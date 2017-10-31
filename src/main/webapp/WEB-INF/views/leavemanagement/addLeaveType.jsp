@@ -30,6 +30,19 @@
 	});
 </script>
     
+    
+    <script>
+    function removeErrMsg(){
+    	$("#departmentDiv").find("p.jquery_form_error_message").remove();
+    }
+    function removeRoleErrMsg(){
+    	$("#rolesDiv").find("p.jquery_form_error_message").remove();
+    }
+    	function validateColor(){
+    		$("#cp").find("p.jquery_form_error_message").remove();
+    	}
+    	
+    </script>
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -53,11 +66,8 @@
 						<div class="form-group">
 							<label class="col-md-3">Name<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="leaveTypeDiv">
-								<input type="hidden" id="leaveTypeId" name="leaveTypeId"
-									value="${leaveType.id}" /> <input type="text"
-									class="form-control" id="leaveTypeName" name="name"
-									value="${leaveType.name}" onblur="validateName();"
-									field-name="Name"
+								<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}" />
+								 <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" onblur="validateName();" field-name="Name"
 									data-validation="required validate_Space validate_length length1-250">
 							</div>
 						</div>
@@ -152,9 +162,9 @@
 						<div class="clearfix" id="noUsersDiv" style="display: none;">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
-								<label class="col-md-3">Select Department</label>
+								<label class="col-md-3">Select Department<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-9 dropdown-select">
-									<select class="chosen-select form-control" name="department"
+									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">Select Department</option>
@@ -168,10 +178,10 @@
 							<div class="form-group" id="rolesDiv">
 								<label class="col-md-3">Select Roles<span
 								class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9 dropdown-select">
+								<div class="col-md-9 dropdown-select" id="roleErrMsg">
 									<select multiple data-placeholder="Select Roles"
 										class="chosen-select form-control" id="roles" name="roles"
-										field-name="Roles" data-validation-optional="true">
+										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg();">
 										<c:forEach var="role" items="${rolesList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="existedRoles" items="${existedRoles}">
@@ -265,10 +275,10 @@
 									class="input-group colorpicker-component errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
-										value="${leaveType.colorCode}" class="form-control"
-										data-validation="required"> <span
+										value="${leaveType.colorCode}" class="form-control" id="colorCode"
+										data-validation="required" > <span
 										class="input-group-addon"><i><img
-											src="resources/images/theme-icon.png" class="img-responsive"
+											src="resources/images/theme-icon.png" onselect="validateColor();" class="img-responsive"
 											title="Themes"></i></span>
 								</div>
 							</div>
@@ -319,7 +329,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="leavePolicyDescription"   
-						value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 
 						</div>
@@ -344,14 +354,13 @@
 
 <script>
 	function validateName() {
+	
 		var locationId = '${SourceLeadWeb_orgLocationId}';
+		var id = $("#leaveTypeId").val();
 		var name = $("#leaveTypeName").val();
 		if (name != null && name != '' && name != 'undefined') {
-			$
-					.get(
-							sourceleadUrl + "/validateName?&orgLocationId="
-									+ locationId + "&from=LeaveType&name="
-									+ name,
+
+			$.get(sourceleadUrl + "/validateName?&orgLocationId="+ locationId + "&from=LeaveType&name="+name+"&id="+id,
 							function(data) {
 								if (data == true) {
 									$('#leaveTypeDiv').find(

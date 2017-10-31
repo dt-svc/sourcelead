@@ -106,7 +106,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
-          success :function(data) {
+          success :function(json) {
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -124,7 +124,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -196,7 +195,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     vendorNewPagination(); 
                /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -225,7 +224,7 @@ function viewVendorDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function vendorNewPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],

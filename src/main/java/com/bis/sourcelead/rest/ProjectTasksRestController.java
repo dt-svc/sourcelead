@@ -424,6 +424,14 @@ public class ProjectTasksRestController {
 		return "success";
 	}
 
+	/**
+	 * @author Laxman
+	 * @param percentage
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/updateTaskPercentage", method = RequestMethod.POST)
 	public String updateTaskPercentage(@RequestParam(value = "percentage", required = false) Integer percentage,
 			@RequestParam(value = "taskId", required = false) String taskId,
@@ -431,6 +439,24 @@ public class ProjectTasksRestController {
 		tasksService.updateTaskPercentage(percentage, taskId, userId);
 		return "success";
 	}
+	
+	
+	/**
+	 * @author Laxman
+	 * @param billingId
+	 * @param taskId
+	 * @param userId
+	 * @return successsssss
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateBillingType", method = RequestMethod.POST)
+	public String updateBillingType(@RequestParam(value = "billingId", required = false) String billingId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateBillingType(billingId, taskId, userId);
+		return "success";
+	}
+	
 
 	/**
 	 * @author Laxman
@@ -1137,8 +1163,8 @@ public class ProjectTasksRestController {
 		
 		BudgetReportDTO report = new BudgetReportDTO();
 		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, filterDate, startDateUTC, endDateUTC);
-		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedBudgetValue())).sum();
-		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->Double.parseDouble(p.getEstimatedHours())).sum();
+		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->p.getEstimatedHours()).sum();
 		if(budgetList.size() >1) {
 			String currency = budgetList.get(0).getEstimatedBudgetCurrency();
 			report.setCurrency(currency);

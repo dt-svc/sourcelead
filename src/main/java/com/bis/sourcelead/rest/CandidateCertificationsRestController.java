@@ -1,5 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,6 +54,9 @@ public class CandidateCertificationsRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	 
 	
 	/**
@@ -87,15 +99,29 @@ public class CandidateCertificationsRestController {
 	   */
 	//@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
-	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+	 public ResponseList<CandidateCertificationDTO> getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
+		 ResponseList<CandidateCertificationDTO> certificationList = new ResponseList<>();
 		 String msg = "";
 		String resultJson;
+		List<CandidateCertificationDTO> candidateCertificationDTOList = new ArrayList<>();
+		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<CandidateCertifications>   candidateCertificationsList = candidateCertificationsService.getCandidateCertificationListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId) , loginOrgLocation.getId());
 		
 		for(CandidateCertifications candidateCertifications : candidateCertificationsList){
-
+			CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
+			
+            candidateCertificationDTO.setId(candidateCertifications.getId());
+			candidateCertificationDTO.setName(candidateCertifications.getName());
+			candidateCertificationDTO.setProvider(candidateCertifications.getProvider());
+		    candidateCertificationDTO.setScore(candidateCertifications.getScore());
+		    candidateCertificationDTO.setScoreType(candidateCertifications.getScoreType());
+		    candidateCertificationDTO.setDescription(candidateCertifications.getDescription());
+		    candidateCertificationDTO.setCandidatevalidFromDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidFrom()));
+		    candidateCertificationDTO.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
+		    candidateCertificationDTOList.add(candidateCertificationDTO);
+			
 			/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
 			if(msg == null){
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editCertification");
@@ -111,8 +137,8 @@ public class CandidateCertificationsRestController {
 			    SourceLeadSessionManager.removeSessionAttribute(request, "editCertification");
 			*/
 		}
-		resultJson = commonUtil.toJSON(candidateCertificationsList);
-		return resultJson;
+		certificationList.setData(candidateCertificationDTOList);
+		return certificationList;
 	 }
 	 
 	 
@@ -136,10 +162,18 @@ public class CandidateCertificationsRestController {
 			String resultJson;
 			User user = userService.getUserById(loginUserId);
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			Candidate candidate =candidateService.getCandidateById(candidateId);
 			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId, user, orgLocations);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
 			 //SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
-
+			 if (null != candidate && null != candidate.getId()) {
+				 CandidateIndex candidateIndex = new CandidateIndex();
+				 candidateIndex.setCandidateId(candidate.getId());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+				 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+			  }	
 			 return resultJson;
 		}
 	   

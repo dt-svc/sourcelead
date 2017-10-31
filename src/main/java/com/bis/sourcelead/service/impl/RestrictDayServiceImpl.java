@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
@@ -43,6 +44,9 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	@Autowired
 	private RolesService rolesService;
 	
+	@Autowired 
+	LeaveService leaveService;
+	
 	@Override
 	public RestrictDay storeRestrictedDay(RestrictDayDTO restrictDayDTO) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(restrictDayDTO.getOrgLocationId()));
@@ -62,9 +66,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		restrictDay.setRestrictName(restrictDayDTO.getRestrictName());
 		restrictDay.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getStartDate()));
 		restrictDay.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getEndDate()));
- 		if(StringUtils.isNotBlank(restrictDayDTO.getReason())){
-			restrictDay.setReason(restrictDayDTO.getReason());
-		}
+		restrictDay.setReason(restrictDayDTO.getReason());
 		restrictDay.setOrgLocationId(orgLocations);
 		restrictDay.setApplicableToAll(restrictDayDTO.getIsApllicable());
 		
@@ -108,6 +110,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, RestrictDay restrictDay, User user) throws Exception {
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
+		boolean flag = leaveService.deleteAllLeaveRolesByParticularTableId(Constants.RESTRICTDAY,restrictDay.getId());
 		roles.forEach(role -> {
 			LeaveRole leaveRole = null;
 			if(restrictDay.getRestrictDayRolesList() !=null && restrictDay.getRestrictDayRolesList().size() >0) {
@@ -143,6 +146,21 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	@Override
 	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception {
 		return restrictDayDao.validateRestrictDayDates(fromDate, toDate, orgLocations);
+	}
+
+	@Override
+	public boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(restrictDayDTO.getOrgLocationId()));
+		List<RestrictDay> list = validateRestrictDayDates(restrictDayDTO.getStartDate(), restrictDayDTO.getEndDate(), orgLocations);
+//		Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getStartDate());
+//		Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),restrictDayDTO.getEndDate());
+//		commonUtil.getNumberOfDaysBetweenTwoDates(startDate, endDate);
+		if(list != null && list.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 }

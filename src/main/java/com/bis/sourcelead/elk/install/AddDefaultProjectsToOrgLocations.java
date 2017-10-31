@@ -66,7 +66,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 if (!rs.next()) {
 					 
 				 String currencyCode = null;	 
-				 String currencyQuery = "SELECT * from sourcelead.COUNTRIES where Name = '"+country+"' ";
+				 String currencyQuery = "SELECT * from sourcelead.countries where Name = '"+country+"' ";
 				 java.sql.PreparedStatement currencyPst = conn.prepareStatement(currencyQuery); 
 				 ResultSet currencyRs = currencyPst.executeQuery();	 
 				 
@@ -101,6 +101,53 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 		    		}catch (Exception e){   
 						e.printStackTrace();
 					}
+		    		
+		    		
+		         String query5 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+				 java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query5); 
+				 ResultSet rs4 = pstmt4.executeQuery();
+				 Long projId = null;
+				 if (rs4.next()) {
+					 projId = rs4.getLong("ID");
+					 
+					 
+					 String query6 = "SELECT * from sourcelead.PROJECT_TASKS where PROJECT_ID IS NULL ";
+					 java.sql.PreparedStatement pstmt5 = conn.prepareStatement(query6); 
+					 ResultSet rs5 = pstmt5.executeQuery();
+					 Integer taskId = 1;
+					 
+					 while(rs5.next()) {
+						 
+						 String taskName = rs5.getString("TASK_NAME");
+						 String description = rs5.getString("DESCRIPTION");
+						 String billableType = rs5.getString("BILLABLE_TYPE");
+						 
+							String query7 = " insert into sourcelead.PROJECT_TASKS (GENERATED_ID,TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_TASKS_UUID, PROJECT_ID, "
+									+ "CREATED_BY, CREATED_DATE, UPDATED_BY, UPDATED_DATE)"
+									+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				    		
+				    		try {
+				    			 PreparedStatement pstmt6 = conn.prepareStatement(query7);
+				    			 pstmt6.setString(1, "DFP-"+taskId);
+				    			 pstmt6.setString(2, taskName);
+				    			 pstmt6.setString(3, description);
+				    			 pstmt6.setString(4,billableType);
+				    			 pstmt6.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
+				    			 pstmt6.setLong(6, projId);
+				    			 pstmt6.setString(7,createdBy);
+				    			 pstmt6.setDate(8,(java.sql.Date) startDate);
+				    			 pstmt6.setString(9,createdBy);
+				    			 pstmt6.setDate(10,(java.sql.Date) startDate);
+				    			 pstmt6.execute();	
+					    		 
+				    		}catch (Exception e){   
+								e.printStackTrace();
+							}
+				    		
+				    		taskId = taskId+1;
+					 }
+					 
+				 }
 		    		
 		    		
 		    		 String query2 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";

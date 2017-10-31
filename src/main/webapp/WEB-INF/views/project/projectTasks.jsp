@@ -73,7 +73,7 @@ function projectTask(projectId, status) {
 		<c:forEach var="status" items="${taskStatusList}">     
 			<c:if test="${taskStatusList[0] == status || taskStatusList[1] == status}">
 			  result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}" checked  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
-		    </c:if>	  
+			  </c:if>	  
 		    <c:if test="${taskStatusList[0] != status  && taskStatusList[1] != status}">
 		      result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
 		    </c:if>
@@ -111,6 +111,7 @@ function projectTask(projectId, status) {
 	$("#tab-3").append(result);
 	$("#tab-3").show();
 	$("#txtEditor").Editor();
+	
 	$(".project-tabs-menu a").click(
 			function(event) {
 				event.preventDefault();
@@ -195,18 +196,20 @@ function projectTask(projectId, status) {
 							result = result + '<tr>';
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
 							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
 							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
+							result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
 							'</sec:authorize>'; 
 							
+ 
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
-							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
+							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+
+							result = result	+ '<td><div><span title="'+opt.taskTypes+'">'+opt.taskTypes+ '</span></div></td>';
 							result = result	+ '<td><div><span>'+ taskPriotiry+ '</span></div></td>';
 							result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskStaus+'</span></div></td>';
+							result = result	+ '<td><div><span title="'+opt.taskStaus+'">'+opt.taskStaus+'</span></div></td>';
 							'</sec:authorize>'; 
 							result = result + '</tr>';
 
@@ -461,6 +464,7 @@ function editCancel(){
     } 
     function addtask(){
     	var projectId =  $("#projectId").val();
+    	var projectStartDate = '${projectStartDate}';
         	var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -531,9 +535,9 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Date</label>';
+			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
 			result = result	+ '           <div class="col-md-8">';
-			result = result	+ '             <input class="form-control calendar"  id="estimatedDate" name="estimatedDate" placeholder="Estimated Date" type="text" readonly>';
+			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
@@ -597,7 +601,7 @@ function editCancel(){
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';
@@ -658,20 +662,13 @@ function editCancel(){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
 				  
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
+					 
 				});
     }
     $(".proj_close, .side_mask").click(function(){
@@ -770,8 +767,8 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();

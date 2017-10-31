@@ -17,6 +17,18 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	private String timeSheetsFor;
 	
 	private String expensesFor;
+	
+	private Long projectMembersId;
+	
+	private Long projectsId;
+	
+	private Long masterCandidateId;
+	
+	private String currentTimeFrequency;
+	
+	private String currentTimeSubFrequency;
+	
+	private String timesheetStatus;
 
 	public Long getUserId() {
 		return userId;
@@ -69,6 +81,57 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	}
 
 	
-	
-	                     
+
+	public Long getProjectMembersId() {
+		return projectMembersId;
+	}
+
+	public void setProjectMembersId(Long projectMembersId) {
+		this.projectMembersId = projectMembersId;
+	}
+
+	public Long getProjectsId() {
+		return projectsId;
+	}
+
+	public void setProjectsId(Long projectsId) {
+		this.projectsId = projectsId;
+	}
+
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
+	}
+
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
+	}
+
+	public String getCurrentTimeSubFrequency() {
+		return currentTimeSubFrequency;
+	}
+
+	public void setCurrentTimeSubFrequency(String currentTimeSubFrequency) {
+		this.currentTimeSubFrequency = currentTimeSubFrequency;
+	}
+
+
+
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getTimesheetStatus() {
+		return timesheetStatus;
+	}
+
+	public void setTimesheetStatus(String timesheetStatus) {
+		this.timesheetStatus = timesheetStatus;
+	}
+
+ 
+
 }

@@ -31,7 +31,7 @@ public interface LeaveService {
 
 	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
 
-	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId);
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception;
 
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
@@ -41,6 +41,8 @@ public interface LeaveService {
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception;
 
-	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
+
+	boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId);
 
 }

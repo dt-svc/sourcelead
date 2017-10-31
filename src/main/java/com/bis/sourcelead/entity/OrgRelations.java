@@ -208,6 +208,14 @@ public class OrgRelations implements Serializable{
 	private String vendorCreateduserName;
 	
 	@Transient
+	@JsonProperty
+	private String poEmail;
+	
+	@Transient
+	@JsonProperty
+	private String paymentRemittanceEmail;
+	
+	@Transient
 	private Integer noOfContatcs;
 	
 	@Transient
@@ -340,6 +348,10 @@ public class OrgRelations implements Serializable{
     @Transient
 	@JsonProperty
     private String bankIdentifierCode;
+    
+    @Transient
+	@JsonProperty
+    private String vendorNameForList;
     
 	public String getStringDate()
 	{
@@ -1058,6 +1070,42 @@ public class OrgRelations implements Serializable{
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
+	}
+
+	public String getVendorNameForList()
+	{
+		return vendorNameForList;
+	}
+
+	public void setVendorNameForList(String vendorNameForList)
+	{
+		this.vendorNameForList = vendorNameForList;
+	}
+
+	public void setResponderJsonLocationId(Long responderJsonLocationId)
+	{
+		this.responderJsonLocationId = responderJsonLocationId;
+	}
+
+	public void setLocationJsonId(Long locationJsonId)
+	{
+		this.locationJsonId = locationJsonId;
 	}
 
 	

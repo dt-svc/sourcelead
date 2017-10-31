@@ -27,6 +27,7 @@
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -49,8 +50,12 @@
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist', 'yes');
 								document.getElementById("projectSequeneNumber").setAttribute('record-exist-errorMsg',ProjectSequeneNumber+ ' is Already Existed');
 								$('input#projectSequeneNumber').removeAttr( "record-exist record-exist-errorMsg");
+								$("#save_project").attr("disabled", "disabled");
+			    				
 							} else {
+								$("#save_project").removeAttr("disabled");
 								$('input#projectSequeneNumber').removeAttr("record-exist record-exist-errormsg");
+								
 							}
 						},
 					});
@@ -93,8 +98,10 @@ function validateShortCode(){
 				document.getElementById("projectShortCode").setAttribute('record-exist', 'yes');
 				document.getElementById("projectShortCode").setAttribute('record-exist-errorMsg',projectShortCode+ ' is Already Existed');
 				$('input#projectShortCode').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
 			} else {
 				$('input#projectShortCode').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
 			}
 		},
 	});
@@ -144,7 +151,10 @@ function validateShortCode(){
 						
 						 <input type="hidden" name="projectId" id=projectId value=""/>
 						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
-
+						 <input type="hidden" name="startDateStr" id="startDateStr" value=""/>
+						 <input type="hidden" name="endDateStr" id="endDateStr" value=""/>
+						 
+ 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
@@ -314,7 +324,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
-									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"   maxlength="3">  
+									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
 						</div>
@@ -389,7 +399,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedBudgetDiv">
 							<label class="col-md-3">Notify Budget At</label>
 							<div class="col-md-9">
-								<div class="input-group">
+								<div class="input-group errorInptgroup">
 								<div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
@@ -419,7 +429,7 @@ function validateShortCode(){
 					                </select>
 					                </div>
 									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
-										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
@@ -476,7 +486,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -618,8 +628,8 @@ function getStatus(){
 
 <script type="text/javascript">
 	function saveProject() {
-		var savedProjectId = '${savedProjectId}';
-		if(savedProjectId == null || savedProjectId == '' || savedProjectId == 'undefined'){
+		var projectId = document.getElementById("projectId").value;
+		if(projectId == null || projectId == '' || projectId == 'undefined'){
 			validateProjectSequeneNumber();
 		}
 		var validationSettings = {
@@ -632,11 +642,18 @@ function getStatus(){
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
-			var frm = $('#project_form').serializeFormJSON();
+// 		   var frm = $('#project_form').serializeFormJSON();
 			 
-		    var form = $('#project_form')[0];
-		    var formData = new FormData(form);
-			
+// 		    var form = $('#project_form')[0];
+// 		    var formData = new FormData(form); 
+		    
+		    var formData = getFormData1("project_form");
+		    if(formData.get("estimatedBudget") === "") {
+		    	formData.set("estimatedBudget","0");
+		    }
+		    if(formData.get("estimatedHours") === "") {
+		    	formData.set("estimatedHours","0");
+		    }
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
@@ -647,9 +664,12 @@ function getStatus(){
 						success : function(projects) {
 								 $("#projectId").val(projects.id);
 								 $("#projectUUID").val(projects.projectUUID);
+								 $("#startDateStr").val(projects.startDateStr);
+								 $("#endDateStr").val(projects.endDateStr);
+								 
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
-								 $("assignedMembers").removeClass("disabledLink");
+								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
 								 assignedMembers.click();
 
@@ -694,11 +714,12 @@ function getProjectDetails(){
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
-	        	
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
 	        	 $("#projectShortCode").val(json.projectShortCode);
+	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
+	        	 $('#projectShortCode').removeAttr('onblur');
 	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
@@ -789,6 +810,8 @@ function getProjectDetails(){
         		   $("#savedProjectDocuments").empty();
       			   $("#savedProjectDocuments").append(result);
         	   }
+        	   
+        	   $("input[type=hidden][name*=uploadedFileInfo]").remove();
       			   
       			   for(var i=0; i<json.approverHierarchyList.length; i++){
 	        		  var opt = json.approverHierarchyList[i];
@@ -902,6 +925,7 @@ function assignEmployeeCancel(){
                     mm='0'+mm
                 } 
                 
+               
                 var today = yyyy+'-'+mm+'-'+dd;
                 
                 var proStartDateTP = today.split("-");
@@ -917,17 +941,39 @@ function assignEmployeeCancel(){
       		    }if(locationDate.match("yyyy-dd-MM")){
       		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
       		    }
+      		    
+      		    
+      		   var projectStartDate = $("#startDate").val();
+               var from = projectStartDate.split("-");
+               if(locationDate.match("yyyy-MM-dd")){
+            	   var d3 = new Date(from[0], from[1] - 1, from[2]);
+    		    }if(locationDate.match("dd-MM-yyyy")){
+    		    	var d3 = new Date(from[2], from[1] - 1, from[0]);
+    		    }if(locationDate.match("MM-dd-yyyy")){
+    		    	var d3 = new Date(from[2], from[0] - 1, from[1]);
+    		    }if(locationDate.match("yyyy-dd-MM")){
+    		    	var d3 = new Date(from[0], from[2] - 1, from[1]);
+    		    }
                 
 				if(d1 > d2){
 					$("#status").empty();
 					$('#status').append('<option >Completed</option>');
 				}else{
 					$("#status").empty();
-					$('#status').append('<option >In-Progress</option>');
-					$('#status').append('<option >Not Started</option>');
-					$('#status').append('<option >Completed</option>');
-					$('#status').append('<option >On-Hold</option>');
-					$('#status').append('<option >Dropped</option>');
+					if(d1 < d3){
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}else{
+						$('#status').append('<option >In-Progress</option>');
+						$('#status').append('<option >Not Started</option>');
+						$('#status').append('<option >Completed</option>');
+						$('#status').append('<option >On-Hold</option>');
+						$('#status').append('<option >Dropped</option>');
+					}
+					
 				}
 			}
 		});
@@ -1010,8 +1056,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Manager-</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -1021,7 +1066,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
 			        			selected = "selected";
 			        		}
-			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
@@ -1055,7 +1100,7 @@ function getProjectLevel1Approvers(approverUserId){
 		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
 		        			selected = "selected";
 		        		}
-			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+"</option>";
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
 					}
 		        	
 			        $("#level1Manager").append(output);

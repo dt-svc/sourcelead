@@ -186,7 +186,7 @@ window.onload = function () {
              <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
-                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
@@ -212,7 +212,7 @@ window.onload = function () {
             
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
+              <div class="col-md-9" id="firstNameDiv">
                 <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100">
               </div>
             </div>
@@ -229,14 +229,14 @@ window.onload = function () {
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
 	              <div class="row">
-	              <div class="col-md-7 paddingRight">
+	              <div class="col-md-6 paddingRight">
 	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
 	              </div>
-             <div class="col-md-5 paddingLeft">
+             <div class="col-md-6 paddingLeft erMesMid">
 	             <div class="row">
 	             <label class="col-md-5">Extension </label>
-	             <div class="col-md-7">
-	             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
+	             <div class="col-md-7 posSta">
+	             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">
 	             </div>
 	             </div>
              </div>
@@ -244,10 +244,6 @@ window.onload = function () {
               </div>
               </div>
             </div>
-            
-            
-            
-            
             
             <div class="form-group">
               <label class="col-md-3">Status</label>
@@ -582,6 +578,7 @@ function getSpocUserDetails(){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
+	        			$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{

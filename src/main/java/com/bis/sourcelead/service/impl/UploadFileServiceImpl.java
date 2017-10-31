@@ -541,9 +541,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setUserName(userImport.getEmailId());
 			
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-			user.setIsMailSent(userImport.getIsMailChecked());
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
+			userRole.setIsMailSent(userImport.getIsMailChecked());
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
 			employee.setUser(user);

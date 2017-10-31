@@ -73,7 +73,7 @@ $(document).ready(function() {
                       <div class="clearfix row">
                       
                       <div class="col-sm-5 paddingRight" id="errFromDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
                       </div>
                       
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
@@ -110,7 +110,7 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt10 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date" readonly>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
@@ -180,7 +180,7 @@ $(document).ready(function() {
               <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
-                  <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
+                  <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
               
@@ -292,8 +292,9 @@ function cancel(){
 function validateHolidayName(){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#holidayName").val();
+	var id = $("#holidayId").val();
 	if(name != null && name != '' && name != 'undefined'){
-		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday&name="+name, function(data) {
+		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday&name="+name+"&id="+id, function(data) {
           	if(data == true){
           		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
           		$("#save_holiday").removeAttr("disabled");

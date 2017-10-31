@@ -98,7 +98,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
         	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
         	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){

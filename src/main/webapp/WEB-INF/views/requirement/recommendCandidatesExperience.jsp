@@ -68,15 +68,15 @@ function closeCertificatePopup(){
 						type : "POST",
 						data : formData,
 						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-						success : function(data) {
+						success : function(json) {
 
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl  + "/errorPage");
-								} else {
+							if (json != null && json != 'undefined'
+									&& json != "") {
+// 								if (data.indexOf('Sign In') >= 0) {
+// 									location.replace(sourceleadUrl);
+// 								} else if (data.indexOf('exception') >= 0) {
+// 									location.replace(sourceleadUrl  + "/errorPage");
+// 								} else {
 									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
 			            			 if(data<50){
 			            			   $("#perVal").removeClass('progress-bar-success');
@@ -106,7 +106,7 @@ function closeCertificatePopup(){
 									$("#popUpDivEmp").removeClass(
 											"edit-details-active");
 									candidateEmployersList(candidateId);
-								}
+// 								}
 							}
 
 						},
@@ -568,13 +568,13 @@ function monthIfYearRequired(){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
-					success : function(data) {
+					success : function(json) {
 						/* if (data != null && data != 'undefined' && data != "" && data != '[]') { */
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else {
+// 							if (data.indexOf('Sign In') >= 0) {
+// 								location.replace(sourceleadUrl);
+// 							} else if (data.indexOf('exception') >= 0) {
+// 								location.replace(sourceleadUrl + "/errorPage");
+// 							} else {
 								$("#candidateEmployersList").empty();
 								var result = "";
 								result = result	+ "<table id='candidateEmployersPagination' class='display' cellspacing='0' width='100%' >";
@@ -589,9 +589,9 @@ function monthIfYearRequired(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+// 								var json = JSON.parse(data);
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
@@ -637,7 +637,7 @@ function monthIfYearRequired(){
 								result = result + "</table>";
 								$("#candidateEmployersList").append(result);
 								employeePagination();
-							}
+// 							}
 						/* } else {
 							var result = "";
 							result = result + "   <div class='row'>";

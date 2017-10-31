@@ -38,13 +38,14 @@
     <div class="form-group" id="startDateDiv">
        <label class="col-md-3">Start Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required" readonly>
        </div>
     </div>
     <div class="form-group" id="endDateDiv">
        <label class="col-md-3">End Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required" readonly>
+        <div id="warnDiv"></div>
        </div>
     </div>
     <div class="form-group">
@@ -182,6 +183,7 @@ $('body').on('blur', '#restrictDay_form', function() {
             dt.setDate(dt.getDate());
             $("#startDate").datepicker("option", "maxDate", dt);
             removeEndValid();
+            checkDuplicateRestrictDay();
         }
 	  });
 	  
@@ -207,6 +209,24 @@ $('body').on('blur', '#restrictDay_form', function() {
  });
  
  </script>
+ 
+<script>
+function checkDuplicateRestrictDay(){
+	$('.jquery_form_error_message cOrange').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	if(startDate != null && startDate != '' && startDate != 'undefined' && startDate != null && startDate != '' && startDate != 'undefined'){
+		$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+			if(data == true){
+				$("#warnDiv").after("<p class='jquery_form_error_message cOrange'><i class='fa fa-exclamation-circle'></i> Your restrict days are already added.</span>");
+			}else{
+				$('.jquery_form_error_message cOrange').hide();
+			}
+		});
+	}
+}
+</script>
  
 <script>
 function removeStartValid(){

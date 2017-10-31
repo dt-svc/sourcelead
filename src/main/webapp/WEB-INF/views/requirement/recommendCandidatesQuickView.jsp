@@ -202,7 +202,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
   				  recQvemployeeSubmission(candidateId);
   				  recQveducationSubmission(candidateId);
 				  recQwikCertificates(candidateId);
-					candidateSideBar(candidateId);
+				  candidateSideBar(candidateId);
               }else{
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -229,17 +229,17 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					success : function(json) {
+						if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 								$("#qvemployeeSubmission").empty();
 								var result = "";
-								var json = JSON.parse(data);
+// 								var json = JSON.parse(data);
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
 
-								for (var i = 0; i < json.length; i++) {
+								for (var i = 0; i < json.data.length; i++) {
 									if(i < 4){
-									var opt = json[i];
+									var opt = json.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -300,20 +300,20 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 <script>
 function recQveducationSubmission(candidateId){
 	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          type : "GET",
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          success :function(json) {
+        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#qveducationSubmission").empty();
 	                	 var result = "";
 	                	 
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <h4>Education</h4>';
 							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) {
+// 							 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.data.length; i++) {
 		                    	 if(i < 3){
-			                    	 var opt = json[i];  
+			                    	 var opt = json.data[i];  
 			                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 		                    		        EducationName = opt.name;
 			                    	    }else{
@@ -372,19 +372,18 @@ function recQveducationSubmission(candidateId){
 <script>
 function recQwikCertificates(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#qvcertificationSubmission").empty();
 	                	 var result = "";
 	                	 
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certificates</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
+						for (var i = 0; i < json.data.length; i++) { 
 								if(i < 3){
-		                    	var opt = json[i];  
+		                    	var opt = json.data[i];  
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){

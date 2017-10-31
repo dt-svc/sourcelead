@@ -8,7 +8,7 @@
 <form:form id="assignMembers_form" name="assignMembers_form" method="post">
 	<div class="project_tabs_inn_head">
 		<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">
-		<i class="glyphicon glyphicon-plus"></i>Assign Members</a> 
+		<i class="glyphicon glyphicon-plus"></i>Search Members</a> 
 		
 		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>
@@ -175,11 +175,11 @@ function getAssociates(){
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu2">';
 	result = result +'<ul class="resourcetype-filter">';
 	result = result +'<li>';
-	result = result +'<input value="hotlist" id="hotlist" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input value="hotlist" id="hotlist" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="hotlist">Hotlist</label>';
 	result = result +'</li>';
 	result = result +'<li>';
-	result = result +'<input  value="assigned" id="Assigned" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input  value="assigned" id="Assigned" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="Assigned">Assigned</label>';
 	result = result +'</li>';
 	result = result +'</ul>';
@@ -362,7 +362,7 @@ function getAssociatesFilter(){
 			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div class="tbldata-dotdot-sm">';
+			        	result = result +'<div class="tbldata-dotdot-200">';
 			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
 			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
 			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
@@ -427,10 +427,15 @@ function getAssociatesFilter(){
 
 <script type="text/javascript">
 	function addRequestedResources() {
-		
-		
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
+		if(projectStartDate == ""){
+		  projectStartDate = $("#startDateStr").val();
+		}
+		if(projectEndDate == ""){
+		  projectEndDate = $("#endDateStr").val();
+		}
+		
 		
 		var oTable = $('#associatesListPagination').dataTable();
 		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
@@ -492,7 +497,7 @@ function getAssociatesFilter(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -500,49 +505,85 @@ function getAssociatesFilter(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
 			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-			  var finalDateFormatResourceReqSave = '';
+			  var finalDateFormatAssignEmpUpdate = '';
 			  if(locationDate.match("yyyy-MM-dd")){
-				  finalDateFormatResourceReqSave = 'yy-mm-dd';
+				  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
 			  }if(locationDate.match("dd-MM-yyyy")){
-				  finalDateFormatResourceReqSave = 'dd-mm-yy'; 
+				  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  finalDateFormatResourceReqSave = 'mm-dd-yy'; 
+				  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
 			  }if(locationDate.match("yyyy-dd-MM")){
-				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
+				  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
 			  }
 			
-			$( "#"+maxRowNum+"memberStartDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					  var dt = $(this).datepicker('getDate', '+1d');
-						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
-						removeStartDateValidation(maxRowNum);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
 			
-			$( "#"+maxRowNum+"memberEndDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					   var dt = $(this).datepicker('getDate', '-1d');
-						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
-			
+			var from = projectStartDate.split("-");
+	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+						if(projectEndDate !=  null && projectEndDate != '' && projectEndDate != 'undefined'){
+							$("#"+maxRowNum+"memberStartDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:projectStartDate,
+								maxDate:projectEndDate,
+						        onClose : function(selected) {
+						        	var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+					                removeStartDateValidation(maxRowNum);
+									getEstimatedHours(maxRowNum)
+								}
+							});
+
+							$("#"+maxRowNum+"memberEndDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								maxDate:projectEndDate,
+								minDate: datepickerStartDate,
+						        onClose : function(selected) {
+						        	 var dt = $(this).datepicker('getDate', '-1d');
+										dt.setDate(dt.getDate() - 1);
+										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+					                getEstimatedHours(maxRowNum)
+								}
+							});
+							
+						}else{
+							$("#"+maxRowNum+"memberStartDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:projectStartDate,
+						        onClose : function(selected) {
+						        	var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+					                removeStartDateValidation(maxRowNum);
+									getEstimatedHours(maxRowNum)
+								}
+							});
+
+							$("#"+maxRowNum+"memberEndDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:datepickerStartDate,
+						        onClose : function(selected) {
+						        	 var dt = $(this).datepicker('getDate', '-1d');
+										dt.setDate(dt.getDate() - 1);
+										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+									 
+					                getEstimatedHours(maxRowNum)
+								}
+							});
+						}
 			
 			var cell5 = row.insertCell(5);
 			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
@@ -643,7 +684,7 @@ function getAssociatesFilter(){
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -651,44 +692,88 @@ function getAssociatesFilter(){
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				
 		    				
-		    				
-		    				$( "#"+maxRowNum+"memberStartDate" ).datepicker({
-		    					  changeMonth: true,
-		    				      changeYear: true,
-		    				      dateFormat : 'dd-mm-yy',
-		    				      minDate : 0,
-		    					  onSelect : function(selected) {
-		    						  var id = $(this).attr('id');
-		    						  var rowId = id.split("memberStartDate")[0];
-		    						  var dt = toDate("#"+rowId+"memberStartDate");
-		    						  dt.setDate(dt.getDate() + 1);
-		    						  $("#"+rowId+"memberEndDate").datepicker("option", "minDate", dt);
-		    						  removeStartDateValidation(maxRowNum);
-		    						  getEstimatedHours(rowId);
-		    				 	  }
-		    				    });
-		    				
-		    				$( "#"+maxRowNum+"memberEndDate" ).datepicker({
-		    					  changeMonth: true,
-		    				      changeYear: true,
-		    				      dateFormat : 'dd-mm-yy',
-		    				      minDate : 0,
-		    					  onSelect : function(selected) {
-		    						  var id = $(this).attr('id');
-		    						  var rowId = id.split("memberEndDate")[0];
-		    						   var dt = toDate("#"+rowId+"memberEndDate");
-		    							dt.setDate(dt.getDate() - 1);
-		    							$("#"+rowId+"memberEndDate").datepicker("option", "maxDate", dt);
-		    							removeStartDateValidation(maxRowNum);
-		    							getEstimatedHours(rowId)
-		    				 	  }
-		    				    });
-		    				
+		    				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		    				  var finalDateFormatAssignEmpUpdate = '';
+		    				  if(locationDate.match("yyyy-MM-dd")){
+		    					  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+		    				  }if(locationDate.match("dd-MM-yyyy")){
+		    					  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+		    				  }if(locationDate.match("MM-dd-yyyy")){
+		    					  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+		    				  }if(locationDate.match("yyyy-dd-MM")){
+		    					  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+		    				  }
+		    				  
+		    				var from = opt.startDateStr.split("-");
+		    		        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+		    		        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+		    							if(opt.endDateStr !=  null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		    								$("#"+maxRowNum+"memberStartDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:opt.startDateStr,
+		    									maxDate:opt.endDateStr,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '+1d');
+		    										dt.setDate(dt.getDate() + 1);
+		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+		    						                removeStartDateValidation(maxRowNum);
+		    										getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+
+		    								$("#"+maxRowNum+"memberEndDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									maxDate:opt.endDateStr,
+		    									minDate: datepickerStartDate,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '-1d');
+		    										dt.setDate(dt.getDate() - 1);
+		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+		    										 
+		    						                getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+		    								
+		    							}else{
+		    								$("#"+maxRowNum+"memberStartDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:opt.startDateStr,
+		    									 
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '+1d');
+		    										dt.setDate(dt.getDate() + 1);
+		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+		    										 
+		    						                removeStartDateValidation(maxRowNum);
+		    										getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+
+		    								$("#"+maxRowNum+"memberEndDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:datepickerStartDate,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '-1d');
+		    										dt.setDate(dt.getDate() - 1);
+		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+		    						                getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+		    							}
+		    							
 		    				
 
 		    				var cell5 = row.insertCell(5);
@@ -909,7 +994,7 @@ function assignMembers(){
 
 						$("#associateRequestLoading").removeAttr("style");
 						 var additionalDetails = document.getElementById("additionalDetails");
-						 $("additionalDetails").removeClass("disabledLink");
+						 document.getElementById("additionalDetails").removeAttribute("class")
 						 additionalDetails.href="#tab-c"; 
 						 additionalDetails.click();
 					},
@@ -997,4 +1082,222 @@ function cancel(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+function getTeamMembers(projectId,startDateStr,endDateStr) {
+	if(projectId == null || projectId == '' || projectId == 'undefined'){
+		projectId  = document.getElementById("projectId").value;
+		startDateStr  = document.getElementById("startDateStr").value;
+	}
+	var sourceleadUrl ='${sourceleadUrl}';
+	var startDateStr = startDateStr;
+	if(endDateStr == null ||  endDateStr == "" || endDateStr == "undefined"){
+		endDateStr = "";
+	}
+	var searchByName = $("#searchByName").val();
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  teamMembersDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  teamMembersDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  teamMembersDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  teamMembersDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var output = "";
+        	output = output+' <div class="wrap_employeeTable">';
+        	output = output+' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+            output = output+' <thead>';
+            output = output+' <tr>';
+            output = output+' <th><input type="checkbox" name="emp" id="empChekId" onclick="toggleCheck();"></th>';
+            output = output+' <th>Name</th>';
+            output = output+' <th>Email</th>';
+            output = output+' <th>Role</th>';
+            output = output+' <th>Start Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
+            output = output+' <th>End Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
+            output = output+' </tr>';
+            output = output+' </thead>';
+            output = output+' <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+     	       // var projectEndDate = $('#EndDate').val();
+	        		var opt = json[i];
+	        		var role = '';
+	        		if(opt.userType != null && opt.userType != '' && opt.userType != 'undefined'){
+	        			role = opt.userType; 
+	        		}else{
+	        			role = 'Employee';
+	        		}
+	        		output = output + "<tr>";
+	        		//output = output + '<td><input type="checkbox"  class="submissionsChecks" name="submissionList[]" ></td>';
+	        		output = output + "<td><input type='hidden' id='projectStartDateStr'  value="+startDateStr+"><input type='hidden' id='projectEndDateStr'  value="+endDateStr+"><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
+	        		if(opt.user.lastName != null && opt.user.lastName !='Undefined' && opt.user.lastName != ''){
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";	
+					}else{
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"'>" + opt.user.firstName+ "</span></td>";
+					}
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
+	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input  id='startDate"+ opt.id+ "'   type='text' name='Date' value='"+startDateStr+"' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
+	        		output = output +"<input id='endDate" + opt.id + "' value='"+endDateStr+"'  type='text' name='Date' value='' class='form-control clsDatePicker' readonly='readonly'>";
+	        		output = output + "</div></td>";
+	        		output = output + "</tr>";
+			}
+        	output = output+' </tbody>';
+	        output = output+' </table>';
+	        output = output+' </div>';
+        	$("#employeesList").empty();
+	        $("#employeesList").append(output);
+	        
+	        assignEmployeespagination();
+	        
+	        //StartDate And EndDate Pickers
+	     	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  	  var finalDateFormatAssignEmpUpdate = '';
+		  	  if(locationDate.match("yyyy-MM-dd")){
+		  		  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+		  	  }if(locationDate.match("dd-MM-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+		  	  }if(locationDate.match("MM-dd-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+		  	  }if(locationDate.match("yyyy-dd-MM")){
+		  		finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+		  	  }
+	        
+	        var from = startDateStr.split("-");
+	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+		       if(json.length > 0){
+			    	for (var i = 0; i <json.length; i++) {
+						var opt = json[i];
+						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:startDateStr,
+								maxDate:endDateStr,
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
+									var actualId = $(this).attr('id').split('startDate')[1];
+									//var dt = toDate('#startDate'+actualId);
+									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
+								}
+							});
+
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								maxDate:endDateStr,
+								minDate: datepickerStartDate,
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
+									var actualId = $(this).attr('id').split('endDate')[1];
+								//	var dt = toDate('#endDate'+actualId);
+									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
+								}
+							});
+							
+						}else{
+							$('#startDate'+opt.id).datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:startDateStr,
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
+									var actualId = $(this).attr('id').split('startDate')[1];
+									//var dt = toDate('#startDate'+actualId);
+									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
+									
+								}
+							});
+
+							$('#endDate'+opt.id).datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:datepickerStartDate,
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
+									var actualId = $(this).attr('id').split('endDate')[1];
+									//var dt = toDate('#endDate'+actualId);
+									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
+									dt.setDate(dt.getDate() - 1);
+									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
+								}
+							});
+						}
+						
+						
+					}
+		      }
+        },
+        error: function(e){
+        }
+    });
+	$('#firstName').val('');
+	$('#lastName').val('');}
+	$('#employeeEmail').val('');
 </script>

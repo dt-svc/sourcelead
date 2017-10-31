@@ -48,13 +48,13 @@ private static final long serialVersionUID = 1L;
    	private User approverUserId;
     
 	@Column(name = "ESTIMATED_HOURS")
-   	private String estimatedHours;
+   	private Double estimatedHours;
 	
 	@Column(name = "ESTIMATED_BUDGET_CURRENCY")
    	private String estimatedBudgetCurrency;
 	
 	@Column(name = "ESTIMATED_BUDGET_VALUE")
-   	private String estimatedBudgetValue;
+   	private Double estimatedBudgetValue;
 	
 	@Column(name = "BUDGET_STATUS")
    	private String budgetStatus;
@@ -151,17 +151,11 @@ private static final long serialVersionUID = 1L;
 		return approverUserId;
 	}
 
-	public String getEstimatedHours() {
-		return estimatedHours;
-	}
 
 	public String getEstimatedBudgetCurrency() {
 		return estimatedBudgetCurrency;
 	}
 
-	public String getEstimatedBudgetValue() {
-		return estimatedBudgetValue;
-	}
 
 	public String getBudgetStatus() {
 		return budgetStatus;
@@ -215,18 +209,26 @@ private static final long serialVersionUID = 1L;
 		this.approverUserId = approverUserId;
 	}
 
-	public void setEstimatedHours(String estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
 
 	public void setEstimatedBudgetCurrency(String estimatedBudgetCurrency) {
 		this.estimatedBudgetCurrency = estimatedBudgetCurrency;
 	}
 
-	public void setEstimatedBudgetValue(String estimatedBudgetValue) {
+	public Double getEstimatedBudgetValue() {
+		return estimatedBudgetValue;
+	}
+
+	public void setEstimatedBudgetValue(Double estimatedBudgetValue) {
 		this.estimatedBudgetValue = estimatedBudgetValue;
 	}
 
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
 
 	public void setBudgetStatus(String budgetStatus) {
 		this.budgetStatus = budgetStatus;

@@ -82,8 +82,8 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Vendor Name</label>
                   <div class="clearfix">
                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="orgNameAdvanced" name="orgNameAdvanced">
-                        <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                        <c:forEach var="vendorList" items="${vendor_list}">
+                                <option value="${vendorList.vendorNameForList}">${vendorList.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -1985,6 +1985,7 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '</div>';
 							
 							
+							
 							if(json.isVendorOnboardSubmitted == 'Y'){
 							result = result + '<div class="clearfix mt10"></div>';
 							result = result +'<h4 class="pull-left">Onboard Details</h4>';
@@ -2097,6 +2098,27 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '<strong>SWIFT Bank Identifier Code (BIC) :</strong>';
 							if(json.bankIdentifierCode != null && json.bankIdentifierCode !='' && json.bankIdentifierCode !='undefined'){
 								result = result + '<span title="'+json.bankIdentifierCode+'">'+json.bankIdentifierCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For PO :</strong>';
+							if(json.poEmail != null && json.poEmail !='' && json.poEmail !='undefined'){
+								result = result + '<span title="'+json.poEmail+'">'+json.poEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For Payment Remittance :</strong>';
+							if(json.paymentRemittanceEmail != null && json.paymentRemittanceEmail !='' && json.paymentRemittanceEmail !='undefined'){
+								result = result + '<span title="'+json.paymentRemittanceEmail+'">'+json.paymentRemittanceEmail+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}

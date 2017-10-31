@@ -36,7 +36,7 @@ public class OnBoardingTemplateDTO implements Serializable {
 	
 	 private List<FileInfo> supportingFileInfo;
 	 
-	 private List<FileInfo> vendorDocumentsFileInfo;
+	 private List<VendorDocumentsFileInfo> vendorDocumentsFileInfo;
 	 
 	 private List<FileInfo> requestDocumentList;
 	 
@@ -157,11 +157,11 @@ public class OnBoardingTemplateDTO implements Serializable {
 		this.supportingFileInfo = supportingFileInfo;
 	}
 
-	public List<FileInfo> getVendorDocumentsFileInfo() {
+	public List<VendorDocumentsFileInfo> getVendorDocumentsFileInfo() {
 		return vendorDocumentsFileInfo;
 	}
 
-	public void setVendorDocumentsFileInfo(List<FileInfo> vendorDocumentsFileInfo) {
+	public void setVendorDocumentsFileInfo(List<VendorDocumentsFileInfo> vendorDocumentsFileInfo) {
 		this.vendorDocumentsFileInfo = vendorDocumentsFileInfo;
 	}
 

@@ -15,7 +15,7 @@
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Holiday</h2>
+        <h2>Holidays List</h2>
       </div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Holiday</div>
     </section>
@@ -31,13 +31,9 @@
           </li>
         <div class="clearfix"></div>
       </ul>
-      <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
         <div id="loading"></div> 
-    <div class="require_wrap_table datatable_filter">
+    <div class="clients_wrap_table datatable_filter">
     <div id="viewHolidaysDiv"></div>
     </div>
   </div>
@@ -89,7 +85,7 @@ function getHolidaysList(){
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
 			        		 if(opt.description !=null && opt.description != 'undefined' && opt.description != ''){
-			        			 result = result + '     <div title="2" class="tblminwidth-75">'+opt.description+'</div>';	 
+			        			 result = result + '     <div title="'+opt.description+'" class="tblminwidth-75">'+opt.description+'</div>';	 
 			        		 }else{
 			        			 result = result + '     <div title="2" class="tblminwidth-75">--</div>';	
 			        		 }
@@ -109,7 +105,7 @@ function getHolidaysList(){
 				result = result + ' </table>';
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
-				viewHolidaysTable();
+				viewHolidaysTablePagination();
 		}); 
  }
 </script> 
@@ -122,10 +118,10 @@ function deleteHoliday(holidayId){
 }
 </script>
 <script>
-function viewHolidaysTable(){ 
+function viewHolidaysTablePagination(){ 
     $('#viewHolidaysTableId').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
@@ -134,6 +130,7 @@ function viewHolidaysTable(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
+    $("#viewHolidaysTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
 	

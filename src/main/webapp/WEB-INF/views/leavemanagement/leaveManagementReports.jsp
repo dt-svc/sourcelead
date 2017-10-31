@@ -71,8 +71,8 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <select class="form-control">
-                                    <option selected>--Select Year--</option>
+                                <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                    <option value="">--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
                                     <option>2018</option>
@@ -88,6 +88,7 @@
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
+                            <div class="clients_wrap_table datatable_filter"></div>
                             <div id="holidayListDiv"></div>
                         
                     </div>
@@ -160,7 +161,7 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right" name="reportYear" id="reportYear" onchange="getTopLeaveTakers();">
+                            <select class="form-control pull-right" name="reportYear" id="topLeaveTakersreportYear" onchange="getTopLeaveTakers();">
                               <option value="">Year</option>
                               <option value="2017">2017</option>
                               <option value="2018">2018</option>
@@ -332,7 +333,11 @@ $("#tab-1").show();
 function getHolidaysList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", function(data) {
+	var reportYear = "";
+	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
+		reportYear = $("#reportYear").val();
+	}
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&reportYear="+reportYear+"", function(data) {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -349,14 +354,19 @@ function getHolidaysList(){
 					 for (var i=0; i<data.length; i++)
 						{
 			        		 var opt = data[i];
-			        		 result = result + ' <tr class="text-danger">';
+			        		 if(opt.isFuture == 'Y'){
+			        			 result = result + ' <tr class="text-success">';
+			        		 }else{
+			        			 result = result + ' <tr class="text-danger">';
+			        		 }
+			        		 
 			        		 result = result + ' <td>'+j+'</td>';
 			        		 if(opt.holidayName !=null && opt.holidayName !='' && opt.holidayName !='undefined'){
 			        			 result = result + '<td title="'+opt.holidayName+'">'+opt.holidayName+'</td>'; 
 			        		 }else{
 			        			 result = result + '<td>---</td>';
 			        		 }
-			        		 result = result + ' <td title="'+opt.fromDate+'">'+opt.fromDate+'</td>';
+			        		 result = result + ' <td title="'+opt.fromDate+' - '+opt.toDate+'">'+opt.fromDate+' - '+opt.toDate+'</td>';
 			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
 			        		 result = result + '  </tr>';
 			        		 j++;
@@ -861,11 +871,24 @@ function getPieChartBasedOnUser(){
 			);
     //Custom buttons
     function showCustom(){
-        $(".customLeaves").toggle();
+    	$(".customLeaves").toggle();
     }
+    $("html").click(function() {
+    	$(".customLeaves").hide();
+    })
+    $("#customLeaves, .showCustom").click(function(e) {
+    	e.stopPropagation();
+    })
+    
     function showLeaveReport(){
         $(".showLeaveReport").toggle();
     }
+    $("html").click(function() {
+        $(".showLeaveReport").hide();
+    });	
+    $("#showLeaveReport, .showLeaveReport").click(function(e) {
+        e.stopPropagation();
+    });
     //jQuery UI Calendar
 //     $("#leavesCalendar").datepicker();
     </script>
@@ -1095,8 +1118,4 @@ function topLeaveTakersPagination(url){
 	  
 	});
 </script>
-
-
-
-
 <jsp:include page="../masterFooter.jsp" />

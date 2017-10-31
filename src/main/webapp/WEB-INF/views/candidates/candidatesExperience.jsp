@@ -588,9 +588,9 @@ function closeCertificatePopup(){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
-					success : function(data) {
+					success : function(json) {
 					
-								var json = JSON.parse(data);
+// 								var json = JSON.parse(data);
 		             			
 								$("#candidateEmployersList").empty();
 								var result = "";
@@ -606,8 +606,8 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
@@ -771,6 +771,9 @@ function removeEmployer(candidateemployerId, candidateId){
 								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
+								 setTimeout(function(){
+							 			candidateList();					 			
+							 	 },100);
 							}
 						}
 					},

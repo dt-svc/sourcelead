@@ -340,6 +340,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		UserRole onboardingUserRole = null;
 		Employees onboardingEmployee = null;
 		TeamMembers onboardingTeamMember = null;
+		boolean isUserActive = true;
 		
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		
@@ -354,11 +355,32 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    userDao.addUser(onboardingUser);
 		}
 		
+		
+		List<UserRole> rolesList = userRoleDao.getUserSpocsListByUserId(onboardingUser.getId());
+		if(rolesList != null && rolesList.size() > 0) {
+			for(UserRole roles : rolesList) {
+				if(roles.getUserState() != null  && !roles.getUserState().equals(Status.ACTIVE)) {
+					roles.setIsPrimary(0);
+					userRoleDao.addUserRole(roles);
+					isUserActive = false;
+				}else {
+					isUserActive = true;
+				}
+			}
+		}
+		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
 	    
 		if(onboardingUserRole == null){
 			onboardingUserRole = saveUserRoles(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
 		    userRoleDao.addUserRole(onboardingUserRole);
+		}
+		
+		if(isUserActive == false) {
+			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
+			userDao.addUser(onboardingUser);
+			onboardingUserRole.setIsPrimary(1);
+			userRoleDao.addUserRole(onboardingUserRole);
 		}
 		
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
@@ -520,7 +542,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
     	 user.setMobilePhone(candidateOnBoarding.getMobileNumber());
         }
 	    
-	    user.setIsMailSent(Status.Y);
 	    user.setLocation(candidateOnBoarding.getAddress1());
 	   
 	    

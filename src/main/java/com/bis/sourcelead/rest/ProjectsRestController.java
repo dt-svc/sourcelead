@@ -139,15 +139,21 @@ public class ProjectsRestController {
 	 * @throws Exception
 	 */
 
-	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody Projects storeProject(ProjectsDTO projectsDTO) throws Exception {
+	@RequestMapping(value = { "/storeProject", "/rest/storeProject" }, method = RequestMethod.POST)
+	public @ResponseBody ProjectsDTO storeProject(ProjectsDTO projectsDTO) throws Exception {
 		
 		Projects projects = null;
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
 			 projects = projectsService.storeProject(projectsDTO);
 		 }
-		return projects;
+		 
+		ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
+		stroredProjectsDTO.setId(projects.getId());
+		stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
+		stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
+		stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+		return stroredProjectsDTO;
 	}
 	
 	
@@ -180,13 +186,15 @@ public class ProjectsRestController {
        
        
        
-	   @RequestMapping(value = "/storeClientProject", method = RequestMethod.POST)
-	   	public @ResponseBody Projects storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+	   @RequestMapping(value = { "/storeClientProject", "/rest/storeClientProject" }, method = RequestMethod.POST)
+	   	public @ResponseBody ProjectsDTO storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
 	   		
 	   		Projects projects = null;
 	   		projects = projectsService.storeClientProject(clientProjectDTO);
-	   		
-	   		return projects;
+	   		ProjectsDTO projectsDTO = new ProjectsDTO();
+	   		projectsDTO.setProjectUUID(projects.getProjectUUID());
+	   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
+	   		return projectsDTO;
 	   	}
        
        
@@ -398,19 +406,38 @@ public class ProjectsRestController {
 		    }
 	  
 	  
-	    @RequestMapping(value = "/getEndClientProjects", method = RequestMethod.GET)
-		public  List<Projects> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId,HttpServletRequest request) throws Exception {
+	    @RequestMapping(value = { "/getEndClientProjects", "/rest/getEndClientProjects" }, method = RequestMethod.GET)
+		public  List<ProjectsDTO> getEndClientProjects(@RequestParam(value="clientOrgLocationId", required=true) Long clientOrgLocationId,HttpServletRequest request) throws Exception {
 		   
 	       OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		   List<Projects> projectsList = projectsService.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocations.getId(),clientOrgLocationId);
-	       return projectsList;
+	       List<ProjectsDTO> projectsDTOList = new ArrayList<>();
+		   if(projectsList != null && projectsList.size() > 0) {
+	    	   for(Projects projects : projectsList) {
+	    		   ProjectsDTO projectsDTO = new ProjectsDTO();
+	    		   projectsDTO.setId(projects.getId());
+	    		   projectsDTO.setProjectName(projects.getProjectName());
+	    		   projectsDTOList.add(projectsDTO);
+	    	   }
+	       }
+		   return projectsDTOList;
 	    }
 
-	    @RequestMapping(value = "/getProjectsListByOrgLocationForTransfer", method = RequestMethod.GET)
-		public  List<Projects> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+	    @RequestMapping(value = { "/getProjectsListByOrgLocationForTransfer", "/rest/getProjectsListByOrgLocationForTransfer" }, method = RequestMethod.GET)
+		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		   
 		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
-	       return projectsList;
+		   List<ProjectsDTO> projectsDTOList = new ArrayList<>();
+		   
+		   if(projectsList != null && projectsList.size() > 0) {
+	    	   for(Projects projects : projectsList) {
+	    		   ProjectsDTO projectsDTO = new ProjectsDTO();
+	    		   projectsDTO.setId(projects.getId());
+	    		   projectsDTO.setProjectName(projects.getProjectName());
+	    		   projectsDTOList.add(projectsDTO);
+	    	   }
+	       }
+		   return projectsDTOList;
 	    }
 	    
 	    

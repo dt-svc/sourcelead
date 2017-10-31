@@ -200,8 +200,8 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  var json = JSON.parse(data);
+          success :function(json) {
+//         	  var json = JSON.parse(data);
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	
@@ -220,8 +220,8 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                      
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 var score = "";
 	                    	 var scoreType ="";
 	                    	 var description ="";
@@ -807,6 +807,9 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
+             			setTimeout(function(){
+				 			candidateList();					 			
+				 	    },100);
 			    	}
                } 
         },

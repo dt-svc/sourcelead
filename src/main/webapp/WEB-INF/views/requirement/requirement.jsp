@@ -365,7 +365,7 @@ $(document).ready(function () {
           
             
               <div class="form-group">
-              <label class="col-md-3">Education${requirement.reqEducationListString}</label>
+              <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
@@ -468,7 +468,7 @@ $(document).ready(function () {
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
                         <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : 'selected'}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
@@ -479,7 +479,7 @@ $(document).ready(function () {
                   
                   <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
                         <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
@@ -700,12 +700,11 @@ $(document).ready(function () {
               <label class="col-md-3">Notice Period</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="noticePeriod" data-placeholder="Select Notice Period"  id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
-					     <option  selected value="${noticePrd}">${noticePrd}</option>
-					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1 Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2 Months</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3 Months</option>
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''} value="Immediately Available">Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''} value="15 Days">15 Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''} value="2 Months">2 Months</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''} value="3 Months">3 Months</option>
                 </select>
               </div>
             </div>
@@ -1267,7 +1266,7 @@ $(document).ready(function () {
                             <label class="col-lg-4">Team Name <span class="text-danger paddingLeft">*</span></label>
                             <div class="col-lg-8" id="teamNameDiv">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="nameOfCandidate" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
                               </div>
                             </div>
                             <div class="form-group">
@@ -1303,7 +1302,7 @@ $(document).ready(function () {
 </section>
 
 <script>
-  $( function() {
+  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatJobSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -1325,7 +1324,7 @@ $(document).ready(function () {
 	  	}
 	  });
 	  
-  } );
+ 
 </script>
 
 <script>
@@ -3027,9 +3026,8 @@ function getEditRequirementDetails(requirementId){
 
 <script type="text/javascript">
  function validateTeamName() {
-	 var name = $('#name').val(); 
+	 var name = $('#candidateName').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -3037,13 +3035,13 @@ function getEditRequirementDetails(requirementId){
 		        success: function(data) {
 		        	if(data == 'true'){
 						  
-		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
 		        	}
 		        	else{
 		        		
-		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('input#candidateName').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
                          $("#add_team").removeAttr("disabled");

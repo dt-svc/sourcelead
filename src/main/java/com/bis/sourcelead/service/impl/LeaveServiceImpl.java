@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -372,8 +373,8 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		EmailScenario notificationScenario = null;
 		
-		if (leaveManagementHistory.getLeaveid().getReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getReason())) {
-			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getReason());
+		if (leaveManagementHistory.getLeaveid().getRejectedReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getRejectedReason())) {
+			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getRejectedReason());
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		}else{
@@ -661,11 +662,17 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
+	public LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception {
 		int selfPendingCounts = 0;
 		int selfApprovedCounts = 0;
 		int selfRejectedCounts = 0;
 		int selfCancelledCounts = 0;
+		
+		int balanceLeaveCounts = 0;
+		int pendingLeaveCounts = 0;
+		
+		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
+
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
 		for (Leave leave : leavesList) {
@@ -682,10 +689,40 @@ public class LeaveServiceImpl implements LeaveService{
 				selfCancelledCounts = selfCancelledCounts + 1;
 			}
 		}
+		
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocationId));
+		List<LeaveType> roleLeaveType = new ArrayList<>();  
+		if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
+			   for(LeaveType leaveType : leaveTypeList) {
+				   Set<Long> roleIds = new HashSet<>();
+				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+					   roleIds.add(leaveRole.getRoleId().getId());
+				   }
+				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+					   roleLeaveType.add(leaveType);
+				   }
+			   }
+			   
+			   for (LeaveType leaveType : roleLeaveType) {
+				   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
+				   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
+			   
+			   for (Leave leave : totalleavesTaken) {
+				if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+					pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+				}
+				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+					totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+				}
+			}
+			   balanceLeaveCounts += totalLeaves;
+		}
+	}
 		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
 		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
 		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));
 		leaveDto.setSelfCancelledCounts(String.valueOf(selfCancelledCounts));
+		leaveDto.setSelfBalancedCounts(balanceLeaveCounts);
 		return leaveDto;
 	}
 	public List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
@@ -753,7 +790,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 }
 			 
 			 if(null != leaveDTO.getReason()){
-			 globalVarsMap.put("description",leaveDTO.getReason());
+			 globalVarsMap.put("reason",leaveDTO.getReason());
 			 }
 			 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getFromDate());
 			 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getToDate());
@@ -995,9 +1032,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
-		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
+		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id);
+	}
+
+	@Override
+	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
+	{
+		return leaveDao.deleteAllLeaveRolesByParticularTableId(from,fromId);
 	}
 
 }

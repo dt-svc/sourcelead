@@ -22,6 +22,7 @@ window.onload = function () {
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -460,7 +461,7 @@ function getVendorDetails(){
 									class="chosen-select form-control" name="templateId" id="templateId"
 									field-name="Template" data-validation-optional="true">
 									<c:forEach var="template" items="${templatesList}">
-										<option value="${template.id}">${template.templateName}</option>
+										<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -504,18 +505,18 @@ function getVendorDetails(){
 							<label class="col-md-3">Phone Number</label>
 							<div class="col-md-9">
 							 <div class="row">
-							 <div class="col-md-7 paddingRight">
+							 <div class="col-md-6 paddingRight">
 								<input type="text" class="form-control" name="phoneNumber"
 									id="phoneNumber"
 									data-validation="validate_Space validate_length length9-20 validate_phone"
 									data-validation-optional="true">
 							  </div>
 							  
-							 <div class="col-md-5 paddingLeft">
+							 <div class="col-md-6 paddingLeft erMesMid">
 				             <div class="row">
 				             <label class="col-md-5">Extension </label>
-				             <div class="col-md-7">
-				             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length4-5" data-validation-optional="true">
+				             <div class="col-md-7 posSta">
+				             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length4-5" data-validation-optional="true">
 				             </div>
 				             </div>
 			             </div>
@@ -848,7 +849,7 @@ function getRolesList(){
 						$("#vendorOnboardId").val(data.vendorOnboardId);
 						$("#loading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
-						 $("#vendorDocuments").removeClass("disabledLink");
+						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
 						 vendorDocuments.addEventListener("click", function() {
 							 getOnboardDocuments();

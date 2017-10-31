@@ -4,6 +4,8 @@
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
@@ -40,14 +42,17 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
-	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	
+	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">';
+		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	'</sec:authorize>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 	result = result + '<div class="input-group" id="uploadFileGroup">';
-	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '<label class="input-group-btn"  onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
 	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
@@ -158,7 +163,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
 	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
@@ -1676,4 +1681,14 @@ function validate_fileupload(fileName)
 		 }); 
  }
  </script>
+ <script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
+<script>
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
  
