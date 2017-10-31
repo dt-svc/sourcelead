@@ -942,7 +942,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers = saveProjectMembers(projectMembersDTO, user, clientProjectClients, projectMembers, orgLocations, projects);
 						saveProjectMembersHistory(projectMembers,user,clientProjectClients);
 						
-						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(clientOrgLocation.getId())){
+						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().getId().equals(clientOrgLocation.getId())){
 							projectClients.setOrgRelationId(orgRelations);
 							projectClientService.storeProjectClients(projectClients);
 						}
