@@ -709,16 +709,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    	}
 							    }
 							    
-							    
-							   List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
-							    if(budgetList != null && budgetList.size() > 0) {
-							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
-										if(budgetList.size() >0) {
-											ProjectBudget projectBudget = budgetList.iterator().next();
-											projectsDTO.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
-										}
-										projectsDTO.setProjectbudgetAmount(budgetSum);
-							    }
+							 
+							 if(projects.getOrgLocationsId().getId().longValue() == orglo.getId().longValue()) {
+								 List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
+								    if(budgetList != null && budgetList.size() > 0) {
+								    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+											if(budgetList.size() >0) {
+												ProjectBudget projectBudget = budgetList.iterator().next();
+												projectsDTO.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+											}
+											projectsDTO.setProjectbudgetAmount(budgetSum);
+								    } 
+							 }
+							   
 							   
 							    projectsDTO.setProjectName(projects.getProjectName());
 							    projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());

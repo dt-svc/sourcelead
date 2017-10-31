@@ -26,7 +26,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	<section class="content-header clearfix">
 		
 		<div class="pull-left">
-			<h2 class="pull-left paddingRight">Project Task Summary</h2>
+			<h2 class="pull-left paddingRight">${projectName} - Task</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
@@ -206,26 +206,22 @@ var sourceleadUrl = '${sourceleadUrl}';
 					   </div>
 					    
 					<div id="tab-task2" class="project_tabs_inn" style="display: none;">
-						 <div class="clearfix mt mb">
-						  <div class="clearfix">
+						 <div class="clearfix mt10 mb btn-paddingright">
 						   <sec:authorize access="hasRole('ROLE_ADD_SUB_TASK')">
-						     <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addSubTasks();showtasktype();"> Add Task </button>
+						     <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addSubTasks();showtasktype();"> Add Task </button>
 						    </sec:authorize>
-						  </div>
 						</div>
 
-						<div class="clearfix project_wrap_table filter_position datatable_filter">
+						<div class="clearfix project_wrap_table datatable_filter">
 						  <div id="subTaskListdivId"></div>
 						</div>
 		            </div>
 	            
 				   <div id="tab-task3" class="project_tabs_inn" style="display: none;">
-					  <div class="clearfix mt mb mr">
-						  <div class="clearfix">
+					  <div class="clearfix mt10 mb btn-paddingright">
 						   <sec:authorize access="hasRole('ROLE_ADD_DOCUMENTS')">
 						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addDocumentEntryPopUp();">Add Documents</button>
 						    </sec:authorize>
-						  </div>
 						</div>
 						
 						<!-- Document Modal Pop -->
@@ -269,8 +265,21 @@ var sourceleadUrl = '${sourceleadUrl}';
 			</div>
 			
 		          <div class="col-md-3">
+		          
+		          <c:if test="${taskTypeName == 'SubTask'}">
+		          <c:if test="${not empty parentGeneratedId}">
+		          <div class="row dropdown-select mb">
+			              <label class="col-md-6">Parent Task Id :</label> 
+			              <div class="col-md-6 dropdown-select">
+			              <a href="${sourceleadUrl}/projectTaskSummary?taskUUID=${parentProjectTaskUUID}&projectClientUUID=${projectClientUUID}" title="${parentGeneratedId}">${parentGeneratedId}</a>
+			              </div>
+			              </div>
+		          </c:if>
+		          </c:if>
+		                 
+			              
 			           <div class="row dropdown-select mb">
-			              <label class="col-md-12">Task Type</label>
+			              <label class="col-md-12">Task Type </label>
 			              <div class="col-md-12 dropdown-select">
 			              <input type="text" value="${projectTask.taskTypes}" disabled="disabled" class="form-control input-sm">
 			                <%-- <select class="form-control" onchange="inlineEditTaskType(${projectTask.id});" id="taskTypeId" disabled="disabled">
@@ -811,7 +820,7 @@ function documentTableList(){
 		url : sourceleadUrl+ "/ProjectTasks/getProjectTasksDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			 result = "";
-			    result  = result + '	<div class="clearfix project_wrap_table filter_position datatable_filter">';
+			    result  = result + '	<div class="clearfix project_wrap_table datatable_filter">';
 				result  = result + '	  <table id="taskDocumentPagination">';
 				result = result +  '    <thead>';
    		    	result = result + '	  <tr>';

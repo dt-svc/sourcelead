@@ -284,7 +284,7 @@ public class ProjectsController {
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
-				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orgLocations.getId());
 				if(projectBudgetList != null) {
 					model.addObject("projectBudgetCount", projectBudgetList.size());
 				}else {
@@ -361,6 +361,13 @@ public class ProjectsController {
 				 }
 				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
+				 if(projectTask.getParentTaskId() != null) {
+					 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
+				 }
+				if(projectTask.getProjectId() != null) {
+					model.addObject("projectName", projectTask.getProjectId().getProjectName());
+				}
 				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);
