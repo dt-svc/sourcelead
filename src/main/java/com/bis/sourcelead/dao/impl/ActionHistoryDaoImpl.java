@@ -92,37 +92,38 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ActionNames> actionNamesList = getActionNameUsingMethodName(methodName);
 		ActionHistory actionHistory = new ActionHistory();
-		if(actionNamesList.size() >1){
-			for(ActionNames actionName : actionNamesList){
-				if(actionName.getActionName().contains(type)){
-					actionHistory.setActionName(actionName.getActionName());
-					actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
+		if(actionNamesList != null && !actionNamesList.isEmpty()){
+			if(actionNamesList.size() >1){
+				for(ActionNames actionName : actionNamesList){
+					if(actionName.getActionName().contains(type)){
+						actionHistory.setActionName(actionName.getActionName());
+						actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
+					}
 				}
+			}else
+			{
+				ActionNames actionNames = actionNamesList.get(0);
+				actionHistory.setActionName(actionNames.getActionName());
+				actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
 			}
-		}else if(actionNamesList != null && !actionNamesList.isEmpty())
-		{
-			ActionNames actionNames = actionNamesList.get(0);
-			actionHistory.setActionName(actionNames.getActionName());
-			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
-		}
-
-		actionHistory.setOrgLocations(loginOrgLocation);
-		actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
-		actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
-		// saving the Activity Time based on the time zone 
-		Date date = new Date();
-		DateTime dt = new DateTime(date);
-		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
-		DateTime dtus = dt.withZone(dtZone); 
-		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
-		actionHistory.setActionTime(dateWithTimezone);
-		try {
-			if (actionHistory != null && actionNamesList != null && !actionNamesList.isEmpty()) {
-				session.saveOrUpdate(actionHistory);
+			actionHistory.setOrgLocations(loginOrgLocation);
+			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+			// saving the Activity Time based on the time zone 
+			Date date = new Date();
+			DateTime dt = new DateTime(date);
+			DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+			DateTime dtus = dt.withZone(dtZone); 
+			Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+			actionHistory.setActionTime(dateWithTimezone);
+			try {
+				if (actionHistory != null) {
+					session.saveOrUpdate(actionHistory);
+				}
+			} catch (Exception exception) {
+				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 			}
-		} catch (Exception exception) {
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
-			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 	}
 
