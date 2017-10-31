@@ -29,7 +29,7 @@ public class OffboardingDocumentsBlobToFile {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT offBord.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" offBord, ORG o, ORG_LOCATIONS ol,off_boarding_template coId where o.ID = ol.ORG_ID and offBord.OFF_BOARDING_TEMPLATE_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
+			ResultSet rs = stmt.executeQuery("SELECT offBord.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" offBord, ORG o, ORG_LOCATIONS ol,OFF_BOARDING_TEMPLATE coId where o.ID = ol.ORG_ID and offBord.OFF_BOARDING_TEMPLATE_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
 			int i = 0;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			boolean flag = false;

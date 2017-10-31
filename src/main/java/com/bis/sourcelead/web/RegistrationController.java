@@ -177,8 +177,8 @@ public class RegistrationController {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
 		    	String modules = orgLocations.getModulesId();
-		    	Long tabId = null;
 		    	Long moduleId = null;
+		    	Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
@@ -187,22 +187,35 @@ public class RegistrationController {
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
-			    	if("ATS".equalsIgnoreCase(respondingOrgType)){
+			    	/*if("ATS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_ATS);
-			    		tabId = (long) Constants.TAB_CLIENT;
 			    		moduleId = (long) Constants.MODULE_ATS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_ATS;
-			    			saveUserRoleActions(moduleId,tabId,orgLocations);
+			    			saveUserRoleActions(moduleId,orgLocations);
 			    		}
-			    	}else if("VMS".equalsIgnoreCase(respondingOrgType)){
+			    		
+			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+			    		if(tsflag == false) {
+		    				modules = modules+","+Constants.MODULE_TIMESHEET;
+		    				saveUserRoleActions(tsModuleId,orgLocations);
+		    			}
+			    		
+			    	}else*/ 
+					 
+					 if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_VMS);
-			    		tabId = (long) Constants.TAB_VENDOR;
 			    		moduleId = (long) Constants.MODULE_VMS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_VMS;
-			    			saveUserRoleActions(moduleId,tabId,orgLocations);
+			    			saveUserRoleActions(moduleId,orgLocations);
 			    		}
+			    		
+			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+			    		if(tsflag == false) {
+		    				modules = modules+","+Constants.MODULE_TIMESHEET;
+		    				saveUserRoleActions(tsModuleId,orgLocations);
+		    			}
 			    	}
 			    	
 			    	org.setStatus(Status.ACTIVE);
@@ -407,7 +420,7 @@ public class RegistrationController {
 		   
 		
 	
-	 public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
+	 public void saveUserRoleActions(Long moduleId,OrgLocations orgLocations) throws Exception{
 		 
 			List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
 			

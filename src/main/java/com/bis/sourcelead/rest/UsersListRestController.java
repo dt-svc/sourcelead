@@ -1171,9 +1171,14 @@ public class UsersListRestController {
 	         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
 	         globalVarsMap.put("RejectReason", userRole.getTerminateReason());
 	         globalVarsMap.put("date", CommonUtil.currentDate().toString());
+	         StringBuilder name1 = new StringBuilder();
 	         if(user.getFirstName() != null && user.getLastName()!= "" && user.getLastName() != "undefined"){
-	        	  globalVarsMap.put("admin", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	        	  globalVarsMap.put("admin", name1.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 	        
+	         }
+	         else
+	         {
+	        	 globalVarsMap.put("admin", user.getFirstName());
 	         }
 	        
 	         StringBuilder loginBuilder = new StringBuilder();
@@ -1702,7 +1707,7 @@ public class UsersListRestController {
 		String password = "";
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
@@ -1779,7 +1784,7 @@ public class UsersListRestController {
 			if (StringUtils.isNotBlank(addUserDTO.getDateofJoin())) {
 				try {
 					//DateFormat sdf = simpleDateFormat;
-					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),addUserDTO.getDateofJoin()));
+					employees.setHireDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(),addUserDTO.getDateofJoin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

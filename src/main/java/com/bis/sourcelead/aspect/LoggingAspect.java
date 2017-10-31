@@ -1,10 +1,17 @@
 package com.bis.sourcelead.aspect;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MemberSignature;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.weaver.reflect.StandardShadow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +123,7 @@ public class LoggingAspect {
 	}*/
 
 
+	@SuppressWarnings("unchecked")
 	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..)) || execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
 		//logger.info("********** Rest Service Layer After Method Exectution ************");
@@ -129,9 +137,22 @@ public class LoggingAspect {
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String methodName = joinPoint.getSignature().getName();
-		if(userLoginSession != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation);
+		String type = "";
+		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[0];
+			Class c=arg.getClass();
+			type=(String)c.getMethod("getResponderType").invoke(arg);
+		}else if("getSpocAndOwnerDetailsById".equalsIgnoreCase(methodName) || "terminateSpoc".equalsIgnoreCase(methodName))
+		{
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[4];
+			type=arg.toString();	
 		}
+
+		if(userLoginSession != null)
+			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
+	}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
 	public void logAfterThrowingRestService(JoinPoint joinPoint, Throwable error) {

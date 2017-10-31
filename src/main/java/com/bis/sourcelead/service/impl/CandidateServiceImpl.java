@@ -335,6 +335,9 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
+		
+	
+		
 		if(candidateDto.getLatitude() != null){
 			candidate.setLatitude(candidateDto.getLatitude());
 		}
@@ -450,7 +453,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
 		
-		if(StringUtils.isNotBlank(candidateDto.getAddress())){
+		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null ){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
