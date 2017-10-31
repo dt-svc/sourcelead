@@ -83,10 +83,10 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   </li>
                   <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="approved_pop">
-                      <ul>
-                      	  <c:forEach var="venReport" items="${vendor_list}">  
+                      <ul id="vendorReleaseCheckList">
+                      	  <%-- <c:forEach var="venReport" items="${vendor_list}">  
 	                      	<li id="VN${venReport.id}"><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
-						  </c:forEach>
+						  </c:forEach> --%>
                       </ul>
                     </div>
                   </li>
@@ -750,11 +750,12 @@ function getVendorLists(){
 	           	        	result = result +'</tr>';
 	           	        	result = result +'</thead>';
 	           	        	result = result +'<tbody>';
+	           	        	var vendorCheckListResult = "";
 	           	        	for (var i=0; i<json.length; i++)
 	           				{  
 	           	        		var report = json[i];
-	           	        		if(report.noOfContatcs == 0){
-	           	        			$("#VN"+report.id).empty();
+	           	        		if(report.noOfContatcs != 0){
+	           	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.id+'" name="vendorSelected" value ="'+report.id+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
 	           	        		}
 	           	        		
 	           	        		var location = "";
@@ -830,7 +831,8 @@ function getVendorLists(){
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
 	           	    	 	vendorPagination();
-   		    		
+	           	    	 $("#vendorReleaseCheckList").empty();
+	           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult);
 	   		    	/* }else{
 	               	 $("#vendor").removeAttr("style");
 		    	     var result ="";
