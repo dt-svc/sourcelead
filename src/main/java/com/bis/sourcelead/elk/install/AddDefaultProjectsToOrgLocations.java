@@ -66,7 +66,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 if (!rs.next()) {
 					 
 				 String currencyCode = null;	 
-				 String currencyQuery = "SELECT * from sourcelead.COUNTRIES where Name = '"+country+"' ";
+				 String currencyQuery = "SELECT * from sourcelead.countries where Name = '"+country+"' ";
 				 java.sql.PreparedStatement currencyPst = conn.prepareStatement(currencyQuery); 
 				 ResultSet currencyRs = currencyPst.executeQuery();	 
 				 
