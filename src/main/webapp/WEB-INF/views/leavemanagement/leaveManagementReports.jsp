@@ -5,9 +5,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
+<script src="resources/js/amcharts.js"></script>
+<script src="resources/js/serial.js"></script>
+<script src="resources/js/pie.js"></script>
 
  <%-- <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
