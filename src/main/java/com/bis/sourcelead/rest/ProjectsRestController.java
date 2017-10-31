@@ -139,15 +139,21 @@ public class ProjectsRestController {
 	 * @throws Exception
 	 */
 
-	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody Projects storeProject(ProjectsDTO projectsDTO) throws Exception {
+	@RequestMapping(value = { "/storeProject", "/rest/storeProject" }, method = RequestMethod.POST)
+	public @ResponseBody ProjectsDTO storeProject(ProjectsDTO projectsDTO) throws Exception {
 		
 		Projects projects = null;
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
 			 projects = projectsService.storeProject(projectsDTO);
 		 }
-		return projects;
+		 
+		ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
+		stroredProjectsDTO.setId(projects.getId());
+		stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
+		stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
+		stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+		return stroredProjectsDTO;
 	}
 	
 	
