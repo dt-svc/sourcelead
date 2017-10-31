@@ -340,7 +340,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
+		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list(); 
 		return projectTasksList;
 	}
