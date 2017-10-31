@@ -28,9 +28,9 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 
 	@Override
-	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations) {
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations,String type) {
 		try {
-			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocations);
+			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocations,type);
 			} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
