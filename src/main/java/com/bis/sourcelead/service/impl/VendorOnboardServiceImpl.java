@@ -615,6 +615,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			Long tabId = null;
 			boolean flag;
 			String modules = vendorOrgLocations.getModulesId();
+			Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 			
 			vendorOrg.setOrgType("Company");
 			
@@ -629,11 +630,16 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	    		moduleId = (long) Constants.MODULE_ATS;
 	    		if(flag == false){
 	    			modules = modules+","+Constants.MODULE_ATS;
-	    			vendorOrgLocations.setModulesId(modules);
-	    			saveUserRoleActions(moduleId,tabId,vendorOrgLocations);
+	    			saveUserRoleActions(moduleId,vendorOrgLocations);
 	    		}
 	    		
+	    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+	    		if(tsflag == false) {
+    				modules = modules+","+Constants.MODULE_TIMESHEET;
+    				saveUserRoleActions(tsModuleId,vendorOrgLocations);
+    			}
 	    		
+	    		vendorOrgLocations.setModulesId(modules);
 	    		vendorOrg.setStatus(Status.ACTIVE);
 				orgService.updateOrg(vendorOrg);
 				vendorOrgLocations.setUser(user);
@@ -679,7 +685,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	
 	
-	public void saveUserRoleActions(Long moduleId,Long tabId,OrgLocations orgLocations) throws Exception{
+	public void saveUserRoleActions(Long moduleId,OrgLocations orgLocations) throws Exception{
 		 
 		List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
 		

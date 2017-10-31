@@ -525,11 +525,11 @@ function getAssociates(){
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu2">';
 	result = result +'<ul class="resourcetype-filter">';
 	result = result +'<li>';
-	result = result +'<input value="hotlist" id="hotlist" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input value="hotlist" id="hotlist" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="hotlist">Hotlist</label>';
 	result = result +'</li>';
 	result = result +'<li>';
-	result = result +'<input  value="assigned" id="Assigned" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input  value="assigned" id="Assigned" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="Assigned">Assigned</label>';
 	result = result +'</li>';
 	result = result +'</ul>';
@@ -931,6 +931,11 @@ function getAssociatesFilter(){
 						}
 			
 			
+		  if(projectStartDate != null && projectStartDate != 'undefined' && projectStartDate != '' 
+							  && projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
+						  getEstimatedHours(maxRowNum)
+		    }	
+						  
 			var cell5 = row.insertCell(5);
 			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
 			divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
