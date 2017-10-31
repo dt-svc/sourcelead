@@ -72,7 +72,7 @@
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
                                 <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
-                                    <option selected>--Select Year--</option>
+                                    <option value="">--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
                                     <option>2018</option>
@@ -88,6 +88,7 @@
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
+                            <div class="clients_wrap_table datatable_filter"></div>
                             <div id="holidayListDiv"></div>
                         
                     </div>
@@ -160,7 +161,7 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right" name="reportYear" id="reportYear" onchange="getTopLeaveTakers();">
+                            <select class="form-control pull-right" name="reportYear" id="topLeaveTakersreportYear" onchange="getTopLeaveTakers();">
                               <option value="">Year</option>
                               <option value="2017">2017</option>
                               <option value="2018">2018</option>
@@ -365,7 +366,7 @@ function getHolidaysList(){
 			        		 }else{
 			        			 result = result + '<td>---</td>';
 			        		 }
-			        		 result = result + ' <td title="'+opt.fromDate+'">'+opt.fromDate+'</td>';
+			        		 result = result + ' <td title="'+opt.fromDate+' - '+opt.toDate+'">'+opt.fromDate+' - '+opt.toDate+'</td>';
 			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
 			        		 result = result + '  </tr>';
 			        		 j++;

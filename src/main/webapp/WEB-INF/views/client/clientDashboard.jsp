@@ -733,7 +733,7 @@ function clearSearch(){
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
-	    $("#orgNameAdvanced").empty();
+// 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
 

@@ -74,7 +74,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		Candidate candidate = new Candidate();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
-		if(candidateId!=null){
+		if(candidateId !=null){
         	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
 	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
 	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
@@ -117,7 +117,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getStartDate());
+                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate());
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
@@ -128,7 +128,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getEndDate());
+                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getEndDate());
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();
