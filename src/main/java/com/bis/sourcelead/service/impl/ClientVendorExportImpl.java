@@ -341,7 +341,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			Sheet sheet = wb.createSheet(projName.append(project.getProjectName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date())).toString());
 			Row writeRow = null;
 			setExcelTitle(sheet,project.getProjectName(),project,wb,writeRow,projectManager);
-			int rowCount = 7;
+			int rowCount = 6;
 			sheet = commonUtil.setExcelHeaders(sheet, style, headers,rowCount);
 			int row = 7;
 			for (ProjectMembers projectMembers : employeeList) {
@@ -452,30 +452,40 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 			writeRow.createCell(0).setCellValue(projectMember.getEmpName());
 		}
-		if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
-			writeRow.createCell(1).setCellValue(projectMember.getEmployee().getUser().getEmail());
+		
+		if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
+			writeRow.createCell(1).setCellValue(projectMember.getStartDateStr());
 		}
-		if (projectMember.getUserRoleType() != null && !"".equalsIgnoreCase(projectMember.getUserRoleType())) {
-			writeRow.createCell(2).setCellValue(projectMember.getUserRoleType());
+		if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
+			writeRow.createCell(2).setCellValue(projectMember.getEndDateStr());
+		}else {
+			writeRow.createCell(2).setCellValue("--");
 		}
 		
-		if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
-			writeRow.createCell(3).setCellValue(projectMember.getProjectAssignedDateStr());
+		if (projectMember.getCurrentBillRate() != null && projectMember.getCurrentBillRate() > 0 ) {
+			writeRow.createCell(3).setCellValue(projectMember.getBillRateCurrency() +"  "+ projectMember.getCurrentBillRate() +"  "+projectMember.getRateType());
+		}else {
+			writeRow.createCell(3).setCellValue("--");
 		}
-		if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
-			writeRow.createCell(4).setCellValue(projectMember.getProjectEndDateStr());
+		if (projectMember.getPayRate() != null && projectMember.getPayRate() > 0 ) {
+			writeRow.createCell(4).setCellValue(projectMember.getPayRateCurrency() +"  "+ projectMember.getPayRate() +"  "+ projectMember.getPayRateType());
+		}else {
+			writeRow.createCell(4).setCellValue("--"); 
 		}
-		if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
-			writeRow.createCell(5).setCellValue(projectMember.getApprovedHrs());
+		if (projectMember.getEstimatedHours() != null && projectMember.getEstimatedHours() > 0 ) {
+			writeRow.createCell(5).setCellValue(projectMember.getEstimatedHours());
+		}else {
+			writeRow.createCell(5).setCellValue("--"); 
 		}
-		if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
-			writeRow.createCell(6).setCellValue(projectMember.getRejectedHrs());
-		}
-		if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
-			writeRow.createCell(7).setCellValue(projectMember.getSubmittedHrs());
+		if (projectMember.getEstimatedBudget() != null && projectMember.getEstimatedBudget() > 0 ) {
+			writeRow.createCell(6).setCellValue(projectMember.getEstimatedBudget());
+		}else {
+			writeRow.createCell(6).setCellValue("--");
 		}
 		if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-			writeRow.createCell(8).setCellValue(projectMember.getDraftHrs());
+			writeRow.createCell(7).setCellValue(projectMember.getDraftHrs());
+		}else {
+			writeRow.createCell(7).setCellValue("--");
 		}
 		return sheet;
 	}
