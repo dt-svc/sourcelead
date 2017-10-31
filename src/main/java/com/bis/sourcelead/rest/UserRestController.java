@@ -401,7 +401,7 @@ public class UserRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			List<User> usersList = new ArrayList<>();
-			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			if(null != userList && !userList.isEmpty()){
 				for (User user : userList) {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
