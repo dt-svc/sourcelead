@@ -129,7 +129,7 @@ public class LoggingAspect {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";
-		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName)){
+		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName) || "searchClientDetails".equalsIgnoreCase(methodName)){
 			Object[] args = joinPoint.getArgs();
 			Object arg=args[0];
 			Class c=arg.getClass();
