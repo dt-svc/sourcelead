@@ -157,7 +157,7 @@
 	  </span>
 	  
 	<div class="pull-right">
-	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'" class="btn btn-danger">
+	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger">
 	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save');" class="btn btn-primary ml10">
 	  <input type="button" value="Save & Finish" id="save_Finish_project" onclick="saveAdditionalDetails('Finish');" class="btn btn-success ml10">
 	</div>

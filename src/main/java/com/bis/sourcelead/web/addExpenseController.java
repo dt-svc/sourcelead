@@ -118,7 +118,7 @@ public class addExpenseController {
 			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, expense.getProjectMembers().getProjects().getProjectName());
 				}
 			}
-		 if(!"".equalsIgnoreCase(rejectedReasonDb) || rejectedReasonDb != null) {
+		 if(!"".equalsIgnoreCase(rejectedReasonDb) && rejectedReasonDb != null) {
 			 isSubmittedForApproval = "rejected";
 		 }
 	    

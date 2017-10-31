@@ -63,8 +63,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 
 	@Override
-	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long Id) throws Exception {
-		return projectBudgetDao.getProjectBudgetByProjectTaskId(Id);
+	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long Id, Long loginOrgLocationId) throws Exception {
+		return projectBudgetDao.getProjectBudgetByProjectTaskId(Id,loginOrgLocationId);
 	}
 
 	@Override

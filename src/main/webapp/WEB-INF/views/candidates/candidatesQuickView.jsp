@@ -225,7 +225,7 @@ function candidateQuickViewProfile(candidateId){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
 					success : function(json) {
 						if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
-							//	$("#qvemployeeSubmission").empty();
+								$("#qvemployeeSubmission").empty();
 								var result = "";
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
