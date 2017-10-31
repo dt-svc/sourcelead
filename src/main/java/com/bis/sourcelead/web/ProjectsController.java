@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,6 +51,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 
 @Controller
@@ -202,9 +204,9 @@ public class ProjectsController {
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/clientProject")
 		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
-		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    
 				ModelAndView model = new ModelAndView();
 				
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -217,7 +219,23 @@ public class ProjectsController {
 					request.getSession().setAttribute("sessionData",sessionData);
 					
 					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
-					model.addObject("clientsList", clientsList);
+					List<OrgRelations> clientList = new ArrayList<>();
+					if(clientsList != null & clientsList.size() > 0) {
+						for(OrgRelations orgRelations : clientsList) {
+							OrgLocations clientOrgLocations = null;
+							if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
+								clientOrgLocations = orgRelations.getResponderLocationId();
+							}else {
+								clientOrgLocations = orgRelations.getLocationId();
+							}
+							
+							if(StringUtils.isNotBlank(clientOrgLocations.getOrg().getOrgType()) && clientOrgLocations.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+								clientList.add(orgRelations);
+							}
+							
+						}
+					}
+					model.addObject("clientsList", clientList);
 					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("project/clientProject");
 					return model;
