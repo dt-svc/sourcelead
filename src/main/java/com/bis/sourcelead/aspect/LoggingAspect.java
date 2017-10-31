@@ -149,6 +149,12 @@ public class LoggingAspect {
 			Object arg=args[4];
 			type=arg.toString();	
 		}
+		if("storeCandidate".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[0];
+			Class c=arg.getClass();
+			type=(String)c.getMethod("getIsAssociate").invoke(arg);
+		}
 
 		if(userLoginSession != null)
 			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
