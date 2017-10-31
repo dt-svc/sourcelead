@@ -366,7 +366,7 @@ function getHolidaysList(){
 			        		 }else{
 			        			 result = result + '<td>---</td>';
 			        		 }
-			        		 result = result + ' <td title="'+opt.fromDate+'">'+opt.fromDate+'</td>';
+			        		 result = result + ' <td title="'+opt.fromDate+' - '+opt.toDate+'">'+opt.fromDate+' - '+opt.toDate+'</td>';
 			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
 			        		 result = result + '  </tr>';
 			        		 j++;

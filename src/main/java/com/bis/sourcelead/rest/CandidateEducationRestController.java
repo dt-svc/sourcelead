@@ -177,8 +177,6 @@ public class CandidateEducationRestController {
 			 candidateIndex.setCandidateId(candidate.getId());
 			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-			 candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
-			
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 		}	
 		 
