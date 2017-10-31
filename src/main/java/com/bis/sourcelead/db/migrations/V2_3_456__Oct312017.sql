@@ -1,0 +1,7 @@
+DELETE FROM `sourcelead`.`ACTION_NAMES` WHERE `ID`='14';
+DELETE FROM `sourcelead`.`ACTION_NAMES` WHERE `ID`='35';
+
+set SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`ACTION_NAMES` SET `METHOD_NAME`='storeCandidate' WHERE `ID`='216';
+UPDATE `sourcelead`.`ACTION_NAMES` SET `METHOD_NAME`='getCandidateById' WHERE `ID`='217';
+set SQL_SAFE_UPDATES=1;
