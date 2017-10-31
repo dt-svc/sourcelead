@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
@@ -87,54 +88,55 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	@Override
 	@Async
 	@Transactional(rollbackFor = { Exception.class })
-
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation) throws Exception {
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		ActionNames actionNames = getActionNameUsingMethodName(methodName);
-		if(actionNames!=null)
+		List<ActionNames> actionNamesList = getActionNameUsingMethodName(methodName);
+		ActionHistory actionHistory = new ActionHistory();
+		if(actionNamesList.size() >1){
+			for(ActionNames actionName : actionNamesList){
+				if(actionName.getActionName().contains(type)){
+					actionHistory.setActionName(actionName.getActionName());
+					actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
+				}
+			}
+		}else
 		{
-			ActionHistory actionHistory = new ActionHistory();
-			actionHistory.setOrgLocations(loginOrgLocation);
-			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
-			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+			ActionNames actionNames = actionNamesList.get(0);
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
-			// saving the Activity Time based on the time zone 
-			Date date = new Date();
-		    DateTime dt = new DateTime(date);
-		    DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
-		    DateTime dtus = dt.withZone(dtZone); 
-		    Date dateWithTimezone = dtus.toLocalDateTime().toDate();
-			actionHistory.setActionTime(dateWithTimezone);
-			try {
-				if (actionHistory != null) {
-					session.saveOrUpdate(actionHistory);
-				}
-			} catch (Exception exception) {
-				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-			}
-
-
 		}
-		
+
+		actionHistory.setOrgLocations(loginOrgLocation);
+		actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+		actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+		// saving the Activity Time based on the time zone 
+		Date date = new Date();
+		DateTime dt = new DateTime(date);
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		DateTime dtus = dt.withZone(dtZone); 
+		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+		actionHistory.setActionTime(dateWithTimezone);
+		try {
+			if (actionHistory != null) {
+				session.saveOrUpdate(actionHistory);
+			}
+		} catch (Exception exception) {
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
 	}
 
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ActionNames getActionNameUsingMethodName(String methodName) throws Exception {
+	public List<ActionNames> getActionNameUsingMethodName(String methodName) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("getActionNameUsingMethodName start");
 		String query = "from ActionNames  actNames  where actNames.methodName =:methodName ";
 		List<ActionNames> actionNames = session.createQuery(query).setString("methodName", methodName).setCacheable(true).list();
 		logger.debug("getActionNameUsingMethodName end");
-		if (!actionNames.isEmpty() && actionNames!=null) {
-			return actionNames.iterator().next();
-		} else {
-			return null;
-		}
+			return actionNames;
 	}
 
 
