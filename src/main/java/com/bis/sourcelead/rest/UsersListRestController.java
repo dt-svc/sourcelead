@@ -1707,7 +1707,7 @@ public class UsersListRestController {
 		String password = "";
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
@@ -1784,7 +1784,7 @@ public class UsersListRestController {
 			if (StringUtils.isNotBlank(addUserDTO.getDateofJoin())) {
 				try {
 					//DateFormat sdf = simpleDateFormat;
-					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),addUserDTO.getDateofJoin()));
+					employees.setHireDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(),addUserDTO.getDateofJoin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
