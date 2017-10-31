@@ -399,7 +399,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 						}
 					}
 				}
-				if (count > 0) {
+				if (count >= 0) {
 					FileOutputStream fos = null;
 					if(!fileName.endsWith("xlsx")){
 						fos = new FileOutputStream("FailureUsersForCheck.xls");

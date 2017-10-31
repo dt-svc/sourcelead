@@ -111,7 +111,7 @@ window.onload = function() {
             </div>
             <p class="form-control-static clearfix"><strong>Approval</strong></p>
             <div class="form-group">
-              <label class="col-md-3">Approved By<span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
 <%--                 	<c:forEach var="user" items="${approverList}"> --%>
@@ -129,7 +129,7 @@ window.onload = function() {
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
-                 <h5>Leave Status</h5>
+                 <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
                 <div id="leaveStatusIdDiv"></div>

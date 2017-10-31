@@ -32,7 +32,7 @@ public class TimesheetSubmissionDocumentBlobToFile {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT td.*,p.ORG_LOCATIONS_ID,ol.ORG_ID FROM TIMESHEET_ENTRIES te,"+table+" td,ORG_LOCATIONS ol,ORG o,TIMESHEET_SUBMISSIONS sb,PROJECTS p where td.TIMESHEET_SUBMISSION_ID = te.TIMESHEET_SUBMISSION_ID and te.TIMESHEET_SUBMISSION_ID = sb.ID and p.ORG_LOCATIONS_ID = ol.ID and ol.ORG_ID = o.ID");
+			ResultSet rs = stmt.executeQuery("SELECT td.*,p.ORG_LOCATIONS_ID,ol.ORG_ID FROM  "+table+" td,ORG_LOCATIONS ol,ORG o,TIMESHEET_SUBMISSIONS sb,PROJECTS p where td.TIMESHEET_SUBMISSION_ID = sb.ID and sb.PROJECT_ID = p.ID and p.ORG_LOCATIONS_ID  = ol.ID and ol.ORG_ID = o.ID");
 			
 			int i = 0;
 			ResultSetMetaData rsmd = rs.getMetaData();

@@ -5509,7 +5509,43 @@ min-height: 34px; padding: 9px 12px 0px;
 .seaHeight {
     height: 32px;
 }
+.errBotValEdit p {
+bottom:-30px !important; padding: 0px 6px 0px 6px !important;
+}
 
+.project_details_cta.project_details_cta_100 {
+    width: 100%; float: left; padding: 20px 0px 10px 0px;
+    }
+ .project_details_cta.project_details_cta_100 strong {
+     float: none; text-align: left; padding: 0px 0px 10px 15px;
+     }   
+.descriptionStyle {
+    padding: 0px 15px;
+}
+.descriptionStyle div {
+    padding: 2px 0px;
+}     
+.descriptionStyle span {
+    float: none; width: 100%; text-overflow: inherit; white-space: normal; overflow: inherit;
+}
+.ColWhite {
+    color: #fff!important;
+}
+.colPicBox {
+       padding: 4px 6px;
+}
+.colPicBox i {
+       width: 24px !important; height: 20px !important; background-color: #337ab7;
+}
+.noRecBor {
+	border: 1px solid #e9e9e7; margin: 5px 0px 0px 0px;
+}
+.hisOutWrap {
+    background-color: #fff; padding: 10px; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+}
+.hisOutWrap .ContrBut {
+    margin: 0px 0px 8px 0px;
+}
 
 
 
