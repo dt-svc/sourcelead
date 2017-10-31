@@ -146,12 +146,12 @@ public class VendorController {
 		for(OrgRelations orgRelation :vendorsList){
 			if(orgRelation.getLocationId() != null && null != orgRelation.getLocationId().getId() && orgRelation.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
 				if(null != orgRelation.getResponderLocationId()){
-					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setVendorNameForList(orgRelation.getResponderLocationId().getOrgLocationName());
 				}
 			}
 			if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLoc.getId().longValue()){
 				if(null != orgRelation.getLocationId()){
-					orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setVendorNameForList(orgRelation.getLocationId().getOrgLocationName());
 				}
 			}
 			
