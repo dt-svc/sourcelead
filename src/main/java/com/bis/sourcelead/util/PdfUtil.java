@@ -773,7 +773,7 @@ public class PdfUtil {
         try {
         	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
-		        cell1.setColspan(9);
+		        cell1.setColspan(8);
 		        headerCellStyle(cell1);
 	            table.addCell(cell1);
 			table.setWidths(columnWidths);
@@ -945,7 +945,7 @@ public class PdfUtil {
 			 }
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3,3};
+	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
@@ -1000,47 +1000,42 @@ public class PdfUtil {
 			}else{
 				empArray[0] = "--";
 			}
-			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
-				empArray[1] = projectMember.getEmployee().getUser().getEmail();
+			if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
+				empArray[1] = projectMember.getStartDateStr();
 			}else{
 				empArray[1] = "--";
 			}
-			
-			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
-				empArray[2] = projectMember.getUserRoleType();
+			if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
+				empArray[2] = projectMember.getEndDateStr();
 			}else{
 				empArray[2] = "--";
 			}
 			
-			if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
-				empArray[3] = projectMember.getProjectAssignedDateStr();
-			}else{
+			if (projectMember.getCurrentBillRate() != null && projectMember.getCurrentBillRate() > 0 ) {
+				empArray[3] = projectMember.getBillRateCurrency() +"  "+ projectMember.getCurrentBillRate() +"  "+projectMember.getRateType();
+			}else {
 				empArray[3] = "--";
+						
 			}
-			if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
-				empArray[4] = projectMember.getProjectEndDateStr();
-			}else{
+			if (projectMember.getPayRate() != null && projectMember.getPayRate() > 0 ) {
+				empArray[4] = projectMember.getPayRateCurrency() +"  "+ projectMember.getPayRate() +"  "+ projectMember.getPayRateType();
+			}else {
 				empArray[4] = "--";
 			}
-			if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
-				empArray[5] = projectMember.getApprovedHrs();
-			}else{
+			if (projectMember.getEstimatedHours() != null && projectMember.getEstimatedHours() > 0 ) {
+				empArray[5] = projectMember.getEstimatedHours().toString();
+			}else {
 				empArray[5] = "--";
 			}
-			if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
-				empArray[6] = projectMember.getRejectedHrs();
-			}else{
+			if (projectMember.getEstimatedBudget() != null && projectMember.getEstimatedBudget() > 0 ) {
+				empArray[6] = projectMember.getEstimatedBudget().toString();
+			}else {
 				empArray[6] = "--";
 			}
-			if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
-				empArray[7] = projectMember.getSubmittedHrs();
-			}else{
-				empArray[7] = "--";
-			}
 			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-				empArray[8] = projectMember.getDraftHrs();
-			}else{
-				empArray[8] = "--";
+				empArray[7] = projectMember.getDraftHrs();
+			}else {
+				empArray[7] = "--";
 			}
 		return empArray;
 	}

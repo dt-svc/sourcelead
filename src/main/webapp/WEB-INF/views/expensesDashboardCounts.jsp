@@ -88,19 +88,45 @@ function expensesCount(expenseType){
 	        		 $("#dial3txt").empty();
 	        		 $("#dial4txt").empty();
 	        		 
-	        		 var  expensesDraftCount = json.expensesDraftCount;
-		        	 var  expensesSubmittedForApprovalCount =json.expensesSubmittedForApprovalCount;
-		        	 var  expensesApprovedCount =json.expensesApprovedCount;
-		        	 var  expensesRejectCount = json.expensesRejectCount;
+	        		 var  expensesDraftCount = 0;
+	        		 if(json.expensesDraftCount != null && json.expensesDraftCount != "" && json.expensesDraftCount != 'undefined'){
+	        			 expensesDraftCount = json.expensesDraftCount;
+	        		 }
+	        		 
+		        	 var  expensesSubmittedForApprovalCount = 0;
+		        	 if(json.expensesSubmittedForApprovalCount != null && json.expensesSubmittedForApprovalCount != "" && json.expensesSubmittedForApprovalCount != 'undefined'){
+		        		 expensesSubmittedForApprovalCount =json.expensesSubmittedForApprovalCount;
+	        		 }
 		        	 
-		        	 var  empExpensesSubmittedForApprovalCount = json.empExpensesSubmittedForApprovalCount;
-		        	 var  empExpensesApprovedCount =json.empExpensesApprovedCount;
-		        	 var  empExpensesRejectedCount =json.empExpensesRejectedCount;
+		        	 var  expensesApprovedCount = 0;
+		        	 if(json.expensesApprovedCount != null && json.expensesApprovedCount != "" && json.expensesApprovedCount != 'undefined'){
+		        		 expensesApprovedCount =json.expensesApprovedCount;
+	        		 }
+		        	 
+		        	 var  expensesRejectCount = 0;
+		        	 if(json.expensesRejectCount != null && json.expensesRejectCount != "" && json.expensesRejectCount != 'undefined'){
+		        		 expensesRejectCount = json.expensesRejectCount;
+	        		 }
+		        	 
+		        	 var  empExpensesSubmittedForApprovalCount = 0;
+		        	 if(json.empExpensesSubmittedForApprovalCount != null && json.empExpensesSubmittedForApprovalCount != "" && json.empExpensesSubmittedForApprovalCount != 'undefined'){
+		        		 empExpensesSubmittedForApprovalCount = json.empExpensesSubmittedForApprovalCount;
+	        		 }
+		        	 
+		        	 var  empExpensesApprovedCount = 0;
+		        	 if(json.empExpensesApprovedCount != null && json.empExpensesApprovedCount != "" && json.empExpensesApprovedCount != 'undefined'){
+		        		 empExpensesApprovedCount =json.empExpensesApprovedCount;
+	        		 }
+		        	 
+		        	 var  empExpensesRejectedCount = 0;
+		        	 if(json.empExpensesRejectedCount != null && json.empExpensesRejectedCount != "" && json.empExpensesRejectedCount != 'undefined'){
+		        		 empExpensesRejectedCount =json.empExpensesRejectedCount;
+	        		 }
+		        	 
 		        	// var  empExpensesReopenCount = json.empExpensesReopenCount;
 		        	 
-		        	 if(expensesDraftCount<1 || expenseType == "myExpenses"){
-		        		 
-		        		 if(json.expensesDraftCount >0){
+		        	 if(expenseType == "myExpenses"){
+		        		 if(expensesDraftCount >0){
 		        			 $("#dial1txt").html("<a onclick='myExpensesListByStage(\"draft\");'>Draft</a>");
 		        			 $("#expensesDraftCount").html("<a onclick='myExpensesListByStage(\"draft\");'>"+expensesDraftCount+"</a>");
 		        		   }else{
@@ -109,8 +135,7 @@ function expensesCount(expenseType){
 		        		   }
 		        		 
 	                  }else{
-	                	  
-	                	  if(json.empExpensesSubmittedForApprovalCount >0){
+	                	  if(empExpensesSubmittedForApprovalCount >0){
 		                	  $("#dial1txt").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>Waiting</a>");
 		                	  $("#expensesDraftCount").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>"+empExpensesSubmittedForApprovalCount+"</a>");
 	                	  }else{
@@ -120,8 +145,7 @@ function expensesCount(expenseType){
 	                	  
 	                  }
 		        	 
-		        	if(expensesSubmittedForApprovalCount<1 || expenseType == "myExpenses"){
-		        		
+		        	if(expenseType == "myExpenses"){
 		        		if(expensesSubmittedForApprovalCount > 0){
 			        		  $("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
 			        		  $("#expensesSubmittedForApprovalCount").html("<a onclick='myExpensesListByStage(\"submitted\");'>"+expensesSubmittedForApprovalCount+"</a>");
@@ -131,7 +155,6 @@ function expensesCount(expenseType){
 		        		}
 		        		
 	                  }else{
-	                	 
 	                	  if(empExpensesApprovedCount > 0){
 		                	  $("#dial2txt").html("<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
 		                	  $("#expensesSubmittedForApprovalCount").html("<a onclick='employeeExpensesListByStage(\"approved\");'>"+empExpensesApprovedCount+"</a>");
@@ -141,7 +164,7 @@ function expensesCount(expenseType){
 	                	  }
 	                  }
 		        	
-		        	if(expensesApprovedCount<1 || expenseType == "myExpenses"){
+		        	if(expenseType == "myExpenses"){
 		        		  if(expensesApprovedCount > 0){
 			        		  $("#dial3txt").html("<a onclick='myExpensesListByStage(\"approved\");'>Approved</a>");
 			        		  $("#expensesApprovedCount").html("<a onclick='myExpensesListByStage(\"approved\");'>"+expensesApprovedCount+"</a>");
@@ -151,7 +174,6 @@ function expensesCount(expenseType){
 		        		  }
 		        		  
 	                }else{
-	                	
 	                	if(empExpensesRejectedCount > 0){
 	                	   $("#dial3txt").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
 	                	   $("#expensesApprovedCount").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>"+empExpensesRejectedCount+"</a>");
@@ -159,12 +181,10 @@ function expensesCount(expenseType){
 	                		$("#dial3txt").html("Rejected");
 		                	$("#expensesApprovedCount").html(empExpensesRejectedCount);
 	                	}
-	                	
 	                  }
 		        	
-		        	if(expensesRejectCount<1 || expenseType == "myExpenses"){
+		        	if(expenseType == "myExpenses"){
 		        		  $("#dial4txtDial").show();
-		        		  
 		        		  if(expensesRejectCount > 0){
 		        		          $("#dial4txt").html("<a onclick='myExpensesListByStage(\"rejected\");'>Rejected</a>");
 		        		          $("#expensesRejectCount").html("<a onclick='myExpensesListByStage(\"rejected\");'>"+expensesRejectCount+"</a>");
