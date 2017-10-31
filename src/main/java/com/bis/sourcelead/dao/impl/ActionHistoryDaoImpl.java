@@ -99,7 +99,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
 				}
 			}
-		}else
+		}else if(actionNamesList != null && !actionNamesList.isEmpty())
 		{
 			ActionNames actionNames = actionNamesList.get(0);
 			actionHistory.setActionName(actionNames.getActionName());
@@ -117,7 +117,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
 		actionHistory.setActionTime(dateWithTimezone);
 		try {
-			if (actionHistory != null) {
+			if (actionHistory != null && actionNamesList != null && !actionNamesList.isEmpty()) {
 				session.saveOrUpdate(actionHistory);
 			}
 		} catch (Exception exception) {
