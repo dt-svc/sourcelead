@@ -2218,21 +2218,33 @@ function setRateTypesByLocation(){
 	if(country == 'India'){
 		$('#currentCTCRateType').val('INR');
 		$('#expectedCTCRateType').val('INR');
+		$('#currentCTCRatePer').val('Monthly');
+		$('#expectedCTCRatePer').val('Monthly');
 	}else if(country == 'Australia'){
 		$('#currentCTCRateType').val('AUD');
 		$('#expectedCTCRateType').val('AUD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'United States'){
 		$('#currentCTCRateType').val('USD');
 		$('#expectedCTCRateType').val('USD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'Singapore'){
 		$('#currentCTCRateType').val('SGD');
 		$('#expectedCTCRateType').val('SGD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'United Kingdom'){
 		$('#currentCTCRateType').val('GBP');
 		$('#expectedCTCRateType').val('GBP');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'France'){
 		$('#currentCTCRateType').val('EUR');
 		$('#expectedCTCRateType').val('EUR');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}
 }
 </script>
