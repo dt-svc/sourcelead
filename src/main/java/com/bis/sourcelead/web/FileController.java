@@ -96,6 +96,8 @@ public class FileController {
 			} else {
 				String fileName = multiFile.getOriginalFilename();
 				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				if(extenstion.equalsIgnoreCase(".rar"))
+					continue;
 				if (extenstion.equalsIgnoreCase(".zip")) {
 					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, multiFile));
 				}
@@ -143,6 +145,9 @@ public class FileController {
 			try {
 				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, request);
 				resume.setFileInfo(fileInfo);
+				if(resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
+					throw new Exception("Email ID missing");
+				}
 				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
 				boolean flag = false;
 				if(c != null && c.getId() > 0) {
