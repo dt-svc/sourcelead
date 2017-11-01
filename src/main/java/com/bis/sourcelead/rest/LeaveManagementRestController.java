@@ -3,6 +3,8 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1261,6 +1263,7 @@ public class LeaveManagementRestController {
 	 * @return ResponseList<LeaveDTO>
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = { "/getTopLeavetakers", "/rest/getTopLeavetakers" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<LeaveDTO> getTopLeavetakers(LeaveDTO leaveDTO, HttpServletRequest req,
 			HttpServletResponse res) throws Exception {
@@ -1303,6 +1306,19 @@ public class LeaveManagementRestController {
 		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
 			leaveDtoList.add(entry.getValue());
 		}
+		
+		
+		 Collections.sort(leaveDtoList, new Comparator() { 
+             @Override 
+             public int compare(Object obj1, Object obj2) { 
+               LeaveDTO leaveDTO1 = (LeaveDTO)obj1; 
+               LeaveDTO leaveDTO2 = (LeaveDTO)obj2;
+               if (Integer.parseInt(leaveDTO2.getNoOfDays()) < Integer.parseInt(leaveDTO1.getNoOfDays())) return -1;
+                 if (Integer.parseInt(leaveDTO2.getNoOfDays()) > Integer.parseInt(leaveDTO1.getNoOfDays())) return 1;
+                 return 0;
+             } 
+         });
+		
 		leaveDtoResponse.setData(leaveDtoList);
 		leaveDtoResponse.setRecordsFiltered(leaveDtoList.size());
 		leaveDtoResponse.setRecordsTotal(leaveDtoList.size());

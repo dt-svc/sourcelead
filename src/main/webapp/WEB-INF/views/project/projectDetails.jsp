@@ -267,9 +267,11 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta">';
+						result = result + '<div class="project_details_cta project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
-						result = result + '<span title="'+description+'">'+ description +'</span><div class="clearfix"></div>';
+						
+						result = result + '<div class="descriptionStyle">'+description+' </div>';
+						
 						result = result + '</div>';
 						
 						result = result + '<div class="clearfix"></div>';
@@ -451,7 +453,7 @@
 							}
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ managerName + " </option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.name + " </option>";
 							} else {
 								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "</option>";
 
