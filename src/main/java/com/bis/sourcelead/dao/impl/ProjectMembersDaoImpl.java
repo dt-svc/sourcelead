@@ -368,7 +368,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "  )  ";
 	     }
 		if(clientId != null){
-			clientQuery = " and projects.orgRelationId.id = :clientId ";
+			clientQuery = " and pclient.orgRelationId.id = :clientId ";
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){

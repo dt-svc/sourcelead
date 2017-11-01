@@ -584,6 +584,11 @@ function getAssociatesFilter(){
 								}
 							});
 						}
+						
+			  if(projectStartDate != null && projectStartDate != 'undefined' && projectStartDate != '' 
+					  && projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
+				  getEstimatedHours(maxRowNum)
+			  }				
 			
 			var cell5 = row.insertCell(5);
 			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
