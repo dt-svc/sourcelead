@@ -554,7 +554,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
-		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.masterCandidateId mc left join fetch submission.projectMembers pm left join fetch submission.projects projects left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
+		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc  left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.masterCandidateId mc left join fetch submission.projectMembers pm left join fetch submission.projects projects left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
 				+ " where projects.id =:projectId and mc.id = :masterCandidateId and  sah.frequencyStartDate =:startDate and  sah.frequencyEndDate =:endDate "
 				        + "and ("
 				           /*
@@ -606,8 +606,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		    			    		
 	    		
 	    		//Get Max Level in Current Location
-	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where  sah.submissionId.id = :submissionId and sah.hierarchyId.id = :hierarchyId and sah.hierarchyId.status != '0' ");
-	    		List<Integer> maxList = queryForMaxLevel.setLong("hierarchyId", sah.getHierarchyId().getId()).setLong("submissionId", sah.getSubmissionId().getId()).list();
+	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from SubmissionApproverHierarchy sah  where  sah.submissionId.id = :submissionId and sah.hierarchyId.projectClientsId.id = :projectClientsId and sah.hierarchyId.status != '0' ");
+	    		List<Integer> maxList = queryForMaxLevel.setLong("projectClientsId", sah.getHierarchyId().getProjectClientsId().getId()).setLong("submissionId", sah.getSubmissionId().getId()).list();
 	    		Integer maxLevel = 0;
 	    		if(maxList !=null && !maxList.isEmpty()){
 	    			maxLevel = maxList.iterator().next();
@@ -645,7 +645,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
             				 }
-            				 else if((approver.getHeirarchyId().getProjectClientsId().getLevel() >=  sah.getHeirarchyId().getProjectClientsId().getLevel())
+            				 else if((approver.getHeirarchyId().getProjectClientsId().getLevel() >  sah.getHeirarchyId().getProjectClientsId().getLevel())
             					     || (approver.getHeirarchyId().getProjectClientsId().getLevel() ==  sah.getHeirarchyId().getProjectClientsId().getLevel() && sah.getHeirarchyId().getLevel()==(maxLevel))){
 	            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
