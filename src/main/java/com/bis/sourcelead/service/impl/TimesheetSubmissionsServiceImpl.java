@@ -1120,11 +1120,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	}
 
 
-	@Override
+	/*@Override
 	public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate, Date endDate,
 			Long projectMemberId) throws Exception {
 		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
-	}
+	}*/
 	
 	@Override
 	public TimesheetSubmissions getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(Date startDate, Date endDate,
