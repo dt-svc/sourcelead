@@ -1820,6 +1820,7 @@ public class VendorRestController {
 					 taskDTO.setTaskName(tasks.getTaskName());
 					 taskDTO.setDueAfterString(tasks.getDueAfterString());
 					 taskDTO.setUsersList(usersList); 
+					 taskDTO.setTaskType(tasks.getTaskType());
 					 tasksDTOList.add(taskDTO);
 			 }
 		 }
