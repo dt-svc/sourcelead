@@ -490,9 +490,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	}
 
 
-	@Override
+	/*@Override
 	@Transactional
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -511,7 +511,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			return false;
 		}
 		
-	}
+	}*/
 
 
 	@Override
