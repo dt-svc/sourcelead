@@ -746,10 +746,10 @@ function getRolesList(){
 					{
 		        		 var opt = json[i];
 			        		if(opt.id == SourceLeadWeb_userId){
-			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.fullName+"</option>";
 			        		}
 			        		else{
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
 			        		}
 					}
 		        	$("#owner").empty();

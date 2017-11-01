@@ -235,7 +235,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				//vendor summary contacts
 				  else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
+					
 					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFullName());
+					
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
 					 orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
 					
