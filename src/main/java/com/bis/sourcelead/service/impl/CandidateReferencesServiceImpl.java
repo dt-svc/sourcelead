@@ -185,4 +185,9 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		return candidateReferencesDao.getCandidateReferenceByReferenceId(refId);
 	}
 
+	@Override
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId);
+	}
+
 }
