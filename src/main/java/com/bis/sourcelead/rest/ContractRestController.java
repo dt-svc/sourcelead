@@ -554,9 +554,16 @@ public class ContractRestController {
 		if(requirementSubmission != null){
 			if(null != requirementSubmission.getVendorLocationId()){
 				requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+			}else{
+				Candidate candi = requirementSubmission.getCandidate();
+				if(candi != null){
+					if(candi.getParentCandidateId() != null){
+						OrgLocations location = candi.getParentCandidateId().getOrgLocationId();
+						requirementSubmission.setVendorLocationCode(location.getLocationCode());
+					}
+				}
 			}
 		}
-		
 		return requirementSubmission;
 	}
 	
