@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,11 +145,12 @@ public class SourceleadResumeParser {
 		String name = "";
 		// boolean nameMatchFound = false;
 		String finalLine = "";
+		String lineSeparator = "";
 		String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
 		int count = 0;
 		for (String line : totalLines) {
 			if (count < 10) {
-				String lineSeparator = "";
+				
 				if (StringUtils.isNotEmpty(firstTenLines)) {
 					lineSeparator = System.getProperty("line.separator");
 				}
@@ -196,7 +198,10 @@ public class SourceleadResumeParser {
 		}
 
 		if (!StringUtils.isNotEmpty(name)) {
-			String[] tenLines = firstTenLines.split(System.getProperty("line.separator"));
+			if(StringUtils.isEmpty(lineSeparator)){
+				lineSeparator = "\n";
+			}
+			String[] tenLines = firstTenLines.split(lineSeparator);
 			outerloop: {
 				for (String line : tenLines) {
 					String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";

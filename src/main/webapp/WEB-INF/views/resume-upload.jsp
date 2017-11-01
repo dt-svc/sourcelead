@@ -203,7 +203,7 @@ padding: 2px
 							<input type="file" class="btnHide" id='uploadFile' multiple="multiple"> <a
 								href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 						</div>
-						<span class="filename">Upload File</span>
+						<span class="filename">Choose File(s)</span>
 						<div class="clear"></div>
 						<div class="addFilBtn">
 							<i class="fa fa-plus"></i>
@@ -240,7 +240,7 @@ padding: 2px
 				<input type="file" id='abc' class="btnHide" multiple="multiple">
 				<a href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 			</div>
-			<span class="filename">Upload File</span>
+			<span class="filename">Choose File(s)</span>
 			<div class="clear"></div>
 			<div class="abcdef"><i class="fa fa-trash-o"></i></div>
 		</div>	
@@ -253,8 +253,7 @@ padding: 2px
 var count = 1;
 	$(document).ready(function() {
 		$(".browseInn input:file").change(function() {
-			var fileName = $(this).val();
-			$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+			updateInputField($(this));
 		});
 		$(".addFilBtn").click(function() {
 			$(".browseScroll").append($("#browserBar").html().replace("abc", "uploadFile"+(count ++)).replace("abcdef", "removeFilBtn"));
@@ -262,15 +261,14 @@ var count = 1;
 				$(this).parent(".browseWrap").remove();
 			});
 			$(".browseInn input:file").change(function() {
-				var fileName = $(this).val();
-				$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+				updateInputField($(this));
 			});
 		});
 		$("#clear").click(function() {
 			count = 1;
 			$(".removeFilBtn").each(function(i) {  $(this).click(); });
 			$("input[type=file]").val('');
-			$('.filename').html("Upload File");
+			$('.filename').html("Choose File(s)");
 		});
 		$("#upload").click(function() {
 			var data1 = new FormData();
@@ -280,6 +278,10 @@ var count = 1;
 				for(var i=0;i<files.length;i++)
 					data1.append("inputFile"+(j++), files[i]);
 			});
+			if(j == 0) {
+				alert("Please select resume(s)");
+				return;
+			}
 			uploadid = new Date().getTime();
 			getUploadStatus();
 			data1.append("uploadid", uploadid);
@@ -298,10 +300,9 @@ var count = 1;
 				        $("#progressBar").html(percentComplete+'%');
 				        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
 				        if (percentComplete === 100) {
-// 				        		$("#progressBar").html('0%');
 				        		$("#progressText").html('Please wait while parsing the uploaded files...');
-				        		$(".progress div").css("width", percentComplete + "%");
-// 				        		$("#progressBar").html('0%');
+				        		$(".progress div").css("width", "0%");
+				        		$("#progressBar").html('0%');
 				        }
 
 				      }
@@ -325,7 +326,15 @@ var count = 1;
 		});
 		
 	});
+	function updateInputField(ele) {
+		var count = document.getElementById($(ele).attr('id')).files.length;
+		var fileName = $(ele).val();
+		if(count > 1)
+			$(ele).parent().parent().find('.filename').html(count+" file(s) selected | "+ (fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1)));
+		else 
+ 			$(ele).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
 	
+	}
 	var uploadid = 0;
 	function getUploadStatus() {
 		if(uploadid > 0) {

@@ -5,6 +5,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style>
+.onboardTasksList{
+padding: 0px 15px 15px;
+}
+</style>
+
 <script>
 function vendorOnboardTasksList(orgRelationId){
 	
@@ -37,7 +43,7 @@ function vendorOnboardTasksList(orgRelationId){
 	 	        		}
 	 	        		
 	 	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	 	        		result = result +'<div class="media-body col-md-12">';
+	 	        		result = result +'<div class="media-body onboardTasksList">';
 	 	        		result = result +'<div class="clearfix taskheder">';
 	 	        		
 	 	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.subject+"</strong></label>";
