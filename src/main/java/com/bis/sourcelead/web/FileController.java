@@ -171,14 +171,17 @@ public class FileController {
 					candidateDto.setCandidateSkills(resume.getSkills());
 					Iterator<String> it = resume.getPhoneNumbers().iterator();
 					while (it.hasNext()) {
-						if (candidateDto.getPhoneNumber() == null)
-							candidateDto.setPhoneNumber(it.next());
+						if (candidateDto.getMobilePhone() == null)
+							candidateDto.setMobilePhone(it.next());
 						else
 							candidateDto.setAlternateMobilePhone(it.next());
 					}
 					candidateDto.setFileName(fileInfo.getFileName());
 					candidateDto.setFileContentType(fileInfo.getContentType());
 					candidateDto.setFileUrl(fileInfo.getFileURL());
+					List<FileInfo> fileInfoList1 = new ArrayList<>();
+					fileInfoList1.add(fileInfo);
+					candidateDto.setFileInfo(fileInfoList1);
 					String name = resume.getName();
 					candidateDto.setFirstName(name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name);
 					candidateDto.setLastName(name.contains(".") ? name.substring(name.lastIndexOf(".")+1) : "");
@@ -254,8 +257,13 @@ public class FileController {
 		}
 	}
 	
-	@RequestMapping("/bulk-resume-import.html")
+	@RequestMapping("/crop.html")
 	public String crop() {
+		return "crop";
+	}
+	
+	@RequestMapping("/bulk-resume-import.html")
+	public String bulkResumeImport() {
 		return "resume-upload";
 	}
 	
