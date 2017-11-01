@@ -218,7 +218,7 @@
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
 							result = result + ' <label>Extentsion</label>';
-							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
 							result = result + ' </div>';
 							result = result + ' </div>';
 							result = result + ' </div>';
@@ -244,7 +244,7 @@
 						
 						result = result + ' <div class="col-md-5 errBotVal">';
 						result = result + ' <label>Extentsion</label>';
-						result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+						result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
 						result = result + ' </div>';
 						result = result + ' </div>';
 						result = result + ' </div>';
