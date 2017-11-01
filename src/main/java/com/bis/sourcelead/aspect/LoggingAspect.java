@@ -1,17 +1,10 @@
 package com.bis.sourcelead.aspect;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MemberSignature;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.aspectj.weaver.reflect.StandardShadow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -138,7 +129,7 @@ public class LoggingAspect {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";
-		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName)){
+		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName) || "searchClientDetails".equalsIgnoreCase(methodName)){
 			Object[] args = joinPoint.getArgs();
 			Object arg=args[0];
 			Class c=arg.getClass();
@@ -148,6 +139,16 @@ public class LoggingAspect {
 			Object[] args = joinPoint.getArgs();
 			Object arg=args[4];
 			type=arg.toString();	
+		}
+		if("storeCandidate".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[0];
+			Class c=arg.getClass();
+			String str=(String)c.getMethod("getIsAssociate").invoke(arg);
+			if("Y".equalsIgnoreCase(str))
+				type = Constants.ASSOCIATE;
+			else
+				type = Constants.Candidate;
 		}
 
 		if(userLoginSession != null)
