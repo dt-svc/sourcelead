@@ -647,9 +647,9 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 
 /* content Area Styels */
 .content-wraper {
-background: #e0e0e0; min-height: 620px; margin-left: 190px; padding: 0 30px 30px;
--moz-transition: all ease-in-out 0.3s; -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.5s;
-transition: all ease-in-out 0.3s; padding-top: 53px;
+background: #e0e0e0; min-height: 620px; margin-left: 190px; padding: 0 30px 30px; padding-top: 53px;
+-moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
+transition: all ease-in-out 0s;
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -1370,6 +1370,9 @@ overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; displa
 }
 .tbldata-dotdot-100 {
 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100px; display: block; margin: 0 auto;
+}
+.tbldata-dotdot-200 {
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 200px; display: block; margin: 0 auto;
 }
 .tbldata-dotdot {
 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block; margin: 0 auto;
@@ -3640,7 +3643,7 @@ left: 295px; top: 100px; padding: 10px 10px; display: none; box-shadow: 0px 0px 
 display: inline-block; width: 750px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .theme-styels{
-background: #222; border-radius: 3px 0 0 3px; cursor: pointer; left: -30px; padding: 2px; position: absolute; top: 0; color: #fff;
+background: #222; border-radius: 3px 0 0 3px; cursor: pointer; left: -32px; padding: 2px; position: absolute; top: 0; color: #fff;
 }
 .theme-styels figure {
     height: 28px; overflow: hidden; position: relative; text-align: center; vertical-align: middle; width: 28px; margin:0;
@@ -5736,7 +5739,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; max-height: 570px; overflow-y: auto; padding-bottom: 10px;
+    position: relative; max-height: 600px; overflow-y: auto; padding-bottom: 10px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
@@ -6059,9 +6062,9 @@ box-shadow: 0px 0px 3px #999;  padding: 10px 15px; position: relative; box-sizin
  background-color:#3d9970 !important;
 }
 /* Timeline Styles */
-.disabled{
+/*.disabled{
     display: none;
-}
+}*/
 .enabled{
     display: block;
 }
@@ -6794,7 +6797,7 @@ border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px;
 
 /* venkat subbaiah */
 .timesheet_week_comm strong input.dele  {
-width : 10px !important;
+width : 18px !important;
 }
 .timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
 width : 20px !important;
@@ -6942,6 +6945,18 @@ bottom:1px;
 }
 .formgroup-minheight .form-group {
 min-height: 65px; margin-bottom: 0px;
+}
+.listof-holidays table thead{
+background: #375d81; color:#fff;
+}
+.countList label {
+   margin-bottom: 2px; font-size: 13px;
+}
+.btn-paddingright {
+	padding-right: 235px;
+}
+.anchorBlue {
+color:#0277BD !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

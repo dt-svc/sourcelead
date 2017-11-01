@@ -259,7 +259,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Override
 	public RequirementSubmission saveRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
 		
-		 Requirement requirement = null;;
+		 Requirement requirement = null;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
@@ -1874,9 +1874,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    			else if(jsonObj.getString("name").equalsIgnoreCase("ExpectedCTC")){
    				if(clientShortlistsRate != null && clientShortlistsRate.length>i && !isNullOrEmpty(clientShortlistsRate[i])){
    					String clientRate = clientShortlistsRate[i];
+   					String submissionPer = "";
+   					if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
+   		  			 submissionPer = submissionratePer[i]; 
+   		  		 }
    	   				if(!isNullOrEmpty(clientRate)){
    	   				    StringBuilder rateBuilder = new StringBuilder();
-   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(templateFields.getExpectedRatePer());
+   	   				    rateBuilder = rateBuilder.append(templateFields.getExpectedRateType()).append(" ").append(clientRate).append(" / ").append(submissionPer);
    	   					jsonObj.put("value", rateBuilder.toString());
    	   				}else{
    	   					jsonObj.put("value", "");
@@ -2069,6 +2073,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 if(clientShortlistsRate.length > 0 && !isNullOrEmpty(clientShortlistsRate[i])){
    			 clientSubmissionFields.setExpectedCTC(clientShortlistsRate[i]); 
    		 }
+   		 
+   		if(submissionratePer.length > 0 && !isNullOrEmpty(submissionratePer[i])){
+  			 clientSubmissionFields.setExpectedRatePer(submissionratePer[i]); 
+  		 }
    		 
    		 if(!isNullOrEmpty(templateFields.getNoticePeriod())){
    			 clientSubmissionFields.setNoticePeriod(templateFields.getNoticePeriod()); 

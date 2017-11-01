@@ -248,7 +248,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     font-weight:400; font-size:13px; white-space: nowrap; text-overflow: ellipsis;
     }
 .timesheet_week_comm strong input.dele {
-    width:18%; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
+    width:18px; text-align:center; font-size:20px; color:red; border:none; text-indent:0px; background-color:transparent;
     padding:0px 0px 0px 0px; margin:0px 0px 0px 5px;  background-image:url(../images/delete.png);
     background-position:center; background-repeat:no-repeat; background-size:13px;
 }
@@ -5497,24 +5497,62 @@ position: static !important;
 .errBotVal p {
 bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 }
+.minHeBtn {
+min-height: 34px; padding: 9px 12px 0px;
+}
+.cOrange {
+    color: #f17929 !important;
+}
+.padIcon {
+	padding: 0px 5px 0px 20px !important;
+}
+.seaHeight {
+    height: 32px;
+}
+.errBotValEdit p {
+bottom:-30px !important; padding: 0px 6px 0px 6px !important;
+}
 
-
-
-
-
-
-
-
-
-
-
+.project_details_cta.project_details_cta_100 {
+    width: 100%; float: left; padding: 20px 0px 10px 0px;
+    }
+ .project_details_cta.project_details_cta_100 strong {
+     float: none; text-align: left; padding: 0px 0px 10px 15px;
+     }   
+.descriptionStyle {
+    padding: 0px 15px;
+}
+.descriptionStyle div {
+    padding: 2px 0px;
+}     
+.descriptionStyle span {
+    float: none; width: 100%; text-overflow: inherit; white-space: normal; overflow: inherit;
+}
+.ColWhite {
+    color: #fff!important;
+}
+.colPicBox {
+       padding: 4px 6px;
+}
+.colPicBox i {
+       width: 24px !important; height: 20px !important; background-color: #337ab7;
+}
+.noRecBor {
+	border: 1px solid #e9e9e7; margin: 5px 0px 0px 0px;
+}
+.hisOutWrap {
+    background-color: #fff; padding: 10px; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+}
+.hisOutWrap .ContrBut {
+    margin: 0px 0px 8px 0px;
+}
 
 
 
 /*    Responsive CSS    */
 
 
-@media screen and (max-width: 1169px){
+/*@media screen and (max-width: 1169px){
 .timesheet_table table table tr td {padding: 8px 2px;} 
 .timesheet_out { padding: 0px 0px 30px 0px;}
 .time_appr_side_wrap { width:85%; top:155px;}
@@ -5530,7 +5568,7 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 		position: relative; padding: 0px 20px;
 	}
 	.resTabScroll ul {
-		padding: 0px 0px; width: 100%; overflow: auto; display: block; height: 40px;
+		padding: 0px 0px; width: 100%; overflow: auto; display: flex; height: 40px; background-color: #ededed;
 	}
 	.tabLeftArrow, .tabRightArrow {
 		position: absolute; display: block; left: 0px; top: 0px; width: 16px; height: 100%; background-color: #5B50DD;
@@ -5538,7 +5576,11 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 	}
 	.tabRightArrow {
 		right: 0px; left: inherit;
-	}	
+	}
+	.new-tabs li a {
+		padding: 8px 15px;
+	}
+	
           
 }  
        
@@ -5644,6 +5686,92 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
        
 .user_summary_edit_cta { width:94%; margin: 0.5% 3%;}
        
+}*/
+
+
+	.resTabScroll, .resMobScroll {
+		position: relative;
+	}
+	.tabLeftArrow, .tabRightArrow {
+		position: absolute; display: none; left: -13px; top: 0px; width: 11px; height: 100%; background-color: #5B50DD;
+		vertical-align: middle; text-align: center; font-size: 20px; color: #fff; line-height: 40px;
+	}
+	.tabRightArrow {
+		right: -13px; left: inherit;
+	}	
+
+/*    Responsive CSS    */
+
+
+@media screen and (max-width: 1169px){
+::-webkit-scrollbar {
+    width: 1px; height: 1px; border-radius:0px;
 }
+::-webkit-scrollbar-button {
+    background: #ccc;
+}
+::-webkit-scrollbar-track-piece {
+    background: #fff;
+}
+::-webkit-scrollbar-thumb {
+    background: #368ee0;
+}	
+.padShow {
+	display: block;
+}	
+.clients_side_wrap { width:90%;}
+.project_side_wrap { width:90%;}	
+	.side_mask .proj_close {
+		left: 2%;
+	}
+	.resTabScroll ul {
+		padding: 0px 0px; width: 100%; overflow: auto; display: flex; height: 40px; background-color: #ededed;
+	}
+.resTabScroll ul {
+		padding: 0px 0px; width: 100%; overflow: auto; display: flex; height: 40px; background-color: #ededed;
+		margin-bottom: 20px;
+	}	
+	
+	.new-tabs li a {
+		padding: 8px 15px 7px;
+	}
+
+.project-tabs-menu li, .canreq-tabs-menu li {
+	background-color: #ededed; border: 1px solid #ededed; border-radius:0px 0px; border-right: 1px solid #ccc;
+	margin-right: 0px; height: 40px;
+}
+.project-tabs-menu li a, .canreq-tabs-menu li a {
+	padding: 9px 10px; text-align: center; display: block; min-width: 145px;
+}
+	
+          
+}  
+       
+@media screen and (max-width: 1020px){
+.resMobScroll ul {
+		padding: 0px 0px; width: 100%; overflow: auto; display: flex; height: 40px; background-color: #ededed;
+		margin-bottom: 20px;
+	}
+ .searchMarBot {
+	margin: 0px 0px 45px 0px;
+} 
+.tabShow {
+	display: block;
+}
+
+}
+       
+@media screen and (max-width: 500px){
+ .mobileShow {
+	display: block;
+}
+ .searchMarBot {
+	margin: 0px 0px 0px 0px;
+} 
+     
+}
+
+
+/*    Responsive CSS    */
 
 /*    Responsive CSS    */

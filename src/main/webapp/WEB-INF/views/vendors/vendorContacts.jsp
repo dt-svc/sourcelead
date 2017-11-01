@@ -387,7 +387,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12" id="errFirstName">';
 	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
@@ -421,7 +421,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12" id="errOwner">';
 	result = result  +'	   <select multiple data-placeholder="select owner" class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
 	result = result  +'	           <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
@@ -597,6 +597,8 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		 if(json[0] != null && json[0] != ''){
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
+	        		    $('#errFirstName').find('p.jquery_form_error_message').remove();
+	        		    
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
 	        			 $("#firstName").val('');
@@ -731,6 +733,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 					        	
 					        		if(opt.id == SourceLeadWeb_userId){
 					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			$('#errOwner').find('p.jquery_form_error_message').remove();
 					        		}
 					        		else{
 					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";

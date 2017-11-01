@@ -61,7 +61,7 @@ window.onload = function() {
 	          result = result +"    <th>Mobile</th>";
 	          result = result +"    <th>Primary Skill</th>";
 	          result = result +"    <th>Experience</th>"; 
-	          result = result +"    <th>No of Jobss</th>"; 
+	          result = result +"    <th>No of Jobs</th>"; 
 	          result = result +"    <th>Owner</th>"; 
 	          result = result +"    <th>Last Update <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
 	          result = result +"  </tr>"; 

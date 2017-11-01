@@ -8,6 +8,7 @@
 <script type="text/javascript">
 window.onload = function() { 
 	getPieChartBasedOnUser();
+	getApproversList();
 	}
 </script>
 
@@ -28,7 +29,7 @@ window.onload = function() {
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf()">
+					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
 					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
@@ -110,14 +111,14 @@ window.onload = function() {
             </div>
             <p class="form-control-static clearfix"><strong>Approval</strong></p>
             <div class="form-group">
-              <label class="col-md-3">Approved By<span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-                	<c:forEach var="user" items="${approverList}">
-	                	<c:if test="${user.id != SourceLeadWeb_userId}">
-	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option>
-	                	</c:if>
-                	</c:forEach>
+<%--                 	<c:forEach var="user" items="${approverList}"> --%>
+<%-- 	                	<c:if test="${user.id != SourceLeadWeb_userId}"> --%>
+<%-- 	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option> --%>
+<%-- 	                	</c:if> --%>
+<%--                 	</c:forEach> --%>
                   </select>
               </div>
             </div>
@@ -128,18 +129,10 @@ window.onload = function() {
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
-                 <h5>Leave Status</h5>
+                 <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
                 <div id="leaveStatusIdDiv"></div>
-                <%-- <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
-                        <c:forEach var="leaveType" items="${leaveTypeList}">
-                        	<li>
-									<label>${leaveType.name}</label>
-									<span class="label label-info" style="background-color: ${leaveType.colorCode};">${leaveType.remainingTotalLeaveCounts}</span>
-							</li>
-						</c:forEach>
-              	</ul> --%>
                 </div>
                 
             </div>
@@ -433,12 +426,14 @@ $(".close").click(function(){
 <script>
 function getLeavePolicy(){
 	var leaveTypeId = $("#leaveType").val();
-	$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
-		if(data !=null){
-			$("#termsAndConditions").html(data);
-			document.getElementById("termsModel").style.display="block";
-		}
-	}); 
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
+			if(data !=null){
+				$("#termsAndConditions").html(data);
+				document.getElementById("termsModel").style.display="block";
+			}
+		}); 
+	}
 }
 </script>
 
@@ -455,14 +450,16 @@ function validateMaxLeave(data){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	
 	var leaveTypeId = $("#leaveType").val();
-	var leaveTypeName = data.options[data.selectedIndex].innerHTML;
-	$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-		if(data == true){
-			$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
-		}else{
-			$('.jquery_form_error_message cOranges').hide();
-		}
-	}); 
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
+		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+			if(data == true){
+				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.jquery_form_error_message cOranges').hide();
+			}
+		}); 
+	}
 	
 }
 </script>
@@ -488,6 +485,28 @@ $(".warMess").fadeOut();
 };
 
 
+</script>
+
+<script>
+function getApproversList(){
+	var userId = '${SourceLeadWeb_userId}';
+	var behalf = $("#checkbox-1");
+	var result = "";
+	if(behalf.is(':checked')){
+		<c:forEach var="user" items="${approverList}">
+			result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+		</c:forEach>
+	}else{
+		<c:forEach var="user" items="${approverList}">
+			if(userId != '${user.id}'){
+				result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+			}
+		</c:forEach>
+	} 
+	$("#approverUser").empty();
+	$("#approverUser").append(result);
+	$('#approverUser').trigger("chosen:updated");
+}
 </script>
 
 

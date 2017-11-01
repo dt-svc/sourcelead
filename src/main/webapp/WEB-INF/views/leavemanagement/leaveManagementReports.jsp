@@ -5,9 +5,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
+<script src="resources/js/amcharts.js"></script>
+<script src="resources/js/serial.js"></script>
+<script src="resources/js/pie.js"></script>
 
  <%-- <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
@@ -72,7 +72,7 @@
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
                                 <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
-                                    <option selected>--Select Year--</option>
+                                    <option value="">--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
                                     <option>2018</option>
@@ -88,6 +88,7 @@
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
+                            <div class="clients_wrap_table datatable_filter"></div>
                             <div id="holidayListDiv"></div>
                         
                     </div>
@@ -160,7 +161,7 @@
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right" name="reportYear" id="reportYear" onchange="getTopLeaveTakers();">
+                            <select class="form-control pull-right" name="topLeaveTakersreportYear" id="topLeaveTakersreportYear" onchange="getTopLeaveTakers();">
                               <option value="">Year</option>
                               <option value="2017">2017</option>
                               <option value="2018">2018</option>
@@ -188,18 +189,12 @@
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="customLeaves" onClick="showCustom()">Custom</button>
   </div>
+  <div class="clearfix pull-lefet col-md-6 paddingRight customLeaves" style="display: none;">
+  <div id="customDateDivId"></div>
+  </div>
+  
 <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-6 paddingRight customLeaves" style="display: none;">
-    <div class="pull-left">
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="reportFromDate" id="reportFromDate" placeholder="From" class="form-control calendar input-sm" type="text">
-    </div>
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="reportEndDate" id="reportEndDate" placeholder="To" class="form-control calendar input-sm" type="text">
-    </div>
-    <button type="button" class="btn btn-primary btn-sm" onclick="getTopLeaveTakers();"><i class="fa fa-search"></i></button>
-    </div>
-    </div>
+    
 <!-- Top Leave Takers Custom Date -->    
                         </div>
                         </div>
@@ -212,7 +207,7 @@
 
                   <div class="col-md-6">
                     <div class="clearfix mt5">
-                   <h4 class="heading col-md-4">Employee Leave Report</h4>
+                   <h4 class="heading col-md-4">Leaves Report</h4>
                     <div class="timesheet_head clearfix col-md-8">
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
@@ -263,7 +258,7 @@
                         </div>
                  </div>
                       <div id="empLeavereport" class="amchartAnchor-Hide mt5" style="width: 100%; height: 250px;"></div>
-                  
+                  <div id="empLeavereportEmptyDiv" class="dataTables_empty noRecBor" style="display:none"></div>
                     </div>
                     </div>
               
@@ -365,7 +360,7 @@ function getHolidaysList(){
 			        		 }else{
 			        			 result = result + '<td>---</td>';
 			        		 }
-			        		 result = result + ' <td title="'+opt.fromDate+'">'+opt.fromDate+'</td>';
+			        		 result = result + ' <td title="'+opt.fromDate+' - '+opt.toDate+'">'+opt.fromDate+' - '+opt.toDate+'</td>';
 			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
 			        		 result = result + '  </tr>';
 			        		 j++;
@@ -580,7 +575,13 @@ function totalLeaveByEmployeeBarChart(data){
 	         	 color: opt.colorCode
 	       });
 	   } 
-	 
+	 if(chartData == ""){
+		 $("#empLeavereport").hide();
+		 $("#empLeavereportEmptyDiv").show();
+	 }else{
+		 $("#empLeavereport").show();
+		 $("#empLeavereportEmptyDiv").hide();
+	 }
 	AmCharts.makeChart("empLeavereport",
 			{
 				"type": "serial",
@@ -600,6 +601,8 @@ function totalLeaveByEmployeeBarChart(data){
 				"autoDisplay": true,
 				"touchClickDuration": 10,
 				"categoryAxis": {
+                    "autoRotateAngle": 40,
+                    "autoRotateCount": 0,					
 					"gridPosition": "start",
 					"titleFontSize": 0
 				},
@@ -869,13 +872,11 @@ function getPieChartBasedOnUser(){
 				}
 			);
     //Custom buttons
-    function showCustom(){
-    	$(".customLeaves").toggle();
-    }
+   
     $("html").click(function() {
     	$(".customLeaves").hide();
     })
-    $("#customLeaves, .showCustom").click(function(e) {
+    $("#customLeaves, .customLeaves, .ui-datepicker").click(function(e) {
     	e.stopPropagation();
     })
     
@@ -899,17 +900,91 @@ function getPieChartBasedOnUser(){
     }
     </script>
     
-    
+    <script>
+    function showCustom(){
+     
+    	$(".customLeaves").toggle();
+        var result = ""
+        	result = result + '<form id="customDate-form" name="customDate-form">';
+           result = result + '<div class="pull-left">';
+           result = result + '<div class="pull-left mr5" style="width: 140px" id="startErr">';
+           result = result + '<input value="" name="reportFromDate" id="reportFromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="Start Date">';
+           result = result + '</div>';
+           result = result + '<div class="pull-left mr5" style="width: 140px" id="endErr">';
+           result = result + '<input value="" name="reportEndDate" id="reportEndDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="End Date">';
+           result = result + '</div>';
+           result = result + '<button type="button" class="btn btn-primary btn-sm" onclick="customDatesearchin();"><i class="fa fa-search"></i></button>';
+           result = result + '</div>';
+           result = result + '</form>';
+        
+           $("#customDateDivId").empty();
+		   $("#customDateDivId").append(result);
+           var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ 		  var finalDateFormatEndDate = '';
+ 		  if(locationDate.match("yyyy-MM-dd")){
+ 			  finalDateFormatEndDate = 'yy-mm-dd';
+ 		  }if(locationDate.match("dd-MM-yyyy")){
+ 			  finalDateFormatEndDate = 'dd-mm-yy'; 
+ 		  }if(locationDate.match("MM-dd-yyyy")){
+ 			  finalDateFormatEndDate = 'mm-dd-yy'; 
+ 		  }if(locationDate.match("yyyy-dd-MM")){
+ 			  finalDateFormatEndDate = 'yy-dd-mm'; 
+ 		  }
+ 		$('#reportFromDate').datepicker({
+ 			dateFormat : finalDateFormatEndDate,
+ 			changeMonth: true,
+ 			changeYear: true, 
+ 			onSelect : function(selected) {
+ 			var dt = $(this).datepicker('getDate', '+1d');
+ 			dt.setDate(dt.getDate());
+ 			$("#reportEndDate").datepicker("option", "minDate", dt);
+ 			removeStartDateValidation();
+ 			}
+ 		});
+ 		
+ 	  $('#reportEndDate').datepicker({
+ 			dateFormat : finalDateFormatEndDate,
+ 			changeMonth: true,
+ 			changeYear: true, 
+ 			onSelect : function(selected) {
+ 			var dt = $(this).datepicker('getDate', '-1d');
+ 			dt.setDate(dt.getDate());
+ 			$("#reportFromDate").datepicker("option", "maxDate", dt);
+ 			removeEndDateValidation();
+ 			}
+ 		});
+    }
+    function removeStartDateValidation(){
+    	$('#startErr').find('p.jquery_form_error_message').remove();
+    }
+    function removeEndDateValidation(){
+    	$('#endErr').find('p.jquery_form_error_message').remove();
+    }
+    function customDatesearchin(){
+    	if ($('#customDate-form').validate(false, validationSettings)) {
+    		getTopLeaveTakers();
+    		$(".customLeaves").hide();
+    	}else {
+			return false;
+		}
+    }
+    $('body').on('blur', '#customDate-form', function() {
+		$("#customDate-form").showHelpOnFocus();
+		$("#customDate-form").validateOnBlur(false, validationSettings);
+	});
+    </script>
     
  <script>
 	function getTopLeaveTakers() {
+		
+		
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		var reportYear = "";
 		var reportMonth = "";
 		var reportFromDate = "";
-		if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
-			reportYear = $("#reportYear").val();
+		if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+			reportYear = $("#topLeaveTakersreportYear").val();
 		}
 		if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
 			reportMonth = $("#reportMonth").val();	
@@ -923,7 +998,7 @@ function getPieChartBasedOnUser(){
 
 		var searchValue = $("#dataTableSearch").val();
   		searchValue = searchValue ? searchValue : "";
-  		var url = sourceleadUrl+"/getTopLeavetakers?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&reportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
+  		var url = sourceleadUrl+"/getTopLeavetakers?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
   		prepareTopLeaveTakersList(url); 
 	}
 	
@@ -1001,7 +1076,7 @@ function topLeaveTakersPagination(url){
 	            }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[0,'desc']],
+		    	"aaSorting": [[1,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -1042,8 +1117,7 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
-			$("#toDate").datepicker("option", "minDate", dt);
-			removeStartValid();
+			$("#reportEndDate").datepicker("option", "minDate", dt);
 			}
 		});
 		
@@ -1054,9 +1128,7 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
-			$("#fromdate").datepicker("option", "maxDate", dt);
-			removeEndValid();
-			validateDate();
+			$("#reportFromDate").datepicker("option", "maxDate", dt);
 			}
 		});
 	  

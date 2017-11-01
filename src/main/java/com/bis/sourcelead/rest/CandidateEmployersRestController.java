@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,10 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
-import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -68,6 +71,9 @@ public class CandidateEmployersRestController {
 	
 	@Autowired
 	private CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	
 
@@ -197,9 +203,19 @@ public class CandidateEmployersRestController {
 		StringBuffer activitySummary = new StringBuffer();
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
 		Candidate candidate =candidateService.getCandidateById(candidateId);
-			activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
-			candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "", Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
+		
+		activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
+		candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "", Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
+		
+		if (null != candidate && null != candidate.getId()) {
+			 CandidateIndex candidateIndex = new CandidateIndex();
+			 candidateIndex.setCandidateId(candidate.getId());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			 sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+		}	
+			
 			
 		 Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		 return percentage.toString();

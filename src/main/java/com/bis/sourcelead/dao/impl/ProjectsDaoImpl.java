@@ -538,7 +538,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ");
+				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ")
+				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
 					
 		}
 		
@@ -667,9 +668,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			for (Projects projects :projectsList ){
 				    	 ProjectClients projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
 				    	 if(projectClients != null){
-				    		 Integer pmhCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
-				    		 if(projects.getOrgLocationsId().getId().equals(orgLocationsId) || pmhCount > 0 || userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-				    			 
+				    		 
 				    			 ProjectsDTO projectsDTO = new ProjectsDTO();
 				    			 
 				    			 projectsDTO.setProjectClientUUID(projectClients.getUuid());
@@ -710,16 +709,19 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    	}
 							    }
 							    
-							    
-							   List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
-							    if(budgetList != null && budgetList.size() > 0) {
-							    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
-										if(budgetList.size() >0) {
-											ProjectBudget projectBudget = budgetList.iterator().next();
-											projectsDTO.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
-										}
-										projectsDTO.setProjectbudgetAmount(budgetSum);
-							    }
+							 
+							 if(projects.getOrgLocationsId().getId().longValue() == orglo.getId().longValue()) {
+								 List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
+								    if(budgetList != null && budgetList.size() > 0) {
+								    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+											if(budgetList.size() >0) {
+												ProjectBudget projectBudget = budgetList.iterator().next();
+												projectsDTO.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+											}
+											projectsDTO.setProjectbudgetAmount(budgetSum);
+								    } 
+							 }
+							   
 							   
 							    projectsDTO.setProjectName(projects.getProjectName());
 							    projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
@@ -728,7 +730,6 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
 							    projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
 							    projectsDTOList.add(projectsDTO);
-				    		 }
 				    		 
 				    	 }
 				    	
@@ -1030,8 +1031,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		
 		logger.debug("In ProjectsDaoImpl class getEndClientProjectByOrgLocationsIdAndClientOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects projects where projects.orgLocationsId = :clientOrgLocationId and projects.projectMode = 'Finished' ";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setCacheable(true).list();
+		String query = "from Projects projects where projects.orgLocationsId = :clientOrgLocationId and projects.projectMode = 'Finished' "
+				+ "and projects.id NOT IN (select pc.projectId.id from ProjectClients pc where pc.orgLocationsId.id = :orgLocationsId)";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		
 		return projectsList;
 	}

@@ -267,9 +267,11 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta">';
+						result = result + '<div class="project_details_cta project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
-						result = result + '<span title="'+description+'">'+ description +'</span><div class="clearfix"></div>';
+						
+						result = result + '<div class="descriptionStyle">'+description+' </div>';
+						
 						result = result + '</div>';
 						
 						result = result + '<div class="clearfix"></div>';
@@ -444,11 +446,17 @@
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
+							if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
+								var managerName = manager.firstName +'' + manager.lastName ;
+							}else{
+								var managerName = manager.firstName;
+							}
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.name + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.name + " </option>";
 							} else {
 								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "</option>";
+
 							}
 						}
 						result = result + '</select>';
@@ -487,12 +495,17 @@
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
+								if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
+									var managerName2 = manager.firstName +'' + manager.lastName ;
+								}else{
+									var managerName2 = manager.firstName;
+								}
 								if (json.manager2 == manager.id) {
 									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.name + "</option>";
+									result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 + "</option>";
 								} else {
 
-									result = result	+ "<option value="+manager.id+" >"+ manager.name + "</option>";
+									result = result	+ "<option value="+manager.id+" >"+ managerName2 + "</option>";									 
 								}
 							}
 							}

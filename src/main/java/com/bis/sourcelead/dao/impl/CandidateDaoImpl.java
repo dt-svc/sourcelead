@@ -25,10 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1070,18 +1069,18 @@ public class CandidateDaoImpl implements CandidateDao {
 				if(type[0].equalsIgnoreCase("hotlist")){
 				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
 				}else{
-					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
+					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
 				}
 			}
 		}
 		
-		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState = 'ACTIVE')";
+		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState != 'INACTIVE')";
 		
 		if(associatesIds != null){
 			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
 		}
 		
-		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' ) and candidate.orgLocationId.id = :orgLocationsId ";
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' ) and candidate.orgLocationId.id = :orgLocationsId ";
 		
 		String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
 		
@@ -1162,6 +1161,36 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	
+	}
+	
+	@Override
+	@Transactional
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog)  {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(candidateImportLog);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	@Transactional
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all)  {
+		List<CandidateImportLog> importLog = new ArrayList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			importLog = session.createQuery("from CandidateImportLog c where c.uploadId="+uploadId+(all ? "" : " and c.read = false")).list();
+			if(importLog != null && !all) {
+				for(CandidateImportLog c : importLog) {
+					c.setRead(true);
+					session.update(c);
+				}
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return importLog;
 	}
 }
 

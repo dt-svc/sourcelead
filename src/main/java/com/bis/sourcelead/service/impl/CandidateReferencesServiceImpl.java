@@ -1,19 +1,24 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -36,6 +41,9 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	
 	@Autowired
     CandidateActivityCommonUtil candidateActivityCommonUtil; 
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;	
 
 	@Override
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws Exception {
@@ -122,8 +130,22 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
+		saveOrUpdateCandidateElkDocumentWithReferenceDetails(candidateReferences.getCandidateId(),orgLocationId);
+		
 		return candidateReferences;
 	
+	}
+	
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate,Long locationId) throws Exception {
+		if(null != candidate && null != candidate.getId()){
+			    CandidateIndex candidateIndex = new CandidateIndex();
+			    candidateIndex.setCandidateId(candidate.getId());
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			    sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		}
 	}
 
 	@Override

@@ -13,7 +13,7 @@
 	<form:form id="project_additional_form" name="project_additional_form" method="post" >
 	<section class="projQueWrap">
 		<div class="projQueCta">
-			<h2>1. Project location</h2>
+			<h2>1. Project location <span class="text-danger">*</span></h2>
 			<div class="projQueCtaInn wid50">
 				<input type="text" name="projectLocation" id="projectLocation" data-validation="required" field-name="Project Location" class="form-control" />
 			</div>
@@ -157,7 +157,7 @@
 	  </span>
 	  
 	<div class="pull-right">
-	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'" class="btn btn-danger">
+	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger">
 	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save');" class="btn btn-primary ml10">
 	  <input type="button" value="Save & Finish" id="save_Finish_project" onclick="saveAdditionalDetails('Finish');" class="btn btn-success ml10">
 	</div>
