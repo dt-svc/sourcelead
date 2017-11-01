@@ -408,9 +408,15 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		StringBuilder contactsStringBuilder=new StringBuilder();
 		if(contactsList != null && !contactsList.isEmpty()){
 			for(OrgSpoc orgspoc :contactsList){
-				orgspoc.setSpocName(contactsStringBuilder.append(orgspoc.getClientUser().getFirstName()).append("").append(orgspoc.getClientUser().getLastName()).toString());
-				orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
-				orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
+				if(orgspoc.getClientUser() != null){
+					if(orgspoc.getClientUser().getLastName() != null){
+						orgspoc.setSpocName(contactsStringBuilder.append(orgspoc.getClientUser().getFirstName()).append("").append(orgspoc.getClientUser().getLastName()).toString());
+					}else{
+						orgspoc.setSpocName(contactsStringBuilder.append(orgspoc.getClientUser().getFirstName()).toString());
+					}
+					orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
+					orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
+				}
 				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrgLocationName());
 				orgspoc.setStatus(orgspoc.getStatus());
 				
