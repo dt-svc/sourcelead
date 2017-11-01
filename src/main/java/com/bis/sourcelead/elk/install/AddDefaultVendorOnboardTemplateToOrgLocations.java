@@ -55,8 +55,15 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 				 if(userId == 0)
 					 continue;
 				 
+				 
+				 
+				 String query = "SELECT * from sourcelead.VENDOR_ON_BOARDING_TEMPLATE where ORG_LOCATION_ID = '"+orgLocId+"' and IS_DEFAULT_TEMPLATE = 'Y' ";
+				 java.sql.PreparedStatement stmt = conn.prepareStatement(query); 
+				 ResultSet rs = stmt.executeQuery();
+				 
+				 if(!rs.next()) {
 					 
-		 		String query1 = " insert into sourcelead.VENDOR_ON_BOARDING_TEMPLATE (TEMPLATE_NAME, TEMPLATE_UUID, TEMPLATE_STATUS, IS_DEFAULT_TEMPLATE, STATUS, ORG_LOCATION_ID, CREATED_DATE,  "
+		 		   String query1 = " insert into sourcelead.VENDOR_ON_BOARDING_TEMPLATE (TEMPLATE_NAME, TEMPLATE_UUID, TEMPLATE_STATUS, IS_DEFAULT_TEMPLATE, STATUS, ORG_LOCATION_ID, CREATED_DATE,  "
 							+ "CREATED_BY,UPDATED_DATE,UPDATED_BY)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
@@ -119,12 +126,11 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 					    		}catch (Exception e){   
 									e.printStackTrace();
 								}
-							 
 						 }
 						 
 					 }
-		    		
 		}
+	 }
 			System.out.println("----Adding default vendor onboard template ends-----");
 		
 	}catch(Exception e){
