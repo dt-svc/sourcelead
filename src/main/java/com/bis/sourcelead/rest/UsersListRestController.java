@@ -1153,7 +1153,12 @@ public class UsersListRestController {
 	         emailMessage.setToEmail(userRole.getUser().getEmail());
 	         emailMessage.setCreatedBy(userRole.getUser().getUserCode());
 	         StringBuilder msgBuild = new StringBuilder();
-	         emailMessage.setFromName(msgBuild.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
+	         if(userRole.getUser().getLastName() != null) {
+		         emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	         }else {
+		         emailMessage.setFromName(msgBuild.append(user.getFirstName()).toString());
+
+	         }
 	         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 	        //setting the class filed values
 	         Map<String, String> globalVarsMap = new HashMap<String, String>();

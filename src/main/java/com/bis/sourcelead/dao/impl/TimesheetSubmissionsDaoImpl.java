@@ -266,7 +266,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	}
 	
 	
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long projectMemberId) throws Exception {
 			
@@ -287,7 +287,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				ts = timesheetSubmissionsList.iterator().next();
 			}
 			return ts;
-	}
+	}*/
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

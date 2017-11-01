@@ -310,23 +310,10 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 }
 		 
 		 for(String email : candidateEmailsList){
-			/* StringBuilder skills = new StringBuilder();
-			 StringBuilder candidateSkills = new StringBuilder();
-			 List<CandidateSkills> skillsList = candidateSkillsService.getCandidateSkillsByCandidateId(email);
-			 if(skillsList.size() > 0){
-				 for(CandidateSkills skill : skillsList){
-					 skills.append(skill.getName()).append(", ");
-				 }
-				 candidateSkills.append(skills);
-			 }else{
-				 candidateSkills.append("-----");
-			 }*/
-			 
-			 
 			 
 			 StringBuilder candidateName = new StringBuilder();
-			 String experienceInYears = null;
-			 String experienceInMonths = null;
+			 Integer experienceInYears = 0;
+			 Integer experienceInMonths = 0;
 			 StringBuilder totalExp = new StringBuilder();
 			 StringBuilder rate = new StringBuilder();
 			 
@@ -372,13 +359,11 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 	 }
 			 
 			 if(!isNullOrEmpty(candidate.getExperienceYears())){
-				 experienceInYears = candidate.getExperienceYears();
+				 experienceInYears = Integer.parseInt(candidate.getExperienceYears());
 			 }
 			 
 			 if(!isNullOrEmpty(candidate.getExperienceMonths())){
-				 experienceInMonths = candidate.getExperienceMonths();
-			 }else{
-				 experienceInMonths = "0";
+				 experienceInMonths = Integer.parseInt(candidate.getExperienceMonths());
 			 }
 			 
 			 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
