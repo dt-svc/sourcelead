@@ -399,6 +399,16 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
 };
 
 
+jQueryFormUtils.validateExtNumber = function(tele) {
+    /**
+     * commented by - prasadK
+     * to allow () in the phone number.
+     */
+    tele = tele.replace(/([-|\+])/g, '');
+	return tele.length > 1 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
+};
+
+
 jQueryFormUtils.validateUSPhoneNumber = function(tele) {
    /* var numPlus = tele.match(/\+/g);
     var numHifen = tele.match(/-/g);
@@ -1149,6 +1159,11 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
             return validationErrorMsg || language.badTelephone;
         }
+        
+        //ExtNo
+        else if (validationRules.indexOf('validate_extno') > -1 && !jQueryFormUtils.validateExtNumber(value)) {
+            return validationErrorMsg || language.badExtno;
+        }
 
         // Swedish phone number
         else if (validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
@@ -1333,6 +1348,7 @@ jQueryFormUtils.LANG =  {
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
+    badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
     tooLongStart : 'You have given an answer longer than ',

@@ -271,7 +271,7 @@ public class LeaveManagementRestController {
 		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
-		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
+		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
 
 		   int balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
@@ -285,7 +285,7 @@ public class LeaveManagementRestController {
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					   roleIds.add(leaveRole.getRoleId().getId());
 				   }
-				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				   if(roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 					   roleLeaveType.add(leaveType);
 				   }
 			   }

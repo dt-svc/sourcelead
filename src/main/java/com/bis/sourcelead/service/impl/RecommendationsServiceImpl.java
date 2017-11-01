@@ -635,8 +635,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		    	 education  = recommendedCustomizeScore.getCustomizeEducation();
 		     }
 		     
-		     
-		     
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -764,10 +762,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					 percentPerMonthExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore())/(float)reqExp;
 				}*/
 				
-				String reqCity = "";
-				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
-					 reqCity = recommendedCustomizeScore.getCustomizeCity();
-				}
 				float requirementHourlyRate = 0;
 				// changed rate logic
 				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
@@ -815,7 +809,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						ArrayList<String> edu = candidateIndex.getEducation();
 						Set<String> set = new HashSet<String>(edu);
 						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
-						
 					}
 					
 					//get the ExperiencePercentage
@@ -827,11 +820,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					// get the NoticeperiodPercentage
 					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
 					
-					if(null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())){
-						if(candidateIndex.getCity().equalsIgnoreCase(reqCity)){
-							locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
-						}
-					}
+					// get the locationPercentage
+					locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
+					
 					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
@@ -920,7 +911,45 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 //		return CandidateListcopy;
 	}
 	
-	
+
+	private float getLocationPercentage(RecommendedCustomizeScore recommendedCustomizeScore,CandidateIndex candidateIndex) {
+		
+		String reqCity = "";
+		float locationPercentage = 0;
+		if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
+			 reqCity = recommendedCustomizeScore.getCustomizeCity();
+		}
+		
+		String reqState = "";
+		if(null != recommendedCustomizeScore.getCustomizeState() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeState())){
+			reqState = recommendedCustomizeScore.getCustomizeState();
+		}
+		
+		String reqCountry = "";
+		if(null != recommendedCustomizeScore.getCustomizeCountry() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCountry())){
+			reqCountry = recommendedCustomizeScore.getCustomizeCountry();
+		}
+		
+		if((null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())) && (null != candidateIndex.getState() && !"".equalsIgnoreCase(candidateIndex.getState())) && (null != candidateIndex.getCountry() && !"".equalsIgnoreCase(candidateIndex.getCountry()))){
+			if((candidateIndex.getCity().equalsIgnoreCase(reqCity)) && (candidateIndex.getState().equalsIgnoreCase(reqState)) && (candidateIndex.getCountry().equalsIgnoreCase(reqCountry))){
+				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+			}
+		}
+		
+	/*	if(null != candidateIndex.getState() && !"".equalsIgnoreCase(candidateIndex.getState())){
+			if(candidateIndex.getState().equalsIgnoreCase(reqState)){
+				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+			}
+		}
+		
+		if(null != candidateIndex.getCountry() && !"".equalsIgnoreCase(candidateIndex.getCountry())){
+			if(candidateIndex.getCountry().equalsIgnoreCase(reqCountry)){
+				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+			}
+		}*/
+		return locationPercentage;
+	}
+
 	/**
 	 * this method is used to calculate the skillPercentage
 	 * @param set

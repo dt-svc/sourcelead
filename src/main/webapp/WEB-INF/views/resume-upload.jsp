@@ -27,6 +27,20 @@ body {
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
     }
+    .text_logo {
+    font-size: 18px;
+font-weight: bold;
+text-align: center;
+line-height: 52px;
+overflow: hidden;
+text-overflow: ellipsis;
+width: 160px;
+white-space: nowrap;
+vertical-align: middle;
+font-style: normal;
+color: #375d81;
+margin: 0px auto;
+    }
     .clear {
         clear: both;
     }
@@ -156,6 +170,18 @@ padding: 2px
 		<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 		<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}">
  	 	</c:if>
+ 	 	<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<div class="text_logo">
+				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+					<c:if test="${!empty SourceLeadWeb_orgName}">
+					<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</c:if>
+				</c:if>
+				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
+				</c:if>
+				</div>
+		</c:if>
 		</div>
 		<div class="clear"></div>
 	</header>

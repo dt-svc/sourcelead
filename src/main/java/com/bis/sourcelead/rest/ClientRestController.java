@@ -838,6 +838,11 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
+		if(orgRelation.getCreatedBy() != null){
+			User user = userService.getUserByUserCode(orgRelation.getCreatedBy());
+			clientVendorDTO.setVendorCreateduserName(user.getFullName());
+		}
+		
 		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
 			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
 			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {

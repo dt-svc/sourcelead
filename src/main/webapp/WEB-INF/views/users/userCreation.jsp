@@ -134,7 +134,7 @@
                     <div class="row">
                     <label class="col-md-5">Extension </label>
                     <div class="col-md-7 posSta">
-                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">
+                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
                     </div>
                     </div>
                     </div>
@@ -571,9 +571,7 @@ function getEmployeementType(designationType){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
@@ -600,7 +598,6 @@ function getEmployeementType(designationType){
 		        			 //$("#phone").val('');
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
