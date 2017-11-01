@@ -143,6 +143,9 @@ public class FileController {
 			try {
 				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, request);
 				resume.setFileInfo(fileInfo);
+				if(resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
+					throw new Exception("Email ID missing");
+				}
 				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
 				boolean flag = false;
 				if(c != null && c.getId() > 0) {
@@ -182,14 +185,14 @@ public class FileController {
 					List<FileInfo> fileInfoList1 = new ArrayList<>();
 					fileInfoList1.add(fileInfo);
 					candidateDto.setFileInfo(fileInfoList1);
+					candidateDto.setStaticPath(staticPath);
 					String name = resume.getName();
 					candidateDto.setFirstName(name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name);
 					candidateDto.setLastName(name.contains(".") ? name.substring(name.lastIndexOf(".")+1) : "");
 					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
-					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes");
 					addToResponse(1, session, uploadid, resume, fileInfo, count, i++);
 					successList.add(resume);
-				}
+				}	
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-failed-"+fileName));
@@ -290,7 +293,7 @@ public class FileController {
 	}
 	
 	private void addToResponse(int type, HttpSession session, String uploadid, ResumeParserJsonUtil resume, FileInfo fileInfo, int count, int i) {
-		saveLogMessage(uploadid, "<br/>"+(type == 1 ? "<span class='a'>Candidate (Resume) added" : type == 2 ? "<span class='b'>Candidate Existed, missing resume" : type == 0 ? "<span class='c'>Candidate Existed" : "<span class='b'>Resume parsing failed")+"</span><br/>File Name: "+fileInfo.getFileName()+"<br/>Name: "+resume.getName() + "<br/>Email: "+resume.getEmail());
+		saveLogMessage(uploadid, "<br/><br/>"+(type == 1 ? "<span class='a'>Candidate (Resume) added" : type == 2 ? "<span class='b'>Candidate Existed, resume attached " : type == 0 ? "<span class='c'>Candidate Existed" : "<span class='b'>Resume parsing failed")+"</span><br/>File Name: "+fileInfo.getFileName()+"<br/>Name: "+resume.getName() + "<br/>Email: "+resume.getEmail());
 		saveLogMessage(uploadid, "<br/><a href='"+fileInfo.getFileURL()+"' target='_blank'>Click here to download the Resume</a>");
 		session.setAttribute("uploadstats"+uploadid, i+ " of "+count+" processed...");
 	}
