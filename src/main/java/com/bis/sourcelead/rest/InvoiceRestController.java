@@ -620,16 +620,18 @@ public class InvoiceRestController {
 				for(InvoiceLineItems inviceLine:invoiceLineItemsList){
 					if(null != inviceLine.getCandidate()){
 						StringBuilder  can = new StringBuilder();
-						if(inviceLine.getCandidate().getLastName() != null){
-							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).append(" ").append(inviceLine.getCandidate().getLastName()).toString());	
+						Candidate candi = inviceLine.getCandidate();
+						if(candi.getLastName() != null){
+							inviceLine.setCandidateName(can.append(candi.getFirstName()).append(" ").append(candi.getLastName()).toString());	
 						}else{
-							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).toString());
+							inviceLine.setCandidateName(can.append(candi.getFirstName()).toString());
 						}	
 					}
 					if(null != inviceLine.getContract()){
 						inviceLine.setSowName(inviceLine.getContract().getContractTitle());	
 					}
 					inviceLine.setRate(inviceLine.getRate());
+//					inviceLine.setEmployeeId(inviceLine.getEmployeeId());
 					inviceLine.setTotalHours(inviceLine.getTotalHours());
 					inviceLine.setAmount(inviceLine.getAmount());
 					if(null != inviceLine.getStartDate()){
@@ -778,20 +780,20 @@ public class InvoiceRestController {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				StringBuilder candidateName = new StringBuilder();
-				if (null != projectMember.getMasterCandidateId().getFirstName()
-						&& null != projectMember.getMasterCandidateId().getLastName()) {
-					candidateName.append(projectMember.getMasterCandidateId().getFirstName()).append(" ").append(projectMember.getMasterCandidateId().getLastName());
+				if (null != projectMember.getProjectMemberCandidteId().getFirstName()
+						&& null != projectMember.getProjectMemberCandidteId().getLastName()) {
+					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
 				}
 				else {
-					candidateName.append(projectMember.getMasterCandidateId().getFirstName());
+					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 //					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
-					if(null != projectMember.getMasterCandidateId()){
-						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
-						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
+					if(null != projectMember.getProjectMemberCandidteId()){
+						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getProjectMemberCandidteId().getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}	
@@ -879,10 +881,10 @@ public class InvoiceRestController {
 				/*Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
 				if(null != employee){*/
 					StringBuilder empName =new StringBuilder();
-					if(null != projectMember.getMasterCandidateId() && StringUtils.isNotBlank(projectMember.getMasterCandidateId().getLastName())){
-						empName.append(projectMember.getMasterCandidateId().getFirstName()).append(" ").append(projectMember.getMasterCandidateId().getLastName());
+					if(null != projectMember.getProjectMemberCandidteId() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getLastName())){
+						empName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
 					}else{
-						empName.append(projectMember.getMasterCandidateId().getFirstName());
+						empName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
 					projectMember.setStartDate(startDateStr);
@@ -910,13 +912,13 @@ public class InvoiceRestController {
 					}
 					projectMember.setTotalHours(sb.toString());
 //					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getMasterCandidateId().getId(),orgLocation.getId(),orgRelationId);
-					if(projectMember.getMasterCandidateId() !=null){
-						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
-						List<Contracts> contractList = getSowContract(projectMember.getMasterCandidateId().getId(),orgLocation,orgRelationId,contractType);
+					if(projectMember.getProjectMemberCandidteId() !=null){
+						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
+						List<Contracts> contractList = getSowContract(projectMember.getProjectMemberCandidteId().getId(),orgLocation,orgRelationId,contractType);
 						if(null != contractList && contractList.size() >0){
 							projectMember.setContractsList(contractList);
 						}
-						projectMember.setCandidateId(projectMember.getMasterCandidateId().getId());
+						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
 					}
 					
 					filteredMembersList.add(projectMember);
