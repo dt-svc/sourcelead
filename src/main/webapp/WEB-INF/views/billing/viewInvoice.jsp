@@ -181,10 +181,10 @@ function getViewInvoice(){
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
 					result = result +'<div class="col-md-6"> ';
-					if(report.invoiceType == "Receivable"){
+					if(invoiceType == "Receivable"){
 						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
-					if(report.invoiceType == "Payables"){
+					if(invoiceType == "Payables"){
 						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
 					result = result +'<div class="col-md-8">                                               ';

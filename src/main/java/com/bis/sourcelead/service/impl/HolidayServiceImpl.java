@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.HolidayService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -34,6 +35,9 @@ public class HolidayServiceImpl implements HolidayService{
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	LeaveService leaveService;
 
 
 	@Override
@@ -106,7 +110,11 @@ public class HolidayServiceImpl implements HolidayService{
 			holiday.setStatus("1");
 			
 		}
-		return holidayDAO.storeHoliday(holiday);
+		
+		holiday = holidayDAO.storeHoliday(holiday);
+		//to save all days of duration
+		leaveService.storeHolidayOrRestrictDays(orgLocations,user,holiday);
+		return holiday;
 	}
 
 	@Override
