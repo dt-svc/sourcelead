@@ -383,21 +383,21 @@ public class LeaveDaoImpl implements LeaveDao{
 		leaveList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
+		@SuppressWarnings("unchecked")
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (leaveDTO != null) {
+			@SuppressWarnings("unchecked")
 			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
 					.setLong("orgLocationId", orgLocation.getId()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
+		} 
 
 		response.setData(leaveList);
 		return response;

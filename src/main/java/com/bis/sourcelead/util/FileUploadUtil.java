@@ -9,6 +9,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
@@ -163,12 +164,15 @@ public class FileUploadUtil {
 		return null;
 	}
 
-	public static void moveFile(String staticPath, FileInfo fileInfo, String type) throws IOException
+	public static void moveFile(String staticPath, FileInfo fileInfo, String... type) throws IOException
 	{
 		File folder = new File(staticPath);
 		folder = folder.getParentFile();
-		File file = new File(folder, fileInfo.getFileURL());
-		File fromFile = new File(folder, fileInfo.getFileURL().replaceFirst(type, StringUtils.isNotBlank(fileInfo.getTempFolderName())
+		File file = new File(folder, type.length == 1 ? fileInfo.getFileURL() : fileInfo.getFileURL().replace(type[0], type[1]));
+		File file1 = file.getParentFile();
+		if(!file.exists())
+			file1.mkdirs();
+		File fromFile = new File(folder, fileInfo.getFileURL().replaceFirst(type[0], StringUtils.isNotBlank(fileInfo.getTempFolderName())
 				? fileInfo.getTempFolderName()
 				: "temp"));
 		Files.move(fromFile.toPath(), file.toPath());

@@ -7,6 +7,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -16,6 +17,10 @@ import com.bis.sourcelead.entity.User;
  *
 */
 public interface CandidateService {
+	
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog);
+	
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
 	
 	/**
 	 * @param jsonObj
