@@ -1572,11 +1572,39 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name, @RequestParam(value = "id", required = true) String id)
+	public String validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, 
+			@RequestParam(value = "from", required = true) String fromTable, 
+			@RequestParam(value = "name", required = true) String name, 
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "fromDate", required = true) String fromDate,
+			@RequestParam(value = "toDate", required = true) String toDate) throws Exception
 	{
-		boolean flag = false;
-		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable,id);
-		return flag;
+		String isTrue = null;
+		StringBuilder sb = null ;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
+		List<Date> daysList = new ArrayList<>();
+		for(HolidayAndRestrictday day : list){
+			daysList.add(day.getDay());
+		}
+		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
+		int i=0;
+		if(daysList.size() > 0){
+			sb = new StringBuilder();
+			for(Date d : daysList){
+				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
+				if(i != daysList.size()-1){
+					sb.append(",");
+				}
+				i++;
+			}
+		}
+		
+       if(sb !=null) {
+    	   isTrue = sb.toString();
+       }
+		return isTrue;
 	}
 
 	@RequestMapping(value = {"/validateMaxLeave","/rest/validateMaxLeave"}, method = RequestMethod.GET)

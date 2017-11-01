@@ -1039,11 +1039,11 @@ public class LeaveServiceImpl implements LeaveService{
 
 	}
 
-	@Override
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
+	/*@Override
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
 	{
-		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id);
-	}
+		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id,fromDate,toDate);
+	}*/
 
 	@Override
 	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
