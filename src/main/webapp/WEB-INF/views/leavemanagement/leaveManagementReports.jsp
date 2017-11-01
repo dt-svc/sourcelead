@@ -109,7 +109,7 @@
 	                            <div class="statusFiler-1">
 	                            <ul>
 		                            <c:forEach var="report" items="${departmentList}">
-		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label>${report.departmentName}</label></li>
+		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label class="tbldata-dotdot_140" title="${report.departmentName}">${report.departmentName}</label></li>
 		                            </c:forEach>
 	                            </ul>
 	                            </div>
