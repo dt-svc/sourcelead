@@ -1727,7 +1727,12 @@ function removeUser(userId){
 								    for (var i=0; i<json.reportingManagers.length; i++)
 			    					{
 								    	reportingManagers = json.reportingManagers[i];
-								    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	if(reportingManagers.lastName != null && reportingManagers.lastName != 'undefined' && reportingManagers.lastName != ''){
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}else{
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}
+								    	
 										
 			    					}
 								    result = result + '</select>';
