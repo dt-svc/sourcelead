@@ -140,12 +140,21 @@ public class LoggingAspect {
 			Object arg=args[4];
 			type=arg.toString();	
 		}
-		if("storeCandidate".equalsIgnoreCase(methodName)){
+		if("storeCandidate".equalsIgnoreCase(methodName) || "updateCandidate".equalsIgnoreCase(methodName)){
 			Object[] args = joinPoint.getArgs();
 			Object arg=args[0];
 			Class c=arg.getClass();
 			String str=(String)c.getMethod("getIsAssociate").invoke(arg);
 			if("Y".equalsIgnoreCase(str))
+				type = Constants.ASSOCIATE;
+			else
+				type = Constants.Candidate;
+		}
+		if("deleteCandidateByCandidateId".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[1];
+			String str=arg.toString();
+			if("Associates".equalsIgnoreCase(str))
 				type = Constants.ASSOCIATE;
 			else
 				type = Constants.Candidate;
