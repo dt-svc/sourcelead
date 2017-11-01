@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -270,7 +271,7 @@ public class LeaveManagementRestController {
 		
 		   OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		   User loginUser = userService.getUserById(userId);
-		   UserRole roleId = userRoleService.getUserRoleByUserId(userId);
+		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
 
 		   int balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
@@ -284,7 +285,7 @@ public class LeaveManagementRestController {
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					   roleIds.add(leaveRole.getRoleId().getId());
 				   }
-				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				   if(roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 					   roleLeaveType.add(leaveType);
 				   }
 			   }
@@ -1337,14 +1338,33 @@ public class LeaveManagementRestController {
 		boolean isValid = false;
 		List<RestrictDay> restrictDayList = new ArrayList<>();
 		String isTrue = null;
-		StringBuilder sb = null;
+		StringBuilder sb = null ;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-		List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate, toDate, orgLocations);
+		
+		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
+		List<Date> daysList = new ArrayList<>();
+		for(HolidayAndRestrictday day : list){
+			daysList.add(day.getDay());
+		}
+		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
+		int i=0;
+		if(daysList.size() > 0){
+			sb = new StringBuilder();
+			for(Date d : daysList){
+				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
+				if(i != daysList.size()-1){
+					sb.append(",");
+				}
+				i++;
+			}
+		}
+		
+		/*List<RestrictDay> restDay = restrictDayService.validateRestrictDayDates(fromDate, toDate, orgLocations);
 
 		Set<Long> roleIds = new HashSet<>();
 		for (RestrictDay resDay : restDay) {
@@ -1385,7 +1405,7 @@ public class LeaveManagementRestController {
 				}
 				isValid = true;
 			}
-		}
+		}*/
        if(sb !=null) {
     	   isTrue = sb.toString();
        }

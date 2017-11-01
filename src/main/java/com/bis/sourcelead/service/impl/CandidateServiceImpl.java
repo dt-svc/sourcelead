@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
-import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
@@ -48,6 +47,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -168,6 +168,15 @@ public class CandidateServiceImpl implements CandidateService {
 		return (str == null || "".equals(str.trim()));
 	}
     
+    public void storeCandidateImportLog(CandidateImportLog candidateImportLog) 
+    {
+    		candidateDao.storeCandidateImportLog(candidateImportLog);
+    }
+    
+    public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all) 
+    {
+    		return candidateDao.getCandidateImportLog(uploadId, all);
+    }
     
 	/*public String getCandidateId(OrgLocations orgLocations) {
     	String companyShortCode = null;
@@ -1475,6 +1484,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
 				}else{
 				candidate.setOrgRelationId(null);
 				}
