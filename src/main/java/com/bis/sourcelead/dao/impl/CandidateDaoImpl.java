@@ -25,10 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1162,6 +1161,36 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	
+	}
+	
+	@Override
+	@Transactional
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog)  {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(candidateImportLog);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	@Transactional
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all)  {
+		List<CandidateImportLog> importLog = new ArrayList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			importLog = session.createQuery("from CandidateImportLog c where c.uploadId="+uploadId+(all ? "" : " and c.read = false")).list();
+			if(importLog != null && !all) {
+				for(CandidateImportLog c : importLog) {
+					c.setRead(true);
+					session.update(c);
+				}
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return importLog;
 	}
 }
 

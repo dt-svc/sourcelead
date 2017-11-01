@@ -276,10 +276,9 @@
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
 										value="${leaveType.colorCode}" class="form-control" id="colorCode"
-										data-validation="required" > <span
-										class="input-group-addon"><i><img
-											src="resources/images/theme-icon.png" onselect="validateColor();" class="img-responsive"
-											title="Themes"></i></span>
+										data-validation="required" > <span class="input-group-addon colPicBox"><i>
+										
+										</i></span>
 								</div>
 							</div>
 						</div>

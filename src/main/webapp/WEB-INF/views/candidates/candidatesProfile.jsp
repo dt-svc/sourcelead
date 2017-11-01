@@ -1796,7 +1796,7 @@ function  removeValiationVendorContact() {
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
 		$("#editVisaBtn").remove();
 		$("#editVisaBtnSpan").hide();
-		window.visaCountBefore = $("#visaName :selected").length;
+// 		window.visaCountBefore = $("#visaName :selected").length;
 		var result = '';
 		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+');">Save Visa</button>';
 		$("#saveVisaBtnSpan").empty();
@@ -1807,10 +1807,10 @@ function  removeValiationVendorContact() {
 
 	function saveVisa(candidateId){
 		$("#visaName").prop('disabled', true).trigger("chosen:updated");
-		window.visaCountAfter = $("#visaName :selected").length;
-		if(visaCountBefore != visaCountAfter){
-			saveVisas(candidateId);
-		}
+// 		window.visaCountAfter = $("#visaName :selected").length;
+// 		if(visaCountBefore != visaCountAfter){
+		saveVisas(candidateId);
+// 		}
 		$("#saveVisaBtn").remove();
 		$("#saveVisaBtnSpan").hide();
 		var result = '';
