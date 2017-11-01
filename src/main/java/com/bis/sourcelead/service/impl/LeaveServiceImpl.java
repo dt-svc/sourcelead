@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,12 +32,15 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -49,6 +55,8 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -1041,6 +1049,46 @@ public class LeaveServiceImpl implements LeaveService{
 	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
 	{
 		return leaveDao.deleteAllLeaveRolesByParticularTableId(from,fromId);
+	}
+
+	@Override
+	public void storeHolidayOrRestrictDays(OrgLocations orgLocations,User user, Object object) throws Exception
+	{
+		if(object instanceof Holiday){
+			Holiday holiday = (Holiday) object;
+			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
+			for(Date d : dateList){
+				HolidayAndRestrictday day = new HolidayAndRestrictday();
+				day.setHoliday(holiday);
+				day.setDay(d);
+				day.setOrgLocations(orgLocations);
+				day.setCreatedBy(user.getUserCode());
+				day.setCreatedDate(new Date());
+				day.setUpdatedBy(user.getUserCode());
+				day.setUpdatedDate(new Date());
+				leaveDao.storeHolidayAndRestrictDays(day);
+			}
+		}else{
+			RestrictDay restrict = (RestrictDay) object;
+			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(restrict.getStartDate(), restrict.getEndDate(), orgLocations.getDateFormat());
+			for(Date d : dateList){
+				HolidayAndRestrictday day = new HolidayAndRestrictday();
+				day.setRestrictDay(restrict);
+				day.setDay(d);
+				day.setOrgLocations(orgLocations);
+				day.setCreatedBy(user.getUserCode());
+				day.setCreatedDate(new Date());
+				day.setUpdatedBy(user.getUserCode());
+				day.setUpdatedDate(new Date());
+				leaveDao.storeHolidayAndRestrictDays(day);
+			}
+		}
+	}
+
+	@Override
+	public List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations)
+	{
+		return leaveDao.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
 	}
 
 }
