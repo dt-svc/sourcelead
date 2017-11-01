@@ -518,10 +518,14 @@ public class InvoiceRestController {
 			if(null != invoice.getParentInvoiceId()){
 				billingDto.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
 			}
+			if(null != invoice.getFileUrl()){
+				billingDto.setFileUrl(invoice.getFileUrl());
+			}
 			billingDto.setDraftInvoiceCount(draftCount);
 			billingDto.setPaidInvoiceCount(paidCount);
 			billingDto.setDueAfterInvoiceCount(overDueInvoiceCount);
 			billingDto.setDueBeforeInvoiceCount(openInvoiceCount);
+			
 			billingDtoList.add(billingDto);
 		}
 		responseList.setRecordsFiltered(invoiceList.getRecordsFiltered());
