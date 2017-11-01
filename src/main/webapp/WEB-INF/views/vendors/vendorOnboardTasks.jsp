@@ -235,7 +235,7 @@ function getVendorOnboardTasksList(){
 			        		result = result +'</div>';
 			        		
 			        		if(report.taskType != 'Vendor Task'){
-		       					result = result +"<input type='hidden'  name='vendorOnboardTasksInfo["+report.id+"].vendorOnboardTaskId' id='templateTask"+report.id+"' value='"+report.id+"' />";
+		       					result = result +"<input type='hidden'  name='vendorOnboardTasksInfo["+i+"].vendorOnboardTaskId' id='templateTask"+report.id+"' value='"+report.id+"' />";
 		       				}
 						}
 		        	}else{
