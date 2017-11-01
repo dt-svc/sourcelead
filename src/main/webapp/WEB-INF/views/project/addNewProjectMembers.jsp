@@ -773,6 +773,30 @@ function getAssociatesFilter(){
 	}
 </script>
 
+<script>
+function pagination(){  
+    $('#associatesListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 30, 50, -1], [10, 15, 30, 50, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#associatesListPagination').wrap("<div class='overflow_Auto'></div>");
+}
+</script>
+
+<script>
+function removeStartDateValidation(rowId){
+	$('#'+rowId+'startDate').find('p.jquery_form_error_message').remove();
+}
+</script>
+
 
 
 <script type="text/javascript">
