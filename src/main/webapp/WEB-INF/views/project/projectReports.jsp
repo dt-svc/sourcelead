@@ -165,7 +165,7 @@ function submitBtn(projectId){
 			
 			/* ================== Expenses and Timesheet reports =============== */
 			
-			result = result + '	<div class="clearfix mt">';
+			/* result = result + '	<div class="clearfix mt">';
 			result = result + '    <div class="col-md-6">';
 			result = result + '     <div class="projectDashboad clearfix positionRelative">';
 			result = result + '         <h4>Expenses</h4>';
@@ -193,10 +193,10 @@ function submitBtn(projectId){
 			result = result + '     </div>';
 			result = result + '    </div>';
 			result = result + ' </div>';
-			
+			 */
 			
 			/* =================   Budget Status  ================  */
-			result = result + '	<div class="clearfix mt">';
+			/* result = result + '	<div class="clearfix mt">';
 			result = result + '  <div class="col-md-6">';
 			result = result + '      <div class="projectDashboad-widget">';
 			result = result + '  <div class="clearfix projectDashboad-header">';
@@ -216,7 +216,7 @@ function submitBtn(projectId){
 			result = result + '          </div>';
 			result = result + '      </div>';
 			result = result + '  </div>';
-			result = result + '      </div>';
+			result = result + '      </div>'; */
 			
 			
 			

@@ -404,7 +404,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="submit" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -1097,152 +1097,147 @@ $('body').on('blur', '#addApplicant_form', function() {
   
   <!-- For Submit Recomended Applicant -->
 <script type="text/javascript">
-$('body').on('submit', '#submitRecomendedApplicant_form', function(e){
-	  var requirementId = $("#requirementId").val();
+
+function addRequirementRecommendations(){
+	var requirementId = $("#requirementId").val();
 	  var candidateId = $("#candidateId").val();
 	  var redirectTo = $("#redirectTo").val();
-	  if ($(this).validate(false, validationSettings)){
-      e.preventDefault();
-      var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
-      
-      var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
-      var con1 = JSON.stringify(frm);
-      con1= con1.replace(/[{}]/g, "");
-      var jsonData = encodeURIComponent(con1);
-      var form = $('#submitRecomendedApplicant_form')[0];
-      var formData = new FormData(form); 
-      //Loop through fields and save field data to array
-      var fields = [];
-      $('.sjfb-field').each(function() { 
-      	  var $this = $(this); 
-      	  var divId = $(this).attr('id');  
-      	  var fieldLabel = $this.find('label:first').text().replace("*","");
-      	  var inputValue = $this.find('input[type="radio"]:checked').val();
-      	  
-      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
-    		   if(inputValue != null){
-    			   var selected = [];
-               	$this.find('input[type="checkbox"]:checked').each(function() {
-      		        selected.push($(this).val()); 
-      		       });
-               	inputValue = selected.toString()
-    		   }
-    		   
-      	 }
-      	 
-      	
-      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-      		  inputValue = $this.find('input').val();
-      	  }
-      	  
-      	   
-    	  
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('select').val();
-     	      }
-     	      
-     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('textarea').val();
-     	      }
-     	      
-     	    
-     	     
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	inputValue = '';
-     	      }
-     	      
-     	      
-     	      
-	       	  var name = $this.find('input[type="radio"]:checked').attr('name');
-	       	  var id = $this.find('input[type="radio"]:checked').attr('id');
-	     	  if(name == null || name == '' || name == 'undefined'){
-	     		  name = $this.find('input').attr('name');
-	     		  id = $this.find('input').attr('id');
-	     	  }
-	     	  if(name == null || name == '' || name == 'undefined'){
-	     		 name = $this.find('select').attr('name');
-	     		 id = $this.find('select').attr('id');
-     	      }
-	     	  
-	     	  if(name == "WorkExperience"){
-	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
-	     			  if(inputValue == "50"){
-	     				 inputValue = inputValue+" Years";
-	     			  }else{
-	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
-	     			  }
-	     			 
-	     		  }
-	     		  
-	     		  if(null == inputValue && monthExp != '0'){
-	     			 inputValue = monthExp+" Months" ;
-	     		  }
-	     	  }
-	     	  
-	     	  
-	     	 if(name == "CurrentCTC"){
-	     		 inputValue = $this.find('input').val();
-	     		 if(inputValue){
-	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
-	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
-	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
-	     		  }
-	     	  }
-	     	 
-	     	if(name == "ExpectedCTC"){
-	     		 inputValue = $this.find('input').val();
-	     		  if(inputValue){
-	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
-	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
-	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
-	     		  }
-	     	  }
-	     	  
-	     	  
-      	  fields.push({
-                label: fieldLabel,
-                id :id,
-                name :name,
-                value: inputValue,
-            });
-       });
-      var con = JSON.stringify(fields);
-      
-      con = encodeURIComponent(con);
-     
-      
-		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-      
-  	     $.ajax({
-	    	type: "POST",
-	    	data: formData,
- 	        contentType : 'application/json; charset=utf-8',
- 	        enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
- 	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
-	        success: function(result) {
-	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
-	    		$(".side_mask").fadeOut(200);
-	    		$("body").css('overflow-y', 'auto');
-	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
-	    		$(".sideMask").fadeOut(200);
-	    		if(redirectTo == "compare"){
-	    			compareRecommendedUsers(requirementId);
-	    		}
-	        },
-	    }); 
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
+	  if ($('#submitRecomendedApplicant_form').validate(false, validationSettings)) {
+		  var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
+	      var con1 = JSON.stringify(frm);
+	      con1= con1.replace(/[{}]/g, "");
+	      var jsonData = encodeURIComponent(con1);
+	      var form = $('#submitRecomendedApplicant_form')[0];
+	      var formData = new FormData(form); 
+	      //Loop through fields and save field data to array
+	      var fields = [];
+	      $('.sjfb-field').each(function() { 
+	      	  var $this = $(this); 
+	      	  var divId = $(this).attr('id');  
+	      	  var fieldLabel = $this.find('label:first').text().replace("*","");
+	      	  var inputValue = $this.find('input[type="radio"]:checked').val();
+	      	  
+	      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+	    		   if(inputValue != null){
+	    			   var selected = [];
+	               	$this.find('input[type="checkbox"]:checked').each(function() {
+	      		        selected.push($(this).val()); 
+	      		       });
+	               	inputValue = selected.toString()
+	    		   }
+	    		   
+	      	 }
+	      	 
+	      	
+	      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	      		  inputValue = $this.find('input').val();
+	      	  }
+	      	  
+	      	   
+	    	  
+	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	 inputValue = $this.find('select').val();
+	     	      }
+	     	      
+	     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	 inputValue = $this.find('textarea').val();
+	     	      }
+	     	      
+	     	    
+	     	     
+	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	inputValue = '';
+	     	      }
+	     	      
+	     	      
+	     	      
+		       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+		       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		  name = $this.find('input').attr('name');
+		     		  id = $this.find('input').attr('id');
+		     	  }
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('select').attr('name');
+		     		 id = $this.find('select').attr('id');
+	     	      }
+		     	  
+		     	  if(name == "WorkExperience"){
+		     		 var monthExp = document.getElementById("monthExp").value; 
+		     		  if(null != inputValue){
+		     			  if(inputValue == "50"){
+		     				 inputValue = inputValue+" Years";
+		     			  }else{
+		     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
+		     			  }
+		     			 
+		     		  }
+		     		  
+		     		  if(null == inputValue && monthExp != '0'){
+		     			 inputValue = monthExp+" Months" ;
+		     		  }
+		     	  }
+		     	  
+		     	  
+		     	 if(name == "CurrentCTC"){
+		     		 inputValue = $this.find('input').val();
+		     		 if(inputValue){
+		     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
+		     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
+		     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
+		     		  }
+		     	  }
+		     	 
+		     	if(name == "ExpectedCTC"){
+		     		 inputValue = $this.find('input').val();
+		     		  if(inputValue){
+		     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
+		     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
+		     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
+		     		  }
+		     	  }
+		     	  
+		     	  
+	      	  fields.push({
+	                label: fieldLabel,
+	                id :id,
+	                name :name,
+	                value: inputValue,
+	            });
+	       });
+	      var con = JSON.stringify(fields);
+	      
+	      con = encodeURIComponent(con);
+	     
+	      
+			
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	      
+	  	     $.ajax({
+		    	type: "POST",
+		    	data: formData,
+	 	        contentType : 'application/json; charset=utf-8',
+	 	        enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	 	        dataType : 'json',
+	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+		        success: function(result) {
+		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		    		$(".side_mask").fadeOut(200);
+		    		$("body").css('overflow-y', 'auto');
+		    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+		    		$(".sideMask").fadeOut(200);
+		    		if(redirectTo == "compare"){
+		    			compareRecommendedUsers(requirementId);
+		    		}
+		        },
+		    }); 
+	  }else {
+			return false;
+		}
+}
     
    	$('body').on('blur', '#submitRecomendedApplicant_form', function() {
 		$("#submitRecomendedApplicant_form").showHelpOnFocus();

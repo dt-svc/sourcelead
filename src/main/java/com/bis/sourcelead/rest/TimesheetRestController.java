@@ -218,13 +218,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		Long projectMemberId = eedDTO.getProjectMembersId();
 		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidateId();
-		if(projectMemberId == null){
-			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
+		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
+		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
-				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				long count = 1;
 				for (ProjectMembers pm : projectMembersList) {
-	                if(count == 1){
+	                if(count == 1 && projectMemberId == null){
 	                    timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLocations,"view");
 	                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
 	                        continue;
@@ -234,12 +233,21 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						masterCandidateId = pm.getMasterCandidateId().getId();
 						count++;
 					}
+	                else if(pm.getId().equals(projectMemberId)){
+	                	 timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLocations,"view");
+		                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
+		                        continue;
+		                    if(projectId == null || masterCandidateId == null){
+		       				 projectId =         pm.getProjects().getId();
+		       				 masterCandidateId = pm.getMasterCandidateId().getId();
+		       			    }
+							count++;
+	                	
+	                }
 					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 				}
-				timesheetEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			}
-		}
-		else{
+		/*else{
 			 ProjectMembers pm = projectMembersService.getProjectMemberById(eedDTO.getProjectMembersId());
 			 if(projectId == null || masterCandidateId == null){
 				 projectId =         pm.getProjects().getId();
@@ -247,7 +255,8 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			 }
 			 if(pm != null)
 			 timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLocations,"view");
-		}
+		}*/
+		timesheetEntryDetailsDTO.setProjectMembersList(pmDTOList);
 		LinkedHashMap<String,String> timeFrequencies = new LinkedHashMap<>();
 		String currentTimeFrequency = eedDTO.getCurrentTimeFrequency();
 		//For List Of Frequencies 
@@ -975,7 +984,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    if(StringUtils.isNotEmpty(projectMemberId)){
 		    	 ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 				 Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long.parseLong(projectMemberId), loginUser);
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getId(),pm.getMasterCandidateId().getId());
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations,pm.getProjects().getId(),pm.getMasterCandidateId().getId());
 		    }
 		    return projectDiv.toString();
 	}
