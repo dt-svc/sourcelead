@@ -693,7 +693,7 @@ function getInternalInterviewsList(submissionId){
 				                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 				                    	 '</sec:authorize>';
 				                    	 if(report.proposeTimeStatus=="Y"){
-				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int" title="Propose New Time"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
 					                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
 												result = result + '			</div>';
 												result = result + ' </a>';
