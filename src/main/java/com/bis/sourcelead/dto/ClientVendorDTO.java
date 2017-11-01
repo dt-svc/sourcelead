@@ -72,6 +72,18 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String poEmail;
 	private String paymentRemittanceEmail;
 	
+	private String vendorCreateduserName;
+	
+	public String getVendorCreateduserName()
+	{
+		return vendorCreateduserName;
+	}
+
+	public void setVendorCreateduserName(String vendorCreateduserName)
+	{
+		this.vendorCreateduserName = vendorCreateduserName;
+	}
+
 	public List<String> getOrgAdvanced() {
 		return orgAdvanced;
 	}

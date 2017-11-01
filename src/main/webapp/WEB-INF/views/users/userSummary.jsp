@@ -1368,7 +1368,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					result = result + ' <div class="col-md-5 errBotValEdit">';
 					result = result + ' <label>Extentsion</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					
@@ -1727,7 +1727,12 @@ function removeUser(userId){
 								    for (var i=0; i<json.reportingManagers.length; i++)
 			    					{
 								    	reportingManagers = json.reportingManagers[i];
-								    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	if(reportingManagers.lastName != null && reportingManagers.lastName != 'undefined' && reportingManagers.lastName != ''){
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}else{
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}
+								    	
 										
 			    					}
 								    result = result + '</select>';

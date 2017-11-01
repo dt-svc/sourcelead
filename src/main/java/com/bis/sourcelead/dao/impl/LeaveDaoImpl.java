@@ -29,9 +29,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
 import com.bis.sourcelead.util.CommonUtil;
@@ -533,5 +535,34 @@ public class LeaveDaoImpl implements LeaveDao{
 		else {
 			return false;
 		}
+	}
+
+
+	@Override
+	@Transactional
+	public void storeHolidayAndRestrictDays(HolidayAndRestrictday day)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (day != null) {
+				session.saveOrUpdate(day);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations)
+	{
+		Date from = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), fromDate);
+		Date to =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
+		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", from).setParameter("toDate", to).setLong("orgLocationId", orgLocations.getId()).list();
+		return list;
 	}
 }

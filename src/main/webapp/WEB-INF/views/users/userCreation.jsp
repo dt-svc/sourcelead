@@ -134,7 +134,7 @@
                     <div class="row">
                     <label class="col-md-5">Extension </label>
                     <div class="col-md-7 posSta">
-                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_phone validate_length length1-5" data-validation-optional="true">
+                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
                     </div>
                     </div>
                     </div>
@@ -571,9 +571,7 @@ function getEmployeementType(designationType){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
@@ -600,7 +598,6 @@ function getEmployeementType(designationType){
 		        			 //$("#phone").val('');
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
@@ -894,7 +891,12 @@ function getAssociateUserDetails(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		if(opt.lastName !=null && opt.lastName !='undefined' && opt.lastName !=''){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"&nbsp;("+opt.userType+")</option>";
+			        		}
+			        		
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);

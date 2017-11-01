@@ -50,7 +50,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		if (canRequestProcessingContinue(httpRequest)) {
 			chain.doFilter(request, response);
 		}
-		System.out.println(((HttpServletRequest) request).getSession().getAttribute("validUsers"));
+		//System.out.println(((HttpServletRequest) request).getSession().getAttribute("validUsers"));
 		
 	}
 	private void checkLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse,FilterChain chain) throws IOException, ServletException {

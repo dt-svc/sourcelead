@@ -1441,7 +1441,7 @@ function validate_fileupload(fileName)
 			 $('#clientSubmissionForm').attr("data-validation-optional","true"); */
 		}
 		
-          var rateType = document.getElementById("rateType").value; 
+          /* var rateType = document.getElementById("rateType").value; 
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
   			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
@@ -1449,7 +1449,7 @@ function validate_fileupload(fileName)
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
   		 }
-  		 
+  		  */
  		 var rate = document.getElementById("rate").value; 
  		 if(rate != null && rate != ""){
  			 $('#rateType').removeAttr('data-validation-optional');

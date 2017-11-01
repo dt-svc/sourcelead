@@ -287,9 +287,9 @@
 		result = result + '</div>';
 
 		result = result + '<div class="clearfix mb10">';
-		result = result + '<div class="col-md-12">';
+		result = result + '<div class="col-md-12" id="EmailIdDiv">';
 		result = result
-				+ '<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+				+ '<input type="text" name="email" field-name="Email" id="referenceEmail" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" onblur="validateReferenceEmail('+candidateId+');" placeholder="Email *">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -592,16 +592,16 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+												+ '<input type="text" name="name" field-name="Name"  value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *" >';
 										result = result + '</div>';
 										result = result + '</div>';
 
 										result = result
 												+ '<div class="clearfix mb10">';
 										result = result
-												+ '<div class="col-md-12">';
+												+ '<div class="col-md-12" id="EmailIdDiv">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -768,4 +768,38 @@
 			$('#designationValEdit').removeAttr("data-validation");
 		}
 	}
+</script>
+
+<script>
+function validateReferenceEmail(candidateId){
+	var email = document.getElementById("referenceEmail").value.trim();
+	 //space value  consider this condition 
+	if(email.match(/^[^\s-](.*)*$/) !== null){
+	var orgLocId = '${SourceLeadWeb_orgLocations.id}';
+	$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	if (email != null && email != "") {
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+ "/validateReferenceEmailByCadidateId?${_csrf.parameterName}=${_csrf.token}&email="+ email+"&candidateId="+candidateId,
+					success : function(data) {
+						if (data == true) {
+							$("input#referenceEmail").after("<p class='jquery_form_error_message'>"+ email+ " is Already Existed</span>");
+							document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
+							document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
+							$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
+// 							$("#save_project").attr("disabled", "disabled");
+		    				
+						} else {
+// 							$("#save_project").removeAttr("disabled");
+							$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
+							
+						}
+					},
+				});
+    	}
+	}
+	 
+	
+}
+
 </script>
