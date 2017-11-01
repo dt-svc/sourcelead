@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.entity.CandidateReferences;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -130,6 +132,26 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		}
 		return candidateReferences;
 	}
-   
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(referenceEmail != null && candidateId != null){
+				String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId ";
+				Collection<CandidateReferences> candidateReferencesList = session.createQuery(query.toString())
+						                                   .setLong("candidateId", candidateId)
+						                                   .setString("referenceEmail", referenceEmail)
+						                                   .setCacheable(true)
+						                                   .list();
+
+				if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
 	
 }
