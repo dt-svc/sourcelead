@@ -220,7 +220,7 @@ function getOrgDetails()
 			             <div class="row">
 			             <label class="col-md-5">Extension </label>
 			             <div class="col-md-7 posSta">
-			             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">
+			             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
 			             </div>
 			             </div>
 		             </div>
