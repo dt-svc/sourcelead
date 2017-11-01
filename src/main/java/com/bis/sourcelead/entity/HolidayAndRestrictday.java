@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "HolidayAndRestrictday", catalog = "sourcelead")
+@Table(name = "HOLIDAY_RESTRICT_DAYS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "HolidayAndRestrictday")
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -28,22 +28,34 @@ public class HolidayAndRestrictday implements Serializable {
 	@GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "HOLIDAY_ID", nullable = false)
 	private Holiday holiday;
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "RESTRICTDAY_ID", nullable = false)
 	private RestrictDay restrictDay;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
+	private OrgLocations orgLocations;
+	
 	@Column(name = "DAY")
 	private Date day;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
+	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
@@ -125,5 +137,15 @@ public class HolidayAndRestrictday implements Serializable {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public OrgLocations getOrgLocations()
+	{
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations)
+	{
+		this.orgLocations = orgLocations;
 	}
 }

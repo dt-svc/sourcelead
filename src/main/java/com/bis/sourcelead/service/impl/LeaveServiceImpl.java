@@ -1061,6 +1061,7 @@ public class LeaveServiceImpl implements LeaveService{
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setHoliday(holiday);
 				day.setDay(d);
+				day.setOrgLocations(orgLocations);
 				day.setCreatedBy(user.getUserCode());
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
@@ -1074,6 +1075,7 @@ public class LeaveServiceImpl implements LeaveService{
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setRestrictDay(restrict);
 				day.setDay(d);
+				day.setOrgLocations(orgLocations);
 				day.setCreatedBy(user.getUserCode());
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
@@ -1081,6 +1083,12 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDao.storeHolidayAndRestrictDays(day);
 			}
 		}
+	}
+
+	@Override
+	public List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations)
+	{
+		return leaveDao.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
 	}
 
 }

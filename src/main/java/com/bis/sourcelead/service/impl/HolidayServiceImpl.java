@@ -110,9 +110,11 @@ public class HolidayServiceImpl implements HolidayService{
 			holiday.setStatus("1");
 			
 		}
+		
+		holiday = holidayDAO.storeHoliday(holiday);
 		//to save all days of duration
 		leaveService.storeHolidayOrRestrictDays(orgLocations,user,holiday);
-		return holidayDAO.storeHoliday(holiday);
+		return holiday;
 	}
 
 	@Override

@@ -48,4 +48,6 @@ public interface LeaveDao {
 
 	void storeHolidayAndRestrictDays(HolidayAndRestrictday day);
 
+	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations);
+
 }

@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -49,6 +50,8 @@ public interface LeaveService {
 	boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId);
 
 	void storeHolidayOrRestrictDays(OrgLocations orgLocations,User user,Object object) throws Exception;
+
+	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String string, OrgLocations orgLocations);
 
 
 }
