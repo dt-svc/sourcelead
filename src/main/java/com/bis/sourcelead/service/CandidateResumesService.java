@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;

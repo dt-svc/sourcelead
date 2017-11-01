@@ -85,10 +85,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId) throws Exception {
+	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId ";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).setCacheable(true).list();
 		return ProjectBudgetList;
 	}
 

@@ -42,7 +42,7 @@
 <style type="text/css">
 
 .actionHistory {
-margin-top: 75px; padding:10px; border: 1px solid #ddd;
+margin-top: 52px; padding:10px; border: 1px solid #ddd;
 }
 </style>
 
@@ -63,7 +63,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <div class="clearfix"></div>
   <section class="container actionHistory">
   <h4>Actions Performed</h4>
-  <div class="clients_wrap_table">
+  <div class="clients_wrap_table hisOutWrap">
   	<div id="actionHistoryOrgList" class="clearfix clients_wrap_table overflow_inherint"></div>
 	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">

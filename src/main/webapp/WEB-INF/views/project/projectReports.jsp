@@ -68,7 +68,7 @@ function submitBtn(projectId){
 				result = result + '   <option value="yesterday">Yesterday</option>';
 				result = result + '   <option value="week">1 Week ago</option>';
 				result = result + '   <option value="twoweeks">2 Weeks ago</option>';
-				result = result + '   <option value="month">1 Month ago</option>';
+				result = result + '   <option value="month" selected>1 Month ago</option>';
 				result = result + '   <option value="twomonths">2 Months ago</option>';
 				result = result + '    <option value="custom">Custom</option> ';
 				result = result + ' </select>';
@@ -165,7 +165,7 @@ function submitBtn(projectId){
 			
 			/* ================== Expenses and Timesheet reports =============== */
 			
-			result = result + '	<div class="clearfix mt">';
+			/* result = result + '	<div class="clearfix mt">';
 			result = result + '    <div class="col-md-6">';
 			result = result + '     <div class="projectDashboad clearfix positionRelative">';
 			result = result + '         <h4>Expenses</h4>';
@@ -193,10 +193,10 @@ function submitBtn(projectId){
 			result = result + '     </div>';
 			result = result + '    </div>';
 			result = result + ' </div>';
-			
+			 */
 			
 			/* =================   Budget Status  ================  */
-			result = result + '	<div class="clearfix mt">';
+			/* result = result + '	<div class="clearfix mt">';
 			result = result + '  <div class="col-md-6">';
 			result = result + '      <div class="projectDashboad-widget">';
 			result = result + '  <div class="clearfix projectDashboad-header">';
@@ -216,7 +216,7 @@ function submitBtn(projectId){
 			result = result + '          </div>';
 			result = result + '      </div>';
 			result = result + '  </div>';
-			result = result + '      </div>';
+			result = result + '      </div>'; */
 			
 			
 			
@@ -224,7 +224,7 @@ function submitBtn(projectId){
 			
 			/* =============== Overdue Work Items =============== */
 			
-			result = result + '      <div class="col-md-3">';
+		/* 	result = result + '      <div class="col-md-3">';
 			result = result + '     <div class="projectDashboad-widget">';
 			result = result + '      <div class="clearfix projectDashboad-header">';
 			result = result + '        <h4>Top 5 Taskminators</h4>';
@@ -250,10 +250,10 @@ function submitBtn(projectId){
 			result = result + '              </div>';
 			result = result + '          </div>';
 			result = result + '     </div>';
-			result = result + '  </div>';
+			result = result + '  </div>'; */
 			
 			/* ==================  Overdue Work Items ================  */
-			result = result + '	<div class="col-md-3">'; 
+			/* result = result + '	<div class="col-md-3">'; 
 			result = result + '	  <div class="projectDashboad-widget">';
 			result = result + '	    <div class="clearfix projectDashboad-header">';
 			result = result + '	      <h4>Top 5 Bugminators</h4>';
@@ -272,7 +272,7 @@ function submitBtn(projectId){
 			result = result + '	      </div>';
 			result = result + '	    </div>';
 			result = result + '	  </div>';
-			result = result + '	</div>';
+			result = result + '	</div>'; */
 			
 			
 			
@@ -1227,6 +1227,7 @@ function getTaskPercentge(data){
  
  <script>
  function overdueTask(projectId,reportType,startDate,endDate){
+	 var projectClientUUID = '${projectClientUUID}';
 	 $.post(sourceleadUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
 		var result = "";
 	    result = result + '  <div class="col-md-6">';
@@ -1260,7 +1261,7 @@ function getTaskPercentge(data){
 				   }else if(report.taskTypes == "General"){
 					   result = result + '                     <td><i class="fa fa-spinner text-warning" title="General Task"></i></td>';
 				   }
-					result = result + '                     <td><span title="'+report.generatedId+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'">'+report.generatedId+'</a></span></td>';
+					result = result + '                     <td><span title="'+report.generatedId+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+report.generatedId+'</a></span></td>';
 					result = result + '                     <td>  '+report.actionTimeStr+' </td>';
 					result = result + '                     <td> '+report.percentage+'% </td>';
 					result = result + '                     <td>';
