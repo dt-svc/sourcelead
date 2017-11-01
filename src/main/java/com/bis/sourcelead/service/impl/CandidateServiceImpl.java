@@ -544,12 +544,6 @@ public class CandidateServiceImpl implements CandidateService {
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
 		
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
-			if(fileInfo != null){
-			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
-				}
-			}
 		
 		/*
 		 * this method is for track candidate activity
@@ -576,6 +570,12 @@ public class CandidateServiceImpl implements CandidateService {
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
 		}
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
+			if(fileInfo != null){
+			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+				}
+			}
 		return savedCandidate;
 	}
 
