@@ -280,8 +280,8 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectIdAndOrgLocationId(Long projectId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.approverUserId "
-				+ "where projects.id IN (select pc.projectId.id from ProjectClients pc where pc.orgLocationsId.id = :orgLocationId and  pc.projectId.id = :projectId)";
+		String query = "from ProjectApproverHierarchy hierarchy left join fetch hierarchy.projectId projects left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId "
+				+ "where projects.id = :projectId and pclient.orgLocationsId.id = :orgLocationId ";
 		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
 				                                                                                     .setCacheable(true)
 				 																					 .list();
