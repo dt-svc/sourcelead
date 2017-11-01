@@ -1,8 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.mail.internet.AddressException;
+
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +24,6 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -56,7 +52,6 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{

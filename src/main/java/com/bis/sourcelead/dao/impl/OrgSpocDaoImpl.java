@@ -131,7 +131,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("getOrgSpocById start");
-		orgSpocs = session.createQuery("from OrgSpoc where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorLocationId left join fetch spoc.clientLocationId  where spoc.id = :id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
 		logger.debug("getOrgSpocById end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
