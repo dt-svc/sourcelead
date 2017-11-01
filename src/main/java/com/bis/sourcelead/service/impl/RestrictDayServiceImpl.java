@@ -79,6 +79,8 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		restrictDay.setStatus(Constants.RECORD_ACTIVE.toString());
 		restrictDay.setUpdatedDate(commonUtil.currentDate());
 		restrictDay.setUpdatedBy(user.getUserCode());
+		//to save all days of duration
+		leaveService.storeHolidayOrRestrictDays(orgLocations,user,restrictDay);
 		return restrictDayDao.storeRestrictedDay(restrictDay);
 	}
 

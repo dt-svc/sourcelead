@@ -29,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -532,6 +533,21 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		else {
 			return false;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public void storeHolidayAndRestrictDays(HolidayAndRestrictday day)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (day != null) {
+				session.saveOrUpdate(day);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
 	}
 }
