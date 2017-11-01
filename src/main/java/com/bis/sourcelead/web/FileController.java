@@ -143,6 +143,9 @@ public class FileController {
 			try {
 				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, request);
 				resume.setFileInfo(fileInfo);
+				if(resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
+					throw new Exception("Email ID missing");
+				}
 				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
 				boolean flag = false;
 				if(c != null && c.getId() > 0) {
