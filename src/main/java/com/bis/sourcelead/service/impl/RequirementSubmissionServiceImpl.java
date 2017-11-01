@@ -4676,14 +4676,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("LastName") && !isNullOrEmpty(jsonObj.getString("LastName"))){
 					 templateFields.setLastName(jsonObj.getString("LastName"));
+				 }else {
+					 templateFields.setLastName(null);
 				 }
 				 
 				 if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
 					 templateFields.setPhoneNumber(jsonObj.getString("PhoneNumber"));
+				 }else {
+					 templateFields.setPhoneNumber(null);
 				 }
 				 
 				 if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
 					 templateFields.setAlternateNumber(jsonObj.getString("AlternateNumber"));
+				 }else {
+					 templateFields.setAlternateNumber(null);
 				 }
 				 
 				 if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
@@ -4712,7 +4718,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 						try {
-							   templateFields.setDateOfBirth(		commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
+							   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 							} catch (Exception e) {
 							  e.printStackTrace();
 							}
@@ -4724,6 +4730,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("Designation") && !isNullOrEmpty(jsonObj.getString("Designation"))){
 					 templateFields.setDesignation(jsonObj.getString("Designation"));
+				 }else {
+					 templateFields.setDesignation(null);
 				 }
 				 
 				 if(jsonObj.has("WorkExperience") && !isNullOrEmpty(jsonObj.getString("WorkExperience"))){
