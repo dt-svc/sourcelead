@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -63,7 +64,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -177,7 +177,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 
 				 String weekMondayDate = null;
 				 
-				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
+				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(weekStartDate, weekEndDate, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 				 if(null != ts){
 					 if(null != ts.getBillableHours()){
 						 Float weekBillable = Float.parseFloat(ts.getBillableHours());
@@ -386,8 +386,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						 String billable = getTotalHours((long) (Math.round(billableHours)));
 						 String nonBillable = getTotalHours( (long) (Math.round(nonBillableHours)));
 						 String grandtotal = getTotalHours(grandTotalHours);
-						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getProjectMemberCandidteId().getConsultantUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
-						file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
+						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getProjectMemberCandidteId(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
+						file = new File(fileName.append(projectMember.getMasterCandidateId()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 						FileOutputStream fos = new FileOutputStream(file);
 						try {
 							wb.write(fos);
@@ -423,7 +423,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, User user, String totalHours, String projectName, String submissionStatusStr, String billableHours, String nonbillableHours) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, String weekStartDate, String weekEndDate, Candidate user, String totalHours, String projectName, String submissionStatusStr, String billableHours, String nonbillableHours) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
@@ -823,7 +823,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		timeSheetApprovalArray[2] = "--";
 	}
 	if(projMembers.getProjectMemberCandidteId().getOrgRelationId() != null){
-		timeSheetApprovalArray[3] = projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName();
+		timeSheetApprovalArray[3] = projMembers.getProjectMemberCandidteId().getOrgRelationId().getResponderLocationId().getOrgLocationName();
 	}else{
 		timeSheetApprovalArray[3] = "--";
 	}

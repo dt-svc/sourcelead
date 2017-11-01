@@ -571,9 +571,7 @@ function getEmployeementType(designationType){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
@@ -600,7 +598,6 @@ function getEmployeementType(designationType){
 		        			 //$("#phone").val('');
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
