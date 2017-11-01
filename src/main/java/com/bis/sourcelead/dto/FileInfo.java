@@ -9,7 +9,6 @@ public class FileInfo {
 	private String fileDbId;
 	private String tempFolderName;
 
-
 	public String getFileURL() {
 		return fileURL;
 	}

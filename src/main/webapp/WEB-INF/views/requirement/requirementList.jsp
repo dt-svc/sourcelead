@@ -198,13 +198,13 @@ function statusvalidating(id){
 										<c:forEach var="report" items="${add_clientList}">
 											<c:if test="${report.locationId.id == loginOrgLocId}">
 												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
+													value="${report.responderLocationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
 											</c:if>
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
 												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
+													value="${report.responderLocationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>
@@ -218,9 +218,9 @@ function statusvalidating(id){
 								<div class="clearfix adv-srh-chosen">
 									<select class="chosen-select" name="country" id="country"
 										field-name="Country">
+										<option value="">---select Country---</option>
 										<c:forEach var="cntry" items="${countryList}">
-											<option value="${cntry.name}"
-												${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+											<option value="${cntry.name}">${cntry.name}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -232,9 +232,9 @@ function statusvalidating(id){
 									<select class="chosen-select" name="state" id="state"
 										field-name="State">
 										<option value="">---select state---</option>
-										<c:forEach var="state" items="${statesList}">
+										<%-- <c:forEach var="state" items="${statesList}">
 											<option value="${state.stateName}">${state.stateName}</option>
-										</c:forEach>
+										</c:forEach> --%>
 									</select>
 								</div>
 							</div>
@@ -792,8 +792,12 @@ function clearSearch(){
 	$('#requirementStatu').val('').trigger('chosen:updated');
 	$('#updatedOn').val('').trigger('chosen:updated');
 	$('#client').val('').trigger('chosen:updated');
-	/* $('#country').val('').trigger('chosen:updated'); */
+	$('#country').val('').trigger('chosen:updated');
+	$('#state').empty();
+	$('#state').append('<option value="">---select city---</option>');
 	$('#state').val('').trigger('chosen:updated');
+	$('#city').empty();
+	$('#city').append('<option value="">---select city---</option>');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
