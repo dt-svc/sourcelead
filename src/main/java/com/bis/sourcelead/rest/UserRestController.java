@@ -334,9 +334,11 @@ public class UserRestController {
 	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
 		 	UserDTO userDTO = new UserDTO();
-		 	userDTO.setFirstName(user.getFirstName());
-		 	userDTO.setLastName(user.getLastName());
-		 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	if(user != null) {
+		 		userDTO.setFirstName(user.getFirstName());
+			 	userDTO.setLastName(user.getLastName());
+			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}
 			return userDTO;
 	   }
 	 
