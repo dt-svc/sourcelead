@@ -94,8 +94,10 @@ function getOnboardDocuments(){
      	      for (var i = 0; i < json.length; i++) { 
 	         		 var opt = json[i]; 
 	         		 var datavalidation = '';
+	         		 var requiredAstrik = '';
 	         		 if(opt.isRequired == 'Y'){
-	         			datavalidation = "data-validation='validatedoc required'"
+	         			datavalidation = "data-validation='validatedoc required'";
+	         			requiredAstrik = "<span class='text-danger astrick'>&nbsp;*</span>";
 	         		 }else{
 	         			datavalidation = "data-validation-optional='true' data-validation='validatedoc'"
 	         		 }
@@ -109,7 +111,7 @@ function getOnboardDocuments(){
            				 result = result +"</td>";
            				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";
                 	 }else{
-                		 result = result +"<td><div><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'></div></td>";
+                		 result = result +"<td><div class='positionRelative'><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'>"+requiredAstrik+"</div></td>";
                     	 result = result +"<td><input type='hidden' value="+opt.id+"  name='vendorDocumentsFileInfo["+i+"].docId'></td>";
                     	 
                 	 }

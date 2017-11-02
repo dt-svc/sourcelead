@@ -194,4 +194,10 @@ public class VendorOnboardTemplateDocumentsServiceImpl implements VendorOnboardT
 		return vendorOnboardTemplateDocumentsDao.getTemplateDocumentsCountByTemplateId(templateId);
 	}
 
+	@Override
+	public List<VendorOnboardingTemplateDocuments> getVendorOnboaringRequiredDocumentsByVendorOnboardId(
+			Long vendorOnboardingId) throws Exception {
+		return vendorOnboardTemplateDocumentsDao.getVendorOnboaringRequiredDocumentsByVendorOnboardId(vendorOnboardingId);
+	}
+
 }
