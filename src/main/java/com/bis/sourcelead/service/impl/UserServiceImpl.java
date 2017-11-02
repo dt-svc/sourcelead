@@ -1370,5 +1370,11 @@ public class UserServiceImpl implements UserService {
 			Long orgLocationsId) throws Exception {
 		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
 	}
+
+	@Override
+	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
+	}
 	
 }
