@@ -119,7 +119,12 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (user != null) {
-				session.saveOrUpdate(user);
+				if(user.getLastName() == null){
+					user.setLastName("");
+					session.saveOrUpdate(user);
+				}else{
+					session.saveOrUpdate(user);
+				}
 			}
 			logger.debug("User Added Successfully");
 		} catch (Exception exception) {

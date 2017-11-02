@@ -198,7 +198,7 @@
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
 							result = result + ' <label>Extentsion</label>';
-							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
 							result = result + ' </div>';
 							result = result + ' </div>';
 							result = result + ' </div>';
@@ -231,7 +231,7 @@
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
 							result = result + ' <label>Extentsion</label>';
-							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_length length1-5" data-validation-optional="true">';
+							result = result + ' <input type="text" value="'+spocExtensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
 							result = result + ' </div>';
 							result = result + ' </div>';
 							result = result + ' </div>';
@@ -241,13 +241,13 @@
 						if(spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'Sent'){ 
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 						}else if(ownerId == "${SourceLeadWeb_userId}" && (json.invitationStatus == 'New' || json.invitationStatus == 'Sent')){
-							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 						}else if(json.invitationStatus == 'Accepted'){
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 						}else if(spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'New'){
 							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 				   		}else if(json.invitationStatus == 'Rejected'){
-				   			result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+				   			result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
 				   		}
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
 						result = result + '</div>';

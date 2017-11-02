@@ -657,7 +657,7 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     
-	                     <li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-sitemap" aria-hidden="true"></i>Bulk Import</a></li>
+	                     <li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
 	                     <li><a href="<c:url value="/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 

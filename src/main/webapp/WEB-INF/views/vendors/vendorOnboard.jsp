@@ -224,7 +224,7 @@
 										<div class="col-md-9">
 											<textarea id="vendorAddress" name="vendorAddress" rows="4"
 												field-name="Address" class="form-control"
-												data-validation="validate_Space"
+												data-validation="validate_length length2-250"
 												data-validation-optional="true"></textarea>
 										</div>
 									</div>
@@ -234,7 +234,7 @@
 										<div class="col-md-9">
 											<textarea id="vendorBillingAddress" rows="4" name="vendorBillingAddress"
 												field-name="Billing Address" class="form-control"
-												data-validation="validate_Space"
+												data-validation="validate_length length2-250"
 												data-validation-optional="true"></textarea>
 										</div>
 									</div>
