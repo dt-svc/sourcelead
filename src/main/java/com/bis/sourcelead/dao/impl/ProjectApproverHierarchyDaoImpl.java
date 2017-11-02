@@ -352,7 +352,7 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("In ProjectApproverHierarchy getProjectApproverByProjectIdAndLevel method");
-		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc left join fetch projectHirachy.approverUserId where projects.id = :projectId and pc.id = :projectClientId ";
+		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc left join fetch projectHirachy.approverUserId where projects.id = :projectId and pc.id = :projectClientId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah where subpah.projectId.id = :projectId and subpah.projectClientsId.id = :projectClientId)";
 		Collection<ProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("projectId", projectId).setLong("projectClientId", projectClientId).setCacheable(true).list();
 
 		ProjectApproverHierarchy ph = null;
