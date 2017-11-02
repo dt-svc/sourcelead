@@ -115,9 +115,9 @@ function getPendingLeavesList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '  <div title="" class="tblminwidth-75">';
-			        		 result = result +' <b class="proj_process">'+opt.status+'</b> ';
+			        		 result = result +' <b class="proj_process mt5 mb5" title="'+opt.status+'">'+opt.status+'</b> ';
 			        		 if(opt.isWithdrawEnable !=null && opt.isWithdrawEnable !='' && opt.isWithdrawEnable == 'Y' ){
-			        			 result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">Withdraw</span>';	 
+			        			 result = result +' <b class="proj_closed mb5 cursorPointer" TITLE="WITHDRAW" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">WITHDRAW</b>';	 
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -156,7 +156,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId,status){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +' <span class="btn btn-warning btn-sm mr10">'+status+'</span>';
+			 result = result +' <span class="btn btn-warning btn-sm mr10" title="'+status+'">'+status+'</span>';
 			 /* result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+leaveId+'\','+orgLocationId+');">Withdraw</span>'; */
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
