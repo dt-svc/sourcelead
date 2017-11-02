@@ -66,7 +66,7 @@ display: none;
             <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="validate_email" data-validation-optional="true" name="Toemails">
 
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="selectRadio();listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -74,10 +74,14 @@ display: none;
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h4 class="modal-title">Select Mailer</h4>
+                    <label class="paddingLeft paddingRight">
+               	    <input  type="radio" id="clientsCheck" name="users" checked onclick="listChange()"><strong class="paddingLeft">Clients</strong></label>
+               	    <label class="paddingLeft">
+               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
                           <select class="form-control" id="clientListType" onchange="listChange();">
                            <option value="listbyContact" selected>List by contact</option>
                             <option value="listbyClient">List by client</option>
@@ -233,6 +237,14 @@ display: none;
   
   
   <script src="resources/js/nicEdit.js"></script> 
+  
+  
+  <script>
+  function selectRadio(){
+	  document.getElementById("clientsCheck").checked = true;
+	  document.getElementById("contactsCheck").checked = false;
+  }
+  </script>
    
 
 <script type="text/javascript">
@@ -407,6 +419,9 @@ function textBoxCancel(){
 		  $("#clientsList").empty(); 
 		  getClientList();
 	  }
+	  
+	  
+	  document.getElementById("clientsListDiv").style.display="";
 	 
   }
   </script>
@@ -416,7 +431,7 @@ function textBoxCancel(){
   
 <script>
 function getClientContacts(){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getClientContacts?${_csrf.parameterName}=${_csrf.token}",    
@@ -475,7 +490,6 @@ function getClientContacts(){
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
 	                 	result = result +'   </div>';
-	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
                  }else{
@@ -498,7 +512,6 @@ function getClientContacts(){
 	        		result = result +'           </table>';
 	        		result = result +'     </div>';
 	        		result = result +'     </div>';
-					$("#clientsList").empty();
 				    $("#clientsList").append(result); 
 				    pagination();  
                 }
@@ -507,13 +520,11 @@ function getClientContacts(){
        }); 
   } 
 </script>
-  
-  
-  
-  
+
+
   <script>
 function getClientList(){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	 $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getClientsListForHotlist?${_csrf.parameterName}=${_csrf.token}",    
@@ -586,7 +597,6 @@ function getClientList(){
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
 	                 	result = result +'   </div>';
-	                 	 $("#clientsList").empty(); 
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -610,10 +620,85 @@ function getClientList(){
  	        		result = result +'           </table>';
  	        		result = result +'     </div>';
  	        		result = result +'     </div>';
- 					$("#clientsList").empty();
  				    $("#clientsList").append(result); 
  				    pagination();  
                  }
+          },
+            
+       }); 
+  } 
+</script>
+
+
+<script>
+function getContactsList(){
+		$("#clientsList").empty();
+		 document.getElementById("clientsListDiv").style.display="none";
+		$.ajax({
+           type : "GET",
+           url: sourceleadUrl+"/getUserContactsListForMalling?${_csrf.parameterName}=${_csrf.token}",    
+            success :function(json) {
+            	
+                 if(json.length > 0){
+	                	   
+               			    var result = '';
+	                		result = result +'     <div class="modal-bodyCustom clearfix mt25 popupFilter hdrAlign">'; 
+	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	                		result = result +'           <thead>';
+	                		result = result +'           <tr>';
+	                		result = result +'             <th><input type="checkbox" id="checkAllContacts" onclick="toggleClientContacts(this);"></th>';
+	                		result = result +'             <th>Contact Name</th>';
+	                		result = result +'             <th>Email</th>';
+	                		result = result +'             <th>Source</th>';
+	                		result = result +'           </tr>';
+	                		result = result +'           </thead>';
+		                    result = result +"<tbody>"; 
+		                    for (var i = 0; i < json.length; i++) { 
+		                    	 var opt = json[i]; 
+		                    	 
+		                    	 result = result +'<tr>';
+		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
+		                    	 result = result +'             <td>'+opt.fullName+' </td>';
+		                    	 result = result +'             <td>'+opt.email+'</td>';
+		                    	 result = result +'             <td>'+opt.source+'</td>';
+		                    	 result = result +'           </tr>';
+		                    	
+	                     }
+		                    
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     result = result +'     </div>'; 
+	                 	 result = result +'     <div class="clearfix">';
+	                 	
+	                 	 result = result +'       </div>'; 
+	                 	 result = result +'   </div>'; 
+	                 	 result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getEmails();">Assign</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
+	                 	result = result +'   </div>';
+	                     $("#clientsList").append(result); 
+	                     pagination(); 
+                 }else{
+  	    	         
+                	var result ="";
+	           		result = result +'     <div class="modal-bodyCustom mt25 clearfix popupFilter">'; 
+	           	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	           		result = result +'           <thead>';
+	           		result = result +'           <tr>';
+	           		result = result +'             <th><input type="checkbox"></th>';
+	           		result = result +'             <th>Contact Name</th>';
+	           		result = result +'             <th>Email</th>';
+	           		result = result +'             <th>Source</th>';
+	           		result = result +'           </tr>';
+	           		result = result +'           </thead>';
+	        		result = result +'           </table>';
+	        		result = result +'     </div>';
+	        		result = result +'     </div>';
+				    $("#clientsList").append(result); 
+				    pagination();  
+                }
           },
             
        }); 
@@ -624,7 +709,7 @@ function getClientList(){
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
