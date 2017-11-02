@@ -419,7 +419,7 @@ function validateTimeZone(){
 			dateFormat : finalDateFormatInterview,
 			changeMonth: true,
 			 changeYear: true, 
-		      //minDate: 0  ,
+		      minDate: 0  ,
 		      onSelect : function(selected) {
 		    	  removeInterviewvalidation();
 		      }
@@ -489,7 +489,7 @@ function validateTimeZone(){
 		$( "#scheduleCalendar" ).datepicker({
 			  changeMonth: true,
 		      changeYear: true,
-		      dateFormat : 'dd-mm-yy',
+		      dateFormat : finalDateFormatInterview,
 		      minDate: 0  ,
 			  onSelect : function(selected) {
 				checkAvailability();
