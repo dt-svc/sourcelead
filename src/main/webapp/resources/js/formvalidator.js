@@ -405,7 +405,7 @@ jQueryFormUtils.validateExtNumber = function(tele) {
      * to allow () in the phone number.
      */
     tele = tele.replace(/([-|\+])/g, '');
-	return tele.length > 1 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
+	return tele.length >= 1 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
 };
 
 
