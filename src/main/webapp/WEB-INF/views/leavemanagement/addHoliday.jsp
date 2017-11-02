@@ -64,7 +64,7 @@ $(document).ready(function() {
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="holidayNameDiv">
-                <input type="text" class="form-control" field-name="Holiday Name"  onblur="validateHolidayName();"  data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidayDTO.holidayName}">
+                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required validate_Space validate_length length1-250" onblur="validateHolidayName();" id="holidayName" name="holidayName" value="${holidayDTO.holidayName}">
               </div>
             </div>
             <div class="form-group">
@@ -110,7 +110,7 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt10 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date" readonly>
+                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
@@ -262,6 +262,7 @@ function cancel(){
 		            dt.setDate(dt.getDate() + 0);
 		            $("#toDate").datepicker("option", "minDate", dt);
 		            removeFromDate();
+		            validateHolidayName();
 		        }
 		  });
 		  
@@ -275,6 +276,7 @@ function cancel(){
 		            dt.setDate(dt.getDate() - 0);
 		            $("#fromDate").datepicker("option", "maxDate", dt);
 		            removeToDate();
+		            validateHolidayName();
 		        }
 		  });
 
@@ -290,23 +292,26 @@ function cancel(){
 </script>
 <script>
 function validateHolidayName(){
+	$('.warMess').hide();
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#holidayName").val();
 	var id = $("#holidayId").val();
-	if(name != null && name != '' && name != 'undefined'){
-		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday&name="+name+"&id="+id, function(data) {
-          	if(data == true){
-          		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
-          		$("#save_holiday").removeAttr("disabled");
-		        $("#save_holiday").attr("disabled", "disabled");
-				$("input#holidayName").after( "<p class='jquery_form_error_message'>" + name + " is already existed as Holiday</span>");
-                 }else{
-                	$("#save_holiday").removeAttr("disabled");
-                	$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
-                 }
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+			if(data != null){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>Holiday was issued on this duration : </span> "+data);
+			}else{
+				$('.warMess').hide();
+			}
             });
 		}
 	}
+	
+function closedate(){
+	$(".warMess").fadeOut();
+	};
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
