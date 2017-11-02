@@ -301,7 +301,7 @@ function validateHolidayName(){
 	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data != null){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>These Dates are already added as Holidays : </span> "+data);
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>Holiday was issued on this duration : </span> "+data);
 			}else{
 				$('.warMess').hide();
 			}
