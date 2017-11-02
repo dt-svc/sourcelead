@@ -1,7 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -281,16 +279,27 @@ public class ProjectPlanningRestController {
 	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
 		public @ResponseBody List<User>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
-	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_PROJECTS));
+	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 		  return approversList;
 	    }
+	  
+	     
+	  @RequestMapping(value = "/getSourceLeadActionApproversList", method = RequestMethod.GET)
+	  public @ResponseBody List<UserDTO>  getSourceLeadActionApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="actionType", required=true) String actionType) throws Exception {
+	    
+	      List<UserDTO> approversList = commonUtil.getRoleActionUsers(actionType, orgLocationId);
+		  return approversList;
+      }
+	  
+	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestsCounts", method = RequestMethod.GET)
 		public @ResponseBody ProjectPlanningRequest getResourceRequestsCounts(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		   
+		  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId,userRoleName);
 		 
 		  ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
 		  
@@ -323,10 +332,10 @@ public class ProjectPlanningRestController {
 	  
 	    @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType, HttpServletRequest request) throws Exception {
 		    
-		  
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType);
+	      String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType,userRoleName);
 		  
 		  return projectPlanningRequestList;
 		  
