@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -424,12 +425,32 @@ public class VendorOnboardRestController {
 		}
 		
 		
+
+		@RequestMapping(value = { "/validateVendorOnboardRequiredAttachedDocuments", "/rest/validateVendorOnboardRequiredAttachedDocuments" }, method = RequestMethod.POST)
+		public @ResponseBody String validateVendorOnboardRequiredAttachedDocuments(@RequestParam(value="vendorOnboardId", required=false) Long vendorOnboardId) throws Exception {
+			
+			String result = "Success";
+			
+			List<VendorOnboardingTemplateDocuments> documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringRequiredDocumentsByVendorOnboardId(vendorOnboardId);
+			if(documentsList != null && documentsList.size() > 0) {
+				for(VendorOnboardingTemplateDocuments documents : documentsList) {
+					if(StringUtils.isBlank(documents.getUploadedFileUrl())) {
+						result = "Invalid";
+						break;
+					}
+				}
+			}
+			
+			return result;
+		}	
+		
+		
 		@RequestMapping(value = { "/deleteVendorUploadedOnboardDocument", "/rest/deleteVendorUploadedOnboardDocument" }, method = RequestMethod.POST)
 		public @ResponseBody String deleteVendorUploadedOnboardDocument(@RequestParam(value="documentId", required=false) Long documentId) throws Exception {
 			
 			VendorOnboardingTemplateDocuments documents = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsById(documentId);
 			documents.setUploadedFileContentType(null);
-			documents.setUploadedFileContentType(null);
+			documents.setUploadedFileName(null);
 			documents.setUploadedFileUrl(null);
 			documents.setDocumentStatus(null);
 			vendorOnboardTemplateDocumentsService.saveVendorOnBoardingTemplateDocuments(documents);

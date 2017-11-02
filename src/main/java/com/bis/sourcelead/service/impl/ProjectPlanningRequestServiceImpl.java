@@ -738,9 +738,9 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	@Override
-	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus,String userRole)
 			throws Exception {
-		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus);
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus,userRole);
 	}
 
 	@Override
@@ -751,8 +751,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 
 	@Override
 	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,
-			Long orgLocationId) throws Exception {
-		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+			Long orgLocationId,String userRole) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId,userRole);
 	}
 
 }

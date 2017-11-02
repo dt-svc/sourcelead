@@ -23,10 +23,10 @@ public interface ProjectPlanningRequestService {
 	
 	ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception;
 	
-	List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId,Long orgLocationId,String requestStatus) throws Exception;
+	List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId,Long orgLocationId,String requestStatus,String userRole) throws Exception;
 	
 	ProjectPlanningRequest storeProjectPlanningRequest(ProjectPlanningRequest projectPlanningRequest) throws Exception;
 	
-	List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,Long orgLocationId) throws Exception;
+	List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,Long orgLocationId,String userRole) throws Exception;
 
 }
