@@ -486,10 +486,22 @@ function validateTimeZone(){
 	    	getUpdatedShortListCandidates();
 	    }); */ 
 	    
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+		  
 		$( "#scheduleCalendar" ).datepicker({
 			  changeMonth: true,
 		      changeYear: true,
-		      dateFormat : 'dd-mm-yy',
+		      dateFormat : finalDateFormatProjectSave,
 		      minDate: 0  ,
 			  onSelect : function(selected) {
 				checkAvailability();
