@@ -514,6 +514,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else {
 			projectBudget = new ProjectBudget();
 			projectBudget.setCreateUserId(user);
+			projectBudget.setUpdateUserId(user);
 			projectBudget.setCreatedDate(new Date());
 			projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
 		}

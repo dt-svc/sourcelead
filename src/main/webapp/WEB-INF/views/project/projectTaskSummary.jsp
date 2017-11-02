@@ -1351,7 +1351,7 @@ function cancelTask(){
 	$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
-	$("#txtEditor").val($('.Editor-editor').html('')); 
+	$("#txtEditor").val($('.Editor-editor').text('')); 
 	$("div.row-fluid .Editor-container").remove();
 	document.getElementById("projectTask_form").reset();
 	$("projectTask_form").validate().resetForm();
@@ -1544,7 +1544,7 @@ function subTasksAssignList(projectId){
  </script>
  <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var frm = $('#projectTask_form').serializeFormJSON();
 		var form = $('#projectTask_form')[0];

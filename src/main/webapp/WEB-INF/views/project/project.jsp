@@ -639,7 +639,7 @@ function getStatus(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
 // 		   var frm = $('#project_form').serializeFormJSON();
@@ -1166,7 +1166,7 @@ function getBudgetApprover(approverUserId){
 
 <script>
 	$(document).ready(function() {
-		$("#txtEditor").Editor();
+		$("#txtEditor").Editor().trim();
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
