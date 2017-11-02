@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -30,6 +31,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -569,7 +571,13 @@ public class Projects implements Serializable{
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
+			SimpleDateFormat dateFormat = null;
+			if(StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
+			}
+			else{
+				dateFormat = (SimpleDateFormat) Constants.DF_YMD;
+			}
 			startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
