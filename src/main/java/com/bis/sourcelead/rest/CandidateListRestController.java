@@ -738,10 +738,10 @@ public class CandidateListRestController {
 
 		if (null != can.getOrgRelationId()) {
 			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
-			if (can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()) {
+			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
-			if (can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()) {
+			if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 

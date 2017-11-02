@@ -96,6 +96,8 @@ public class FileController {
 			} else {
 				String fileName = multiFile.getOriginalFilename();
 				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				if(extenstion.equalsIgnoreCase(".rar"))
+					continue;
 				if (extenstion.equalsIgnoreCase(".zip")) {
 					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, multiFile));
 				}
