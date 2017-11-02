@@ -163,7 +163,7 @@
 						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						   <c:if test="${pm.id == expenses.projectMemberId}">
+						   <c:if test="${pm.projectId == expenses.projectId}">
 				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
 				 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 				 	    	 </c:forEach>

@@ -144,6 +144,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		String isFileCreated = null;
 		boolean isValidated = false;
 		 boolean isUserFound = false;
+		 int savedRecordCount = 0;
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
@@ -216,7 +217,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					 if(isUserFound){
 								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 					 }else{
-						 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+						 savedRecordCount = saveBulkUser(userImport,orgLocations,user,isMailChecked,savedRecordCount);
 					 }
 				}else{
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
@@ -285,7 +286,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
 		Workbook createExcelworkbook = null ;
-
+		int savedRecordCount = 0;
 		if (fileName.endsWith("xlsx")) {
 			createExcelworkbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -389,7 +390,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 								 }else{
 									 userImport.setIsMailChecked(Status.N);
 								 }
-								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+								 savedRecordCount = saveBulkUser(userImport,orgLocations,user,isMailChecked,savedRecordCount);
 							 }
 						}
 					} else {
@@ -411,16 +412,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 					
 					createExcelworkbook.write(fos);
 					fos.close();
+				}if(savedRecordCount >0){
+					isFileCreated = "failure";
 				}
-//				if(count > 0){
-//					if(!fileName.endsWith("xlsx")){
-//					isFileCreated = "FailureUsersForCheck.xls";
-//					}else{
-//						isFileCreated = "FailureUsersForCheck.xlsx";
-//					}
-//				}else{
-//					isFileCreated = "failed";
-//				}
+
 			}
 			fis.close();
 		} catch (IOException e) {
@@ -479,10 +474,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param orgLocations
  * @param loginUser 
  * @param isMailChecked 
+ * @param savedRecordCount 
  * @param fileName 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
+	private int saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, int savedRecordCount) throws Exception {
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
@@ -527,7 +523,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				masterCandidate = storeMasterCandidate(userExisted);
 			}
 			storeCandidate(userExisted, orgLocations, masterCandidate);
-			
+			savedRecordCount++;
 		}else{
 			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
@@ -559,8 +555,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				masterCandidate = storeMasterCandidate(user);
 			}
 			storeCandidate(user, orgLocations, masterCandidate);
-				
+			savedRecordCount++;
 		}
+		return savedRecordCount;
 
 	}
 	

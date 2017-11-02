@@ -27,6 +27,20 @@ body {
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
     }
+    .text_logo {
+    font-size: 18px;
+font-weight: bold;
+text-align: center;
+line-height: 52px;
+overflow: hidden;
+text-overflow: ellipsis;
+width: 160px;
+white-space: nowrap;
+vertical-align: middle;
+font-style: normal;
+color: #375d81;
+margin: 0px auto;
+    }
     .clear {
         clear: both;
     }
@@ -156,6 +170,18 @@ padding: 2px
 		<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 		<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}">
  	 	</c:if>
+ 	 	<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<div class="text_logo">
+				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+					<c:if test="${!empty SourceLeadWeb_orgName}">
+					<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</c:if>
+				</c:if>
+				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
+				</c:if>
+				</div>
+		</c:if>
 		</div>
 		<div class="clear"></div>
 	</header>
@@ -177,7 +203,7 @@ padding: 2px
 							<input type="file" class="btnHide" id='uploadFile' multiple="multiple"> <a
 								href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 						</div>
-						<span class="filename">Upload File</span>
+						<span class="filename">Choose File(s)</span>
 						<div class="clear"></div>
 						<div class="addFilBtn">
 							<i class="fa fa-plus"></i>
@@ -214,7 +240,7 @@ padding: 2px
 				<input type="file" id='abc' class="btnHide" multiple="multiple">
 				<a href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 			</div>
-			<span class="filename">Upload File</span>
+			<span class="filename">Choose File(s)</span>
 			<div class="clear"></div>
 			<div class="abcdef"><i class="fa fa-trash-o"></i></div>
 		</div>	
@@ -227,8 +253,7 @@ padding: 2px
 var count = 1;
 	$(document).ready(function() {
 		$(".browseInn input:file").change(function() {
-			var fileName = $(this).val();
-			$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+			updateInputField($(this));
 		});
 		$(".addFilBtn").click(function() {
 			$(".browseScroll").append($("#browserBar").html().replace("abc", "uploadFile"+(count ++)).replace("abcdef", "removeFilBtn"));
@@ -236,15 +261,14 @@ var count = 1;
 				$(this).parent(".browseWrap").remove();
 			});
 			$(".browseInn input:file").change(function() {
-				var fileName = $(this).val();
-				$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+				updateInputField($(this));
 			});
 		});
 		$("#clear").click(function() {
 			count = 1;
 			$(".removeFilBtn").each(function(i) {  $(this).click(); });
 			$("input[type=file]").val('');
-			$('.filename').html("Upload File");
+			$('.filename').html("Choose File(s)");
 		});
 		$("#upload").click(function() {
 			var data1 = new FormData();
@@ -254,6 +278,10 @@ var count = 1;
 				for(var i=0;i<files.length;i++)
 					data1.append("inputFile"+(j++), files[i]);
 			});
+			if(j == 0) {
+				alert("Please select resume(s)");
+				return;
+			}
 			uploadid = new Date().getTime();
 			getUploadStatus();
 			data1.append("uploadid", uploadid);
@@ -272,10 +300,9 @@ var count = 1;
 				        $("#progressBar").html(percentComplete+'%');
 				        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
 				        if (percentComplete === 100) {
-// 				        		$("#progressBar").html('0%');
 				        		$("#progressText").html('Please wait while parsing the uploaded files...');
-				        		$(".progress div").css("width", percentComplete + "%");
-// 				        		$("#progressBar").html('0%');
+				        		$(".progress div").css("width", "0%");
+				        		$("#progressBar").html('0%');
 				        }
 
 				      }
@@ -299,7 +326,15 @@ var count = 1;
 		});
 		
 	});
+	function updateInputField(ele) {
+		var count = document.getElementById($(ele).attr('id')).files.length;
+		var fileName = $(ele).val();
+		if(count > 1)
+			$(ele).parent().parent().find('.filename').html(count+" file(s) selected | "+ (fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1)));
+		else 
+ 			$(ele).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
 	
+	}
 	var uploadid = 0;
 	function getUploadStatus() {
 		if(uploadid > 0) {

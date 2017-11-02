@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,8 +42,12 @@ public interface LeaveDao {
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndUserIdAndStatus(Long locationId, String userId, String status);
 
-	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
+//	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id, String fromDate, String toDate);
 
 	boolean deleteAllLeaveRolesByParticularTableId(String from, String fromId);
+
+	void storeHolidayAndRestrictDays(HolidayAndRestrictday day);
+
+	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations);
 
 }

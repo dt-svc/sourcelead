@@ -1174,6 +1174,12 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
 		//commented by Pavan Jampana for change request #5851(taiga Id)
 		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
@@ -1254,6 +1260,12 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
 		
 		hideCommonSOWFields();
 	}

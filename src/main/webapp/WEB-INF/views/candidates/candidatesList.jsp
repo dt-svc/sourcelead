@@ -2026,9 +2026,9 @@ function getCities(){
 <!-- Add candidate Popup -->
       <div class="addcandidate-popup">
 				  <div class="row">
-                      <div class="col-md-offset-2 col-md-8">
+                      <div class="col-md-offset-1 col-md-10">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
+                          <div class="col-md-4 mt">
                         <div class="small-widget bg-purple">
                             <a href="<c:url value='/candidate'/>"  title="Import Candidate">
                                 <div class="clearfix mb10">
@@ -2039,7 +2039,7 @@ function getCities(){
                                 </a>
                         </div>
 					  </div>
-					  <div class="col-md-6 mt">
+					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
                               <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
                                   <div class="clearfix mb10">
@@ -2051,6 +2051,20 @@ function getCities(){
                                 
                           </div>
 					  </div>
+					  
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bgGreen">
+                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Add Candidate">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-upload fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Bulk Imports</strong>
+                                </a>
+                                
+                          </div>
+					  </div>					  
+					  
                       </div>
                           <div class="col-md-4 hidden">
                           <div class="small-widget bg-green">

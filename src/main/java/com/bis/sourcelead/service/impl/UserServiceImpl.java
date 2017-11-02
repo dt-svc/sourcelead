@@ -302,6 +302,7 @@ public class UserServiceImpl implements UserService {
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
 				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+				
 			}else{
 				candidate.setConsultantUser(user);
 				candidateService.addCandidate(candidate);
