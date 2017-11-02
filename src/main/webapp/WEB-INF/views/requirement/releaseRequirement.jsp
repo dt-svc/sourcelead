@@ -94,14 +94,16 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                 </ul>
               </div>
               <!-- Contact Table -->
-              
-              <div id="vendorContacts"> </div>
+              <div id="vendorContactsLoaderDiv"></div>
+              <div id="vendorContacts">
+              </div>
              
               <!-- Contact Table Ends --> 
               
               <!-- Vendor Table -->
-              
-              <div id="vendor"></div>
+              <div id="vendorLoaderDiv"></div>
+              <div id="vendor">
+              </div>
               
               <!-- Vendor Table Ends --> 
             </div>
@@ -551,6 +553,7 @@ function getContactsLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
+	$("#vendorContactsLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status+"&vendorSelectedIds="+vendorSelectedIds, 	   
@@ -644,6 +647,7 @@ function getContactsLists(){
 			   	    	    $("#vendor").empty();
 			   	    	 	$("#vendorContacts").empty();
 			   	    	    $("#vendorContacts").append(result);
+			   	    	 	$("#vendorContactsLoaderDiv").removeAttr("style");
 			   	    	 	candidatePagination();
                		}
 	   		    	/* }else{
@@ -728,7 +732,7 @@ function getVendorLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
-	
+	$("#vendorLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
@@ -830,6 +834,7 @@ function getVendorLists(){
 	           	    	    $("#vendorContacts").empty();  
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
+	           	    	 	$("#vendorLoaderDiv").removeAttr("style");
 	           	    	 	vendorPagination();
 	           	    	 $("#vendorReleaseCheckList").empty();
 	           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult);
