@@ -78,6 +78,7 @@ public class Constants {
 	public static final DateFormat M = new SimpleDateFormat("MMMM");
 	public static final DateFormat DF_MM = new SimpleDateFormat("MM");
 	public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static final DateFormat DF_MDY = new SimpleDateFormat("MM-dd-yyyy");
 	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd MMM");
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");

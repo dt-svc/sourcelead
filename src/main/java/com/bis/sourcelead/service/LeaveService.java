@@ -1,10 +1,14 @@
 package com.bis.sourcelead.service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,8 +45,13 @@ public interface LeaveService {
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception;
 
-	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
+//	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id, String fromDate, String toDate);
 
 	boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId);
+
+	void storeHolidayOrRestrictDays(OrgLocations orgLocations,User user,Object object) throws Exception;
+
+	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String string, OrgLocations orgLocations);
+
 
 }

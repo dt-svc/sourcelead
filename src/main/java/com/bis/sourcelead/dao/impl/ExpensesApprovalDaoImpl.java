@@ -244,8 +244,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		/*
 	    		 * get Max Level
 	    	    */
-	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from ExpensesApproverHierarchy sah  where  sah.expenseId.id = :expenseId and sah.hierarchyId.status != '0'  ");
-	    		List<Integer> maxList = queryForMaxLevel.setLong("expenseId", expenseId).list();
+	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from ExpensesApproverHierarchy sah  where sah.hierarchyId.projectClientsId.id = :projectClientsId and  sah.expenseId.id = :expenseId and sah.hierarchyId.status != '0'  ");
+	    		List<Integer> maxList = queryForMaxLevel.setLong("projectClientsId", sah.getHierarchyId().getProjectClientsId().getId()).setLong("expenseId", expenseId).list();
 	    		
 	    		if(maxList !=null && !maxList.isEmpty()){
 	    			maxLevel = maxList.iterator().next();
@@ -315,7 +315,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
                 				 }
-                				 else if((approver.getHierarchyId().getProjectClientsId().getLevel() >=  sah.getHierarchyId().getProjectClientsId().getLevel())
+                				 else if((approver.getHierarchyId().getProjectClientsId().getLevel() >  sah.getHierarchyId().getProjectClientsId().getLevel())
                 					     || (approver.getHierarchyId().getProjectClientsId().getLevel() ==  sah.getHierarchyId().getProjectClientsId().getLevel() && sah.getHierarchyId().getLevel()==(maxLevel))){
                 					      expenseStatus.add(Submission_Status.APPROVED.getValue());
                 					      Expenses expenses =approver.getExpenseId();
