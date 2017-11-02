@@ -1315,11 +1315,7 @@ public class CommonUtil {
 						candidate.setCountry(candidateDTO.getCountry());
 					}
 				
-				if(StringUtils.isNotBlank(candidateDTO.getIsAssociate()) && candidateDTO.getIsAssociate().equalsIgnoreCase(Constants.YES)) {
-					candidate.setIsAssociate(Constants.YES);
-				}else {
-					candidate.setIsAssociate(Constants.NO);
-				}
+				candidate.setIsAssociate(Constants.YES);
 				
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);

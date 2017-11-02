@@ -17,6 +17,7 @@
 	<div id="loading"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
 		<div class="newPrTabs">
+		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
