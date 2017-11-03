@@ -136,20 +136,28 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId) throws Exception {
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
+		 Collection<CandidateReferences> candidateReferencesList = null;
 		 if(referenceEmail != null && candidateId != null){
-				String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId ";
-				Collection<CandidateReferences> candidateReferencesList = session.createQuery(query.toString())
-						                                   .setLong("candidateId", candidateId)
-						                                   .setString("referenceEmail", referenceEmail)
-						                                   .setCacheable(true)
-						                                   .list();
+			 if(candidateReferenceId != null) {
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.id =:candidateReferenceId";
+					candidateReferencesList = session.createQuery(query.toString()).setLong("candidateReferenceId", candidateReferenceId).setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+					if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+						flag = false;
+					}else {
+						flag = true;
+					}
+			 }else {
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId ";
+				 candidateReferencesList = session.createQuery(query.toString()) .setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+				 if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+						flag = true;
+					}
+			 }
 
-				if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
-					flag = true;
-				}
+				
 		 }
 		return flag;
 	}
