@@ -15,9 +15,8 @@ function candidateQuickViewProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
 							var result ="";
 							
 							if(json.country != null && json.country != '' && json.country != 'undefined'){
