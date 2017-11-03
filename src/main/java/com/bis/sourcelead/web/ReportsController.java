@@ -48,22 +48,57 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 	 
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-	 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-	 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
-	  
+	
 	 
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
-	 model.addObject("vendorTabAccess", vendorTabAccess);
-	 model.addObject("billingTabAccess", billingTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.setViewName("reports/userReports");
+	 model.setViewName("reports/recruitersReports");
 	 return model;
 		
     }	
+		
+	
+	@RequestMapping(value = "/userReports")
+	public ModelAndView userReports(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+		  
+		
+		ModelAndView model = new ModelAndView();
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.addObject("billingTabAccess", billingTabAccess);
+		 model.setViewName("reports/userReports");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = "/billingReports")
+	public ModelAndView billingReports(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+
+		 
+		ModelAndView model = new ModelAndView();
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 model.addObject("userList", userList);
+		 model.addObject("billingTabAccess", billingTabAccess);
+		 model.setViewName("reports/billingReports");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 	
 	 @RequestMapping(value = "/applicantsListForReports")
 		public ModelAndView applicantsListForReports() throws Exception {

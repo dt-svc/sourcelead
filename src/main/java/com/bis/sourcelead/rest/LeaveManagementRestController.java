@@ -1572,39 +1572,43 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public String validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, 
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, 
 			@RequestParam(value = "from", required = true) String fromTable, 
 			@RequestParam(value = "name", required = true) String name, 
 			@RequestParam(value = "id", required = true) String id,
 			@RequestParam(value = "fromDate", required = true) String fromDate,
 			@RequestParam(value = "toDate", required = true) String toDate) throws Exception
 	{
-		String isTrue = null;
-		StringBuilder sb = null ;
+		String [] dateParts = fromDate.split("\\-");
+		String [] dateParts1 = toDate.split("\\-");
+		String year1 = dateParts[2];
+		String year2 = dateParts1[2];
+		boolean flag = false;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
-		List<Date> daysList = new ArrayList<>();
-		for(HolidayAndRestrictday day : list){
-			daysList.add(day.getDay());
+		for(HolidayAndRestrictday holidayAndRestrictday : list)
+		{
+			if(holidayAndRestrictday.getHoliday() != null){
+				if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
+					flag = true;
+					break;
+				}}
 		}
-		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
-		int i=0;
-		if(daysList.size() > 0){
-			sb = new StringBuilder();
-			for(Date d : daysList){
-				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
-				if(i != daysList.size()-1){
-					sb.append(",");
-				}
-				i++;
+		if(flag != true && !year1.equalsIgnoreCase(year2))
+		{
+			List<HolidayAndRestrictday> list1 = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
+			for(HolidayAndRestrictday holidayAndRestrictday : list1)
+			{
+				if(holidayAndRestrictday.getHoliday() != null){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
+						flag = true;
+						break;
+					}}
 			}
 		}
-		
-       if(sb !=null) {
-    	   isTrue = sb.toString();
-       }
-		return isTrue;
+
+
+		return flag;
 	}
 
 	@RequestMapping(value = {"/validateMaxLeave","/rest/validateMaxLeave"}, method = RequestMethod.GET)

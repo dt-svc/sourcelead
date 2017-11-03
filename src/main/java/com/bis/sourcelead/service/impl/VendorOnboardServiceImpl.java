@@ -594,8 +594,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					    documents.setUploadedFileUrl(fileInfo.getFileURL());
 					    documents.setDocumentStatus("Submitted");
 					    vendorOnboardTemplateDocumentsDao.saveVendorOnBoardingTemplateDocuments(documents);
+					    FileUploadUtil.moveFile(vendorOnboardDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Submitted-Documents");
 					}
-					 FileUploadUtil.moveFile(vendorOnboardDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Submitted-Documents");
 				   }
 			}
 		}
