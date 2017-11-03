@@ -46,9 +46,9 @@ function editCandidate(candidateId){
 	  $.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-	         success :function(data) {  
-	              if(data != null && data != 'undefined' && data != ""){  
-	              	 var json = JSON.parse(data);
+	         success :function(json) {  
+	              if(json != null){  
+	              	// var json = JSON.parse(data);
 	            			 	var lastName = '';
 	            			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
 	            			 		lastName = json.lastName;            			 		
@@ -619,16 +619,16 @@ function candidateProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
+         success :function(json) {  
+              if(json != null){  
+              //	var json = JSON.parse(data);
+            		 /* if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
             		 else if (data.indexOf('exception') >= 0) {
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
-            		 else{ 
+            		 else{  */
 							var result ="";
 							var summary= "";
 							if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
@@ -857,7 +857,7 @@ function candidateProfile(candidateId){
 								 
 							     event.preventDefault();
 								   
-            		 }
+            		/*  } */
               }else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
@@ -1056,15 +1056,15 @@ function candidateSkillsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
+          success :function(json) {
+               if(json != null){
+             		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
-             		 else{
+             		 else{ */
 	                	 $("#candidateSkillList").empty();
 	                	 var result = "";
                 	     result = result + '      <table class="table table-responsive table-hover clearfix">';
@@ -1077,7 +1077,7 @@ function candidateSkillsList(candidateId){
                 		 result = result + '          </tr>';
                 		 result = result + '        </thead>';
                 		 result = result + '        <tbody>';
-	                     var json = JSON.parse(data);
+	                    // var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) {  
 	                    	 var opt = json[i];   
 	                    	    result = result + '<tr>';
@@ -1185,8 +1185,8 @@ function candidateSkillsList(candidateId){
 	                     
 	                     $("#candidateSkills").trigger("chosen:updated");
 	                     
-	                     
-			    	} 
+	                /*      
+			    	}  */
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
