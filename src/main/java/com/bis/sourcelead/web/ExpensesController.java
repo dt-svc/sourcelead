@@ -129,7 +129,7 @@ public class ExpensesController {
 			}
 				
 			String rejectedReason = null;
-			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
+			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expensesDTO.getId());
 			for(ExpensesApproverHierarchy eah : eahList){
 				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
 					rejectedReason  = eah.getRejectedReason(); 
