@@ -10,7 +10,10 @@ function getFormData(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
-	indexed_array[n['name']] = n['value'];
+		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
+			indexed_array[n['name']] = n['value'];
+		else
+			indexed_array[n['name']] = n['value'].trim();
 	});
 	return indexed_array;
 }
@@ -20,7 +23,10 @@ function getFormData1(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var formData = new FormData();
 	$.map(unindexed_array, function (n, i) {
-		formData.append(n['name'], n['value']);
+		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
+			formData.append(n['name'], n['value']);
+		else
+			formData.append(n['name'], n['value'].trim());
 	});
 	return formData;
 }

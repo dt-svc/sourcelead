@@ -315,11 +315,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
-		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
@@ -330,23 +330,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	}
 	
-	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
-		 ContractsTemplate contractsTemplate = new ContractsTemplate();
-		 contractsTemplate.setTemplateName(templateType);
-		 contractsTemplate.setDescription(templateType);
-		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
-		 contractsTemplate.setOrgLocationId(orgLocations);
-		 contractsTemplate.setTemplateType(templateType);
-		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
-		 contractsTemplate.setUpdatedBy(user.getUserCode());
-		 contractsTemplate.setUpdatedDate(new Date());
-		 contractsTemplate.setCreatedBy(user.getUserCode());
-		 contractsTemplate.setCreatedDate(new Date());
-		 contractsTemplateService.saveContractTemplate(contractsTemplate);
-		
-	}
-
 	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate){
 		
 		Candidate candidate = null;

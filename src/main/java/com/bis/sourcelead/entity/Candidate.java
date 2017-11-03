@@ -302,6 +302,10 @@ public class Candidate implements Serializable{
 	 @Transient
 	 @JsonProperty
 	 private String candidateScore;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String isCandidateSubmitted;
 	    
 	 @Transient
 	 private int noOfReq;
@@ -1626,6 +1630,16 @@ public class Candidate implements Serializable{
 	public void setFileUrl(String fileUrl)
 	{
 		this.fileUrl = fileUrl;
+	}
+
+	public String getIsCandidateSubmitted()
+	{
+		return isCandidateSubmitted;
+	}
+
+	public void setIsCandidateSubmitted(String isCandidateSubmitted)
+	{
+		this.isCandidateSubmitted = isCandidateSubmitted;
 	}
 
 }
