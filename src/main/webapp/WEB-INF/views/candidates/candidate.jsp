@@ -416,8 +416,8 @@
                </div>
                 </div>
          </div>
-        
-        
+        <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="import">
         <div class="clearfix"></div>
       </div> 
     </div>
