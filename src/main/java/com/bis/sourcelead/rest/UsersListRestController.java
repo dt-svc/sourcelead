@@ -1480,17 +1480,16 @@ public class UsersListRestController {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getClientUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Client");
+						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(clientOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(clientOwnerOrUser);
-						}
+						String spocOwnerName = orgSpoc.getOwnerUser().getFullName();
+						orgSpoc.setOwnerUser(clientOwnerOrUser);
+						orgSpoc.setVendorUser(clientOwnerOrUser);
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						pointOfContactChangedMial(user, orgLocations, orgSpoc, "Vendor", spocOwnerName,clientOwnerOrUser);
 					}
 				}
 
@@ -1500,17 +1499,16 @@ public class UsersListRestController {
 				User vendorOwnerOrUser = new User();
 				vendorOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Vendor");
+						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(vendorOwnerOrUser);
-						}
+						String spocOwnerName = orgSpoc.getOwnerUser().getFullName();
+						orgSpoc.setOwnerUser(vendorOwnerOrUser);
+						orgSpoc.setClientUser(vendorOwnerOrUser);
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						pointOfContactChangedMial(user, orgLocations, orgSpoc, "Client", spocOwnerName,vendorOwnerOrUser);
 					}
 				}
 
@@ -1683,6 +1681,56 @@ public class UsersListRestController {
 	}
 		
 	
+	
+	private void pointOfContactChangedMial(User loginUser, OrgLocations loginOrgLocation,OrgSpoc orgSpoc,String type,String spocOwnerName,User SpocOwner) throws Exception {
+		
+		 String spocUserName = null;
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 if(type.equalsIgnoreCase("Client")) {
+			 emailMessage.setToEmail(orgSpoc.getVendorUser().getEmail());
+			 spocUserName = orgSpoc.getVendorUser().getFullName();
+		 }else {
+			 emailMessage.setToEmail(orgSpoc.getClientUser().getEmail());
+			 spocUserName = orgSpoc.getClientUser().getFullName();
+		 }
+		
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			globalVarsMap.put("spocUserName", spocUserName);
+			User spocOwner = userService.getUserById(SpocOwner.getId());
+			globalVarsMap.put("spocOwnerName", spocOwner.getFullName());
+			globalVarsMap.put("spocOldOwnerName", spocOwnerName);
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			globalVarsMap.put("loginOrgName", loginOrgLocation.getOrgLocationName());
+
+		    InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_SPOC_CONTACT,Constants.ENTITY_TYPE_EMAIL);
+
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		}
 	
 	/**
 	 * To update user and employee By User ID.
