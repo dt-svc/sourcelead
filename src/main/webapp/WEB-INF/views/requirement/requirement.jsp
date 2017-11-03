@@ -1403,7 +1403,7 @@ function validate_fileupload(fileName)
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 		
 		checkTemplateforDouplicate();
 		validateJobId();
@@ -1579,151 +1579,6 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
-
-<!-- Country,State,City Script Starts Here -->
-
-<script type="text/javascript">
-function getAllCountries(){
-	
- setTimeout(function(){ 
-	var countryName ;
-	
-	 if ($('#existingCountry').length)
-	 {
-		 countryName = document.getElementById("existingCountry").value; 
-	 }
-	 else
-	 {
-		 countryName = '';
-	 }
-	 
-	 
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---Select Country---</option>');
-        	for(var i=0;i<json.length;i++){
-            	if(json[i] == countryName ){
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${SourceLeadWeb_loginCountryName}')){
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#countryReq').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
- }, 100);
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#countryReq").val();
-
-	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("existingState").value;
-	}
-	//end state Auto populate
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select State---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	
-	var countryName = $("#countryReq").val();
-	var stateName = $("#state").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("existingCity").value;
-	}
-	//end city Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-
-<!-- Country,State,City Script Ends Here -->
-
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
 	       
@@ -1951,7 +1806,8 @@ function setTemplateValues(){
 			    	
 			    	//$("textarea#description").val(json.description);
 			    	
-			    	$('#txtEditor').html(json.description); 
+			    	$('#txtEditor').text(json.description);
+			    	$('.Editor-editor').text(json.description);
 			    	
 			    	$("#rate").val(json.rate);
 			    	$("#maxRate").val(json.maxRate);
