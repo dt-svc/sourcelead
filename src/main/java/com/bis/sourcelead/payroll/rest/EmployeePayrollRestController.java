@@ -212,6 +212,7 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
 		ResponseList<WageTaxSummary> list = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+		logger.info("=+++++====================================="+list.getData().size());
 		List<WageTaxSummary> data = getSortWageTaxList(list.getData());
 		list.setData(data);
 		return list;
@@ -353,7 +354,6 @@ public class EmployeePayrollRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		
 		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
-//		Collections.sort(payrollReportList,new FinalPayrollComparator());  
 		Collections.sort(payrollReportList, new Comparator() {  
             @Override  
             public int compare(Object obj1, Object obj2) {  
