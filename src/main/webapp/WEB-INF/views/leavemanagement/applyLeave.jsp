@@ -463,7 +463,7 @@ function validateMaxLeave(data){
 	
 }
 </script>
-
+<div class='comMask'></div>
 <script>
 function validateDate(){
 	$('.warMess').hide();
@@ -474,6 +474,7 @@ function validateDate(){
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data != null){
 			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
+			$(".comMask").fadeIn();
 		}else{
 			$('.warMess').hide();
 		}
@@ -482,7 +483,13 @@ function validateDate(){
 
 function closedate(){
 $(".warMess").fadeOut();
+$(".comMask").fadeOut();
 };
+$(".comMask").click(function()
+{
+	$(".comMask").fadeOut();
+	$(".warMess").fadeOut();
+		});
 
 
 </script>
