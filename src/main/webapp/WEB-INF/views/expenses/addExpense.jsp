@@ -60,7 +60,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 	
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();flushDetails();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();flushDetails();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -74,7 +74,7 @@
 				 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" id="expensePurposeId" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div> 
 					
@@ -163,7 +163,7 @@
 						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						   <c:if test="${pm.projectId == expenses.projectId}">
+						   <c:if test="${pm.id == expenses.projectMemberId}">
 				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
 				 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 				 	    	 </c:forEach>
@@ -382,6 +382,7 @@ function removeWhiteSpacesMyExp(rowCount){
 
 <script>
 function getClientBasedOnSelectedProject(){
+	$('#expensePurposeId').val('');
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	 $('#clientNameId').val('');
 	 $('#expenseAutoId').val('');
@@ -403,7 +404,8 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		
+		$('#projectStartDateExpensesId').val('');
+		$('#projectEndDateExpensesId').val('');
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormataddExpense= '';
 		  if(locationDate.match("yyyy-MM-dd")){
