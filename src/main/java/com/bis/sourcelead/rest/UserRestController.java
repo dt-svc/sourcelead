@@ -39,10 +39,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -329,11 +331,15 @@ public class UserRestController {
 	 
 	 
 	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
-		 	String resultJson = null;
+	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
-		 	resultJson = toJSON(user);
-			return resultJson;
+		 	UserDTO userDTO = new UserDTO();
+		 	if(user != null) {
+		 		userDTO.setFirstName(user.getFirstName());
+			 	userDTO.setLastName(user.getLastName());
+			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}
+			return userDTO;
 	   }
 	 
 	 

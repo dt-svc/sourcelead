@@ -302,6 +302,7 @@ public class UserServiceImpl implements UserService {
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
 				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+				
 			}else{
 				candidate.setConsultantUser(user);
 				candidateService.addCandidate(candidate);
@@ -1368,6 +1369,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId,
 			Long orgLocationsId) throws Exception {
 		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
 	}
 	
 }

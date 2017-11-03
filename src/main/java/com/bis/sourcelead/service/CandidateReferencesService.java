@@ -32,4 +32,5 @@ public interface CandidateReferencesService {
 
 	void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate, Long locationId) throws Exception;
 	
+	Boolean validateReferenceEmail(String referenceEmail, Long candidateId) throws Exception;
 }

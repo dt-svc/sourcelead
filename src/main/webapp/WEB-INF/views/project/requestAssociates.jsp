@@ -303,27 +303,22 @@ function emptyRecordsList(){
 function getApproversList(approverId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
 		     		
 		     		if(approverId != null && approverId != '' && approverId != 'undefined' && approverId == opt.id){
 		     			var selected = 'selected';
-		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.name+" ("+opt.userRole+")</option>";
 		     		}else{
-		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "'>"+opt.name+" ("+opt.userRole+")</option>";
 		     		} 
 	     		}
 	     		$("#approver").empty();
@@ -954,7 +949,7 @@ function getAssociatesFilter(){
 			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div class="tbldata-dotdot-sm">';
+			        	result = result +'<div class="tblminwidth-175">';
 			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
 			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
 			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';

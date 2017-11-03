@@ -30,6 +30,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -626,6 +627,13 @@ public class OrgLocations implements Serializable{
 
 
 	public String getDateFormat() {
+		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
+			if((location.contains("INDIA")) ||  StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+				dateFormat =  "dd-MM-yyyy";
+			}else{
+				dateFormat =  "MM-dd-yyyy";
+			}
+		}
 		return dateFormat;
 	}
 
@@ -637,6 +645,13 @@ public class OrgLocations implements Serializable{
 	public SimpleDateFormat getLocFullFormDateFormatter() {
 		if(StringUtils.isNotEmpty(dateFormat)){
 			locFullFormDateFormatter = new SimpleDateFormat(dateFormat);
+		}
+		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
+			if((location.contains("INDIA")) || StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+				   locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_DMY;
+			}else{
+				locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_MDY;
+			}
 		}
 		return locFullFormDateFormatter;
 	}

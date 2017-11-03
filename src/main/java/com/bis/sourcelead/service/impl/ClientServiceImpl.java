@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -156,6 +158,9 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -331,7 +336,7 @@ public class ClientServiceImpl implements ClientService {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
-
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
@@ -470,6 +475,14 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
+		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client MSA Template",Constants.CLIENT_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor MSA Template",Constants.VENDOR_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
 		}
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
@@ -1011,8 +1024,21 @@ public class ClientServiceImpl implements ClientService {
 			User editUser = null;
 			if (StringUtils.isNotBlank(clientDTO.getExistingSpocUserId())) {
 				User existingUser = userService.getUserById(Long.parseLong(clientDTO.getExistingSpocUserId()));
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(),
-						orgLocation.getId());
+				UserRole userRole = null;
+				Candidate candidate = null;
+				Employees employee = null;
+				
+				if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getClientLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+				}else {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getVendorLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+				}
 
 				if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
 					existingUser.setFirstName(clientDTO.getFirstName());
@@ -1043,9 +1069,25 @@ public class ClientServiceImpl implements ClientService {
 					existingUser.setEmail("");
 				}
 				editUser = userService.addUser(existingUser);
-
-				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(),
-						orgLocation.getId());
+				
+				
+				if(candidate != null) {
+					if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
+						candidate.setFirstName(clientDTO.getFirstName());
+					} else {
+						candidate.setFirstName("");
+					}
+					if (StringUtils.isNotBlank(clientDTO.getLastName())){
+						candidate.setLastName(clientDTO.getLastName());
+					} else {
+						candidate.setLastName("");
+					}
+					
+					Candidate savedCandidate = candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+				}
+				
+				
 				// Update the user details for Elk search
 				commonUtil.commonUserUpdate(editUser);
 				userService.saveOrUpdateUserElkDocument(userRole, employee, editUser.getUserCode());

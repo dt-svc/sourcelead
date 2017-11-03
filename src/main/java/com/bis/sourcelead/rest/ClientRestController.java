@@ -838,6 +838,11 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
+		if(orgRelation.getCreatedBy() != null){
+			User user = userService.getUserByUserCode(orgRelation.getCreatedBy());
+			clientVendorDTO.setVendorCreateduserName(user.getFullName());
+		}
+		
 		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
 			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
 			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
@@ -1532,27 +1537,27 @@ public class ClientRestController {
 			}
 			
 			//Country
-			if(clientVendorDTO.getCountry() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
 		    }
-			if(clientVendorDTO.getCountry() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
 		    }
 			
 			
 			 //State
-			if(clientVendorDTO.getState() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
 		    }
-			if(clientVendorDTO.getState() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
 				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorState", clientVendorDTO.getState()));
 		    }
 			
 			//City
-			if(clientVendorDTO.getCity() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
 				boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
 		    }
-			if(clientVendorDTO.getCity() !=null){
+			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
 				boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
 		    }
 			
@@ -1641,7 +1646,7 @@ public class ClientRestController {
 		     clientVendorList.add(clientVendor);
 				
 			}
-			response.setRecordsFiltered(searchHits.length);
+			response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
 							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilderForCount);

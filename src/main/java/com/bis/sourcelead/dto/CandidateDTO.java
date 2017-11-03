@@ -178,6 +178,8 @@ public class CandidateDTO extends SearchDTO{
 	private Integer assignedProjectsCount;
 	
 	private String fileUrl;
+	
+	private String candidateCreationType;
 
 	public String getCandidateId() {
 		return candidateId;
@@ -853,6 +855,16 @@ public class CandidateDTO extends SearchDTO{
 	public void setFileUrl(String fileUrl)
 	{
 		this.fileUrl = fileUrl;
+	}
+
+	public String getCandidateCreationType()
+	{
+		return candidateCreationType;
+	}
+
+	public void setCandidateCreationType(String candidateCreationType)
+	{
+		this.candidateCreationType = candidateCreationType;
 	}
 	
 	
