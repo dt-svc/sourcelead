@@ -119,7 +119,12 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (user != null) {
-				session.saveOrUpdate(user);
+				if(user.getLastName() == null){
+					user.setLastName("");
+					session.saveOrUpdate(user);
+				}else{
+					session.saveOrUpdate(user);
+				}
 			}
 			logger.debug("User Added Successfully");
 		} catch (Exception exception) {
@@ -1144,5 +1149,36 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 	
+	}
+
+	@Override
+	@Transactional
+	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
+			throws Exception {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+         List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationId).setCacheable(true).list();
+         List<Long> ownerRolesList = new ArrayList<Long>();
+         List<User> roleAccessUserList = new ArrayList<User>();
+         
+         for(Roles roles : rolesList){
+	      	 if(null != roles.getActionId()){
+	      		 List<Long> roleActionsList = new ArrayList<Long>();
+	      		 for (String s : roles.getActionId().split(",")){
+	          		 roleActionsList.add(Long.parseLong(s));
+	          	 }
+	      		 
+	      		 if(roleActionsList.contains(roleActionId)) {
+	      			ownerRolesList.add(roles.getId());
+	      		 }
+	      	 }
+	       }
+         
+           String query = "from User user where  user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and  userRole.orgLocations.id =:orgLocationsId)   ";
+	       List<User> userList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationId).setCacheable(true).list();
+	       roleAccessUserList.addAll(userList);
+	       
+	       return roleAccessUserList;
 	}
 }

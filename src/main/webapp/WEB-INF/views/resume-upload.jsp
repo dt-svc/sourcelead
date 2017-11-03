@@ -253,8 +253,7 @@ padding: 2px
 var count = 1;
 	$(document).ready(function() {
 		$(".browseInn input:file").change(function() {
-			var fileName = $(this).val();
-			$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+			updateInputField($(this));
 		});
 		$(".addFilBtn").click(function() {
 			$(".browseScroll").append($("#browserBar").html().replace("abc", "uploadFile"+(count ++)).replace("abcdef", "removeFilBtn"));
@@ -262,24 +261,49 @@ var count = 1;
 				$(this).parent(".browseWrap").remove();
 			});
 			$(".browseInn input:file").change(function() {
-				var fileName = $(this).val();
-				$(this).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+				updateInputField($(this));
 			});
 		});
 		$("#clear").click(function() {
 			count = 1;
 			$(".removeFilBtn").each(function(i) {  $(this).click(); });
 			$("input[type=file]").val('');
-			$('.filename').html("Upload File");
+			$('.filename').html("Choose File(s)");
 		});
 		$("#upload").click(function() {
 			var data1 = new FormData();
 			var j = 0;
+			var validFiles = [];
+			var k = 0;
 			$("input[type=file]").each(function(i) {
 				var files = document.getElementById($(this).attr('id')).files;
-				for(var i=0;i<files.length;i++)
+				for(var i=0;i<files.length;i++) {
+					var validFlag = isValidFile(files[i].name);
+					if(!validFlag)
+						validFiles[k++] = files[i].name;
 					data1.append("inputFile"+(j++), files[i]);
+				}
 			});
+			if(validFiles.length > 0) {
+				var text = "<span class='c'>Unbale to process your request as you have selected unsupported formatted files</span><br/><br/>Unsupported Files:";
+				var rarflag = false;
+				for(var i=0;i<validFiles.length;i++) {
+					text += "<br/>"+validFiles[i];
+					if(validFiles[i].toLowerCase().endsWith(".rar"))
+						rarflag = true;
+				}
+				text += "<br/><br/><span class='a'>To upload candidates using Excel (.xls | .xlsx) file</span> ";
+				text += "<a href='uploadCandidateForm' target='_blank'>Click Here</a>";
+				if(rarflag)
+					text += "<br/><br/><span class='b'>Uploading candidates using rar files will be provided in next release.</span> ";
+				
+				$(".editText").html(text);
+				return;
+			}
+			if(j == 0) {
+				alert("Please select resume(s)");
+				return;
+			}
 			uploadid = new Date().getTime();
 			getUploadStatus();
 			data1.append("uploadid", uploadid);
@@ -298,10 +322,9 @@ var count = 1;
 				        $("#progressBar").html(percentComplete+'%');
 				        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
 				        if (percentComplete === 100) {
-// 				        		$("#progressBar").html('0%');
 				        		$("#progressText").html('Please wait while parsing the uploaded files...');
-				        		$(".progress div").css("width", percentComplete + "%");
-// 				        		$("#progressBar").html('0%');
+				        		$(".progress div").css("width",  "0%");
+				        		$("#progressBar").html('0%');
 				        }
 
 				      }
@@ -325,6 +348,27 @@ var count = 1;
 		});
 		
 	});
+	
+	function updateInputField(ele) {
+		var count = document.getElementById($(ele).attr('id')).files.length;
+		var fileName = $(ele).val();
+		if(count > 1)
+			$(ele).parent().parent().find('.filename').html(count+" file(s) selected | "+ (fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1)));
+		else 
+ 			$(ele).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
+	
+	}
+
+	function isValidFile(fileName) {
+		var fileName = fileName.toLowerCase();
+		if(fileName.endsWith(".doc") 
+			|| fileName.endsWith(".docx") 
+			|| fileName.endsWith(".pdf") 
+			|| fileName.endsWith(".odt")
+			|| fileName.endsWith(".zip"))
+			return true;
+		return false;
+	}
 	
 	var uploadid = 0;
 	function getUploadStatus() {

@@ -78,13 +78,13 @@ width: auto;
 							    <c:when test="${permission=='YES'}">
 								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 						          		<i class="fa fa-check-circle fa-3x"></i>
-							        	<p class="reason-msg">You Have accepted the Job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">You have accepted the job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 							    </c:when>    
 							    <c:otherwise>
 							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
-							        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							    </c:otherwise>
 							  </c:choose>
 						  </div>
@@ -114,7 +114,7 @@ width: auto;
 					     <c:otherwise>
 							    <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          	<i class="fa fa-clock-o fa-3x"></i>
-							        <p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        <p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							     </div>
 							    </c:otherwise>    
 					  </c:choose>
@@ -144,7 +144,7 @@ width: auto;
 					    <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
-					        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+					        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
 					  </c:choose>
