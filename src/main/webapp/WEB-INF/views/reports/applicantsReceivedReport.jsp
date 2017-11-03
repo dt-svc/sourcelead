@@ -840,4 +840,4 @@ function getDayWiseAppRecReports(){
 }
 
 </script>
-
+<jsp:include page="../masterFooter.jsp"></jsp:include>
