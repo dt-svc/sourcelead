@@ -354,9 +354,9 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			
 			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
 			   }else{
-				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			
 			    spocsList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
