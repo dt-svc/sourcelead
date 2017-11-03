@@ -525,7 +525,7 @@ function preventTabkey(e){
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	            <li class="reportsH">
-					<a title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
+					<a title="Reports" href="<c:url value='${sourceleadUrl}/userReports'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
             </c:if>
             

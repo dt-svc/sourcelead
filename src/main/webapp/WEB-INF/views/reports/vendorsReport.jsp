@@ -1,10 +1,96 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+<style>
+#billing_chartdiv {
+  	width:100%; height:300px;
+}
+.reportBtns {
+    width: 65%;
+}
+.reportBtn {
+    width: 20%;
+}																		
+</style>
 <script type="text/javascript">
 window.onload = function() { 
 	getVendorsReportList();
 	}
 </script>
 
+
+
+<section class="content-wraper">
+<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>Vendors Report </h2>
+			</div>
+			<div class="pull-right brud-crum"><a href="/sourcelead/dashboard/3">Home</a>»Client List</div>
+</section>
+
+
+<div class="timesheet_out">
+    <div class="vendor_wrap">
+      <div class="timesheet_head">
+<div class="pull-left reportBtns mt5 mb10">
+<h4 class="pull-left mr">Vendors Report</h4>
+	  <div class="reportBtn select-field pull-left">
+		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
+		  <option value="today">Today</option>
+		  <option value="yesterday">Yesterday</option>
+		  <option value="week">1 Week ago</option>
+		  <option value="twoweeks">2 Weeks ago</option>
+		  <option value="month">1 Month ago</option>
+		  <option value="twomonths">2 Months ago</option>
+		   <option value="custom">Custom</option> 
+		</select>
+	 </div>	
+	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
+	 <div id="dateShow" style="display:none">
+	 <span class="dashboard-datepkr">
+	 <input type="text" class="form-control" value="" id="vendorStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="vendorreportStartDate" class="ReError"></p>
+	 </span>
+	<span class="dashboard-datepkr">
+	<input type="text"  class="form-control" value="" id="vendorEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="vendorreportEndDate" class="ReError"></p>
+	</span>
+	<span class=""><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getVendorCustomReports();" /></span>
+	</div>
+	
+        <div class="clearfix"></div>
+      </div>
+  
+ <div class="clearfix">
+<section class="candidate_wrap_table recruiterReports_table">
+
+<div id="vendorReportsDiv" class="datatable_filter"></div>
+
+<div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
+
+</section>    
+ </div>
+      
+ </div>
+
+
+  </div>
+  </div>
+</section>
 <script>
 function getVendorsReportList(){
 	$('#reportStartDate').empty();
@@ -114,10 +200,10 @@ function prepareReportDataDiv(data){
 </script>
 <script>
 function vendorReportPagination(){
-	$('#vendorReportPagination').DataTable({ 
+	$('#vendorReportPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -644,3 +730,4 @@ function getVendorCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
+<jsp:include page="../masterFooter.jsp" />

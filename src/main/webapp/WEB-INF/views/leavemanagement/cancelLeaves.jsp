@@ -235,7 +235,7 @@
 										+ ' <div class="viewgrid-header pull-right zIndex positionRelative">';
 								// 			 result = result +' <span class="btn btn-primary btn-sm mr10">Rejected</span>';
 								result = result
-										+ ' <span class="btn btn-danger btn-sm mr10" onClick="cancel()">Cancel</span>';
+										+ ' <span class="btn btn-danger btn-sm mr10" title="CANCEL" onClick="cancel()">CANCEL</span>';
 								result = result
 										+ '<div class="clearfix"></div>';
 								result = result
