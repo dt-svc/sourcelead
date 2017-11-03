@@ -875,8 +875,8 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
  */
 jQueryFormUtils.validate = function(value, el, language, config, form) {
 
-	if(el.attr('type') && el.attr('type').toLowerCase() !== "password")
-		el.val(el.val().trim());
+	//if(el.attr('type') && el.attr('type').toLowerCase() !== "password")
+		//el.val(el.val().trim());
     var optional = el.attr("data-validation-optional");
     
     // test if a checkbox forces this element to be validated
