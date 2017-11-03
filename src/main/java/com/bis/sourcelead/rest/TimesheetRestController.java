@@ -47,6 +47,7 @@ import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.TimesheetStoringDTO;
 import com.bis.sourcelead.dto.TimesheetTaskDTO;
+import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -713,13 +714,46 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			 timesheetEntriesList =   timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(ts.getId());
 		  }	
 		  LinkedList<TimesheetEntriesDTO> entriesDTOList = new LinkedList<>();
+		  Float monDayTotalHours = 0f;
+		  Float monDayBillableHours = 0f;
+		  Float monDayNonBillableHours = 0f;
+		  
+		  Float tuesDayTotalHours = 0f;
+		  Float tuesDayBillableHours = 0f;
+		  Float tuesDayNonBillableHours = 0f;
+		  
+		  Float wedDayTotalHours = 0f;
+		  Float wedDayBillableHours = 0f;
+		  Float wedDayNonBillableHours = 0f;
+		  
+		  Float thursDayTotalHours = 0f;
+		  Float thursDayBillableHours = 0f;
+		  Float thursDayNonBillableHours = 0f;
+		  
+		  Float friDayTotalHours = 0f;
+		  Float friDayBillableHours = 0f;
+		  Float friDayNonBillableHours = 0f;
+		  
+		  Float satDayTotalHours = 0f;
+		  Float satDayBillableHours = 0f;
+		  Float satDayNonBillableHours = 0f;
+		  
+		  Float sunDayTotalHours = 0f;
+		  Float sunDayBillableHours = 0f;
+		  Float sunDayNonBillableHours = 0f;
+		  
+		  Float totalHours = 0f;
+		  Float billableHours = 0f;
+		  Float nonBillableHours = 0f;
+		  
 		  if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
 				  for(TimesheetEntries te   : timesheetEntriesList){
+					     String billableType = te.getProjectTask().getBillableType();
 						 //Project Tasks
 						 TimesheetTaskDTO timesheetTaskDTO	= new TimesheetTaskDTO();	
 						 timesheetTaskDTO.setId(te.getProjectTask().getId());
 						 timesheetTaskDTO.setTaskName(te.getProjectTask().getTaskName());
-						 timesheetTaskDTO.setTaskType(te.getProjectTask().getBillableType());
+						 timesheetTaskDTO.setTaskType(billableType);
 						 
 						//TimesheetEntry For Mon
 						 TimesheetEntriesDTO teMonDTO = new TimesheetEntriesDTO();
@@ -735,6 +769,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teMonDTO.setHours(te.getMonHours());
 						 teMonDTO.setComments(te.getMoncomments());
 						 entriesDTOList.add(teMonDTO);
+						 monDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getMonHours().replace(":", ".")), monDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							monDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getMonHours().replace(":", ".")), monDayNonBillableHours);
+						 }
+						 else{
+							monDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getMonHours().replace(":", ".")), monDayBillableHours);
+						 }
 						 
 						//TimesheetEntry For Tue
 						 TimesheetEntriesDTO teTueDTO = new TimesheetEntriesDTO();
@@ -750,6 +791,14 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teTueDTO.setHours(te.getTueHours());
 						 teTueDTO.setComments(te.getTuecomments());
 						 entriesDTOList.add(teTueDTO);
+						 tuesDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getTueHours().replace(":", ".")), tuesDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							tuesDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getTueHours().replace(":", ".")), tuesDayNonBillableHours);
+						 }
+						 else{
+							tuesDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getTueHours().replace(":", ".")), tuesDayBillableHours);
+						 }
+						 
 						 
 						//TimesheetEntry For Wed
 						 TimesheetEntriesDTO teWedDTO = new TimesheetEntriesDTO();
@@ -765,6 +814,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teWedDTO.setHours(te.getWedHours());
 						 teWedDTO.setComments(te.getWedcomments());
 						 entriesDTOList.add(teWedDTO);
+						 wedDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getWedHours().replace(":", ".")), wedDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							wedDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getWedHours().replace(":", ".")), wedDayNonBillableHours);
+						 }
+						 else{
+							wedDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getWedHours().replace(":", ".")), wedDayBillableHours);
+						 }
 						 
 						//TimesheetEntry For Wed
 						 TimesheetEntriesDTO teThuDTO = new TimesheetEntriesDTO();
@@ -780,6 +836,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teThuDTO.setHours(te.getThuHours());
 						 teThuDTO.setComments(te.getThucomments());	   
 						 entriesDTOList.add(teThuDTO);
+						 thursDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getThuHours().replace(":", ".")), thursDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							thursDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getThuHours().replace(":", ".")), thursDayNonBillableHours);
+						 }
+						 else{
+							 thursDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getThuHours().replace(":", ".")), thursDayBillableHours);
+						 }
 						 
 						//TimesheetEntry For Fri
 						 TimesheetEntriesDTO teFriDTO = new TimesheetEntriesDTO();
@@ -795,6 +858,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teFriDTO.setHours(te.getFriHours());
 						 teFriDTO.setComments(te.getFricomments());	   
 						 entriesDTOList.add(teFriDTO);
+						 friDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getFriHours().replace(":", ".")), friDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							friDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getFriHours().replace(":", ".")), friDayNonBillableHours);
+						 }
+						 else{
+							friDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getFriHours().replace(":", ".")), friDayBillableHours);
+						 }
 						 
 						//TimesheetEntry For SAT
 						 TimesheetEntriesDTO teSatDTO = new TimesheetEntriesDTO();
@@ -810,6 +880,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 teSatDTO.setHours(te.getSatHours());
 						 teSatDTO.setComments(te.getSatcomments());	   		              
 						 entriesDTOList.add(teSatDTO);
+						 satDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSatHours().replace(":", ".")), satDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							 satDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getSatHours().replace(":", ".")), satDayNonBillableHours);
+						 }
+						 else{
+							 satDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSatHours().replace(":", ".")), satDayBillableHours);
+						 }
 						 
 						//TimesheetEntry For SUN
 						 TimesheetEntriesDTO teSunDTO = new TimesheetEntriesDTO();
@@ -824,7 +901,14 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }
 						 teSunDTO.setHours(te.getSunHours());
 						 teSunDTO.setComments(te.getSuncomments());	 
-						 entriesDTOList.add(teSunDTO);			  
+						 entriesDTOList.add(teSunDTO);	
+						 sunDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSunHours().replace(":", ".")), sunDayTotalHours);
+						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
+							sunDayNonBillableHours  = CommonUtil.getCombinedHours(Float.parseFloat(te.getSunHours().replace(":", ".")), sunDayNonBillableHours);
+						 }
+						 else{
+							sunDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSunHours().replace(":", ".")), sunDayBillableHours);
+						 }
 					}
 				    tsDTO.setTimesheetEntries(entriesDTOList);
 		}
@@ -832,65 +916,116 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 /**
 		  * Current Week Days 
 		  */
-		 Map<String,Map<String,Boolean>> weekDays	= new LinkedHashMap<>();
-		 Map<String,Boolean> isMondayEditable = new LinkedHashMap<>();
+		 ArrayList<WeekDaysDTO> weekDays = new ArrayList<>();
+		 WeekDaysDTO monDayDTO	= new WeekDaysDTO();
+		 monDayDTO.setDate(weekStartDate);
+		 monDayDTO.setDayOfTheDate("Mon");
 		 if(disbleCondition1.toString().equalsIgnoreCase("disabled")){
-			 isMondayEditable.put("Mon", false);
+			 monDayDTO.setEditable(false);
 		 }else{
-			 isMondayEditable.put("Mon", true);
+			 monDayDTO.setEditable(true);
 		 }
-		 weekDays.put(weekStartDate, isMondayEditable);
+		 monDayDTO.setTotalHours(monDayTotalHours.toString());
+		 monDayDTO.setBillableHours(monDayBillableHours.toString());
+		 monDayDTO.setNonBillableHours(monDayNonBillableHours.toString());
+		 weekDays.add(monDayDTO);
 		 
-		 Map<String,Boolean> isTuesdayEditable = new LinkedHashMap<>();
+		 
+		 WeekDaysDTO tuesDayDTO	= new WeekDaysDTO();
+		 tuesDayDTO.setDate(tuesDayDate);
+		 tuesDayDTO.setDayOfTheDate("Tue");
 		 if(disbleCondition2.toString().equalsIgnoreCase("disabled")){
-			 isTuesdayEditable.put("Tue", false);
+			 tuesDayDTO.setEditable(false);
 		 }else{
-			 isTuesdayEditable.put("Tue", true);
+			 tuesDayDTO.setEditable(true);
 		 }
-		 weekDays.put(tuesDayDate, isTuesdayEditable);
-		
-		 Map<String,Boolean> isWednesdayEditable = new LinkedHashMap<>();
+		 tuesDayDTO.setTotalHours(tuesDayTotalHours.toString());
+		 tuesDayDTO.setBillableHours(tuesDayBillableHours.toString());
+		 tuesDayDTO.setNonBillableHours(tuesDayNonBillableHours.toString());
+		 weekDays.add(tuesDayDTO);
+		 
+		 
+		 WeekDaysDTO wedDayDTO	= new WeekDaysDTO();
+		 wedDayDTO.setDate(WednesDayDate);
+		 wedDayDTO.setDayOfTheDate("Wed");
 		 if(disbleCondition3.toString().equalsIgnoreCase("disabled")){
-			 isWednesdayEditable.put("Wed", false);
+			 wedDayDTO.setEditable(false);
 		 }else{
-			 isWednesdayEditable.put("Wed", true);
+			 wedDayDTO.setEditable(true);
 		 }
-		 weekDays.put(WednesDayDate, isWednesdayEditable);
+		 wedDayDTO.setTotalHours(wedDayTotalHours.toString());
+		 wedDayDTO.setBillableHours(wedDayBillableHours.toString());
+		 wedDayDTO.setNonBillableHours(wedDayNonBillableHours.toString());
+		 weekDays.add(wedDayDTO);
 		 
-		 Map<String,Boolean> isThursdayEditable = new LinkedHashMap<>();
+		 
+		 WeekDaysDTO thursDayDTO	= new WeekDaysDTO();
+		 thursDayDTO.setDate(ThursDayDate);
+		 thursDayDTO.setDayOfTheDate("Thu");
 		 if(disbleCondition4.toString().equalsIgnoreCase("disabled")){
-			 isThursdayEditable.put("Thu", false);
+			 thursDayDTO.setEditable(false);
 		 }else{
-			 isThursdayEditable.put("Thu", true);
+			 thursDayDTO.setEditable(true);
 		 }
-		 weekDays.put(ThursDayDate, isThursdayEditable);
+		 thursDayDTO.setTotalHours(thursDayTotalHours.toString());
+		 thursDayDTO.setBillableHours(thursDayBillableHours.toString());
+		 thursDayDTO.setNonBillableHours(thursDayNonBillableHours.toString());
+		 weekDays.add(thursDayDTO);
 		 
-		 Map<String,Boolean> isFridayEditable = new LinkedHashMap<>();
+		 
+		 WeekDaysDTO friDayDTO	= new WeekDaysDTO();
+		 friDayDTO.setDate(FriDayDate);
+		 friDayDTO.setDayOfTheDate("Fri");
 		 if(disbleCondition5.toString().equalsIgnoreCase("disabled")){
-			 isFridayEditable.put("Fri", false);
+			 friDayDTO.setEditable(false);
 		 }else{
-			 isFridayEditable.put("Fri", true);
+			 friDayDTO.setEditable(true);
 		 }
-		 weekDays.put(FriDayDate, isFridayEditable);
+		 friDayDTO.setTotalHours(friDayTotalHours.toString());
+		 friDayDTO.setBillableHours(friDayBillableHours.toString());
+		 friDayDTO.setNonBillableHours(friDayNonBillableHours.toString());
+		 weekDays.add(friDayDTO);
 		 
-		 Map<String,Boolean> isSaturdayEditable = new LinkedHashMap<>();
+		 
+		 WeekDaysDTO satDayDTO	= new WeekDaysDTO();
+		 satDayDTO.setDate(SaturdayDate);
+		 satDayDTO.setDayOfTheDate("Sat");
 		 if(disbleCondition6.toString().equalsIgnoreCase("disabled")){
-			 isSaturdayEditable.put("Sat", false);
+			 satDayDTO.setEditable(false);
 		 }else{
-			 isSaturdayEditable.put("Sat", true);
+			 satDayDTO.setEditable(true);
 		 }
-		 weekDays.put(SaturdayDate, isSaturdayEditable);
+		 satDayDTO.setTotalHours(satDayTotalHours.toString());
+		 satDayDTO.setBillableHours(satDayBillableHours.toString());
+		 satDayDTO.setNonBillableHours(satDayNonBillableHours.toString());
+		 weekDays.add(satDayDTO);
 		 
-		
-		 Map<String,Boolean> isSundayEditable = new LinkedHashMap<>();
+		 WeekDaysDTO sunDayDTO	= new WeekDaysDTO();
+		 sunDayDTO.setDate(SundayDate);
+		 sunDayDTO.setDayOfTheDate("Sun");
 		 if(disbleCondition7.toString().equalsIgnoreCase("disabled")){
-			 isSundayEditable.put("Sun", false);
+			 sunDayDTO.setEditable(false);
 		 }else{
-			 isSundayEditable.put("Sun", true);
+			 sunDayDTO.setEditable(true);
 		 }
-		 weekDays.put(SundayDate, isSundayEditable);
+		 sunDayDTO.setTotalHours(sunDayTotalHours.toString());
+		 sunDayDTO.setBillableHours(sunDayBillableHours.toString());
+		 sunDayDTO.setNonBillableHours(sunDayNonBillableHours.toString());
+		 weekDays.add(sunDayDTO);
+
 		 tsDTO.setWeekDays(weekDays);
+		 if(ts != null && StringUtils.isNotBlank(ts.getTotalHours()))
+			 totalHours = Float.parseFloat(ts.getTotalHours());
+		 tsDTO.setTotalHours(totalHours.toString());
 		 
+		 if(ts != null &&StringUtils.isNotBlank(ts.getBillableHours()))
+			 billableHours = Float.parseFloat(ts.getBillableHours());
+		 tsDTO.setBillableHours(billableHours.toString());
+		 
+		 if(ts != null && StringUtils.isNotBlank(ts.getNonBillableHours()))
+			 nonBillableHours = Float.parseFloat(ts.getNonBillableHours());
+		 
+		 tsDTO.setNonBillableHours(nonBillableHours.toString());
 		 /**
 		  * Project Task List
 		  */
