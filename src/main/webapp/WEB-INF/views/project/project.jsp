@@ -1111,19 +1111,20 @@ function getProjectLevel1Approvers(approverUserId){
 </script>
 <script>
 function getBudgetApprover(approverUserId){
+	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	var actionType = "ROLE_BUDGET_APPROVER";
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+	        url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	        success: function(json) {
 	        	var output = "";
-// 	        	output = output + "<option value=''>-- Select Budget Approver --</option>";
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		 var opt = json[i];
 	        		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.name+" ("+opt.userRole+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+"</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.name+" ("+opt.userRole+")</option>";
 		        		}
 				}
 		        $("#budgetApprover").append(output);

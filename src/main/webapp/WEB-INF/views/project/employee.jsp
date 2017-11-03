@@ -2335,9 +2335,11 @@ function removeErrMsg(){
 function getApproversList(approverUserId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_BUDGET_APPROVER";
+
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
     			var output = "";
      			output = output + "<option value=''>--Select Approver--</option>";
@@ -2345,17 +2347,10 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	     		{
 		     		var opt = json[i];
 		     		
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
-		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.name+" ("+opt.userRole+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.name+" ("+opt.userRole+")</option>";
 		        		}
 		     		 
 	     		}
