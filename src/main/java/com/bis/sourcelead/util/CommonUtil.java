@@ -49,7 +49,9 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -68,6 +70,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -149,6 +152,9 @@ public class CommonUtil {
 	
 	@Autowired
 	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -1461,6 +1467,24 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
 		return datesStrLisr;
+	}
+	
+	
+	public void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
+		 ContractsTemplate contractsTemplate = new ContractsTemplate();
+		 contractsTemplate.setTemplateName(templateType);
+		 contractsTemplate.setDescription(templateType);
+		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
+		 contractsTemplate.setOrgLocationId(orgLocations);
+		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		 contractsTemplate.setUpdatedBy(user.getUserCode());
+		 contractsTemplate.setUpdatedDate(new Date());
+		 contractsTemplate.setCreatedBy(user.getUserCode());
+		 contractsTemplate.setCreatedDate(new Date());
+		 contractsTemplateService.saveContractTemplate(contractsTemplate);
+		
 	}
 		
 }
