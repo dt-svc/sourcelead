@@ -226,11 +226,11 @@ overflow-x: auto;
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
-					<sec:authorize access="hasAnyRole('ROLE_ADD_RESOURCE_REQUEST','ROLE_VIEW_EDIT_RESOURCE_REQUEST','ROLE_ADD_REQUEST_ASSOCIATE','ROLE_VIEW_EDIT_REQUEST_ASSOCIATE','ROLE_RESOURCE_REQUEST_APPROVER')">
+					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 					   <jsp:include page="resourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
 					
-					<sec:authorize access="hasAnyRole('ROLE_BUDGET_APPROVER','ROLE_ADD_BUDGET_REQUEST','ROLE_VIEW_EDIT_BUDGET_REQUEST')">
+					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
 					   <jsp:include page="budgetRequest.jsp"></jsp:include>
 					</sec:authorize>
 					
