@@ -1480,14 +1480,12 @@ public class UsersListRestController {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getClientUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Client");
+						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(clientOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(clientOwnerOrUser);
-						}
+						orgSpoc.setOwnerUser(clientOwnerOrUser);
+						orgSpoc.setVendorUser(clientOwnerOrUser);
+						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
@@ -1500,14 +1498,11 @@ public class UsersListRestController {
 				User vendorOwnerOrUser = new User();
 				vendorOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Vendor");
+						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(vendorOwnerOrUser);
-						}
+						orgSpoc.setOwnerUser(vendorOwnerOrUser);
+						orgSpoc.setClientUser(vendorOwnerOrUser);
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
