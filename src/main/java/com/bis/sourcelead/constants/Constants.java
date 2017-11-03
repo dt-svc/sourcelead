@@ -78,6 +78,7 @@ public class Constants {
 	public static final DateFormat M = new SimpleDateFormat("MMMM");
 	public static final DateFormat DF_MM = new SimpleDateFormat("MM");
 	public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static final DateFormat DF_MDY = new SimpleDateFormat("MM-dd-yyyy");
 	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("dd MMM");
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
@@ -834,8 +835,10 @@ public class Constants {
 	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o bgYellow";
 	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
 	
-	
+	public static final String MANUAL_CANDIDATE = "manual";
+	public static final String IMPORT_CANDIDATE = "import";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
+	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";
 	public static final String CANDIDATE_DELETED = "deleted profile";
 	public static final String CANDIDATE_REACTIVATED = "reactivated profile";
