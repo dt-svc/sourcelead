@@ -19,11 +19,6 @@
   	width:100%; height:300px;
 }
 .reportBtns {
-    width: 65%;
-}
-.reportBtn {
-    width: 20%;
-}																		
 </style>
 <script type="text/javascript">
 window.onload = function() { 
@@ -38,16 +33,16 @@ window.onload = function() {
 			<div class="pull-left">
 				<h2>Vendors Report </h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="/sourcelead/dashboard/3">Home</a>»Client List</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Vendors Reports </div>
 </section>
 
 
 <div class="timesheet_out">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-<div class="pull-left reportBtns mt5 mb10">
+<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
 <h4 class="pull-left mr">Vendors Report</h4>
-	  <div class="reportBtn select-field pull-left">
+	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>

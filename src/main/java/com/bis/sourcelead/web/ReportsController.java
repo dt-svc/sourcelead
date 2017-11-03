@@ -48,17 +48,13 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 	 
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-	 /*boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-	 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
-	 */ 
+	
 	 
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
-	/* model.addObject("vendorTabAccess", vendorTabAccess);
-	 model.addObject("billingTabAccess", billingTabAccess);*/
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/recruitersReports");
 	 return model;
@@ -67,9 +63,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		
 	
 	@RequestMapping(value = "/userReports")
-	public ModelAndView userReports(HttpServletRequest request)
+	public ModelAndView userReports(HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+		  
+		
 		ModelAndView model = new ModelAndView();
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.addObject("billingTabAccess", billingTabAccess);
 		 model.setViewName("reports/userReports");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
