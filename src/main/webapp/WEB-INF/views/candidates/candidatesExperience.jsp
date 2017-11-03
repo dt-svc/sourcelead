@@ -219,7 +219,7 @@ function closeCertificatePopup(){
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true"  >';
+		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true"  >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		result = result + '	                 <div id="endDateDiv">';
@@ -243,7 +243,7 @@ function closeCertificatePopup(){
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_int validate_length length4" data-validation-optional="true" >';
+		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
@@ -410,7 +410,7 @@ function closeCertificatePopup(){
 								result = result + '</div>';
 								result = result	+ '<div class="col-md-6">';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+json.startYear+'" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="'+json.startYear+'" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
 									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 								}
@@ -497,7 +497,7 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="col-md-6">';
 								
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit1" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control" value="'+json.endYear+'" id="endYearEdit1" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
 									result = result	+ '<input type="text" max class="form-control" value="" id="endYearEdit" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 								}
@@ -910,7 +910,7 @@ function monthIfYearRequired(){
 	var startMonth= document.getElementById("startMonth").value;
 	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
 		 $('#startYear').removeAttr('data-validation-optional');
-	     $('#startYear').attr("data-validation","required"); 
+	     $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 	}else{
 		 $('#startYear').removeAttr('data-validation');
 		 $('#startYear').attr("data-validation-optional","true"); 
@@ -920,7 +920,7 @@ function monthIfYearRequired(){
 	
 	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
 			 $('#endYear').removeAttr('data-validation-optional');
-		     $('#endYear').attr("data-validation","required"); 
+		     $('#endYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 		}else{
 			 $('#endYear').removeAttr('data-validation');
 			 $('#endYear').attr("data-validation-optional","true"); 
