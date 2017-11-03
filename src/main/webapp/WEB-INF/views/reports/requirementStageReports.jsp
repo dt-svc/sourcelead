@@ -280,7 +280,7 @@ function getRequirementStageList(){
       <h2 class="pull-left">Job Stages Reports</h2>
 		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/userReports'/>">Dashboard Reports</a>&nbsp;&raquo; Jobs Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

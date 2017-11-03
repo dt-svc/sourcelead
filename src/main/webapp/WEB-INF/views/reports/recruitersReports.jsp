@@ -18,12 +18,6 @@
 #billing_chartdiv {
   	width:100%; height:300px;
 }
-.reportBtns {
-    width: 65%;
-}
-.reportBtn {
-    width: 20%;
-}																		
 </style>
 <script type="text/javascript">
 	window.onload = function () {
@@ -48,14 +42,14 @@ function getDayWiseReports(){
 			<div class="pull-left">
 				<h2>Recruiters Report </h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="/sourcelead/dashboard/3">Home</a>»Client List</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Recruiter Reports </div>
 </section>
 
 
 <div style="overflow: auto;" class=" vendor_wrap"> 
-   <div class="pull-left reportBtns mt5 mb10">
+   <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
 <h4 class="pull-left">Recruiters Report</h4>
-		  <div class="reportBtn select-field  pull-left ml">
+		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
 <!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
@@ -167,6 +161,7 @@ function getCustomReports(){
 	        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	
             	     $("#usersList").empty();
+                     $("#usersList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
                 	 var result = "";
                 	 result = result +"<table id='reportPagination' class='display' cellspacing='0' width='99.9%' >"; 
                      result = result +"<thead>"; 
