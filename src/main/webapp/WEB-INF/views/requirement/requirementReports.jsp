@@ -635,3 +635,4 @@ function getCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
+<jsp:include page="../masterFooter.jsp" />

@@ -224,7 +224,6 @@ function addResume(candidateId) {
 --%>
 <script type="text/javascript">
 	function storeCandidateResume(candidateId,resumeId){
-		alert("11111")	
 		var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
@@ -234,7 +233,6 @@ function addResume(candidateId) {
 			 if ($('#candidateResume_form').validate(false, validationSettings)){
 
 				var formData =  getFormData('candidateResume_form'); 
-				alert("hhhhh")
 				$("#candidateResume_form").attr("disabled", "disabled");
 			    $("#add_resume").attr("disabled", "disabled");
 
