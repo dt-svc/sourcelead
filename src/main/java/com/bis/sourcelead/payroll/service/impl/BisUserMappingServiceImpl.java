@@ -153,14 +153,14 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							String comments = getCellValueAsString(row.getCell(13), fileName);
 							bisUserMapping.setComments(comments);
 						}
-//						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-//							advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
-//							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
-//						}
-//						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-//							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
-//							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
-//						}
+						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+						 advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
+							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
+						}
+						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
+							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
+						}
 						bisUserMapping.setCreatedBy(user.getUserCode());
 						bisUserMapping.setCreatedDate(new Date());
 						bisUserMapping.setUpdatedBy(user.getUserCode());
