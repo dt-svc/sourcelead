@@ -1546,8 +1546,8 @@ function previewTemplatePDF(){
 		 }else{
 		 	$("#flatReward").val("");
        	  
-       	    $("#billingRateType").val("");
-       	    $("#billingRateType").val("").trigger('change');
+       	    $("#billingRateType").val("${currencyCode}");
+       	    $("#billingRateType").trigger('change');
        	  
        	    $("#billingRatePer").val("");
        	    $("#billingRatePer").val("").trigger('change');
