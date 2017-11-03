@@ -2158,7 +2158,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else if(Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
 				vendorContracts.setContractType(Constants.VENDOR_NSA);
 			}
-				vendorContracts.setContractType(Constants.CLIENT_MSA);
 				vendorContracts.setInitiatorType(Constants.CLIENT);
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setParentContractId(savedContracts);

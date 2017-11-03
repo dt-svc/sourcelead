@@ -664,8 +664,10 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequsetListByBudgetStatusAndOrgLocationId", method = RequestMethod.GET)
-			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(orgLocationId, requestType);
+			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+					@RequestParam(value="requestType", required=true) String requestType,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, requestType,userRoleName);
 			  return projectBudgetList;
 			  
 		    }
@@ -678,8 +680,10 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequestListCount", method = RequestMethod.GET)
-			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(orgLocationId);
+			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="approverUserId", required=true) Long approverUserId,
+					@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId, userRoleName);
 	        	  ProjectBudget projectBudget = new ProjectBudget();
 				  Integer waitingCount = 0;
 				  Integer approvedCount = 0;
