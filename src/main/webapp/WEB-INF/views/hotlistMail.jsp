@@ -285,12 +285,16 @@ $(function() {
   		 var formData = new FormData(form)
 	  		
 		
-  		var toEmails =  $('#emailsList_chosen span').size();
+  		/* var toEmails =  $('#emailsList_chosen span').size();
   		var otherEmails =  $('#otherEmails_chosen span').size();
   		
-  		var selectedEmails = toEmails + otherEmails;
+  		var selectedEmails = toEmails + otherEmails; */
   		
-  	    if(selectedEmails < 1){
+  		 var toEmails =  $('#emailsList').val();
+  		 var otherEmails =  $('#otherEmails').val();
+  		 
+  		
+  	    if(toEmails == null && otherEmails == null){
   	    	
   	    	alertMailerMsg();
   	    }
