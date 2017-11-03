@@ -188,7 +188,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private int profilePercentage;
 	 
-	
+	private String candidateCreationType;
+
 
 	public String getCandidateId() {
 		return candidateId;
@@ -866,6 +867,7 @@ public class CandidateDTO extends SearchDTO{
 		this.fileUrl = fileUrl;
 	}
 
+
 	public LinkedHashSet<String> getAllAndCandidateVisa() {
 		return allAndCandidateVisa;
 	}
@@ -896,6 +898,15 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setProfilePercentage(int profilePercentage) {
 		this.profilePercentage = profilePercentage;
+	}
+	public String getCandidateCreationType()
+	{
+		return candidateCreationType;
+	}
+
+	public void setCandidateCreationType(String candidateCreationType)
+	{
+		this.candidateCreationType = candidateCreationType;
 	}
 	
 	
