@@ -511,7 +511,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    
 		    LinkedList<TimesheetTaskDTO> taskDTOList = new LinkedList<>();
 		    Collection<ProjectTasks> projectTasksList = projectTasksService.getAllTasksByProjectId(projectMember.getProjects().getId());
-		    if(projectTasksList != null && projectTasksList.isEmpty()){
+		    if(projectTasksList != null && !projectTasksList.isEmpty()){
 		    	for(ProjectTasks pt :projectTasksList){
 		    		TimesheetTaskDTO taskDTO = new TimesheetTaskDTO();
 		    		taskDTO.setId(pt.getId());
