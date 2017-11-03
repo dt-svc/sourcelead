@@ -59,7 +59,7 @@ public class TokenManagerImpl implements TokenManager {
 			tokenInfoList = getUserTokens(userDetails,session);
 		}
 		
-		if(tokenInfoList != null && !tokenInfoList.isEmpty()){
+		if(tokenInfoList != null && !tokenInfoList.isEmpty() && !tokenInfoList.contains(null)){
 			tokenInfo = tokenInfoList.iterator().next();
 			token = tokenInfo.getToken();
 		}
