@@ -29,6 +29,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -217,13 +218,14 @@ public class Candidate implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-    @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
+    @JoinColumn(name="ORG_RELATION_ID")        
     private OrgRelations orgRelationId; 
 	   
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-    @JoinColumn(name="SPOC_ID", nullable=false )        
+	@JsonBackReference
+    @JoinColumn(name="SPOC_ID" )        
     private OrgSpoc spocId; 
 	
 	@Transient
