@@ -19,12 +19,6 @@
 <style>
 #billing_chartdiv {
   	width:100%; height:300px;
-}
-.reportBtns {
-    width: 65%;
-}
-.reportBtn {
-    width: 20%;
 }																		
 </style>
 
@@ -42,16 +36,16 @@ $(document).ready(function(){
 			<div class="pull-left">
 				<h2>Billing Reports </h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="/sourcelead/dashboard/3">Home</a>»Client List</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Billing Reports </div>
 </section>
 
 
 <div class="vendor_wrap clearfix">
 
    <div class="timesheet_head">
-<div class="pull-left reportBtns mt5 mb10">
+<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
 <h4 class="pull-left mr">Billing Report</h4>
-	  <div class="reportBtn select-field pull-left">
+	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
 		  <option value="THIS_QUARTER">This quarter</option>

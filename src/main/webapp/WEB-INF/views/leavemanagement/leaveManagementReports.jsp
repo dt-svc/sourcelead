@@ -634,7 +634,6 @@ function totalLeaveByEmployeeBarChart(data){
 }
 </script>
 
-
 <script>
 function getPieChartBasedOnUser(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -662,6 +661,7 @@ function getPieChartBasedOnUser(){
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';
+      	            
       	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
       						"type": "pie",
       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",

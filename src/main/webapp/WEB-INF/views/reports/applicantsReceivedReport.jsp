@@ -6,7 +6,19 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- Content Area -->
+
+<style>
+#billing_chartdiv {
+  	width:100%; height:300px;
+}
+.reportBtns {
+    width: 65%;
+}
+.reportBtn {
+    width: 20%;
+}																		
+</style>
+
 <script type="text/javascript">
 window.onload = function() { 
 	getApplicantReceivedReports();
@@ -163,7 +175,7 @@ function toDate(selector) {
       <h2 class="pull-left">Applicants Reports</h2>
 		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Applicants Received</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Applicants Received Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -183,20 +195,24 @@ function toDate(selector) {
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-	</span>	
-</div>
+			<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
+			<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
+			</span>	
+	<div class="col-md-6">
+		 <span class="dashboard-datepkr cusShow">
+		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+		 <p id="reportStartDate" class="ReError"></p>
+		 </span>
+		<span class="dashboard-datepkr cusShow">
+		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+		<p id="reportEndDate" class="ReError"></p>
+		</span>
+		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+		</div>
+		
+		
+	</div>
                      
         <!-- <ul style="padding: 2px 300px 2px 0px;">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|

@@ -95,7 +95,7 @@ window.onload = function () {
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
-                             <option value="BIS_USERS">Employees</option>
+                             <option value="BIS_USERS">Master Data</option>
                              <option value="BIS_CHECKS">Checks</option>
                               <option value="INVOICE">Invoice Data</option>
                           </select>

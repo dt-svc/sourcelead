@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.Email;
@@ -179,7 +180,16 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String fileUrl;
 	
+	private LinkedHashSet<String> allAndCandidateVisa;
+	
+	private LinkedHashSet<String> allAndCandidateSkills;
+	 
+	private String vendorName;
+	
+	private int profilePercentage;
+	 
 	private String candidateCreationType;
+
 
 	public String getCandidateId() {
 		return candidateId;
@@ -857,6 +867,38 @@ public class CandidateDTO extends SearchDTO{
 		this.fileUrl = fileUrl;
 	}
 
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
+	public LinkedHashSet<String> getAllAndCandidateSkills() {
+		return allAndCandidateSkills;
+	}
+
+	public void setAllAndCandidateSkills(LinkedHashSet<String> allAndCandidateSkills) {
+		this.allAndCandidateSkills = allAndCandidateSkills;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public int getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
 	public String getCandidateCreationType()
 	{
 		return candidateCreationType;
