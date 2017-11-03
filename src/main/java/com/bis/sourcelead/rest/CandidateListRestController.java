@@ -665,12 +665,15 @@ public class CandidateListRestController {
 	   * @throws Exception
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  CandidateDTO getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
 			
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 			
+			 
+			 CandidateDTO candidateDTO = new CandidateDTO();
+			 
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
 			int percentage = candidateService.getCandidatePercentage(can,loginOrgLocation);
@@ -688,7 +691,7 @@ public class CandidateListRestController {
 				lhs.add(sl);
 			}
 		}
-		can.setAllAndCandidateSkills(lhs);
+		candidateDTO.setAllAndCandidateSkills(lhs);
 
 		// visa type
 		LinkedHashSet<String> visa = new LinkedHashSet<String>();
@@ -702,36 +705,36 @@ public class CandidateListRestController {
 				visa.add(sl);
 			}
 		}
-		can.setAllAndCandidateVisa(visa);
+		candidateDTO.setAllAndCandidateVisa(visa);
 
 		if (null != can.getExpectedRateCurrencey()) {
-			can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				can.setExpectedRateCurrencey(countries.getCurrency());
+				candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
 			}
 		}
 
 		if (null != can.getCurrentRateCurrency()) {
-			can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+			candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				can.setCurrentRateCurrency(countries.getCurrency());
+				candidateDTO.setCurrentRateCurrency(countries.getCurrency());
 
 			}
 		}
 
 		if (null != can.getCurrentRateType()) {
-			can.setCurrentRateType(can.getCurrentRateType());
+			candidateDTO.setCurrentRateType(can.getCurrentRateType());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
 				String countryCheck = countries.getName();
 				switch (countryCheck) {
 				case "India":
-					can.setCurrentRateType("Monthly");
+					candidateDTO.setCurrentRateType("Monthly");
 					break;
 				default:
-					can.setCurrentRateType("Hourly");
+					candidateDTO.setCurrentRateType("Hourly");
 				}
 			}
 		}
@@ -739,10 +742,10 @@ public class CandidateListRestController {
 		if (null != can.getOrgRelationId()) {
 			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
-				can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
+				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
 			if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
-				can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 
 		}
@@ -750,16 +753,29 @@ public class CandidateListRestController {
 			StringBuilder contactName = new StringBuilder();
 			can.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
-				can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
+				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
 			} else {
-				can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
 			}
 
 		}
-		can.setProfilePercentage(percentage);
-		resultJson = commonUtil.toJSON(can);
-		return resultJson;
+		candidateDTO.setProfilePercentage(percentage);
+		candidateDTO.setCountry(can.getCountry());
+		candidateDTO.setCity(can.getCity());
+		candidateDTO.setState(can.getState());
+		candidateDTO.setFirstName(can.getFirstName());
+		candidateDTO.setLastName(can.getLastName());
+		candidateDTO.setSummary(can.getSummary());
+		candidateDTO.setFileUrl(can.getFileUrl());
+		candidateDTO.setMobilePhone(can.getMobilePhone());
+		candidateDTO.setSkillsName(can.getSkillsName());
+		candidateDTO.setRateType(can.getRateType());
+		candidateDTO.setDesignationType(can.getDesignationType());
+		candidateDTO.setExpectedRate(can.getExpectedRate());
+		candidateDTO.setCurrentRate(can.getCurrentRate());
+		candidateDTO.setEmail(can.getEmail());
+		return candidateDTO;
 	}
 
 	/**
