@@ -205,7 +205,7 @@ public class TimesheetRestController {
 		eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 		eedDTO.setProjectsId(timesheetEntryDetailsDTO.getProjectId());
 		eedDTO.setProjectMembersId(timesheetEntryDetailsDTO.getProjectMemberId());
-		eedDTO.setMasterCandidateId(timesheetEntryDetailsDTO.getMasterCandidateId());
+		eedDTO.setMasterCandidatesId(timesheetEntryDetailsDTO.getMasterCandidateId());
 		
 		TimeSheetSubmissionDTO ts = timesheetSubmissionDetails(eedDTO, request);
 		timesheetEntryDetailsDTO.setTimesheetSubmission(ts);
@@ -217,7 +217,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		Map<String,String>  timesheetFrequencyMap  = null;
 		Long projectMemberId = eedDTO.getProjectMembersId();
 		Long projectId = eedDTO.getProjectsId();
-		Long masterCandidateId = eedDTO.getMasterCandidateId();
+		Long masterCandidateId = eedDTO.getMasterCandidatesId();
 		List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),candidate.getId());
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
