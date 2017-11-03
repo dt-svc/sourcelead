@@ -835,8 +835,10 @@ public class Constants {
 	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o bgYellow";
 	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
 	
-	
+	public static final String MANUAL_CANDIDATE = "manual";
+	public static final String IMPORT_CANDIDATE = "import";
 	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
+	public static final String CANDIDATE_ADDED_BY_IMPORTING = "imported";
 	public static final String CANDIDATE_EDITTED = "updated profile";
 	public static final String CANDIDATE_DELETED = "deleted profile";
 	public static final String CANDIDATE_REACTIVATED = "reactivated profile";
