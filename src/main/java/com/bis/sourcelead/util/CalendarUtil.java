@@ -24,21 +24,12 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	/*public static void main(String[] args){
-		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
-		currentCal.setLenient(false);
-		currentCal.setTime(new Date());
-		Calendar currentSunday = getPreviousWeekDayByCalendar(currentCal, "SUN","MM-dd-yyyy");
-		System.out.println("Current-Sunday>>>>>>>>>>>>"+currentSunday.getTime());
-		
-		Calendar currentSatday = getCurrentWeekDayByCalendar(currentCal, "SAT","MM-dd-yyyy");
-		System.out.println("Current-Saturday>>>>>>>>>>>>"+currentSatday.getTime());
-		
-		System.out.println(getNumberOfDays(currentSunday.getTime(), currentSunday.getTime()));
+	public static void main(String[] args){
+	 System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
 		
 		
 		
-	}*/
+	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
