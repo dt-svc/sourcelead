@@ -553,11 +553,17 @@ public class RequirementController {
 					}
 				}
 			}
-			
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 		Boolean isLoginUserAsApprover = false;
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(isAdmin || isManager){
+			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
+		}else{
+			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		}
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;
+			requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
 		}
 		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 		
@@ -580,7 +586,6 @@ public class RequirementController {
 			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isTeamMember",isTeamMember);
 			
-			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
 			model.addObject("isAdmin",isAdmin);

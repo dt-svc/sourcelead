@@ -601,7 +601,7 @@
 										result = result
 												+ '<div class="col-md-12" id="EmailIdDiv">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
+												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateEditReferenceEmail('+candidateId+','+json.id+');">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -680,7 +680,7 @@
 												+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
 
 										result = result
-												+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('
+												+ '<button type="button"  id="Edit_candidateReference"  onClick ="updateCandidateReference('
 												+ candidateId
 												+ ','
 												+ refId
@@ -771,11 +771,36 @@
 </script>
 
 <script>
+function validateEditReferenceEmail(candidateId,candidateReferenceId){
+	var email = document.getElementById("referenceEmail").value.trim();
+	if(email.match(/^[^\s-](.*)*$/) !== null){
+		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+		if (email != null && email != "") {
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+ "/validateReferenceEmailByCadidateId?${_csrf.parameterName}=${_csrf.token}&email="+ email+"&candidateId="+candidateId+"&candidateReferenceId="+candidateReferenceId,
+						success : function(data) {
+							if (data == true) {
+								$("input#referenceEmail").after("<p class='jquery_form_error_message'>"+ email+ " is Already Existed</span>");
+								document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
+								document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
+								$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
+	 							$("#Edit_candidateReference").attr("disabled", "disabled");
+			    				
+							} else {
+	 							$("#Edit_candidateReference").removeAttr("disabled");
+								$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
+								
+							}
+						},
+					});
+	    	}
+		}
+}
 function validateReferenceEmail(candidateId){
 	var email = document.getElementById("referenceEmail").value.trim();
 	 //space value  consider this condition 
 	if(email.match(/^[^\s-](.*)*$/) !== null){
-	var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 	$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	if (email != null && email != "") {
 		$.ajax({
@@ -787,10 +812,10 @@ function validateReferenceEmail(candidateId){
 							document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
 							document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
 							$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
-// 							$("#save_project").attr("disabled", "disabled");
+							$("#save_ref").attr("disabled", "disabled");
 		    				
 						} else {
-// 							$("#save_project").removeAttr("disabled");
+							$("#save_ref").removeAttr("disabled");
 							$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
 							
 						}

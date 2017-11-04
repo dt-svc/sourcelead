@@ -218,8 +218,8 @@ public class CandidateReferencesRestController {
 	// to validate Project SequeneNumber
 		@RequestMapping(value = "/validateReferenceEmailByCadidateId", method = RequestMethod.POST)
 		public @ResponseBody Boolean validateProjectSequeneNumber( @RequestParam(value = "email", required = false) String email,
-				@RequestParam("candidateId") Long candidateId) throws Exception {
-			return candidateReferencesService.validateReferenceEmail(email, candidateId);
+				@RequestParam("candidateId") Long candidateId,@RequestParam(value = "candidateReferenceId", required = false) Long candidateReferenceId) throws Exception {
+				return candidateReferencesService.validateReferenceEmail(email, candidateId,candidateReferenceId);
 		}
 		
 }
