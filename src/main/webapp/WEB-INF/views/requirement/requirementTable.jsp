@@ -317,9 +317,9 @@ function jpagination(url,sourceleadUrl){
 			         		   result = result +"<td><div style='width:75px'>";
 			         		   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
 			         		   var userId = '${SourceLeadWeb_user.id}';
-			         		   if(opt.managerUserId != null && opt.managerUserId != '' && opt.managerUserId != 'undefined'){
-			         			   if(opt.managerUserId.id == userId){
-			         				  contains = true;
+			         		   if(opt.isLoginUserAsManager != null && opt.isLoginUserAsManager != '' && opt.isLoginUserAsManager != 'undefined'){
+			         			   if(opt.isLoginUserAsManager == userId){
+			         				   contains = true;
 			         			   }
 			         		   }
 			         		   
