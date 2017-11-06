@@ -509,7 +509,7 @@ function getContactsList(){
   		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAll(this);"></th>';
+		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAllContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
 		result = result +'<th>Source</th>';
@@ -522,12 +522,12 @@ function getContactsList(){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getEmails();">Add</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getContactEmails();">Add</button>';
      	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
      	result = result +' </div>'; 
 	    $("#userList").empty();
 	    $("#userList").append(result);
-	    
+	    contactUsers = [];
 	    contactsDataTableList();
 }
 </script>
@@ -568,8 +568,17 @@ function contactsPagination(url,sourceleadUrl){
     	  	"targets": colIndex++,
     	  	"data": "ischeck",
     	  	"render": function(data, type, opt, meta) {
-    	  		  var result = "";
-    	  		  result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
+    	  		 var result = "";
+    	  		 var flag = false;
+    	  		 
+    	  		 for(var e in contactUsers) {
+    	  			 if(opt.email+"" === contactUsers[e]) {
+    	  				 flag = true;
+    	  				 break;
+    	  			 }
+    	  		 }
+    	  		 
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
 	              return result;
     	  	}
          },{
@@ -621,6 +630,15 @@ function contactsPagination(url,sourceleadUrl){
     	});
 }
 
+</script>
+
+<script>
+var contactUsers = [];
+function checkContactUsers(ele) {
+	if($(ele).is(":checked")) {
+		contactUsers[contactUsers.length] = $(ele).val();
+	}
+}
 </script>
 
 
@@ -680,7 +698,6 @@ function toggleAll(source) {
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
     
 $('input:checkbox:not(#checkAllUsers)').click(function() {
@@ -691,6 +708,27 @@ $('input:checkbox:not(#checkAllUsers)').click(function() {
     
 }
 </script>
+
+<script>
+function toggleAllContacts(source) {
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+            checkContactUsers(checkboxes[i])
+    }
+    
+$('input:checkbox:not(#checkAllUsers)').click(function() {
+    if(!this.checked) {
+        $('#checkAllUsers').removeAttr('checked');
+    }
+}); 
+    
+}
+</script>
+
+
+
 
   
 <script>
@@ -719,16 +757,38 @@ function pagination(){
 <script>
 function getEmails(){
 	
-	var oTable = $('#example').dataTable();
+ 	var oTable = $('#example').dataTable();
 	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
-	
+	 
 	var internalOutput = "";
-	rowcollection.each(function(index,elem){
+	 rowcollection.each(function(index,elem){
 		 var checkbox_value = $(elem).val();
 		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
-	});
+	}); 
+
 	
-	 
+	    $("#emailsList").append(internalOutput);
+		$("#emailsList").trigger("chosen:updated");
+		
+		$("input[name='emails[]']:checked").removeAttr('checked');
+		$('#checkAllUsers').removeAttr('checked');
+		
+		
+}
+</script>
+
+
+
+<script>
+function getContactEmails(){
+	var internalOutput = "";
+	
+	for(var e in contactUsers) {
+		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
+			continue;
+		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
+	}
+	
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
 		

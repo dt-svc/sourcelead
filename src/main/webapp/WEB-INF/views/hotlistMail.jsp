@@ -665,11 +665,12 @@ function getContactsList(){
     	result = result +'</div>';
     	
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getEmails();">Add</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getAllEmailContacts();">Add</button>';
      	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
      	result = result +' </div>'; 
 	    
      	$("#clientsList").append(result);
+     	contactUsers = [];
 	    contactsDataTableList();
 }
 </script>
@@ -709,8 +710,17 @@ function contactsPagination(url,sourceleadUrl){
     	  	"targets": colIndex++,
     	  	"data": "ischeck",
     	  	"render": function(data, type, opt, meta) {
-    	  		  var result = "";
-    	  		  result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
+    	  		var result = "";
+    	  		var flag = false;
+   	  		 
+	   	  		  for(var e in contactUsers) {
+	   	  			 if(opt.email+"" === contactUsers[e]) {
+	   	  				 flag = true;
+	   	  				 break;
+	   	  			 }
+	   	  		 }
+   	  		 
+   	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
 	              return result;
     	  	}
          },{
@@ -955,6 +965,7 @@ function toggleClientContacts(source) {
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
+            checkContactUsers(checkboxes[i])
         
     }
 $('input:checkbox:not(#checkAllContacts)').click(function() {
@@ -962,6 +973,15 @@ $('input:checkbox:not(#checkAllContacts)').click(function() {
         $('#checkAllContacts').removeAttr('checked');
     }
 });
+}
+</script>
+
+<script>
+var contactUsers = [];
+function checkContactUsers(ele) {
+	if($(ele).is(":checked")) {
+		contactUsers[contactUsers.length] = $(ele).val();
+	}
 }
 </script>
 
@@ -1017,6 +1037,27 @@ function getEmails(){
 		
 		$("input[name='emails[]']:checked").removeAttr('checked');
 		$('#checkAllContacts').removeAttr('checked');
+		
+}
+</script>
+
+
+<script>
+function getAllEmailContacts(){
+	var internalOutput = "";
+	
+	for(var e in contactUsers) {
+		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
+			continue;
+		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
+	}
+	
+	    $("#emailsList").append(internalOutput);
+		$("#emailsList").trigger("chosen:updated");
+		
+		$("input[name='emails[]']:checked").removeAttr('checked');
+		$('#checkAllUsers').removeAttr('checked');
+		
 		
 }
 </script>
