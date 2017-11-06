@@ -212,7 +212,6 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
 		ResponseList<WageTaxSummary> list = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
-		logger.info("=+++++====================================="+list.getData().size());
 		List<WageTaxSummary> data = getSortWageTaxList(list.getData());
 		list.setData(data);
 		return list;
