@@ -60,7 +60,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 	
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();flushDetails();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -404,8 +404,6 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		$('#projectStartDateExpensesId').val('');
-		$('#projectEndDateExpensesId').val('');
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormataddExpense= '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -550,10 +548,10 @@ function deleteAttchment(documentId){
 </script>
 
 <script>
-function flushDetails(){
+function flushDetailsExpenses(){
 	$('#projectStartDateExpensesId').val('');
 	$('#projectEndDateExpensesId').val('');
-	var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+	 var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
 	maxRowNum = maxRowNum - 1;
 	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 0){
 		for(var i = 1; i < maxRowNum; i=i+2){
@@ -561,10 +559,8 @@ function flushDetails(){
 			var detailsRowId = rowId+1;
 			removeExpenseRow(rowId,detailsRowId);
 		}
-		
-	}
-	
-
+	} 
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
