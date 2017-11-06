@@ -225,6 +225,8 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						double generalExpenses = 0;
 						double payrollChecks = 0;
 						double amount = 0;
+						boolean notEmpty = checkRowEmptyOrNot(row);
+						if(notEmpty) {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String empId = getCellValueAsString(row.getCell(0), fileName);
 							checks.setEmpId(empId.split("\\.")[0]);
@@ -301,6 +303,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (savedChecks != null) {
 							count++;
 						}
+					}
 					}
 				}
 
@@ -415,5 +418,32 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	{
 		return bisUserMappingDao.getChecksVersionByLocationId(locationId);
 	}
+  
+	/**
+	 * check the rows empty or not
+	 * 
+	 * @param row
+	 * @return boolean
+	 */
 
+	private boolean checkRowEmptyOrNot(Row row) {
+		if     (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()) 
+				|| row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
+				|| row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())
+				|| row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) 
+				|| row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) 
+				|| row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())
+				|| row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString()) 
+				|| row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) 
+				|| row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString()) 
+				|| row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())
+				|| row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())
+				|| row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) 
+				|| row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString()) 
+				|| row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+
+			return true;
+		}
+		return false;
+	}
 }
