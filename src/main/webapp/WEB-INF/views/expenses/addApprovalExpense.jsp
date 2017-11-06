@@ -116,7 +116,7 @@
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow("approver");'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
+	<a href="javascript:addExpenseRow('approver');"  data-id="approver" id="addExpenseItemButton" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
