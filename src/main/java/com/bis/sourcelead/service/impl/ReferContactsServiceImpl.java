@@ -18,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -64,8 +65,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	}
 
 	@Override
-	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
-		return referContactsDao.getReferContactsListByUserIdAndOrglocationId(userId,orgLocationId);
+	public ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO,Long userId, Long orgLocationId) throws Exception {
+		return referContactsDao.getReferContactsListByUserIdAndOrglocationId(contactsDTO,userId,orgLocationId);
 	}
 
 	@Override
