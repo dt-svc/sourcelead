@@ -767,6 +767,7 @@ public class CandidateListRestController {
 		candidateDTO.setState(can.getState());
 		candidateDTO.setFirstName(can.getFirstName());
 		candidateDTO.setLastName(can.getLastName());
+		candidateDTO.setLocation(can.getLocation());
 		candidateDTO.setSummary(can.getSummary());
 		candidateDTO.setFileUrl(can.getFileUrl());
 		candidateDTO.setMobilePhone(can.getMobilePhone());
