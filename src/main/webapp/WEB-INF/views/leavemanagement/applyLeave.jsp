@@ -38,10 +38,9 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user">
+                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf');">
                    <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
-                	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                 	</c:forEach>
                 </select>
@@ -246,9 +245,14 @@ function removeEndValid(){
  		
  		
  <script type="text/javascript">
- function getPieChartBasedOnUser(){
+ function getPieChartBasedOnUser(onbehalf){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var userId = '${SourceLeadWeb_userId}';
+	 var userId ='';
+	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
 	 $.ajax({
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
@@ -515,6 +519,7 @@ function getApproversList(){
 	$('#approverUser').trigger("chosen:updated");
 }
 </script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />
