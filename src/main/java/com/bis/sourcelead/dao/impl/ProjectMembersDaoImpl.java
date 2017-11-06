@@ -951,7 +951,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 @Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user   left join fetch pm.projects proj where proj.orgLocationsId = :orglocationId";
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
+				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc where loc.id = :orglocationId ";
 		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
 		return allProjectMembersList;
 	}
