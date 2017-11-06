@@ -706,6 +706,7 @@ public class CandidateListRestController {
 			}
 		}
 		candidateDTO.setAllAndCandidateVisa(visa);
+		candidateDTO.setVisaType(can.getVisaType());
 
 		if (null != can.getExpectedRateCurrencey()) {
 			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());

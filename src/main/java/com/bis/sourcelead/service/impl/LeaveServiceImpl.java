@@ -1086,4 +1086,10 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
 	}
 
+	@Override
+	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
+	{
+		return leaveDao.getApproversListBasedonHierarchyExceptLoginUser(loginUserId, roleId, locationId);
+	}
+
 }
