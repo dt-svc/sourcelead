@@ -612,7 +612,7 @@ function contactsPagination(url,sourceleadUrl){
 	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
     $("input[type=search]").hide();
     $("#contactsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
