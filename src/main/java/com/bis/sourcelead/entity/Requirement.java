@@ -405,9 +405,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsApprover;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsManager;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsInitiator;
 	
 	@Transient

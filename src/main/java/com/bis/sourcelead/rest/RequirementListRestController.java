@@ -1929,7 +1929,8 @@ public class RequirementListRestController {
       	}
       /*	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
  		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());*/
- 		
+      	requirement.setIsLoginUserAsManager(requirementIndex.getManagerUserId());
+      	requirement.setLevel1ApproverUserId(requirementIndex.getReqLevel1ApproverUserId());
  		Boolean isLoginUserAsApprover = false;
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementIndex.getRequirementId(), user.getId());
 		if (requirementApproverHierarchy != null) {
