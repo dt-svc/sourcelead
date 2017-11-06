@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface LeaveDao {
 
@@ -49,5 +50,7 @@ public interface LeaveDao {
 	void storeHolidayAndRestrictDays(HolidayAndRestrictday day);
 
 	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations);
+
+	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
 
 }
