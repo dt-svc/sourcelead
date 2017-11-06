@@ -123,7 +123,8 @@ public class EmployeePayrollRestController {
 			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
 				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-				 isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
+				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
+//				isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
@@ -135,9 +136,9 @@ public class EmployeePayrollRestController {
 			}else if(Constants.INVOICE_DATA.equalsIgnoreCase(payrollType)) {
 				isInserted = invoiceDataService.saveInvoiceData(multipartFile,orgLocation,user,jsonObj);
 			}
-		}else{
+		}/*else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
-		}
+		}*/
 		return commonUtil.toJSON(isInserted);
 	}
 	/**
