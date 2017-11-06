@@ -540,7 +540,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="clientUserDiv">';
@@ -564,7 +564,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="vendorUserDiv">';
@@ -1362,13 +1362,13 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="row">';
 					
-					result = result + ' <div class="col-md-7 posSta">';
+					result = result + ' <div class="col-md-7 posSta phoneErrorvalid">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
 					result = result + ' <div class="col-md-5 errBotValEdit">';
 					result = result + ' <label>Extension</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					

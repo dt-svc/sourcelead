@@ -109,19 +109,16 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		int filteredCount = 0;
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
 		if(countlist != null && !countlist.isEmpty()) {
-			count = countlist.size();
+			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (wagesTaxSummaryDTO != null) {
 			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-				filteredCount = filteredCountlist.size();
+				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
+		} 
 			response.setData(wagesAndTaxlist);
 		}
 			return response;

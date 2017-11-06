@@ -14,7 +14,7 @@ public class TimesheetEntriesDTO implements Serializable{
     
     private String date;
     
-    private boolean isEditable;
+    private boolean editable;
     
     private String hours;
     
@@ -52,12 +52,12 @@ public class TimesheetEntriesDTO implements Serializable{
 		this.date = date;
 	}
 
-	public boolean isEditable() {
-		return isEditable;
+	public boolean getEditable() {
+		return editable;
 	}
 
-	public void setEditable(boolean isEditable) {
-		this.isEditable = isEditable;
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	public String getHours() {

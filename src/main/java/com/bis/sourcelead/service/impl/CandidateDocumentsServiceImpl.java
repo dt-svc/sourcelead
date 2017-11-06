@@ -82,6 +82,11 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateDocuments.setDescription(candidateDocumentsDTO.getDescription());
+				}else {
+					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(candidateDocumentsDTO.getDescription())){
+						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
+					candidateDocuments.setDescription(null);
 				}
 				// for professional user add is confidential Y/N
 				if (StringUtils.isNotBlank(candidateDocumentsDTO.getIsConfidential())
