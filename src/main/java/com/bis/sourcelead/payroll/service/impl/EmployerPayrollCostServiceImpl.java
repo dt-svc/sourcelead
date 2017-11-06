@@ -301,19 +301,21 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
-							userPayroll.setEmpId(pm.getEmployee().getEmployeeId());
-							userPayroll.setUserId(pm.getEmployee().getUser());
+							if(pm.getEmployee() !=null) {
+								userPayroll.setEmpId(pm.getEmployee().getEmployeeId());	
+								userPayroll.setUserId(pm.getEmployee().getUser());
+							}
 							userPayroll.setOrgLocationId(orgLocation);
-							if(pm.getEmployee().getUser().getLastName() !=null){
-								sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+							if(pm.getProjectMemberCandidteId().getLastName() !=null){
+								sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(pm.getProjectMemberCandidteId().getLastName());
 							}else{
-								sb.append(pm.getEmployee().getUser().getFirstName());
+								sb.append(pm.getProjectMemberCandidteId().getFirstName());
 							}
 							userPayroll.setEmployeeName(sb.toString());
 							userPayroll.setTotalHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)));
 							userPayroll.setHalfHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)/2));
-							if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
-								double payRateD =  Double.parseDouble(pm.getEmployee().getRate());
+							if(pm.getPayRate() !=null){
+								double payRateD =  pm.getPayRate();
 								userPayroll.setPayRate(df.format(payRateD));
 								 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 								 finalAmount = amount;
