@@ -515,7 +515,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		 *  get ExpensesApproverHierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
 		String query = " from ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.expenseId expense left join fetch expense.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " left join fetch pm.projectClientsId pc where expense.id =:expenseId "
+				+ " left join fetch hierarchy.projectClientsId pc where expense.id =:expenseId "
 				        + " and ("
 				           /*
 						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)

@@ -186,8 +186,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	}
 
 	@Override
-	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId) throws Exception {
-		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId);
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId,candidateReferenceId);
 	}
 
 }
