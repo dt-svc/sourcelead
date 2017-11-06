@@ -1594,12 +1594,12 @@ public class LeaveManagementRestController {
 		{
 			if(holidayAndRestrictday.getHoliday() != null){
 				if(StringUtils.isNotEmpty(id)){
-					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim()) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
 						flag = false;
 						break;
 					}
 				}else{
-					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())){
 						flag = true;
 						break;
 					}
