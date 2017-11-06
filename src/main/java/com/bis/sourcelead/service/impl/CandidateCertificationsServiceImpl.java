@@ -128,7 +128,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
 						
-                        Date validFrom = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidFrom());
+                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidFrom());
                         candidatecertificate.setValidFrom(validFrom);
 						
 					} catch (Exception e) {
@@ -138,7 +138,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
                         
-                        Date validTo = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidTo());
+                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidTo());
                         candidatecertificate.setValidTo(validTo);
 						
 					} catch (Exception e) {

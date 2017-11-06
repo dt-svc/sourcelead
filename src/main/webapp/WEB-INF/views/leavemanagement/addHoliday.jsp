@@ -58,7 +58,7 @@ $(document).ready(function() {
     <div class="content-area content-new clearfix">
     <div id="holidayLoading"></div>
     <form id="holiday_form" name="holiday_form" method="post">
-    <input type="hidden" name="holidayId" value="${holidayDTO.id}"/>
+    <input type="hidden" name="holidayId" id="holidayId" value="${holidayDTO.id}"/>
       <div class="clearfix form-horizontal inner-content">
         <div class="clearfix">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
