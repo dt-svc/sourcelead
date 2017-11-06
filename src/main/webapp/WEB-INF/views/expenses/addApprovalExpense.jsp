@@ -312,14 +312,7 @@ $.ajax({
         }
         if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
             event.preventDefault();
-    });
-
-    $('.allownumericwithdecimal').blur(function() {
-    	var num = parseFloat($(this).val());
-        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
-        $('.allownumericwithdecimal').val(with2Decimals);
-    });
-    
+    });    
 </script>
 
 <script>
