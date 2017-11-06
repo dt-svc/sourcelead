@@ -55,6 +55,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		return invoiceData;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception {
@@ -124,40 +125,38 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
-			response.setData(getInvoiceListSorting(invoiceDetailsList));
+		} 
+//			response.setData(getInvoiceListSorting(invoiceDetailsList));
+			response.setData(invoiceDetailsList);
 		}
 			return response;
 	}
 		
-		private List<InvoiceData> getInvoiceListSorting(List<InvoiceData> invoiceDataList)
-	{
-			
-			for (InvoiceData invoiceData : invoiceDataList) {
-				if (invoiceData.getDate() != null) {
-					invoiceData.setDateStr(conversionUtil.getMM_DD_YYYAsString(invoiceData.getDate()));
-				}
-				if (invoiceData.getDueDate() != null) {
-					invoiceData.setDueDateStr(conversionUtil.getMM_DD_YYYAsString(invoiceData.getDueDate()));
-				}
-				if (invoiceData.getLastmodified() != null) {
-					invoiceData.setLastModifiedStr(conversionUtil.getDateAsDD_MM_YYYY_HHMMSS(invoiceData.getLastmodified()));
-				}
-			}
-			Collections.sort(invoiceDataList, new Comparator() {  
-	            @Override  
-	            public int compare(Object obj1, Object obj2) {  
-	            	InvoiceData invoiceData1 = (InvoiceData)obj1;  
-	            	InvoiceData invoiceData2 = (InvoiceData)obj2; 
-	            	return invoiceData1.getEmpName().compareToIgnoreCase(invoiceData2.getEmpName());  
-	            }  
-	        });
-			return invoiceDataList;
-		
-	}
+//		private List<InvoiceData> getInvoiceListSorting(List<InvoiceData> invoiceDataList)
+//	{
+//			
+//			for (InvoiceData invoiceData : invoiceDataList) {
+//				if (invoiceData.getDate() != null) {
+//					invoiceData.setDateStr(conversionUtil.getMM_DD_YYYAsString(invoiceData.getDate()));
+//				}
+//				if (invoiceData.getDueDate() != null) {
+//					invoiceData.setDueDateStr(conversionUtil.getMM_DD_YYYAsString(invoiceData.getDueDate()));
+//				}
+//				if (invoiceData.getLastmodified() != null) {
+//					invoiceData.setLastModifiedStr(conversionUtil.getDateAsDD_MM_YYYY_HHMMSS(invoiceData.getLastmodified()));
+//				}
+//			}
+//			Collections.sort(invoiceDataList, new Comparator() {  
+//	            @Override  
+//	            public int compare(Object obj1, Object obj2) {  
+//	            	InvoiceData invoiceData1 = (InvoiceData)obj1;  
+//	            	InvoiceData invoiceData2 = (InvoiceData)obj2; 
+//	            	return invoiceData1.getEmpName().compareToIgnoreCase(invoiceData2.getEmpName());  
+//	            }  
+//	        });
+//			return invoiceDataList;
+//		
+//	}
 
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDataList = null;
