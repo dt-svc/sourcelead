@@ -475,7 +475,9 @@
       </div> 
     </div>
     
-    
+    <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
+         
     <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">

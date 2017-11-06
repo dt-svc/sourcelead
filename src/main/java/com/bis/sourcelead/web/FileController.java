@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -191,6 +192,7 @@ public class FileController {
 					String name = resume.getName();
 					candidateDto.setFirstName(name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name);
 					candidateDto.setLastName(name.contains(".") ? name.substring(name.lastIndexOf(".")+1) : "");
+					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
 					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
 					addToResponse(1, session, uploadid, resume, fileInfo, count, i++);
 					successList.add(resume);

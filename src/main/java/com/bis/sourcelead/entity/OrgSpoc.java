@@ -20,6 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -41,12 +42,13 @@ public class OrgSpoc implements Serializable{
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-    @JoinColumn(name="VENDOR_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="VENDOR_LOCATION_ID") 
+	@JsonBackReference
     private OrgLocations vendorLocationId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-    @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="CLIENT_LOCATION_ID")        
     private OrgLocations clientLocationId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
