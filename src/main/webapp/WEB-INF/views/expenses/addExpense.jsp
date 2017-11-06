@@ -526,24 +526,18 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
             event.preventDefault();
         }
     }); */
-$('.allownumericwithdecimal').keypress(function(evt) {
-		  evt = (evt) ? evt : window.event;
-		  var charCode = (evt.which) ? evt.which : evt.keyCode;
-		  if (charCode == 8 || charCode == 37) {
-		    return true;
-		  } else if (charCode == 46 && $(this).val().indexOf('.') != -1) {
-		    return false;
-		  } else if (charCode > 31 && charCode != 46 && (charCode < 48 || charCode > 57)) {
-		    return false;
-		  }
-		  return true;
-		});
-    $('.allownumericwithdecimal').blur(function() {
-    	var num = parseFloat($(this).val());
-        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
-        $('.allownumericwithdecimal').val(with2Decimals);
+        $('.allownumericwithdecimal').keydown(function (event) {
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+            } else {
+                event.preventDefault();
+            }
+            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                event.preventDefault();
+        });
     });
-});
 </script>
 
 <script>
