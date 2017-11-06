@@ -336,7 +336,7 @@ public class ClientServiceImpl implements ClientService {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
-
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
@@ -475,6 +475,14 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setCreatedDate(new Date());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
+		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client MSA Template",Constants.CLIENT_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor MSA Template",Constants.VENDOR_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
 		}
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){

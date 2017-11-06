@@ -248,7 +248,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 // 			 result = result +' <span class="btn btn-primary btn-sm mr10">Approved</span>';
-			 result = result +' <span class="btn btn-danger btn-sm mr10" onClick="cancel()">Cancelled</span>';
+			 result = result +' <span class="btn btn-danger btn-sm mr10" title="CANCELLED" onClick="cancel()">CANCELLED</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';

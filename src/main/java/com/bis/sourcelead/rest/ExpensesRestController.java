@@ -273,6 +273,7 @@ public class ExpensesRestController {
 							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
 						  }
 					 }
+					 pmDTO.setProjectId(pm.getProjects().getId());
 					pmDTOList.add(pmDTO);
 				}
 				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);

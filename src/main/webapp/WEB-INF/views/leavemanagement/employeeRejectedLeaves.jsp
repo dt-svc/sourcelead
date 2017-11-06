@@ -237,7 +237,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +' <span class="btn btn-danger btn-sm mr10">Rejected</span>';
+			 result = result +' <span class="btn btn-danger btn-sm mr10" title="REJECTED">REJECTED</span>';
 // 			 result = result +' <span class="btn btn-default btn-sm" onClick="cancel()">Cancel</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';

@@ -58,8 +58,8 @@ $(document).ready(function(){
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li>
                       <li class="clearfix">
-                        <label class="pull-left">Balanced Leaves</label>
-                        <div class="color_white" title="Balanced Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+                        <label class="pull-left">Balance Leaves</label>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
                     </li>
                 </ul>
                     </div>
@@ -307,7 +307,7 @@ function getSelfTotalCounts(){
  							"column-1": report.selfCancelledCounts
  						},
  						{
- 							"category": "Balanced",
+ 							"category": "Balance",
  							"column-1": report.selfBalancedCounts
  						} 
  					]

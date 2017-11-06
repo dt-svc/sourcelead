@@ -12,6 +12,7 @@ public class UserDTO implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String mobilePhone;
+	private String userRole;
 	
 	public long getId()
 	{
@@ -93,5 +94,13 @@ public class UserDTO implements Serializable {
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 }

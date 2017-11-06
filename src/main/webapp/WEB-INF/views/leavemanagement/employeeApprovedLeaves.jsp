@@ -201,7 +201,7 @@ function approvedEmployeesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
-                       result = result + '<a href="javascript:void(0)" onclick="CancelLeave(\''+opt.id+'\');"><b class="proj_closed">Cancel</b></a>';
+                       result = result + '<a href="javascript:void(0)" title="CANCEL" onclick="CancelLeave(\''+opt.id+'\');"><div><b class="proj_closed cursorPointer">CANCEL</b></div></a>';
 	                   '</sec:authorize>';
 	                   '<sec:authorize access="!hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
 	                       result = result + '<a><b>---</b></a>';
@@ -308,8 +308,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +' <span class="btn btn-primary btn-sm mr10">Approved</span>';
-			 result = result +' <span class="btn btn-default btn-sm" onClick="CancelLeave(\''+leaveId+'\')">Cancel</span>';
+			 result = result +' <span class="btn btn-primary btn-sm mr10">APPROVED</span>';
+			 result = result +' <span class="btn btn-danger btn-sm" title="CANCEL" onClick="CancelLeave(\''+leaveId+'\')">CANCEL</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';

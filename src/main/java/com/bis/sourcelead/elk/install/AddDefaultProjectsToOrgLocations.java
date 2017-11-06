@@ -52,6 +52,8 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 String country = rs1.getString("COUNTRY");
 				 Long userId = rs1.getLong("PRIMARY_CONTACT_USER_ID");
 				 
+				 System.out.println(country);
+				 
 				 if(country == null)
 					 continue;
 				 

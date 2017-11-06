@@ -17,6 +17,7 @@
 	<div id="loading"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
 		<div class="newPrTabs">
+		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
@@ -224,7 +225,7 @@
 										<div class="col-md-9">
 											<textarea id="vendorAddress" name="vendorAddress" rows="4"
 												field-name="Address" class="form-control"
-												data-validation="validate_Space"
+												data-validation="validate_length length2-250"
 												data-validation-optional="true"></textarea>
 										</div>
 									</div>
@@ -234,7 +235,7 @@
 										<div class="col-md-9">
 											<textarea id="vendorBillingAddress" rows="4" name="vendorBillingAddress"
 												field-name="Billing Address" class="form-control"
-												data-validation="validate_Space"
+												data-validation="validate_length length2-250"
 												data-validation-optional="true"></textarea>
 										</div>
 									</div>

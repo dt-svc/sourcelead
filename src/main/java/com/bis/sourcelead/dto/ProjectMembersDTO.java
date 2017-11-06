@@ -45,6 +45,8 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private Double estBudget;
 	
+	private Long projectId;
+	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 	
@@ -218,6 +220,14 @@ public class ProjectMembersDTO implements Serializable {
 
 	public void setMasterCandidateId(Long masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 	
 	

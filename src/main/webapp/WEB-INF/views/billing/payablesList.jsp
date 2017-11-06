@@ -215,7 +215,7 @@ $(document).ready(function(){
 													<li><input type="checkbox" id="" value="Partial Paid"
 														name="paymentStatus" onclick="getPayableInvoiceList();">
 														<label for="onboard2">Partially Paid</label></li>
-													<li><input type="checkbox" id="" value="OverDue"
+													<li><input type="checkbox" id="" value="Overdue"
 														name="paymentStatus" onclick="getPayableInvoiceList();">
 														<label for="onboard4">OverDue</label></li>
 													<li><input type="checkbox" value="Unpaid"

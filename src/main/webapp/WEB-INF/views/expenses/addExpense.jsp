@@ -60,7 +60,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 	
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();flushDetails();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -74,7 +74,7 @@
 				 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" id="expensePurposeId" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div> 
 					
@@ -382,6 +382,7 @@ function removeWhiteSpacesMyExp(rowCount){
 
 <script>
 function getClientBasedOnSelectedProject(){
+	$('#expensePurposeId').val('');
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	 $('#clientNameId').val('');
 	 $('#expenseAutoId').val('');
@@ -403,7 +404,6 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormataddExpense= '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -548,10 +548,10 @@ function deleteAttchment(documentId){
 </script>
 
 <script>
-function flushDetails(){
+function flushDetailsExpenses(){
 	$('#projectStartDateExpensesId').val('');
 	$('#projectEndDateExpensesId').val('');
-	var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+	 var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
 	maxRowNum = maxRowNum - 1;
 	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 0){
 		for(var i = 1; i < maxRowNum; i=i+2){
@@ -559,10 +559,8 @@ function flushDetails(){
 			var detailsRowId = rowId+1;
 			removeExpenseRow(rowId,detailsRowId);
 		}
-		
-	}
-	
-
+	} 
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

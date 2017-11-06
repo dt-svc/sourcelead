@@ -250,7 +250,14 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 	 
 		 	 StringBuilder userNameSB = new StringBuilder();
+		 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= ""){
 		 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 	 }
+		 	 else
+		 	 {
+		 		emailMessage.setFromName(loginUser.getFirstName());
+		 	 }
+		 	 
 		 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<>();
