@@ -580,7 +580,7 @@ function professionalProfile(candidateId){
 							result = result +'		        <div class="design-view visaresult">';
 							
 							result = result +'		<div class="clearfix">';
-							result = result +'<h2 class="education  pull-left">Immigration StatusKKKKK:</h2>';
+							result = result +'<h2 class="education  pull-left">Immigration Status:</h2>';
 							 if(json.candidateType == "Candidate"){ 
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 							 }else{ 
