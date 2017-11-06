@@ -1589,10 +1589,18 @@ public class LeaveManagementRestController {
 		for(HolidayAndRestrictday holidayAndRestrictday : list)
 		{
 			if(holidayAndRestrictday.getHoliday() != null){
+				if(id != null){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
+						flag = false;
+						break;
+					}}
+			}else{
 				if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
 					flag = true;
 					break;
-				}}
+				}
+			}
+
 		}
 		if(flag != true && !year1.equalsIgnoreCase(year2))
 		{
@@ -1600,13 +1608,19 @@ public class LeaveManagementRestController {
 			for(HolidayAndRestrictday holidayAndRestrictday : list1)
 			{
 				if(holidayAndRestrictday.getHoliday() != null){
+					if(id != null){
+						if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
+							flag = false;
+							break;
+						}}
+				}else{
 					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
 						flag = true;
 						break;
-					}}
+					}
+				}
 			}
 		}
-
 
 		return flag;
 	}
