@@ -1579,40 +1579,25 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "fromDate", required = true) String fromDate,
 			@RequestParam(value = "toDate", required = true) String toDate) throws Exception
 	{
-		String [] dateParts = fromDate.split("\\-");
-		String [] dateParts1 = toDate.split("\\-");
-		String year1 = dateParts[2];
-		String year2 = dateParts1[2];
 		boolean flag = false;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
-		for(HolidayAndRestrictday holidayAndRestrictday : list)
+		List<HolidayAndRestrictday> listFilter = new ArrayList<HolidayAndRestrictday>();
+		if(list != null && !list.isEmpty()){
+			for(HolidayAndRestrictday holidayAndRestrictday : list){
+				if(holidayAndRestrictday.getHoliday() != null && StringUtils.isNotEmpty(holidayAndRestrictday.getHoliday().getStatus()))
+					if(holidayAndRestrictday.getHoliday().getStatus().equalsIgnoreCase("1"))
+						listFilter.add(holidayAndRestrictday);
+			}
+		}
+		for(HolidayAndRestrictday holidayAndRestrictday : listFilter)
 		{
 			if(holidayAndRestrictday.getHoliday() != null){
-				if(id != null){
+				if(StringUtils.isNotEmpty(id)){
 					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
 						flag = false;
 						break;
-					}}
-			}else{
-				if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
-					flag = true;
-					break;
-				}
-			}
-
-		}
-		if(flag != true && !year1.equalsIgnoreCase(year2))
-		{
-			List<HolidayAndRestrictday> list1 = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
-			for(HolidayAndRestrictday holidayAndRestrictday : list1)
-			{
-				if(holidayAndRestrictday.getHoliday() != null){
-					if(id != null){
-						if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
-							flag = false;
-							break;
-						}}
+					}
 				}else{
 					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
 						flag = true;
@@ -1621,7 +1606,6 @@ public class LeaveManagementRestController {
 				}
 			}
 		}
-
 		return flag;
 	}
 
