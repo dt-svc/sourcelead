@@ -116,27 +116,48 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 
 	@Override
 	@Transactional
-	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus,String userRole)
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
-				+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
-				+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
-		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+		List<ProjectPlanningRequest> projectPlanningRequestList = null;
+		
+		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+					+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
+					+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+			
+		}else {
+			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+					+ " where  projectPlanningRequest.orgLocationId.id = :orgLocationId "
+					+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+			
+		}
 		
 		return projectPlanningRequestList;
 	}
 
 	@Override
 	@Transactional
-	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,Long orgLocationId) throws Exception {
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,Long orgLocationId,String userRole) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
-				+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
-				+ " and projectPlanningRequest.status = '1' ";
-		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<ProjectPlanningRequest> projectPlanningRequestList = null;
+		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+					+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
+					+ " and projectPlanningRequest.status = '1' ";
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			
+		}else {
+			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+					+ " where projectPlanningRequest.orgLocationId.id = :orgLocationId "
+					+ " and projectPlanningRequest.status = '1' ";
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			
+		}
 		
 		return projectPlanningRequestList;
 	}

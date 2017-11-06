@@ -826,7 +826,8 @@ function loadRequirement(){
 function loadUsers(){
 	var searchResult = "searchresult";
 	var searchValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
+	window.location.href = sourceleadUrl + "/usersList"/* ?&searchResult="+searchResult+"&searchValue="+searchValue */;
+	//usersList
 }
 </script>
 

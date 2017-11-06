@@ -191,6 +191,13 @@ public class SubmissionsRestController {
 		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
 		candidate.setProfilePercentage(percentage);
 		
+		boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+		if(isSumbitted == true){
+			candidate.setIsCandidateSubmitted(Constants.YES);
+		}else{
+			candidate.setIsCandidateSubmitted(Constants.NO);
+		}
+		
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
 		if(candidateResume != null){
 			candidate.setResumeUUID(candidateResume.getResumeUUID());
@@ -425,6 +432,9 @@ public class SubmissionsRestController {
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+			requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
+			requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
 			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -485,6 +495,7 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
 			
 			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
 				requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());

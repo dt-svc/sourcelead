@@ -36,10 +36,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
@@ -47,10 +49,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
+import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
@@ -112,6 +116,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	TeamService teamService;
+	
+	@Autowired
+	ReferContactsService referContactsService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -695,6 +702,29 @@ public class MailBoxRestController {
     		resultJson = commonUtil.toJSON(combinedList);
     		return resultJson;
     	}
+        
+        @RequestMapping(value = "/getUserContactsListForMalling", method = RequestMethod.GET)
+      	public List<ReferContactsDTO> getUserContactsListForMalling(HttpServletRequest request) throws Exception {
+
+      		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+      		List<ReferContactsDTO> contactsDTOList = new ArrayList<>();
+      		
+      		List<ReferContacts> contactsList = referContactsService.getReferContactsListByUserIdAndOrglocationId(user.getId(), orgLocation.getId());
+      		if(contactsList != null && contactsList.size() > 0) {
+      			for(ReferContacts contacts : contactsList) {
+      				ReferContactsDTO contactsDTO = new ReferContactsDTO();
+      				contactsDTO.setFullName(contacts.getFullName());
+      				contactsDTO.setEmail(contacts.getContactUserEmail());
+      				contactsDTO.setSource(contacts.getContactSource().toString());
+      				contactsDTOList.add(contactsDTO);
+      			}
+      		}
+      		
+      		return contactsDTOList;
+    	}
+        
+        
 
 
 	 

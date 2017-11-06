@@ -515,9 +515,8 @@
 						</div>
 					</div>
 
-
-
-
+					<!-- this "candidateCreationType" field is used for candidate creation type -->
+         			<input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
 
 					<div class="clearfix"></div>
 

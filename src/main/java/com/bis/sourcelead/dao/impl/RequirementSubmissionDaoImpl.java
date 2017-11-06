@@ -1921,9 +1921,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
-		public Integer getRecruiterSubmittedCandidatesCountByStage(Long userId, String submissionStatus, Date startDate,
-				Date endDate) throws Exception {
-			
+		public Integer getRecruiterSubmittedCandidatesCountByStage(Long userId, String submissionStatus, Date startDateFormat,
+				Date endDateFormat) throws Exception {
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String query = "";
 			 
@@ -2000,8 +2001,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 		@Override
 		@Transactional
-		public Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId, Date startDate,
-				Date endDate) throws Exception { Session session = this.sessionFactory.getCurrentSession();
+		public Integer getRecruiterSubmittedCandidateCountByStartDateAndEndDate(Long userId, Date startDateFormat,
+				Date endDateFormat) throws Exception { 
+			
+			 java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
+			Session session = this.sessionFactory.getCurrentSession();
 				 
 				 String query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId and (rs.createdDate BETWEEN :startDate and :endDate) ";
 			     

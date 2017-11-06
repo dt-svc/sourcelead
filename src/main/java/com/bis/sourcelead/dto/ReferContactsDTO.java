@@ -15,6 +15,10 @@ public class ReferContactsDTO {
 	 private List<String> userContacts;
 	 
 	 private Long contactReferRequirementId;
+	 
+	 private String fullName;
+	 
+	 private String source;
 
 	public String getFirstName()
 	{
@@ -74,6 +78,22 @@ public class ReferContactsDTO {
 	public void setContactReferRequirementId(Long contactReferRequirementId)
 	{
 		this.contactReferRequirementId = contactReferRequirementId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 	 
 }

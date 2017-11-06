@@ -919,7 +919,8 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("loginUsername",loginUser.getLastName());
 			 }
 			 StringBuilder urlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("login").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			// globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 StringBuilder rejecturlBuilder = new StringBuilder();
 			 globalVarsMap.put("rejectURL",rejecturlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			 StringBuilder linkBuilder = new StringBuilder();
@@ -1369,6 +1370,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId,
 			Long orgLocationsId) throws Exception {
 		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
 	}
 	
 }

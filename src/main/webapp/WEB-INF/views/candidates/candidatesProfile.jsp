@@ -83,9 +83,9 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
+//               	 var json = JSON.parse(data);
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -672,9 +672,9 @@ function candidateProfile(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
+//               	var json = JSON.parse(data);
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';

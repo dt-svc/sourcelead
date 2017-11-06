@@ -109,7 +109,7 @@ function getAllPayrollBalanceReports(){
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		  var result = "";
-		    	  		    result = result +' <td><div><span class="tbldata-dotdot-vsm">'+report.empName+'</span>';  
+		    	  		    result = result +' <td><div><span title="'+report.empName+'" class="tbldata-dotdot-vsm">'+report.empName+'</span>';  
 			              return  result;
 		    	  	}
 		      },{

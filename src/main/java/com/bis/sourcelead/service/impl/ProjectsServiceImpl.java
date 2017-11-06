@@ -514,6 +514,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else {
 			projectBudget = new ProjectBudget();
 			projectBudget.setCreateUserId(user);
+			projectBudget.setUpdateUserId(user);
 			projectBudget.setCreatedDate(new Date());
 			projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
 		}
@@ -521,6 +522,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
 		projectBudget.setEstimatedHours(projectsDTO.getEstimatedHours());
 		projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
+		projectBudget.setStatus(Constants.RECORD_ACTIVE);
 		projectBudget.setEstimatedBudgetValue(projectsDTO.getEstimatedBudget());
 		projectBudget.setBudgetDescription(projectsDTO.getProjectName());
 		if(StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {

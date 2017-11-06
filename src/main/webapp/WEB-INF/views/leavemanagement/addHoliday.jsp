@@ -292,7 +292,6 @@ function cancel(){
 </script>
 <script>
 function validateHolidayName(){
-	$('.warMess').hide();
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#holidayName").val();
 	var id = $("#holidayId").val();
@@ -300,18 +299,18 @@ function validateHolidayName(){
 	var toDate = $("#toDate").val();
 	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
-			if(data != null){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>These Dates are already added as Holidays : </span> "+data);
-			}else{
-				$('.warMess').hide();
-			}
+			if(data == true){
+          		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+          		$("#save_holiday").removeAttr("disabled");
+		        $("#save_holiday").attr("disabled", "disabled");
+				$("input#holidayName").after( "<p class='jquery_form_error_message'>" + name + " is already existed as Holiday in this year</span>");
+                 }else{
+                	$("#save_holiday").removeAttr("disabled");
+                	$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+                 }
             });
 		}
 	}
-	
-function closedate(){
-	$(".warMess").fadeOut();
-	};
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

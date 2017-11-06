@@ -16,12 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Contact_Source;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REFER_CONTACTS", catalog = "sourcelead")
@@ -99,6 +101,11 @@ public class ReferContacts implements Serializable{
 	
 	@Transient
 	private String contactUserName;
+	
+	@Transient
+	@JsonProperty
+	private String fullName;
+	
 	
 	public Long getId() {
 		return id;
@@ -258,6 +265,29 @@ public class ReferContacts implements Serializable{
 
 	public void setContactUserEmail2(String contactUserEmail2) {
 		this.contactUserEmail2 = contactUserEmail2;
+	}
+
+	public String getFullName() {
+
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
+	
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 
