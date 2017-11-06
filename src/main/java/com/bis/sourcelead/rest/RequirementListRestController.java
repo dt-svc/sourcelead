@@ -1932,6 +1932,7 @@ public class RequirementListRestController {
       	requirement.setIsLoginUserAsManager(requirementIndex.getManagerUserId());
       	requirement.setLevel1ApproverUserId(requirementIndex.getReqLevel1ApproverUserId());
  		Boolean isLoginUserAsApprover = false;
+ 		requirement.setLevel2ApproverUserId(requirementIndex.getReqLevel2ApproverUserId());
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementIndex.getRequirementId(), user.getId());
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;

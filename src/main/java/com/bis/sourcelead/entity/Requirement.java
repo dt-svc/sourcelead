@@ -434,9 +434,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String createdByName;
 	
 	@Transient
+	@JsonProperty
     private String[] level1ApproverUserId;
 	
 	@Transient
+	@JsonProperty
 	private String[] level2ApproverUserId;
 	
 	@Transient
