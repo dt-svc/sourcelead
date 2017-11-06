@@ -78,13 +78,13 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long orgLocationId, String budgetStatus) throws Exception {
-		return projectBudgetDao.getProjectBudgetListByOrgLocationIdAndBudgetStatus(orgLocationId, budgetStatus);
+	public 	List<ProjectBudget>  getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long approverUserId,Long orgLocationId,String budgetStatus, String userRoleName) throws Exception{
+		return projectBudgetDao.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, budgetStatus,userRoleName);
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationId(Long orgLocationId) throws Exception {
-		return projectBudgetDao.getProjectBudgetListByOrgLocationId(orgLocationId);
+	public 	List<ProjectBudget>  getProjectBudgetListByOrgLocationId(Long approverUserId,Long orgLocationId,String userRoleName) throws Exception{
+		return projectBudgetDao.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId,userRoleName);
 	}
 	
 	@Override
@@ -111,6 +111,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 			projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL);
 			projectBudget.setEstimatedHours(projectBudgetRequestDTO.getEstimatedHours());
 			projectBudget.setEstimatedBudgetValue(projectBudgetRequestDTO.getEstimatedBudget());
+			projectBudget.setStatus(Constants.RECORD_ACTIVE);
 			projectBudget.setBudgetDescription(projectBudgetRequestDTO.getBaseLine());
 			if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetApprover())) {
 		     User use = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getBudgetApprover()));

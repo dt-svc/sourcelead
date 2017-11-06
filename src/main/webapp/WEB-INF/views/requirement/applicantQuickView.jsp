@@ -16,10 +16,10 @@ function applicantQuickViewProfile(submissionId,candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != ""){  
+         success :function(json) {  
+        	 if(json != null){  
               	
-               var json = JSON.parse(data);
+              // var json = JSON.parse(data);
  	    	   
  	    	   if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
 			 		designationType =json.designationType+',';

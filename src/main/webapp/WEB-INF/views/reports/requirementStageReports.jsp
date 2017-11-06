@@ -772,3 +772,4 @@ $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {
     e.stopPropagation();
 });	
 </script>  	
+<jsp:include page="../masterFooter.jsp" />
