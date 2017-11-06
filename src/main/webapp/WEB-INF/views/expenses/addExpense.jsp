@@ -520,12 +520,30 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 </script>
 
 <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+/* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
             event.preventDefault();
         }
-    });	
+    }); */
+$('.allownumericwithdecimal').keypress(function(evt) {
+		  evt = (evt) ? evt : window.event;
+		  var charCode = (evt.which) ? evt.which : evt.keyCode;
+		  if (charCode == 8 || charCode == 37) {
+		    return true;
+		  } else if (charCode == 46 && $(this).val().indexOf('.') != -1) {
+		    return false;
+		  } else if (charCode > 31 && charCode != 46 && (charCode < 48 || charCode > 57)) {
+		    return false;
+		  }
+		  return true;
+		});
+    $('.allownumericwithdecimal').blur(function() {
+    	var num = parseFloat($(this).val());
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+        $('.allownumericwithdecimal').val(with2Decimals);
+    });
+});
 </script>
 
 <script>
