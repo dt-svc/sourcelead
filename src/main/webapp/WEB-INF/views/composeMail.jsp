@@ -269,9 +269,9 @@ $(function(){
 				var form = $('#email_form')[0];
 		  		 var formData = new FormData(form)
 		  		
-		  		 var toEmails =  $('#emailsList_chosen span').size();
+		  		 var toEmails =  $('#emailsList').val();
 		  		 
-		  		if(toEmails < 1){
+		  		if(toEmails == null){
 		   	    	alertMailerMsg("Provide at least one To mail");
 		   	    }
 		  		else{
@@ -287,7 +287,7 @@ $(function(){
 			  				success : function(result) {
 			  						location.replace(sourceleadUrl+"/mailBox");
 			  				},
-			  			}); 
+			  			});  
 			  		
 		  		}
 		  		  
