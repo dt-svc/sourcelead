@@ -42,7 +42,7 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-     <div id="loading"></div> 
+     <div id="appRejLoading"></div>
     <div class="clients_wrap_table datatable_filter">
     <div class='remove_search mt10'>
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
@@ -279,9 +279,11 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 		 } 
 	 }    
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
-			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
+			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();
+						$("#appRejLoading").removeAttr("style");
 			 			$("#remove_user_pop, .side_mask").fadeOut();
 			 			$("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });

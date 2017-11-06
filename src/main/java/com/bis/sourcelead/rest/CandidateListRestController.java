@@ -706,6 +706,7 @@ public class CandidateListRestController {
 			}
 		}
 		candidateDTO.setAllAndCandidateVisa(visa);
+		candidateDTO.setVisaType(can.getVisaType());
 
 		if (null != can.getExpectedRateCurrencey()) {
 			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
@@ -766,6 +767,7 @@ public class CandidateListRestController {
 		candidateDTO.setState(can.getState());
 		candidateDTO.setFirstName(can.getFirstName());
 		candidateDTO.setLastName(can.getLastName());
+		candidateDTO.setLocation(can.getLocation());
 		candidateDTO.setSummary(can.getSummary());
 		candidateDTO.setFileUrl(can.getFileUrl());
 		candidateDTO.setMobilePhone(can.getMobilePhone());

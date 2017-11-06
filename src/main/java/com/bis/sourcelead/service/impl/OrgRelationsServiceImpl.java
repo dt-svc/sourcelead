@@ -411,14 +411,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
 		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){
 		   for (OrgSpoc orgSpoc : vandorsContactsList) {
-			     StringBuilder spocNameSB = new StringBuilder();
-				 StringBuilder ownerNameSB = new StringBuilder();
 				 
 				 if("Vendor".equalsIgnoreCase(relationType)){
 					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setSpocName(orgSpoc.getClientUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getVendorUser().getFullName());
 					
 					 orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
@@ -427,9 +425,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 				 }else{
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
 					 
 					 orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());

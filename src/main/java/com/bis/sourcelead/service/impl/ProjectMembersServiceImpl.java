@@ -1525,4 +1525,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
+			Long locationId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+	}
+
 }

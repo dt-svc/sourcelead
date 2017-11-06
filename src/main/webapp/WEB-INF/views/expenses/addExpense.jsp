@@ -116,7 +116,7 @@
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow("emp");'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
+	<a href="javascript:addExpenseRow('emp');" id="addExpenseItemButton" data-id="emp" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
@@ -520,12 +520,24 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 </script>
 
 <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+/* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
             event.preventDefault();
         }
-    });	
+    }); */
+        $('.allownumericwithdecimal').keydown(function (event) {
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+            } else {
+                event.preventDefault();
+            }
+            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                event.preventDefault();
+        });
+    });
 </script>
 
 <script>
