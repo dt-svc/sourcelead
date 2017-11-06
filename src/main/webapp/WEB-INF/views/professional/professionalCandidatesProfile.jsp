@@ -477,7 +477,6 @@ function editCandidate(candidateId){
 <script>
 function professionalProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -581,7 +580,7 @@ function professionalProfile(candidateId){
 							result = result +'		        <div class="design-view visaresult">';
 							
 							result = result +'		<div class="clearfix">';
-							result = result +'<h2 class="education  pull-left">Immigration Status:</h2>';
+							result = result +'<h2 class="education  pull-left">Immigration StatusKKKKK:</h2>';
 							 if(json.candidateType == "Candidate"){ 
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 							 }else{ 
@@ -593,7 +592,6 @@ function professionalProfile(candidateId){
 							
 							
 	                     result = result +'<div class="clearfix">';
-							
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
 							alert("dsadas    "+json.allAndCandidateVisa)
