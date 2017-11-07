@@ -857,10 +857,6 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-5").empty();  
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
-							    
-							employeeSubmissionProfile(candidateId);
-							educationSubmissionProfile(candidateId);
-							certificationSubmissionProfile(candidateId); 
 							
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
@@ -1165,7 +1161,6 @@ function candidateProfile(candidateId,candidateType){
 		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 		        	//location.replace(sourceleadUrl+"/candidatesList"); 
 
-		        	candidateSideBar(candidateId);
 		        	 $("#selector1").removeAttr("style");
          			 $("#selector1").css({ display: "block" });
 		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
@@ -1842,7 +1837,7 @@ function  removeValiationVendorContact() {
          success :function(data) {
             	  var candidateType = "Candidates";
            	  	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
+            	  //candidateQuickViewProfile(candidateId);
             	  $("#loading").removeAttr('style');
        },
          

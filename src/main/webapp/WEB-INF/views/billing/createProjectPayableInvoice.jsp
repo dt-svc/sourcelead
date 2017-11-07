@@ -1131,7 +1131,11 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Bill..");
+					    		if(saveType == 'SENT'){
+					    			$("#msgDiv").html("Successfully you have sent a Bill..");
+					    		}else if(saveType == 'DRAFT'){
+					    			$("#msgDiv").html("Bill saved Successfully..");
+					    		}
 	    		     			msgFadein();
 			  				}
 			  			   }); 

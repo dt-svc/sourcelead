@@ -2354,7 +2354,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 							for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 								if(!isNullOrEmpty(tsd.getFileName())){
 										documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
-										documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append(">");
+										documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append("download>");
 										documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 										documentBuffer.append(" <input type='button' class='padIcon' value='"+tsd.getFileName()+"'>");
 										documentBuffer.append("</a>");

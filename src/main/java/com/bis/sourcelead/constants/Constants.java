@@ -542,7 +542,7 @@ public class Constants {
 			"Vendor Contact Name"," Vendor Contact Email", "Vendor Phone ", "Bill Date", "Due Date", "Total Amount", "Due Amount",
 			"Paid Amount", "Status", "Payment Status", "Linked Bill Id"};
 	
-	public static final String[] EXPENSES_REPORTS_HEADERS = {"Expense id","Employee Name","Email id","Phone Number","Emp Type","Vendor","Vendor Contact","Project","Client"};
+	public static final String[] EXPENSES_REPORTS_HEADERS = {"Emp id","Employee Name","Email id","Phone Number","Emp Type","Vendor","Vendor Contact","Project","Client"};
 	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
 	
 	
