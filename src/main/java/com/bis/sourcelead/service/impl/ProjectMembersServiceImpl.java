@@ -1178,12 +1178,24 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembers.setRateType(null);
 		}
 		
-		if(pm.getProjectAssignedDate() != null){
+		//commented by laxman
+		
+	/*	if(pm.getProjectAssignedDate() != null){
 			projectMembers.setProjectAssignedDate(pm.getProjectAssignedDate());
 		}
 		
 		if(pm.getProjectEndDate() != null ){
 			projectMembers.setProjectEndDate(pm.getProjectEndDate());
+		}else{
+			projectMembers.setProjectEndDate(null);
+		}*/
+		
+		if(projects.getStartDate() != null){
+			projectMembers.setProjectAssignedDate(projects.getStartDate());
+		}
+		
+		if(projects.getEndDate() != null ){
+			projectMembers.setProjectEndDate(projects.getEndDate());
 		}else{
 			projectMembers.setProjectEndDate(null);
 		}
