@@ -830,6 +830,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				    	  expensesArray[headers.length-1]= projectMember.getClaimedExpenseTotal().toString();
 				      }else{
 				    	  expensesArray[headers.length-2] =  projectMember.getExpenseTotal().toString();
+				    	  if(projectMember.getClaimedExpenseTotal() != null)
 				    	  expensesArray[headers.length-1] =  projectMember.getClaimedExpenseTotal().toString();
 				      }
 				   }

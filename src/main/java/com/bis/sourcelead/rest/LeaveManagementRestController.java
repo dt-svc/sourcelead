@@ -249,15 +249,16 @@ public class LeaveManagementRestController {
 		   List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(loginUser.getId(), roleId, orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersList);
-			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-			if(approverList !=null) {
-				for (User user : approverList) {
+		   
+		   List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(loginUser.getId(), roleId, orgLocations.getId());
+			if(approversList !=null) {
+				for (User user : approversList) {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 					if(userRole != null){
 						user.setUserType(userRole.getUserType());
 					}
 				}
-				 model.addObject("approverList", approverList);
+				 model.addObject("approverList", approversList);
 			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
@@ -650,7 +651,6 @@ public class LeaveManagementRestController {
 		return "success";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getHolidaysList","/rest/getHolidaysList"}, method = RequestMethod.GET)
 	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "reportYear", required = false) String reportYear, HttpServletRequest request) throws Exception
 	{
@@ -1594,12 +1594,12 @@ public class LeaveManagementRestController {
 		{
 			if(holidayAndRestrictday.getHoliday() != null){
 				if(StringUtils.isNotEmpty(id)){
-					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim()) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
 						flag = false;
 						break;
 					}
 				}else{
-					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name)){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())){
 						flag = true;
 						break;
 					}
