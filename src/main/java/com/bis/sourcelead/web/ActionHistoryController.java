@@ -24,7 +24,6 @@ public class ActionHistoryController {
 	@RequestMapping(value = "/getActionHistoryList")
 	public ModelAndView getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId, HttpServletRequest request) throws Exception
 	{
-		
 		ModelAndView model = new ModelAndView();
 		model.addObject("userSessionId", userSessionId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
