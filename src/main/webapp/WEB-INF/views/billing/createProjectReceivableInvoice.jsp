@@ -1247,7 +1247,11 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/invoiceList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Invoice..");
+					    		if(saveType == 'SENT'){
+					    			$("#msgDiv").html("Successfully you have sent a Invoice..");
+					    		}else if(saveType == 'DRAFT'){
+					    			$("#msgDiv").html("Invoice saved Successfully..");
+					    		}
 	    		     			msgFadein();
 			  				}
 			  			   }); 
