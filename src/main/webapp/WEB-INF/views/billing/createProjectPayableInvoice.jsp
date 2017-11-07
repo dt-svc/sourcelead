@@ -1571,7 +1571,7 @@ function getVendorContacts(vendorContactId){
 		var opt = json[i];
 		
 		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
+		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spoc){
 			selected = 'selected';
 		}
 		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";

@@ -299,21 +299,24 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 						double finalAmount = 0;
 						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
+							System.out.println("--------");
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
-							userPayroll.setEmpId(pm.getEmployee().getEmployeeId());
-							userPayroll.setUserId(pm.getEmployee().getUser());
+							if(pm.getEmployee() !=null) {
+								userPayroll.setEmpId(pm.getEmployee().getEmployeeId());	
+								userPayroll.setUserId(pm.getEmployee().getUser());
+							}
 							userPayroll.setOrgLocationId(orgLocation);
-							if(pm.getEmployee().getUser().getLastName() !=null){
-								sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+							if(pm.getProjectMemberCandidteId().getLastName() !=null){
+								sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(pm.getProjectMemberCandidteId().getLastName());
 							}else{
-								sb.append(pm.getEmployee().getUser().getFirstName());
+								sb.append(pm.getProjectMemberCandidteId().getFirstName());
 							}
 							userPayroll.setEmployeeName(sb.toString());
 							userPayroll.setTotalHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)));
 							userPayroll.setHalfHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)/2));
-							if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
-								double payRateD =  Double.parseDouble(pm.getEmployee().getRate());
+							if(pm.getPayRate() !=null){
+								double payRateD =  pm.getPayRate();
 								userPayroll.setPayRate(df.format(payRateD));
 								 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 								 finalAmount = amount;
@@ -348,11 +351,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 	private double getAmount(float halgHours, ProjectMembers pm) {
 		double amount = 0;
-		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
+		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
 			amount = halgHours*rate;
-		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
+		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
 			amount = rate/2;
 		}
 		return amount;
