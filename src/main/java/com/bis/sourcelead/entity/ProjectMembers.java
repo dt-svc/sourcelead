@@ -141,9 +141,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String empEmail;
 	
+	@JsonProperty
 	@Transient
 	private String startDate;
 	
+	@JsonProperty
 	@Transient
 	private String endDate;
 	
