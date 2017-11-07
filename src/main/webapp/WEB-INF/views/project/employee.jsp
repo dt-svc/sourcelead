@@ -1679,43 +1679,32 @@ function getProjectDetails(){
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-						result = result + '<strong>Project Id:</strong>';
+						result = result + '<strong>Project ID:</strong>';
 						result = result + '<span>'+projectSequeneNumber+'</span>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
-						result = result + '	<strong>Project name:</strong>';
+						result = result + '	<strong>Project Name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
+					
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-
-						for (var j = 0; j < json.managersList.length; j++) {
-							var manager = json.managersList[j];
-							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
-							}
+						result = result + '	<strong>Manager 1 Name:</strong>';
+						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '	<strong>Manager 2 Name:</strong>';
+						if(json.manager2Name != null && json.manager2Name != 'undefined' && json.manager2Name != ''){
+							var manager2Name = json.manager2Name;
+						}else{
+							var manager2Name = '------';
 						}
-						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	<span title="'+manager2Name+'">'+manager2Name+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
-						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '	<strong>Manager 2:</strong><span>';
-
-							for (var j = 0; j < json.managersList.length; j++) {
-								var manager = json.managersList[j];
-								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
-								}
-							}
-							result = result	+ '</span><div class="clearfix"></div>';
-							result = result + '	</div>';
-						}
 						
 						
 						result = result + '<div class="project_details_cta">';
