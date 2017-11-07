@@ -1,0 +1,1 @@
+INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('517', '5', '150');
