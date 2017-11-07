@@ -165,6 +165,7 @@ function saveCandidateImage(candidateId, formId, data){
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
 	                        		  cancel(candidateId);
+	                        		  candidateSideBar(candidateId);
 	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
@@ -189,7 +190,7 @@ function saveUserProfileImage(formId,data){
                       success: function(result) {
                     	  if(result)
                     		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-//                   		  location.replace(sourceleadUrl+"/userProfile");  
+                  		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
         return true;         
