@@ -1387,11 +1387,15 @@ function getResumesList(){
 
 <script type="text/javascript">
     function getRecruiterCandidateDetails(){
-	var candidateId = document.getElementById("candidateId").value
+	
+	    var candidateId = document.getElementById("candidateId").value
+	    var requirementId = $("#requirementId").val();
+		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
