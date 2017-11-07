@@ -22,7 +22,7 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 	
 	private Long projectsId;
 	
-	private Long masterCandidateId;
+	private Long masterCandidatesId;
 	
 	private String currentTimeFrequency;
 	
@@ -114,14 +114,12 @@ public class TimesheetExpenseEntryDetailsUtilDTO implements Serializable{
 		this.currentTimeSubFrequency = currentTimeSubFrequency;
 	}
 
-
-
-	public Long getMasterCandidateId() {
-		return masterCandidateId;
+	public Long getMasterCandidatesId() {
+		return masterCandidatesId;
 	}
 
-	public void setMasterCandidateId(Long masterCandidateId) {
-		this.masterCandidateId = masterCandidateId;
+	public void setMasterCandidatesId(Long masterCandidatesId) {
+		this.masterCandidatesId = masterCandidatesId;
 	}
 
 	public String getTimesheetStatus() {

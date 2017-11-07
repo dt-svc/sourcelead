@@ -1679,43 +1679,32 @@ function getProjectDetails(){
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-						result = result + '<strong>Project Id:</strong>';
+						result = result + '<strong>Project ID:</strong>';
 						result = result + '<span>'+projectSequeneNumber+'</span>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
-						result = result + '	<strong>Project name:</strong>';
+						result = result + '	<strong>Project Name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
+					
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-
-						for (var j = 0; j < json.managersList.length; j++) {
-							var manager = json.managersList[j];
-							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
-							}
+						result = result + '	<strong>Manager 1 Name:</strong>';
+						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '	<strong>Manager 2 Name:</strong>';
+						if(json.manager2Name != null && json.manager2Name != 'undefined' && json.manager2Name != ''){
+							var manager2Name = json.manager2Name;
+						}else{
+							var manager2Name = '------';
 						}
-						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	<span title="'+manager2Name+'">'+manager2Name+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
-						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '	<strong>Manager 2:</strong><span>';
-
-							for (var j = 0; j < json.managersList.length; j++) {
-								var manager = json.managersList[j];
-								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
-								}
-							}
-							result = result	+ '</span><div class="clearfix"></div>';
-							result = result + '	</div>';
-						}
 						
 						
 						result = result + '<div class="project_details_cta">';
@@ -2335,9 +2324,11 @@ function removeErrMsg(){
 function getApproversList(approverUserId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_BUDGET_APPROVER";
+
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
     			var output = "";
      			output = output + "<option value=''>--Select Approver--</option>";
@@ -2345,17 +2336,10 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	     		{
 		     		var opt = json[i];
 		     		
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
-		     		 
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.name+" ("+opt.userRole+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.name+" ("+opt.userRole+")</option>";
 		        		}
 		     		 
 	     		}

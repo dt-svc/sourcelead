@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -155,11 +157,71 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
+	public ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO,Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		Query queryObj = null;
+		Integer filterCount = 0;
+		StringBuilder query1 = new StringBuilder("");
+		ResponseList<ReferContactsDTO> response = new ResponseList<>();
+		List<ReferContactsDTO> contactsDTOList = new ArrayList<>();
+		
+		if(contactsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contactsDTO.getSearchValue())) {
+		 query1.append(" contacts.contactUserEmail like '%" + contactsDTO.getSearchValue() + "%' ")
+				.append("OR contacts.firstName like '%" + contactsDTO.getSearchValue() + "%' ")
+				.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
+				.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
+					
+		}
+		
 		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId  ";
-		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) .list();
-		return referContactsList;
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+		}else{
+			 queryObj = session.createQuery(query + query1.toString());
+		}
+		
+		queryObj.setFirstResult(contactsDTO.getStart());
+		queryObj.setMaxResults(contactsDTO.getLength());
+		queryObj.setLong("userId", userId).setCacheable(true).list();
+		List<ReferContacts> referContactsList = queryObj.list();
+		
+		List<Long> countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setCacheable(true).list();
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			filterCount = referContactsList.size();
+		}
+		
+        int totalCount = 0;
+
+		
+		if (contactsDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		if(referContactsList != null && referContactsList.size() > 0) {
+  			for(ReferContacts contacts : referContactsList) {
+  				ReferContactsDTO referContactsDTO = new ReferContactsDTO();
+  				referContactsDTO.setFullName(contacts.getFullName());
+  				referContactsDTO.setEmail(contacts.getContactUserEmail());
+  				referContactsDTO.setSource(contacts.getContactSource().toString());
+  				referContactsDTO.setId(contacts.getId());
+  				referContactsDTO.setPhone(contacts.getContactUserPhone());
+  				contactsDTOList.add(referContactsDTO);
+  			}
+  		}
+		
+		
+		response.setData(contactsDTOList);
+		return response;
+		
 	}
 
 	@Override

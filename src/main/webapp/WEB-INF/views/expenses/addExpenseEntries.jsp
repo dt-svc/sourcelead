@@ -44,6 +44,9 @@ function hideAndShowDetailsRow(rowId,type){
 		var entityId = parseInt(rowId-1);
 		 var maxRecCount = $("#maxRecCount").val();
 		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
+			 $("#addExpenseItemButton").removeAttr('href');
+			 $("#addExpenseItemButton").removeClass("btn-primary");
+			 $("#addExpenseItemButton").addClass("btn-default");
 			 for(var i = 2; i < maxRecCount; i=i+2){
 				 if(rowId != i){
 					 if($("#divEntityTsRow"+i).is(':visible'))
@@ -53,6 +56,15 @@ function hideAndShowDetailsRow(rowId,type){
 					   }
 				 }
 			  } 
+		 }
+		 else{
+			   var from = $("#addExpenseItemButton").attr('data-id');
+				if(from == null || from == '' || from == 'undefined'){
+					from = "emp";
+				}
+				$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			    $("#addExpenseItemButton").removeClass("btn-default");
+	    	    $("#addExpenseItemButton").addClass("btn-primary");
 		 }
 		
 		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
@@ -159,6 +171,14 @@ function addAttachment(entityRowId,from){
 		var  rId1 ="divEntityTsRow"+detailsRowId;
 		var r1 = document.getElementById("categoryTable").rows[rId1];
 	    
+		var from = $("#addExpenseItemButton").attr('data-id');
+		if(from == null || from == '' || from == 'undefined'){
+			from = "emp";
+		}
+		$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+	    $("#addExpenseItemButton").removeClass("btn-default");
+ 	    $("#addExpenseItemButton").addClass("btn-primary");
+		
 		//subtract row amount
 		var totlaMount = $("#expenseAmountDivId").val();
 		var expenseAmount = $("#expenseAmount"+rowId).val();
@@ -457,6 +477,10 @@ function addExpenseRow(from){
 			            </c:forEach>
 		    	    }
 		    	    
+		    	    
+		    	    $("#addExpenseItemButton").removeAttr('href');
+		    	    $("#addExpenseItemButton").removeClass("btn-primary");
+		    	    $("#addExpenseItemButton").addClass("btn-default");
 		        	$("#categoryType"+maxRowNum).empty();
 		            $("#categoryType"+maxRowNum).append(output);
 		            $('#categoryType'+maxRowNum).chosen();
@@ -475,12 +499,25 @@ function addExpenseRow(from){
 			
 		}
 	}
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 		    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 		        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
 		            event.preventDefault();
 		        }
-		    });	
+		    });	 */
+	 
+		    $('.allownumericwithdecimal').keydown(function (event) {
+	            if (event.shiftKey == true) {
+	                event.preventDefault();
+	            }
+	            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+	            } else {
+	                event.preventDefault();
+	            }
+	            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+	                event.preventDefault();
+	        });
+
   }			
 </script>
 <script>
@@ -530,12 +567,19 @@ function addExpenseRow(from){
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
 			
 			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
-			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+'),"Edit"');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+',"Edit")');
 			
 			
 			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
 			$("#divEntityTsRow"+parseInt(entityId+1)).attr('style','display:none;');
 			
+			var from = $("#addExpenseItemButton").attr('data-id');
+    		if(from == null || from == '' || from == 'undefined'){
+				from = "emp";
+			}
+			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			$("#addExpenseItemButton").removeClass("btn-default");
+	        $("#addExpenseItemButton").addClass("btn-primary");
 			return true;
 		}else{
 			return false;

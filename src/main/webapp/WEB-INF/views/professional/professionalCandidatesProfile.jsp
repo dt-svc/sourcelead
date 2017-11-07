@@ -83,9 +83,9 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	 //var json = JSON.parse(data);
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -477,13 +477,12 @@ function editCandidate(candidateId){
 <script>
 function professionalProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	//var json = JSON.parse(data);
 							var result ="";
 							var checked = "";
 							
@@ -593,13 +592,15 @@ function professionalProfile(candidateId){
 							
 							
 	                     result = result +'<div class="clearfix">';
-							
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
+							alert("dsadas    "+json.allAndCandidateVisa)
 							$.each( json.allAndCandidateVisa, function( i, visa ){
 								  var existed = 0;
+								  alert("dsadas    "+json.visaType)
 					                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
-						                var res = [];
+					                	alert("dsadas    "+json.visaType)
+						                var res = []; 
 						                res = json.visaType.split(",");
 						                res.forEach(function(item) {
 						                	if(visa == item){
