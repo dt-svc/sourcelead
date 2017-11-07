@@ -628,7 +628,7 @@ public class OrgLocations implements Serializable{
 
 	public String getDateFormat() {
 		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
-			if((location.contains("INDIA")) ||  StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+			if((StringUtils.isNotEmpty(location) && location.contains("INDIA")) ||  StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
 				dateFormat =  "dd-MM-yyyy";
 			}else{
 				dateFormat =  "MM-dd-yyyy";
@@ -647,7 +647,7 @@ public class OrgLocations implements Serializable{
 			locFullFormDateFormatter = new SimpleDateFormat(dateFormat);
 		}
 		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
-			if((location.contains("INDIA")) || StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+			if(( StringUtils.isNotEmpty(location) && location.contains("INDIA")) || StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
 				   locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_DMY;
 			}else{
 				locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_MDY;

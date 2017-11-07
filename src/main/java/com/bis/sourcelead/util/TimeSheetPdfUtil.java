@@ -493,7 +493,9 @@ public class TimeSheetPdfUtil {
 	            table.addCell("Status : "+submissionStatusStr);
 	            table.addCell("Email Id : "+user.getEmail());
 	            table.addCell("Billabe Hours : "+billableHours);
+	            if(user.getMobilePhone() != null) {
 	            table.addCell("Phone Number : "+user.getMobilePhone());
+	            }
 	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
 	            table.addCell("Project : "+projectName);
 	            table.addCell("Total Hours : "+totalHours);
