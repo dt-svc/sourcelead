@@ -50,13 +50,13 @@ public class OnboardingDocumentsBlobToFile {
 				File folder = null;
 				String link = "";
 				if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Contracts")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Contracts-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Contracts-Documents/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Forms")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Forms-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Forms-Documents/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Policies")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Policies-Documetns/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Policies-Documetns/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Supported")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Supporting-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Supporting-Documents/");
 				}
 				 
 				if(!folder.exists())

@@ -799,7 +799,7 @@ public class TimesheetApprovalRestController {
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" <div class='app_error_mes errorOverightDiv' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
 			            	 timesheetApprovalDiv.append(" </i>");
 			            	 timesheetApprovalDiv.append(" <b class='Rname' title='"+sah.getActionPerformedBy()+"'>By : ").append(sah.getActionPerformedBy());
 			            	 timesheetApprovalDiv.append(" </b>");
