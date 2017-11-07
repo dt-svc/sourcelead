@@ -580,7 +580,7 @@ function professionalProfile(candidateId){
 							result = result +'		        <div class="design-view visaresult">';
 							
 							result = result +'		<div class="clearfix">';
-							result = result +'<h2 class="education  pull-left">Immigration StatusKKKKK:</h2>';
+							result = result +'<h2 class="education  pull-left">Immigration Status:</h2>';
 							 if(json.candidateType == "Candidate"){ 
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 							 }else{ 
@@ -594,10 +594,13 @@ function professionalProfile(candidateId){
 	                     result = result +'<div class="clearfix">';
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
+							alert("dsadas    "+json.allAndCandidateVisa)
 							$.each( json.allAndCandidateVisa, function( i, visa ){
 								  var existed = 0;
+								  alert("dsadas    "+json.visaType)
 					                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
-						                var res = [];
+					                	alert("dsadas    "+json.visaType)
+						                var res = []; 
 						                res = json.visaType.split(",");
 						                res.forEach(function(item) {
 						                	if(visa == item){

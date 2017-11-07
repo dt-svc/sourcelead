@@ -491,9 +491,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				    + dateQuery
 					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
 					+ " and ( "
-					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
+					+  "      (  projects.id IN "
+					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
+					+ "                             ("
+					+ "                                  (pah.level = '2' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
+					+ "                               OR (pah.level = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
+					+ "               )"
+					+ "       )"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
 					+ "     ) ";
+		
+		
 		
 		
 		Query query = session.createQuery(queryStr.toString());
@@ -957,7 +965,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 @Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user   left join fetch pm.projects proj where proj.orgLocationsId = :orglocationId";
+		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
+				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc where loc.id = :orglocationId ";
 		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
 		return allProjectMembersList;
 	}
