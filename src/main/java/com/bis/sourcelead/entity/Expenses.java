@@ -179,6 +179,11 @@ private static final long serialVersionUID = 1L;
 	@JsonProperty
 	private BigDecimal totalAmountRoundoffValue;
 	
+
+	@Transient
+	@JsonProperty
+	private String expenseLocationCode;
+	
 	public Long getId() {
 		return id;
 	}
@@ -464,6 +469,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
 	}
 
 	

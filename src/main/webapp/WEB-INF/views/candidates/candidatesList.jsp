@@ -611,7 +611,8 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
@@ -2054,7 +2055,7 @@ function getCities(){
 					  
 					  <div class="col-md-4 mt">
                           <div class="small-widget bgGreen">
-                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Add Candidate">
+                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Bulk Imports">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-upload fa-4x"></i>
                                       <span class="fa fa-plus"></span>

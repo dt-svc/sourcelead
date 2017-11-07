@@ -587,10 +587,10 @@ public class UsersListRestController {
 			
 			if(null != employee.getOrgRelationId()){
 				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
-				if(employee.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				if(employee.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
-				if(employee.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				if(employee.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
@@ -600,6 +600,9 @@ public class UsersListRestController {
 				userRole.setVendorSpocId(employee.getSpocId().getId().toString());
 				if(null != employee.getSpocId().getVendorUser().getLastName()){
 					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).append(" ").append(employee.getSpocId().getVendorUser().getLastName()).toString());	
+				}else{
+					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).toString());	
+
 				}
 				
 			}
