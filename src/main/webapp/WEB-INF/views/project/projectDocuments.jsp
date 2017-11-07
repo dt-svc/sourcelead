@@ -21,9 +21,7 @@
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectDocumentsList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId,
-					success : function(data) {
-						var json = JSON.parse(data);
-
+					success : function(json) {
 						var result = "";
 						result = result + '<div class="project_tabs_inn_head">';
 							result = result	+ '<span class="pad-sea">';
@@ -56,7 +54,7 @@
 							} 
 							result = result + '<tr>';
 							result = result+ '<td><div class="tbldata-dotdot-me"><span title="'+report.fileName+'" >'+ report.fileName+ '</span></div></td>';
-							result = result+ '<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectDocumentView(\''+report.Id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadProjectDoc?porjectDocumentId='+report.Id+'\"></a></div></td>';
+							result = result+ '<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\" title="Download"></a></div></td>';
 							result = result+ '<td><div class="tbldata-dotdot-big"><span title="'+description+'" >'+description+ '</span></div></td>';
 							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.Id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.Id+','+projectId+');"></i></div></td>';
 							result = result + '</tr>';
@@ -372,15 +370,7 @@ function removeProjectDocuments(documentId,projectId){
 
 
 </script>
-<script>
-function projectDocumentView(documentUUID,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
-		if(documentUUID != null && documentUUID != ""){
-			window.open(sourceleadUrl+'/viewProjectDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
-		}
-}
-
-</script>
+ 
 <script> 	
 // Edit pop
 <script type="text/javascript">

@@ -720,12 +720,10 @@ public class ProjectsDashboardRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getProjectDocumentsList")
-		public String getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+		public List<ProjectDocuments> getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
 		{
-			String resultJson;
 			List<ProjectDocuments> projectDocumentList = projectDocumentsService.getProjectDocumentsListByProjectIdId(projectId);
-			resultJson = commonUtil.toJSON(projectDocumentList);
-			return resultJson;
+			return projectDocumentList;
 		}
 	 /**
 	  * @author Laxman
