@@ -14,7 +14,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private List<TimesheetTaskDTO> timesheetTaskList;
 	
-	private Map<String,Map<String,Boolean>> weekDays;
+	private List<WeekDaysDTO> weekDays;
 	
 	private List<TimesheetEntriesDTO> timesheetEntries;
 	
@@ -201,12 +201,11 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	public void setTimesheetTaskList(List<TimesheetTaskDTO> timesheetTaskList) {
 		this.timesheetTaskList = timesheetTaskList;
 	}
-
-	public Map<String, Map<String, Boolean>> getWeekDays() {
+	public List<WeekDaysDTO> getWeekDays() {
 		return weekDays;
 	}
 
-	public void setWeekDays(Map<String, Map<String, Boolean>> weekDays) {
+	public void setWeekDays(List<WeekDaysDTO> weekDays) {
 		this.weekDays = weekDays;
 	}
 

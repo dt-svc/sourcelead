@@ -1654,16 +1654,16 @@ function clientSideBar(candidateId,recScore){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) { 
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
+           success :function(json) { 
+                if(json != null){  
+                	// var json = JSON.parse(data);
+              		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
+			    	 } */
+              		/*  else if (data.indexOf('exception') >= 0) {
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
-              		 else{
+              		 else{ */
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 			             
@@ -1911,7 +1911,7 @@ function clientSideBar(candidateId,recScore){
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId);
 						 hilightTab();
-			    	} 
+			    	/* }  */
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
