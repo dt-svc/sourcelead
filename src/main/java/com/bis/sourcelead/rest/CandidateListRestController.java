@@ -1619,7 +1619,8 @@ public class CandidateListRestController {
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
 						candidate.setPostedDateStr(currentDateInTimezone);
-						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						//candidate.setCandidateUpdateDateToString(currentTimeStr);
+						candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getCreatedDate()));
 						freshList.add(candidate);
 					}
 				    String reportsList = commonUtil.toJSON(freshList);
