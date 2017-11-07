@@ -844,7 +844,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '+1d');
-						dt.setDate(dt.getDate() + 1);
+						dt.setDate(dt.getDate());
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 						getEstimatedHours(maxRowNum);
 			 	  }
@@ -856,7 +856,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '-1d');
-						dt.setDate(dt.getDate() - 1);
+						dt.setDate(dt.getDate());
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 						getEstimatedHours(maxRowNum);
 			 	  }
@@ -1906,7 +1906,11 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Bill..");
+					    		if(saveType == 'SENT'){
+					    			$("#msgDiv").html("Successfully you have sent a Bill..");
+					    		}else if(saveType == 'DRAFT'){
+					    			$("#msgDiv").html("Bill saved Successfully..");
+					    		}
 	    		     			msgFadein();
 			  				}
 			  			   }); 
