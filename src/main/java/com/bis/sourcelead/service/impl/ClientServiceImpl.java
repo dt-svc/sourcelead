@@ -800,6 +800,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -855,6 +859,13 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 
 				orgLocations.setZipCode("");
+			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			}
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				orgLocations.setBillingAddress(clientDTO.getBillingAddress());
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
 		} else {

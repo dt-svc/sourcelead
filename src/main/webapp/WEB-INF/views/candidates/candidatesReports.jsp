@@ -111,7 +111,7 @@ window.onload = function() {
 		            	}
 		            	
 	                result = result +"<tr>";
-	                result = result +"  <td><div class='proj_show divmax-width' ><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' ><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
 	                result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
