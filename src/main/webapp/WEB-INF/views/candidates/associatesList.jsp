@@ -585,16 +585,19 @@ function deleteProfileImage(candidateId){
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
+	        	 
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	 
 	        	 //refreshImageBlock(candidateId);
-	        	 candidateQuickViewProfile(candidateId);
+	        	 //candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
 }
 </script>
-
+s')
 <%-- 
      @author : Laxman.
      this script is for refresh image block

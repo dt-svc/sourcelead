@@ -611,7 +611,8 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 candidateQuickViewProfile(candidateId);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
