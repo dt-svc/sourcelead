@@ -165,6 +165,7 @@ function saveCandidateImage(candidateId, formId, data){
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
 	                        		  cancel(candidateId);
+	                        		  candidateSideBar(candidateId);
 	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
