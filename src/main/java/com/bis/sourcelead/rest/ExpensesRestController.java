@@ -25,6 +25,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -76,6 +77,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.itextpdf.text.ListItem;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -668,27 +670,32 @@ public class ExpensesRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/myExpensesListByStage")
-	public String myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
+	@RequestMapping(value = "/myExpensesListByStage",method= RequestMethod.GET)
+	public List<Expenses> myExpensesListByStage(HttpServletRequest request, String expenseStatus) throws Exception
 	{
-		String resultJson = "";
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(candidate.getMasterCandidateId().getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
+			ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(ex.getMasterCandidateId().getId(),ex.getProjects().getId(),orgLoc.getId());
 			if (null != ex.getProjectMembers()) {
-				ex.setProjectName(ex.getProjectMembers().getProjects().getProjectName());
+				ex.setProjectName(pm.getProjects().getProjectName());
 			}
+			if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
+				ex.setClientName(pm.getProjectClientsId().getOrgRelationId().getClientName());	
+            }
 			if (null != ex.getStartDate()) {
 				ex.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),ex.getStartDate()));
 			}
 			if (null != ex.getEndDate()) {
 				ex.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),ex.getEndDate()));
 			}
+			if (null != orgLoc.getLocationCode()) {
+				ex.setExpenseLocationCode(orgLoc.getLocationCode());
+			}
 		}
-		resultJson = commonUtil.toJSON(expensesList);
-		return resultJson;
+		//resultJson = commonUtil.toJSON(expensesList);
+		return expensesList;
 	}
 	
 	@RequestMapping(value = "/employeeExpensesListByStage")
