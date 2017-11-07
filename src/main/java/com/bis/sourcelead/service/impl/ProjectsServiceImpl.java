@@ -631,7 +631,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			LookUpData taskStatusLookUpData = new LookUpData();
 			taskStatusLookUpData.setId(1069L);
 			projectTasks.setTaskStatus(taskStatusLookUpData);
-			
+			projectTasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setProjectId(projects);

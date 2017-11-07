@@ -150,7 +150,7 @@ public class PayrollController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.PAYROLL);
+			//sessionData.setNav(Constants.PAYROLL);
 			
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -216,7 +216,7 @@ public class PayrollController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PAYROLL);
+					//sessionData.setNav(Constants.PAYROLL);
 					request.getSession().setAttribute("sessionData",sessionData);
 					
 					model.setViewName("payroll/allPayrollReports");

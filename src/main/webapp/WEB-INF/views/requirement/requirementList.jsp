@@ -394,25 +394,6 @@ function statusvalidating(id){
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
 
-					<li><sec:authorize
-							access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-							<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Template <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-										<a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
-									</sec:authorize> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-										<a href="<c:url value='/interViewFeedBackTemplate'/>"><i
-											class="fa fa-plus"></i>Interview</a>
-									</sec:authorize>
-								</span>
-							</div>
-						</sec:authorize></li>
-
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypop"><i
 							class="glyphicon glyphicon-export"></i>
