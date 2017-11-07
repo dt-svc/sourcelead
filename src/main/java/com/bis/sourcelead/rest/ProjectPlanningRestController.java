@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -85,19 +87,26 @@ public class ProjectPlanningRestController {
 	OrgLocationService orgLocationService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
-	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType,
-			 @RequestParam(value="selectedAssociates", required=false) String selectedAssociates,
-			 @RequestParam(value="projectUUID", required=false) String projectUUID) throws Exception{ 
+	 public @ResponseBody ResponseList<CandidateDTO>  getRequestedAssociatesList(CandidateDTO candidateDTO) throws Exception{ 
 		 
-		String resultJson;
 		
 		List<Long> roleIds = null; 
 		Projects projects = null;
 		
-		if(!isNullOrEmpty(roles)){
+		
+		String[] tableColumns = {"ischeck","name", "primarySkill", "rate", "employmentType", "manager", "resume", "assignedProjectsCount"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default referContactsDTO order
+		if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+		}
+		candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateDTO.setSortOrder(sortColumnOrder);
+		
+		if(!isNullOrEmpty(candidateDTO.getRoles())){
 			roleIds = new ArrayList<Long>();
-			 String[] rolesList = roles.split(",");
+			 String[] rolesList = candidateDTO.getRoles().split(",");
 			 for(int i=0; i < rolesList.length; i++){
 				 roleIds.add(Long.valueOf(rolesList[i]));
 			 }
@@ -105,16 +114,16 @@ public class ProjectPlanningRestController {
 		}
 		
 		List<Long> associateIds = null; 
-		if(!isNullOrEmpty(selectedAssociates)){
+		if(!isNullOrEmpty(candidateDTO.getSelectedAssociates())){
 			associateIds = new ArrayList<Long>();
-			 String[] associateIdsList = selectedAssociates.split(",");
+			 String[] associateIdsList = candidateDTO.getSelectedAssociates().split(",");
 			 for(int i=0; i < associateIdsList.length; i++){
 				 associateIds.add(Long.valueOf(associateIdsList[i]));
 			 }
 		}
 		
-		if(!isNullOrEmpty(projectUUID)){
-			projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(!isNullOrEmpty(candidateDTO.getProjectUUID())){
+			projects = projectsService.getProjectByProjectUUID(candidateDTO.getProjectUUID());
 			List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
 		    if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0){
 		    	if(null == associateIds){
@@ -129,37 +138,9 @@ public class ProjectPlanningRestController {
 		    }
 		}
 		
-		
-		List<Candidate> assoicatesList = new ArrayList<Candidate>(); 
-		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType,associateIds,projects.getId());
-		 for(Candidate candidate : candidatesList){
-			 Integer projectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
-			 candidate.setAssignedProjectsCount(projectsCount);
-			 
-			 UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(candidate.getConsultantUser().getId(), orgLocationId);
-			 candidate.setUserRole(userRole.getRoles().getDisplayName());
-			 if(userRole.getReportingManager() != null){
-				 StringBuilder reportingManager = new StringBuilder();
-				 if(!isNullOrEmpty(userRole.getReportingManager().getLastName())){
-					 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName()).append(" ").append(userRole.getReportingManager().getLastName());
-				 }else{
-					 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName());
-				 }
-				 candidate.setReportingManager(reportingManager.toString());
-			 }else{
-				 candidate.setReportingManager("----");
-			 }
-			 
-			 CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByCandidateId(candidate.getId());
-			 if(candidateResumes != null){
-				 candidate.setResumeUUID(candidateResumes.getResumeUUID());
-			 }
-				
-			 assoicatesList.add(candidate);
-		 }
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getRequestedCandidatesList(candidateDTO,candidateDTO.getOrgLocationId(), roleIds, candidateDTO.getResourceType(),associateIds,projects.getId());
 		 
-		 resultJson = commonUtil.toJSON(assoicatesList);
-		 return resultJson;
+		 return candidateDTOList;
 	  }
 	 
 	 
