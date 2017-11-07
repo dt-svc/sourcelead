@@ -53,5 +53,7 @@ public interface LeaveService {
 
 	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String string, OrgLocations orgLocations);
 
+	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
+
 
 }

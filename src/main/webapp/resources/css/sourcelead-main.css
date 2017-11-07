@@ -2,12 +2,14 @@
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
-	margin: 0;
-	padding: 0;
+	margin: 0; padding: 0; font-weight: 300;
 }
 body {
-	font-size: 14px; color: #333; font-family:'Roboto', sans-serif  !important;
+	font-size: 14px; color: #333;
     min-height: 100%; background-color: #e0e0e0 !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+	font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
 	outline: 0; text-decoration: none;
@@ -6959,7 +6961,13 @@ background: #375d81; color:#fff;
 color:#0277BD !important;
 }
 .astrick {
-position: absolute; left: 100%; top: 5px;	
+position: absolute; left: 100%; top: 5px; 
+}
+.reportBtns.reportBtns_custom {
+    width: 65% !important;
+}
+.reportBtn.reportBtn_custom_btn {
+    width: 20% !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

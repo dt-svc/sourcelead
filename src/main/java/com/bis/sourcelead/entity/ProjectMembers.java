@@ -1285,6 +1285,8 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getClaimedExpenseTotal() {
+		if(claimedExpenseTotal == null)
+			claimedExpenseTotal = 0f;
 		return claimedExpenseTotal;
 	}
 
