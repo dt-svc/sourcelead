@@ -158,8 +158,8 @@
                       <i class="fa fa-usd fa-2x text-info"></i>
                   </div>
                   <div class="pull-left">
-                      <h4 class="text-info">Employee ROI Report</h4>
-                      <small class="text-muted">Payroll Report</small>
+                      <h4 class="text-info">Employee ROI</h4>
+                      <small class="text-muted">All Payroll Reports</small>
                       <div class="clearfix mt10">
                       <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/payrollReport" />">View</a>
 
