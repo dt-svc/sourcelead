@@ -249,15 +249,16 @@ public class LeaveManagementRestController {
 		   List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(loginUser.getId(), roleId, orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersList);
-			List<User> approverList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-			if(approverList !=null) {
-				for (User user : approverList) {
+		   
+		   List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(loginUser.getId(), roleId, orgLocations.getId());
+			if(approversList !=null) {
+				for (User user : approversList) {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 					if(userRole != null){
 						user.setUserType(userRole.getUserType());
 					}
 				}
-				 model.addObject("approverList", approverList);
+				 model.addObject("approverList", approversList);
 			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
@@ -650,7 +651,6 @@ public class LeaveManagementRestController {
 		return "success";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/getHolidaysList","/rest/getHolidaysList"}, method = RequestMethod.GET)
 	public @ResponseBody List<HolidayDTO> getHolidaysList(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "reportYear", required = false) String reportYear, HttpServletRequest request) throws Exception
 	{
@@ -1572,10 +1572,40 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = { "/validateName", "/rest/validateName" }, method = RequestMethod.GET)
-	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name, @RequestParam(value = "id", required = true) String id)
+	public boolean validateName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, 
+			@RequestParam(value = "from", required = true) String fromTable, 
+			@RequestParam(value = "name", required = true) String name, 
+			@RequestParam(value = "id", required = true) String id,
+			@RequestParam(value = "fromDate", required = true) String fromDate,
+			@RequestParam(value = "toDate", required = true) String toDate) throws Exception
 	{
 		boolean flag = false;
-		flag = leaveService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable,id);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
+		List<HolidayAndRestrictday> listFilter = new ArrayList<HolidayAndRestrictday>();
+		if(list != null && !list.isEmpty()){
+			for(HolidayAndRestrictday holidayAndRestrictday : list){
+				if(holidayAndRestrictday.getHoliday() != null && StringUtils.isNotEmpty(holidayAndRestrictday.getHoliday().getStatus()))
+					if(holidayAndRestrictday.getHoliday().getStatus().equalsIgnoreCase("1"))
+						listFilter.add(holidayAndRestrictday);
+			}
+		}
+		for(HolidayAndRestrictday holidayAndRestrictday : listFilter)
+		{
+			if(holidayAndRestrictday.getHoliday() != null){
+				if(StringUtils.isNotEmpty(id)){
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim()) && holidayAndRestrictday.getHoliday().getId().equalsIgnoreCase(id)){
+						flag = false;
+						break;
+					}
+				}else{
+					if(holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())){
+						flag = true;
+						break;
+					}
+				}
+			}
+		}
 		return flag;
 	}
 

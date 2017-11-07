@@ -42,7 +42,7 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-     <div id="loading"></div> 
+     <div id="appRejLoading"></div>
     <div class="clients_wrap_table datatable_filter">
     <div class='remove_search mt10'>
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
@@ -211,11 +211,11 @@ function requestedEmployeesPagination(url){
 		        			 result = result + ' <b title="Reject" class="paddingRight proj_closed">REJECTED</b>';
 		        		 }else{
 		        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
-
-                             result = result + ' <span title="Approve" class="paddingRight"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
-
-                             result = result + '  <span title="Reject" class="paddingLeft"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
-                            '</sec:authorize>';
+		        			 result = result + '<div class="tblminwidth-75 pull-left text-center ml10">';
+                             result = result + ' <span title="APPROVE" class="paddingRight pull-left"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+                             result = result + '  <span title="REJECT" class="paddingLeft  pull-left"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
+                             result = result + '</div>';
+                             '</sec:authorize>';
 
 		        		 }
                 	    return result; 
@@ -279,9 +279,11 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 		 } 
 	 }    
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
-			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
+			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();
+						$("#appRejLoading").removeAttr("style");
 			 			$("#remove_user_pop, .side_mask").fadeOut();
 			 			$("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });
@@ -309,8 +311,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +'<span class="btn btn-primary btn-sm mr10" onclick="approveLeavePopup(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">Approve</span>';
-			 result = result +'<span class="btn btn-danger btn-sm mr10" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">Reject</span>';
+			 result = result +'<span class="btn btn-primary btn-sm mr10" title="APPROVE" onclick="approveLeavePopup(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">APPROVE</span>';
+			 result = result +'<span class="btn btn-danger btn-sm mr10" title="REJECT" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">REJECT</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';

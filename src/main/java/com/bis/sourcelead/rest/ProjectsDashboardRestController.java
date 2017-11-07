@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -315,11 +316,30 @@ public class ProjectsDashboardRestController {
 		 */
 		 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
 		 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
-		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
-			 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
+		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,
+				 @RequestParam(value="taskStatus", required=false) String taskStatus,HttpServletRequest request) throws Exception {
+				List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
 			 return taskList;
 		 }
 				 
+		 
+		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
+		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
+			 
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+				}
+				projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectTasksDTO.setSortOrder(sortColumnOrder);
+				ResponseList<ProjectTasksDTO>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+			 return taskList;
+		 }
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -700,12 +720,10 @@ public class ProjectsDashboardRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getProjectDocumentsList")
-		public String getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+		public List<ProjectDocuments> getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
 		{
-			String resultJson;
 			List<ProjectDocuments> projectDocumentList = projectDocumentsService.getProjectDocumentsListByProjectIdId(projectId);
-			resultJson = commonUtil.toJSON(projectDocumentList);
-			return resultJson;
+			return projectDocumentList;
 		}
 	 /**
 	  * @author Laxman

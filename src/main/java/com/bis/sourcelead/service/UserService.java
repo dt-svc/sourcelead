@@ -190,6 +190,8 @@ public interface UserService  {
 	void passwordResetMailToLoginUser(User user, OrgLocations orgLocations) throws Exception;
 	
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId,Long userId) throws Exception;
+	
+	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
 
 }	
 		

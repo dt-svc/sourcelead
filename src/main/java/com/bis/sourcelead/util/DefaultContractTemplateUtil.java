@@ -792,21 +792,20 @@ public class DefaultContractTemplateUtil {
 			sb.append("term not otherwise defined herein shall have the meaning ascribed to           ");
 			sb.append("it in such agreement.                                                          ");
 			sb.append("</P>                                                                           ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Requirement Title:                            ");
-			sb.append("[Requirement            ");
-			sb.append("Title]</P>                                                                     ");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Job Title:                            ");
+			sb.append("[Job Title]</P>                                                                     ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Associate: [Associate Name]</P>               ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Client: [Company Name]</P>                    ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Address: [Client Location]</P>                ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Start Date: [Start Date]</P>                  ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>End Date: [End Date]</P>                      ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Rate: <FONT COLOR='#000000'>          ");
-			sb.append("<FONT SIZE=2 STYLE='font-size: 10pt'><SPAN STYLE='background: #ffffff'>[Billing Rate]");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Amount: <FONT COLOR='#000000'>          ");
+			sb.append("<FONT SIZE=2 STYLE='font-size: 10pt'><SPAN STYLE='background: #ffffff'>[Billing Amount]");
 			sb.append("</SPAN></FONT></FONT></P>                                                 ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Over time: [Overtime]</P>                     ");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Overtime Hours: [Overtime Hours]</P>                     ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Cycle: [Billing Cycle]</P>            ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'><A NAME='_GoBack'></A>Payment Term:           ");
-			sb.append("[Payment Term]</P>                                                             ");
+			sb.append("<P STYLE='margin-bottom: 0.14in'><A NAME='_GoBack'></A>Payment Frequency:           ");
+			sb.append("[Payment Frequency]</P>                                                             ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Except for this provision, the terms          ");
 			sb.append("and conditions of the Agreement shall remain in full force and                 ");
 			sb.append("effect, without any amendments. Contractor agrees to report on the             ");
@@ -864,20 +863,20 @@ public class DefaultContractTemplateUtil {
 			sb.append("Any term not otherwise defined herein shall have the meaning ascribed                                       ");
 			sb.append("to it in such agreement.                                                                                    ");
 			sb.append("</P>                                                                                                        ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Requirement Title:                                                         ");
-			sb.append("&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;[Requirement Title]");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Job Title:                                                         ");
+			sb.append("&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;&shy;[Job Title]");
 			sb.append("</P>                                                                                                  ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Associate: [Associate Name]</P>                                            ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Client: [Client Name]</P>                                                  ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Address: [Client Location]</P>                                             ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Start Date: [Start Date]</P>                                               ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>End Date: [End Date]</P>                                                   ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Rate: <FONT COLOR='#000000'><FONT SIZE=2 STYLE='font-size: 10pt'>  ");
-			sb.append("<SPAN STYLE='background: #ffffff'>[Billing Rate]");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Amount: <FONT COLOR='#000000'><FONT SIZE=2 STYLE='font-size: 10pt'>  ");
+			sb.append("<SPAN STYLE='background: #ffffff'>[Billing Amount]");
 			sb.append("</SPAN></FONT></FONT></P>                                                                              ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Over time: [Overtime]</P>                                                  ");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Overtime Hours: [Overtime Hours]</P>                                                  ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Billing Cycle: [Billing Cycle]</P>                                         ");
-			sb.append("<P STYLE='margin-bottom: 0.14in'>Payment Term : [Payment Term]</P>                                          ");
+			sb.append("<P STYLE='margin-bottom: 0.14in'>Payment Frequency : [Payment Frequency]</P>                                          ");
 			sb.append("<P STYLE='margin-bottom: 0.14in'>Except for this provision, the terms                                       ");
 			sb.append("and conditions of the Agreement shall remain in full force and                                              ");
 			sb.append("effect, without any amendments. Contractor agrees to report on the                                          ");
@@ -902,7 +901,7 @@ public class DefaultContractTemplateUtil {
 			sb.append("</P>                                                                                                        ");
 			sb.append("</BODY>                                                                                                     ");
 			sb.append("</HTML>");
-            template = sb.toString();
+	        template = sb.toString();
 		}else if(Constants.NDA.equalsIgnoreCase(templateType)){
 			
 			sb.append("<HTML>                                                                                                                               ");
@@ -1065,7 +1064,7 @@ public class DefaultContractTemplateUtil {
 			sb.append("</BODY>                                                                                                                              ");
 			sb.append("</HTML>");
 			
-            template = sb.toString();
+	        template = sb.toString();
 		}
 		
 		return template;

@@ -9,7 +9,7 @@
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
 
 <script>
-	function requirementRecommendations(requirementId){
+	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
 	 	$("#recommendationsLoading").removeAttr('style');
 		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -24,20 +24,20 @@
 		  }if(locationList.match("yyyy-dd-MM")){
 			  requirementRecommendationsDate = 'YYYY-DD-MM'; 
 		  }
-		  getRecommendationList(requirementId,requirementRecommendationsDate);
+		  getRecommendationList(requirementId,requirementRecommendationsDate, requirementSubmissionStatus);
 	}
 	
 	
 
- function getRecommendationList(requirementId,requirementRecommendationsDate){
+ function getRecommendationList(requirementId,requirementRecommendationsDate, requirementSubmissionStatus){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var searchValue = $("#recommendationTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
-	prepareRecommendationList(url,requirementRecommendationsDate,requirementId);
+	prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus);
 }	
  
-function prepareRecommendationList(url,requirementRecommendationsDate,requirementId) {
+function prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus) {
 	var result = '';
 	result = result +" <div class='clearfix'>";
  	result = result +" <div class='remove_search'>";
@@ -75,12 +75,13 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
 	    result = result +'<div class="clearfix timesheetHead">';
 	    result = result +'<div class="rec_head">';
-
-	    result = result +'		   <div class="pull-left cand-advsrch">																							';
-	    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
-		    	result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
-		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
-	    result = result +'		        </div>';
+	    if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
+		    result = result +'		   <div class="pull-left cand-advsrch">																							';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    result = result +'		        </div>';
+	    }
 	    result = result +'                   <div id="customizeScoreDiv"></div>';
 	    
 	    result = result +'</div>';
@@ -113,7 +114,7 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    $("#status-data").empty();
 		$("#tab-3").append(result);
 		
-		recommendationpagination(url,requirementId);
+		recommendationpagination(url,requirementId, requirementSubmissionStatus);
 		$("#tab-3").show();
 		$(".project-tabs-menu a").click(function(event) {
 		     event.preventDefault();
@@ -127,7 +128,7 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 
 
 	
-function recommendationpagination(url,requirementId){
+function recommendationpagination(url,requirementId, requirementSubmissionStatus){
 		var colIndex = 0;
 		 var dt = $('#recommendationTable').DataTable( { 
 	    	"processing": true,
@@ -372,10 +373,12 @@ function recommendationpagination(url,requirementId){
 					    	  	"render": function(data, type, report, meta) {
 					    	  		 var result = "";
 					    	  		 if(report.isCandidateSubmitted == 'N'){
+					    	  			if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
 					    			    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Add</a></div>';
-					    			    }else{
+					    	  			}
+					    			 }else{
 					    			    	result = result +'<td class="text-center"><div class="text-success">Added</div>';
-					    			    }
+					    			 }
 					    	  		 result = result +'</tr>';
 					    	  		 return result; 
 					  }

@@ -392,6 +392,7 @@ public class RequirementSubmission implements Serializable{
 	private String submitToClientRate;
 	
 	@Transient
+	@JsonProperty
 	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
 	
 	@Transient

@@ -352,8 +352,8 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public String getUpdatedUserName() {
-			if(approverUserId != null) {
-				updatedUserName = approverUserId.getFullName();
+			if(updateUserId != null) {
+				updatedUserName = updateUserId.getFullName();
 			}
 		return updatedUserName;
 	}

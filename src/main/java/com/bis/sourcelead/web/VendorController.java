@@ -110,7 +110,8 @@ public class VendorController {
 		}*/
 		
 		//for get the owners list for spocs
-		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR));
 		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());

@@ -110,8 +110,6 @@
 							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
-						alert("json.vendorCreateduserName"+json.vendorCreateduserName);
-						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Created By :</strong>';
 						if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){

@@ -67,7 +67,7 @@ public class VendorOnboardController {
  			OrgLocations vendorOrgLocations = vendorOnboarding.getVendorLocationId();
  			model.addObject("vendorOnboardId",vendorOnboarding.getId());
  			if(vendorOnboarding.getOnboardSubmitted().equalsIgnoreCase(Constants.NO)){
- 	 			commonUtil.highLightMenu(Constants.Vendors, request);
+ 	 			commonUtil.highLightMenu(Constants.Clients, request);
  				model.setViewName("vendors/vendorOnboard");
  			}else{
  				

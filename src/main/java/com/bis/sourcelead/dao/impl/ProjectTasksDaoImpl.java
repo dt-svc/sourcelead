@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,7 +22,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -358,5 +363,63 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			}
 			return count;
 	}
-	 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<ProjectTasksDTO> response = new ResponseList<>();
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
+		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskType.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
+					
+		}
+		 
+		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String subQueryStr = "";
+		 if(StringUtils.isNotEmpty(taskType)) {
+			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
+		 }
+		 if(StringUtils.isNotEmpty(taskStatus)) {
+			 subQueryStr = subQueryStr+" and pt.taskStatus.id IN ("+taskStatus+") ";
+		 }
+		 if(StringUtils.isNotEmpty(assignedMembers)) {
+			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
+		 }
+		 
+		 Query query = session.createQuery(queryStr+subQueryStr+query1);
+		
+		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		
+		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
+		 
+		 countlist =countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		 
+		
+		int totalCount = 0;
+		if (projectTasksDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(projectTasksList);
+		return response;
+		
+	}
 }

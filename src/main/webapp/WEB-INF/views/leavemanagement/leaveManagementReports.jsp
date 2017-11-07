@@ -331,7 +331,7 @@ function getHolidaysList(){
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&reportYear="+reportYear+"", function(data) {
+	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(data) {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -634,7 +634,6 @@ function totalLeaveByEmployeeBarChart(data){
 }
 </script>
 
-
 <script>
 function getPieChartBasedOnUser(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -662,6 +661,7 @@ function getPieChartBasedOnUser(){
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';
+      	            
       	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
       						"type": "pie",
       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",

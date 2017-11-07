@@ -150,4 +150,18 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 			return count;
 	}
 
+
+	@Override
+	@Transactional
+	public List<VendorOnboardingTemplateDocuments> getVendorOnboaringRequiredDocumentsByVendorOnboardId(
+			Long vendorOnboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingId where documents.vendorOnboardingId.id = :vendorOnboardingId "
+	    		+ " and documents.status = '1' and documents.isRequired = 'Y' ";
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).setCacheable(true).list();
+        return documentsList;
+	
+	}
+
 }
