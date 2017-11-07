@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -704,22 +705,22 @@ public class MailBoxRestController {
     	}
         
         @RequestMapping(value = "/getUserContactsListForMalling", method = RequestMethod.GET)
-      	public List<ReferContactsDTO> getUserContactsListForMalling(HttpServletRequest request) throws Exception {
+      	public ResponseList<ReferContactsDTO> getUserContactsListForMalling(ReferContactsDTO referContactsDTO,HttpServletRequest request) throws Exception {
 
       		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-      		List<ReferContactsDTO> contactsDTOList = new ArrayList<>();
       		
-      		List<ReferContacts> contactsList = referContactsService.getReferContactsListByUserIdAndOrglocationId(user.getId(), orgLocation.getId());
-      		if(contactsList != null && contactsList.size() > 0) {
-      			for(ReferContacts contacts : contactsList) {
-      				ReferContactsDTO contactsDTO = new ReferContactsDTO();
-      				contactsDTO.setFullName(contacts.getFullName());
-      				contactsDTO.setEmail(contacts.getContactUserEmail());
-      				contactsDTO.setSource(contacts.getContactSource().toString());
-      				contactsDTOList.add(contactsDTO);
-      			}
-      		}
+      		String[] tableColumns = {"ischeck","contactName", "email", "source"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default referContactsDTO order
+			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(referContactsDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = referContactsDTO.getOrder().get(0).get("dir");
+			}
+			referContactsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			referContactsDTO.setSortOrder(sortColumnOrder);
+      		
+			ResponseList<ReferContactsDTO> contactsDTOList = referContactsService.getReferContactsListByUserIdAndOrglocationId(referContactsDTO,user.getId(), orgLocation.getId());
       		
       		return contactsDTOList;
     	}

@@ -295,9 +295,9 @@ overflow-x: auto;
 	    
 	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	   
 	     	
-<%-- 	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')"> --%>
+	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 				<jsp:include page="dashboardContracts.jsp"></jsp:include> 
-<%-- 			</sec:authorize>  --%>
+			</sec:authorize> 
 	  
 </section>
 
