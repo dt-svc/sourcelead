@@ -44,6 +44,9 @@ function hideAndShowDetailsRow(rowId,type){
 		var entityId = parseInt(rowId-1);
 		 var maxRecCount = $("#maxRecCount").val();
 		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
+			 $("#addExpenseItemButton").removeAttr('href');
+			 $("#addExpenseItemButton").removeClass("btn-primary");
+			 $("#addExpenseItemButton").addClass("btn-default");
 			 for(var i = 2; i < maxRecCount; i=i+2){
 				 if(rowId != i){
 					 if($("#divEntityTsRow"+i).is(':visible'))
@@ -53,6 +56,15 @@ function hideAndShowDetailsRow(rowId,type){
 					   }
 				 }
 			  } 
+		 }
+		 else{
+			   var from = $("#addExpenseItemButton").attr('data-id');
+				if(from == null || from == '' || from == 'undefined'){
+					from = "emp";
+				}
+				$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			    $("#addExpenseItemButton").removeClass("btn-default");
+	    	    $("#addExpenseItemButton").addClass("btn-primary");
 		 }
 		
 		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
@@ -159,6 +171,14 @@ function addAttachment(entityRowId,from){
 		var  rId1 ="divEntityTsRow"+detailsRowId;
 		var r1 = document.getElementById("categoryTable").rows[rId1];
 	    
+		var from = $("#addExpenseItemButton").attr('data-id');
+		if(from == null || from == '' || from == 'undefined'){
+			from = "emp";
+		}
+		$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+	    $("#addExpenseItemButton").removeClass("btn-default");
+ 	    $("#addExpenseItemButton").addClass("btn-primary");
+		
 		//subtract row amount
 		var totlaMount = $("#expenseAmountDivId").val();
 		var expenseAmount = $("#expenseAmount"+rowId).val();
@@ -203,7 +223,12 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
+
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
+    <div id="paidByDivREPLACEROWID">--</div>
+</div>
+
+<div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
@@ -212,48 +237,62 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-						<div class="col-md-4 mb10 chosen-custom minHe">
+						<div class="col-md-4 minHeight chosen-custom">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							</select>
 						</div>
-						<div class="col-md-4 mb10 minHe">
+						<div class="col-md-4 minHeight">
 							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="categoryDateREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].dateOccurred" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
-						<div class="col-md-4 mb10 minHe">
+						<div class="col-md-4 minHeight">
 							<label>Receipt Issued by</label>
 							<input type="text" id="receiptIssuedByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].receiptIssuedBy" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
 
-						<div class="col-md-4 mb10 chosen-custom minHe">
+						<div class="col-md-4 minHeight chosen-custom">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
 							          <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
-							                  <option value="${paymentMode}">${paymentMode}</option>
+							                   <option ${paymentMode == 'Cash' ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
 							          </c:forEach>
 							</select>
 						</div>	
-	                  <div id="amountDivREPLACEROWID" class="col-md-4 mb10 valid_ation">
+	                  <div id="amountDivREPLACEROWID" class="col-md-4 minHeight valid_ation">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryAmountType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
-									                  <option  value="${currencyType}">${currencyType}</option>
+									                 <%--  <option  value="${currencyType}">${currencyType}</option> --%>
+									                  <option ${currencyType == expEntry.loginCurrencyCode ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									               </c:forEach>
 											  </select>
 								</div>
 							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseEntry[REPLACENAMEROWID].categoryAmount" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
-					<div class="col-md-4 mb10">
+	                 
+	                 
+	                 <div class="col-md-4 minHeight">
+							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
+							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
+							         <option value="" disabled>Select paid By</option>
+							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
+							         			<option ${paidByType == 'Company' ? 'selected' : ''} value="${paidByType}">${paidByType}</option>
+									 </c:forEach>
+							</select> 
+					</div>
+	                 
+	                 
+					<div class="col-md-12 minHeight mb">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
-	                   <div id='attachmentSection' class='col-md-4 mb10'>
+	                   <div id='attachmentSection' class='col-md-4 minHeight'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
 	                   <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
 	                   <div class="uploadFile timesheet_week_comm">
@@ -283,12 +322,11 @@ function addAttachment(entityRowId,from){
 
 <script type="text/javascript">
 function removeWhiteSpacesAdd(rowCount){
-	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	var el = $("#entryDes"+rowCount).val();
+	var val = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
 	$("#entryDes"+rowCount).val(val);
-}
+	}
 </script>
-
 <script>
 function addExpenseRow(from){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
@@ -359,8 +397,13 @@ function addExpenseRow(from){
 			var cell6 = row.insertCell(6);
 			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
 			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divRowTd6Str = divRowTd6Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
 			cell6.innerHTML = divRowTd6Str;
+			
+			var cell7 = row.insertCell(7);
+			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
+			cell7.innerHTML = divRowTd7Str;
 			
 			
 			var detailsRow = parseInt(maxRowNum+1);
@@ -374,7 +417,7 @@ function addExpenseRow(from){
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEDOWNROWID/g, (maxRowNum+1));
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACENAMEROWID/g, ((maxRowNum+1)/2-1));
 			cell2_0.innerHTML = divRowTd2_0Str;
-			cell2_0.colSpan = 7;
+			cell2_0.colSpan = 8;
 			
 			
 			$("#categoryDate"+maxRowNum).datepicker("destroy");
@@ -434,6 +477,10 @@ function addExpenseRow(from){
 			            </c:forEach>
 		    	    }
 		    	    
+		    	    
+		    	    $("#addExpenseItemButton").removeAttr('href');
+		    	    $("#addExpenseItemButton").removeClass("btn-primary");
+		    	    $("#addExpenseItemButton").addClass("btn-default");
 		        	$("#categoryType"+maxRowNum).empty();
 		            $("#categoryType"+maxRowNum).append(output);
 		            $('#categoryType'+maxRowNum).chosen();
@@ -452,12 +499,25 @@ function addExpenseRow(from){
 			
 		}
 	}
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 		    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 		        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
 		            event.preventDefault();
 		        }
-		    });	
+		    });	 */
+	 
+		    $('.allownumericwithdecimal').keydown(function (event) {
+	            if (event.shiftKey == true) {
+	                event.preventDefault();
+	            }
+	            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+	            } else {
+	                event.preventDefault();
+	            }
+	            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+	                event.preventDefault();
+	        });
+
   }			
 </script>
 <script>
@@ -486,6 +546,8 @@ function addExpenseRow(from){
 			
 			var expenseRoundOffAmount = expenseAmount.toFixed(2);
 			var descriptions = $("#entryDes"+entityId).val();
+			var paidBy = $("#paidBy"+entityId).val();
+			
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
@@ -494,7 +556,7 @@ function addExpenseRow(from){
 			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
-			
+			$("#paidByDiv"+entityId).html(paidBy);
 			
 			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
@@ -505,12 +567,19 @@ function addExpenseRow(from){
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
 			
 			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
-			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+'),"Edit"');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+',"Edit")');
 			
 			
 			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
 			$("#divEntityTsRow"+parseInt(entityId+1)).attr('style','display:none;');
 			
+			var from = $("#addExpenseItemButton").attr('data-id');
+    		if(from == null || from == '' || from == 'undefined'){
+				from = "emp";
+			}
+			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			$("#addExpenseItemButton").removeClass("btn-default");
+	        $("#addExpenseItemButton").addClass("btn-primary");
 			return true;
 		}else{
 			return false;

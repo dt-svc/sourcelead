@@ -21,6 +21,8 @@ public class RequirementStagesReport {
 	private Integer approvedRequirementsCount;
 	
 	private Integer rejectedRequirementsCount;
+	
+	private Integer closedRequirementsCount;
 
 	public Integer getNewRequirementsCount() {
 		return newRequirementsCount;
@@ -100,6 +102,14 @@ public class RequirementStagesReport {
 
 	public void setRejectedRequirementsCount(Integer rejectedRequirementsCount) {
 		this.rejectedRequirementsCount = rejectedRequirementsCount;
+	}
+
+	public Integer getClosedRequirementsCount() {
+		return closedRequirementsCount;
+	}
+
+	public void setClosedRequirementsCount(Integer closedRequirementsCount) {
+		this.closedRequirementsCount = closedRequirementsCount;
 	}
 	
 }

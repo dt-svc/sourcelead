@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -720,18 +721,35 @@ public class PdfUtil {
 	private String[] prepareClientsArray(OrgRelations orgRelations, String[] headers) {
 		
 		String clientArray[] = new String[headers.length];
-		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			clientArray[0] = orgRelations.getOrgName();
 		}else{
 			clientArray[0] = "--";
 		}
-		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+		if (StringUtils.isNotEmpty(orgRelations.getWebSite())) {
 			StringBuilder sb = new StringBuilder();
 			clientArray[1] = sb.append("www.").append(orgRelations.getWebSite()).toString();
 		}else{
 			clientArray[1] = "--";
 		}
-		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+		StringBuilder sb = new StringBuilder();
+		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState());
+			clientArray[2] = sb.toString();
+		}else if((StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCity())){
+			clientArray[2] = orgRelations.getCity();
+		}else if(StringUtils.isNotEmpty(orgRelations.getState())){
+			clientArray[2] = orgRelations.getState();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCountry())){
 			clientArray[2] = orgRelations.getCountry();
 		}else{
 			clientArray[2] = "--";
@@ -962,45 +980,61 @@ public class PdfUtil {
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
 		
+			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
+				 UserRole userRole;
+				try {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+					 if(userRole != null){
+						 projectMember.setUserRoleType(userRole.getUserType());
+					 } 
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			 }else{
+				 projectMember.setUserRoleType("Candidate");
+			 }
+		
 		   String empArray[] = new String[headers.length];
 			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 				empArray[0] = projectMember.getEmpName();
 			}else{
 				empArray[0] = "--";
 			}
-			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
-				empArray[1] = projectMember.getEmployee().getUser().getEmail();
+			if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
+				empArray[1] = projectMember.getStartDateStr();
 			}else{
 				empArray[1] = "--";
 			}
-			if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
-				empArray[2] = projectMember.getProjectAssignedDateStr();
+			if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
+				empArray[2] = projectMember.getEndDateStr();
 			}else{
 				empArray[2] = "--";
 			}
-			if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
-				empArray[3] = projectMember.getProjectEndDateStr();
-			}else{
+			
+			if (projectMember.getCurrentBillRate() != null && projectMember.getCurrentBillRate() > 0 ) {
+				empArray[3] = projectMember.getBillRateCurrency() +"  "+ projectMember.getCurrentBillRate() +"  "+projectMember.getRateType();
+			}else {
 				empArray[3] = "--";
+						
 			}
-			if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
-				empArray[4] = projectMember.getApprovedHrs();
-			}else{
+			if (projectMember.getPayRate() != null && projectMember.getPayRate() > 0 ) {
+				empArray[4] = projectMember.getPayRateCurrency() +"  "+ projectMember.getPayRate() +"  "+ projectMember.getPayRateType();
+			}else {
 				empArray[4] = "--";
 			}
-			if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
-				empArray[5] = projectMember.getRejectedHrs();
-			}else{
+			if (projectMember.getEstimatedHours() != null && projectMember.getEstimatedHours() > 0 ) {
+				empArray[5] = projectMember.getEstimatedHours().toString();
+			}else {
 				empArray[5] = "--";
 			}
-			if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
-				empArray[6] = projectMember.getSubmittedHrs();
-			}else{
+			if (projectMember.getEstimatedBudget() != null && projectMember.getEstimatedBudget() > 0 ) {
+				empArray[6] = projectMember.getEstimatedBudget().toString();
+			}else {
 				empArray[6] = "--";
 			}
 			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
 				empArray[7] = projectMember.getDraftHrs();
-			}else{
+			}else {
 				empArray[7] = "--";
 			}
 		return empArray;

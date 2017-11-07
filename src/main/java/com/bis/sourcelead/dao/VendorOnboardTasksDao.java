@@ -15,4 +15,6 @@ public interface VendorOnboardTasksDao {
 	List<VendorOnboardTasks> getVendorOnboardTasksByTemplateIdsList(List<Long> templateIdsList) throws Exception;
 	
 	List<VendorOnboardTasks> getVendorOnboardTasksByVendorOnboardId(Long vendorOnboardingId) throws Exception;
+	
+	Integer getTemplateTasksCountByTemplateId(Long templateId) throws Exception;
 }

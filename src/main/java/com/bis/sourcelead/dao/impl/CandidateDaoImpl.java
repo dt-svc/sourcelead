@@ -25,10 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.CandidateHotList;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -715,7 +714,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "";
 		List<Candidate> candidateList = null;
 		
-		String subQuery = " and candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId)";
+		String subQuery = " and candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId and onboarding.candidateId IS NOT NULL )";
 		
 		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
 			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL "+subQuery+" ";
@@ -1065,28 +1064,31 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(!isNullOrEmpty(resourceType)){
 			String[] type = resourceType.split(",");
 			if(type.length > 1){
-				subQuery2 = " and ((candidate.isFavouriteAssociate = '1') OR (candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))))";
+				subQuery2 = " and ((candidate.isFavouriteAssociate = '1') OR (candidate.consultantUser.id IN (select pm.projectMemberCandidteId.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )))";
 			}else{
 				if(type[0].equalsIgnoreCase("hotlist")){
 				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
 				}else{
-					subQuery2 = " and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))  and candidate.orgLocationId.id = :orgLocationsId ";
+					subQuery2 = " and candidate.consultantUser.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' )  and candidate.orgLocationId.id = :orgLocationsId ";
 				}
 			}
 		}
 		
-		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState = 'ACTIVE')";
+		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState != 'INACTIVE')";
 		
 		if(associatesIds != null){
 			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
 		}
 		
-		String subQuery5 = " and candidate.consultantUser.id NOT IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' )) and candidate.orgLocationId.id = :orgLocationsId ";
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' ) and candidate.orgLocationId.id = :orgLocationsId ";
 		
-		String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
-		
+		// Dont delete this logic., It will be used further
+		/*String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
 		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" ";
-        
+        */
+		
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+"  ";
+		
 		if(roleIds != null && associatesIds == null){
 			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setCacheable(true).list();
 		}
@@ -1162,6 +1164,36 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	
+	}
+	
+	@Override
+	@Transactional
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog)  {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(candidateImportLog);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	@Transactional
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all)  {
+		List<CandidateImportLog> importLog = new ArrayList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			importLog = session.createQuery("from CandidateImportLog c where c.uploadId="+uploadId+(all ? "" : " and c.read = false")).list();
+			if(importLog != null && !all) {
+				for(CandidateImportLog c : importLog) {
+					c.setRead(true);
+					session.update(c);
+				}
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return importLog;
 	}
 }
 

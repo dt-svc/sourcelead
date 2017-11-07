@@ -485,13 +485,16 @@ public class TimesheetApprovalRestController {
 				}
 			}
 			
-			
+		 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+		 String fileUrl = "";
+		 if(pm != null && pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null)
+			 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 	    
 		// timesheetApprovalDiv.append("<tr id='row").append(projectMemberId).append("'>");
 			
 		 timesheetApprovalDiv.append("  <td>");
 		 timesheetApprovalDiv.append("<div class='time_appr_user'>");
-		 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getProjectMemberCandidteId().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
+		 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'>");
 		 timesheetApprovalDiv.append("    <span><b  title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
 		                                             .append("<b title='").append(projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append(projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
 		                                             .append("<b title='").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
@@ -501,7 +504,7 @@ public class TimesheetApprovalRestController {
 		 
 		 
 		 if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
-	    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+			 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 	    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()+","+orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()+"<br/>"+orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
 	     }else if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
 	    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</b></span></div></td>"); 
@@ -687,11 +690,15 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("	        	<tbody>");
 					for (ProjectMembers projectMember : projectMembers)
 					{
-						
+						 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+						 String fileUrl = "";
+						 if(pm != null && pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null)
+							 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
+						 
 						 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
 						 timesheetApprovalDiv.append("  <td>");
 						 timesheetApprovalDiv.append("<div class='time_appr_user'>");
-						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getProjectMemberCandidteId().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
+						 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'>");
 						 timesheetApprovalDiv.append("    <span><b title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
 						                                             .append("<b title='").append(projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append(projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
 						                                             .append("<b title='").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
@@ -699,20 +706,16 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
 						 
-						 
-						 
-						/* if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
-						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</b></span></div></td>");
-						 }else{
-						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>");	 
-						 }*/
-						 
-						 
-						 
-						 if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
-					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()+","+orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()+"<br/>"+orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
-					     }else if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+						 if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+					    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+					    	 if(orgRelation != null){
+					    		 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()+","+orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()+"<br/>"+orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
+					    	 }
+					    	 else{
+					    		 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</b></span></div></td>"); 
+					    	 }
+					    	
+					     }else if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
 					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</b></span></div></td>"); 
 					     }else{
 					    	 timesheetApprovalDiv.append("	<td><span><b title='").append("--").append("'>").append("--").append("</b></span></td>"); 
@@ -796,7 +799,7 @@ public class TimesheetApprovalRestController {
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" <div class='app_error_mes errorOverightDiv' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
 			            	 timesheetApprovalDiv.append(" </i>");
 			            	 timesheetApprovalDiv.append(" <b class='Rname' title='"+sah.getActionPerformedBy()+"'>By : ").append(sah.getActionPerformedBy());
 			            	 timesheetApprovalDiv.append(" </b>");

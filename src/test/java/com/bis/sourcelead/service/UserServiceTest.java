@@ -90,7 +90,6 @@ public class UserServiceTest {
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
-		user.setIsMailSent(Status.N);
 		user.setJobTitle("developer");
 		user.setLastName("reddy");
 		user.setLocation("hyderabad");
@@ -148,7 +147,6 @@ public class UserServiceTest {
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");
@@ -214,7 +212,6 @@ public class UserServiceTest {
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");

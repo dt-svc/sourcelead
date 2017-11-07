@@ -31,7 +31,7 @@ $(document).ready(function(){
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
             <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
-            	<li><a data-toggle="tab" href="#employee">Employee</a></li>
+            	<li><a data-toggle="tab" href="#employee">Employees</a></li>
             </sec:authorize>
           </ul>
           <div class="tab-content clearfix mt10">
@@ -40,7 +40,7 @@ $(document).ready(function(){
                 <div class="width100percnt clearfix">
                   <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left"> </div>
                   <div style="width: 40%; height: 105px;" class="countList pull-left">
-                <ul class="list-unstyled list-group clearfix mb5">
+                <ul class="list-unstyled  clearfix">
                     <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
                         <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
@@ -56,6 +56,10 @@ $(document).ready(function(){
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
                         <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
+                    </li>
+                      <li class="clearfix">
+                        <label class="pull-left">Balance Leaves</label>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
                     </li>
                 </ul>
                     </div>
@@ -80,7 +84,7 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Pending Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
@@ -91,8 +95,8 @@ $(document).ready(function(){
                         <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
-                        <label class="pull-left">Cancel Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancel Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <label class="pull-left">Cancelled Leaves</label>
+                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -177,8 +181,7 @@ function getEmployeeTotalCounts(){
     							"#337ab7",
     							"#66bb6a",
     							"#ef5350",
-    							"#ff5722",
-    							"#ededed"
+    							"#f0ad4e"
     						],
     						"labelsEnabled": false,
     						"marginBottom": 0,
@@ -206,7 +209,7 @@ function getEmployeeTotalCounts(){
     								"column-1": report.employeeRejectedCounts
     							},
     							{
-    								"category": "Canceled",
+    								"category": "Cancelled",
     								"column-1": report.employeeCancelledCounts
     							} 
     						]
@@ -251,6 +254,9 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
+   			if((report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined') || report.selfBalancedCounts == '0'){
+   			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
+   		   }
    		   
    		 AmCharts.makeChart("empselfLeaves",
  				{
@@ -265,11 +271,11 @@ function getSelfTotalCounts(){
  					"radius": "49%",
  					"startAngle": 0,
  					"colors": [
- 						"#5c6bc0",
- 						"#8bc34a",
- 						"#ef5350",
- 						"#ffc107",
- 						"#ededed"
+ 						"#337ab7",
+						"#66bb6a",
+						"#ef5350",
+						"#f0ad4e",
+						"#5bc0de"
  					],
  					"labelsEnabled": false,
  					"marginBottom": 0,
@@ -297,8 +303,12 @@ function getSelfTotalCounts(){
  							"column-1": report.selfRejectedCounts
  						},
  						{
- 							"category": "Canceled",
+ 							"category": "Cancelled",
  							"column-1": report.selfCancelledCounts
+ 						},
+ 						{
+ 							"category": "Balance",
+ 							"column-1": report.selfBalancedCounts
  						} 
  					]
  				}

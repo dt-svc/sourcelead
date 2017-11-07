@@ -210,7 +210,22 @@ function getOrgDetails()
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
-	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_phone validate_length length2-20" data-validation-optional="true">
+	               <div class="row">
+	                <div class="col-md-6 paddingRight">
+	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">
+	                </div>
+	                
+		             
+		              <div class="col-md-6 paddingLeft erMesMid">
+			             <div class="row">
+			             <label class="col-md-5">Extension </label>
+			             <div class="col-md-7 posSta">
+			             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
+			             </div>
+			             </div>
+		             </div>
+	              
+	              </div>
 	              </div>
 	            </div>
 	            
@@ -219,7 +234,7 @@ function getOrgDetails()
 	              <div class="col-md-9">
 	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
-		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+		                       <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach>
 	                </select>
 	              </div>
@@ -688,10 +703,10 @@ function getRolesList(){
 					{
 			        		 var opt = json[i];
 		        		if(opt.id == SourceLeadWeb_userId){
-		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.fullName+"</option>";
 		        		}
 		        		else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
 		        		}
 					}
 		        	$("#owner").empty();

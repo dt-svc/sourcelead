@@ -240,7 +240,7 @@ function getUsersSearchResult(searchValue){
 				</select>
 		   </li>
 		   
-		 <li>
+		 <li id="searchIdDiv">
 			  <a href="javascript:void(0)">
 			  <i class="fa fa-user"></i></a>
 				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
@@ -510,7 +510,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<div class='text-center image-parent'>";
 			       	    	opt = opt +"<div class='imageParent'>";
 			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			       	    	}else{
 			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
 			       	    	}
@@ -533,7 +533,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
-			       	        
+			       	    	
 			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
 			       	    	  opt = opt +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
 			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
@@ -734,7 +734,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -980,13 +980,15 @@ function getUserSummary(userId){
 		$("#ShowList").show();
 		$("#ShowGrid").hide();
 		$("#listView").show();
-		$("#gridView").hide();		
+		$("#gridView").hide();	
+		$("#searchIdDiv").hide();
 	});
 	$("#ShowList").click(function(){
 		$("#ShowGrid").show();
 		$("#ShowList").hide();
 		$("#gridView").show();
-		$("#listView").hide();			
+		$("#listView").hide();	
+		$("#searchIdDiv").show();
 	});	
 </script>
 
@@ -1094,7 +1096,7 @@ function showList(viewType){
 			        			   result = result +"<td>"    
 			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
 			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
+					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			        			    }else{
 						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
 			        			    }
@@ -1163,6 +1165,10 @@ function userListViewPagination(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"aoColumnDefs": [{
+		           'bSortable': false,
+		           'aTargets': 6
+				}],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

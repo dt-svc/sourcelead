@@ -26,6 +26,8 @@ private String emailId;			// Email id
 
 private String mobileNumber;	// Phone Number
 
+private String extensionNumber; // Extension Number
+
 private String rate;			// Rate
 
 private String ratePer;			// Rate Per
@@ -109,6 +111,16 @@ public String getMobileNumber() {
 
 public void setMobileNumber(String mobileNumber) {
 	this.mobileNumber = mobileNumber;
+}
+
+public String getExtensionNumber()
+{
+	return extensionNumber;
+}
+
+public void setExtensionNumber(String extensionNumber)
+{
+	this.extensionNumber = extensionNumber;
 }
 
 public String getRate() {

@@ -11,6 +11,7 @@ import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
 public interface WageTaxSummaryService {
@@ -39,6 +40,8 @@ public interface WageTaxSummaryService {
 	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String EmpId,Long locationId,Date startDate, Date endDate);
 	
 	int getWageTaxSummaryVersionByLocationId(Long locationId);
+
+	ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation, PayrollBalance payrollBalance) throws Exception;
 	
 	
 

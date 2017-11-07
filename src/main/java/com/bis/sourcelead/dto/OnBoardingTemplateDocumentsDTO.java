@@ -32,9 +32,57 @@ public class OnBoardingTemplateDocumentsDTO implements Serializable {
 	private List<FileInfo> polaciesFileInfo;
 	
 	private List<FileInfo> supportingFileInfo;
+	
+	private Long id;
+	
+	private String fileName;
+	
+	private String fileURL;
+	
+	private String documentUUID;
+	
+	private String onboardDocumentType;
 
-	
-	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
+
+	public String getDocumentUUID() {
+		return documentUUID;
+	}
+
+	public void setDocumentUUID(String documentUUID) {
+		this.documentUUID = documentUUID;
+	}
+
+	public String getOnboardDocumentType() {
+		return onboardDocumentType;
+	}
+
+	public void setOnboardDocumentType(String onboardDocumentType) {
+		this.onboardDocumentType = onboardDocumentType;
+	}
+
 	public String getCandidateonboardingId() {
 		return candidateonboardingId;
 	}

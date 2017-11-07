@@ -326,7 +326,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
-				if(StringUtils.isNotEmpty(user.getFirstName())){
+				if(StringUtils.isNotEmpty(user.getLastName())){
 					authorLastName = user.getLastName();
 				}
 				StringBuilder nameBuilder = new StringBuilder();

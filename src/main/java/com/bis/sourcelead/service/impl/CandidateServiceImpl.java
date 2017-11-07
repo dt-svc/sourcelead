@@ -37,9 +37,9 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
-import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -167,6 +168,15 @@ public class CandidateServiceImpl implements CandidateService {
 		return (str == null || "".equals(str.trim()));
 	}
     
+    public void storeCandidateImportLog(CandidateImportLog candidateImportLog) 
+    {
+    		candidateDao.storeCandidateImportLog(candidateImportLog);
+    }
+    
+    public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all) 
+    {
+    		return candidateDao.getCandidateImportLog(uploadId, all);
+    }
     
 	/*public String getCandidateId(OrgLocations orgLocations) {
     	String companyShortCode = null;
@@ -334,6 +344,9 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setZipCode(candidateDto.getZipcode());
 		}
 		
+		
+	
+		
 		if(candidateDto.getLatitude() != null){
 			candidate.setLatitude(candidateDto.getLatitude());
 		}
@@ -449,7 +462,7 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
 		
-		if(StringUtils.isNotBlank(candidateDto.getAddress())){
+		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null ){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
@@ -511,7 +524,6 @@ public class CandidateServiceImpl implements CandidateService {
 			if(fileInfo != null){
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
-			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
 				}
 			}
 		
@@ -532,13 +544,18 @@ public class CandidateServiceImpl implements CandidateService {
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
 		
+		
 		/*
 		 * this method is for track candidate activity
 		 */
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_EDITTED, activitySummary.toString(), "CANDIDATE");
 		}else{
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, savedCandidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
+			}
 		}
 		
 		
@@ -553,6 +570,16 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
+		// resume details update in elk
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
+		}
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
+			if(fileInfo != null){
+			FileUploadUtil.moveFile(candidateDto.getStaticPath(), fileInfo, "resumes");
+				}
+			}
 		return savedCandidate;
 	}
 
@@ -1467,6 +1494,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
 				}else{
 				candidate.setOrgRelationId(null);
 				}
@@ -1592,6 +1621,55 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
 		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
+	}
+
+
+	@Override
+	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		
+		ResponseList<CandidateDTO> canList = new ResponseList<>();
+		List<CandidateDTO> candtoList = new ArrayList<>();
+		
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		for (Candidate candidate : candidateList) {
+			
+			CandidateDTO canDTO = new CandidateDTO();
+			
+			StringBuilder sb = new StringBuilder();
+			if(candidate.getLastName() != null){
+			canDTO.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			}else{
+				canDTO.setCandidateName(candidate.getFirstName());
+			}
+			canDTO.setEmail(candidate.getEmail());
+			
+			canDTO.setCountry(candidate.getCountry());
+			canDTO.setState(candidate.getState());
+			canDTO.setCity(candidate.getCity());
+			
+			canDTO.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getUpdatedDate()));
+			canDTO.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			canDTO.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+			
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumesListByCandidateId(candidate.getId());
+			if(candidateResumes != null){
+				canDTO.setCandidateResumeName(candidateResumes.getFileName());
+				canDTO.setCandidateResumeFileType(candidateResumes.getFileContentType());
+				canDTO.setFileUrl(candidateResumes.getFileURL());
+			}
+			
+			if(candidate.getConsultantUser() != null){
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
+				canDTO.setAssignedProjectsCount(assignedProjectsCount);
+			}
+			candtoList.add(canDTO);
+		}
+		canList.setData(candtoList);
+		return canList;
 	}
 
 }

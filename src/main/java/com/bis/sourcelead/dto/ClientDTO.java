@@ -47,7 +47,7 @@ public class ClientDTO {
 	
 	private String billingAddress;
 	
-	private String PaymentTerm;
+	private String paymentTerms;
 	
 	@Required(desc = "email")
 	@Email
@@ -59,6 +59,8 @@ public class ClientDTO {
 	private String lastName;
 	
 	private String phoneNumber;
+	
+	private String extensionNumber;
 	
 	private String spocStatus;
 	
@@ -217,11 +219,14 @@ public class ClientDTO {
 	public void setBillingAddress(String billingAddress) {
 		this.billingAddress = billingAddress;
 	}
-	public String getPaymentTerm() {
-		return PaymentTerm;
+
+	public String getPaymentTerms()
+	{
+		return paymentTerms;
 	}
-	public void setPaymentTerm(String paymentTerm) {
-		PaymentTerm = paymentTerm;
+	public void setPaymentTerms(String paymentTerms)
+	{
+		this.paymentTerms = paymentTerms;
 	}
 	public String getEmail() {
 		return email;
@@ -246,6 +251,15 @@ public class ClientDTO {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 	public String getSpocStatus() {
 		return spocStatus;

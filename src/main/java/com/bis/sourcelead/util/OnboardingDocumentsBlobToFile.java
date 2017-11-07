@@ -28,7 +28,7 @@ public class OnboardingDocumentsBlobToFile {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT onb.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" onb, ORG o, ORG_LOCATIONS ol,candidate_on_boarding coId where o.ID = ol.ORG_ID and onb.CANDIDATE_ON_BOARDING_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
+			ResultSet rs = stmt.executeQuery("SELECT onb.*, o.ID as ORG_ID,coId.ORG_LOCATION_ID FROM "+table+" onb, ORG o, ORG_LOCATIONS ol,CANDIDATE_ON_BOARDING coId where o.ID = ol.ORG_ID and onb.CANDIDATE_ON_BOARDING_ID = coId.ID and coId.ORG_LOCATION_ID = ol.ID");
 			int i = 0;
 			ResultSetMetaData rsmd = rs.getMetaData();
 			boolean flag = false;
@@ -50,13 +50,13 @@ public class OnboardingDocumentsBlobToFile {
 				File folder = null;
 				String link = "";
 				if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Contracts")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Contracts-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Contracts-Documents/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Forms")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Forms-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Forms-Documents/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Policies")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Policies-Documetns/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Policies-Documetns/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Supported")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Supporting-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Onboard-Template-Supporting-Documents/");
 				}
 				 
 				if(!folder.exists())

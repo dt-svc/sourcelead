@@ -4,9 +4,10 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -16,6 +17,10 @@ import com.bis.sourcelead.entity.User;
  *
 */
 public interface CandidateService {
+	
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog);
+	
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
 	
 	/**
 	 * @param jsonObj
@@ -175,5 +180,7 @@ public interface CandidateService {
 	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
 
 	String getCandidateId(OrgLocations orgLocations);
+	
+	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 
 }

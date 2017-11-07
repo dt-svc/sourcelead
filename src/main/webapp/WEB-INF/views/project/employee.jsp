@@ -15,7 +15,7 @@
   position: absolute !important; right: 0 !important;
 }
 .countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 12px; 
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px; 
 }
 .remove_user_pop.remove_user_pop_a {
 top:20% !important;
@@ -145,7 +145,7 @@ left: 115px !important;
     <div class="proj_close"></div>
 </div> 
 <div id="associatesList"></div>
- 
+ <input type="hidden" id="employeeEmptyListId" name="employeeEmptyListId">
  
  <script>
  /* function filterStatus() {
@@ -237,25 +237,25 @@ result = result + '<div class="project_tabs mb">';
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
-			/* result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; */
-			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
+			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" checked="true" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>'; 
+			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 			result = result + '           </ul>';
 			result = result + '       </div>'; 
 			result = result + '   </li>';
 	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
-					result = result +'<li>';
+					result = result +'<li class="dropdown">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-						result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+						result = result +' <a title="Export" id="export-pop" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
 					} 
 					
-					result = result +'<div class="" id="exportPop" style="display:none;">';
-					result = result +'<ul>';
+					result = result +'<div class="dropdown-menu bootstrap_dropdownMenu">';
+					result = result +'<ul class="ul_padding">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-						result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+						result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o text-danger paddingRight"></i>PDF</li>';
 						
-						result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
+						result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o text-success paddingRight"></i>Excel</li>';
 			
 					} 
 					result = result +'</ul>';
@@ -327,7 +327,7 @@ result = result + '<div class="project_tabs mb">';
 						values.push($(this).val());
 				    });
 	 }else{
-		 values = "Active";
+		 values = "All";
 	 }
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -351,7 +351,6 @@ result = result + '<div class="project_tabs mb">';
 	    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
 	    		result = result + ' </div>';
 	    	    result = result + '        <div id="employeesLoadingImg"></div>';
-	    		/* if(json.projectMembersList.length!=null && json.projectMembersList.length!=''){ */
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
@@ -360,22 +359,28 @@ result = result + '<div class="project_tabs mb">';
 	    		  }
 	    		
 	            result = result + '	 	<th>Emp Name</th>';
-	            result = result + '	 	<th>Emp Email</th>';
-	            result = result + '	 	<th>Emp Role</th>';
+	        /*     result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>'; */
 	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
-	            result = result + '	     <th>Approved hrs</th>';
-	            result = result + '	     <th>Rejected hrs</th>';
-	            result = result + '	     <th>Wait for Approval </th>';
-	            result = result + '	     <th>Saved hrs</th>';
+	            result = result + '	     <th>Bill Rate</th>';
+	            result = result + '	     <th>Pay Rate</th>';
+	            result = result + '	     <th>Estimated hrs</th>';
+	            result = result + '	     <th>Estimated Budget</th>';
+	            result = result + '	     <th>Actual hrs</th>';
 	            result = result + '	     <th>Action</th>';
 	            result = result + '	 </tr>';
 	            result = result + '	</thead>';
 	            result = result + '	<tbody>';
-	        	for (var i=0; i<json.projectMembersList.length; i++)
+	        	for (var i=0; i<json.length; i++)
 				{      
-		        		var opt = json.projectMembersList[i];
+		        		var opt = json[i];
 		        		var role = '';
+		        		var billRate = '';
+		        		var payRate = '';
+		        		var estimatedHours = '';
+		        		var estimatedBudget = '';
+		        		
 						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
 							role = opt.userRoleType;
 						} else {
@@ -388,14 +393,44 @@ result = result + '<div class="project_tabs mb">';
 		        		}else{
 		        			projectEndDateStr = "--"
 		        		}
+		        		
+		        		
+		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
+		        		}else{
+		        			billRate = "-----"
+		        		}
+		        		
+		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
+		        		}else{
+		        			payRate = "-----"
+		        		}
+		        		
+		        		if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
+		        			estimatedHours = opt.estimatedHours;
+		        		}else{
+		        			estimatedHours = "------"
+		        		}
+		        		
+		        		if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
+		        			estimatedBudget = opt.estimatedBudget;
+		        		}else{
+		        			estimatedBudget = "------"
+		        		}
+		        		
 		        		result = result + '	 <tr>';
 		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
-		        			 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        			 if(opt.status == 1){
+		        				 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
+		        			 }else{
+		        				 result = result + '<td>--</td>';
+		        			 }
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
-		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
-		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
+		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>'; */
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
@@ -414,13 +449,15 @@ result = result + '<div class="project_tabs mb">';
 	                	   '</sec:authorize>';
 		                	
 		                }
+		                
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+billRate+'">'+billRate+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+payRate+'">'+payRate+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedHours+'">'+estimatedHours+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.rejectedHrs+'">'+opt.rejectedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.submittedHrs+'">'+opt.submittedHrs+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.draftHrs+'">'+opt.draftHrs+'</span></div></td>';
 		                
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div>';
@@ -475,14 +512,15 @@ result = result + '<div class="project_tabs mb">';
 	    		result = result + '	     </div>';
 	    		$("#employeeDetailsDiv").empty();  
 	    		$("#employeeDetailsDiv").append(result);  
+	    		$("#employeeEmptyListId").val(json.length);  
 	    		 //pagination function
 	    	    projectEmployeePagination();
 	    		
-	    	    if(json.projectMembersList.length > 0)
+	    	    if(json.length > 0)
 		   		{
-	    			for (var i=0; i<json.projectMembersList.length; i++)
+	    			for (var i=0; i<json.length; i++)
 	    			{      
-	    	             var jsonData = json.projectMembersList[i];
+	    	             var jsonData = json[i];
 						 if(jsonData.status != null && jsonData.status != '' && jsonData.status !='undefined' && jsonData.status == 0)
 							   continue;
 						 //Assign date of project member
@@ -514,8 +552,10 @@ result = result + '<div class="project_tabs mb">';
 	 					 $('#endDate'+jsonData.id).datepicker({
 			    		      dateFormat: finalDateFormatResourceListDisplay,
 //			    		      minDate: dt,
-			    		      maxDate: endDate,
+			    		      maxDate: projectEndDate,
 			    		      minDate: selected,
+			    		      changeMonth: true,
+			    			  changeYear: true, 
 			    		      showOn: 'focus',
 		    	              showButtonPanel: true,
 		    	              closeText: 'Clear',
@@ -596,7 +636,7 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 
 	result = result +"		<p>Are you sure you want to delete ?</p>";
-	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
+	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Terminate reason' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -608,6 +648,7 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
 }
 
 function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
@@ -999,35 +1040,72 @@ this script is for Add Employee functionality at Projects screen
 <script>
 function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	
-	 var values = [];
-	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
-	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
-			$('input:checkbox[name=employeeStatus]:checked').each(function() 
-				    {
-						values.push($(this).val());
-				    });
-	 }else{
-		 values = "Active";
-	 }
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+	var employeeEmptyCount = $("#employeeEmptyListId").val();
+	if(employeeEmptyCount > 0 ){
+		var values = [];
+		 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+		 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+				$('input:checkbox[name=employeeStatus]:checked').each(function() 
+					    {
+							values.push($(this).val());
+					    });
+		 }else{
+			 values = "Active";
+		 } 
+		 
+	   window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Employee List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	 
 }
 </script>
-
+<script type="text/javascript">
+function empCancelTermination(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$("#exportPop").toggle();
+	$(".export_pipline").slideUp();
+}
+</script>
 <script>
 function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var values = [];
-	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
-	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
-			$('input:checkbox[name=employeeStatus]:checked').each(function() 
-				    {
-						values.push($(this).val());
-				    });
-	 }else{
-		 values = "Active";
-	 }
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
+	var employeeEmptyCount = $("#employeeEmptyListId").val();
+	if(employeeEmptyCount > 0 ){
+		var values = [];
+		 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
+		 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
+				$('input:checkbox[name=employeeStatus]:checked').each(function() 
+					    {
+							values.push($(this).val());
+					    });
+		 }else{
+			 values = "Active";
+		 }
+		window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Employee List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#client_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
 }
 </script>
 
@@ -1073,7 +1151,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3" >Start date<span <span class="text-danger">*</span></label>';
    result = result +'<div class="col-lg-9 positionRelative" id="empDatePicker">';
    
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-StartDate" name="Re-StartDate" field-name="Start Date" data-validation="required">';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reStartDate" name="reStartDate" field-name="Start Date" data-validation="required">';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -1082,7 +1160,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="Re-EndDate" name="Re-EndDate"  field-name="End Date" />';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reEndDate" name="reEndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -1094,7 +1172,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    $("#ReAssignProjectId").empty();
    $("#ReAssignProjectId").append(result);
 	  
-   var reStatertDate = $('#Re-StartDate').val();
+   var reStatertDate = $('#reStartDate').val();
    
 	
    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1109,9 +1187,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
 	  }
    
-  var reStatertDate = $('#Re-StartDate').val()
+  var reStatertDate = $('#reStartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
-	  $('#Re-StartDate').datepicker({
+	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1122,9 +1200,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           closeText: 'Clear',
           onClose: function (selected) {
 	    	    removevalidation();
-	            var dt = toDate('#Re-StartDate');
+	            var dt = toDate('#reStartDate');
 	            dt.setDate(dt.getDate() + 1);
-	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            $("#reEndDate").datepicker("option", "minDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1134,7 +1212,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  });
 	  
-	  $('#Re-EndDate').datepicker({
+	  $('#reEndDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1144,9 +1222,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-EndDate');
+	            var dt = toDate('#reEndDate');
 	            dt.setDate(dt.getDate() - 1);
-	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            $("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1156,7 +1234,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  });
   }
   else{
-	  $('#Re-StartDate').datepicker({
+	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1165,9 +1243,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-StartDate');
+	            var dt = toDate('#reStartDate');
 	            dt.setDate(dt.getDate() + 1);
-	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            $("#reEndDate").datepicker("option", "minDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1179,7 +1257,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  
 	  
 	
-	  $('#Re-EndDate').datepicker({
+	  $('#reEndDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
@@ -1189,9 +1267,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#Re-EndDate');
+	            var dt = toDate('#reEndDate');
 	            dt.setDate(dt.getDate() - 1);
-	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            $("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -1227,13 +1305,15 @@ function removevalidation(){
 		   }; 
 	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
 		 var projectMemberId = $("#projectMemberId").val();
-	        var frm = $('#reAssignProject_form').serializeFormJSON();
+	       /*  var frm = $('#reAssignProject_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var sourceleadUrl ='${sourceleadUrl}'; */
+	        var formData = getFormData("reAssignProject_form");
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&json="+con+"&projectMemberId="+projectMemberId, 
+		    	data: formData,
+		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	//$("#Re-AssignProject").modal('hide');
@@ -1261,8 +1341,8 @@ function removevalidation(){
 </script>
 <script type="text/javascript">
 function flushReProject(){
-	$('#Re-StartDate').val('');
-	$('#Re-EndDate').val('');
+	$('#reStartDate').val('');
+	$('#reEndDate').val('');
 	$(".error").removeClass("error");
 	$('#assignProjectDiv').find('p.jquery_form_error_message').remove();
 }
@@ -1324,11 +1404,17 @@ function resourceRequestsTab(){
 	        	
 	    		result = result + '	<div class="timesheet_head anchorTag-black">';
 	    		result = result + '	<ul>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
-	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
-
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+	    		 '</sec:authorize>';
+	    		
+	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';
+		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
+	    		 '</sec:authorize>';
+		    		 
 	    		result = result + '	</ul>';
 	    		result = result + '	       </div>';
 	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
@@ -1353,9 +1439,21 @@ function resourceRequestsTab(){
 	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							    result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+							     result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							'</sec:authorize>';
+							
+							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
+						        result = result + '<td><div>'+report.requestId+'</div></td>';
+						    '</sec:authorize>';
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
@@ -1507,8 +1605,7 @@ function getProjectDetails(){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var endDateStr = "";
 						var description = "";
 						var clientName = "";
@@ -1584,43 +1681,32 @@ function getProjectDetails(){
 						result = result + '<div class="clearfix"></div>';
 
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-						result = result + '<strong>Project Id:</strong>';
+						result = result + '<strong>Project ID:</strong>';
 						result = result + '<span>'+projectSequeneNumber+'</span>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
-						result = result + '	<strong>Project name:</strong>';
+						result = result + '	<strong>Project Name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
+					
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-
-						for (var j = 0; j < json.managersList.length; j++) {
-							var manager = json.managersList[j];
-							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
-							}
+						result = result + '	<strong>Manager 1 Name:</strong>';
+						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '	<strong>Manager 2 Name:</strong>';
+						if(json.manager2Name != null && json.manager2Name != 'undefined' && json.manager2Name != ''){
+							var manager2Name = json.manager2Name;
+						}else{
+							var manager2Name = '------';
 						}
-						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	<span title="'+manager2Name+'">'+manager2Name+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
-						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '	<strong>Manager 2:</strong><span>';
-
-							for (var j = 0; j < json.managersList.length; j++) {
-								var manager = json.managersList[j];
-								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
-								}
-							}
-							result = result	+ '</span><div class="clearfix"></div>';
-							result = result + '	</div>';
-						}
 						
 						
 						result = result + '<div class="project_details_cta">';
@@ -1880,7 +1966,7 @@ function budgetRequests(){
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					if(report.budgetStatus == "Waiting For Approval"){
-						result = result + '     <td><div class="tblminwidth-75">';
+						result = result + '     <td><div class="tblminwidth-90">';
 						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset('+report.id+')"></i>|';
 						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet('+report.id+');"></i>';
 						result = result + '     <i class="fa fa-clock-o" alt="On hold" title="On hold" onclick="onholdBudgetRequaet('+report.id+');"></i></div></td>';
@@ -1920,6 +2006,7 @@ function budgetRequests(){
 	    		result = result + '</div>';
 	    	    $("#budgetRequestsTabDiv").empty();
 	    	    $("#budgetRequestsTabDiv").append(result); 
+	    	    
 	    	    $("#projectBudgetCount").val(json.length); 
 	    	    
 	    	    budgetRequestPagination();
@@ -1944,6 +2031,14 @@ function rejectedMessage(local){
 	   
 	}
 </script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script>
 function deleteBudgetRequaet(budgetRequestedId){
 	var result = "";
@@ -1952,10 +2047,10 @@ function deleteBudgetRequaet(budgetRequestedId){
 	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
-	result = result +"		<p>Are you sure you want to delete ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<p>Are you sure you want to reject ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Reject" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
@@ -1966,8 +2061,10 @@ function deleteBudgetRequaet(budgetRequestedId){
 function cancelTermination(){
 	$("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
+	 $(".vendor_wrap_mask").fadeOut(200);
 }
 function saveBudgetReason(budgetRequestedId){
+	if ($('#deleteBudget_form').validate(false, validationSettings)) {
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
@@ -1982,12 +2079,15 @@ function saveBudgetReason(budgetRequestedId){
 	   			 	budgetRequests();
 				},
 			}); 
-}
-$('body').on('blur', '#deleteBudget_form', function() {
+	 return true;
+	}else{
+		return false;
+}}
+/* $('body').on('blur', '#deleteBudget_form', function() {
 	$("#deleteBudget_form").showHelpOnFocus();;
 	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
 }); 
-
+ */
 function acceptBudgetRequset(budgetRequestedId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
@@ -2006,10 +2106,10 @@ function onholdBudgetRequaet(budgetRequestedId){
 	result = result +"<form id='deleteBudget_form' name='deleteBudget_form' >";
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
-	result = result +"		<p>Are you sure you want to reject ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
-	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="On-Hold" onclick="onHoldBudgetRequest('+budgetRequestedId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 
 	$("#popUp").append(result);
@@ -2026,7 +2126,27 @@ function onholdBudgetRequaet(budgetRequestedId){
 				},
 			}); 
 }
-
+function onHoldBudgetRequest(budgetRequestedId){
+	if ($('#deleteBudget_form').validate(false, validationSettings)) {
+	var sourceleadUrl = '${sourceleadUrl}';
+     $("#delete_budget").attr("disabled", "disabled");
+	 $("#delete_budget").attr("disabled", "disabled");
+	 var formData = getFormData("deleteBudget_form");
+	 $.ajax({
+				type : "POST",
+				data :formData,
+				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+				success : function(result) {
+					$("#popUp").empty();
+	   			 	//$(".project_inn_mask").fadeOut(200);
+	   			 	$(".vendor_wrap_mask").fadeOut(200);
+	   			 	budgetRequests();
+				},
+			}); 
+	 return true;
+	}else{
+		return false;
+}}
 function editBudgetrequest(budgetRequestedId){
 	 $("#budgetRequestPopUpid").empty();
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -2156,12 +2276,12 @@ function addBudgetRequestPopUp(){
  
 	result = result + '	    <div class="clearfix mb10">';
 	result = result + '	      <div class="col-md-12">';
-	result = result + ' <div class="input-group">';
+	result = result + ' <div class="input-group errorInptgroup">';
 	result = result + '  <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
 	result = result + '  <input type="text" class="pull-left btn btn-primary btn-block" id="estimatedBudgetCurrency" name="estimatedBudgetCurrency" value="${projectCurrency}" readonly>';
 	result = result + ' </div>';
 	result = result + ' 	<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control" placeholder="Estimated Budget *"';
-	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" data-validation-optional="true" class="form-control" field-name="Estimated Budget" >';
+	result = result + ' 		data-validation="required validate_Space validate_float validate_length length1-16" field-name="Estimated Budget" >';
 	result = result + ' </div>';
 	result = result + ' </div>';
 	
@@ -2206,27 +2326,22 @@ function removeErrMsg(){
 function getApproversList(approverUserId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_BUDGET_APPROVER";
+
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
-	     		var output = "";
-	     			output = output + "<option value=''>--Select Approver--</option>";
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    		success: function(json) {
+    			var output = "";
+     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
-		     		 
+		     		
 		     		 if(opt.id == approverUserId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.name+" ("+opt.userRole+")</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"'> "+opt.fullname+" ("+opt.userType+")</option>";
+		        			output = output + "<option value='"+opt.id+"'> "+opt.name+" ("+opt.userRole+")</option>";
 		        		}
 		     		 
 	     		}

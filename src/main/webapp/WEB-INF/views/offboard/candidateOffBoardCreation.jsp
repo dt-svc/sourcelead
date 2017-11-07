@@ -701,9 +701,8 @@ function getTemplateResignationDocumentsDetails(offboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -758,9 +757,8 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -989,14 +987,14 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	 var json = JSON.parse(data);
-	        	 
 	        	 var result = "";
 	        	 var selected = 'selected';
 	        	 result = result +'<option disabled selected>--Select User--</option>';
-	        	 result = result +'<option value='+json['offBoardUserId']+' '+selected+' >'+json['candidateName']+'</option>';
+	        	 
+	        	 result = result +'<option value='+json.offboardUser+' '+selected+' >'+json['candidateName']+'</option>';
+	        	 
 	        	 $("#offboardUser").empty();
 	           	 $("#offboardUser").append(result); 
 	           	 $('#offboardUser').trigger("chosen:updated");
@@ -1068,7 +1066,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    		loadOffBoardingTemplates(json['offboardTemplateId']);
 		    	}
 		    	
-		    	$("#savedoffboardId").val(json['id']);
+		    	$("#savedoffboardId").val(json['savedoffboardId']);
 		    	
 		    	$("#loading").removeAttr("style");
 	        },
@@ -1446,14 +1444,14 @@ function getOffboardingTasksList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	 
         	if(json.length > 0){ 
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var report = json[i];
+	        		
 	        		
 	        		var prority = '';
 	        		var repeat = '';
@@ -1481,6 +1479,7 @@ function getOffboardingTasksList(){
 	        		result = result +'<ul class="list-inline list-description mt10">';
 	        		
 	        		result = result +'<li><span>Assign To:</span>';
+	        		
 	        		
 	        		if(report.usersList.length > 0){
 	        			for(var j=0; j<report.usersList.length; j++){
@@ -1644,8 +1643,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{

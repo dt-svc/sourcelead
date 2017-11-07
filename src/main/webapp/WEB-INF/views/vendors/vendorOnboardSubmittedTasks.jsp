@@ -5,6 +5,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style>
+.onboardTasksList{
+padding: 0px 15px 15px;
+}
+</style>
+
 <script>
 function vendorOnboardTasksList(orgRelationId){
 	
@@ -15,7 +21,7 @@ function vendorOnboardTasksList(orgRelationId){
 	        	 var result = "";
 	        	 if(json.length > 0){ 
 	         		result = result +'	<div class="clearfix">';
-	         		result = result +'      <h4 class="pull-left">Task List</h4>';
+	         		result = result +'      <h4 class="pull-left ml">Task List</h4>';
 	         		result = result +'  </div>';
 	 	        	for (var i=0; i<json.length; i++)
 	 				{
@@ -37,7 +43,7 @@ function vendorOnboardTasksList(orgRelationId){
 	 	        		}
 	 	        		
 	 	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	 	        		result = result +'<div class="media-body">';
+	 	        		result = result +'<div class="media-body onboardTasksList">';
 	 	        		result = result +'<div class="clearfix taskheder">';
 	 	        		
 	 	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.subject+"</strong></label>";
@@ -67,7 +73,9 @@ function vendorOnboardTasksList(orgRelationId){
 	 	        		
 	 				}
 	         	}else{
-	         		result = result +'<div><h4>No Tasks Found</h4></div>';
+	         		result = result +'    <div class="col-md-12 text-center mb10">  ';
+	        		result = result +'<p class="dataTables_empty"></p>';
+	        		result = result +'    </div> ';
 	         	}
 	        	
 	    		

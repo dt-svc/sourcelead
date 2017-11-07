@@ -65,17 +65,17 @@ function candidateEducationList(candidateId){
 	 
 	 
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
+             		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
-             		 else{
+             		 else{ */
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateEducationPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -93,9 +93,9 @@ function candidateEducationList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                   //  var json = JSON.parse(data);
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
@@ -156,22 +156,7 @@ function candidateEducationList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateEducationList").append(result); 
 	                     educationPagination(); 
-			    	} 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No CandidatesCertifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateEducationList").empty();
-				    $("#candidateEducationList").append(result); 
-               } */
+			    	/* } */ 
         },
           
      }); 
@@ -395,8 +380,7 @@ function addEducation(candidateId) {
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
-				success : function(data) {
-					var json = JSON.parse(data);
+				success : function(json) {
 					var specialization = "";
 					var grade = "";
 					var institute = "";
@@ -417,12 +401,12 @@ function EditEducation(candidateId,candidateEducationId) {
 						address = json.address;
 					}
 					
-					if (data != null && data != 'undefined' && data != "") {
-						if (data.indexOf('Sign In') >= 0) {
+					if (json != null && json != 'undefined' && json != "") {
+						/* if (data.indexOf('Sign In') >= 0) {
 							location.replace(sourceleadUrl);
 						} else if (data.indexOf('exception') >= 0) {
 							location.replace(sourceleadUrl + "/errorPage");
-						} else {	
+						} else {	 */
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
@@ -582,9 +566,6 @@ function EditEducation(candidateId,candidateEducationId) {
 	          }
 	  });
 	
-	/* $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -592,9 +573,6 @@ function EditEducation(candidateId,candidateEducationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -613,7 +591,7 @@ function EditEducation(candidateId,candidateEducationId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 		
 }
-					}
+//					}
 			},
 
 		});

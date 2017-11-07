@@ -19,4 +19,6 @@ public interface VendorOnboardTasksService {
 	List<VendorOnboardTasks> getVendorOnboardTasksByVendorOnboardId(Long vendorOnboardingId) throws Exception;
 	
 	void saveVendorOnboardTemplateTask(OnboardTasksDTO onboardTasksDTO,User user) throws Exception;
+	
+	Integer getTemplateTasksCountByTemplateId(Long templateId) throws Exception;
 }

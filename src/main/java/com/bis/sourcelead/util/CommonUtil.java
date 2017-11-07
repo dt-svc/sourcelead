@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,10 +45,13 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -57,6 +61,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -66,6 +71,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -74,6 +80,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -147,6 +154,12 @@ public class CommonUtil {
 	
 	@Autowired
 	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -1244,7 +1257,7 @@ public class CommonUtil {
 		public  Date[] getMonthStartDateEndDateByMonth(int month) {
 			Date[] dates = new Date[2];
 			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.MONTH, month-1);
+			cal.set(Calendar.MONTH, month);
 			cal.set(Calendar.DATE, 1);
 			cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
 			dates[0] = cal.getTime();
@@ -1255,10 +1268,10 @@ public class CommonUtil {
 		public  Date[] getMonthStartDateEndDateByYearAndMonth(int year,int month) {
 			Calendar calendar = Calendar.getInstance();
 			Date[] dates = new Date[2];
-			int yearpart = 2017;
-			int monthPart = 9;
+//			int yearpart = 2017;
+//			int monthPart = 9;
 			int dateDay = 1;
-			calendar.set(yearpart, monthPart, dateDay);
+			calendar.set(year, month, dateDay);
 			int numOfDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 			dates[0] = calendar.getTime();
 			calendar.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth-1);
@@ -1313,10 +1326,11 @@ public class CommonUtil {
 						candidate.setCountry(candidateDTO.getCountry());
 					}
 				
-				candidate.setIsAssociate(Constants.NO);
+				candidate.setIsAssociate(Constants.YES);
+				
 				candidate.setStatus(1);
-	  			candidateService.saveOrUpdateCandidate(candidate);
-	  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
+	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 			  }
 			  
 			  return candidate;
@@ -1433,6 +1447,64 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			  return candidate;
 		  }
 
+		/**
+		 * returns all the dates between two dates as String
+		 * @param startDate
+		 * @param endDate
+		 * @return String
+		 * @throws ParseException
+		 */
+	public String getDaysBetweenDates(Date startDate, Date endDate,String orgFormat) throws ParseException {
+		List<Date> dates = new ArrayList<Date>();
+		List<String> dateStr = new ArrayList<>();
+		DateFormat formatter;
+		formatter = new SimpleDateFormat(orgFormat);
+		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
+		long endTime = endDate.getTime(); // create your endtime here, possibly using Calendar or Date
+		long curTime = startDate.getTime();
+		while (curTime <= endTime) {
+			dates.add(new Date(curTime));
+			curTime += interval;
+		}
+		for (int i = 0; i < dates.size(); i++) {
+			Date lDate = (Date) dates.get(i);
+			String ds = formatter.format(lDate);
+			dateStr.add(ds);
+		}
+		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
+		return datesStrLisr;
+	}
+	
+	public void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
+		 ContractsTemplate contractsTemplate = new ContractsTemplate();
+		 contractsTemplate.setTemplateName(templateType);
+		 contractsTemplate.setDescription(templateType);
+		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
+		 contractsTemplate.setOrgLocationId(orgLocations);
+		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		 contractsTemplate.setUpdatedBy(user.getUserCode());
+		 contractsTemplate.setUpdatedDate(new Date());
+		 contractsTemplate.setCreatedBy(user.getUserCode());
+		 contractsTemplate.setCreatedDate(new Date());
+		 contractsTemplateService.saveContractTemplate(contractsTemplate);
+	}
+	
+	public List<UserDTO> getRoleActionUsers(String roleActionName,Long orgLocationId) throws Exception{
 		
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(roleActionName);
+		List<User> usersList = userService.getUserListByRoleActionIdAndOrgLocationId(action.getId(), orgLocationId);
+		for(User user : usersList) {
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(user.getId());
+			userDTO.setName(user.getFullName());
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
+			userDTO.setUserRole(userRole.getRoles().getDisplayName());
+			usersDTOList.add(userDTO);
+		}
+		return usersDTOList;
+	}
 		
 }

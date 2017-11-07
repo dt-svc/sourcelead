@@ -39,9 +39,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -328,11 +331,15 @@ public class UserRestController {
 	 
 	 
 	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
-	 public @ResponseBody  String getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
-		 	String resultJson = null;
+	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
-		 	resultJson = toJSON(user);
-			return resultJson;
+		 	UserDTO userDTO = new UserDTO();
+		 	if(user != null) {
+		 		userDTO.setFirstName(user.getFirstName());
+			 	userDTO.setLastName(user.getLastName());
+			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}
+			return userDTO;
 	   }
 	 
 	 
@@ -394,20 +401,23 @@ public class UserRestController {
 		  * @throws Exception
 		  */
 		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
-		public @ResponseBody String getApproversByUserId(
+		public @ResponseBody List<User> getApproversByUserId(
 				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
 				HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			/*List<User> userList = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(currentApproverId,
-					orgLocations.getId());*/
-			
+			List<User> usersList = new ArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			
-			
-			resultJson = toJSON(userList);
-			return resultJson;
+			if(null != userList && !userList.isEmpty()){
+				for (User user : userList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
+					if(null != userRole){
+						user.setUserType(userRole.getUserType());
+					}
+					usersList.add(user);
+				}
+			}
+			return usersList;
 		}
 
 		/**
@@ -467,7 +477,6 @@ public class UserRestController {
 	 			if(isUserActive == false){
 	 				user.setPassword(sourceleadPasswordEncoder.encode(password));
 	 			}
-	 			user.setIsMailSent(Status.Y);
 	 			userService.addUser(user);
 	 			
 	 			// mail should forward user when action done in sourcelead admin 
@@ -485,6 +494,9 @@ public class UserRestController {
 	    			  if(null != employee){
 	    				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 	    			  }
+	    			  
+	    			  userRole.setIsMailSent(Status.Y);
+	    			  userRoleService.addUserRole(userRole);
 	 			  }
 	 		}
 		
@@ -503,9 +515,9 @@ public class UserRestController {
 		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
 		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
-					@RequestParam(value = "filterValue", required = false) String filterValue) throws Exception {
+					@RequestParam(value = "filterValue", required = false) String filterValue,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue);
+				List<ProjectMembers> allProjectsList = projectMembersService.getAllProjectsByUserIdAndStatus(userId, filterValue,orgLocationId);
 				return toJSON(allProjectsList);
 
 			}
@@ -616,12 +628,13 @@ public class UserRestController {
 								  }
 								  
 								  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
-									   List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+									   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
 									      for(ProjectApproverHierarchy pah : mangerList){
 									    	  if(user.getId() != pah.getApproverUserId().getId()){
 									    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
 									    	  }
-									      }
+									      }*/
+									  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
 								  }else{
 									  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 								  }
@@ -1035,10 +1048,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
      	     userProfileDTO.setLastName(user.getLastName());
      	     userProfileDTO.setUserId(user.getId());
      	  
-     	     if(user.getDocFile() != null && user.getFileContentType() != null){
-        	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());
+     	     if(StringUtils.isNoneBlank(user.getFileUrl())){
+        	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
    			 }else{
-   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   				userProfileDTO.setProfileImageUrl("/resources/images/userprofile-img.png");
    			 }
      	     
 	         try {
@@ -1184,11 +1197,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
-		@ResponseBody String saveReAssignProject(@RequestParam(value = "json", required = false) String json,
+		@ResponseBody String saveReAssignProject(ProjectsDTO projectsDTO,
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
 						throws Exception {
-			json = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json);
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1206,12 +1217,12 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 			  		  //String pattern = "dd-MM-yyyy";
 		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
-		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
-		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-StartDate"));
+		    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
+		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
-		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
-		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-EndDate"));
+		    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
+		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
 		    	      pmh.setCreatedDate(commonUtil.currentDate());

@@ -365,7 +365,7 @@ $(document).ready(function () {
           
             
               <div class="form-group">
-              <label class="col-md-3">Education${requirement.reqEducationListString}</label>
+              <label class="col-md-3">Education</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
@@ -468,7 +468,7 @@ $(document).ready(function () {
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
                         <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : 'selected'}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
@@ -479,7 +479,7 @@ $(document).ready(function () {
                   
                   <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
                         <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
@@ -700,12 +700,11 @@ $(document).ready(function () {
               <label class="col-md-3">Notice Period</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="noticePeriod" data-placeholder="Select Notice Period"  id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
-					     <option  selected value="${noticePrd}">${noticePrd}</option>
-					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
-	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''}>1 Month</option>
-	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''}>2 Months</option>
-	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''}>3 Months</option>
+					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''} value="Immediately Available">Immediately Available</option>
+	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''} value="15 Days">15 Days</option>
+	               			  <option  ${requirement.noticePeriod  == '1-Month' ? 'selected' : ''} value="1 Month">1 Month</option>
+	                		 <option  ${requirement.noticePeriod  == '2-Month' ? 'selected' : ''} value="2 Months">2 Months</option>
+	                 		<option  ${requirement.noticePeriod  == '3-Month' ? 'selected' : ''} value="3 Months">3 Months</option>
                 </select>
               </div>
             </div>
@@ -1267,7 +1266,7 @@ $(document).ready(function () {
                             <label class="col-lg-4">Team Name <span class="text-danger paddingLeft">*</span></label>
                             <div class="col-lg-8" id="teamNameDiv">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="nameOfCandidate" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
                               </div>
                             </div>
                             <div class="form-group">
@@ -1303,7 +1302,7 @@ $(document).ready(function () {
 </section>
 
 <script>
-  $( function() {
+  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatJobSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -1325,7 +1324,7 @@ $(document).ready(function () {
 	  	}
 	  });
 	  
-  } );
+ 
 </script>
 
 <script>
@@ -1404,7 +1403,7 @@ function validate_fileupload(fileName)
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 		
 		checkTemplateforDouplicate();
 		validateJobId();
@@ -1442,7 +1441,7 @@ function validate_fileupload(fileName)
 			 $('#clientSubmissionForm').attr("data-validation-optional","true"); */
 		}
 		
-          var rateType = document.getElementById("rateType").value; 
+          /* var rateType = document.getElementById("rateType").value; 
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
   			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
@@ -1450,7 +1449,7 @@ function validate_fileupload(fileName)
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
   		 }
-  		 
+  		  */
  		 var rate = document.getElementById("rate").value; 
  		 if(rate != null && rate != ""){
  			 $('#rateType').removeAttr('data-validation-optional');
@@ -1580,151 +1579,6 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
-
-<!-- Country,State,City Script Starts Here -->
-
-<script type="text/javascript">
-function getAllCountries(){
-	
- setTimeout(function(){ 
-	var countryName ;
-	
-	 if ($('#existingCountry').length)
-	 {
-		 countryName = document.getElementById("existingCountry").value; 
-	 }
-	 else
-	 {
-		 countryName = '';
-	 }
-	 
-	 
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#countryReq').empty();
-        	$('#countryReq').append('<option value="">---Select Country---</option>');
-        	for(var i=0;i<json.length;i++){
-            	if(json[i] == countryName ){
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else if((countryName ==null ||  countryName =='' || countryName =='undefined') && (json[i] == '${SourceLeadWeb_loginCountryName}')){
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		
-            		$('#countryReq').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#countryReq').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
- }, 100);
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#countryReq").val();
-
-	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("existingState").value;
-	}
-	//end state Auto populate
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select State---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	
-	var countryName = $("#countryReq").val();
-	var stateName = $("#state").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("existingCity").value;
-	}
-	//end city Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-
-<!-- Country,State,City Script Ends Here -->
-
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
 	       
@@ -1952,7 +1806,8 @@ function setTemplateValues(){
 			    	
 			    	//$("textarea#description").val(json.description);
 			    	
-			    	$('#txtEditor').html(json.description); 
+			    	$('#txtEditor').text(json.description);
+			    	$('.Editor-editor').text(json.description);
 			    	
 			    	$("#rate").val(json.rate);
 			    	$("#maxRate").val(json.maxRate);
@@ -2221,9 +2076,6 @@ function popupWindow(reqId){
 	  $("#popupWindow").removeAttr("style");
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
-        result = result +' <div class="form-horizontal custom-form">';
- 		result = result +'     <div class="row">';
- 		
  		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
  		result = result +'         <div class="input-group">';
  		result = result +'           <input type="search" class="form-control" value="">';
@@ -2231,14 +2083,12 @@ function popupWindow(reqId){
  		result = result +'			</div>';
  		result = result +'       </div>';
  		
- 		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
+ 		result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10">';
  		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
  		result = result +'          </select>';
  		result = result +'       </div>';
  		
- 		result = result +'     </div>';
- 		result = result +'  </div>';
- 		result = result +'  <div id="usersGrid" class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 		result = result +'  <div id="usersGrid" class="clearfix datatable_filter">'; 
     	
  		result = result +'     </div>';
 		result = result +'     </div>';
@@ -2375,9 +2225,11 @@ function getUserList(teamType){
 	                       result = result +'   <div class="clearfix"></div>'; 
 	                 	   result = result +'   </div>'; 
 	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
-	                 	   result = result +'   <div class="modal-footer mt">';
+	                 	   result = result +'   <div class="clearfix">';
+	                 	  result = result +'   <div class="pull-right mt">';
 	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
 	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
+	                 	   result = result +'   </div>'; 
 	                 	   result = result +'   </div>'; 
 	                 	   $("#usersGrid").empty(); 
 	                       $("#usersGrid").append(result); 
@@ -2550,9 +2402,10 @@ function paginations(){
     $("#assignToDataTableId").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -2561,9 +2414,12 @@ function paginations(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
+
+
 
 <script>
 function assignMembers() {
@@ -3026,9 +2882,8 @@ function getEditRequirementDetails(requirementId){
 
 <script type="text/javascript">
  function validateTeamName() {
-	 var name = $('#name').val(); 
+	 var name = $('#candidateName').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
@@ -3036,13 +2891,13 @@ function getEditRequirementDetails(requirementId){
 		        success: function(data) {
 		        	if(data == 'true'){
 						  
-		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
 		        	}
 		        	else{
 		        		
-		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('input#candidateName').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
                          $("#add_team").removeAttr("disabled");

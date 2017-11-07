@@ -7,11 +7,7 @@ public class FileInfo {
 	private String contentType;
 	private Integer status;
 	private String fileDbId;
-	private String docFileName;
-	private String checked;
-	private String docId;
 	private String tempFolderName;
-
 
 	public String getFileURL() {
 		return fileURL;
@@ -54,29 +50,7 @@ public class FileInfo {
 		this.fileDbId = fileDbId;
 	}
 
-	public String getDocFileName() {
-		return docFileName;
-	}
-
-	public void setDocFileName(String docFileName) {
-		this.docFileName = docFileName;
-	}
-
-	public String getChecked() {
-		return checked;
-	}
-
-	public void setChecked(String checked) {
-		this.checked = checked;
-	}
-
-	public String getDocId() {
-		return docId;
-	}
-
-	public void setDocId(String docId) {
-		this.docId = docId;
-	}
+	
 	public String getTempFolderName() {
 		return tempFolderName;
 	}

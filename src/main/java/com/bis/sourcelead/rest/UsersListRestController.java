@@ -232,6 +232,7 @@ public class UsersListRestController {
 				for(UserRole role : rolesList){
 					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
+					role.setIsMailSent(role.getIsMailSent());
 					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
 						role.setUserName(userName.toString());
@@ -241,7 +242,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
-					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
+					//role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
 							role.setFileUrl(role.getUser().getFileUrl());
@@ -586,10 +587,10 @@ public class UsersListRestController {
 			
 			if(null != employee.getOrgRelationId()){
 				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
-				if(employee.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				if(employee.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
-				if(employee.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				if(employee.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
@@ -599,6 +600,9 @@ public class UsersListRestController {
 				userRole.setVendorSpocId(employee.getSpocId().getId().toString());
 				if(null != employee.getSpocId().getVendorUser().getLastName()){
 					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).append(" ").append(employee.getSpocId().getVendorUser().getLastName()).toString());	
+				}else{
+					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).toString());	
+
 				}
 				
 			}
@@ -1024,10 +1028,9 @@ public class UsersListRestController {
 				}
 			}
 
-			/*if (jsonObj.has("projectApproverUser") && !isNullOrEmpty("projectApproverUser")) {
-
-				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
-			} */else {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			} else {
 
 				List<ProjectMembers> projectmembersList = projectMembersService
 						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
@@ -1101,8 +1104,7 @@ public class UsersListRestController {
 			userRole.setTerminateReason(addUserDTO.getReason());
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			
-			
+						
 			UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
 			if (existinguserRole != null) {
 				existinguserRole.setIsPrimary(1);
@@ -1119,6 +1121,11 @@ public class UsersListRestController {
 	
 			}
 			
+			if(userRole.getTerminateReason()!=null)
+			{
+				
+				sendTerminateEmailtoUser(user,userRole,orgLocations);	
+			}
 			// to assign primary role to another user
 			
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
@@ -1127,6 +1134,7 @@ public class UsersListRestController {
 			
 			 
 		}
+		
 
 		return "success";
 	}
@@ -1134,7 +1142,87 @@ public class UsersListRestController {
 	
 	
 	
+	/**
+	 * @throws Exception *****/
+	private void sendTerminateEmailtoUser( User user,UserRole userRole, OrgLocations orgLocations) throws Exception {
+		   // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+		 
 	
+		
+	        EmailMessage emailMessage = new EmailMessage();
+	         emailMessage.setFirstName(userRole.getUser().getFirstName());
+	         emailMessage.setLastName(userRole.getUser().getLastName());
+	         emailMessage.setFromEmail(user.getEmail());
+	         emailMessage.setToEmail(userRole.getUser().getEmail());
+	         emailMessage.setCreatedBy(userRole.getUser().getUserCode());
+	         StringBuilder msgBuild = new StringBuilder();
+	         if(userRole.getUser().getLastName() != null) {
+		         emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	         }else {
+		         emailMessage.setFromName(msgBuild.append(user.getFirstName()).toString());
+
+	         }
+	         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	        //setting the class filed values
+	         Map<String, String> globalVarsMap = new HashMap<String, String>();
+	        
+	         globalVarsMap.put("loginUser", emailMessage.getFromName());
+
+	         StringBuilder name = new StringBuilder();
+	         if(userRole.getUser().getLastName() != null && userRole.getUser().getLastName() != "" && userRole.getUser().getLastName() != "undefined"){
+	        	  globalVarsMap.put("applicantName", name.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
+	        
+	         }
+	         else{
+	        	 globalVarsMap.put("applicantName", userRole.getUser().getFirstName());
+	         }
+	         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+	         globalVarsMap.put("RejectReason", userRole.getTerminateReason());
+	         globalVarsMap.put("date", CommonUtil.currentDate().toString());
+	         StringBuilder name1 = new StringBuilder();
+	         if(user.getFirstName() != null && user.getLastName()!= "" && user.getLastName() != "undefined"){
+	        	  globalVarsMap.put("admin", name1.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+	        
+	         }
+	         else
+	         {
+	        	 globalVarsMap.put("admin", user.getFirstName());
+	         }
+	        
+	         StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		  
+	         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	        
+	         //getting the current EmailScenario by EmailScenario unique name and entity type
+	         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDEMAIL,Constants.ENTITY_TYPE_EMAIL);
+	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDNOTIFICATIONEMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	        
+	         //covert subject,body and signature
+	         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	         String url = sourceleadUrl;
+	        
+	         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	         notificationScenario.setBody(notificationbody);
+
+	        
+	        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+
+	        
+	         //construct HTML template using required data
+	         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
+	         emailMessage.setSubject(subject);
+	         emailMessage.setMessageBody(emailTemplate);
+	        
+	         //calling the sendEmail method of emailScenerioUtil
+	         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	         String actionLink="";
+	       emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, orgLocations, notificationScenario);
+
+}
 	private void assignedNewUserAsaManager(User loginUser, Requirement requirement, Long userId, OrgLocations orgLocations, Integer requirementsCountAsManager2) throws Exception {
 		
 	Requirement req = 	requirementService.getRequirementByRequirementId(requirement.getId());
@@ -1395,17 +1483,16 @@ public class UsersListRestController {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getClientUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Client");
+						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(clientOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(clientOwnerOrUser);
-						}
+						String spocOwnerName = orgSpoc.getOwnerUser().getFullName();
+						orgSpoc.setOwnerUser(clientOwnerOrUser);
+						orgSpoc.setVendorUser(clientOwnerOrUser);
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						pointOfContactChangedMial(user, orgLocations, orgSpoc, "Vendor", spocOwnerName,clientOwnerOrUser);
 					}
 				}
 
@@ -1415,17 +1502,16 @@ public class UsersListRestController {
 				User vendorOwnerOrUser = new User();
 				vendorOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
 				List<OrgSpoc> orgSpocList = orgSpocService.getAssignedAsClientOrVendorSpocByUserId(userId,
-						orgLocations.getId(), "Vendor");
+						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						if (orgSpoc.getOrgRelations().getLocationId().getId() == orgLocations.getId()) {
-							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId() != orgLocations.getId()) {
-							//orgSpoc.setSpocUser(vendorOwnerOrUser);
-						}
+						String spocOwnerName = orgSpoc.getOwnerUser().getFullName();
+						orgSpoc.setOwnerUser(vendorOwnerOrUser);
+						orgSpoc.setClientUser(vendorOwnerOrUser);
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
+						pointOfContactChangedMial(user, orgLocations, orgSpoc, "Client", spocOwnerName,vendorOwnerOrUser);
 					}
 				}
 
@@ -1478,10 +1564,10 @@ public class UsersListRestController {
 
 			}
 
-			/*if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
+			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
 
-				projectsService.tereminateAsProjectApprover(addUserDTO, user, userId, orgLocations);
-			}*/
+				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
+			}
 			
 			
 			
@@ -1599,6 +1685,56 @@ public class UsersListRestController {
 		
 	
 	
+	private void pointOfContactChangedMial(User loginUser, OrgLocations loginOrgLocation,OrgSpoc orgSpoc,String type,String spocOwnerName,User SpocOwner) throws Exception {
+		
+		 String spocUserName = null;
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 if(type.equalsIgnoreCase("Client")) {
+			 emailMessage.setToEmail(orgSpoc.getVendorUser().getEmail());
+			 spocUserName = orgSpoc.getVendorUser().getFullName();
+		 }else {
+			 emailMessage.setToEmail(orgSpoc.getClientUser().getEmail());
+			 spocUserName = orgSpoc.getClientUser().getFullName();
+		 }
+		
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			globalVarsMap.put("spocUserName", spocUserName);
+			User spocOwner = userService.getUserById(SpocOwner.getId());
+			globalVarsMap.put("spocOwnerName", spocOwner.getFullName());
+			globalVarsMap.put("spocOldOwnerName", spocOwnerName);
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			globalVarsMap.put("loginOrgName", loginOrgLocation.getOrgLocationName());
+
+		    InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_SPOC_CONTACT,Constants.ENTITY_TYPE_EMAIL);
+
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		}
+	
 	/**
 	 * To update user and employee By User ID.
 	 * 
@@ -1627,11 +1763,12 @@ public class UsersListRestController {
 		String password = "";
 		boolean isUserActive = false;
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
+			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
@@ -1647,7 +1784,7 @@ public class UsersListRestController {
 				user.setUserName(addUserDTO.getEmail());
 				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				user.setPassword(sourceleadPasswordEncoder.encode(password));
-				user.setIsMailSent(Status.Y);
+				userRole.setIsMailSent(Status.Y);
 			}
 			user.setUpdatedBy(loginUser.getUserCode());
 			user.setUpdatedDate(commonUtil.currentDate());
@@ -1703,7 +1840,7 @@ public class UsersListRestController {
 			if (StringUtils.isNotBlank(addUserDTO.getDateofJoin())) {
 				try {
 					//DateFormat sdf = simpleDateFormat;
-					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),addUserDTO.getDateofJoin()));
+					employees.setHireDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(),addUserDTO.getDateofJoin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -131,7 +131,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("getOrgSpocById start");
-		orgSpocs = session.createQuery("from OrgSpoc where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorLocationId left join fetch spoc.clientLocationId  where spoc.id = :id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
 		logger.debug("getOrgSpocById end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -354,9 +354,9 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			
 			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
 			   }else{
-				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			
 			    spocsList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)

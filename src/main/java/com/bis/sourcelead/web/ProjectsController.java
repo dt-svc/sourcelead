@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,6 +51,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 
 @Controller
@@ -202,9 +204,9 @@ public class ProjectsController {
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/clientProject")
 		public ModelAndView clientProject(HttpServletRequest request) throws Exception {
-		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    
 				ModelAndView model = new ModelAndView();
 				
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -217,7 +219,23 @@ public class ProjectsController {
 					request.getSession().setAttribute("sessionData",sessionData);
 					
 					List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
-					model.addObject("clientsList", clientsList);
+					List<OrgRelations> clientList = new ArrayList<>();
+					if(clientsList != null & clientsList.size() > 0) {
+						for(OrgRelations orgRelations : clientsList) {
+							OrgLocations clientOrgLocations = null;
+							if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
+								clientOrgLocations = orgRelations.getResponderLocationId();
+							}else {
+								clientOrgLocations = orgRelations.getLocationId();
+							}
+							
+							if(StringUtils.isNotBlank(clientOrgLocations.getOrg().getOrgType()) && clientOrgLocations.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+								clientList.add(orgRelations);
+							}
+							
+						}
+					}
+					model.addObject("clientsList", clientList);
 					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("project/clientProject");
 					return model;
@@ -243,7 +261,7 @@ public class ProjectsController {
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 				OrgLocations clientOrgLocations = null;
-				String isClientOrgActive = Constants.YES;
+				String isClientOrgActive = Constants.NO;
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
@@ -253,8 +271,13 @@ public class ProjectsController {
 					if(projects.getEndDate() != null){
 						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 					}
+					List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations);
+					model.addObject("projectAssignMemberList", projectAssignMemberList);
 					model.addObject("projectStatus", projects.getProjectStatus());
+					
 				}
+				
+				
 				
 				if(StringUtils.isNotEmpty(projectClientUUID)){
 					ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
@@ -265,8 +288,8 @@ public class ProjectsController {
 							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
 						}
 						
-						if(clientOrgLocations.getStatus() != null && !clientOrgLocations.getStatus().equals(Status.ACTIVE)){
-							isClientOrgActive = Constants.NO;
+						if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+							isClientOrgActive = Constants.YES;
 						}
 					}
 					model.addObject("isClientOrgActive", isClientOrgActive);
@@ -284,7 +307,7 @@ public class ProjectsController {
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
 				
-				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orgLocations.getId());
 				if(projectBudgetList != null) {
 					model.addObject("projectBudgetCount", projectBudgetList.size());
 				}else {
@@ -310,6 +333,8 @@ public class ProjectsController {
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
 				 
+				commonUtil.highLightMenu(Constants.Projects, request);
+				 
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
@@ -320,7 +345,9 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+				
 				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
+				 OrgLocations locations=orgLocationService.getOrgLocations(projectTask.getProjectId().getOrgLocationsId().getId());
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());
@@ -336,6 +363,11 @@ public class ProjectsController {
 				 }else {
 					 model.addObject("dueDate",  "--");
 				 }
+				 
+				 if(projectTask.getProjectId() != null && projectTask.getProjectId().getStartDate() != null){
+						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projectTask.getProjectId().getStartDate()));
+					}
+				 
 				 if(projectTask.getTaskAssignedUsers() != null) {
 					 model.addObject("assignTask", projectTask.getTaskAssignedUsers());
 				 }
@@ -350,7 +382,15 @@ public class ProjectsController {
 						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
 					 }
 				 }
+				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
+				 if(projectTask.getParentTaskId() != null) {
+					 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
+				 }
+				if(projectTask.getProjectId() != null) {
+					model.addObject("projectName", projectTask.getProjectId().getProjectName());
+				}
 				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);
@@ -562,13 +602,15 @@ public class ProjectsController {
     @RequestMapping(value = "/viewNewResourceRequest")
    	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,
    			@RequestParam(value="projectUUID", required=true) String projectUUID,
-   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
+   			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
    	    
    	    ModelAndView model = new ModelAndView();
+   	    
+   	    commonUtil.highLightMenu(Constants.Projects, request);
+   	    
    		model.addObject("projectUUID", projectUUID);
    		model.addObject("requestUUID",requestUUID);
    		model.addObject("projectClientUUID",projectClientUUID);
-   		
    		model.setViewName("project/viewNewResourceRequest");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
@@ -581,10 +623,12 @@ public class ProjectsController {
 			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    
 	    ModelAndView model = new ModelAndView();
+	    
+	    commonUtil.highLightMenu(Constants.Projects, request);
+	    
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("requestUUID",requestUUID);
 		model.addObject("projectClientUUID",projectClientUUID);
-		
 		model.setViewName("project/viewResourceRequest");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

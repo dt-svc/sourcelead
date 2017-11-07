@@ -29,7 +29,7 @@ width : 6% !important;
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="getTemplateDetails();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Template details</small> </a> </li>
-            <li onclick="getTemplatePolicyDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -610,8 +610,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{
@@ -670,7 +669,6 @@ function createTemplate(saveType){
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(json.id);
 		        	}
-		        	
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(json.id);
 	     	        $("#documentstemplateId").val(json.id);
@@ -723,7 +721,8 @@ function createTemplateDocs(saveType){
 		     	        document.getElementById("templateTasks").disabled = false;
 		     	        $("#onboardTaskDiv").val('Y');
 		     	        getOnboardingTasksList();
-		        	}else{
+		        	}
+		    	  else{
 		        		getTemplatePolicyDocumentsDetails();
 		        		/* getTemplateSupportingDocumentsDetails();
 		        		getTemplateContractsDocumentsDetails();
@@ -868,7 +867,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	$("#templateDocuments_form input[name*='polaciesFileInfo']").remove();
 	$("#templateDocuments_form input[name*='supportingFileInfo']").remove();
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Policies"
 	if(templateId){
@@ -915,7 +914,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 <script>
 function getTemplateSupportingDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Supported"
 	if(templateId){
@@ -959,7 +958,7 @@ function getTemplateSupportingDocumentsDetails(templateId){
 <script>
 function getTemplateContractsDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Contracts"
 	if(templateId){
@@ -1002,7 +1001,7 @@ function getTemplateContractsDocumentsDetails(templateId){
 <script>
 function getTemplateFormsDocumentsDetails(templateId){
 	if(templateId == '' || templateId == null || templateId =='undefined'){
-		templateId = document.getElementById("templateId").value;
+		templateId = $("#documentstemplateId").val();
 	}
 	var documentType = "Forms"
 	if(templateId){
@@ -1114,8 +1113,7 @@ function getOnboardingTasksList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	if(json.length > 0){ 
 	        	for (var i=0; i<json.length; i++)
@@ -1168,6 +1166,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
+    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
     		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
@@ -1183,6 +1182,11 @@ function getOnboardingTasksList(){
 	
  }
 }
+
+
+function redirect(){
+	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
+}
 </script>
 
 
@@ -1197,6 +1201,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });

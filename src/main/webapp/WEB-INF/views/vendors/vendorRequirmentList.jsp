@@ -29,7 +29,7 @@ function vendorRequirementListInclude(orgRelationID){
 	    
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-	    result = result + '<ul>';
+	    result = result + '<ul  class="paddingLi">';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">Open</label>';
@@ -113,9 +113,8 @@ function vendorRequirementListInclude(orgRelationID){
 		$.ajax({
 	    	type: "POST",
 	    	   url: sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
-	    	success: function(data) {
+	    	success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
 	        
 	        	$("#vendorRequirmentListDiv").empty();
 	        	
@@ -242,10 +241,14 @@ function vendorRequirementListInclude(orgRelationID){
 function contactRequirmentlistPagination(){  
     $('#vendorRequirmentPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 9
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

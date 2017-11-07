@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientDocumentsDTO;
+import com.bis.sourcelead.dto.OrgDocumentsDTO;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -93,16 +95,18 @@ public class OrgDocumentsRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasRole('ROLE_VIEW_VENDOR_DOCUMENT')")
-	@RequestMapping(value = "/getclientDocumentsListByResponderLocationId")
-	public String getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
+	@RequestMapping(value = {"/getclientDocumentsListByResponderLocationId","/rest/getclientDocumentsListByResponderLocationId"},method = RequestMethod.POST)
+	public List<OrgDocumentsDTO> getclientDocumentsListByResponderLocationId(@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 			                                                 @RequestParam(value = "sourceType", required = false) String sourceType,
 			                                                 HttpServletRequest request) throws Exception {
 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 String resultJson , msg="" ;
+		 String  msg="" ;
+		 List<OrgDocumentsDTO> clientDocumentsListDTO=new ArrayList<OrgDocumentsDTO>();
 		 List<OrgDocuments> clientDocumentsList = orgDocumentsService.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(Long.valueOf(responderLocationId), user.getId(), loginOrgLocation.getId(), sourceType);
 		 for(OrgDocuments orgDocuments :clientDocumentsList){
+			 OrgDocumentsDTO orgDocumentsDTO=new OrgDocumentsDTO();
 			 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"addDocument");
 			 if(msg == null){
 				 msg = (String) SourceLeadSessionManager.getSessionAttribute(request,"editDocument");
@@ -113,13 +117,24 @@ public class OrgDocumentsRestController {
 			 if(msg != null){
 				 orgDocuments.setMsg(msg);
 			 }
+			 orgDocumentsDTO.setId((orgDocuments.getId()).toString());
+			 orgDocumentsDTO.setDocName(orgDocuments.getDocName());
+			 orgDocumentsDTO.setContractType(orgDocuments.getContractType());
+			 orgDocumentsDTO.setEndDateStr(orgDocuments.getEndDateStr());
+			 orgDocumentsDTO.setFileName(orgDocuments.getFileName());
+			 orgDocumentsDTO.setFileType(orgDocuments.getFileType());
+			 orgDocumentsDTO.setFileUrl(orgDocuments.getFileUrl());
+			 orgDocumentsDTO.setOwnerName(orgDocuments.getOwnerName());
+			 orgDocumentsDTO.setSpocName(orgDocuments.getSpocName());
+			 orgDocumentsDTO.setDescription(orgDocuments.getDescription());
+			 orgDocumentsDTO.setStartDateStr(orgDocuments.getStartDateStr());
+			 clientDocumentsListDTO.add(orgDocumentsDTO);
 				 SourceLeadSessionManager.removeSessionAttribute(request, "addDocument");
 				 SourceLeadSessionManager.removeSessionAttribute(request, "editDocument");
 				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteDocument");
 		 }
-		 resultJson = commonUtil.toJSON(clientDocumentsList);
-		 return resultJson;
-	}	
+		 return clientDocumentsListDTO;
+	}		
 	
 	
 	/** to get orgDocument by Id
@@ -129,9 +144,9 @@ public class OrgDocumentsRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getOrgDocument", method = RequestMethod.POST)
-	public @ResponseBody String getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request,String type) throws Exception {
-		String resultJson = null;
+	@RequestMapping(value = {"/getOrgDocument","/rest/getOrgDocument"}, method = RequestMethod.POST)
+	public @ResponseBody OrgDocumentsDTO getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request,String type) throws Exception {
+		OrgDocumentsDTO orgDocumentDTO=new OrgDocumentsDTO();
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -159,11 +174,21 @@ public class OrgDocumentsRestController {
 		
 		
 		if(orgDocument != null){
-			orgDocument.setOrgSpocsList(orgSpocsList);
-			orgDocument.setOwnersList(ownersList);
-			resultJson = commonUtil.toJSON(orgDocument);
+			orgDocumentDTO.setOrgSpocsList(orgSpocsList);
+			orgDocumentDTO.setOwnersList(ownersList);
+			orgDocumentDTO.setId(orgDocument.getId().toString());
+			orgDocumentDTO.setFileName(orgDocument.getFileName());
+			orgDocumentDTO.setDocName(orgDocument.getDocName());
+			orgDocumentDTO.setContractType(orgDocument.getContractType());
+			orgDocumentDTO.setOrgSpocsList(orgDocument.getOrgSpocsList());
+			orgDocumentDTO.setSpocUser(orgDocument.getSpocUser());
+			orgDocumentDTO.setStartDateStr(orgDocument.getStartDateStr());
+			orgDocumentDTO.setEndDateStr(orgDocument.getEndDateStr());
+			orgDocumentDTO.setDescription(orgDocument.getDescription());
+			orgDocumentDTO.setOwnerUser(orgDocument.getOwnerUser());
+			orgDocumentDTO.setOwnerId(orgDocument.getOwnerId());
 		}
-		return resultJson;
+		return orgDocumentDTO;
 	}
 	
 	

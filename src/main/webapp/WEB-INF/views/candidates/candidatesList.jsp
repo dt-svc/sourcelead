@@ -611,7 +611,8 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
@@ -628,9 +629,9 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
+           success :function(json) {   
+                if(data){  
+//                 	 var json = JSON.parse(data);
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
@@ -701,8 +702,9 @@ function addFavourite(candidateId){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
+					 //document.getElementById("favourite"+candidateId).removeAttribute("class");
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
 				}
 				
 			},
@@ -2025,9 +2027,9 @@ function getCities(){
 <!-- Add candidate Popup -->
       <div class="addcandidate-popup">
 				  <div class="row">
-                      <div class="col-md-offset-2 col-md-8">
+                      <div class="col-md-offset-1 col-md-10">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
+                          <div class="col-md-4 mt">
                         <div class="small-widget bg-purple">
                             <a href="<c:url value='/candidate'/>"  title="Import Candidate">
                                 <div class="clearfix mb10">
@@ -2038,7 +2040,7 @@ function getCities(){
                                 </a>
                         </div>
 					  </div>
-					  <div class="col-md-6 mt">
+					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
                               <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
                                   <div class="clearfix mb10">
@@ -2050,6 +2052,20 @@ function getCities(){
                                 
                           </div>
 					  </div>
+					  
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bgGreen">
+                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Bulk Imports">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-upload fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Bulk Imports</strong>
+                                </a>
+                                
+                          </div>
+					  </div>					  
+					  
                       </div>
                           <div class="col-md-4 hidden">
                           <div class="small-widget bg-green">

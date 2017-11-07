@@ -3,6 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+ window.onload = function() {
+	 var applicable = '${restrictDay.applicableToAll}';
+	 if(applicable == 'N'){
+		 $("#selectRoles").show();
+	 }
+};
+</script>
+
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -21,37 +31,58 @@
     <div class="form-group">
        <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
        <div class="col-md-9">
+       <input type="hidden" id="restrictDayId" name="restrictDayId" value="${restrictDay.id}"/>
        <input type="text" name="restrictName" placeholder="Restrict Name" value="${restrictDay.restrictName}" field-name="Restrict Name" class="form-control" data-validation="required validate_length length1-250">
        </div>
     </div>
     <div class="form-group" id="startDateDiv">
        <label class="col-md-3">Start Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required" readonly>
        </div>
     </div>
     <div class="form-group" id="endDateDiv">
        <label class="col-md-3">End Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
-       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required">
+       <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required" readonly>
+        <div id="warnDiv"></div>
        </div>
     </div>
     <div class="form-group">
        <label class="col-md-3">Reason</label>
         <div class="col-md-9">
-            <textarea class="form-control" name="reason" value="${restrictDay.reason}" rows="2" placeholder="Reason">${restrictDay.reason}</textarea>
+            <textarea class="form-control" name="reason" value="${restrictDay.reason}" rows="2" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Reason">${restrictDay.reason}</textarea>
        </div>
     </div>
     <div class="form-group">
        <label class="col-md-3 paddingRight">Applicable For All</label>
        <div class="col-md-9">
  			<div class="clearfix mb"> 
-              <label class="paddingLeft paddingRight">
+ 			<c:if test="${empty restrictDay.applicableToAll}">
+ 			<label class="paddingLeft paddingRight">
                 <input name="isApllicable" type="radio" id="yesApplica" value="Y" checked>
                 <span class="paddingLeft">Yes</span></label>
               <label class="paddingLeft">
                 <input name="isApllicable" type="radio" id="noApplica" value="N">
                 <span class="paddingLeft">No</span></label>
+ 			</c:if>
+ 			<c:if test="${restrictDay.applicableToAll == 'Y'}">
+ 			<label class="paddingLeft paddingRight">
+                <input name="isApllicable" type="radio" id="yesApplica" value="Y" checked>
+                <span class="paddingLeft">Yes</span></label>
+              <label class="paddingLeft">
+                <input name="isApllicable" type="radio" id="noApplica" value="N">
+                <span class="paddingLeft">No</span></label>
+ 			</c:if>
+ 			<c:if test="${restrictDay.applicableToAll == 'N'}">
+ 			<label class="paddingLeft paddingRight">
+                <input name="isApllicable" type="radio" id="yesApplica" value="Y" >
+                <span class="paddingLeft">Yes</span></label>
+              <label class="paddingLeft">
+                <input name="isApllicable" type="radio" id="noApplica" value="N" checked>
+                <span class="paddingLeft">No</span></label>
+ 			</c:if>
+              
             </div>
        </div>
     </div>
@@ -61,8 +92,17 @@
        <div class="col-md-9">
            <select multiple class="chosen-select form-control" name="rolesList" id="roleId" data-placeholder="Select Roles" field-name="Role" data-validation-optional="true">
                <option>--Select Roles--</option>
-                <c:forEach var="option" items="${rolesList}">
-					<option value="${option.id}">${option.displayName}</option>
+               <c:forEach var="role" items="${rolesList}">
+               <c:set var = "NUM" value = "${0}"/>
+                <c:forEach var="existedRoles" items="${existedRoles}">
+                	<c:if test="${existedRoles.id eq role.id}">
+						<c:set var = "NUM" value = "${1}"/>
+							<option selected value="${role.id}">${existedRoles.displayName}</option>
+					</c:if> 
+				</c:forEach>
+				<c:if test="${NUM == 0}">
+						<option value="${role.id}">${role.displayName}</option>
+				</c:if>
 				</c:forEach>
            </select>
        </div>
@@ -143,6 +183,7 @@ $('body').on('blur', '#restrictDay_form', function() {
             dt.setDate(dt.getDate());
             $("#startDate").datepicker("option", "maxDate", dt);
             removeEndValid();
+            checkDuplicateRestrictDay();
         }
 	  });
 	  
@@ -168,6 +209,24 @@ $('body').on('blur', '#restrictDay_form', function() {
  });
  
  </script>
+ 
+<script>
+function checkDuplicateRestrictDay(){
+	$('.jquery_form_error_message cOrange').hide();
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	if(startDate != null && startDate != '' && startDate != 'undefined' && startDate != null && startDate != '' && startDate != 'undefined'){
+		$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+			if(data == true){
+				$("#warnDiv").after("<p class='jquery_form_error_message cOrange'><i class='fa fa-exclamation-circle'></i> Your restrict days are already added.</span>");
+			}else{
+				$('.jquery_form_error_message cOrange').hide();
+			}
+		});
+	}
+}
+</script>
  
 <script>
 function removeStartValid(){

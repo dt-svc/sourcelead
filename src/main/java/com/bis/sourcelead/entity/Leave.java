@@ -37,6 +37,15 @@ public class Leave {
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	@JsonBackReference
+	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
+	private LeaveType leaveType;
+	
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
@@ -59,13 +68,6 @@ public class Leave {
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
-	@JsonBackReference
-	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
-	private LeaveType leaveType;
-	
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -153,6 +155,10 @@ public class Leave {
 	@Transient
 	@JsonProperty
 	private String approvedByUser;
+	
+	@Transient
+	@JsonProperty
+	private int totalLeavesTaken;
 
 	public String getId() {
 		return id;
@@ -421,6 +427,13 @@ public class Leave {
 	public void setWithdrawReason(String withdrawReason) {
 		this.withdrawReason = withdrawReason;
 	}
-	
+
+	public int getTotalLeavesTaken() {
+		return totalLeavesTaken;
+	}
+
+	public void setTotalLeavesTaken(int totalLeavesTaken) {
+		this.totalLeavesTaken = totalLeavesTaken;
+	}
 
 }

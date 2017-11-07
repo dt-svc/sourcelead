@@ -5,6 +5,8 @@ import java.util.Date;
 public class CandidateCertificationDTO extends CommonDTO {
 
 
+	private Long id;
+	
 	private String candidateId;
 	
 	private String name;
@@ -31,110 +33,169 @@ public class CandidateCertificationDTO extends CommonDTO {
 	
 	private String candidatecertificateID;
 
-	public String getCandidateId() {
+	private String candidatevalidFromDateToString;
+
+	private String candidatevalidToDateToString;
+
+	public Long getId()
+	{
+		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
+	}
+
+	public String getCandidateId()
+	{
 		return candidateId;
 	}
 
-	public void setCandidateId(String candidateId) {
+	public void setCandidateId(String candidateId)
+	{
 		this.candidateId = candidateId;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public String getProvider() {
+	public String getProvider()
+	{
 		return provider;
 	}
 
-	public void setProvider(String provider) {
+	public void setProvider(String provider)
+	{
 		this.provider = provider;
 	}
 
-	public String getScore() {
+	public String getScore()
+	{
 		return score;
 	}
 
-	public void setScore(String score) {
+	public void setScore(String score)
+	{
 		this.score = score;
 	}
 
-	public String getScoreType() {
+	public String getScoreType()
+	{
 		return scoreType;
 	}
 
-	public void setScoreType(String scoreType) {
+	public void setScoreType(String scoreType)
+	{
 		this.scoreType = scoreType;
 	}
 
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
 
-	public String getValidFrom() {
+	public String getValidFrom()
+	{
 		return validFrom;
 	}
 
-	public void setValidFrom(String validFrom) {
+	public void setValidFrom(String validFrom)
+	{
 		this.validFrom = validFrom;
 	}
 
-	public String getValidTo() {
+	public String getValidTo()
+	{
 		return validTo;
 	}
 
-	public void setValidTo(String validTo) {
+	public void setValidTo(String validTo)
+	{
 		this.validTo = validTo;
 	}
 
-	public Date getCreatedDate() {
+	public Date getCreatedDate()
+	{
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Date createdDate)
+	{
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
+	public String getCreatedBy()
+	{
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(String createdBy)
+	{
 		this.createdBy = createdBy;
 	}
 
-	public String getUpdatedDate() {
+	public String getUpdatedDate()
+	{
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(String updatedDate) {
+	public void setUpdatedDate(String updatedDate)
+	{
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy() {
+	public String getUpdatedBy()
+	{
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(String updatedBy)
+	{
 		this.updatedBy = updatedBy;
 	}
 
-	public String getCandidatecertificateID() {
+	public String getCandidatecertificateID()
+	{
 		return candidatecertificateID;
 	}
 
-	public void setCandidatecertificateID(String candidatecertificateID) {
+	public void setCandidatecertificateID(String candidatecertificateID)
+	{
 		this.candidatecertificateID = candidatecertificateID;
+	}
+
+	public String getCandidatevalidFromDateToString()
+	{
+		return candidatevalidFromDateToString;
+	}
+
+	public void setCandidatevalidFromDateToString(String candidatevalidFromDateToString)
+	{
+		this.candidatevalidFromDateToString = candidatevalidFromDateToString;
+	}
+
+	public String getCandidatevalidToDateToString()
+	{
+		return candidatevalidToDateToString;
+	}
+
+	public void setCandidatevalidToDateToString(String candidatevalidToDateToString)
+	{
+		this.candidatevalidToDateToString = candidatevalidToDateToString;
 	}
 	
 	
-
 }

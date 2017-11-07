@@ -59,7 +59,7 @@ margin:10px 220px 0;
 						class="chosen-select form-control" name="templateId" id="templateId"
 						field-name="Template" data-validation-optional="true">
 						<c:forEach var="template" items="${templatesList}">
-							<option value="${template.id}">${template.templateName}</option>
+							<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
 						</c:forEach>
 					</select>
 			</div>

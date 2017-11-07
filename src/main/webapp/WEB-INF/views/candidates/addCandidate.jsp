@@ -515,9 +515,8 @@
 						</div>
 					</div>
 
-
-
-
+					<!-- this "candidateCreationType" field is used for candidate creation type -->
+         			<input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
 
 					<div class="clearfix"></div>
 
@@ -1037,12 +1036,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");

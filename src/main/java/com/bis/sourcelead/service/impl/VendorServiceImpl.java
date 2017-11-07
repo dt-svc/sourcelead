@@ -92,8 +92,8 @@ public class VendorServiceImpl implements VendorService{
 		    	orgRelations.setVendorOnboardTemplateId(null);
 		    }
 		 
-		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerm())){
-			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerm());
+		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerms())){
+			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
 		 
 		 orgRelationsDao.addOrgRelations(orgRelations);
@@ -209,7 +209,7 @@ public class VendorServiceImpl implements VendorService{
 			clientService.saveOrUpdateClientVendorElkDocument(org, vendorOrgLocations, "Vendor", null, orgRelations,
 					submissionTemplate, user, orgLocations);
 		 
-		return null;
+		return vendorOrgLocations;
 	}
 	
 	
@@ -262,6 +262,8 @@ public class VendorServiceImpl implements VendorService{
 		onboardDTO.setPaymentTerm(orgRelations.getPaymentTerm());
 		onboardDTO.setTier(orgRelations.getInitiatorLevel());
 		onboardDTO.setSicCode(orgRelations.getSicCode());
+		onboardDTO.setNaicsCode(orgRelations.getNaicsCode());
+		onboardDTO.setEinCode(orgRelations.getEinCode());
 		onboardDTO.setIndustryName(orgRelations.getIndustryName());
 		onboardDTO.setCurrency(orgRelations.getCurrency());
 		onboardDTO.setTaxRegNumber(orgRelations.getTaxRegistrationNumber());
@@ -275,6 +277,8 @@ public class VendorServiceImpl implements VendorService{
 			onboardDTO.setBranchNumber(bankDetails.getBranchNumber());
 			onboardDTO.setBicNumber(bankDetails.getBankIdentifierCode());
 			onboardDTO.setBankAddress(bankDetails.getBankAddress());
+			onboardDTO.setPoEmail(bankDetails.getPoEmail());
+			onboardDTO.setPaymentRemittanceEmail(bankDetails.getPaymentRemittanceEmail());
 		}
 		
 		return onboardDTO;

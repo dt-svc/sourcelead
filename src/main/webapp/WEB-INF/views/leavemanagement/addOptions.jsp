@@ -4,6 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
 
+
+<script type="text/javascript">
+$(document).ready(function(){
+ //getRoles();
+});
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -32,7 +39,8 @@
             <div class="form-group">
               <label class="col-md-3">Select Role</label>
               <div class="col-md-9 dropdown-select">
-                <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
+              <div id="rolesDiv"></div>
+                 <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
 		                        <c:forEach var="role" items="${rolesList}">
 		                           <c:set var = "NUM" value = "${0}"/>
 			                        <c:forEach var="existedRoles" items="${existedRoles}">
@@ -45,7 +53,7 @@
 											<option value="${role.id}">${role.displayName}</option>
 										</c:if>
 								</c:forEach>
-			    </select>
+			    </select> 
               </div>
             </div>
             <div class="form-group">
@@ -138,7 +146,8 @@
             <div class="form-group">
               <label class="col-md-3">Working Hours</label>
               <div class="col-md-9 dropdown-select">
-                <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours">
+                <input type="text" class="form-control" value="${options.workingHours}" placeholder="Working Hours" id="workingHours" name="workingHours" field-name="Working Hours"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true">
+                <input type="hidden" value="${optionId}" name="optionId" id="optionId" />
               </div>
             </div>
           </div>
@@ -156,17 +165,27 @@
   
 <script type="text/javascript">
 function saveLeaveOption(){
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var userId = '${SourceLeadWeb_userId}';
-	  	/* var formData = getFormData("add_option_form"); */
-	  	var formData = $($('#add_option_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-			if(data == true){
-				location.replace(sourceleadUrl+ "/viewOptions");
-			}
-		}); 
+	 if ($('#add_option_form').validate(false, validationSettings)){ 
+		 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+			var userId = '${SourceLeadWeb_userId}';
+		  	/* var formData = getFormData("add_option_form"); */
+		  	var formData = $($('#add_option_form')[0]).serialize();
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+				if(data == true){
+					location.replace(sourceleadUrl+ "/viewOptions");
+				}
+			}); 
+			return true;
+	 }else{ 
+			return false;
+	 }   
+		
 }
+$('body').on('blur', '#add_option_form', function() {
+	$("#add_option_form").showHelpOnFocus();
+	$("#add_option_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 <script>
@@ -208,4 +227,64 @@ function cancel(){
         }
             }
         </script> 
+         <%--  <select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">
+		                        <c:forEach var="role" items="${rolesList}">
+		                           <c:set var = "NUM" value = "${0}"/>
+			                        <c:forEach var="existedRoles" items="${existedRoles}">
+										     <c:if test="${existedRoles.id eq role.id}">
+										    	<c:set var = "NUM" value = "${1}"/>
+										       <option  selected value="${role.id}">${existedRoles.displayName}</option>
+ 										    </c:if> 
+										</c:forEach>
+										<c:if test="${NUM == 0}">
+											<option value="${role.id}">${role.displayName}</option>
+										</c:if>
+								</c:forEach>
+			    </select> --%>
+        
+ <script>
+  function getRoles(){
+	    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var  orgCode ='${SourceLeadWeb_orgCode}';
+		var  roleHierarchyId ='${SourceLeadWeb_roleHierarchyId}';
+		$.get(sourceleadUrl+"/getRoles?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgCode="+orgCode+"&roleHierarchyId="+roleHierarchyId, function(result) {
+		  var json = result.data;
+		  var output = "";
+      	  output = output +'<select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">';
+      	  for (var i = 0; i < json.length; i++) { 
+      		  var role = json[i];
+      		  output = output +'<option value='+role.id+'>'+role.displayName+'</option>';
+      	  }
+      	  output = output +'</select>';
+      	  $("#rolesDiv").empty();
+      	  $("#rolesDiv").append(output);
+      	  /* $('#rolesDiv').chosen();
+      	 $("#rolesDiv").trigger("chosen:updated"); */
+      	 
+      	 var config = {
+      			  '.chosen-select'           : {},
+      			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+      			  '.chosen-select-no-single' : {disable_search_threshold:10},
+      			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      			  '.chosen-select-width'     : {width:"95%"}
+      			}
+      			for (var selector in config) {
+      			  $(selector).chosen(config[selector]);
+      			}
+      			$('.chosen-select').each(function() {
+
+      				var $this = $(this);
+      				$this.next().css({'width': '100%'});
+      				})
+      				$(document).ready(function(){
+      					$("#cd").click(function(){
+      						$(".clientDetails").toggleClass('hidden', 500);
+      					});
+
+      	});
+		}); 
+  }
+  
+ 
+  </script>
 <jsp:include page="../masterFooter.jsp" />

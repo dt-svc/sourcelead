@@ -2258,16 +2258,14 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
-        		
-        		var frm = $('#create_alert_form').serializeFormJSON();
-        		var con = JSON.stringify(frm);
-        		con = con.replace(/[{}]/g, ""); 
-        		//It will escape all the special characters
-        	    var jsonData = encodeURIComponent(con);
-
+        	    var formData = getFormData1("create_alert_form");
+        	    
         		$.ajax({
-        					type : "POST",
-        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+		        		    type : "POST",
+							data: formData,
+			  		        processData: false,
+			  		        contentType:false, 
+        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
         							location.replace(sourceleadUrl+"/openRequirementsRedirect");
         					},

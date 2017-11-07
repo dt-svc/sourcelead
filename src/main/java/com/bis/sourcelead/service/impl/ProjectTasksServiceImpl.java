@@ -20,6 +20,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -213,11 +214,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			}
 		}
 		generatedIdcount = generatedIdcount + 1;
-		Long checkNumber = tasksDao.getProjectTasksGeneratedIdByProjectId(projects.getId(), generatedIdcount); 
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
 		if (checkNumber == null) {
 			requirementId = number.toString();
 		} else {
-			Long reqId = checkNumber + 1;
+			Integer reqId = checkNumber + 1;
 			requirementId = reqId.toString();
 		}
 		final DecimalFormat decimalFormat = new DecimalFormat("0");
@@ -260,12 +261,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getDuDate());
 	    		tasks.setDueDate(duDate);
 		}
-		if(projectTasksDTO.getEstimatedDate() != null && !projectTasksDTO.getEstimatedDate().isEmpty()){
-	    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),projectTasksDTO.getEstimatedDate());
-	    		tasks.setEstimateDate(estimatedDate);
+		if(projectTasksDTO.getEstimatedTime() != null && !projectTasksDTO.getEstimatedTime().isEmpty()) {
+			tasks.setEstimateTime(projectTasksDTO.getEstimatedTime());
 		}
-		
-		
+
 		if(projectTasksDTO.getPriority() != null){
 			LookUpData priority = lookUpDataService.getTasksById(projectTasksDTO.getPriority());
 			tasks.setPriority(priority);
@@ -499,6 +498,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 	
+	
+	
 	@Override
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		return tasksDao.getProjectTasksGeneratedIdByProjectId(projectId, generatedIdCount);
@@ -524,4 +525,26 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, filterDate, startDateUTC, endDateUTC);
 	}
 
+	@Override
+	public void updateBillingType(String billing, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		
+		 //Task Billing Type activity	
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Billing Type");
+	     projectTasks.setBillableType(billing);
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     
+	     activitySummary.append(oldData.getBillableType()).append(" to ").append(projectTasks.getBillableType());
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+	}
+
+	@Override
+	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
+		return tasksDao.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,projectId,taskType,taskStatus,userRole,assignedMembers);
+	}
 }

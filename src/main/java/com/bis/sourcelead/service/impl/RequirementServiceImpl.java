@@ -845,7 +845,12 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementRate", "--");
 		}
-		if (assUser.getFirstName() != null && assUser.getLastName() != null
+		
+		if(requirement.getSpocId() != null){
+			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
+		}
+		
+		/*if (assUser.getFirstName() != null && assUser.getLastName() != null
 				&& !"".equalsIgnoreCase(assUser.getFirstName())
 				&& !"".equalsIgnoreCase(assUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -853,7 +858,9 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			globalVarsMap.put("clientContactname", assUser.getFirstName());
-		}
+		}*/
+		
+		
 		if ((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()))
 				&& (requirement.getMaxExp() != null
 						&& !"".equalsIgnoreCase(requirement.getMaxExp()))) {
@@ -967,7 +974,10 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementRate", "--");
 		}
-		if (managerUser.getFirstName() != null && managerUser.getLastName() != null
+		if(requirement.getSpocId() != null){
+			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
+		}
+		/*if (managerUser.getFirstName() != null && managerUser.getLastName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())
 				&& !"".equalsIgnoreCase(managerUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -975,7 +985,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			globalVarsMap.put("clientContactname", managerUser.getFirstName());
-		}
+		}*/
 		if ((requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()))
 				&& (requirement.getMaxExp() != null
 						&& !"".equalsIgnoreCase(requirement.getMaxExp()))) {
@@ -1042,7 +1052,9 @@ public class RequirementServiceImpl implements RequirementService {
 		User vendorUser = userService.getUserById(spoc.getVendorUser().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
-		emailMessage.setLastName(loginUser.getLastName());
+		if(loginUser.getLastName()!=null){
+			emailMessage.setLastName(loginUser.getLastName());
+		}
 		emailMessage.setToEmail(vendorUser.getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
@@ -2177,6 +2189,120 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			globalVarsMap.put("jobInitiatorName", requirement.getManagerUserId().getFirstName());
+		}
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		}
+		else {
+			globalVarsMap.put("requirementName", "--");
+		}
+		StringBuilder linkBuild = new StringBuilder();
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		// setting the Recipient information
+		/*
+		 * ArrayList<EmailRecipient> emailRecipientList = new
+		 * ArrayList<EmailRecipient>(); EmailRecipient emailRecipient = new
+		 * EmailRecipient(); emailRecipient.setEmail(emailMessage.getToEmail());
+		 * StringBuilder recipBuild = new StringBuilder();
+		 * emailRecipient.setName(recipBuild.append(emailMessage.getFirstName())
+		 * .append(" ").append(emailMessage.getLastName()).toString());
+		 * emailRecipientList.add(emailRecipient);
+		 */
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
+	}
+	
+	@Override
+	public void rejectedInitiatorUserEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(initiatorUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (rejectedReason != null && !"".equalsIgnoreCase(rejectedReason)) {
+			globalVarsMap.put("reason", rejectedReason);
+		}
+		else {
+			globalVarsMap.put("reason", "--");
+		}
+		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder loginName = new StringBuilder();
+			globalVarsMap.put("loginUserName", loginName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
+		}
+		StringBuilder userBuild = new StringBuilder();
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName())
+				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else if (loginUser.getFirstName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName())) {
+			globalVarsMap.put("approverName", userBuild.append(loginUser.getFirstName()).toString());
+		}
+		else {
+			globalVarsMap.put("approverName", "--");
+		}
+		UserRole userRole = userRoleService.getUserRoleByUserId(loginUser.getId());
+		if (null != userRole.getRoles()) {
+			if (userRole.getRoles().getDisplayName() != null
+					&& !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
+				globalVarsMap.put("role", userRole.getRoles().getDisplayName());
+			}
+		}
+		else {
+			globalVarsMap.put("role", "--");
+		}
+		StringBuilder appendString = new StringBuilder();
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())
+				&& (requirement.getJobTitle() != null
+						&& !"".equalsIgnoreCase(requirement.getJobTitle()))) {
+			globalVarsMap.put("requirementId-Name", appendString.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		}
+		else if (requirement.getJobTitle() != null
+				&& !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobTitle());
+		}
+		else if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		}
+		else {
+			globalVarsMap.put("requirementId-Name", requirement.getJobId());
+		}
+		if (requirement.getManagerUserId().getLastName() != null
+				&& !"".equalsIgnoreCase(requirement.getManagerUserId().getLastName())) {
+			StringBuilder managerName = new StringBuilder();
+			globalVarsMap.put("jobInitiatorName", managerName.append(initiatorUser.getFirstName()).append(" ").append(initiatorUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
 		}
 		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
 			globalVarsMap.put("requirementName", requirement.getJobTitle());

@@ -711,9 +711,22 @@ function getDesignationType(designationType){
 		  }
 	}
 }
-$(function() {
-	 uploadResumeOnSelect("candidate_form");
- });
+	
+	 var educationList = [];
+	   var skillList = [];
+	   $(function() {
+		 var i= 0;
+		 <c:forEach var="skill" items="${skillsList}">
+		 	skillList[i++] = "${skill.name}";
+		 </c:forEach>
+		 var i= 0;
+		 <c:forEach var="edu" items="${educationsList}">
+		 	educationList[i++] = "${edu.name}";
+		 </c:forEach>
+		 
+		 uploadResumeOnSelect("candidate_form");
+		 
+	 });
 </script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->

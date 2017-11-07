@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,7 +22,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -288,7 +293,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
+		String query = "SELECT count(*) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -340,9 +345,81 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
+		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list(); 
 		return projectTasksList;
 	}
-	 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getProjectTasksCountByProjectId(Long projectId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectTasks pt where pt.projectId.id = :projectId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("projectId", projectId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<ProjectTasksDTO> response = new ResponseList<>();
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
+		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskType.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
+					
+		}
+		 
+		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String subQueryStr = "";
+		 if(StringUtils.isNotEmpty(taskType)) {
+			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
+		 }
+		 if(StringUtils.isNotEmpty(taskStatus)) {
+			 subQueryStr = subQueryStr+" and pt.taskStatus.id IN ("+taskStatus+") ";
+		 }
+		 if(StringUtils.isNotEmpty(assignedMembers)) {
+			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
+		 }
+		 
+		 Query query = session.createQuery(queryStr+subQueryStr+query1);
+		
+		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		
+		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
+		 
+		 countlist =countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		 
+		
+		int totalCount = 0;
+		if (projectTasksDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(projectTasksList);
+		return response;
+		
+	}
 }

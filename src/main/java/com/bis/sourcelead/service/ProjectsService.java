@@ -64,7 +64,7 @@ public interface ProjectsService {
 		
 	    List<Long> getProjectIdsByOrgLocationsId(Long orgLocationsId) throws Exception;   
 	
-		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,JSONObject jsonObj) throws Exception ;
+		Projects getProjectDetailsUpdateByProjectId(Long projectId,User user,ProjectsDTO projectsDTO) throws Exception ;
 
 		Projects getProjectByIdAndLoginOrgId(Long projectId,Long orgLocationId) throws Exception;
 	
@@ -76,7 +76,7 @@ public interface ProjectsService {
 		
 		//HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 		
-		String getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
+		ProjectsDTO getProjectDetailsByProjectIdAndLoginOrgId(Long projectId,User user,String loginOrgLocation) throws Exception ;
 	
 	
 		String storeEmployeeInProjectDashboard(OrgLocations loginOrgLocation,User users,JSONObject jsonObj) throws Exception ;
@@ -98,7 +98,7 @@ public interface ProjectsService {
 		
 		Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId,Long orgLocationId)throws Exception;
 		
-		void tereminateAsProjectApprover(JSONObject jsonObj,User user,Long userId,OrgLocations orgLocations) throws Exception;
+		void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception;
 		
 		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
@@ -108,7 +108,7 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
+		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
@@ -116,7 +116,7 @@ public interface ProjectsService {
 		
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
-		ResponseList<Projects> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
+		ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

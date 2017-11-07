@@ -61,6 +61,9 @@ function checkBox(){
         <h2>Create Bill</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
+    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -746,6 +749,10 @@ function saveInvoice(saveType){
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
+					    	    $("#msgDiv").html("Successfully you have created a Bill..");
+	    		     			msgFadein();
 			  				}
 			  			   }); 
 		    	         return true; 
@@ -759,6 +766,11 @@ $('body').on('blur', '#project_payable_invoice_form', function() {
 	$("#project_payable_invoice_form").showHelpOnFocus();
 	$("#project_payable_invoice_form").validateOnBlur(false, validationSettings);  
 }); 
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
 </script>
  
 <script>
@@ -1538,7 +1550,7 @@ function populateExpensesEntriesGrid(data){
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
                  	  var opt = data[i];
-                 	  subTotal = opt.subTotal;
+                 	  subTotal = opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
@@ -1546,30 +1558,30 @@ function populateExpensesEntriesGrid(data){
          		      
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.date !=null && opt.date != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
+         		      if(opt.dateOccurred !=null && opt.dateOccurred != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.dateOccurred+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.category !=null && opt.category != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
+         		      if(opt.categoryName !=null && opt.categoryName != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.categoryName+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.description !=null && opt.description != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
+         		      if(opt.entryDescription !=null && opt.entryDescription != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.entryDescription+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
+         		      if(opt.categoryAmount !=null && opt.categoryAmount != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.categoryAmount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';

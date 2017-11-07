@@ -196,6 +196,23 @@ public class UserServiceImpl implements UserService {
 	   user = userDao.findByUserName(addUserDTO.getEmail());
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getFirstName())) {
+			  user.setFirstName(addUserDTO.getFirstName());
+		  }
+		 
+		  if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+			  user.setLastName(addUserDTO.getLastName());
+		  }
+		
+		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
+			  user.setMobilePhone(addUserDTO.getPhoneNumber());
+		  }
+		  
+		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+		    }
+		 
 	   }
 	   
 	   if(null == user){
@@ -210,13 +227,11 @@ public class UserServiceImpl implements UserService {
 	    if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())){
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 		}
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
+	    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
+	    }
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
-			user.setIsMailSent(Status.Y);
-		}else{
-			user.setIsMailSent(Status.N);
-		}
-	   
 	    if(sourceType.equalsIgnoreCase("PROJECTS")){
 	 		user.setUserType("Employee");
 	    } 
@@ -236,6 +251,11 @@ public class UserServiceImpl implements UserService {
 			  }else{
 				  userRole.setIsPrimary(0);
 			  }
+			}
+	   }else {
+		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
 	   }
 		
@@ -282,6 +302,7 @@ public class UserServiceImpl implements UserService {
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
 				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+				
 			}else{
 				candidate.setConsultantUser(user);
 				candidateService.addCandidate(candidate);
@@ -426,6 +447,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
+	    	userRole.setIsMailSent(Status.Y);
+			}else{
+				userRole.setIsMailSent(Status.N);
+			}
+		   
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		
 		Roles roles = null;
@@ -461,6 +488,10 @@ public class UserServiceImpl implements UserService {
 
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+		if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+			userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 		}
 		
 		userRole.setRoles(roles);
@@ -592,7 +623,7 @@ public class UserServiceImpl implements UserService {
 		 if(userRole == null){
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
-		 
+		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
@@ -619,6 +650,7 @@ public class UserServiceImpl implements UserService {
 		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
@@ -887,7 +919,8 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("loginUsername",loginUser.getLastName());
 			 }
 			 StringBuilder urlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("login").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			// globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 StringBuilder rejecturlBuilder = new StringBuilder();
 			 globalVarsMap.put("rejectURL",rejecturlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			 StringBuilder linkBuilder = new StringBuilder();
@@ -911,8 +944,14 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
-				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
+				 
+				    UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), respondingPartyOrgLocation.getId());
+					if(userRole != null) {
+						userRole.setIsMailSent(Status.Y);
+						userRoleService.addUserRole(userRole);
+					}
+					
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{
@@ -968,8 +1007,12 @@ public class UserServiceImpl implements UserService {
 			 }else if(null == password && isUserActive == false){
 				 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				 user.setPassword(sourceleadPasswordEncoder.encode(password));
-				 user.setIsMailSent(Status.Y);
 				 userDao.addUser(user);
+			     UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), respondingPartyOrgLocation.getId());
+				  if(userRole != null) {
+					userRole.setIsMailSent(Status.Y);
+					userRoleService.addUserRole(userRole);
+				  }
 				 globalVarsMap.put("userName",user.getEmail());
 				 globalVarsMap.put("password",password);
 			 }else{
@@ -1198,6 +1241,7 @@ public class UserServiceImpl implements UserService {
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
+		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1218,6 +1262,7 @@ public class UserServiceImpl implements UserService {
 		 //globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1319,6 +1364,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
 		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
+	}
+
+	@Override
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(userId, roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
+			throws Exception {
+		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
 	}
 	
 }

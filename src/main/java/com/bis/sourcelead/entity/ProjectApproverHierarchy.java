@@ -24,7 +24,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -49,7 +48,8 @@ public class ProjectApproverHierarchy implements Serializable{
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
 	
-    @ManyToOne
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "PROJECT_CLIENTS_ID")
     private ProjectClients projectClientsId;
  	

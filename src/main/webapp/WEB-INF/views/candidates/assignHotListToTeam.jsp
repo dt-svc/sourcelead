@@ -22,7 +22,7 @@
     <div class="vendor_wrap">
       <div class="timesheet_head minHeight">
             <ul>
-            <div id="teamDiv" style="display: none" class="mt5">
+            <div id="teamDiv" style="display: none; width:175px;" class="mt5">
             	<select class="form-control chosen-select" id="team"  onchange="assignHotListToTeam();">
                </select>
            	</div>

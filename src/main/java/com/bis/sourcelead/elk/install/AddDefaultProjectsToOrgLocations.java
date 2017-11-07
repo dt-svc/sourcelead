@@ -49,14 +49,37 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 String projectName = orgLocName+" Default Project";
 				 Date startDate = rs1.getDate("CREATED_DATE");
 				 String createdBy = rs1.getString("CREATED_BY");
+				 String country = rs1.getString("COUNTRY");
 				 Long userId = rs1.getLong("PRIMARY_CONTACT_USER_ID");
+				 
+				 System.out.println(country);
+				 
+				 if(country == null)
+					 continue;
+				 
 				 if(userId == 0)
 					 continue;
 				 
+				 
+				 String query = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+				 java.sql.PreparedStatement pst = conn.prepareStatement(query); 
+				 ResultSet rs = pst.executeQuery();
+				 
+				 if (!rs.next()) {
+					 
+				 String currencyCode = null;	 
+				 String currencyQuery = "SELECT * from sourcelead.countries where Name = '"+country+"' ";
+				 java.sql.PreparedStatement currencyPst = conn.prepareStatement(currencyQuery); 
+				 ResultSet currencyRs = currencyPst.executeQuery();	 
+				 
+				 if(currencyRs.next()) {
+					 currencyCode = currencyRs.getString("currency");
+				 }
+					 
 					 
 		 		String query1 = " insert into sourcelead.PROJECTS (PROJECT_NAME, START_DATE, INVOICE_FREQUENCY, TIMESHEET_FREQUENCY, PROJECT_STATUS, IS_PRIMARY,  "
-							+ "IS_DEFAULT_PROJECT,ORG_LOCATIONS_ID,PROJECT_UUID,PROJECT_MODE,CREATED_DATE, CREATED_BY)"
-							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+							+ "IS_DEFAULT_PROJECT,ORG_LOCATIONS_ID,PROJECT_UUID,PROJECT_MODE,CREATED_DATE, CREATED_BY, CURRENCY, PROJECT_SHORT_CODE)"
+							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
 		    		try {
 		    			
@@ -73,11 +96,60 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 			    		 pstmt1.setString(10,"Finished");
 			    		 pstmt1.setDate(11,(java.sql.Date) startDate);
 			    		 pstmt1.setString(12,createdBy);
+			    		 pstmt1.setString(13, currencyCode);
+			    		 pstmt1.setString(14, "DFP");
 			    		 pstmt1.executeUpdate();	
 			    		 
 		    		}catch (Exception e){   
 						e.printStackTrace();
 					}
+		    		
+		    		
+		         String query5 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+				 java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query5); 
+				 ResultSet rs4 = pstmt4.executeQuery();
+				 Long projId = null;
+				 if (rs4.next()) {
+					 projId = rs4.getLong("ID");
+					 
+					 
+					 String query6 = "SELECT * from sourcelead.PROJECT_TASKS where PROJECT_ID IS NULL ";
+					 java.sql.PreparedStatement pstmt5 = conn.prepareStatement(query6); 
+					 ResultSet rs5 = pstmt5.executeQuery();
+					 Integer taskId = 1;
+					 
+					 while(rs5.next()) {
+						 
+						 String taskName = rs5.getString("TASK_NAME");
+						 String description = rs5.getString("DESCRIPTION");
+						 String billableType = rs5.getString("BILLABLE_TYPE");
+						 
+							String query7 = " insert into sourcelead.PROJECT_TASKS (GENERATED_ID,TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_TASKS_UUID, PROJECT_ID, "
+									+ "CREATED_BY, CREATED_DATE, UPDATED_BY, UPDATED_DATE)"
+									+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				    		
+				    		try {
+				    			 PreparedStatement pstmt6 = conn.prepareStatement(query7);
+				    			 pstmt6.setString(1, "DFP-"+taskId);
+				    			 pstmt6.setString(2, taskName);
+				    			 pstmt6.setString(3, description);
+				    			 pstmt6.setString(4,billableType);
+				    			 pstmt6.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
+				    			 pstmt6.setLong(6, projId);
+				    			 pstmt6.setString(7,createdBy);
+				    			 pstmt6.setDate(8,(java.sql.Date) startDate);
+				    			 pstmt6.setString(9,createdBy);
+				    			 pstmt6.setDate(10,(java.sql.Date) startDate);
+				    			 pstmt6.execute();	
+					    		 
+				    		}catch (Exception e){   
+								e.printStackTrace();
+							}
+				    		
+				    		taskId = taskId+1;
+					 }
+					 
+				 }
 		    		
 		    		
 		    		 String query2 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
@@ -87,9 +159,9 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					 if (rs2.next()) {
 						  projectId = rs2.getLong("ID");
 						 
-					 		String query3 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS,  "
+					 		String query3 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS,LEVEL,  "
 									+ "CREATED_DATE, CREATED_BY)"
-									+ " values (?, ?, ?, ?, ?, ?)";
+									+ " values (?, ?, ?, ?, ?, ?, ?)";
 				    		
 				    		try {
 				    			 PreparedStatement pstmt2 = conn.prepareStatement(query3);
@@ -97,8 +169,10 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					    		 pstmt2.setLong(2,orgLocId);
 					    		 pstmt2.setString(3, SourceLeadRandomCodeHelper.generateRandomUUID());
 					    		 pstmt2.setInt(4, 1);
-					    		 pstmt2.setDate(5,(java.sql.Date) startDate);
-					    		 pstmt2.setLong(6,userId);
+					    		 pstmt2.setLong(5,1);
+					    		 pstmt2.setDate(6,(java.sql.Date) startDate);
+					    		 pstmt2.setLong(7,userId);
+					    		
 					    		 pstmt2.execute();	
 					    		 
 				    		}catch (Exception e){   
@@ -137,7 +211,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 						 
 					 }
 					 
-				    	
+				 } 	
 		}
 			System.out.println("----Adding default projects ends-----");
 		

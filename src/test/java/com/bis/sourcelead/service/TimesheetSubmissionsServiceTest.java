@@ -389,9 +389,9 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test 
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationId() throws Exception{
-		Long userId=1l;
+		Long masterCandidateId=1l;
 		Long orgLocationId=1l;
-		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocationId);
+		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, orgLocationId);
 		tms.getApprovalTimesheetsSubmissionsHoursCount();
 		assertNotNull(tms);
 		

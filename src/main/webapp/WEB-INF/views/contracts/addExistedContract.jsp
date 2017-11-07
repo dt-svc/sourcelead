@@ -5,6 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
+<script>
+$(document).ready(function(){
+	$("#tempEye").hide();
+});
+</script>
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -57,15 +62,16 @@
             </div>	
              <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8 clearfix">
 							
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Upload Documents">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;"  class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
 	                        </div>
 	                        <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
+	                        <span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
               </div>
             </div>  			
 			</div>
@@ -1340,10 +1346,20 @@ function hideCommonSOWFields(){
 
 </script>
 
+<script>
+function previewTemplatePDF(){
+	var res = $('input[name="fileInfo[0].fileURL"]').val();
+	var fileurl = res.replace("ContractDocs", "temp");
+	var filename = $('input[name="fileInfo[0].fileName"]').val();
+	var contentType = $('input[name="fileInfo[0].contentType"]').val();
+	viewFile(fileurl, filename, contentType);
+}
+</script>
+
 <script type="text/javascript">
 	function saveExistigContract() {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			$("#save_template").attr("disabled", "disabled");
+			/* $("#save_template").attr("disabled", "disabled");
 			$("#save_template" ).addClass('button').val('Processing..');
 			var form = $('#newcontract_form')[0];
       		var formData = new FormData(form); 
@@ -1361,7 +1377,15 @@ function hideCommonSOWFields(){
 					success : function(result) {
 						location.replace(sourceleadUrl+"/contractListbyStatus");
 					},
-					}); 
+					}); */ 
+			var formData = getFormData("newcontract_form");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	           $.post( sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+	                      if(data == true){
+	                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+	                      }
+	                   });		
+					
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();
@@ -1522,8 +1546,8 @@ function hideCommonSOWFields(){
 		 }else{
 		 	$("#flatReward").val("");
        	  
-       	    $("#billingRateType").val("");
-       	    $("#billingRateType").val("").trigger('change');
+       	    $("#billingRateType").val("${currencyCode}");
+       	    $("#billingRateType").trigger('change');
        	  
        	    $("#billingRatePer").val("");
        	    $("#billingRatePer").val("").trigger('change');
@@ -1749,6 +1773,7 @@ function cancelContract(){
 <script>
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
+		$("#tempEye").show();
 	});
 </script>
 

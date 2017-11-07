@@ -42,10 +42,10 @@
             </sec:authorize>
              <%--  <td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td> --%>
               <td><div><span>
-              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
-              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.orgLocationName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.orgLocationName}
               </c:if>
-              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.orgLocationName}">
               	--
               </c:if>
               </span></div></td>

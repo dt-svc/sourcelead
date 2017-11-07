@@ -4,6 +4,8 @@
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
@@ -40,14 +42,17 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
-	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	
+	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">';
+		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	'</sec:authorize>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 	result = result + '<div class="input-group" id="uploadFileGroup">';
-	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '<label class="input-group-btn"  onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
 	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
@@ -158,7 +163,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
 	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
@@ -372,10 +377,11 @@ function discordApplicant(){
 <script type="text/javascript">
  function isCoolingOff(requirementId){
 	var candidateEmail =   $("input[name=EmailId]").val();
-	var reqCoolingOffPeriod = document.getElementById("reqCoolingOffPeriod").value;
+	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod, 
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
 	    success: function(data) {
 	    	if(data == "true"){
 	    		isCoolingOffAlert();
@@ -936,29 +942,31 @@ function getCandidateSelectionType(){
 <script type="text/javascript">
 function getCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
+	var requirementId = $("#requirementId").val();
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
-		        	 $("input[name=FirstName]").val(json['firstName']);
-		        	 $("input[name=EmailId]").val(json['email']);
-		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
+		        	     
+	        		$("input[name=FirstName]").val(json['firstName']);
+	        	    $("input[name=EmailId]").val(json['email']);
+	        	    $("input[name=EmailId]").attr('readonly', 'readonly'); 
 		        	 
-		        	 if(json['email'] != null && json['email'] != "" && json['email'] != 'email'){
+		        	if(json['email'] != null && json['email'] != "" && json['email'] != 'email'){
 		        		 var requirementId = $("#requirementId").val();
 		        		 isCoolingOff(requirementId);
-		        	 }
+		        	 } 
 		        	 
-		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
+		       	     if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
 		        		 $("input[name=LastName]").val(json['lastName']);
 		        	 }else{
 		        		 $("input[name=LastName]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
+		        	  if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
 		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
 		        	 }else{
 		        		 $("input[name=PhoneNumber]").val(''); 
@@ -970,7 +978,7 @@ function getCandidateDetails(){
 		        		 $("input[name=AlternateNumber]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
+		        	   if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
 		        		 $("input[name='Current/LastCompany']").val(json['employer']);
 		        	 }else{
 		        		 $("input[name='Current/LastCompany']").val(''); 
@@ -988,23 +996,35 @@ function getCandidateDetails(){
 		        		 $("input[name=Education]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#submissionLocation").val(json['location']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#submissionLocation").val('');
+		        	 }
+
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("#submissionCountry").val(json['country']);
+		        	 }else{
+		        		 $("#submissionCountry").val('');
 		        	 }
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates(json['state']);
+		        		 $("#submissionState").val(json['state']);
 		        	 }else{
-		        		 $("select[name=state]").val('');
+		        		 $("#submissionState").val('');
 		        	 }
 		        	 
+		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getSubmissionCandidateCities(json['city']);
+		        		 $("#submissionCity").val(json['city']);
 		        	 }else{
-		        		 $("select[name=city]").val('');
+		        		 $("#submissionCity").val('');
+		        	 }
+		        	 
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#submissionZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#submissionZipCode").val('');
 		        	 }
 		        
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
@@ -1069,7 +1089,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
 		        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
-		        	 }
+		        	 } 
 		        	 
 		        },
 		    });
@@ -1400,9 +1420,7 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+emailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("input[name=FirstName]").val(json.firstName);
@@ -1445,7 +1463,6 @@ function validate_fileupload(fileName)
 		        			
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
@@ -1663,12 +1680,12 @@ function validate_fileupload(fileName)
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
 		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorContact').trigger("chosen:updated");
@@ -1676,4 +1693,14 @@ function validate_fileupload(fileName)
 		 }); 
  }
  </script>
+ <script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
+<script>
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
  

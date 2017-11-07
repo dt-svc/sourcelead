@@ -37,7 +37,7 @@ public interface OrgRelationsService {
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
-	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId);
+	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId) throws Exception;
 	
 	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
 

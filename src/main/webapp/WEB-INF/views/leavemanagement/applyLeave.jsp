@@ -8,6 +8,7 @@
 <script type="text/javascript">
 window.onload = function() { 
 	getPieChartBasedOnUser();
+	getApproversList();
 	}
 </script>
 
@@ -28,7 +29,7 @@ window.onload = function() {
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
-					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf()">
+					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
 					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
@@ -37,10 +38,9 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user">
+                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf');">
                    <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
-                	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                 	</c:forEach>
                 </select>
@@ -53,7 +53,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -71,7 +71,7 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
-                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required">
+                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                   </div>
                   <div class="col-md-5 paddingLeft">
                     <label class="checkBox mt5">
@@ -88,19 +88,12 @@ window.onload = function() {
               <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
               <div id="leaveTypeIdDiv"></div>
-                <%-- <select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">
-                  <option value="">--Select Leave Type--</option>
-                	<c:forEach var="leave" items="${leaveTypeList}">
-                	${dept.id  == departmentId ? 'selected' : ''}
-	                     <option value="${leave.id}">${leave.name}</option>
-                	</c:forEach>
-                </select> --%>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Reason<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500"></textarea>
               </div>
             </div>
               
@@ -110,21 +103,21 @@ window.onload = function() {
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
                       <input  type="file" class="pull-left valid" id="uploadBtn" onchange="uploadButton(0);">
                       <a id="Button0value=">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i>
+                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
                   </div>
               </div>
             </div>
             <p class="form-control-static clearfix"><strong>Approval</strong></p>
             <div class="form-group">
-              <label class="col-md-3">Approved By<span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-                	<c:forEach var="user" items="${approverList}">
-	                	<c:if test="${user.id != SourceLeadWeb_userId}">
-	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option>
-	                	</c:if>
-                	</c:forEach>
+<%--                 	<c:forEach var="user" items="${approverList}"> --%>
+<%-- 	                	<c:if test="${user.id != SourceLeadWeb_userId}"> --%>
+<%-- 	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option> --%>
+<%-- 	                	</c:if> --%>
+<%--                 	</c:forEach> --%>
                   </select>
               </div>
             </div>
@@ -135,18 +128,10 @@ window.onload = function() {
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="well-sm well well-custom clearfix amchartAnchor-Hide">
-                 <h5>Leave Status</h5>
+                 <h5>Leaves Status</h5>
                 <div id="leavestatsu" style="width: 100%; height: 150px;"></div>
                 <div class="row">
                 <div id="leaveStatusIdDiv"></div>
-                <%-- <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">
-                        <c:forEach var="leaveType" items="${leaveTypeList}">
-                        	<li>
-									<label>${leaveType.name}</label>
-									<span class="label label-info" style="background-color: ${leaveType.colorCode};">${leaveType.remainingTotalLeaveCounts}</span>
-							</li>
-						</c:forEach>
-              	</ul> --%>
                 </div>
                 
             </div>
@@ -166,7 +151,11 @@ window.onload = function() {
     </div>
   </section>
   
-  
+ <script>
+ function removedocfile(){
+	 $("#uploadBtn").val('');
+ }
+ </script> 
  <script>
  function checkFromHalfDay(){
 	 $("#checkbox-2").val('YES');
@@ -194,7 +183,8 @@ window.onload = function() {
 		$('#fromDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
-			changeYear: true, 
+			changeYear: true,
+			minDate: 0,
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
@@ -255,16 +245,20 @@ function removeEndValid(){
  		
  		
  <script type="text/javascript">
- function getPieChartBasedOnUser(){
+ function getPieChartBasedOnUser(onbehalf){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var userId = '${SourceLeadWeb_userId}';
+	 var userId ='';
+	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
 	 $.ajax({
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
-        	  
         	  var output = "";
-        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();">';
+        	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeavePolicy();validateMaxLeave(this);">';
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
@@ -276,10 +270,15 @@ function removeEndValid(){
         	  $('#leaveType').chosen();
         	  $("#leaveType").trigger("chosen:updated");
         	  
-        	  getpieChar(json);
+        	  var counts = json[json.length-1];
+        	  var totalBalanceCounts = counts.balanceLeaveCounts;
+        	  var totalPendingCounts = counts.pendingLeaveCounts;
+        	  var totalTakenCounts = counts.takenLeaveCounts;
+        	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
         	  
         	  var result = "";
 	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+	    	  result = result +'			<label>Balance Leaves :</label>';
 	          for (var i = 0; i < json.length; i++) { 
 	        		  var leaveType = json[i];
 				        result = result +'	<li>';
@@ -296,18 +295,8 @@ function removeEndValid(){
          },
           
      }); 
-function getpieChar(json){
-	 var chartData = [];
-
-	   for (var i = 0; i < json.length; i++) { 
-	 		 var opt = json[i]; 
-	         chartData.push({
-	        	 category: opt.name,
-	        	 counts: opt.remainingTotalLeaveCounts,
-	         	 color: opt.colorCode
-	       });
-	   }
-	   
+	 
+function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 	//ApplyLeves piechart
 	AmCharts.makeChart("leavestatsu",
 		{
@@ -327,11 +316,27 @@ function getpieChar(json){
 			"marginTop": 0,
 			"maxLabelWidth": 0,
 			"titleField": "category",
-			"valueField": "counts",
+			"valueField": "column-1",
 			"allLabels": [],
 			"balloon": {},
 			"titles": [],
-			"dataProvider": chartData
+			"dataProvider": [
+				{
+					"category": "Pending Leaves",
+					"column-1": totalPendingCounts,
+					"color"	  : "#337ab7"
+				},
+				{
+					"category": "Balance Leaves",
+					"column-1": totalBalanceCounts,
+					"color"	  : "#5bc0de"
+				},
+				{
+					"category": "Taken Leaves",
+					"column-1": totalTakenCounts,
+					"color"	  : "#5cb85c"
+				}
+			]
 		}				
 	);
 }
@@ -425,15 +430,44 @@ $(".close").click(function(){
 <script>
 function getLeavePolicy(){
 	var leaveTypeId = $("#leaveType").val();
-	$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
-		if(data !=null){
-			$("#termsAndConditions").html(data);
-			document.getElementById("termsModel").style.display="block";
-		}
-	}); 
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		$.get(sourceleadUrl+"/getLeavePolicy?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId, function(data) {
+			if(data !=null){
+				$("#termsAndConditions").html(data);
+				document.getElementById("termsModel").style.display="block";
+			}
+		}); 
+	}
 }
 </script>
 
+<script>
+function validateMaxLeave(data){
+	$('.jquery_form_error_message cOrange').hide();
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	
+	var leaveTypeId = $("#leaveType").val();
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
+		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+			if(data == true){
+				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.jquery_form_error_message cOranges').hide();
+			}
+		}); 
+	}
+	
+}
+</script>
+<div class='comMask'></div>
 <script>
 function validateDate(){
 	$('.warMess').hide();
@@ -442,13 +476,50 @@ function validateDate(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
-		if(data == true){
-			$("#toDate").after("<p class='warMess'>You cannot apply for leave on restricted/holiday day</span>");
+		if(data != null){
+			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
+			$(".comMask").fadeIn();
 		}else{
 			$('.warMess').hide();
 		}
 	}); 
+};
+
+function closedate(){
+$(".warMess").fadeOut();
+$(".comMask").fadeOut();
+};
+$(".comMask").click(function()
+{
+	$(".comMask").fadeOut();
+	$(".warMess").fadeOut();
+		});
+
+
+</script>
+
+<script>
+function getApproversList(){
+	var userId = '${SourceLeadWeb_userId}';
+	var behalf = $("#checkbox-1");
+	var result = "";
+	if(behalf.is(':checked')){
+		<c:forEach var="user" items="${approverList}">
+			result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+		</c:forEach>
+	}else{
+		<c:forEach var="user" items="${approverList}">
+			if(userId != '${user.id}'){
+				result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
+			}
+		</c:forEach>
+	} 
+	$("#approverUser").empty();
+	$("#approverUser").append(result);
+	$('#approverUser').trigger("chosen:updated");
 }
 </script>
+
+
 
 <jsp:include page="../masterFooter.jsp" />

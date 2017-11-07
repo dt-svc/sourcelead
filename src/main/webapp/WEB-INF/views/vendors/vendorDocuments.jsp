@@ -106,7 +106,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
-          success :function(data) {
+          success :function(json) {
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -124,7 +124,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -196,7 +195,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     vendorNewPagination(); 
                /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -225,13 +224,17 @@ function viewVendorDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function vendorNewPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -378,15 +381,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 

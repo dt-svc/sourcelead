@@ -171,7 +171,7 @@ width: auto;
 			con = con.replace(/[{}]/g, "");
 			
 			$.ajax({
-						type : "POST",
+						type : "GET",
 						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
 						success : function(data) {
 							if("success"){

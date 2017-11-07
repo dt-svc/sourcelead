@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.bis.sourcelead.enums.Submission_Status;
-
-public class ExpensesDTO implements Serializable {
+public class ExpensesDTO extends TimesheetExpenseEntryDetailsUtilDTO implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -31,9 +29,9 @@ private static final long serialVersionUID = 1L;
 	
 	private String noOfExpenses;
 	
-	private Submission_Status expenseStatus;
+	private String expenseStatus;
 	
-	private Submission_Status combinedSubmissionStatus;
+	private String combinedSubmissionStatus;
 	
     private List<ExpensesEntriesDTO> expenseEntry;
 	
@@ -48,6 +46,8 @@ private static final long serialVersionUID = 1L;
 	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
+	
+	private List<Long> removedDocumentIds;
 
 	public Long getId() {
 		return id;
@@ -74,7 +74,7 @@ private static final long serialVersionUID = 1L;
 	}
 
 	
-	public long getProjectId() {
+	public Long getProjectId() {
 		return projectId;
 	}
 
@@ -131,19 +131,19 @@ private static final long serialVersionUID = 1L;
 		this.noOfExpenses = noOfExpenses;
 	}
 
-	public Submission_Status getExpenseStatus() {
+	public String getExpenseStatus() {
 		return expenseStatus;
 	}
 
-	public void setExpenseStatus(Submission_Status expenseStatus) {
+	public void setExpenseStatus(String expenseStatus) {
 		this.expenseStatus = expenseStatus;
 	}
 
-	public Submission_Status getCombinedSubmissionStatus() {
+	public String getCombinedSubmissionStatus() {
 		return combinedSubmissionStatus;
 	}
 
-	public void setCombinedSubmissionStatus(Submission_Status combinedSubmissionStatus) {
+	public void setCombinedSubmissionStatus(String combinedSubmissionStatus) {
 		this.combinedSubmissionStatus = combinedSubmissionStatus;
 	}
 
@@ -209,6 +209,18 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpenseLocationCode(String expenseLocationCode) {
 		this.expenseLocationCode = expenseLocationCode;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
 	}
 
 }

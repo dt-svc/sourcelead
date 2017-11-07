@@ -1,7 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -252,29 +251,55 @@ public class ProjectPlanningRestController {
 	  
 	  @RequestMapping(value = "/getResourceRequestDetailsByRequestUUID")
 		 public ProjectPlanningRequest getResourceRequestDetailsByRequestUUID(@RequestParam(value="requestUUID", required=false) String requestUUID) throws Exception {
-				
-				return  projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		  ProjectPlanningRequest projectPlanningRequest =   projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		 
+		  Set<ProjectPlanningResourceRequest> planningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+		  if(planningResourceRequestList != null && planningResourceRequestList.size() > 0) {
+			  List<ProjectPlanningResourceRequest> resourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningResourceRequest resourceRequest : planningResourceRequestList) {
+				  resourceRequestList.add(resourceRequest);
+			  }
+			  projectPlanningRequest.setResourceRequestList(resourceRequestList);
+		  }
+		  
+		  Set<ProjectPlanningNewResourceRequest> newRequestRessourceList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
+		  if(newRequestRessourceList != null && newRequestRessourceList.size() > 0) {
+			  List<ProjectPlanningNewResourceRequest> newResourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningNewResourceRequest requestList : newRequestRessourceList) {
+				  newResourceRequestList.add(requestList);
+			  }
+			  projectPlanningRequest.setNewResourceRequestList(newResourceRequestList);
+		  }
+		 
+		  return  projectPlanningRequest;
 		 }
 	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
-		public @ResponseBody String getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public @ResponseBody List<User>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
-		  String resultJson;
-		  
-	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_PROJECTS));
-		  
-		  resultJson = commonUtil.toJSON(approversList);
-		  return resultJson;
+	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+		  return approversList;
 	    }
+	  
+	     
+	  @RequestMapping(value = "/getSourceLeadActionApproversList", method = RequestMethod.GET)
+	  public @ResponseBody List<UserDTO>  getSourceLeadActionApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="actionType", required=true) String actionType) throws Exception {
+	    
+	      List<UserDTO> approversList = commonUtil.getRoleActionUsers(actionType, orgLocationId);
+		  return approversList;
+      }
+	  
+	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestsCounts", method = RequestMethod.GET)
 		public @ResponseBody ProjectPlanningRequest getResourceRequestsCounts(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		   
+		  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId,userRoleName);
 		 
 		  ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
 		  
@@ -307,10 +332,10 @@ public class ProjectPlanningRestController {
 	  
 	    @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType, HttpServletRequest request) throws Exception {
 		    
-		  
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType);
+	      String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType,userRoleName);
 		  
 		  return projectPlanningRequestList;
 		  
@@ -519,9 +544,10 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequestListByProjectUUID")
-			public @ResponseBody List<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
-			  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-			  List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId());
+			public @ResponseBody List<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	        	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+			  List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),loginOrgLocation.getId());
 			  return projectBudgetList;
 		    }
 	        
@@ -638,8 +664,10 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequsetListByBudgetStatusAndOrgLocationId", method = RequestMethod.GET)
-			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(orgLocationId, requestType);
+			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+					@RequestParam(value="requestType", required=true) String requestType,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, requestType,userRoleName);
 			  return projectBudgetList;
 			  
 		    }
@@ -652,8 +680,10 @@ public class ProjectPlanningRestController {
 	         * @throws Exception
 	         */
 	        @RequestMapping(value = "/getBudgetRequestListCount", method = RequestMethod.GET)
-			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(orgLocationId);
+			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="approverUserId", required=true) Long approverUserId,
+					@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId, userRoleName);
 	        	  ProjectBudget projectBudget = new ProjectBudget();
 				  Integer waitingCount = 0;
 				  Integer approvedCount = 0;

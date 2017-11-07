@@ -381,9 +381,8 @@ function validatePrimaryUserEmail(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
+		        	
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#firstName").val(json.firstName);
 				        	$("#firstName").attr("readonly", "readonly");
@@ -406,7 +405,6 @@ function validatePrimaryUserEmail(){
 		        			 $("#lastName").val('');
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{

@@ -93,7 +93,7 @@ public class ProjectTaskDocumentsServiceImpl implements ProjectTaskDocumentsServ
 				projectTaskDoc.setDescription(projectTasksDTO.getTaskDescription());
 		}
 		if (projectTasksDTO.getDocumentName() != null && !projectTasksDTO.getDocumentName().isEmpty() ) {
-			projectTaskDoc.setDocumentName(projectTasksDTO.getTaskDescription());
+			projectTaskDoc.setDocumentName(projectTasksDTO.getDocumentName());
 		}
 		
 		ProjectTasks  projectTask = projectTasksService.getTasksId(projectTaskId);

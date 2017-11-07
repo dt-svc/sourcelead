@@ -60,8 +60,7 @@ public class ProjectMembers implements Serializable {
 	private Employees employee;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
@@ -142,9 +141,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String empEmail;
 	
+	@JsonProperty
 	@Transient
 	private String startDate;
 	
+	@JsonProperty
 	@Transient
 	private String endDate;
 	
@@ -390,6 +391,7 @@ public class ProjectMembers implements Serializable {
 	private Long candidateId;
 
 	@Transient
+	@JsonProperty
 	private String userRoleType;
 
 	@Transient
@@ -429,6 +431,10 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String billRateStr;
+	
+	@Transient
+	@JsonProperty
+	private String projectClientUUID;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -1281,6 +1287,8 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getClaimedExpenseTotal() {
+		if(claimedExpenseTotal == null)
+			claimedExpenseTotal = 0f;
 		return claimedExpenseTotal;
 	}
 
@@ -1468,6 +1476,17 @@ public class ProjectMembers implements Serializable {
 
 	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getProjectClientUUID() {
+		if(projectClientsId != null) {
+			projectClientUUID = projectClientsId.getUuid();
+		}
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
 	}
 
 	

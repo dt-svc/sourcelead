@@ -195,8 +195,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId) {
-		return projectMembersDao.getAllProjectsByUserId(userId);
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
+		return projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
 	}
 	
 	
@@ -225,11 +225,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.updateProjectMemberDeletedReason(projectMemberId,reason);
 	}
 
+	/*
+	 *  For User Tab Approved And Rejected Hours
+	 */
 	@Override
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue) throws Exception {
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue,Long orgLocationId) throws Exception {
 		List<ProjectMembers> allProjectsList = null;
 		if(filterValue.equals("All")){
-			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId);
+			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
 		}
 		if(filterValue.equals("Active")){
 			 allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
@@ -258,22 +261,22 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			if (projectMembers.getProjects().getEndDate() != null) {
 				projectMembers.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMembers.getProjects().getEndDate()));
 			}
-	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
+	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCount =  draftTimesheetsSubmissionsCountAsEmployee + draftTimesheetsSubmissionsCountAsApprover;
 	        projectMembers.setDraftHrs(draftTimesheetsSubmissionsCount.toString());
 
-	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "SUBMITTED");
+	        Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId(), "SUBMITTED");
 	        Float submittedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "SUBMITTED");
 	        Float submittedTimesheetsSubmissionsCount =  submittedTimesheetsSubmissionsCountAsEmployee + submittedTimesheetsSubmissionsCountAsApprover;
 			projectMembers.setSubmittedHrs(submittedTimesheetsSubmissionsCount.toString());
 			
-		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "APPROVED");
+		    Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId(), "APPROVED");
 		    Float approvalTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "APPROVED");
 	        Float approvalTimesheetsSubmissionsCount =  approvalTimesheetsSubmissionsCountAsEmployee + approvalTimesheetsSubmissionsCountAsApprover;
 			projectMembers.setApprovedHrs(approvalTimesheetsSubmissionsCount.toString());
 			
-			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "REJECTED");
+			Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId(), "REJECTED");
 		    Float rejectedTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "REJECTED");
 		    Float rejectedTimesheetsSubmissionsCount =  rejectedTimesheetsSubmissionsCountAsEmployee + rejectedTimesheetsSubmissionsCountAsApprover;
 		    projectMembers.setRejectedHrs(rejectedTimesheetsSubmissionsCount.toString());
@@ -735,7 +738,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
 		Float finalExpenseAmount = 0f;
 		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
@@ -762,13 +765,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				
 				if (pmh.getProjectAssignedDate() != null
 						&& pmh.getProjectTerminationDate() != null) {
-					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
+					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "DRAFT");
 					projectMember.setDraftHrs(String.valueOf(draftTimesheetsSubmissionsCountAsEmployee));
-					Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "SUBMITTED");
+					Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "SUBMITTED");
 					projectMember.setSubmittedHrs(String.valueOf(submittedTimesheetsSubmissionsCountAsEmployee));
-					Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "APPROVED");
+					Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
 					projectMember.setApprovedHrs(String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee));
-					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "REJECTED");
+					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "REJECTED");
 					projectMember.setRejectedHrs(String.valueOf(rejectedTimesheetsSubmissionsCountAsEmployee));
 				}
 				if (projectMember.getProjects() != null) {
@@ -802,13 +805,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 		projectMemberList.forEach(pm -> {
 			StringBuilder sb = new StringBuilder();
-			if (pm.getEmployee().getUser().getLastName() != null) {
-				sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-						.append(pm.getEmployee().getUser().getLastName());
-			} else {
-				sb.append(pm.getEmployee().getUser().getFirstName());
+			if(pm.getProjectMemberCandidteId() != null ) {
+				if (pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getId() != null && StringUtils.isNotBlank(pm.getProjectMemberCandidteId().getLastName())) {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ")
+							.append(pm.getProjectMemberCandidteId().getLastName());
+				} else {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName());
+				}
+				pm.setEmpName(sb.toString());
 			}
-			pm.setEmpName(sb.toString());
+			
 		});
 		return (List<ProjectMembers>) projectMemberList;
 	}
@@ -817,21 +823,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
 			Long orgRelationId) throws Exception {
 
-		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId);
 
 		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
-				.filter(item -> item.getEmployee().getUser().getCandidateSet().stream()
-						.filter(predicate -> predicate.getOrgRelationId().getId().longValue() == orgRelationId)
-						.findAny().isPresent())
+						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
 				.collect(Collectors.toList());
-		projectMemberList.forEach(pm -> {
+		
+		projectMemberfilteredList.forEach(pm -> {
 			try {
 				StringBuilder sb = new StringBuilder();
-				if (pm.getEmployee().getUser().getLastName() != null) {
-					sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-							.append(pm.getEmployee().getUser().getLastName());
+				if (pm.getProjectMemberCandidteId() != null && StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getLastName())) {
+					sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ")
+							.append(pm.getProjectMemberCandidteId().getLastName());
 				} else {
-					sb.append(pm.getEmployee().getUser().getFirstName());
+					sb.append(pm.getProjectMemberCandidteId().getFirstName());
 				}
 				pm.setEmpName(sb.toString());
 
@@ -937,7 +942,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers = saveProjectMembers(projectMembersDTO, user, clientProjectClients, projectMembers, orgLocations, projects);
 						saveProjectMembersHistory(projectMembers,user,clientProjectClients);
 						
-						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().equals(clientOrgLocation.getId())){
+						if(clientProjectClients != null && clientProjectClients.getOrgLocationsId().getId().equals(clientOrgLocation.getId())){
 							projectClients.setOrgRelationId(orgRelations);
 							projectClientService.storeProjectClients(projectClients);
 						}
@@ -1173,12 +1178,24 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembers.setRateType(null);
 		}
 		
-		if(pm.getProjectAssignedDate() != null){
+		//commented by laxman
+		
+	/*	if(pm.getProjectAssignedDate() != null){
 			projectMembers.setProjectAssignedDate(pm.getProjectAssignedDate());
 		}
 		
 		if(pm.getProjectEndDate() != null ){
 			projectMembers.setProjectEndDate(pm.getProjectEndDate());
+		}else{
+			projectMembers.setProjectEndDate(null);
+		}*/
+		
+		if(projects.getStartDate() != null){
+			projectMembers.setProjectAssignedDate(projects.getStartDate());
+		}
+		
+		if(projects.getEndDate() != null ){
+			projectMembers.setProjectEndDate(projects.getEndDate());
 		}else{
 			projectMembers.setProjectEndDate(null);
 		}
@@ -1300,11 +1317,19 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 }
 							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
 							 if(flag == false){
-								 Long tabId = (long) Constants.TAB_CLIENT;
 								 Long moduleId = (long) Constants.MODULE_ATS;
 							     modules = modules+","+Constants.MODULE_VMS;
-							     registrationController.saveUserRoleActions(moduleId,tabId,orgLoc);
+							     registrationController.saveUserRoleActions(moduleId,orgLoc);
 							 }
+							 
+							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
+							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+							 if(tsflag == false) {
+				    				modules = modules+","+Constants.MODULE_TIMESHEET;
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    			}
+							
+							 
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);
 							 
@@ -1505,6 +1530,17 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
 		return projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
+		return projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
+			Long locationId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
 	}
 
 }

@@ -5,7 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
-
+<script>
+$(document).ready(function(){
+	$("#tempEye").hide();
+});
+</script>
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -17,9 +21,32 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 var type = '${contract.contractType}';
+	 if(type == "Client MSA" || type == "Vendor MSA"){
+	 	 $("#billingDiv").hide();
+	 	 $('#billingRateType').removeAttr('data-validation');
+	 		$('#billingRateType').attr('data-validation-optional',"true");
+	 		
+	 		$('#flatReward').removeAttr('data-validation');
+	 		$('#flatReward').attr('data-validation-optional',"true");
+	 		
+	 		$('#billingRatePer').removeAttr('data-validation');
+	 		$('#billingRatePer').attr('data-validation-optional',"true");
+	 		
+	 		$('#invoiceFrequency').removeAttr('data-validation');
+	 		$('#invoiceFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#paymentFrequency').removeAttr('data-validation');
+	 		$('#paymentFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#candiFlatReward').removeAttr('data-validation');
+	 		$('#candiFlatReward').attr('data-validation-optional',"true");
 
-
-
+	 }
+};
+</script>
 
 <!-- Content Area -->
  <section class="content-wraper">
@@ -62,8 +89,8 @@
             </div>	
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
+              <div class="col-md-8 clearfix">
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -71,6 +98,7 @@
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" value="${contract.fileName}" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
+              			<span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
               </div>			
 			</div>
           	
@@ -706,7 +734,7 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 </script> -->
 
 <script>
-function getVendorContacts(){
+function getVendorContacts(spocUserCode){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
 	if("" != orgRelationId){
@@ -717,13 +745,20 @@ function getVendorContacts(){
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
-	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	if(spocUserCode == null && spocUserCode != ''){
+	       		output = output + "<option value=''>Select Vendor Contact</option>";
+	       	}
 	       	for (var i=0; i<json.length; i++)
 				{
 		        var opt = json[i];
 		            // need to use in edit
 	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			if(spocUserCode != null && opt.spocUserCode == spocUserCode){
+	       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}else{
+	       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}
+	       			
 				}
 	       	    $("#vendorContact").empty();
 		        $("#vendorContact").append(output);
@@ -1547,6 +1582,39 @@ function hideCommonSOWFields(){
 	    });
 
 	}
+	
+	function getVendor(){
+		var reqSubId = $("#submissionOffersList").val();
+		var sowType = $("#contractType").val();
+		if(sowType == "Vendor SOW"){
+			$.ajax({
+		        type : "GET",
+		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+		         success :function(json) {
+	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
+// 	            	 var json = JSON.parse(data);
+		             <c:forEach var="vendor" items="${orgRelationsList}">
+		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
+		    	        		  $("#orgRelationId").val('${vendor.id}'); 
+		    	        		  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+		    				  if(json.vendorLocationCode == '${vendor.locationId.locationCode}'){
+		    					  $("#orgRelationId").val('${vendor.id}');
+		    					  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }
+		              </c:forEach>
+// 		              setTimeout(function () {
+		            	  getVendorContacts(json.createdBy);
+//                        }, 100);
+		              
+	              }
+		       },
+		    });
+		}
+	} 
 </script>
 
 
@@ -1716,8 +1784,19 @@ function validateContractTitle(){
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
+		$("#tempEye").show();
 	});
  });
+</script>
+
+<script>
+function previewTemplatePDF(){
+	var res = $('input[name="fileInfo[0].fileURL"]').val();
+	var fileurl = res.replace("ContractDocs", "temp");
+	var filename = $('input[name="fileInfo[0].fileName"]').val();
+	var contentType = $('input[name="fileInfo[0].contentType"]').val();
+	viewFile(fileurl, filename, contentType);
+}
 </script>
 
 <script>

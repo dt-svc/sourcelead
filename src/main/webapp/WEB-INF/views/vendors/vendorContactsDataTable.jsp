@@ -38,7 +38,6 @@ function getVendorContactList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Vendor";
-	
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',

@@ -85,10 +85,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId) throws Exception {
+	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId ";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).setCacheable(true).list();
 		return ProjectBudgetList;
 	}
 
@@ -121,20 +121,33 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long orgLocationId, String budgetStatus) throws Exception {
+	public List<ProjectBudget> getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long approverUserId,Long orgLocationId, String budgetStatus, String userRole) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId  projects left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.budgetStatus =:budgetStatus and orgLoaction.id = :orgLocationId";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).setCacheable(true).list();
+		List<ProjectBudget> ProjectBudgetList = null;
+		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId  projects left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.budgetStatus =:budgetStatus and projectbudget.approverUserId.id =:approverUserId and orgLoaction.id = :orgLocationId and projectbudget.status = '1' ";
+			ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).setCacheable(true).list();
+		}else {
+			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId  projects left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.budgetStatus =:budgetStatus and orgLoaction.id = :orgLocationId and projectbudget.status = '1' ";
+			ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).setCacheable(true).list();
+		}
+		
 		return ProjectBudgetList;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationId(Long orgLocationId) throws Exception {
+	public List<ProjectBudget> getProjectBudgetListByOrgLocationId(Long approverUserId,Long orgLocationId,String userRole) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where orgLoaction.id = :orgLocationId";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<ProjectBudget> ProjectBudgetList = null;
+		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.approverUserId.id =:approverUserId and orgLoaction.id = :orgLocationId and projectbudget.status = '1'";
+			 ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}else {
+			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where orgLoaction.id = :orgLocationId and projectbudget.status = '1'";
+			 ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
 		return ProjectBudgetList;
 	}
 

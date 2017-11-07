@@ -397,8 +397,14 @@ public class ConversionUtil {
 	}
 	
 	public static String getDateAsddMMMYYYYHHMMSS(Date date,ZoneId zoneId) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss a");
 		formatter.setTimeZone(TimeZone.getTimeZone(zoneId));
+		return formatter.format(date);
+		
+	}
+	
+	public static String getActionDateddMMMYYYYHHMMSS(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss a");
 		return formatter.format(date);
 		
 	}

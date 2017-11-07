@@ -54,6 +54,8 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementReferDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -87,10 +89,8 @@ import com.bis.sourcelead.service.SavedJobsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -1225,18 +1225,18 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
-		public String submitReferToJob(@RequestParam(value = "json", required = false) String json,
+		public String submitReferToJob(RequirementReferDTO requirementReferDTO,
 				HttpServletRequest request,HttpServletResponse response)
 				throws Exception {
 
-			String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+			/*String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);*/
 
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			
-			requirementReferService.saveReferCandidate(user, orgLocations, jsonObj);
+			requirementReferService.saveReferCandidate(user, orgLocations, requirementReferDTO);
 						
 			return "success";
 
@@ -1370,36 +1370,25 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.POST)
-		public String getRefercontactList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			String resultJson = null;
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<ReferContacts> referContactList = referContactsService.getReferContactsListByUserIdAndOrglocationId(user.getId(), orgLocations.getId());
-			for(ReferContacts rc :referContactList){
-				if(null != rc.getContactUser()){
-					StringBuilder username = new StringBuilder();
-					if(null != rc.getContactUser().getLastName()){
-						rc.setContactUserName(username.append(rc.getContactUser().getFirstName()).append(" ").append(rc.getContactUser().getLastName()).toString());	
-					}else{
-						rc.setContactUserName(username.append(rc.getContactUser().getLastName()).toString());
-					}
-					rc.setContactUserEmail(rc.getContactUser().getEmail());
-					rc.setContactUserPhone(rc.getContactUser().getMobilePhone());
-				}else{
-					StringBuilder contactName = new StringBuilder();
-					if(null != rc.getLastName()){
-						rc.setContactUserName(contactName.append(rc.getFirstName()).append(" ").append(rc.getLastName()).toString());
-					}else{
-						rc.setContactUserName(contactName.append(rc.getLastName()).toString());
-					}
-					rc.setContactUserEmail(rc.getContactUserEmail());
-					rc.setContactUserPhone(rc.getContactUserPhone());
-				}
-				
+		@RequestMapping(value = "/getRefercontactList", method = RequestMethod.GET)
+		public  ResponseList<ReferContactsDTO> getRefercontactList(ReferContactsDTO referContactsDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+      		
+      		String[] tableColumns = {"contactName", "email", "phone", "source"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default referContactsDTO order
+			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(referContactsDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = referContactsDTO.getOrder().get(0).get("dir");
 			}
-			resultJson = commonUtil.toJSON(referContactList);
-			return resultJson;
+			referContactsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			referContactsDTO.setSortOrder(sortColumnOrder);
+      		
+			ResponseList<ReferContactsDTO> contactsDTOList = referContactsService.getReferContactsListByUserIdAndOrglocationId(referContactsDTO,user.getId(), orgLocation.getId());
+      		
+      		return contactsDTOList;
 
 		}
 		

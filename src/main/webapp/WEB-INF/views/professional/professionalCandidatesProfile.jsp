@@ -83,9 +83,9 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	 //var json = JSON.parse(data);
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -477,13 +477,12 @@ function editCandidate(candidateId){
 <script>
 function professionalProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	//var json = JSON.parse(data);
 							var result ="";
 							var checked = "";
 							
@@ -593,13 +592,12 @@ function professionalProfile(candidateId){
 							
 							
 	                     result = result +'<div class="clearfix">';
-							
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
 							$.each( json.allAndCandidateVisa, function( i, visa ){
 								  var existed = 0;
 					                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
-						                var res = [];
+						                var res = []; 
 						                res = json.visaType.split(",");
 						                res.forEach(function(item) {
 						                	if(visa == item){
@@ -1097,8 +1095,8 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					success : function(json) {
+						if (json != null && json != 'undefined' && json != "" && json != '[]') {
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
@@ -1106,9 +1104,9 @@ function removeSkillById(candidateId, skillId){
 								result = result +'          <div class="row">';
 								result = result +'            <div class="col-md-12">';
 								result = result +'              <ul class="list-unstyled personal-info">';
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+							//	var json = JSON.parse(data);
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -1156,10 +1154,10 @@ function removeSkillById(candidateId, skillId){
 <script>
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GER",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#educationSubmissionDetailsList").empty();
 	                	 var result = "";
 	                	 
@@ -1171,9 +1169,9 @@ function educationSubmissionProfile(candidateId){
 							result = result +'              <ul class="list-unstyled personal-info">';
 							
 							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
+						//	 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.data.length; i++) { 
+		                    	 var opt = json.data[i];  
 		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    		        EducationName = opt.name;
 		                    	    }else{
@@ -1240,8 +1238,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1250,9 +1248,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{

@@ -38,6 +38,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String balanceleaves;
 	private String fileUrl;
 	private String fileName;
+	private String fileContentType;
 	private String empid;
 	private String empType;
 	private String empEmail;
@@ -77,7 +78,9 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String selfApprovedCounts;
 	private String selfRejectedCounts;
 	private String selfCancelledCounts;
-	
+	private String isBillable;
+	private int selfBalancedCounts;
+	private String topLeaveTakersreportYear;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -542,6 +545,29 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setIsWithdrawEnable(String isWithdrawEnable) {
 		this.isWithdrawEnable = isWithdrawEnable;
 	}
-
+	public String getFileContentType() {
+		return fileContentType;
+	}
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+	public String getIsBillable() {
+		return isBillable;
+	}
+	public void setIsBillable(String isBillable) {
+		this.isBillable = isBillable;
+	}
+	public int getSelfBalancedCounts() {
+		return selfBalancedCounts;
+	}
+	public void setSelfBalancedCounts(int selfBalancedCounts) {
+		this.selfBalancedCounts = selfBalancedCounts;
+	}
+	public String getTopLeaveTakersreportYear() {
+		return topLeaveTakersreportYear;
+	}
+	public void setTopLeaveTakersreportYear(String topLeaveTakersreportYear) {
+		this.topLeaveTakersreportYear = topLeaveTakersreportYear;
+	}
 
 }

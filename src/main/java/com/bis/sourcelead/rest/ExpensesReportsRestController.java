@@ -37,6 +37,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.itextpdf.text.ListItem;
 
 @RestController
 public class ExpensesReportsRestController {
@@ -142,22 +143,22 @@ public class ExpensesReportsRestController {
 			 if(expenses != null && !expenses.isEmpty()){
 			 for(Expenses exp:expenses){
 				 if(null != projectMember.getEmployee()){
-						if(null != projectMember.getEmployee().getUserEmploymentType()){
-							projectMember.setEmployementType(exp.getProjectMembers().getEmployee().getUserEmploymentType());
+						if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
+							projectMember.setEmployementType(projectMember.getProjectMemberCandidteId().getDesignationType());
 						}
 						if(null != projectMember.getEmployee().getEmployeeId()){
 							projectMember.setEmployeeIdForExpenses(exp.getProjectMembers().getEmployee().getEmployeeId());
 						}
-						if(null != projectMember.getEmployee().getUser()){
-							if(null != projectMember.getEmployee().getUser().getLastName()){
+						if(null != projectMember.getProjectMemberCandidteId()){
+							if(null !=projectMember.getProjectMemberCandidteId().getLastName()){
 								StringBuilder nameBuilder = new StringBuilder();
-								projectMember.setUserName(nameBuilder.append(projectMember.getEmployee().getUser().getFirstName()).append(projectMember.getEmployee().getUser().getLastName()).toString());
+								projectMember.setUserName(nameBuilder.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
 							}else{
-								projectMember.setUserName(projectMember.getEmployee().getUser().getFirstName());
+								projectMember.setUserName(projectMember.getProjectMemberCandidteId().getFirstName());
 							}
 							
-							if(null != projectMember.getEmployee().getUser().getEmail()){
-								projectMember.setUserEmail(projectMember.getEmployee().getUser().getEmail());
+							if(null != projectMember.getProjectMemberCandidteId().getEmail()){
+								projectMember.setUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
 							}else{
 								projectMember.setUserEmail("--");
 							}
@@ -169,15 +170,26 @@ public class ExpensesReportsRestController {
 						}
 					}
 				 
-				 if(exp.getClientName() != null){
-					 projectMember.setClientNameExpenses(exp.getClientName());
+				 if(projectMember.getProjectClientsId() != null && projectMember.getProjectClientsId().getOrgRelationId() !=null && projectMember.getProjectClientsId().getOrgRelationId().getClientName() != null){
+					 projectMember.setClientNameExpenses(projectMember.getProjectClientsId().getOrgRelationId().getClientName());
 				 }
 				 
-				 if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+				 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 						OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
 						projectMember.setEmploymentTypeVendors(orgRelation.getResponderLocationId().getOrg().getOrgName());
 				 
-				 }				 
+				 }*/
+				 
+			    StringBuilder vendor=new StringBuilder();
+			 	if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+     			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+     			  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+           	     }else{
+           	    	vendor.append("--").toString(); 
+           	     }
+				 
+				 
+				 
 				 Date d = new Date(exp.getEndDate().getTime());
 				 if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
 					 Float approvedTotal = 0f;

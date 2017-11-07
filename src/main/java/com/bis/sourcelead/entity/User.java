@@ -31,6 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER", catalog = "sourcelead")
@@ -59,6 +60,9 @@ public class User implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
+
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -89,9 +93,9 @@ public class User implements Serializable{
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
-	@Column(name = "IS_MAIL_SENT")
+	/*@Column(name = "IS_MAIL_SENT")
 	@Enumerated(EnumType.STRING)
-	private Status isMailSent;
+	private Status isMailSent;*/
 	
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
@@ -246,6 +250,8 @@ public class User implements Serializable{
 	@Transient
 	private String registrationType;
 	
+	@Transient
+	private String isMailSent;
 	
 
 	public Status getPreviousUserState() {
@@ -257,6 +263,7 @@ public class User implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String fullName;
 	
 	public Long getId() {
@@ -305,6 +312,16 @@ public class User implements Serializable{
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public Status getUserState() {
@@ -356,13 +373,6 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
-	public Status getIsMailSent() {
-		return isMailSent;
-	}
-
-	public void setIsMailSent(Status isMailSent) {
-		this.isMailSent = isMailSent;
-	}
 
 	public byte[] getDocFile() {
 		return docFile;
@@ -746,5 +756,11 @@ public class User implements Serializable{
 		this.fileUrl = fileUrl;
 	}
 
-	
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
 }

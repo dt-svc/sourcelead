@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.OrgLocations;
  * @param <Expenses>
  * 
  */
-public interface ExpensesDao<Expenses> {
+public interface ExpensesDao {
 	
 	public List<Expenses> getAllExpenses(Long masterCandidateId,String expenseStatus, Date startDateUTC, Date endDateUTC);
 	public List<Expenses> getIndividualExpense(Long orgLocId,Long loginUserId,String expenseId);

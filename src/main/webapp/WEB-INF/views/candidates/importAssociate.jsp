@@ -36,7 +36,7 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
+            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
@@ -411,7 +411,8 @@
         <div class="clearfix"></div>
       </div> 
     </div>
-    
+    <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="import">
     
     <div class="form-footer clearfix mt">
       <div class="col-lg-12">
@@ -453,13 +454,16 @@
 		
 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var formData = getFormData("candidate_form");
-			$("#store_candidate").attr("disabled", "disabled");
-			$("#store_candidate").addClass('button').val('Processing..');
+			 var form = $('#candidate_form')[0];
+	      	 var formData = new FormData(form); 
+			 $("#store_candidate").attr("disabled", "disabled");
+			 $("#store_candidate").addClass('button').val('Processing..');
 
 			$.ajax({
-					type : "POST",
-		        	    data: formData,
+					 type : "POST",
+					 data: formData,
+		    	     processData: false,
+		    	     contentType:false,
 		        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 					success : function(result) {
 								location.replace(sourceleadUrl+"/associatesList");
@@ -877,12 +881,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -892,7 +896,19 @@ function  removeValiationVendorContact() {
  </script>
  
  <script>
+ var educationList = [];
+ var skillList = [];
  $(function() {
+	 var i= 0;
+	 <c:forEach var="skill" items="${skillsList}">
+	 	skillList[i++] = "${skill.name}";
+	 </c:forEach>
+	 var i= 0;
+	 <c:forEach var="edu" items="${educationsList}">
+	 	educationList[i++] = "${edu.name}";
+	 </c:forEach>
+	 
 	 uploadResumeOnSelect("candidate_form");
- });
+	 
+});
  </script>

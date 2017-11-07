@@ -8,6 +8,11 @@ public class UserDTO implements Serializable {
 	private String designation;
 	private String profileImage;
 	private long parentId;
+	private String userType;
+	private String firstName;
+	private String lastName;
+	private String mobilePhone;
+	private String userRole;
 	
 	public long getId()
 	{
@@ -57,5 +62,45 @@ public class UserDTO implements Serializable {
 	public void setParentId(long parentId)
 	{
 		this.parentId = parentId;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 }

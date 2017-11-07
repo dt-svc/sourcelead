@@ -104,7 +104,7 @@ public interface UserRoleService {
 	 */
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
-	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception;
+	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	 
