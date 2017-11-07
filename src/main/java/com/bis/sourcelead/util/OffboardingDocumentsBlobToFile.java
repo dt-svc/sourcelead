@@ -51,9 +51,9 @@ public class OffboardingDocumentsBlobToFile {
 				File folder = null;
 				String link = "";
 				if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Resignation")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Offboard-Template-Resignation-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Offboard-Template-Resignation-Documents/");
 				}else if(rs.getString("DOCUMENT_TYPE").equalsIgnoreCase("Offboard Pack")) {
-					folder = new File("C:/blob/slead-static/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Offboard-Template-OffboardPack-Documents/");
+					folder = new File("C:/blob/"+rs.getString("ORG_ID")+"/"+rs.getString("ORG_LOCATION_ID")+"/Offboard-Template-OffboardPack-Documents/");
 				} 
 				 
 				if(!folder.exists())
