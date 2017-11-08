@@ -1667,18 +1667,18 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	        	else if(isReopenButtonVisible && (from.equalsIgnoreCase("approver") || from.equalsIgnoreCase("dashboard")) && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
-	        			timesheetEntriesDiv.append(" <i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
-	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
-		        		timesheetEntriesDiv.append(" </i>");
+	        			timesheetEntriesDiv.append("<i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append("<div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append("</i>");
 	        		}
 	        		timesheetEntriesDiv.append("<p class='pull-right ml' style='width: 87px;'>Re-Open Request sent</p>");
 		        }
 	        	else if(isReopenButtonVisible && (from.equalsIgnoreCase("approver") || from.equalsIgnoreCase("dashboard")) && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
-	        			timesheetEntriesDiv.append(" <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
-	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
-		        		timesheetEntriesDiv.append(" </i>");
+	        			timesheetEntriesDiv.append("<i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append("<div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append("</i>");
 	        		}
 	        		 timesheetEntriesDiv.append("<div class='pull-right  sm text-center reopen'>").append(" <label class='clearfix reopen-label'>RE-OPEN</label><i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenTimeSheetBySuperUser(\"")
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
@@ -1686,7 +1686,8 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
 	                .append("\");'></i></div>");
 	        	}
-	        	timesheetEntriesDiv.append("&nbsp;&nbsp;<b  "+innerStyleWidth+" class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<b  "+innerStyleWidth+" class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<div class='clearfix'></div>");
 	        	timesheetEntriesDiv.append("</div>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
