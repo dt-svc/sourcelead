@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1453,7 +1454,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
 		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(null == candidate){
@@ -1469,6 +1470,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setEmail(user.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getRate())){
+				candidate.setCurrentRate(addUserDTO.getRate());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getRatePer())){
+				candidate.setCurrentRateType(addUserDTO.getRatePer());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getCurrentCurrency())){
+				candidate.setCurrentRateCurrency(addUserDTO.getCurrentCurrency());
+			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
 				candidate.setMobilePhone(candidateDTO.getPhoneNumber());
@@ -1598,9 +1610,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
