@@ -321,12 +321,13 @@ public class RequirementServiceImpl implements RequirementService {
 			try {
 				// SimpleDateFormat formatter =
 				// orgLocations.getLocFullFormDateFormatter();
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+				/*Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 				Date startTime = commonUtil.orgLocationDateFormat(requirementDTO.getDateFormat(), requirementDTO.getClosedDate());
 				String currentTimeStr = Constants.TZ_DF.format(startTime);
 				String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);*/
+				Date convertedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), requirementDTO.getClosedDate());
 				requirement.setClosedDate(convertedDate);
 			} catch (Exception e) {
 				e.printStackTrace();
