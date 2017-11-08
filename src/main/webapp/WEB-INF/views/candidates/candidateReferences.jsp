@@ -127,8 +127,8 @@
 						result = result + "</thead>";
 						result = result + "<tbody>";
 
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
+						for (var i = 0; i < json.data.length; i++) {
+							var opt = json.data[i];
 							result = result + ' <tr>';
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
@@ -431,8 +431,11 @@
 					$("#refMsgDiv").html("Success!! New References added");
 		        	candReferencesList(candidateId);
 					refMsgFadein(); 
+					setTimeout(function(){
+			 			candidateList();					 			
+			 	     },100);
 		        });
-			
+		        
 			return true;
 		} else {
 			return false;
@@ -524,6 +527,9 @@
 									.fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
+							setTimeout(function(){
+					 			candidateList();					 			
+					 	 },100);
 						}
 					},
 				});

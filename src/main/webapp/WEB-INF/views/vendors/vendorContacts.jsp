@@ -71,12 +71,12 @@ function vendorContacts(orgRelationID,clientLocationId){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor", 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
+	        //	var json = JSON.parse(data);
 	        	
-	        	for (var i = 0; i < 1; i++) { 
-	 				var val= json[i];
+	        	/* for (var i = 0; i < 1; i++) { 
+	 				var val= json.data[i];
 	 				var opt = "";
 	 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
 	     					opt  = opt + '<div class="success_pop" id="vendorConactMsgSelector" style="display: block;">';
@@ -85,10 +85,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 	 						}
 	 					$("#vendorConactMsgDiv").empty();
 	 					$("#vendorConactMsgDiv").append(opt);
-	 				}
+	 				} */
 	        	
 	        	$("#vendorContactListDiv").empty();
-	    		if(json.length != null && json.length != ''){
+	    		if(json.data.length != null && json.data.length != ''){
 	    			var result = "";
 	    			result = result +"<table id='vendorContactsPagination' class='display' cellspacing='0' width='100%' >"; 
 		    	    result = result +'<thead>';
@@ -104,9 +104,9 @@ function vendorContacts(orgRelationID,clientLocationId){
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
 		            
-			          for (var i=0; i<json.length; i++)
+			          for (var i=0; i<json.data.length; i++)
 					  {        
-				        		var opt = json[i];
+				        		var opt = json.data[i];
 				        		var selected1 = '';
 								var selected2 = '';
 								var selected3 = '';
@@ -140,18 +140,21 @@ function vendorContacts(orgRelationID,clientLocationId){
 			   		    			spocMobilePhone = "---";
 			   		    		}
 				        		
+			   		    		
+			   		    		
 				        		result = result + '	 <tr>';
 				                result = result + '	 	<td><div><span title="'+opt.spocName+'">'+opt.spocName+'</span></div></td>';
 				                result = result + '	     <td><div><span title="'+opt.spocEmail+'">'+opt.spocEmail+'</span></div></td>';
 				                result = result + '	     <td><div>'+spocMobilePhone+'</div></td>';
 				                result = result + '	     <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
-				                
+				               
 				                result = result + ' <td><div>';
-				                
+				               
 				                if(opt.invitationStatus == 'Rejected'){
 				        			result = result + '<span>'+opt.spocStatus+'</span>';
+				        			 
 				        		}else{
-									result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
+									result = result + ' <select id="spocStatus'+json.data[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json.data[i].id+'\,'+vendorLocationId+');">';
 									result = result + ' <option '+selected1+'>Active</option>';
 									result = result + ' <option '+selected2+'>In-Active</option>';
 									/* result = result + ' <option '+selected3+'>New</option>';
@@ -160,12 +163,12 @@ function vendorContacts(orgRelationID,clientLocationId){
 									result = result + ' </select>';
 				        		}
 								result = result + ' </div></td>';
-				                
+								 
 				                result = result +'<td data-title="Invitation Status"><div>';
 				                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){
 				   	        		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptSpocInvitation('+opt.id+','+orgRelationID+','+vendorLocationId+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectSpocInvitation('+opt.id+','+orgRelationID+','+vendorLocationId+');"></i>';
-				   	        		}
-				                
+				                }
+				               
 					                if(opt.spocUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				                        result = result +' ---';
 				                  	}
@@ -173,9 +176,11 @@ function vendorContacts(orgRelationID,clientLocationId){
 				   	        		if(opt.ownerUserId == "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				   	        			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendSpocInvitation('+opt.spocUserId+','+orgRelationID+','+vendorLocationId+','+opt.id+');">Send</a></b>';
 				   	        		}
+				   	        	
 				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'New'){
 				   	        			result = result +' ---';
 				   	        		}
+				   	        	
 				   	        		
 				   	        		if(opt.spocUserId != "${SourceLeadWeb_userId}" && opt.ownerUserId != "${SourceLeadWeb_userId}" && opt.invitationStatus == 'Sent'){ 
 				   	        			result = result +' <b class="proj_process">Received</b>';
@@ -194,10 +199,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 				             		}
 			   		    		result = result +'</div></td>';
 				                
-				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+				                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 				                result = result + '	    <td><div>';
                                        '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_CONTACT\")">';
-                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc(\''+json[i].id+'\',\''+orgRelationID+'\',\''+vendorLocationId+'\',\''+opt.spocName+'\');" title = "Remove vendor contact"></i>';
+                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc(\''+json.data[i].id+'\',\''+orgRelationID+'\',\''+vendorLocationId+'\',\''+opt.spocName+'\');" title = "Remove vendor contact"></i>';
                                         '</sec:authorize>';
                 	                    result = result +'</div></td>';
 			                     }
@@ -349,10 +354,14 @@ function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId,spocId){
 function contactPagination(){  
     $('#vendorContactsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 6
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -378,7 +387,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12" id="errFirstName">';
 	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
@@ -412,7 +421,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12" id="errOwner">';
 	result = result  +'	   <select multiple data-placeholder="select owner" class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
 	result = result  +'	           <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? "selected" : ''} >${user.firstName} ${user.lastName}</option>';
@@ -588,6 +597,8 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		 if(json[0] != null && json[0] != ''){
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
+	        		    $('#errFirstName').find('p.jquery_form_error_message').remove();
+	        		    
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
 	        			 $("#firstName").val('');
@@ -722,6 +733,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 					        	
 					        		if(opt.id == SourceLeadWeb_userId){
 					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			$('#errOwner').find('p.jquery_form_error_message').remove();
 					        		}
 					        		else{
 					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";

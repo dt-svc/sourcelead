@@ -268,15 +268,15 @@ public class RequirementRestController {
 		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
 		if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
 			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
-			requirementApproverHierarchy.setRejectedReason(reason);
-	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+			/*requirementApproverHierarchy.setRejectedReason(reason);
+	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);*/
 		}else{
 		requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 		
-		 if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		 /*if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
 	    	requirementApproverHierarchy.setRejectedReason(reason);
 	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-	    }
+	    }*/
 		}
 		//  This for the Requirement Location 
 		StringBuilder location = new StringBuilder();
@@ -312,6 +312,7 @@ public class RequirementRestController {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 								} else if (status.equalsIgnoreCase("REJECTED")) {
+									rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
@@ -343,6 +344,7 @@ public class RequirementRestController {
 										if (status.equalsIgnoreCase("APPROVED")) {
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 										} else if (status.equalsIgnoreCase("REJECTED")) {
+											rah.setRejectedReason(reason);
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 										}
 										rah.setUpdatedBy(loginUser.getUserCode());
@@ -364,7 +366,7 @@ public class RequirementRestController {
 									
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 										if(!requirement.getCreatedBy().getId().equals(managerUser.getId())){
-									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
+									requirementService.rejectedInitiatorUserEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 									requirementService.rejectedEmailScenario(loginUser, managerUser, requirement, location, reason,orgLocation);
 										}
 										else{
@@ -413,6 +415,7 @@ public class RequirementRestController {
 								    requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 								    level2approver.setUpdatedBy(loginUser.getUserCode());
 								    level2approver.setUpdatedDate(commonUtil.currentDate());
+								    level2approver.setRejectedReason(reason);
 									requirementApproverHierarchyService.addRequirementApproverHierarchy(level2approver);
 								}
 								requirementApproverHierarchy.setUpdatedBy(loginUser.getUserCode());

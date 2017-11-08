@@ -30,35 +30,11 @@
               </a>
           </li>
         
-          <!-- <li class="dropdown">
-            <span class="dropdown-toggle" id="menu1" data-toggle="dropdown">
-                <i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i></span>|
-          
-            <div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding" role="menu" aria-labelledby="menu1">
-            <ul>
-              <li>
-                <input value="" name="resourcerequest" id="all" type="checkbox">
-                <label for="all">Full Day</label>
-              </li>
-              <li>
-                <input id="hotlist" name="resourcerequest" type="checkbox">
-                <label for="hotlist">Half Day</label>
-              </li>
-              <li>
-                <input id="Assigned" name="resourcerequest" type="checkbox">
-                <label for="Assigned">SickLeave</label>
-              </li>
-            </ul>
-          </div>
-        </li> -->
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
-      <div class="remove_search">
-        <input placeholder="Search" type="text">
-      </div>
     </div>
-    <div class="require_wrap_table datatable_filter">
+    <div class="clients_wrap_table datatable_filter">
       <div id= "shiftDev"></div> 
     </div>
   </div>
@@ -96,8 +72,8 @@ function populategShiftList(json){
    result = result +' </tr>';
    result = result +' </thead>';
    result = result +' <tbody>';
-   for (var i=0; i<json.length; i++){
-           var report = json[i];
+   for (var i=0; i<json.data.length; i++){
+           var report = json.data[i];
            result = result +'  <tr>';                                                                                                                  
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tbldata-dotdot-150">';                                                                          
@@ -112,7 +88,7 @@ function populategShiftList(json){
            result = result +'      <div class="tbldata-dotdot-100">'+report.timeOut+'</div>';                                                          
            result = result +'  </td>';
            result = result +'  <td>';                                                                                                                  
-           result = result +'    <div title="TimeOut" class="tbldata-dotdot-big">'+report.shiftDescription+'</div>';
+           result = result +'    <div title="'+report.shiftDescription+'" class="tbldata-dotdot-big">'+report.shiftDescription+'</div>';
            result = result +'  </td>';                                                                                                                
            result = result +'  <td>';
            if(report.updatedBy != null && report.updatedBy !='undefined' && report.updatedBy != ""){

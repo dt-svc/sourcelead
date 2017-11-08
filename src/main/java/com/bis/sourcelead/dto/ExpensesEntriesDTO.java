@@ -29,11 +29,15 @@ public class ExpensesEntriesDTO {
 	
 	private String categoryAmountType;
 	
+	private String paidBy;
+	
 	private String entryDescription;
 	
 	private List<FileInfo> fileInfo;
 	
 	private BigDecimal amountRoundOff;
+	
+	private float amount;
 
 	public Long getId() {
 		return id;
@@ -146,6 +150,23 @@ public class ExpensesEntriesDTO {
 	public void setCategoryTypeId(long categoryTypeId) {
 		this.categoryTypeId = categoryTypeId;
 	}
+
+	public String getPaidBy() {
+		return paidBy;
+	}
+
+	public void setPaidBy(String paidBy) {
+		this.paidBy = paidBy;
+	}
+
+	public float getAmount() {
+		return amount;
+	}
+
+	public void setAmount(float amount) {
+		this.amount = amount;
+	}
+	
 	
 }
 

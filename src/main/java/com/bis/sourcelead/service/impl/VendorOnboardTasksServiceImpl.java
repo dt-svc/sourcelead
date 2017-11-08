@@ -125,4 +125,9 @@ public class VendorOnboardTasksServiceImpl implements VendorOnboardTasksService{
 		 vendorOnboardTasksDao.saveVendorOnboardTasks(onboardTasks);
 	}
 
+	@Override
+	public Integer getTemplateTasksCountByTemplateId(Long templateId) throws Exception {
+		return vendorOnboardTasksDao.getTemplateTasksCountByTemplateId(templateId);
+	}
+
 }

@@ -55,7 +55,7 @@
 
 </head>
 
-
+<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/userReports"}'>
 	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
@@ -108,12 +108,12 @@
 	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
+ <%-- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
 	<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
 	<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
 	<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
 	<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
- </c:if>
+ </c:if> --%>
  
 <!--  Amcharts -->
 <script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
@@ -240,7 +240,7 @@ function getNotificationsByuserId(){
 				result = result + ' <li>';
 				result = result + '<div class="clearfix msg">';
 				result = result + '<div class="msg-img"> <span>';
-				result = result + ' <img class="img-circle" title='+opt.notificationFrom.firstName+' '+opt.notificationFrom.lastName+' alt='+opt.notificationFrom.userType+' onerror="predefineProfileImage(this);" src='+opt.notificationFrom.fileUrl+'>';
+				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
 				result = result + ' <a href="#"><p>'+opt.body+'</p>';
@@ -357,10 +357,10 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId;
-			//document.getElementById("logoutForm").submit();
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
+			document.getElementById("logoutForm").submit();
 		}
 </script>
 
@@ -375,6 +375,8 @@ function preventTabkey(e){
 <body>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
+  <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
+   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocations.id}"/>
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
@@ -525,7 +527,7 @@ function preventTabkey(e){
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	            <li class="reportsH">
-					<a title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
+					<a title="Reports" href="<c:url value='${sourceleadUrl}/userReports'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
             </c:if>
             
@@ -657,6 +659,7 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     
+	                     <li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
 	                     <li><a href="<c:url value="/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
@@ -923,9 +926,9 @@ function notificationStatusAsRead(){
       <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
       <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
       <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-      <li><a href="#" class="" id="btn4"><span class="hdr-grey"></span><span class="dark-grey"></span></a></li>
+      <li class="hidden"><a href="#" class="" id="btn4"><span class="hdr-grey"></span><span class="dark-grey"></span></a></li>
       <li><a href="#" class="" id="btn5"><span class="hdr-greydrk"></span><span class="sidenav-purle"></span></a></li>
-      <li><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
+      <li class="hidden"><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
 <!--  Theme Swithcer div ends  -->

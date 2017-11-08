@@ -62,7 +62,7 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesId expenses where expenses.id =:expenseId";
+		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesCategoryId ec left join fetch expensesEntries.expensesId expenses where expenses.id =:expenseId";
 		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
 		return expensesEntryList;
 	}

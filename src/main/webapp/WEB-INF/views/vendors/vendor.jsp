@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','clientLatitude','clientLongitude','invite');
  };
 </script>
 <!-- <script>
@@ -22,6 +22,7 @@ window.onload = function () {
 {
 	color: #333;
 	text-decoration : none;
+	pointer-events: none;
 }
 </style>
 
@@ -120,12 +121,12 @@ function getVendorDetails(){
 	        		   $("input[name=state]").val(json.state);
 	        		   $("input[name=city]").val(json.city);
 	        		   
-	        		   if(json.zipCode != null && json.zipCode != 'undefined' && json.zipCode != ''){
-	        			   $("input[name=zipcode]").val(json.zipCode);
+	        		   if(json.zipcode != null && json.zipcode != 'undefined' && json.zipcode != ''){
+	        			   $("input[name=zipcode]").val(json.zipcode);
 	        		   }
 	        		   $("input[name=zipcode]").removeAttr("readonly");
 	        		   
-	        		   $("select[name=level]").val(json.responderLevel);
+	        		   $("select[name=level]").val(json.level);
 	        		   
 	        		   if(json.address != null && json.address != 'undefined' && json.address != ''){
 	        			   $("textarea[name=address]").val(json.address);
@@ -137,7 +138,7 @@ function getVendorDetails(){
 	        		   
 	        		   
 	        		   if(json.paymentTerms != null && json.paymentTerms != 'undefined' && json.paymentTerms != ''){
-	        			   $("select[name=PaymentTerm]").val(json.paymentTerms);
+	        			   $("select[name=paymentTerms]").val(json.paymentTerms);
 	        		   }
 	        		   
 	        		   
@@ -164,15 +165,19 @@ function getVendorDetails(){
 	        			}
 	        			
 	        			
-	        			 $("input[name=firstName]").val(json.vendorContactFirstName);
-	        			 if(json.vendorContactLastName != null && json.vendorContactLastName != 'undefined' && json.vendorContactLastName != ''){
-	        				 $("input[name=lastName]").val(json.vendorContactLastName);
+	        			 $("input[name=firstName]").val(json.firstName);
+	        			 if(json.lastName != null && json.lastName != 'undefined' && json.lastName != ''){
+	        				 $("input[name=lastName]").val(json.lastName);
 	        			 }
 	        			
 	        			 $("input[name=email]").val(json.email);
 	        			 
-	        			 if(json.phone != null && json.phone != 'undefined' && json.phone != ''){
-	        				 $("input[name=phoneNumber]").val(json.phone);
+	        			 if(json.phoneNumber != null && json.phoneNumber != 'undefined' && json.phoneNumber != ''){
+	        				 $("input[name=phoneNumber]").val(json.phoneNumber);
+	        			 }
+	        			 
+	        			 if(json.extensionNumber != null && json.extensionNumber != 'undefined' && json.extensionNumber != ''){
+	        				 $("input[name=extensionNumber]").val(json.extensionNumber);
 	        			 }
 	        			
 	        			
@@ -268,7 +273,7 @@ function getVendorDetails(){
 							<div class="col-md-9" id="clientNameDiv">
 								<input type="text" class="form-control" id="orgName"
 									name="orgName" value="${orgName}" onclick="getOrgName();"
-									onblur="getOrgDetails(); validateClientName();"
+									onblur="getOrgDetails(); validateOrgName();"
 									field-name="Vendor Name"
 									data-validation="required validate_length length2-250"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
@@ -292,12 +297,12 @@ function getVendorDetails(){
 							<div class="col-md-9" id="locationField">
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="clientLocation" name="location"
+										id="vendorLocation" name="location"
 										placeholder="Enter your Location" type="text"
 										field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+										onClick="refreshGoogleApiLocation('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode');"></i>
 								</div>
 							</div>
 						</div>
@@ -315,7 +320,7 @@ function getVendorDetails(){
 						<div class="form-group" id="countryDiv" style="display: block;">
 							<label class="col-md-3">Country</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientCountry" name="country"
+								<input class="form-control" id="vendorCountry" name="country"
 									placeholder="Enter your Country" value="${loginCountryName}"
 									type="text" readonly></input>
 							</div>
@@ -332,7 +337,7 @@ function getVendorDetails(){
 						<div class="form-group" id="stateDiv" style="display: block;">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientState" name="state"
+								<input class="form-control" id="vendorState" name="state"
 									placeholder="Enter your State" type="text" readonly></input>
 							</div>
 						</div>
@@ -349,7 +354,7 @@ function getVendorDetails(){
 						<div class="form-group" id="cityDiv" style="display: block;">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientCity" name="city"
+								<input class="form-control" id="vendorCity" name="city"
 									placeholder="Enter your City" type="text" readonly></input>
 							</div>
 						</div>
@@ -366,13 +371,13 @@ function getVendorDetails(){
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
 							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+								<input class="form-control" id="vendorZipCode" name="zipcode"
+									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
 							</div>
 						</div>
 
 						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-							<label class="col-md-3">ZipCode2</label>
+							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
 									placeholder="Enter your Zip code" type="text" readonly ></input>
@@ -436,7 +441,7 @@ function getVendorDetails(){
 							<label class="col-md-3">Payment Term</label>
 							<div class="col-md-9">
 								<select class="form-control" id="PaymentTermId"
-									name="PaymentTerm">
+									name="paymentTerms">
 									<option selected="selected" disabled value="">Select
 										Payment Term</option>
 									<option value="10 days">10 days</option>
@@ -456,7 +461,7 @@ function getVendorDetails(){
 									class="chosen-select form-control" name="templateId" id="templateId"
 									field-name="Template" data-validation-optional="true">
 									<c:forEach var="template" items="${templatesList}">
-										<option value="${template.id}">${template.templateName}</option>
+										<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -499,12 +504,29 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Phone Number</label>
 							<div class="col-md-9">
+							 <div class="row">
+							 <div class="col-md-6 paddingRight">
 								<input type="text" class="form-control" name="phoneNumber"
 									id="phoneNumber"
 									data-validation="validate_Space validate_length length9-20 validate_phone"
 									data-validation-optional="true">
+							  </div>
+							  
+							 <div class="col-md-6 paddingLeft erMesMid">
+				             <div class="row">
+				             <label class="col-md-5">Extension </label>
+				             <div class="col-md-7 posSta">
+				             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
+				             </div>
+				             </div>
+			             </div>
+							  
+							  		
+							</div>		
 							</div>
 						</div>
+						
+						
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
@@ -702,7 +724,7 @@ function getOrgDetails()
 			      	}
 			      	
 			      	if(json['location'] != null && json['location'] != ''){
-			      	$('#clientLocation').attr("data-validation-optional", "true");  
+			      	$('#vendorLocation').attr("data-validation-optional", "true");  
 			      	document.getElementById("locationDiv").style.display="none";
    	        		document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
@@ -827,7 +849,7 @@ function getRolesList(){
 						$("#vendorOnboardId").val(data.vendorOnboardId);
 						$("#loading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
-						 $("#vendorDocuments").removeClass("disabledLink");
+						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
 						 vendorDocuments.addEventListener("click", function() {
 							 getOnboardDocuments();
@@ -1005,6 +1027,51 @@ function validateClientName(){
 				}
 				
 				$("#loading").removeAttr("style");
+			},
+
+		});
+	}
+  }
+}
+</script>
+
+
+
+
+
+<script type="text/javascript">
+function validateOrgName(){
+	
+	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var vendor = encodeURIComponent(vendorName);
+	if(vendor.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (vendor != null && vendor != '') {
+		
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			success : function(data) {
+				var result = data;
+				if (result == 'invalid') {
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + vendorName + " is invalid</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', vendorName +"  is invalid");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_vendor").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_vendor").click(function() {
+					});
+					
+					validateClientName();
+				}
+				
 			},
 
 		});

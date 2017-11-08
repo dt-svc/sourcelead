@@ -47,7 +47,7 @@ window.onload = function () {
            <h3>Client Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur=" getOrgDetails(); validateClientName();" field-name="Client Name" data-validation="required validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur=" getOrgDetails(); validateOrgName();" field-name="Client Name" data-validation="required validate_length length2-250" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Client Name</span>
 				</div>
@@ -186,7 +186,7 @@ window.onload = function () {
              <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
-                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
@@ -212,7 +212,7 @@ window.onload = function () {
             
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
+              <div class="col-md-9" id="firstNameDiv">
                 <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_AlphaNumber validate_length length1-100">
               </div>
             </div>
@@ -226,11 +226,25 @@ window.onload = function () {
             </div>
 			
             <div class="form-group">
-              <label class="col-md-3">Phone Number</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
+	              <label class="col-md-3">Phone Number</label>
+	              <div class="col-md-9">
+	              <div class="row">
+	              <div class="col-md-6 paddingRight">
+	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
+	              </div>
+             <div class="col-md-6 paddingLeft erMesMid">
+	             <div class="row">
+	             <label class="col-md-5">Extension </label>
+	             <div class="col-md-7 posSta">
+	             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
+	             </div>
+	             </div>
+             </div>
+             
+              </div>
               </div>
             </div>
+            
             <div class="form-group">
               <label class="col-md-3">Status</label>
               <div class="col-md-9">
@@ -564,6 +578,7 @@ function getSpocUserDetails(){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
+	        			$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
@@ -670,6 +685,51 @@ function validateClientName(){
   }
 }
 </script>   
+
+
+
+
+
+<script type="text/javascript">
+function validateOrgName(){
+	
+	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var client = encodeURIComponent(clientName);
+	if(client.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (client != null && client != '') {
+		
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
+			success : function(data) {
+				var result = data;
+				if (result == 'invalid') {
+					$("#save_vendor").removeAttr("disabled");
+			        $("#save_vendor").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is invalid</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  is invalid");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					$("#save_vendor").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_vendor").click(function() {
+					});
+					
+					validateClientName();
+				}
+				
+			},
+
+		});
+	}
+  }
+}
+</script>
 
 
 <!-- <script type="text/javascript">

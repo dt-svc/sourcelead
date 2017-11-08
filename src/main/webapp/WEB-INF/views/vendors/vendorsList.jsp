@@ -82,8 +82,8 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Vendor Name</label>
                   <div class="clearfix">
                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="orgNameAdvanced" name="orgNameAdvanced">
-                        <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                        <c:forEach var="vendorList" items="${vendor_list}">
+                                <option value="${vendorList.vendorNameForList}">${vendorList.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -371,7 +371,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 <div class="side_mask"><div class="proj_close"></div></div>
 
 <!-- Client Side Nav Div -->
-<div class="clients_side_wrap">
+<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="vendorNameDiv"></h1>
 				<div class="proj_close">
@@ -1843,9 +1843,8 @@ function getVendorOrgname(vendorOrgname){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-					success : function(data) {
+					success : function(json) {
 						
-						var json = JSON.parse(data);
 						getVendorOrgname(json.orgName);
 						var result = "";
 						var city = "";
@@ -1922,8 +1921,8 @@ function getVendorOrgname(vendorOrgname){
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Vendor Zip Code:</strong>';
-							if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-								result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
+							if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+								result = result + '<span>'+json.zipcode+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
@@ -1985,7 +1984,157 @@ function getVendorOrgname(vendorOrgname){
 							}
 							result = result + '</div>';
 							
+							
+							
+							if(json.isVendorOnboardSubmitted == 'Y'){
+							result = result + '<div class="clearfix mt10"></div>';
+							result = result +'<h4 class="pull-left">Onboard Details</h4>';
 							result = result + '<div class="clearfix"></div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Nature Of Business :</strong>';
+							if(json.industryName != null && json.industryName !='' && json.industryName !='undefined'){
+								result = result + '<span title="'+json.industryName+'">'+json.industryName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Currency :</strong>';
+							if(json.currency != null && json.currency !='' && json.currency !='undefined'){
+								result = result + '<span title="'+json.currency+'">'+json.currency+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SIC Code :</strong>';
+							if(json.sicCode != null && json.sicCode !='' && json.sicCode !='undefined'){
+								result = result + '<span title="'+json.sicCode+'">'+json.sicCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>NAICS Code :</strong>';
+							if(json.naicsCode != null && json.naicsCode !='' && json.naicsCode !='undefined'){
+								result = result + '<span title="'+json.naicsCode+'">'+json.naicsCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>EIN Code :</strong>';
+							if(json.einCode != null && json.einCode !='' && json.einCode !='undefined'){
+								result = result + '<span title="'+json.einCode+'">'+json.einCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Tax Reg Number :</strong>';
+							if(json.taxRegistrationNumber != null && json.taxRegistrationNumber !='' && json.taxRegistrationNumber !='undefined'){
+								result = result + '<span title="'+json.taxRegistrationNumber+'">'+json.taxRegistrationNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>DUNS Number :</strong>';
+							if(json.dunsNumber != null && json.dunsNumber !='' && json.dunsNumber !='undefined'){
+								result = result + '<span title="'+json.dunsNumber+'">'+json.dunsNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Name :</strong>';
+							if(json.accountName != null && json.accountName !='' && json.accountName !='undefined'){
+								result = result + '<span title="'+json.accountName+'">'+json.accountName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Number :</strong>';
+							if(json.accountNumber != null && json.accountNumber !='' && json.accountNumber !='undefined'){
+								result = result + '<span title="'+json.accountNumber+'">'+json.accountNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Bank Name :</strong>';
+							if(json.bankName != null && json.bankName !='' && json.bankName !='undefined'){
+								result = result + '<span title="'+json.bankName+'">'+json.bankName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Branch Number :</strong>';
+							if(json.branchNumber != null && json.branchNumber !='' && json.branchNumber !='undefined'){
+								result = result + '<span title="'+json.branchNumber+'">'+json.branchNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SWIFT Bank Identifier Code (BIC) :</strong>';
+							if(json.bankIdentifierCode != null && json.bankIdentifierCode !='' && json.bankIdentifierCode !='undefined'){
+								result = result + '<span title="'+json.bankIdentifierCode+'">'+json.bankIdentifierCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For PO :</strong>';
+							if(json.poEmail != null && json.poEmail !='' && json.poEmail !='undefined'){
+								result = result + '<span title="'+json.poEmail+'">'+json.poEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For Payment Remittance :</strong>';
+							if(json.paymentRemittanceEmail != null && json.paymentRemittanceEmail !='' && json.paymentRemittanceEmail !='undefined'){
+								result = result + '<span title="'+json.paymentRemittanceEmail+'">'+json.paymentRemittanceEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Building No/Name & Street  :</strong>';
+							if(json.bankAddress != null && json.bankAddress !='' && json.bankAddress !='undefined'){
+								result = result + '<span title="'+json.bankAddress+'">'+json.bankAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							}
+							
+							
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
 							result = result + '</div>';
 						result = result + '</div>';

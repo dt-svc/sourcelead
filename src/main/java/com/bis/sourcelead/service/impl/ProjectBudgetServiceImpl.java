@@ -63,8 +63,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 
 	@Override
-	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long Id) throws Exception {
-		return projectBudgetDao.getProjectBudgetByProjectTaskId(Id);
+	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long Id, Long loginOrgLocationId) throws Exception {
+		return projectBudgetDao.getProjectBudgetByProjectTaskId(Id,loginOrgLocationId);
 	}
 
 	@Override
@@ -78,13 +78,13 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long orgLocationId, String budgetStatus) throws Exception {
-		return projectBudgetDao.getProjectBudgetListByOrgLocationIdAndBudgetStatus(orgLocationId, budgetStatus);
+	public 	List<ProjectBudget>  getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long approverUserId,Long orgLocationId,String budgetStatus, String userRoleName) throws Exception{
+		return projectBudgetDao.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, budgetStatus,userRoleName);
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetListByOrgLocationId(Long orgLocationId) throws Exception {
-		return projectBudgetDao.getProjectBudgetListByOrgLocationId(orgLocationId);
+	public 	List<ProjectBudget>  getProjectBudgetListByOrgLocationId(Long approverUserId,Long orgLocationId,String userRoleName) throws Exception{
+		return projectBudgetDao.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId,userRoleName);
 	}
 	
 	@Override
@@ -111,6 +111,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 			projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL);
 			projectBudget.setEstimatedHours(projectBudgetRequestDTO.getEstimatedHours());
 			projectBudget.setEstimatedBudgetValue(projectBudgetRequestDTO.getEstimatedBudget());
+			projectBudget.setStatus(Constants.RECORD_ACTIVE);
 			projectBudget.setBudgetDescription(projectBudgetRequestDTO.getBaseLine());
 			if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetApprover())) {
 		     User use = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getBudgetApprover()));
@@ -143,7 +144,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         
         globalVarsMap.put("descrption", projectBudgetRequestDTO.getBaseLine());
         globalVarsMap.put("estimatedBudget", projectBudgetRequestDTO.getEstimatedBudgetCurrency() +" "+ projectBudgetRequestDTO.getEstimatedBudget());
-        globalVarsMap.put("estimatedHours", projectBudgetRequestDTO.getEstimatedHours());
+        globalVarsMap.put("estimatedHours", String.valueOf(projectBudgetRequestDTO.getEstimatedHours()));
         
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());

@@ -123,7 +123,8 @@ public class EmployeePayrollRestController {
 			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
 				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-				 isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
+				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
+//				isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
@@ -135,9 +136,9 @@ public class EmployeePayrollRestController {
 			}else if(Constants.INVOICE_DATA.equalsIgnoreCase(payrollType)) {
 				isInserted = invoiceDataService.saveInvoiceData(multipartFile,orgLocation,user,jsonObj);
 			}
-		}else{
+		}/*else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
-		}
+		}*/
 		return commonUtil.toJSON(isInserted);
 	}
 	/**
@@ -353,8 +354,7 @@ public class EmployeePayrollRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		
 		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
-//		Collections.sort(payrollReportList,new FinalPayrollComparator());  
-		Collections.sort(payrollReportList, new Comparator() {  
+		Collections.sort(payrollReportList, new Comparator<Object>() {  
             @Override  
             public int compare(Object obj1, Object obj2) {  
             	UserPayroll report1 = (UserPayroll)obj1;  
@@ -693,8 +693,14 @@ public class EmployeePayrollRestController {
 		return payrollBalance;
 	}
 	
-//	//
-	
+	/**
+	 * Add Check manually 
+	 * @param orgLocationId
+	 * @param userId
+	 * @param checksDTO
+	 * @return boolean
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/addCheques" }, method = RequestMethod.POST)
 	public boolean addCheques(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			                 @RequestParam(value = "userId", required = false) Long userId,ChecksDTO checksDTO) throws Exception {
@@ -705,4 +711,13 @@ public class EmployeePayrollRestController {
 		}
 		return isInserted;
 	}
+	
+	@RequestMapping(value = {"/getAllPayrollBalanceReport", "/rest/getAllPayrollBalanceReport"}, method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<PayrollBalance> getAllPayrollBalanceReport(PayrollBalance payrollBalance,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(payrollBalance.getOrgLocationId()));
+		ResponseList<PayrollBalance> list = employerPayrollCostService.getAllPayrollBalanceSheetByOrgLocationId(orgLocation,payrollBalance);
+		return list;
+	}
+	
 }

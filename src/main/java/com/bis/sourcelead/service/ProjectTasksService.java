@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 
@@ -56,7 +57,9 @@ public interface ProjectTasksService {
 	public void updateTaskName(String taskName, String taskId, Long userId)throws Exception;
 	
 	public void updateTaskPercentage(Integer percentage, String taskId, Long userId)throws Exception;
-    
+	
+	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
+	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
 	
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
@@ -66,5 +69,8 @@ public interface ProjectTasksService {
 	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
 	
 	 public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+	 
+	 ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+
 	 
 }

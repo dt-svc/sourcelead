@@ -42,7 +42,7 @@
 <style type="text/css">
 
 .actionHistory {
-margin-top: 75px; padding:10px; border: 1px solid #ddd;
+margin-top: 52px; padding:10px; border: 1px solid #ddd;
 }
 </style>
 
@@ -51,7 +51,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript.void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="<c:url value='/login'/>" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -63,11 +63,11 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <div class="clearfix"></div>
   <section class="container actionHistory">
   <h4>Actions Performed</h4>
-  <div class="clients_wrap_table">
+  <div class="clients_wrap_table hisOutWrap">
   	<div id="actionHistoryOrgList" class="clearfix clients_wrap_table overflow_inherint"></div>
 	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">
-<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
+<div class="welSiO" onclick="location.href='<c:url value='/login'/>'" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 <%-- 	<a href="<c:url value='/login'/>" class="btn btn-primary" title="Go to Loginpage">Go to Login <i class="fa fa-arrow-right paddingLeft"></i></a> --%>
 </div>
 </div>
@@ -78,7 +78,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
 
 <script> 
  window.onload = function() {
-	 var userSessionId = '${userLoginSession.id}';
+	 var userSessionId = '${userSessionId}';
 actionHistoryList(userSessionId);
  };
 </script>
@@ -196,7 +196,8 @@ function actionHistoryPagenation(){
 	    	"ordering": true,
 	    	"oLanguage": {
 	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
+					"sZeroRecords" : "",
+					"sEmptyTable" : ""
 	       }
 	    });
 	 $('#actionHistoryPagenation').wrap('<div class="overflow_Auto width100percnt"></div>');
@@ -212,19 +213,8 @@ var validationSettings = {
 	};
 </script>
           
-   <script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>   
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+      
 
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>   
 
 <script type="text/javascript">
 	(function($) {
@@ -247,11 +237,14 @@ var validationSettings = {
 	})(jQuery);
 </script> 
 
-<script>
-	function enableTabs(orgLocationsId){
-		document.getElementById('shift'+orgLocationsId+'').className = 'active';
+	<script>
+		function enableTabs(orgLocationsId) {
+			$('[id^=shift]').each(function() {
+	                this.className = '';   
+	            });
+			document.getElementById('shift' + orgLocationsId + '').className = 'active';
 		};
-</script>
+	</script>
          
 
 </body>

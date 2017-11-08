@@ -29,253 +29,224 @@ public class LeaveTypeDTO {
 	private int rejectedCount;
 	private int cancelCount;
 	private String numberOfDaysCount;
+	private String status;
 	
 	public String getName()
 	{
 		return name;
 	}
-	
 	public void setName(String name)
 	{
 		this.name = name;
 	}
-	
 	public String getDuration()
 	{
 		return duration;
 	}
-	
 	public void setDuration(String duration)
 	{
 		this.duration = duration;
 	}
-	
 	public String getHours()
 	{
 		return hours;
 	}
-	
 	public void setHours(String hours)
 	{
 		this.hours = hours;
 	}
-	
 	public String getHoursType()
 	{
 		return hoursType;
 	}
-	
 	public void setHoursType(String hoursType)
 	{
 		this.hoursType = hoursType;
 	}
-	
 	public String getBillingType()
 	{
 		return billingType;
 	}
-	
 	public void setBillingType(String billingType)
 	{
 		this.billingType = billingType;
 	}
-	
 	public String getApplicableToUsers()
 	{
 		return applicableToUsers;
 	}
-	
 	public void setApplicableToUsers(String applicableToUsers)
 	{
 		this.applicableToUsers = applicableToUsers;
 	}
-	
 	public String getDepartment()
 	{
 		return department;
 	}
-	
 	public void setDepartment(String department)
 	{
 		this.department = department;
 	}
-	
 	public List<String> getRoles()
 	{
 		return roles;
 	}
-
 	public void setRoles(List<String> roles)
 	{
 		this.roles = roles;
 	}
-
 	public String getCarryforward()
 	{
 		return carryforward;
 	}
-	
 	public void setCarryforward(String carryforward)
 	{
 		this.carryforward = carryforward;
 	}
-	
 	public String getNoOfLeavesPerYear()
 	{
 		return noOfLeavesPerYear;
 	}
-	
 	public void setNoOfLeavesPerYear(String noOfLeavesPerYear)
 	{
 		this.noOfLeavesPerYear = noOfLeavesPerYear;
 	}
-	
 	public String getDescription()
 	{
 		return description;
 	}
-	
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
-	
 	public String getLeavePolicy()
 	{
 		return leavePolicy;
 	}
-	
 	public void setLeavePolicy(String leavePolicy)
 	{
 		this.leavePolicy = leavePolicy;
 	}
-	
 	public String getPolicyName()
 	{
 		return policyName;
 	}
-	
 	public void setPolicyName(String policyName)
 	{
 		this.policyName = policyName;
 	}
-	
 	public String getVisibilityToAllUsers()
 	{
 		return visibilityToAllUsers;
 	}
-	
 	public void setVisibilityToAllUsers(String visibilityToAllUsers)
 	{
 		this.visibilityToAllUsers = visibilityToAllUsers;
 	}
-	
 	public String getLeavePolicyDescription()
 	{
 		return leavePolicyDescription;
 	}
-	
 	public void setLeavePolicyDescription(String leavePolicyDescription)
 	{
 		this.leavePolicyDescription = leavePolicyDescription;
 	}
-	
 	public String getOrgLocationId()
 	{
 		return orgLocationId;
 	}
-	
 	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
 	}
-
 	public String getNoOfLeavesPerMonth()
 	{
 		return noOfLeavesPerMonth;
 	}
-
 	public void setNoOfLeavesPerMonth(String noOfLeavesPerMonth)
 	{
 		this.noOfLeavesPerMonth = noOfLeavesPerMonth;
 	}
-
 	public String getLoginUserId()
 	{
 		return loginUserId;
 	}
-
 	public void setLoginUserId(String loginUserId)
 	{
 		this.loginUserId = loginUserId;
 	}
-
 	public String getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
-
 	public void setLeaveTypeId(String leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
-
 	public String getDeleteReason()
 	{
 		return deleteReason;
 	}
-
 	public void setDeleteReason(String deleteReason)
 	{
 		this.deleteReason = deleteReason;
 	}
-
-	public String getColorCode() {
+	public String getColorCode()
+	{
 		return colorCode;
 	}
-
-	public void setColorCode(String colorCode) {
+	public void setColorCode(String colorCode)
+	{
 		this.colorCode = colorCode;
 	}
-
-	public int getApprovedCount() {
+	public int getApprovedCount()
+	{
 		return approvedCount;
 	}
-
-	public void setApprovedCount(int approvedCount) {
+	public void setApprovedCount(int approvedCount)
+	{
 		this.approvedCount = approvedCount;
 	}
-
-	public int getPendingCount() {
+	public int getPendingCount()
+	{
 		return pendingCount;
 	}
-
-	public void setPendingCount(int pendingCount) {
+	public void setPendingCount(int pendingCount)
+	{
 		this.pendingCount = pendingCount;
 	}
-
-	public int getRejectedCount() {
+	public int getRejectedCount()
+	{
 		return rejectedCount;
 	}
-
-	public void setRejectedCount(int rejectedCount) {
+	public void setRejectedCount(int rejectedCount)
+	{
 		this.rejectedCount = rejectedCount;
 	}
-
-	public int getCancelCount() {
+	public int getCancelCount()
+	{
 		return cancelCount;
 	}
-
-	public void setCancelCount(int cancelCount) {
+	public void setCancelCount(int cancelCount)
+	{
 		this.cancelCount = cancelCount;
 	}
-
-	public String getNumberOfDaysCount() {
+	public String getNumberOfDaysCount()
+	{
 		return numberOfDaysCount;
 	}
-
-	public void setNumberOfDaysCount(String numberOfDaysCount) {
+	public void setNumberOfDaysCount(String numberOfDaysCount)
+	{
 		this.numberOfDaysCount = numberOfDaysCount;
 	}
-
+	public String getStatus()
+	{
+		return status;
+	}
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	
+	
 }

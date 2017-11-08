@@ -233,7 +233,7 @@ public class CandidateOffBoardController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
+//	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
 	@RequestMapping(value = "/viewOffboardCandidateDetails")
  	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
  			HttpServletRequest request) throws Exception {

@@ -13,4 +13,6 @@ public interface LeaveTypeService {
 
 	public LeaveType getLeaveTypeById(String leaveTypeId) throws Exception;
 
+	List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId);
+
 }

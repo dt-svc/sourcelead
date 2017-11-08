@@ -79,6 +79,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "PHONE")
 	private String phone;
+
+	@Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
 	
 	@Column(name = "STATUS") 
 	private String status;
@@ -239,6 +242,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setPhone(String phone)
 	{
 		this.phone = phone;
+	}
+
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public String getStatus()

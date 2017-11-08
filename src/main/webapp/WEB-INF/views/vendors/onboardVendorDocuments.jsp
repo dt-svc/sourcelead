@@ -2,54 +2,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<style>
-.timesheet_week_comm strong input.dele  {
-width : 10px !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm strong input.dele {
-width : 20px !important;
-}
-.timesheetDocs.timesheetDocs-custom {
-width: 65%;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span input {
-width: 275px !important; padding-left: 15px !important; text-indent:0; text-align: left;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label input[type="checkbox"] {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.vendorinput {
-	background-color: #fff; color: #333; border: 1px solid #ddd; width: 250px !important;
-	margin-right: 15px;
-}
-.timesheetDocs.timesheetDocs-custom .timesheetAttachment td {
-width: auto !important;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm label.switch {
-position: relative; background-color: transparent; width: 35px; overflow: inherit; padding: 5px 10px;
-}
-.ml-mr {
-margin-left: 15px !important; margin-right: 15px !important; margin-top: 5px !important;
-}
-.switch.switchvendor-custom input[type="checkbox"]{
-background: #f60; position: relative;top:0; top: -15px; opacity: 0;
-filter: alpha(opacity=0);  -moz-opacity: 0; -khtml-opacity: 0;
-}
-.timesheetDocs.timesheetDocs-custom .timesheet_week_comm span .inputpadding input[type="button"] {
-	padding-left: 35px !important;
-}
-a.downloadbtn {
-	position: absolute;top: 12px; color: #fff; padding-left: 10px; font-size: 15px;
-}
-</style>
-
 <div id="tab-b" class="newPrTabs_inn">
  <div id="choicepopUp"></div>
 	<form:form id="vendorOnboardUploadedDocuments_form" name="vendorOnboardUploadedDocuments_form" method="post">
 		 <div class="form-group">
+		  <label class="col-md-12 mt10">Required documents for onboarding :</label>
 			<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
                       <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 				        <span class="uploadAttachments"> 
@@ -132,11 +89,15 @@ function getOnboardDocuments(){
 	        	
      	       var result = "";
      	      result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
-	         	 for (var i = 0; i < json.length; i++) { 
+	         	 
+     	     if(json.length > 0){ 
+     	      for (var i = 0; i < json.length; i++) { 
 	         		 var opt = json[i]; 
 	         		 var datavalidation = '';
+	         		 var requiredAstrik = '';
 	         		 if(opt.isRequired == 'Y'){
-	         			datavalidation = "data-validation='validatedoc required'"
+	         			datavalidation = "data-validation='validatedoc required'";
+	         			requiredAstrik = "<span class='text-danger astrick'>&nbsp;*</span>";
 	         		 }else{
 	         			datavalidation = "data-validation-optional='true' data-validation='validatedoc'"
 	         		 }
@@ -150,13 +111,16 @@ function getOnboardDocuments(){
            				 result = result +"</td>";
            				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";
                 	 }else{
-                		 result = result +"<td><div><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'></div></td>";
+                		 result = result +"<td><div class='positionRelative'><input type='file' id='"+i+"vendorDocFile' field-name='Attachment' "+datavalidation+"  onchange='uploadVendorDocument("+i+")'  class='timesheetAttachmentValidation'>"+requiredAstrik+"</div></td>";
                     	 result = result +"<td><input type='hidden' value="+opt.id+"  name='vendorDocumentsFileInfo["+i+"].docId'></td>";
                     	 
                 	 }
                 	 
                 	 result = result +"</tr>";
 	         	 }
+     	     }else{
+	        		result = result +'<div><h4>&nbsp;&nbsp;&nbsp;No Documents Found</h4></div>';
+	        	}
          	 result = result +"</table>";
       	
       	 $("#vendorDocumentsList").empty();

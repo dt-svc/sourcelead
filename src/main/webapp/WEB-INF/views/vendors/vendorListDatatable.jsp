@@ -159,7 +159,6 @@ function getVendorList(){
 	          }, {
 	              "targets": colIndex++,
 	              "data": "initiatorCountry",
-	          	  "sortable": false,
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	              		var location = "";

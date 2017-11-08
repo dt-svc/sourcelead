@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.index.helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +34,7 @@ public class UserIndexHelper {
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
+			userIndex.setExtensionNumber(user.getExtensionNumber());
 			if(null != user.getIsMailSent()){
 				userIndex.setIsMailSent(user.getIsMailSent().toString());	
 			}

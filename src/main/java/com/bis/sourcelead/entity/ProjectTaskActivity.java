@@ -56,11 +56,11 @@ private static final long serialVersionUID = 1L;
 	private String activity;
  
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="PRIORITY", nullable=false )	
+	@JoinColumn(name="PRIORITY")	
 	private LookUpData priority;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="TASK_STATUS", nullable=false )	
+	@JoinColumn(name="TASK_STATUS")	
 	private LookUpData taskStatus;
 	
 	@Column(name = "ACTIVITY_DESCRIPTION")

@@ -17,7 +17,10 @@
 
 <script type="text/javascript">
    var sourceleadUrl ='${sourceleadUrl}';
+   var tokenParamName = "${_csrf.parameterName}";
+   var tokenValue = "${_csrf.token}";
 </script>
+
 
 <style>
 .viewTemplate {
@@ -688,7 +691,18 @@ function uploadAddApplicantRecrutierDoc() {
 <script>
 function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 var candidateId = '${candidateId}';
-	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatScript = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatScript = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatScript = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatScript = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatScript = 'yy-dd-mm'; 
+	  }
+	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 var result = "";
@@ -1016,7 +1030,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
 	 if($("#notifyToApplicantId").is(':checked')){
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
-		 alert("hello else");
 		 $("#notifyToApplicantId").val("N");
 	 }
 }
@@ -1373,12 +1386,16 @@ function getResumesList(){
 </script>
 
 <script type="text/javascript">
-function getRecruiterCandidateDetails(){
-	var candidateId = document.getElementById("candidateId").value
+    function getRecruiterCandidateDetails(){
+	
+	    var candidateId = document.getElementById("candidateId").value
+	    var requirementId = $("#requirementId").val();
+		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -1549,10 +1566,14 @@ function getRecruiterCandidateDetails(){
 
 <script>
 function getCandidateDetails(){
+	
      var candidateId = '${SourceLeadWeb_candidateId}'; 
+     var requirementId = $("#requirementId").val();
+ 	 var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+ 	 
      $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		   
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -2225,11 +2246,11 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 
 <script>
   function dobDatePicker() {
-	  $('#DOB').datepicker({
+	 /*  $('#DOB').datepicker({
 	      dateFormat: 'yy-mm-dd',
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  });
+	  }); */
 	  
   }
 </script>
@@ -2355,7 +2376,31 @@ function init(){
     setRateTypesByLocation();
 }
 </script>
-
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+ }
+ </script>
 
 
 <script>

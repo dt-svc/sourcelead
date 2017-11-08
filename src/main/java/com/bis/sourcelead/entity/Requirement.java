@@ -366,24 +366,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private Integer highestLevel;
 	
 	@Transient
+	@JsonProperty
 	private String noOfApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String noOfShortlistedApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String noOfSubmittedApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String noOfInterviewedApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String noOfOfferedApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String noOfBackOutApplicants;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactName;
 	
 	@Transient
@@ -398,9 +405,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsApprover;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsManager;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsInitiator;
 	
 	@Transient
@@ -425,9 +434,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String createdByName;
 	
 	@Transient
+	@JsonProperty
     private String[] level1ApproverUserId;
 	
 	@Transient
+	@JsonProperty
 	private String[] level2ApproverUserId;
 	
 	@Transient

@@ -107,7 +107,135 @@ $(document).ready(function() {
 <jsp:include page="../masterFooter.jsp" />
 <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
 
+
 <script>
+function refercontactList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix">';
+  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'<th>Contact Name</th>';
+		result = result +'<th>Email</th>';
+		result = result +'<th>Phone</th>';
+		result = result +'<th>Source</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>';
+	    $("#refercontactListDiv").empty();
+	    $("#refercontactListDiv").append(result);
+	    
+	    contactsDataTableList();
+}
+</script>
+
+
+<script>
+function contactsDataTableList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#contactsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue;
+	 contactsPagination(url);
+}
+</script>
+
+
+
+<script>
+function contactsPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#example').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 2
+        }),
+        "columns": [
+            { "data": "contactName" },
+            { "data": "email"},
+            { "data": "source"}
+           
+        ],
+        "columnDefs": [{
+	    	  	"targets": colIndex++,
+	    	  	"data": "contactName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "email",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+opt.email+'">'+opt.email+'</div></td>';
+	              return result;
+              		
+              }
+          },{
+	    	  "targets": colIndex++,
+              "data": "phone",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  var phone = "";
+            	  if(opt.phone != null && opt.phone != '' && opt.phone != 'undefined'){
+            		  phone = opt.phone;
+            	  }else{
+            		  phone = '------';
+            	  }
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+phone+'">'+phone+'</div></td>';
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "source",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#example").wrap("<div class='project_tabs_inn_table vendor_wrap_inn_table' style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#contactsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   contactsDataTableList();
+    	   }
+    	});
+}
+
+</script>
+
+
+<!-- <script>
 function refercontactList(){
 	$.ajax({
 	   	type: "POST",
@@ -123,7 +251,6 @@ function refercontactList(){
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
 			   	 result = result +'          <th>Source</th>';
-			   	/*  result = result +'          <th>Action</th>';  */
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
 			   	 result = result +'      <tbody>';
@@ -145,7 +272,6 @@ function refercontactList(){
 				   	 result = result +'<td><div class="text-left"><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'<td><div  class="tbldata-dotdot"><span>'+contactUserPhone+'</span></div></td>';
 				   	 result = result +'<td><div class="tbldata-dotdot-100"><span>'+report.contactSource+'</span></div></td>';
-				   	/*  result = result +'<td><div class="tbldata-dotdot-100"><span class="bg-blue status_contact paddingRight">Accepted</span><b title="Chat" class="text-success fa fa-comments"></b></div></td>'; */ 
 				   	 result = result +'</tr>';
 			   }
 			   	 result = result +'      </tbody>';
@@ -159,7 +285,7 @@ function refercontactList(){
 	
 }
 
-</script>
+</script> -->
 
 <script>
 	function predefineProfileImage(imageId){

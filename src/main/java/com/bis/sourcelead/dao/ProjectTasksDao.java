@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectTasks;
 
 public interface ProjectTasksDao {
@@ -41,10 +43,15 @@ public interface ProjectTasksDao {
     
     public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
     
+    Integer getProjectTasksCountByProjectId(Long projectId) throws Exception;
+    
     Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
     
     public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+    
+	ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+
     
 }

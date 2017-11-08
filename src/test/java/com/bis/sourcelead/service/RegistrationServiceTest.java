@@ -81,7 +81,6 @@ public class RegistrationServiceTest {
 		user.setEmail("shiva@gmail.com");
 		user.setFileContentType("string");
 		user.setFirstName("ajith");
-		user.setIsMailSent(Status.ACTIVE);
 		user.setJobTitle("developer");
 		user.setLastName("kumar");
 		user.setLocation("hyderabad");

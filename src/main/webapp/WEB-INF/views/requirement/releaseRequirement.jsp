@@ -83,10 +83,10 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   </li>
                   <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="approved_pop">
-                      <ul>
-                      	  <c:forEach var="venReport" items="${vendor_list}">  
-	                      	<li><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
-						  </c:forEach>
+                      <ul id="vendorReleaseCheckList">
+                      	  <%-- <c:forEach var="venReport" items="${vendor_list}">  
+	                      	<li id="VN${venReport.id}"><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
+						  </c:forEach> --%>
                       </ul>
                     </div>
                   </li>
@@ -94,14 +94,16 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                 </ul>
               </div>
               <!-- Contact Table -->
-              
-              <div id="vendorContacts"> </div>
+              <div id="vendorContactsLoaderDiv"></div>
+              <div id="vendorContacts">
+              </div>
              
               <!-- Contact Table Ends --> 
               
               <!-- Vendor Table -->
-              
-              <div id="vendor"></div>
+              <div id="vendorLoaderDiv"></div>
+              <div id="vendor">
+              </div>
               
               <!-- Vendor Table Ends --> 
             </div>
@@ -112,6 +114,9 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
 
       <!-- Accordion second Tab -->
          <form:form id="releaseToCrowdSourcing_form"  name="releaseToCrowdSourcing_form" method="post">
+         <div class="success_pop" id="relTocro" style="display: none;">
+	    	<i class="fa fa-check-circle"></i><span id="relMsgDiv"></span>
+	    </div>
          <div class="clearfix">
           <h2 onclick="opennetwork();">Open Network</h2>
           <div class="content clearfix" >
@@ -458,6 +463,13 @@ function releaseToOneVendor(vendorcheckboxId){
 			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId, 
 			        success: function(result) {
 			        	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);
+			        	
+			        	$("#relTocro").removeAttr("style");
+		    			$("#relTocro").css({ display: "block" });
+						$("#relMsgDiv").html("Success!! Job Release To Open Network");
+		       			relMsgFadeinFunction();
+			        	
+			        	
 			        },
 			    });  
 		        return true;
@@ -475,6 +487,15 @@ function releaseToOneVendor(vendorcheckboxId){
   
  
 </script>  
+
+<!-- Show success message after form submission script -->
+<script>
+	function relMsgFadeinFunction() {
+		$("#relTocro").fadeIn(200);
+        $('#relTocro').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 
 <script type="text/javascript">
         var validationSettings = {
@@ -532,6 +553,7 @@ function getContactsLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
+	$("#vendorContactsLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?requirementId="+requirementId+"&vendors="+vendors+"&status="+status+"&vendorSelectedIds="+vendorSelectedIds, 	   
@@ -625,6 +647,7 @@ function getContactsLists(){
 			   	    	    $("#vendor").empty();
 			   	    	 	$("#vendorContacts").empty();
 			   	    	    $("#vendorContacts").append(result);
+			   	    	 	$("#vendorContactsLoaderDiv").removeAttr("style");
 			   	    	 	candidatePagination();
                		}
 	   		    	/* }else{
@@ -709,7 +732,7 @@ function getVendorLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
-	
+	$("#vendorLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
@@ -731,9 +754,14 @@ function getVendorLists(){
 	           	        	result = result +'</tr>';
 	           	        	result = result +'</thead>';
 	           	        	result = result +'<tbody>';
+	           	        	var vendorCheckListResult = "";
 	           	        	for (var i=0; i<json.length; i++)
 	           				{  
 	           	        		var report = json[i];
+	           	        		if(report.noOfContatcs != 0){
+	           	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.id+'" name="vendorSelected" value ="'+report.id+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
+	           	        		}
+	           	        		
 	           	        		var location = "";
 	           	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
 	           	        			location = report.country+", "+report.state+", "+report.city;
@@ -806,8 +834,10 @@ function getVendorLists(){
 	           	    	    $("#vendorContacts").empty();  
 	           	    	 	$("#vendor").empty();
 	           	    	    $("#vendor").append(result);
+	           	    	 	$("#vendorLoaderDiv").removeAttr("style");
 	           	    	 	vendorPagination();
-   		    		
+	           	    	 $("#vendorReleaseCheckList").empty();
+	           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult);
 	   		    	/* }else{
 	               	 $("#vendor").removeAttr("style");
 		    	     var result ="";

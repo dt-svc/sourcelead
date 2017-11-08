@@ -48,9 +48,9 @@
 		 $.ajax({  
 	          type : "POST",
 	          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-	          success :function(data) {
+	          success :function(json) {
 	           
-	             			 var json = JSON.parse(data); 
+// 	             			 var json = JSON.parse(data); 
 		                	 $("#documentsSubmissionDetailsList").empty();
 		                	 var result = "";
 		                	 result = result +"<table id='documentsSubPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -64,8 +64,8 @@
 		                     result = result +"</thead>";
 		                     result = result +"<tbody>"; 
 		                  
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
+		                     for (var i = 0; i < json.data.length; i++) { 
+		                    	 var opt = json.data[i];  
 		                    	 result  = result + ' <tr>';
 		                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 		    	             	 {
@@ -89,7 +89,7 @@
 			                    	 }else{
 			                    		 result  = result + ' <td><div><span>----</span></div></td>';
 			                    	 }
-			                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\"></a>';
+			                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
 				           		result = result+'</div></td>';
 		                    	 result  = result + '</tr>';
 		                      } 

@@ -48,8 +48,8 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	 
 	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
-	@JsonBackReference
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
+	@JsonBackReference
   	private ProjectPlanningRequest projectPlanningRequestId;
     
     @Column(name = "NO_OF_RESOURCES")

@@ -28,10 +28,14 @@ function getVendorOnboardTasksList(){
 	        			 }else{
 	        				 closedSelected = 'selected'
 	        			 }
-	        			 
+	        			 if(opt.priority != null && opt.priority != '' && opt.priority != 'undefined'){
+	        				 priority = opt.priority;
+	        			 }else{
+	        				 priority = "--";
+	        			 }
 	        			 result = result +'<ul id="task'+opt.id+'">';
 		        		 result = result +'<li>Subject : '+opt.subject+'</li>';
-		        		 result = result +'<li><i class="fa fa-star-o"></i>Priority : '+opt.priority+'</li>';
+		        		 result = result +'<li><i class="fa fa-star-o"></i>Priority : '+priority+'</li>';
 		        		 result = result +'<li><i class="fa fa-clock-o"></i>Task Date : '+opt.vendorTaskDateStr+'</li>';
 		        		 
 		        		 result = result +'<li>';
@@ -80,16 +84,53 @@ function changeTaskStatus(taskId){
 
 <script>
 function saveAndFinishVendorOnbord(){
+	
 	var vendorOnboardId = '${vendorOnboardId}';
 	var notificationUUID = '${notificationUUID}';
-	 $("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	$("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/finishVendorOnboardProcess?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+	    	 url: sourceleadUrl+"/validateVendorOnboardRequiredAttachedDocuments?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 	         success: function(result) {
-	        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	        	 if(result == "Success"){
+	        		 $.ajax({
+	     		    	type: "POST",
+	     		    	 url: sourceleadUrl+"/finishVendorOnboardProcess?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+	     		         success: function(result) {
+	     		        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	     		        }
+	     		    });
+	        	 }else{
+	        		 $("#tasksLoading").removeAttr("style");
+	        		 alertMessage();
+	        	 }
 	        }
 	 });
+	 
 }
 </script>
 
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Need to attach Required Documents</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(id){
+	$("#popup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>

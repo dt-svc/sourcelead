@@ -192,6 +192,8 @@ public class CandidateIndex implements Serializable {
 	
 	private String recommendationFileUrl;
 	
+	private String resumeName;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -956,6 +958,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setRecommendationFileUrl(String recommendationFileUrl) {
 		this.recommendationFileUrl = recommendationFileUrl;
+	}
+
+	public String getResumeName() {
+		return resumeName;
+	}
+
+	public void setResumeName(String resumeName) {
+		this.resumeName = resumeName;
 	}
 	
 }

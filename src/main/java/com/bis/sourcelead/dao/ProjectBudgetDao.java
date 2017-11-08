@@ -13,11 +13,11 @@ public interface ProjectBudgetDao {
 	
 	ProjectBudget getProjectBudgetsById(Long Id)throws Exception;
 	
-	List<ProjectBudget>  getProjectBudgetByProjectTaskId(Long projectId) throws Exception;
+	List<ProjectBudget>  getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception;
 	
-	List<ProjectBudget>  getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long orgLocationId,String budgetStatus) throws Exception;
+	List<ProjectBudget>  getProjectBudgetListByOrgLocationIdAndBudgetStatus(Long approverUserId,Long orgLocationId,String budgetStatus, String userRoleName) throws Exception;
 	
-	List<ProjectBudget>  getProjectBudgetListByOrgLocationId(Long orgLocationId) throws Exception;
+	List<ProjectBudget>  getProjectBudgetListByOrgLocationId(Long approverUserId,Long orgLocationId,String userRoleName) throws Exception;
 	
 	Long getProjectBudgetReqestedIdByProjectId(Long projectId, Integer generatedIdcount);
 	

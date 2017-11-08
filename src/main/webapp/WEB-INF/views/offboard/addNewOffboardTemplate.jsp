@@ -592,8 +592,7 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	for (var i=0; i<json.length; i++)
 			{
@@ -715,7 +714,9 @@ function createTemplateDocs(saveType){
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("checkList").disabled = false;
 		     	        getOffboardingCheckList();
-		        	}else{
+		        	}
+		    	  
+		    	  else{
 		        		getTemplateResignationDocumentsDetails();
 		     	        getTemplateOffboardPackDocumentsDetails();
 		        	}
@@ -834,8 +835,7 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOffboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(data) {
-	        	 var json = JSON.parse(data);
+	        success: function(json) {
 	        	
 	        	 $("input[name=templateName]").val(json['templateName']);
 	        	 $("textarea[name=description]").val(json['description']);
@@ -864,9 +864,8 @@ function getTemplateResignationDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -910,9 +909,8 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1013,8 +1011,7 @@ function getOffboardingTasksList(){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
+		    success: function(json) {
 	        	 var result = "";
 	        	 
 	        	if(json.length > 0){ 
@@ -1068,6 +1065,7 @@ function getOffboardingTasksList(){
 	        	
 	        	result = result +'<div class="form-footer clearfix mt">';
 	    		result = result +'<div class="pull-right mr">';
+	    		result = result +'<input type="button" value="Cancel" id="finish_task" onClick="redirect();" class="btn btn-sm btn-default">';
 	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
 	    		result = result +'</div>';
 	    		result = result +'</div>';
@@ -1085,6 +1083,9 @@ function getOffboardingTasksList(){
 	}
 	
 }
+function redirect(){
+	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
+}
 </script>
 
 
@@ -1099,6 +1100,9 @@ function deleteTask(taskId){
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		document.getElementById("onboardTask"+taskId).remove();
+	        		if($("#offboardTasksList div[id*=onboardTask]").length === 0) {
+	        			$("#offboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+	        		}
 	        	}
 	        },
 	    });
@@ -1344,7 +1348,9 @@ function createTemplateCheckList(saveType){
 	      		     	        document.getElementById("templateTasks").disabled = false;
 	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
-	      		        	}else{
+	      		        	}
+	      	        		 
+	      	        		 else{
 	      		        		getOffboardingCheckList();
 	      		        	}
 	      		        } 

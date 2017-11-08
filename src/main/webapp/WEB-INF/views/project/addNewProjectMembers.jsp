@@ -337,37 +337,82 @@ function emptyRecordsList(){
 		    				
 		    				
 		    				
-		    				$( "#"+maxRowNum+"memberStartDate" ).datepicker({
-		    					  changeMonth: true,
-		    				      changeYear: true,
-		    				      dateFormat : 'dd-mm-yy',
-		    				      minDate : 0,
-		    					  onSelect : function(selected) {
-		    						  var id = $(this).attr('id');
-		    						  var rowId = id.split("memberStartDate")[0];
-		    						  var dt = toDate("#"+rowId+"memberStartDate");
-		    						  dt.setDate(dt.getDate() + 1);
-		    						  $("#"+rowId+"memberEndDate").datepicker("option", "minDate", dt);
-		    						  removeStartDateValidation(maxRowNum);
-		    						  getEstimatedHours(rowId);
-		    				 	  }
-		    				    });
-		    				
-		    				$( "#"+maxRowNum+"memberEndDate" ).datepicker({
-		    					  changeMonth: true,
-		    				      changeYear: true,
-		    				      dateFormat : 'dd-mm-yy',
-		    				      minDate : 0,
-		    					  onSelect : function(selected) {
-		    						  var id = $(this).attr('id');
-		    						  var rowId = id.split("memberEndDate")[0];
-		    						   var dt = toDate("#"+rowId+"memberEndDate");
-		    							dt.setDate(dt.getDate() - 1);
-		    							$("#"+rowId+"memberEndDate").datepicker("option", "maxDate", dt);
-		    							removeStartDateValidation(maxRowNum);
-		    							getEstimatedHours(rowId)
-		    				 	  }
-		    				    });
+		    				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		    				  var finalDateFormatAssignEmpUpdate = '';
+		    				  if(locationDate.match("yyyy-MM-dd")){
+		    					  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+		    				  }if(locationDate.match("dd-MM-yyyy")){
+		    					  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+		    				  }if(locationDate.match("MM-dd-yyyy")){
+		    					  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+		    				  }if(locationDate.match("yyyy-dd-MM")){
+		    					  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+		    				  }
+		    				  
+		    				var from = opt.startDateStr.split("-");
+		    		        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+		    		        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+		    							if(opt.endDateStr !=  null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		    								$("#"+maxRowNum+"memberStartDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:opt.startDateStr,
+		    									maxDate:opt.endDateStr,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '+1d');
+		    										dt.setDate(dt.getDate() + 1);
+		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+		    						                removeStartDateValidation(maxRowNum);
+		    										getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+
+		    								$("#"+maxRowNum+"memberEndDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									maxDate:opt.endDateStr,
+		    									minDate: datepickerStartDate,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '-1d');
+		    										dt.setDate(dt.getDate() - 1);
+		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+		    										 
+		    						                getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+		    								
+		    							}else{
+		    								$("#"+maxRowNum+"memberStartDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:opt.startDateStr,
+		    									 
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '+1d');
+		    										dt.setDate(dt.getDate() + 1);
+		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+		    										 
+		    						                removeStartDateValidation(maxRowNum);
+		    										getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+
+		    								$("#"+maxRowNum+"memberEndDate").datepicker({
+		    									dateFormat : finalDateFormatAssignEmpUpdate,
+		    									changeMonth: true,
+		    									changeYear: true, 
+		    									minDate:datepickerStartDate,
+		    							        onClose : function(selected) {
+		    							        	var dt = $(this).datepicker('getDate', '-1d');
+		    										dt.setDate(dt.getDate() - 1);
+		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+		    						                getEstimatedHours(maxRowNum)
+		    									}
+		    								});
+		    							}
 		    				
 		    				
 
@@ -480,11 +525,11 @@ function getAssociates(){
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu2">';
 	result = result +'<ul class="resourcetype-filter">';
 	result = result +'<li>';
-	result = result +'<input value="hotlist" id="hotlist" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input value="hotlist" id="hotlist" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="hotlist">Hotlist</label>';
 	result = result +'</li>';
 	result = result +'<li>';
-	result = result +'<input  value="assigned" id="Assigned" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input  value="assigned" id="Assigned" name="resourceType"  type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="Assigned">Assigned</label>';
 	result = result +'</li>';
 	result = result +'</ul>';
@@ -667,7 +712,7 @@ function getAssociatesFilter(){
 			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div class="tbldata-dotdot-sm">';
+			        	result = result +'<div class="tbldata-dotdot-200">';
 			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
 			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
 			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
@@ -726,6 +771,30 @@ function getAssociatesFilter(){
 	        });         
 	    } 
 	}
+</script>
+
+<script>
+function pagination(){  
+    $('#associatesListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 30, 50, -1], [10, 15, 30, 50, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#associatesListPagination').wrap("<div class='overflow_Auto'></div>");
+}
+</script>
+
+<script>
+function removeStartDateValidation(rowId){
+	$('#'+rowId+'startDate').find('p.jquery_form_error_message').remove();
+}
 </script>
 
 
@@ -810,50 +879,87 @@ function getAssociatesFilter(){
 			cell4.innerHTML = endDateText;
 			
 			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-			  var finalDateFormatResourceReqSave = '';
+			  var finalDateFormatAssignEmpUpdate = '';
 			  if(locationDate.match("yyyy-MM-dd")){
-				  finalDateFormatResourceReqSave = 'yy-mm-dd';
+				  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
 			  }if(locationDate.match("dd-MM-yyyy")){
-				  finalDateFormatResourceReqSave = 'dd-mm-yy'; 
+				  finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  finalDateFormatResourceReqSave = 'mm-dd-yy'; 
+				  finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
 			  }if(locationDate.match("yyyy-dd-MM")){
-				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
-			  }
-			  
-			  
-			  if(projectStartDate != null && projectEndDate != null){
-				  getEstimatedHours(maxRowNum)
+				  finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
 			  }
 			
-			$( "#"+maxRowNum+"memberStartDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					  var dt = $(this).datepicker('getDate', '+1d');
-						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
-						removeStartDateValidation(maxRowNum);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
 			
-			$( "#"+maxRowNum+"memberEndDate" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : finalDateFormatResourceReqSave,
-			      minDate : 0,
-				  onSelect : function(selected) {
-					   var dt = $(this).datepicker('getDate', '-1d');
-						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-						getEstimatedHours(maxRowNum)
-			 	  }
-			    });
+			var from = projectStartDate.split("-");
+	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
+	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
+						if(projectEndDate !=  null && projectEndDate != '' && projectEndDate != 'undefined'){
+							$("#"+maxRowNum+"memberStartDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:projectStartDate,
+								maxDate:projectEndDate,
+						        onClose : function(selected) {
+						        	var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+					                removeStartDateValidation(maxRowNum);
+									getEstimatedHours(maxRowNum)
+								}
+							});
+
+							$("#"+maxRowNum+"memberEndDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								maxDate:projectEndDate,
+								minDate: datepickerStartDate,
+						        onClose : function(selected) {
+						        	 var dt = $(this).datepicker('getDate', '-1d');
+										dt.setDate(dt.getDate() - 1);
+										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+					                getEstimatedHours(maxRowNum)
+								}
+							});
+							
+						}else{
+							$("#"+maxRowNum+"memberStartDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:projectStartDate,
+						        onClose : function(selected) {
+						        	var dt = $(this).datepicker('getDate', '+1d');
+									dt.setDate(dt.getDate() + 1);
+									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
+					                removeStartDateValidation(maxRowNum);
+									getEstimatedHours(maxRowNum)
+								}
+							});
+
+							$("#"+maxRowNum+"memberEndDate").datepicker({
+								dateFormat : finalDateFormatAssignEmpUpdate,
+								changeMonth: true,
+								changeYear: true, 
+								minDate:datepickerStartDate,
+						        onClose : function(selected) {
+						        	 var dt = $(this).datepicker('getDate', '-1d');
+										dt.setDate(dt.getDate() - 1);
+										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
+									 
+					                getEstimatedHours(maxRowNum)
+								}
+							});
+						}
 			
 			
+		  if(projectStartDate != null && projectStartDate != 'undefined' && projectStartDate != '' 
+							  && projectEndDate != null && projectEndDate != 'undefined' && projectEndDate != ''){
+						  getEstimatedHours(maxRowNum)
+		    }	
+						  
 			var cell5 = row.insertCell(5);
 			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
 			divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));

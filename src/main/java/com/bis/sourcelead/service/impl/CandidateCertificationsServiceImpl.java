@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,7 +128,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
 						
-                        Date validFrom = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidFrom());
+                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidFrom());
                         candidatecertificate.setValidFrom(validFrom);
 						
 					} catch (Exception e) {
@@ -136,7 +138,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
                         
-                        Date validTo = commonUtil.orgLocationDateFormat(candidateCertificationDTO.getDateFormat(),candidateCertificationDTO.getValidTo());
+                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidTo());
                         candidatecertificate.setValidTo(validTo);
 						
 					} catch (Exception e) {
@@ -269,6 +271,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				for(CandidateCertifications cert :certificationList){
 					certList.add(cert.getName());
 				}
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				candidateIndex.setCertifications(certList);
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());

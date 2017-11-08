@@ -10,6 +10,9 @@
 <link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 <script>
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
+<script>
 //description script
 	$(document).ready(function(){ 
 		var projectId = "${projectId}";
@@ -23,7 +26,7 @@
 	<section class="content-header clearfix">
 		
 		<div class="pull-left">
-			<h2 class="pull-left paddingRight">Project Task Summary</h2>
+			<h2 class="pull-left paddingRight">${projectName} - Task</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
@@ -92,12 +95,14 @@
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
 <!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
-	            <c:if test="${projectTask.taskType.id != 1059}">
+	            <c:if test="${taskTypeName != 'SubTask'}">
 	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
-	             <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
+                 <sec:authorize access="hasAnyRole('ROLE_ADD_TASK_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
+	                <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
+	             </sec:authorize>
 	            <div class="clearfix"></div>
 	          </ul>
 					          
@@ -201,22 +206,22 @@
 					   </div>
 					    
 					<div id="tab-task2" class="project_tabs_inn" style="display: none;">
-						 <div class="clearfix mt mb">
-						  <div class="clearfix">
-						    <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addSubTasks();showtasktype();"> Add Task </button>
-						  </div>
+						 <div class="clearfix mt10 mb btn-paddingright">
+						   <sec:authorize access="hasRole('ROLE_ADD_SUB_TASK')">
+						     <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addSubTasks();showtasktype();"> Add Task </button>
+						    </sec:authorize>
 						</div>
 
-						<div class="clearfix project_wrap_table filter_position datatable_filter">
+						<div class="clearfix project_wrap_table datatable_filter">
 						  <div id="subTaskListdivId"></div>
 						</div>
 		            </div>
 	            
 				   <div id="tab-task3" class="project_tabs_inn" style="display: none;">
-					  <div class="clearfix mt mb mr">
-						  <div class="clearfix">
+					  <div class="clearfix mt10 mb btn-paddingright">
+						   <sec:authorize access="hasRole('ROLE_ADD_DOCUMENTS')">
 						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addDocumentEntryPopUp();">Add Documents</button>
-						  </div>
+						    </sec:authorize>
 						</div>
 						
 						<!-- Document Modal Pop -->
@@ -239,7 +244,9 @@
 					 <div id="tab-task5" class="project_tabs_inn">
 						<div class="clearfix mt mb">
 						  <div class="clearfix mr">
+						  <sec:authorize access="hasRole('ROLE_ADD_TASK_COMMENTS')">
 						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addCommentsPopUp()">Add Comment</button>
+						  </sec:authorize>
 						  </div>
 						</div>
 						<!-- TimeEntry Modal Pop -->
@@ -258,8 +265,21 @@
 			</div>
 			
 		          <div class="col-md-3">
+		          
+		          <c:if test="${taskTypeName == 'SubTask'}">
+		          <c:if test="${not empty parentGeneratedId}">
+		          <div class="row dropdown-select mb">
+			              <label class="col-md-6">Parent Task Id :</label> 
+			              <div class="col-md-6 dropdown-select">
+			              <a href="${sourceleadUrl}/projectTaskSummary?taskUUID=${parentProjectTaskUUID}&projectClientUUID=${projectClientUUID}" title="${parentGeneratedId}">${parentGeneratedId}</a>
+			              </div>
+			              </div>
+		          </c:if>
+		          </c:if>
+		                 
+			              
 			           <div class="row dropdown-select mb">
-			              <label class="col-md-12">Task Type</label>
+			              <label class="col-md-12">Task Type </label>
 			              <div class="col-md-12 dropdown-select">
 			              <input type="text" value="${projectTask.taskTypes}" disabled="disabled" class="form-control input-sm">
 			                <%-- <select class="form-control" onchange="inlineEditTaskType(${projectTask.id});" id="taskTypeId" disabled="disabled">
@@ -325,11 +345,21 @@
 		                      <option value="100" ${projectTask.percentage  == 100 ? 'selected' : ''} >100 Percentage</option>  
 		                </select>
 		                <span class="pull-right">
-						 	<small class="status" id="percentageLabel" style="display:block;">Work Completed</small>
+						 	<small class="status" id="percentageLabel" style="display:block;">Completed</small>
 						 	<i class="fa fa-spinner fa-spin faSpin " id="percentageSpin" style="display:none;"></i>
 						 </span> 
 		            </div>
 		            
+		            <div class="clearfix  mb select-loader">
+		                <select class="pull-left" onchange="inlineEditBillingType(${projectTask.id});" id="billingId">
+		                <option value="Billable" ${projectTask.billableType  == 'Billable' ? 'selected' : ''} >Billable</option>  
+		                <option value="Non-Billable" ${projectTask.billableType  == 'Non-Billable' ? 'selected' : ''} >Non-Billable</option>  
+		                </select>
+		                <span class="pull-right">
+						 	<small class="status" id="billingLabel" style="display:block;">Billing</small>
+						 	<i class="fa fa-spinner fa-spin faSpin " id="billingSpin" style="display:none;"></i>
+						 </span>  
+		            </div>
 		            
 		              
 		               <div class="row mb">
@@ -377,9 +407,9 @@ function tasksAssignList(projectId){
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-        		var opt = json.projectMembersList[i];
+        		var opt = json[i];
 
         		if(!jQuery.isEmptyObject(map)){
         			 $.each(map, function(key, value) {
@@ -408,7 +438,6 @@ function tasksAssignList(projectId){
 function inlineditTaskName(){
 	var taskName = $("#taskName").val();
 	var projectTaskId = '${projectTask.id}';
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	var hiddenTaskName = $("#hiddenTaskName").val();
 	if(taskName.length > 250){
@@ -455,7 +484,6 @@ function inlineEditTaskStatus(taskId){
 	var taskStatusId = $("#taskStatusId").val();
     $("#statusLabel").fadeOut("slow");
     $("#statusSpin").fadeIn("slow");
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
 		   	type: "POST",
@@ -469,7 +497,6 @@ function inlineEditTaskStatus(taskId){
 }
 function inlineEditTaskPriority(taskId){
 	var taskpriorityId = $("#taskpriorityId").val();
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
        $("#priorityLabel").fadeOut("slow");
       $("#prioritySpin").fadeIn("slow");
@@ -486,7 +513,6 @@ function inlineEditTaskPriority(taskId){
 function inlineEditTaskSeverity(taskId){
 	var taskSeverityId = $("#taskseverityId").val();
 	var userId = '${SourceLeadWeb_userId}';
-	var sourceleadUrl = '${sourceleadUrl}';
 	$("#severityLabel").fadeOut("slow");
     $("#severitySpin").fadeIn("slow");
 	  $.ajax({
@@ -502,7 +528,6 @@ function inlineEditTaskSeverity(taskId){
 
 function inlineEditDescription(taskId){
 	var desc = $(".Editor-editor").text(); 
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 		   	type: "POST",
@@ -518,7 +543,6 @@ function inlineEditDescription(taskId){
 }
 function inlineEditTaskPercentage(taskId){
 	var percentageId = $("#taskPercentageId").val();
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	$("#percentageLabel").fadeOut("slow");
     $("#percentageSpin").fadeIn("slow");
@@ -528,6 +552,21 @@ function inlineEditTaskPercentage(taskId){
 		    success: function(data) {
 		    	$("#percentageLabel").fadeIn("slow");
   		    	$("#percentageSpin").fadeOut("slow");
+  		    	getTaskActivities();
+		    }
+	 }); 
+}
+function inlineEditBillingType(taskId){
+	var billingId = $("#billingId").val();
+	var userId = '${SourceLeadWeb_userId}';
+	$("#billingLabel").fadeOut("slow");
+    $("#billingSpin").fadeIn("slow");
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/ProjectTasks/updateBillingType?${_csrf.parameterName}=${_csrf.token}&billingId="+billingId+"&taskId="+taskId+"&userId="+userId,    
+		    success: function(data) {
+		    	$("#billingLabel").fadeIn("slow");
+  		    	$("#billingSpin").fadeOut("slow");
   		    	getTaskActivities();
 		    }
 	 }); 
@@ -553,7 +592,7 @@ function inlineEditTaskPercentage(taskId){
 				 result = result +' </div> ';
 				 
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
-			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea" >' + json.description + '</textarea>';
+			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true">' + json.description + '</textarea>';
 			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
 			   	 result  = result  + '</div>';
@@ -781,7 +820,7 @@ function documentTableList(){
 		url : sourceleadUrl+ "/ProjectTasks/getProjectTasksDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			 result = "";
-			    result  = result + '	<div class="clearfix project_wrap_table filter_position datatable_filter">';
+			    result  = result + '	<div class="clearfix project_wrap_table datatable_filter">';
 				result  = result + '	  <table id="taskDocumentPagination">';
 				result = result +  '    <thead>';
    		    	result = result + '	  <tr>';
@@ -813,8 +852,20 @@ function documentTableList(){
 	   		 		result  = result + '		          <td>';
 	   		 		result  = result + '		          <div class="tbldata-dotdot-me" title="'+description+'">'+description+'</div>';
 	   		 		result  = result + '		        </td>';
-	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="projectTaskDocumentView(\''+report.id+'\',\''+report.fileName+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
-	   		 	    result  = result + '               <td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i></div></td>';
+	   		 	    result  = result + '               <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\', \''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a></div></td>';
+	   		 	    result  = result + '               <td><div>';
+	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\')">';
+	   		 	       result  = result + '    <a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getEditTaskDocument('+report.id+');"></a>';
+	   		 	    '</sec:authorize>'; 
+	   		 	   
+	   		 	    '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_TASK_DOCUMENTS\')">';
+	   		 	       result  = result + ' <i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectTaskDocuments('+report.id+');"></i>';
+	   		 	    '</sec:authorize>'; 
+	   		 	    
+	   		 	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_DOCUMENTS\',\'ROLE_DELETE_TASK_DOCUMENTS\')">';
+	   		 	       result  = result + '----';
+	   		 	     '</sec:authorize>';
+	   		 	    result  = result + '  </div></td>';
 	   		 		result  = result + '		      </tr>';
    				}
    		    	result  = result + '    </tbody>';
@@ -928,8 +979,7 @@ function getEditTaskDocument(projectTaskDocId){
 </script>
 <script>
 function editUploadFile(){
-	
-	fileUpload(sourceleadUrl, "uploadBtn", "tasks", "updateDocument_form");
+	fileUpload("uploadBtn", "tasks", "updateDocument_form");
 }
 </script>
 <script>
@@ -1063,6 +1113,7 @@ function taskDocumentPagination(){
 <script>
 function addSubTasks(){
 			var projectId =  "${projectId}";
+			var projectStartDate = '${projectStartDate}';
 			var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -1135,12 +1186,20 @@ function addSubTasks(){
 			result = result	+ '             </select>'; 
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
+			
 			result = result	+ '         <div class="form-group">';
+			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
+			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
+			result = result	+ '           </div>';
+			result = result	+ '         </div>';
+			
+		/* 	result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Estimated Date</label>';
 			result = result	+ '           <div class="col-md-8">';
 			result = result	+ '             <input class="form-control calendar"  id="estimatedDate" name="estimatedDate" placeholder="Estimated Date" type="text" readonly>';
 			result = result	+ '           </div>';
-			result = result	+ '         </div>';
+			result = result	+ '         </div>'; */
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Severity</label>';
 			result = result	+ '           <div class="col-md-8 dropdown-select">';
@@ -1202,7 +1261,7 @@ function addSubTasks(){
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';
@@ -1262,20 +1321,13 @@ function addSubTasks(){
 				  }if(locationDate.match("yyyy-dd-MM")){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
+			    
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
 				});
 			     
 }
@@ -1299,7 +1351,7 @@ function cancelTask(){
 	$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
-	$("#txtEditor").val($('.Editor-editor').html('')); 
+	$("#txtEditor").val($('.Editor-editor').text('')); 
 	$("div.row-fluid .Editor-container").remove();
 	document.getElementById("projectTask_form").reset();
 	$("projectTask_form").validate().resetForm();
@@ -1319,8 +1371,7 @@ function getOwnerList(){
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Owner--</option>";
 	     		for (var i=0; i<json.length; i++)
@@ -1349,12 +1400,11 @@ function subTasksAssignList(projectId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-	        		var opt = json.projectMembersList[i];
+        		    var opt = json[i];
 	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
 			}
         	$("#assignTaskId").chosen();
@@ -1393,7 +1443,7 @@ function subTasksAssignList(projectId){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 $('#taskId').attr("data-validation","required"); 
+		 $('#taskId').removeAttr("data-validation","required");
 		 getSubTasks();
 	 } 
 	 
@@ -1467,7 +1517,6 @@ function subTasksAssignList(projectId){
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
@@ -1495,9 +1544,9 @@ function subTasksAssignList(projectId){
  </script>
  <script>
 function saveTasks(){
+	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var frm = $('#projectTask_form').serializeFormJSON();
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId =  "${projectId}";
@@ -1530,6 +1579,7 @@ $('body').on('blur', '#projectTask_form', function() {
 
 <script>
 function getSubTaskList(){
+	var projectClientUUID = '${projectClientUUID}';
 	var sourceleadUrl = '${sourceleadUrl}';
 	var projectId =  "${projectId}";
 	var projectTaskId = "${projectTask.id}";
@@ -1564,7 +1614,14 @@ function getSubTaskList(){
 				
 				 
 				result = result + '<tr>';
-				result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskId='+opt.id+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				
+				'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
+				   result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="!hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
+				   result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				'</sec:authorize>';
 				result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
 				result = result	+ '<td><div><span>'+taskStaus+'</span></div></td>';
 				result = result + '</tr>';
@@ -1658,7 +1715,7 @@ function addComment(){
 	result = result + '    <form id="addComment_form" name="addComment_form">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..."></textarea>';
+	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_Space  validate_length length2-500" field-name="Task Comment" ></textarea>';
 	result  = result + '   </div>';
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter mt5">';
@@ -1743,11 +1800,6 @@ function commentTableList(){
 </script>
 
 <!-- ============================ Comments related Script End's ========================================== -->
-
-
-
-
-
 
 
  <jsp:include page="../masterFooter.jsp" />	

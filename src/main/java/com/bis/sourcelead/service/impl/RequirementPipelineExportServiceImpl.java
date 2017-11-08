@@ -133,7 +133,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -583,7 +583,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
+		cell1.setCellValue("Job Name :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
 		cell2.setCellValue(requirement.getJobTitle());

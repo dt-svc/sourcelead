@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -72,7 +74,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		Candidate candidate = new Candidate();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
-		if(candidateId!=null){
+		if(candidateId !=null){
         	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
 	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
 	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
@@ -115,7 +117,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getStartDate());
+                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate());
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
@@ -126,7 +128,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = commonUtil.orgLocationDateFormat(candidateEducationDTO.getDateFormat(),candidateEducationDTO.getEndDate());
+                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getEndDate());
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -341,9 +343,13 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				ArrayList<String> eduList = new ArrayList<>();
 				for(CandidateEducation edu :educationList){
 					eduList.add(edu.getName());
+					
 				}
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				candidateIndex.setEducation(eduList);
 			}
+			
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 		}
 	}

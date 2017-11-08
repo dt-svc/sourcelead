@@ -39,17 +39,17 @@ function educationSubmissionDetailsList(candidateId){
 	  
 	 
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
                /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
+             		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
-             		 else{
+             		 else{ */
 	                	 $("#educationSubmissionDetailsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='educationSubmissionPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -66,9 +66,8 @@ function educationSubmissionDetailsList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    	 result  = result + '<td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
@@ -117,22 +116,7 @@ function educationSubmissionDetailsList(candidateId){
 	                     result = result +"</table>";
 	                     $("#educationSubmissionDetailsList").append(result); 
 	                     educationSubmissionPagination(); 
-			    	} 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No SubmissionEducation Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#educationSubmissionDetailsList").empty();
-				    $("#educationSubmissionDetailsList").append(result); 
-               } */
+			    //	} 
         },
           
      }); 

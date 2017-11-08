@@ -56,15 +56,16 @@ $(document).ready(function() {
      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
+    <div id="holidayLoading"></div>
     <form id="holiday_form" name="holiday_form" method="post">
-    <input type="hidden" name="holidayId" value="${holidayDTO.id}"/>
+    <input type="hidden" name="holidayId" id="holidayId" value="${holidayDTO.id}"/>
       <div class="clearfix form-horizontal inner-content">
         <div class="clearfix">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="form-group">
               <label class="col-md-3">Holiday Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="holidayNameDiv">
-                <input type="text" class="form-control" field-name="Holiday Name"  onblur="validateHolidayName();"  data-validation="required validate_Space validate_length length1-250" id="holidayName" name="holidayName" value="${holidayDTO.holidayName}">
+                <input type="text" class="form-control" field-name="Holiday Name" data-validation="required validate_Space validate_length length1-250" onblur="validateHolidayName();" id="holidayName" name="holidayName" value="${holidayDTO.holidayName}">
               </div>
             </div>
             <div class="form-group">
@@ -73,7 +74,7 @@ $(document).ready(function() {
                       <div class="clearfix row">
                       
                       <div class="col-sm-5 paddingRight" id="errFromDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
                       </div>
                       
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
@@ -110,7 +111,7 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt10 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
-                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate" placeholder="To Date">
+                      <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
@@ -180,7 +181,7 @@ $(document).ready(function() {
               <div class="form-group">
               <label class="col-md-3">Description</label>
               <div class="col-md-9">
-                  <textarea rows="2" class="form-control" name="description" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
+                  <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
               
@@ -207,10 +208,10 @@ $(document).ready(function() {
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
-		  	$("#holiday_form").attr("disabled", "disabled");
-			$("#holiday_form").addClass('button').val('Processing..');
+		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-					location.replace(sourceleadUrl+ "/viewHoliday");
+				$("#holidayLoading").removeAttr("style");	
+				location.replace(sourceleadUrl+ "/viewHoliday");
 			});
 			return true;
 		} else {
@@ -262,6 +263,7 @@ function cancel(){
 		            dt.setDate(dt.getDate() + 0);
 		            $("#toDate").datepicker("option", "minDate", dt);
 		            removeFromDate();
+		            validateHolidayName();
 		        }
 		  });
 		  
@@ -275,6 +277,7 @@ function cancel(){
 		            dt.setDate(dt.getDate() - 0);
 		            $("#fromDate").datepicker("option", "maxDate", dt);
 		            removeToDate();
+		            validateHolidayName();
 		        }
 		  });
 
@@ -288,46 +291,27 @@ function cancel(){
 		$('#errToDate').find('p.jquery_form_error_message').remove();
 	} 
 </script>
-<!-- <script type="text/javascript">
+<script>
 function validateHolidayName(){
-	var holidayName = (document.getElementById("holidayName").value).replace(/[{}]/g, "");
-	var holiday = encodeURIComponent(holidayName);
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	if(holiday.match(/^[^\s-](.*)*$/) != null){
-		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
-	if (holiday != null && holiday != '') {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
-			type : "GET",
-			url : sourceleadUrl + "/validateHolidayName?"+tokenParamName+"="+tokenValue+"&holidayName="+holiday+"&orgLocationId="+orgLocationId,
-			success : function(data) {
-				var result = data;
-				if (result == 'true') {
-					//duplicate holiday
-					$("#save_holiday").removeAttr("disabled");
-			        $("#save_holiday").attr("disabled", "disabled");
-					$("input#holidayName").after( "<p class='jquery_form_error_message'>" + holidayName + " is already existed as holiday</span>");
-					document.getElementById("holidayName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("holidayName").setAttribute( 'record-exist-errorMsg', holidayName +"  already existed as holiday");
-					$('input#holidayName').removeAttr( "record-exist record-exist-errorMsg");
-					
-				}else {
-					$("#save_holiday").removeAttr("disabled");
-					$('input#holidayName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#holidayName').attr('class','valid form-control');
-					$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_holiday").click(function() {
-						
-					});
-				}
-				
-				$("#loading").removeAttr("style");
-			},
-
-		});
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#holidayName").val();
+	var id = $("#holidayId").val();
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+			if(data == true){
+          		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+          		$("#save_holiday").removeAttr("disabled");
+		        $("#save_holiday").attr("disabled", "disabled");
+				$("input#holidayName").after( "<p class='jquery_form_error_message'>" + name + " is already existed as Holiday in this year</span>");
+                 }else{
+                	$("#save_holiday").removeAttr("disabled");
+                	$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
+                 }
+            });
+		}
 	}
-  }
-}
-</script>  -->
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

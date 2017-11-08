@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.Email;
@@ -164,6 +165,31 @@ public class CandidateDTO extends SearchDTO{
 	private String orgloationId;
 	
 	private String loginUserId;
+	
+	private String candidateName;
+	
+	private String candidateUpdateDateToString;
+	
+	private String vendorContactName;
+	
+	private String candidateResumeName;
+	
+	private String candidateResumeFileType;
+	 
+	private Integer assignedProjectsCount;
+	
+	private String fileUrl;
+	
+	private LinkedHashSet<String> allAndCandidateVisa;
+	
+	private LinkedHashSet<String> allAndCandidateSkills;
+	 
+	private String vendorName;
+	
+	private int profilePercentage;
+	 
+	private String candidateCreationType;
+
 
 	public String getCandidateId() {
 		return candidateId;
@@ -751,6 +777,16 @@ public class CandidateDTO extends SearchDTO{
 		this.candidateEmployers = candidateEmployers;
 	}
 
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
 	public String getOrgloationId()
 	{
 		return orgloationId;
@@ -770,4 +806,108 @@ public class CandidateDTO extends SearchDTO{
 	{
 		this.loginUserId = loginUserId;
 	}
+
+	public String getCandidateUpdateDateToString()
+	{
+		return candidateUpdateDateToString;
+	}
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString)
+	{
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+	public String getVendorContactName()
+	{
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName)
+	{
+		this.vendorContactName = vendorContactName;
+	}
+
+	public String getCandidateResumeName()
+	{
+		return candidateResumeName;
+	}
+
+	public void setCandidateResumeName(String candidateResumeName)
+	{
+		this.candidateResumeName = candidateResumeName;
+	}
+
+	public String getCandidateResumeFileType()
+	{
+		return candidateResumeFileType;
+	}
+
+	public void setCandidateResumeFileType(String candidateResumeFileType)
+	{
+		this.candidateResumeFileType = candidateResumeFileType;
+	}
+
+	public Integer getAssignedProjectsCount()
+	{
+		return assignedProjectsCount;
+	}
+
+	public void setAssignedProjectsCount(Integer assignedProjectsCount)
+	{
+		this.assignedProjectsCount = assignedProjectsCount;
+	}
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
+	public LinkedHashSet<String> getAllAndCandidateSkills() {
+		return allAndCandidateSkills;
+	}
+
+	public void setAllAndCandidateSkills(LinkedHashSet<String> allAndCandidateSkills) {
+		this.allAndCandidateSkills = allAndCandidateSkills;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public int getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+	public String getCandidateCreationType()
+	{
+		return candidateCreationType;
+	}
+
+	public void setCandidateCreationType(String candidateCreationType)
+	{
+		this.candidateCreationType = candidateCreationType;
+	}
+	
+	
 }

@@ -18,7 +18,7 @@ public interface AddExpensesService {
 
 	public List<ProjectMembers> getAllProjectsForExpenses( OrgLocations orgLoc, User loginUser);
 
-	public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status, String currencyCode) throws JSONException, NumberFormatException, Exception;
+	public void storeAddExpensesData(ExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request, String currencyCode) throws JSONException, NumberFormatException, Exception;
 
 	public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc,String currencyCode) throws Exception;
 

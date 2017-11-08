@@ -96,8 +96,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&sourceType=Client",        
-          success :function(data) {
-             			var json = JSON.parse(data);
+          success :function(json) {
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -190,7 +189,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     clientDocsPagination(); 
 	                     //msgFadein();
         },
           
@@ -205,13 +204,17 @@ function viewClientDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function clientDocsPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -299,7 +302,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -358,15 +361,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -459,13 +454,13 @@ function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
         	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
@@ -485,8 +480,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -606,7 +600,7 @@ function manageDates(startDateStr,endDateStr) {
 </script>
 
 <script>
-function removeResumeNameDiv(){
+function removeResumeDiv(){
 	$("#docNameDiv").hide();
 	$("#uploadDocumentDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");

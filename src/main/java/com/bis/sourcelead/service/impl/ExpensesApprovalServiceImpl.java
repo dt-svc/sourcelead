@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -99,6 +101,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
 
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
 	
@@ -150,18 +155,13 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
 							
-					
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee()) {
-						
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId() && !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId())){
-								expensesApproverHierarchy.setExpensesEmployeeUserId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId());
-							}else{
-								expensesApproverHierarchy.setExpensesEmployeeUserId("--");
-							}
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType())){
-								String empType = expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType();
+					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
+					if (null !=projectMember.getProjectMemberCandidteId()) {
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgLocations().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgRelationId().getId());
+									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
 									expensesApproverHierarchy.setExpenseEmpUserType(empType);
 								 }else{
@@ -171,15 +171,13 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpenseEmpUserType("--");
 							}
 						
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser()) {
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName()){
-								StringBuilder firstLastName = new StringBuilder();
-								expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(firstLastName.append(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName()).append("").append(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName()).toString());
-							}else{
-								expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());	
+						if (null != projectMember.getProjectMemberCandidteId()) {
+							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
+							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
+							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
+								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
-								expensesApproverHierarchy.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getEmail());
-								expensesApproverHierarchy.setExpensesUserid(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getId());
 						}
 						
 						if (null != expensesApproverHierarchy.getExpenseId()) {
@@ -189,6 +187,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
 							}
 						}
+						Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
+						if(StringUtils.isNotEmpty(expensesApproverHierarchy.getReopenRejectedReason()) && !isadmin){
+							expensesApproverHierarchy.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
+						}
+						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
 					}
 				}
 			}
@@ -383,10 +386,13 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				expenseArray[12] = submissionStatus.getValue();
+				    if(eah.getReopenRejectedReason()!= null) {
+				    	expenseArray[12] = "Rejected";
+				    }else {
+				    	expenseArray[12] = submissionStatus.getValue();	
+				    }
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -551,8 +557,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			if(null != expenseId.getExpenseStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
+			    if(eah.getReopenRejectedReason()!= null) {
+			    	writeRow.createCell(12).setCellValue("Rejected");
+			    }else {
 				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
+			    }
 			}
 			if(null != ex.getActionPerformedBy()){
 				writeRow.createCell(13).setCellValue(ex.getActionPerformedBy());
@@ -567,6 +577,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
 	}
 
+	@Override
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId){
+		return expensesApprovalDao.isReopenButtonVisibleForLoginOrg(expenseId, locationsId);
+	}
 
 	@Override
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
@@ -614,7 +628,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				//setting the class filed values
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
+				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);

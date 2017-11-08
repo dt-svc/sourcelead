@@ -98,7 +98,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			userMailBox.setCreatedDate(new Date());
 			userMailBox.setUpdatedDate(new Date());
 			
-			
+			if(hotListEmailCampaignDTO.getFileInfo() != null){
 			 FileInfo fileInfo = hotListEmailCampaignDTO.getFileInfo().get(0);
 			 if(fileInfo != null) {
 				 userMailBox.setFileContentType(fileInfo.getContentType());
@@ -106,7 +106,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			   	 userMailBox.setFileName(fileInfo.getFileName());
 			   	FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
 			 }
-			  
+			}
 			 
 			 
 			String table = getRequestedHotListCandidatesTable(candidatesIds);

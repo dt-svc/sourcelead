@@ -128,7 +128,6 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
  	    	     var closeElement = $('.proj_close');
  	    	      closeElement.removeAttr('onclick');
  	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
- 	    	      
 			     $("#timesheetPopUp").append(data);
 			     maskme();
 			     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -488,13 +487,10 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		   $("#loadTime").attr('style','position:absolute; width:100%; height:350px;top:-38px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 		   $.ajax({
-	          type : "POST",
-    	      data: formData,
-    	      contentType : 'application/json; charset=utf-8',
-    	      enctype: 'multipart/form-data',
-	          processData: false,
-	          contentType:false,
-    	      dataType : 'json',
+			   type : "POST",
+	   	        data: formData,
+		        processData: false,
+		        contentType:false,
 	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
 		      success :function(result) {
 		    	  
@@ -1414,13 +1410,23 @@ function reOpenMyTimesheet(projectMemberId,timesheetFrequency){
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeWhiteSpacesAdd();notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
+
+<script type="text/javascript">
+function removeWhiteSpacesAdd(){
+ var el = $("#reOpenReason").val();
+ var reopenval = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
+ $("#reOpenReason").val(reopenval);
+ 
+}
+</script>
+
 
 <script>
 function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
@@ -1641,7 +1647,9 @@ function validateUploadFile(id)
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-   		     $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+   		     $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+   		     fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","","","");
+   		     
 	      }
 	  }
 	  else{

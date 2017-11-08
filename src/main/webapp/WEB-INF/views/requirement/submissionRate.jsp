@@ -78,13 +78,13 @@ width: auto;
 							    <c:when test="${permission=='YES'}">
 								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 						          		<i class="fa fa-check-circle fa-3x"></i>
-							        	<p class="reason-msg">You Have accepted the Job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">You have accepted the job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 							    </c:when>    
 							    <c:otherwise>
 							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
-							        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							    </c:otherwise>
 							  </c:choose>
 						  </div>
@@ -114,7 +114,7 @@ width: auto;
 					     <c:otherwise>
 							    <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          	<i class="fa fa-clock-o fa-3x"></i>
-							        <p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        <p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							     </div>
 							    </c:otherwise>    
 					  </c:choose>
@@ -144,7 +144,7 @@ width: auto;
 					    <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
-					        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+					        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
 					  </c:choose>
@@ -210,6 +210,7 @@ width: auto;
   </footer>
   <!-- Footer Area --> 
 </div>
+<script type="text/javascript" src='resources/js/slead-common.js'></script>
 </body>
 </html>
 
@@ -279,18 +280,18 @@ width: auto;
 
 <script type="text/javascript">
 	function storeNegotiation() {
+		var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
-			if ($('#negotiation_form').validate(false, validationSettings)){ 
+			if ($('#negotiation_form').validate(false, validationSettings)){
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
 		    var formData = getFormData1("negotiation_form");
-		    
 			$.ajax({
 						type : "POST",
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
@@ -308,6 +309,17 @@ width: auto;
 	} 
 	    
 	
+</script>
+<script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
 </script>
 
 <script type="text/javascript">

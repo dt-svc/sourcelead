@@ -16,7 +16,7 @@ $(function(){
     	
         var themeColor = localStorage.getItem("themeColor");
     if(themeColor == 'dark-blue'){
-		 $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css?staticTime="'+staticTime+'" type="text/css" />');
+		 $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css" type="text/css" />');
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
@@ -24,7 +24,7 @@ $(function(){
 		 $('.footer').append('<script src="js/theme-one-script.js">');
     }
     else if(themeColor == 'flat-green'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css?staticTime="'+staticTime+'" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css" type="text/css" />');
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
@@ -33,7 +33,7 @@ $(function(){
     }
    else if(themeColor == 'hdr-blue'){
 	   
-       $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css?staticTime="'+staticTime+'" type="text/css" />');
+       $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css" type="text/css" />');
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
 		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
@@ -42,7 +42,7 @@ $(function(){
          $('<script src="js/theme-one-script.js">').remove();
 	}
     else if(themeColor == 'hdr-grey'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css?staticTime="'+staticTime+'" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css" type="text/css" />');
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
@@ -50,7 +50,7 @@ $(function(){
 		$('<script src="js/theme-one-script.js">').remove();
 	}
     else if(themeColor == 'hdr-greydrk'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css?staticTime="'+staticTime+'" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css" type="text/css" />');
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
@@ -59,7 +59,7 @@ $(function(){
 	}
     
     else if(themeColor == 'default-redTheme'){
-		$('head').append('<link rel="stylesheet" href="resources/css//sourcelead-theme-default.css?staticTime="'+staticTime+'" type="text/css" />');
+		$('head').append('<link rel="stylesheet" href="resources/css//sourcelead-theme-default.css" type="text/css" />');
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
 		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
@@ -79,7 +79,7 @@ $(document).ready(function (e) {
             window.alert('Please use a modern browser to properly view this template!');
         }
 
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css?staticTime="'+staticTime+'" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
@@ -90,9 +90,9 @@ $(document).ready(function (e) {
         if (typeof (Storage) !== "undefined") {
             localStorage.setItem("themeColor", "flat-green");
         } else {
-            window.alert('Please use a modern browser to properly view this 					template!');
+            window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css?staticTime="'+staticTime+'" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
@@ -105,6 +105,7 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
@@ -121,7 +122,7 @@ $(document).ready(function (e) {
             window.alert('Please use a modern browser to properly view this template!');
         }
 
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css?staticTime="'+staticTime+'" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
@@ -134,7 +135,7 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css?staticTime="'+staticTime+'" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
@@ -147,7 +148,7 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-default.css?staticTime="'+staticTime+'" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-default.css" type="text/css" />');
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();

@@ -491,6 +491,10 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 
 }
 
+	@Override
+	public List<CandidateOffBoarding> candidateOffboringDelayMail(){
+		return candidateOffBoardingDao.candidateOffboringDelayMail();
+	}
 
 	@Override
 	public CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser, Long orgLocationId)

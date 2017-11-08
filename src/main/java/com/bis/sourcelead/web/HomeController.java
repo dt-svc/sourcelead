@@ -94,8 +94,9 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: " );
 	}
 
-	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })
-	public String defaultPage() {
+/*	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })
+	public String defaultPage(HttpServletRequest request) {
+		try {
 		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
  		 if(auth != null && auth.getPrincipal() != null){
 				return "redirect:/dashboard";
@@ -103,8 +104,12 @@ public class HomeController {
 		 else{
 				return "redirect:/login";
 		 } 
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return "redirect:/login"; 
 	}
-	
+	*/
 	
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public String customExceptionPage(HttpRequestMethodNotSupportedException exception){

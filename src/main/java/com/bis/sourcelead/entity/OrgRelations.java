@@ -99,6 +99,12 @@ public class OrgRelations implements Serializable{
 	@Column(name="SIC_CODE")
 	private String sicCode;
 	
+	@Column(name="NAICS_CODE")
+	private String naicsCode;
+	
+	@Column(name="EIN_CODE")
+	private String einCode;
+	
 	@Column(name="TAX_REGISTRATION_NUMBER")
 	private String taxRegistrationNumber;
 	
@@ -171,6 +177,11 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String phone;
 	
+	
+	@Transient
+	@JsonProperty
+	private String phoneNumber;
+	
 	@Transient
 	@JsonProperty
 	private String email;
@@ -195,6 +206,14 @@ public class OrgRelations implements Serializable{
 	@Transient
 	@JsonProperty
 	private String vendorCreateduserName;
+	
+	@Transient
+	@JsonProperty
+	private String poEmail;
+	
+	@Transient
+	@JsonProperty
+	private String paymentRemittanceEmail;
 	
 	@Transient
 	private Integer noOfContatcs;
@@ -300,7 +319,40 @@ public class OrgRelations implements Serializable{
 	 @Transient
 	 @JsonProperty
 	 private String clientCurrency;
+	 
+	 
+    @Transient
+	@JsonProperty
+	private String isVendorOnboardSubmitted;
+    
+    @Transient
+	@JsonProperty
+    private String accountName;
+    
+    @Transient
+	@JsonProperty
+    private String accountNumber;
+    
+    @Transient
+	@JsonProperty
+    private String bankName;
+    
+    @Transient
+	@JsonProperty
+    private String branchNumber;
 	
+    @Transient
+	@JsonProperty
+    private String bankAddress;
+    
+    @Transient
+	@JsonProperty
+    private String bankIdentifierCode;
+    
+    @Transient
+	@JsonProperty
+    private String vendorNameForList;
+    
 	public String getStringDate()
 	{
 		return stringDate;
@@ -938,6 +990,122 @@ public class OrgRelations implements Serializable{
 
 	public void setIndustryName(String industryName) {
 		this.industryName = industryName;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
+	}
+
+	public String getIsVendorOnboardSubmitted() {
+		return isVendorOnboardSubmitted;
+	}
+
+	public void setIsVendorOnboardSubmitted(String isVendorOnboardSubmitted) {
+		this.isVendorOnboardSubmitted = isVendorOnboardSubmitted;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchNumber() {
+		return branchNumber;
+	}
+
+	public void setBranchNumber(String branchNumber) {
+		this.branchNumber = branchNumber;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getBankIdentifierCode() {
+		return bankIdentifierCode;
+	}
+
+	public void setBankIdentifierCode(String bankIdentifierCode) {
+		this.bankIdentifierCode = bankIdentifierCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
+	}
+
+	public String getVendorNameForList()
+	{
+		return vendorNameForList;
+	}
+
+	public void setVendorNameForList(String vendorNameForList)
+	{
+		this.vendorNameForList = vendorNameForList;
+	}
+
+	public void setResponderJsonLocationId(Long responderJsonLocationId)
+	{
+		this.responderJsonLocationId = responderJsonLocationId;
+	}
+
+	public void setLocationJsonId(Long locationJsonId)
+	{
+		this.locationJsonId = locationJsonId;
 	}
 
 	

@@ -47,6 +47,7 @@ import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
@@ -646,5 +647,10 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	public int getWageTaxSummaryVersionByLocationId(Long locationId)
 	{
 		return wageTaxSummaryDao.getWageTaxSummaryVersionByLocationId(locationId);
+	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation,PayrollBalance payrollBalance) throws Exception {
+		return wageTaxSummaryDao.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
 	}
 }

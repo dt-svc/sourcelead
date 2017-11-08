@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -47,6 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -663,12 +665,15 @@ public class CandidateListRestController {
 	   * @throws Exception
 	   */
 	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  CandidateDTO getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
 			String resultJson ="" ;
 			
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 			
+			 
+			 CandidateDTO candidateDTO = new CandidateDTO();
+			 
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
 			int percentage = candidateService.getCandidatePercentage(can,loginOrgLocation);
@@ -686,7 +691,7 @@ public class CandidateListRestController {
 				lhs.add(sl);
 			}
 		}
-		can.setAllAndCandidateSkills(lhs);
+		candidateDTO.setAllAndCandidateSkills(lhs);
 
 		// visa type
 		LinkedHashSet<String> visa = new LinkedHashSet<String>();
@@ -700,47 +705,48 @@ public class CandidateListRestController {
 				visa.add(sl);
 			}
 		}
-		can.setAllAndCandidateVisa(visa);
+		candidateDTO.setAllAndCandidateVisa(visa);
+		candidateDTO.setVisaType(can.getVisaType());
 
 		if (null != can.getExpectedRateCurrencey()) {
-			can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				can.setExpectedRateCurrencey(countries.getCurrency());
+				candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
 			}
 		}
 
 		if (null != can.getCurrentRateCurrency()) {
-			can.setCurrentRateCurrency(can.getCurrentRateCurrency());
+			candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
-				can.setCurrentRateCurrency(countries.getCurrency());
+				candidateDTO.setCurrentRateCurrency(countries.getCurrency());
 
 			}
 		}
 
 		if (null != can.getCurrentRateType()) {
-			can.setCurrentRateType(can.getCurrentRateType());
+			candidateDTO.setCurrentRateType(can.getCurrentRateType());
 		} else {
 			if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
 				String countryCheck = countries.getName();
 				switch (countryCheck) {
 				case "India":
-					can.setCurrentRateType("Monthly");
+					candidateDTO.setCurrentRateType("Monthly");
 					break;
 				default:
-					can.setCurrentRateType("Hourly");
+					candidateDTO.setCurrentRateType("Hourly");
 				}
 			}
 		}
 
 		if (null != can.getOrgRelationId()) {
 			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
-			if (can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()) {
-				can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
+			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
-			if (can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()) {
-				can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+				candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 
 		}
@@ -748,16 +754,30 @@ public class CandidateListRestController {
 			StringBuilder contactName = new StringBuilder();
 			can.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
-				can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
+				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
 			} else {
-				can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
 			}
 
 		}
-		can.setProfilePercentage(percentage);
-		resultJson = commonUtil.toJSON(can);
-		return resultJson;
+		candidateDTO.setProfilePercentage(percentage);
+		candidateDTO.setCountry(can.getCountry());
+		candidateDTO.setCity(can.getCity());
+		candidateDTO.setState(can.getState());
+		candidateDTO.setFirstName(can.getFirstName());
+		candidateDTO.setLastName(can.getLastName());
+		candidateDTO.setLocation(can.getLocation());
+		candidateDTO.setSummary(can.getSummary());
+		candidateDTO.setFileUrl(can.getFileUrl());
+		candidateDTO.setMobilePhone(can.getMobilePhone());
+		candidateDTO.setSkillsName(can.getSkillsName());
+		candidateDTO.setRateType(can.getRateType());
+		candidateDTO.setDesignationType(can.getDesignationType());
+		candidateDTO.setExpectedRate(can.getExpectedRate());
+		candidateDTO.setCurrentRate(can.getCurrentRate());
+		candidateDTO.setEmail(can.getEmail());
+		return candidateDTO;
 	}
 
 	/**
@@ -1066,11 +1086,11 @@ public class CandidateListRestController {
 	 * @throws NullPointerException
 	 */
 	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
-	public String updateCandidate(CandidateDTO CandidateDto,HttpServletRequest request) throws Exception {
+	public String updateCandidate(CandidateDTO candidateDto,HttpServletRequest request) throws Exception {
 		String isUpdated = "failed";
-		User user = userService.getUserById(Long.valueOf(CandidateDto.getLoginUserId()));
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(CandidateDto.getOrgloationId()));
-		Candidate candidate = candidateService.storeCandidate(CandidateDto, loginOrgLocation, user);
+		User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
+		Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
         if(candidate != null) {
         	isUpdated =  "success";	
         }
@@ -1359,7 +1379,19 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
+			
+			
+			ArrayList<String> oldSkills = new ArrayList<>();
+			if(StringUtils.isNotBlank(can.getSkillsName())){
+				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+			}
+			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+			ArrayList<String> actualNewSkills = new ArrayList<>();
+			actualNewSkills.addAll(newSkills);
+			 newSkills.removeAll(oldSkills);
+			 oldSkills.removeAll(actualNewSkills);
+			
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
@@ -1368,7 +1400,18 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
+			
+			ArrayList<String> oldSkills = new ArrayList<>();
+			if(StringUtils.isNotBlank(can.getSkillsName())){
+				oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+			}
+			ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
+			ArrayList<String> actualNewSkills = new ArrayList<>();
+			actualNewSkills.addAll(newSkills);
+			 newSkills.removeAll(oldSkills);
+			 oldSkills.removeAll(actualNewSkills);
+			
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills)).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
@@ -1479,23 +1522,27 @@ public class CandidateListRestController {
 							startDateUTC = TZ_DF_TS.parse(startDateString);
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-								String customStartTimeStr = null;
-								String customEndTimeStr = null;
-								if(null !=startTime){
-								 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-								}
+								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+								//DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
 								
-								if(null != endTime){
-								 customEndTimeStr = TZ_DF_CED.format(endTime);  
-								}
-								String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-								String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-								startDateUTC = TZ_DF_TS.parse(startDateString);
-								endDateUTC = TZ_DF_TS.parse(endDateString);
+								
+								
+								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
+								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
+								startDateUTC = startTime;
+								endDateUTC = endTime;
+							/*	String customStartTimeStr = null;
+								String customEndTimeStr = null;
+							if(null !=startTime){
+							 customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							}
+								
+							if(null != endTime){
+							 customEndTimeStr = TZ_DF_CED.format(endTime);  
+							}
+								String startDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), startTime);
+								String endDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), endTime);
+								*/
 							 }
 							
 						}
@@ -1576,7 +1623,8 @@ public class CandidateListRestController {
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
 						candidate.setPostedDateStr(currentDateInTimezone);
-						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						//candidate.setCandidateUpdateDateToString(currentTimeStr);
+						candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getCreatedDate()));
 						freshList.add(candidate);
 					}
 				    String reportsList = commonUtil.toJSON(freshList);
@@ -1599,10 +1647,10 @@ public class CandidateListRestController {
 			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if(null != candidate){
-					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
-						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
-					}else{
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_INACTIVE)){
 						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
 					}
 					candidate.setTeamId(null);
 					candidateService.saveOrUpdateCandidate(candidate);

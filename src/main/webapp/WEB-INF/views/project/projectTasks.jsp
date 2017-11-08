@@ -65,6 +65,15 @@ function projectTask(projectId, status) {
 		result = result +'</li>';
 	}
 	
+		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '	    	<ul>';
+		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
+			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
+		</c:forEach>  
+	    result = result	+ '	        </ul>';
+		result = result	+ '	    </div>';                	
+		result = result	+ '	</li>';
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
 		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
@@ -73,7 +82,7 @@ function projectTask(projectId, status) {
 		<c:forEach var="status" items="${taskStatusList}">     
 			<c:if test="${taskStatusList[0] == status || taskStatusList[1] == status}">
 			  result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}" checked  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
-		    </c:if>	  
+			  </c:if>	  
 		    <c:if test="${taskStatusList[0] != status  && taskStatusList[1] != status}">
 		      result = result	+ '	 <li><input   name="taskStatusId" value ="${status.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskStatusId${status.id}">${status.name}</label></li>';
 		    </c:if>
@@ -81,6 +90,7 @@ function projectTask(projectId, status) {
 	    result = result	+ '	        </ul>';
 		result = result	+ '	    </div>';                	
 		result = result	+ '	</li>';
+		
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Task Type</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
 		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 		result = result	+ '	    	<ul>';   
@@ -88,20 +98,23 @@ function projectTask(projectId, status) {
 		 
 		<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
 		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();" checked type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    </c:if>	
+	    
+		</c:if>	
 	    <c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
 	    result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
 	    </c:if>
 	    
-		
 		</c:forEach>  
 		 result = result	+ '	        </ul>';                                                              
 		result = result	+ '	    </div>';                	                                            
 		result = result	+ '	</li>';                                                                      
 		 
+	
+		
 		 result = result	+ '</ul>';
 		 result = result + '</div>';
-	result = result +'<div id="taskListdivId" class="datatable_filter"> </div>';
+// 	result = result +'<div id="taskListdivId" class="datatable_filter"> </div>';
+	result = result +'<div id="taskTitledivId" class="datatable_filter"> </div>';
 	$("#tab-1").empty();
 	$("#tab-3").empty();
 	$("#tab-2").empty();
@@ -110,6 +123,7 @@ function projectTask(projectId, status) {
 	$("#tab-3").append(result);
 	$("#tab-3").show();
 	$("#txtEditor").Editor();
+	
 	$(".project-tabs-menu a").click(
 			function(event) {
 				event.preventDefault();
@@ -133,95 +147,158 @@ function projectTask(projectId, status) {
 		var projectClientUUID = '${projectClientUUID}';
 		var projectId = $("#projectId").val();
 		var status =  $("#projectStatus").val();
-		var result = "";
-		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		
-		
-		 var taskStatus = [];
+		 var projectTaskStatus = [];
 		$('input:checkbox[name=taskStatusId]:checked').each(function() 
 	    {
-			taskStatus.push($(this).val());
+			projectTaskStatus.push($(this).val());
 	    });
 		
-		var taskType = [];
+		var projectTaskType = [];
 		$('input:checkbox[name=taskTypeId]:checked').each(function() 
 	     {
-			taskType.push($(this).val());
+			projectTaskType.push($(this).val());
 		 });
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl	+ "/getProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskStatus="+taskStatus+"&taskType="+taskType,
-					success : function(json) {
-						var result = "";
-						result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
-						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
-						result = result	+ '<div id="tasksLoadingImg"></div>';
-						result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
-						result = result + '<thead>';
-						result = result + '<tr id="projectTaskTableId">';
-						result = result + '<th>Task Name</th>';
-						result = result + '<th>Task Type</th>';
-						result = result + '<th>Priotiry</th>';
-						result = result + '<th>Assigned To</th>';
-						result = result + '<th>Status</th>';
-						result = result + '</tr>';
-						result = result + '</thead>';
-						result = result + '<tbody>';
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
-							if(opt.taskPriotiry != null && opt.taskPriotiry != "" && opt.taskPriotiry !="undefoned"){
-								taskPriotiry = opt.taskPriotiry;
-							}else{
-								taskPriotiry = "--";
-							}
-							if(opt.taskStaus != null && opt.taskStaus != "" && opt.taskStaus !="undefined"){
-								taskStaus = opt.taskStaus;
-							}else{
-								taskStaus = "--"
-							}
-							
-							if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
-								taskAssignedUsers = opt.taskAssignedUsers;
-							}else{
-								taskAssignedUsers = "--"
-							}
-							if(opt.generatedId != null && opt.generatedId != ""  && opt.generatedId != "undefined"){
-								generatedId = opt.generatedId + " - ";
-							}else{
-								generatedId = "";
-							}
-							 
-							result = result + '<tr>';
-							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'; 
-							result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+opt.taskTypes+ '</div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
-							result = result	+ '<td><div class="tbldata-dotdot_50">'+taskStaus+'</div></td>';
-							'</sec:authorize>'; 
-							
-							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">';
-							result = result+ '<td><div><a title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskTypes+ '</span></div></td>';
-							result = result	+ '<td><div><span>'+ taskPriotiry+ '</span></div></td>';
-							result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
-							result = result	+ '<td><div><span>'+opt.taskStaus+'</span></div></td>';
-							'</sec:authorize>'; 
-							result = result + '</tr>';
-
-						}
-						result = result + '</tbody>';
-						result = result + '</table>   ';
-						$("#taskListdivId").empty();  
-			    		$("#taskListdivId").append(result);  
-						
-						taskPagination();
-
-					}
-				});
+		
+	    var assignedMembers = [];
+		$('input:checkbox[name=assignedtaskId]:checked').each(function() 
+	    {
+			assignedMembers.push($(this).val());
+	    });
+		
+		var searchValue = $("#taskDataTableSearch").val();
+		 searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers;
+		prepareTasksList(url);
 	}
 </script>
-
+<script>
+function prepareTasksList(url){
+	var status =  $("#projectStatus").val();
+	var result = "";
+	result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
+    result = result	+ '<div class="remove_search">';
+    result = result +" <input type='text' placeholder='Search' id='taskDataTableSearch'/>";
+	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+	result = result	+ '<div id="tasksLoadingImg"></div>';
+	result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
+	result = result + '<thead>';
+	result = result + '<tr">';
+	result = result + '<th>Task Name</th>';
+	result = result + '<th>Task Type</th>';
+	result = result + '<th>Priotiry</th>';
+	result = result + '<th>Assigned To</th>';
+	result = result + '<th>Status</th>';
+	result = result + '</tr>';
+	result = result + '</thead>';
+	result = result + '</table>';
+	result = result	+ '</div>';
+	$("#taskTitledivId").empty();  
+	$("#taskTitledivId").append(result);  
+	projectTaskPaginations(url);
+}
+function projectTaskPaginations(url){
+	var colIndex = 0;
+	var projectClientUUID = '${projectClientUUID}';
+    $('#projectTaskPagination').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "taskName" },
+            { "data": "taskstype"},
+            { "data": "priority"},
+            { "data": "assignedTo" },
+            { "data": "projectTaskStatus" }
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "taskName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.generatedId != null && opt.generatedId != ""  && opt.generatedId != "undefined"){
+						generatedId = opt.generatedId + " - ";
+					}else{
+						generatedId = "";
+					}
+	    	  		result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "taskstype",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "priority",
+            "render": function ( data, type, opt, meta ) {
+            	if(opt.taskPriotiry != null && opt.taskPriotiry != "" && opt.taskPriotiry !="undefoned"){
+					taskPriotiry = opt.taskPriotiry;
+				}else{
+					taskPriotiry = "--";
+				}
+            	var result = "";
+            	result = result	+ '<td><div class="tbldata-dotdot_50">'+taskPriotiry+ '</div></td>';
+            	 return result;
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "assignedTo",
+              "render": function ( data, type, opt, meta ) {
+            	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
+						taskAssignedUsers = opt.taskAssignedUsers;
+					}else{
+						taskAssignedUsers = "--"
+					}
+            	  var result = "";
+            	  result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  return result;
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "projectTaskStatus",
+                "render": function ( data, type, opt, meta ) {
+                	if(opt.taskStaus != null && opt.taskStaus != "" && opt.taskStaus !="undefined"){
+						taskStaus = opt.taskStaus;
+					}else{
+						taskStaus = "--"
+					}
+                	var result = "";
+                	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+    	              return result;
+                }
+          }],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#taskDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   projectTaskList();
+    	   }
+    	});
+	
+}
+</script>
  
 <div class="vendor_wrap_mask"></div>
 	
@@ -460,6 +537,7 @@ function editCancel(){
     } 
     function addtask(){
     	var projectId =  $("#projectId").val();
+    	var projectStartDate = '${projectStartDate}';
         	var result = "";
 			result = result	+ ' 	<div class="tasks_wrapinn">';
 			result = result	+ '     <h4 class="modal-title">Add Task</h4>';
@@ -530,9 +608,9 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Date</label>';
+			result = result	+ '           <label class="col-md-4">Estimated Time</label>';
 			result = result	+ '           <div class="col-md-8">';
-			result = result	+ '             <input class="form-control calendar"  id="estimatedDate" name="estimatedDate" placeholder="Estimated Date" type="text" readonly>';
+			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
@@ -596,7 +674,7 @@ function editCancel(){
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';
@@ -657,20 +735,13 @@ function editCancel(){
 					  finalDateFormatProjectSave = 'yy-dd-mm'; 
 				  }
 				  
-			    $('#estimatedDate').datepicker({
-					dateFormat : finalDateFormatProjectSave,
-					changeMonth: true,
-					changeYear: true, 
-					onSelect : function(selected) {
-					}
-				});
 			    
 			    $('#dueDate').datepicker({
 					dateFormat : finalDateFormatProjectSave,
 					changeMonth: true,
 					changeYear: true, 
-					onSelect : function(selected) {
-					}
+					minDate : projectStartDate,
+					 
 				});
     }
     $(".proj_close, .side_mask").click(function(){
@@ -701,7 +772,7 @@ function editCancel(){
 		$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		$("#txtEditor").val($('.Editor-editor').html('')); 
+		$("#txtEditor").val($('.Editor-editor').text('')); 
 		$("div.row-fluid .Editor-container").remove();
 		document.getElementById("projectTask_form").reset();
 		$("projectTask_form").validate().resetForm();
@@ -722,8 +793,7 @@ function getOwnerList(){
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Owner--</option>";
 	     		for (var i=0; i<json.length; i++)
@@ -754,9 +824,9 @@ function tasksAssignList(projectId){
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
-        	for (var i=0; i<json.projectMembersList.length; i++)
+        	for (var i=0; i<json.length; i++)
 			{
-	        		var opt = json.projectMembersList[i];
+        		    var opt = json[i];
 	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
 			}
         	$("#assignTaskId").chosen();
@@ -770,8 +840,8 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
+	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();

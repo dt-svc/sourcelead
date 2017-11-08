@@ -3,8 +3,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		$("#dataTableSearch").val(searchValue);
 		candidateList();
 	} else if(candidateKeyword == "candidateSearch"){
-		/*candidateSideBar(candidateIdSearchId);
-		candidateQuickViewProfile(candidateIdSearchId);*/
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
 		candidateList();
 		$("#upcandidateStatus").val('');
 	} else {
@@ -134,7 +134,7 @@ function cpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
+	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -148,6 +148,7 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
+	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
 		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 		             }
@@ -157,6 +158,7 @@ function cpagination(url){
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
+		              result = result +"</div>";
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
@@ -185,7 +187,7 @@ function cpagination(url){
 	            		lastName = "";
 	            	}
             		if(name1Flag)
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+"); candidateSideBar("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              
 	              if(name2Flag)
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span></div></td>";
@@ -229,6 +231,7 @@ function cpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "mobilePhone",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
 	    	  		var mobilePhone = "";
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){

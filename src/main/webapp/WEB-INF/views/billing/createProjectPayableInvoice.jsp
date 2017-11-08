@@ -22,6 +22,9 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
         <h2>Project Bill</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
+    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -355,7 +358,7 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="lineItems['+i+'].candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="lineItems['+i+'].candidate">';
-             result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="lineItems['+i+'].user">';
+            /*  result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="lineItems['+i+'].user">'; */
              result = result +' </td>';
              result = result +'  <td class="tblminwidth-150">';
              result = result +' <textarea type="text" class="form-control input-sm" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
@@ -499,7 +502,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName"  data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="lineItems['+i+'].candidate">';
-    	 result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="lineItems['+i+'].user">';
+    	/*  result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="lineItems['+i+'].user">'; */
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
@@ -1126,6 +1129,14 @@ function saveInvoice(saveType){
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
+					    		if(saveType == 'SENT'){
+					    			$("#msgDiv").html("Successfully you have sent a Bill..");
+					    		}else if(saveType == 'DRAFT'){
+					    			$("#msgDiv").html("Bill saved Successfully..");
+					    		}
+	    		     			msgFadein();
 			  				}
 			  			   }); 
 		        	 
@@ -1140,6 +1151,11 @@ $('body').on('blur', '#project_payable_invoice_form', function() {
 	$("#project_payable_invoice_form").showHelpOnFocus();
 	$("#project_payable_invoice_form").validateOnBlur(false, validationSettings);  
 }); 
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
 </script>
  
 <script>
@@ -1559,7 +1575,7 @@ function getVendorContacts(vendorContactId){
 		var opt = json[i];
 		
 		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
+		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spoc){
 			selected = 'selected';
 		}
 		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";

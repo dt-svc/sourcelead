@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadActionsDao;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -188,6 +187,22 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
     
 	    return actionsList;
+	}
+
+	@Override
+	@Transactional
+	public SourceleadActions getSourceleadActionsByActionRole(String actionRole) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SourceleadActions> action = new ArrayList<SourceleadActions>();
+		logger.debug("getSourceleadActionsByActionRole start");
+		action = session.createQuery("from SourceleadActions sa where sa.actionRole = :actionRole" ).setCacheable(true).setString("actionRole", actionRole ).setCacheable(true).list();
+		logger.debug("getSourceleadActionsByActionRole end");
+		if (action.size() > 0) {
+			return action.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

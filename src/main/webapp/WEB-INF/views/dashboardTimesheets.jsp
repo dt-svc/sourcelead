@@ -83,8 +83,8 @@ function timeSheetSubmissionStatusCount(timesheetType){
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	
 		        
 

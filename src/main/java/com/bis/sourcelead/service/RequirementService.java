@@ -46,6 +46,8 @@ public interface RequirementService {
 	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 	
 	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
+
+	void rejectedInitiatorUserEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 	
 	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype) throws Exception;
 	

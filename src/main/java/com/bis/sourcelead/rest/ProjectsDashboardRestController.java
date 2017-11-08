@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -182,14 +183,15 @@ public class ProjectsDashboardRestController {
 		 * @throws Exception
         */
 			@RequestMapping(value = "/getProjectsByStatusAndClient")
-			public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+			public ResponseList<ProjectsDTO> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectMode", "projectDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
@@ -198,7 +200,7 @@ public class ProjectsDashboardRestController {
 				}
 				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectsDTO.setSortOrder(sortColumnOrder);
-				ResponseList<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+				ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
 			    
 				return projectsList;
 			}
@@ -212,11 +214,11 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   
-		     String ProjectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
+		     ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   
 			 return ProjectDetails;
 	  }
@@ -278,11 +280,11 @@ public class ProjectsDashboardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getProjectDetailsForResouceTransfer", method = RequestMethod.POST)
-	 public @ResponseBody String getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
+	 public @ResponseBody ProjectsDTO getProjectDetailsForResouceTransfer(@RequestParam(value="projectId", required=false) Long projectId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception{ 
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		     String projectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
+		     ProjectsDTO projectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
 			 return projectDetails;
 	  }
 	 
@@ -297,12 +299,10 @@ public class ProjectsDashboardRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
 	 @RequestMapping(value = "/updateProjectByProjectId", method = RequestMethod.POST)
-	 public String updateProjectByProjectId(@RequestParam(value="json", required=false) String json,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+	 public String updateProjectByProjectId(ProjectsDTO projectsDTO,@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
-		 String json1 = "{"+json+"}";	
-		 JSONObject jsonObj = new JSONObject(json1);
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
-		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, jsonObj);
+		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, projectsDTO);
 	
 		 resultJson = commonUtil.toJSON(projects);
 		 return resultJson;
@@ -316,11 +316,30 @@ public class ProjectsDashboardRestController {
 		 */
 		 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
 		 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
-		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
-			 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
+		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,
+				 @RequestParam(value="taskStatus", required=false) String taskStatus,HttpServletRequest request) throws Exception {
+				List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
 			 return taskList;
 		 }
 				 
+		 
+		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
+		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
+			 
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+				}
+				projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectTasksDTO.setSortOrder(sortColumnOrder);
+				ResponseList<ProjectTasksDTO>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+			 return taskList;
+		 }
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -329,12 +348,10 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody ProjectMembers  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
+	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
 			 HttpServletRequest request) throws Exception{ 
-		 String resultJson;
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
-		
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
 		 return employeeList;
 	  }
 	 
@@ -703,12 +720,10 @@ public class ProjectsDashboardRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getProjectDocumentsList")
-		public String getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+		public List<ProjectDocuments> getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
 		{
-			String resultJson;
 			List<ProjectDocuments> projectDocumentList = projectDocumentsService.getProjectDocumentsListByProjectIdId(projectId);
-			resultJson = commonUtil.toJSON(projectDocumentList);
-			return resultJson;
+			return projectDocumentList;
 		}
 	 /**
 	  * @author Laxman

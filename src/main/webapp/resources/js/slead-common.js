@@ -10,7 +10,10 @@ function getFormData(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
-	indexed_array[n['name']] = n['value'];
+		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
+			indexed_array[n['name']] = n['value'];
+		else
+			indexed_array[n['name']] = n['value'].trim();
 	});
 	return indexed_array;
 }
@@ -20,7 +23,10 @@ function getFormData1(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var formData = new FormData();
 	$.map(unindexed_array, function (n, i) {
-		formData.append(n['name'], n['value']);
+		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
+			formData.append(n['name'], n['value']);
+		else
+			formData.append(n['name'], n['value'].trim());
 	});
 	return formData;
 }
@@ -37,8 +43,19 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var count = 0;
 	for(var e in files) {
+		if(!$.isNumeric(e))
+			continue;
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			continue;
 		data.append('file', files[e]);
+		count ++;
+	}
+	if(count === 0) {
+		$(".file_mask").hide();
+		alert("Please select valid file (zip files and rar files are not allowed)");
+		return;
 	}
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
@@ -61,60 +78,6 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	});
 }
 
-
-/*function applyData(data, formId, name, id) {
-	if($("#"+formId+" input[name*="+name+"][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*="+name+"][data-id="+id+"]").remove();
-	}
-
-	if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
-		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 4;
-	}
-	
-	if(formId == 'vendorOnboardUploadedDocuments_form'){
-		  var i = name.split('@')[1];
-		  name = name.split('@')[0];
-	}
-	
-	else{
-		var i = $("#"+formId+" input[type=hidden][name*="+name+"]").length / 3;
-	}
-
-function applyData(data, formId, name, id) {
-	 
-	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
-		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
-	}
-	var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
-	
-
-		
-	for(var e in data) {
-		var data1 = data[e];
-		if(data[0].fileInfo) {
-			data1 = data[e].fileInfo;
-		}
-		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data1.fileURL+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data1.fileName+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data1.contentType+"'/>";
-		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
-			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";
-		}
-		$("#"+formId).append(html);
-		i ++;
-	}
-	 
-	
-	if(data && data.length > 0 && data[e].fileInfo) {
-		for(var e in data) {
-			applyResumeData(data[e]);
-		}
-	}
-}*/
-
-
-
-
 function applyData(data, formId, name, id) {
 	if($("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").length > 0) {
 		$("#"+formId+" input[name*='"+name+"'][data-id="+id+"]").remove();
@@ -131,14 +94,25 @@ function applyData(data, formId, name, id) {
 	}
 	
 	for(var e in data) {
-		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data[e].fileURL+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data[e].fileName+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data[e].contentType+"'/>";
+		if(!$.isNumeric(e))
+			continue;
+		var data1 = data[e];
+		if(data[0].fileInfo) {
+			data1 = data[e].fileInfo;
+		}
+		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data1.fileURL+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data1.fileName+"'/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data1.contentType+"'/>";
 		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
 			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";
 		}
 		$("#"+formId).append(html);
 		i ++;
+	}
+	if(data && data.length > 0 && data[e].fileInfo) {
+		for(var e in data) {
+			applyResumeData(data[e]);
+		}
 	}
 }
 
@@ -191,6 +165,7 @@ function saveCandidateImage(candidateId, formId, data){
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
 	                        		  cancel(candidateId);
+	                        		  candidateSideBar(candidateId);
 	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
@@ -215,7 +190,7 @@ function saveUserProfileImage(formId,data){
                       success: function(result) {
                     	  if(result)
                     		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-//                   		  location.replace(sourceleadUrl+"/userProfile");  
+                  		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
         return true;         
@@ -228,26 +203,15 @@ return false;
 function uploadResumeOnSelect(formId) {
 	$("#uploadBtn").change(function() {
 		$("#uploadFile").focus();
-      	 if(validate_fileupload(this.value)){
-      		 var docSize = this.files[0].size;
      	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-     	      if(docSize > 2097152){
-     	    	  	document.getElementById("uploadFile").value = '';
-     	    	  	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-     			$("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-     			document.getElementById("uploadFile").setAttribute('record-exist','yes');
-     			document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-        		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
-     	      }
-      	 }
+     	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
+
 	});
 }
 
 function applyResumeData(json) {
+	
 	var name = json.name;
 	var firstName = '';
 	var lastName = '';
@@ -267,30 +231,59 @@ function applyResumeData(json) {
 	if(!$("#email").attr('readonly'))
 		validateCandidateEmail();
 	$("#candidateSkills").empty();
-	 var internalOutput = "";
-	 
+	
+	var internalOutput = "";
 	var skills = json.skills;
 	if(skills != null && skills != 'undefined' && skills != ''){
 		var str_array = skills.split(',');
+	} else {
+		str_array = [];
+	}
+	
+   for(var j = 0; j< skillList.length; j++){
+	    var existed = 0;
 		for(var i = 0; i < str_array.length; i++) {
 		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		   if(str_array[i] == skillList[j]){
+				 existed = 1;
+				 internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+				 break;
+		  }
 		}
-	}
-	$("#candidateSkills").append(internalOutput);
+		if(existed == 0){
+			internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+        }
+	 }
+	
+	$("#candidateSkills").html(internalOutput);
 	$("#candidateSkills").trigger("chosen:updated");
 	$("#candidateEducation").trigger("chosen:updated");
 	
 	$("#candidateEducation").empty();
+	
 	 var internalOutput = "";
-	var edu = json.edu;
-	if(edu != null && edu != 'undefined' && edu != ''){
-		var str_array = edu.split(',');
+	 var edu = json.edu;
+	 if(edu != null && edu != 'undefined' && edu != ''){
+			var str_array = edu.split(',');
+	 }else{
+		 str_array = [];
+	 }
+	 for(var j = 0; j< educationList.length; j++){
+		var existed = 0;
+	 
 		for(var i = 0; i < str_array.length; i++) {
 		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		   if(str_array[i] == educationList[j]){
+				   existed = 1;
+				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+				   break;
+		   }
 		}
-	}
+		if(existed == 0){
+			internalOutput = internalOutput+"<option value='"+educationList[j]+"'>"+educationList[j]+"</option>";
+        }
+		
+	 }		
 	$("#candidateEducation").append(internalOutput);
 	$("#loading").removeAttr("style");
 }

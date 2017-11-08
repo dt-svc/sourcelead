@@ -32,7 +32,7 @@ window.onload = function () {
                   
                   <!-- <ul class="popdiv_two"> -->
                   <li>
-                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
+                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
                   <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
@@ -95,7 +95,7 @@ window.onload = function () {
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
-                             <option value="BIS_USERS">Employees</option>
+                             <option value="BIS_USERS">Master Data</option>
                              <option value="BIS_CHECKS">Checks</option>
                               <option value="INVOICE">Invoice Data</option>
                           </select>

@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
@@ -13,7 +14,7 @@ public interface ReferContactsService {
 	
 	ReferContacts getReferContactsByUUID(String contactUUID) throws Exception;
 	
-	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;
+	ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO, Long userId,Long orgLocationId) throws Exception;
 
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 

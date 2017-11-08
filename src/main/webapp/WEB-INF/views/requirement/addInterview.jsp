@@ -25,6 +25,15 @@ padding:0!important;
 ul.tagit li.tagit-choice-editable {
 z-index: 9 !important;
 }
+.requiresymbol {
+position: absolute; left: 1px; top:5px; font-size: 100%;
+}
+.requiresymbol2 {
+position: absolute; left: -7px; top:5px; font-size: 100%;
+}
+.add_inter table tr td {
+	position: relative;
+}
 
 </style>
 <!-- For add New Interview -->
@@ -115,7 +124,7 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
 
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	
@@ -207,7 +216,7 @@ function addInterview(requirementId){
 
 
 <script>
-function showOthersDiv(){
+function showOthersDivInterview(){
 	var isNofityToOthers = document.getElementById("notificationToOthers").checked;
 	if (isNofityToOthers) {
 		document.getElementById("notifyOthersDiv").style.display = '';
@@ -217,11 +226,11 @@ function showOthersDiv(){
 		       ,placeholderText:"Enter emails"
 		       ,allowDuplicates: false
 		    	,afterTagAdded: function(evt, ui){
-			              checkEmails();
+			              checkEmailsInterview();
 			              return false;
 			    }
 		       ,afterTagRemoved: function(evt, ui){
-	              checkEmails();
+	              checkEmailsInterview();
 	              return false;
 	         }
 		   });
@@ -238,7 +247,7 @@ function checkEmail(email) {
    return regExp.test(email);
 }
 
-function checkEmails(){
+function checkEmailsInterview(){
 	var emails = document.getElementById("notificationToOthersEmails").value;
 	var emailArray = emails.split(",");
 	var invEmails = "";
@@ -265,7 +274,7 @@ function checkEmails(){
 }
 </script> 
 <script>
-function validateOtherMail(){
+function validateAddInterviewOthersMail(){
 var dataNotify =document.getElementById("notificationToOthersEmails").value;
 var isNofityToOthers = document.getElementById("notificationToOthers").value;
 if((dataNotify == '' || dataNotify == 0)){
@@ -315,8 +324,9 @@ function validateTimeZone(){
 
 
 
-<div id="divTaskTd1" style="display: none; float: left;">
-       <select  multiple data-placeholder="select applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
+<div id="divTaskTd1" style="display: none; float: left;" class="positionRelative">
+<small class='requiresymbol text-danger'>*</small>
+       <select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
 </div>
@@ -385,7 +395,7 @@ function validateTimeZone(){
 		var text = "";
 		var cell2 = row.insertCell(2);
 		/* cell2.innerHTML = "<div class='positionRelative date'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>"; */
-		text = text+"<div class='positionRelative date' id='inteviewDatePic'><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date'>";
+		text = text+"<div class='positionRelative date' id='inteviewDatePic'><small class='requiresymbol2 text-danger'>*</small><input class='form-control input-sm Datepicker' placeholder='Select Date' name='"+maxRowNum+"dateOfInterview' id='"+maxRowNum+"dateOfInterview'  readonly='readonly'  type='text' data-validation='required' field-name='Interview Date'>";
 		text = text+"</div>";
 		
 		
@@ -409,13 +419,13 @@ function validateTimeZone(){
 			dateFormat : finalDateFormatInterview,
 			changeMonth: true,
 			 changeYear: true, 
-		      //minDate: 0  ,
+		      minDate: 0  ,
 		      onSelect : function(selected) {
 		    	  removeInterviewvalidation();
 		      }
 		});
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
+		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><small class='requiresymbol2 text-danger'>*</small><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
 			'showDuration': true,
@@ -476,10 +486,23 @@ function validateTimeZone(){
 	    	getUpdatedShortListCandidates();
 	    }); */ 
 	    
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+		  
 		$( "#scheduleCalendar" ).datepicker({
 			  changeMonth: true,
 		      changeYear: true,
-		      dateFormat : 'dd-mm-yy',
+		      dateFormat : finalDateFormatProjectSave,
+		      dateFormat : finalDateFormatInterview,
 		      minDate: 0  ,
 			  onSelect : function(selected) {
 				checkAvailability();
@@ -585,7 +608,7 @@ function cancelAddInterviewDiv(){
 </script>
 
 <script>
-function getNotifyToOtersVal(){
+function getNotifyToOtersValInterview(){
     if(document.getElementById('notificationToOthers').checked) {
         $("#notificationToOthers").val('Y');
         $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
@@ -602,7 +625,7 @@ function getNotifyToOtersVal(){
    	$('body').on('submit', '#addInterview_form', function(e){
    	var isNofityToOthers = document.getElementById("notificationToOthers").value;
    		if(isNofityToOthers == "Y"){
-   			validateOtherMail();
+   			validateAddInterviewOthersMail();
    		}else{
    			$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
    			$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 

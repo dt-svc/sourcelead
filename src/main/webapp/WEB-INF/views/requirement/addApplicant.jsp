@@ -54,8 +54,11 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
-	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	
+/* 	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">'; */
+		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	/* '</sec:authorize>'; */
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -192,7 +195,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -401,7 +404,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="submit" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -944,62 +947,59 @@ function discordApplicant(){
 
 <!-- For add New Applicant -->
 <script type="text/javascript">
-$('body').on('submit', '#addApplicant_form', function(e){
-
-	  var requirementId = $("#requirementId").val();
-	  if ($(this).validate(false, validationSettings)){
-      e.preventDefault();
-      var frm = $('#addApplicant_form').serializeFormJSON();
-      
-      var frm = $('#addApplicant_form').serializeFormJSON();
-      var con1 = JSON.stringify(frm);
-      con1= con1.replace(/[{}]/g, "");
-      var jsonData = encodeURIComponent(con1);
-      var form = $('#addApplicant_form')[0];
-      var formData = new FormData(form); 
-      //Loop through fields and save field data to array
-      var fields = [];
-      $('.sjfb-field').each(function() { 
-      	  var $this = $(this); 
-      	  var divId = $(this).attr('id');  
-      	  var fieldLabel = $this.find('label:first').text().replace("*","");
-      	  var inputValue = $this.find('input[type="radio"]:checked').val();
-      	  
-      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
-    		   if(inputValue != null){
-    			   var selected = [];
-               	$this.find('input[type="checkbox"]:checked').each(function() {
-      		        selected.push($(this).val()); 
-      		       });
-               	inputValue = selected.toString()
-    		   }
-    		   
-      	 }
-      	 
-      	
-      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-      		  inputValue = $this.find('input').val();
-      	  }
-      	  
-      	   
+function addApplicantSubmission(){
+	 
+	var requirementId = $("#requirementId").val();
+	if ($('#addApplicant_form').validate(false, validationSettings)) {
+    var frm = $('#addApplicant_form').serializeFormJSON();
+    var con1 = JSON.stringify(frm);
+    con1= con1.replace(/[{}]/g, "");
+    var jsonData = encodeURIComponent(con1);
+    var form = $('#addApplicant_form')[0];
+    var formData = new FormData(form); 
+    //Loop through fields and save field data to array
+    var fields = [];
+    $('.sjfb-field').each(function() { 
+    	  var $this = $(this); 
+    	  var divId = $(this).attr('id');  
+    	  var fieldLabel = $this.find('label:first').text().replace("*","");
+    	  var inputValue = $this.find('input[type="radio"]:checked').val();
     	  
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('select').val();
-     	      }
-     	      
-     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('textarea').val();
-     	      }
-     	      
-     	    
-     	     
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	inputValue = '';
-     	      }
-     	      
-     	      
-     	      
+    	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+  		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+  		   if(inputValue != null){
+  			   var selected = [];
+             	$this.find('input[type="checkbox"]:checked').each(function() {
+    		        selected.push($(this).val()); 
+    		       });
+             	inputValue = selected.toString()
+  		   }
+  		   
+    	 }
+    	 
+    	
+    	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+    		  inputValue = $this.find('input').val();
+    	  }
+    	  
+    	   
+  	  
+   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+   	    	 inputValue = $this.find('select').val();
+   	      }
+   	      
+   	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+   	    	 inputValue = $this.find('textarea').val();
+   	      }
+   	      
+   	    
+   	     
+   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+   	    	inputValue = '';
+   	      }
+   	      
+   	      
+   	      
 	       	  var name = $this.find('input[type="radio"]:checked').attr('name');
 	       	  var id = $this.find('input[type="radio"]:checked').attr('id');
 	     	  if(name == null || name == '' || name == 'undefined'){
@@ -1009,7 +1009,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  if(name == null || name == '' || name == 'undefined'){
 	     		 name = $this.find('select').attr('name');
 	     		 id = $this.find('select').attr('id');
-     	      }
+   	      }
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
@@ -1047,30 +1047,30 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  }
 	     	  
 	     	  
-      	  fields.push({
-                label: fieldLabel,
-                id :id,
-                name :name,
-                value: inputValue,
-            });
-       });
-      var con = JSON.stringify(fields);
-      
-      con = encodeURIComponent(con);
-     
-      
+    	  fields.push({
+              label: fieldLabel,
+              id :id,
+              name :name,
+              value: inputValue,
+          });
+     });
+    var con = JSON.stringify(fields);
+    
+    con = encodeURIComponent(con);
+   
+    
 		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-      
-  	     $.ajax({
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    
+	     $.ajax({
 	    	type: "POST",
 	    	data: formData,
- 	        contentType : 'application/json; charset=utf-8',
- 	        enctype: 'multipart/form-data',
+	        contentType : 'application/json; charset=utf-8',
+	        enctype: 'multipart/form-data',
 	        processData: false,
 	        contentType:false,
- 	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+	        dataType : 'json',
+	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
@@ -1081,178 +1081,163 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		//pipelineList(requirementId);
 	        },
 	    }); 
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
-    
-   	$('body').on('blur', '#addApplicant_form', function() {
-		$("#addApplicant_form").showHelpOnFocus();
-		$("#addApplicant_form").validateOnBlur(false, validationSettings);
-	});
+    return true; 
+  }
+  else{
+  	return false;	
+     }
+}
+$('body').on('blur', '#addApplicant_form', function() {
+	$("#addApplicant_form").showHelpOnFocus();
+	$("#addApplicant_form").validateOnBlur(false, validationSettings);
+});
   
-  </script>
-  
-  
-  
-  
-  
-  
-  
+</script>
   
   
   <!-- For Submit Recomended Applicant -->
 <script type="text/javascript">
-$('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 
-	  var requirementId = $("#requirementId").val();
+function addRequirementRecommendations(){
+	var requirementId = $("#requirementId").val();
 	  var candidateId = $("#candidateId").val();
 	  var redirectTo = $("#redirectTo").val();
-	  if ($(this).validate(false, validationSettings)){
-      e.preventDefault();
-      var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
-      
-      var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
-      var con1 = JSON.stringify(frm);
-      con1= con1.replace(/[{}]/g, "");
-      var jsonData = encodeURIComponent(con1);
-      var form = $('#submitRecomendedApplicant_form')[0];
-      var formData = new FormData(form); 
-      //Loop through fields and save field data to array
-      var fields = [];
-      $('.sjfb-field').each(function() { 
-      	  var $this = $(this); 
-      	  var divId = $(this).attr('id');  
-      	  var fieldLabel = $this.find('label:first').text().replace("*","");
-      	  var inputValue = $this.find('input[type="radio"]:checked').val();
-      	  
-      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
-    		   if(inputValue != null){
-    			   var selected = [];
-               	$this.find('input[type="checkbox"]:checked').each(function() {
-      		        selected.push($(this).val()); 
-      		       });
-               	inputValue = selected.toString()
-    		   }
-    		   
-      	 }
-      	 
-      	
-      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-      		  inputValue = $this.find('input').val();
-      	  }
-      	  
-      	   
-    	  
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('select').val();
-     	      }
-     	      
-     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	 inputValue = $this.find('textarea').val();
-     	      }
-     	      
-     	    
-     	     
-     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-     	    	inputValue = '';
-     	      }
-     	      
-     	      
-     	      
-	       	  var name = $this.find('input[type="radio"]:checked').attr('name');
-	       	  var id = $this.find('input[type="radio"]:checked').attr('id');
-	     	  if(name == null || name == '' || name == 'undefined'){
-	     		  name = $this.find('input').attr('name');
-	     		  id = $this.find('input').attr('id');
-	     	  }
-	     	  if(name == null || name == '' || name == 'undefined'){
-	     		 name = $this.find('select').attr('name');
-	     		 id = $this.find('select').attr('id');
-     	      }
-	     	  
-	     	  if(name == "WorkExperience"){
-	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
-	     			  if(inputValue == "50"){
-	     				 inputValue = inputValue+" Years";
-	     			  }else{
-	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
-	     			  }
-	     			 
-	     		  }
-	     		  
-	     		  if(null == inputValue && monthExp != '0'){
-	     			 inputValue = monthExp+" Months" ;
-	     		  }
-	     	  }
-	     	  
-	     	  
-	     	 if(name == "CurrentCTC"){
-	     		 inputValue = $this.find('input').val();
-	     		 if(inputValue){
-	     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
-	     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
-	     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
-	     		  }
-	     	  }
-	     	 
-	     	if(name == "ExpectedCTC"){
-	     		 inputValue = $this.find('input').val();
-	     		  if(inputValue){
-	     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
-	     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
-	     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
-	     		  }
-	     	  }
-	     	  
-	     	  
-      	  fields.push({
-                label: fieldLabel,
-                id :id,
-                name :name,
-                value: inputValue,
-            });
-       });
-      var con = JSON.stringify(fields);
-      
-      con = encodeURIComponent(con);
-     
-      
-		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-      
-  	     $.ajax({
-	    	type: "POST",
-	    	data: formData,
- 	        contentType : 'application/json; charset=utf-8',
- 	        enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
- 	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
-	        success: function(result) {
-	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
-	    		$(".side_mask").fadeOut(200);
-	    		$("body").css('overflow-y', 'auto');
-	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
-	    		$(".sideMask").fadeOut(200);
-	    		if(redirectTo == "compare"){
-	    			compareRecommendedUsers(requirementId);
-	    		}
-	        },
-	    }); 
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
+	  if ($('#submitRecomendedApplicant_form').validate(false, validationSettings)) {
+		  var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
+	      var con1 = JSON.stringify(frm);
+	      con1= con1.replace(/[{}]/g, "");
+	      var jsonData = encodeURIComponent(con1);
+	      var form = $('#submitRecomendedApplicant_form')[0];
+	      var formData = new FormData(form); 
+	      //Loop through fields and save field data to array
+	      var fields = [];
+	      $('.sjfb-field').each(function() { 
+	      	  var $this = $(this); 
+	      	  var divId = $(this).attr('id');  
+	      	  var fieldLabel = $this.find('label:first').text().replace("*","");
+	      	  var inputValue = $this.find('input[type="radio"]:checked').val();
+	      	  
+	      	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	    		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+	    		   if(inputValue != null){
+	    			   var selected = [];
+	               	$this.find('input[type="checkbox"]:checked').each(function() {
+	      		        selected.push($(this).val()); 
+	      		       });
+	               	inputValue = selected.toString()
+	    		   }
+	    		   
+	      	 }
+	      	 
+	      	
+	      	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	      		  inputValue = $this.find('input').val();
+	      	  }
+	      	  
+	      	   
+	    	  
+	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	 inputValue = $this.find('select').val();
+	     	      }
+	     	      
+	     	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	 inputValue = $this.find('textarea').val();
+	     	      }
+	     	      
+	     	    
+	     	     
+	     	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+	     	    	inputValue = '';
+	     	      }
+	     	      
+	     	      
+	     	      
+		       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+		       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		  name = $this.find('input').attr('name');
+		     		  id = $this.find('input').attr('id');
+		     	  }
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('select').attr('name');
+		     		 id = $this.find('select').attr('id');
+	     	      }
+		     	  
+		     	  if(name == "WorkExperience"){
+		     		 var monthExp = document.getElementById("monthExp").value; 
+		     		  if(null != inputValue){
+		     			  if(inputValue == "50"){
+		     				 inputValue = inputValue+" Years";
+		     			  }else{
+		     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
+		     			  }
+		     			 
+		     		  }
+		     		  
+		     		  if(null == inputValue && monthExp != '0'){
+		     			 inputValue = monthExp+" Months" ;
+		     		  }
+		     	  }
+		     	  
+		     	  
+		     	 if(name == "CurrentCTC"){
+		     		 inputValue = $this.find('input').val();
+		     		 if(inputValue){
+		     			 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value; 
+		     			 var currentCTCRateType = document.getElementById("currentCTCRateType").value; 
+		     			 inputValue = currentCTCRateType+" "+inputValue+" /"+" "+currentCTCRatePer ;
+		     		  }
+		     	  }
+		     	 
+		     	if(name == "ExpectedCTC"){
+		     		 inputValue = $this.find('input').val();
+		     		  if(inputValue){
+		     			 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value; 
+		     			 var expectedCTCRateType = document.getElementById("expectedCTCRateType").value; 
+		     			 inputValue = expectedCTCRateType+" "+inputValue+" /"+" "+expectedCTCRatePer ;
+		     		  }
+		     	  }
+		     	  
+		     	  
+	      	  fields.push({
+	                label: fieldLabel,
+	                id :id,
+	                name :name,
+	                value: inputValue,
+	            });
+	       });
+	      var con = JSON.stringify(fields);
+	      
+	      con = encodeURIComponent(con);
+	     
+	      
+			
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	      
+	  	     $.ajax({
+		    	type: "POST",
+		    	data: formData,
+	 	        contentType : 'application/json; charset=utf-8',
+	 	        enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	 	        dataType : 'json',
+	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+		        success: function(result) {
+		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		    		$(".side_mask").fadeOut(200);
+		    		$("body").css('overflow-y', 'auto');
+		    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+		    		$(".sideMask").fadeOut(200);
+		    		if(redirectTo == "compare"){
+		    			compareRecommendedUsers(requirementId);
+		    		}
+		        },
+		    }); 
+	  }else {
+			return false;
+		}
+}
     
    	$('body').on('blur', '#submitRecomendedApplicant_form', function() {
 		$("#submitRecomendedApplicant_form").showHelpOnFocus();
@@ -1586,10 +1571,12 @@ function getCandidateSelectionType(){
 <script type="text/javascript">
 function getCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
+	var requirementId = $("#requirementId").val();
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -1926,10 +1913,12 @@ function getSubmittedCandidateDetails(submissionId){
 <script type="text/javascript">
 function getRecomededCandidateDetails(candidateId){
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	var requirementId = $("#requirementId").val();
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -2233,21 +2222,33 @@ function setRateTypesByLocation(){
 	if(country == 'India'){
 		$('#currentCTCRateType').val('INR');
 		$('#expectedCTCRateType').val('INR');
+		$('#currentCTCRatePer').val('Monthly');
+		$('#expectedCTCRatePer').val('Monthly');
 	}else if(country == 'Australia'){
 		$('#currentCTCRateType').val('AUD');
 		$('#expectedCTCRateType').val('AUD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'United States'){
 		$('#currentCTCRateType').val('USD');
 		$('#expectedCTCRateType').val('USD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'Singapore'){
 		$('#currentCTCRateType').val('SGD');
 		$('#expectedCTCRateType').val('SGD');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'United Kingdom'){
 		$('#currentCTCRateType').val('GBP');
 		$('#expectedCTCRateType').val('GBP');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}else if(country == 'France'){
 		$('#currentCTCRateType').val('EUR');
 		$('#expectedCTCRateType').val('EUR');
+		$('#currentCTCRatePer').val('Hourly');
+		$('#expectedCTCRatePer').val('Hourly');
 	}
 }
 </script>
@@ -2443,9 +2444,7 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+emailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("input[name=FirstName]").val(json.firstName);
@@ -2488,7 +2487,6 @@ function validate_fileupload(fileName)
 		        			
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
@@ -2706,12 +2704,12 @@ function validate_fileupload(fileName)
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
 		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorContact').trigger("chosen:updated");

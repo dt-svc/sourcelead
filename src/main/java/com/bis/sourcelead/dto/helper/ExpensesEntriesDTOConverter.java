@@ -26,6 +26,7 @@ public class ExpensesEntriesDTOConverter {
 		BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
 		expensesEntriesDTO.setEntryDescription(expensesEntries.getDescription());
+		expensesEntriesDTO.setPaidBy(expensesEntries.getPaidBy());
 		if(expensesEntries.getExpensesCategoryId() != null){
 			expensesEntriesDTO.setCategoryTypeId(expensesEntries.getExpensesCategoryId().getId());
 			expensesEntriesDTO.setCategoryName(expensesEntries.getExpensesCategoryId().getExpensesName());
@@ -34,13 +35,15 @@ public class ExpensesEntriesDTOConverter {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		if(expensesEntries.getExpensesEntryDocuments() != null && expensesEntries.getExpensesEntryDocuments().size() > 0){
 			for(ExpensesEntryDocuments eed :expensesEntries.getExpensesEntryDocuments()){
-				FileInfo fileInfo = new FileInfo();
-				fileInfo.setFileDbId(eed.getId().toString());
-				fileInfo.setFileName(eed.getFileName());
-				fileInfo.setFileURL(eed.getFileURL());
-				fileInfo.setStatus(eed.getStatus());
-				fileInfo.setContentType(eed.getFileContentType());
-				fileInfoList.add(fileInfo);
+				if(eed.getStatus() == 1){
+					FileInfo fileInfo = new FileInfo();
+					fileInfo.setFileDbId(eed.getId().toString());
+					fileInfo.setFileName(eed.getFileName());
+					fileInfo.setFileURL(eed.getFileURL());
+					fileInfo.setStatus(eed.getStatus());
+					fileInfo.setContentType(eed.getFileContentType());
+					fileInfoList.add(fileInfo);
+				}
 				/*eedDTOList.add(ExpensesEntryDocumentsDTOConverter.getExpensesEntryDocumentsDTOFromExpensesEntryDocuments(eed, expensesEntriesDTO));*/
 			}
 		}

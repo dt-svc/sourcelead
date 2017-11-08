@@ -1416,7 +1416,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
-  	  						populateClientDetails(vendorOrgLocation,invoice);
+  	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
   	  						invoice.setOrgRelationID(orgRelation);
   	  						invoice.setOrgLocation(orgLocation);
   	  						invoice.setInvoiceType(invoiceType);
@@ -1651,15 +1651,17 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				StringBuilder candidateName = new StringBuilder();
-				if (null != projectMember.getEmployee().getUser().getFirstName()
-						&& null != projectMember.getEmployee().getUser().getLastName()) {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				if(projectMember.getProjectMemberCandidteId() !=null) {
+					if (null != projectMember.getProjectMemberCandidteId().getFirstName() && null != projectMember.getProjectMemberCandidteId().getLastName()) {
+						candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
+					}
+					else {
+						candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
+					}	
 				}
-				else {
-					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
-				}
+				
 				projectMember.setCandidateName(candidateName.toString());
-				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
+				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if (null != candidate) {
@@ -1733,9 +1735,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
-				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+//				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getProjectMemberCandidteId(),orgRelationId);
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				if (null != employee) {
+				if (null != projectMember.getProjectMemberCandidteId()) {
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getEmployee().getUser().getFirstName()
 							&& null != projectMember.getEmployee().getUser().getLastName()) {
@@ -1745,7 +1747,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						empName.append(projectMember.getEmployee().getUser().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
-					projectMember.setUserId(employee.getUser().getId().toString());
+					projectMember.setUserId(projectMember.getProjectMemberCandidteId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
 					String billableHours = String.valueOf(sah.getBillableHours());;
@@ -1808,20 +1810,21 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * 
 	 * @param vendorOrgLocation
 	 * @param invoice
+	 * @param orgRelation 
 	 */
-	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice)
+	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice, OrgRelations orgRelation)
 	{
 		invoice.setResponderLocationId(vendorOrgLocation);
-		if (null != vendorOrgLocation.getOrg().getPaymentTerm()
-				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getPaymentTerm())) {
-			invoice.setPaymentFrequency(vendorOrgLocation.getOrg().getPaymentTerm());
+		if (null != orgRelation.getPaymentTerm()
+				&& !"".equalsIgnoreCase(orgRelation.getPaymentTerm())) {
+			invoice.setPaymentFrequency(orgRelation.getPaymentTerm());
 			invoice.setInvoiceDate(new Date());
-			Date dueDate = getDueDateByPaymentTerm(new Date(), vendorOrgLocation.getOrg().getPaymentTerm());
+			Date dueDate = getDueDateByPaymentTerm(new Date(), orgRelation.getPaymentTerm());
 			invoice.setDueDate(dueDate);
 		}
-		if (null != vendorOrgLocation.getOrg().getClientBillingAddress()
-				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getClientBillingAddress())) {
-			invoice.setBillingAddress(vendorOrgLocation.getOrg().getClientBillingAddress());
+		if (null != orgRelation.getBillingAddress()
+				&& !"".equalsIgnoreCase(orgRelation.getBillingAddress())) {
+			invoice.setBillingAddress(orgRelation.getBillingAddress());
 		}
 	}
 	

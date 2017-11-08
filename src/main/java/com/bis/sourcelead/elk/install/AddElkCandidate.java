@@ -255,6 +255,9 @@ public class AddElkCandidate{
 									 candidateIndex.setCurrentResumeId(rs4.getLong("ID"));
 									 candidateIndex.setCurrentResumeName(rs4.getString("FILE_NAME"));
 									 candidateIndex.setResumeContent("");
+									 candidateIndex.setFileUrl(rs4.getString("FILE_URL"));
+									 candidateIndex.setFileContentType(rs4.getString("FILE_CONTENT_TYPE"));
+									 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
 							    }
 		    	           }
 		    	    }

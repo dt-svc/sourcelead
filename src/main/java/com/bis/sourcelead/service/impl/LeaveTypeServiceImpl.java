@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
@@ -39,6 +41,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	RolesService rolesService;
 	@Autowired
 	UserService userService;
+	
+	@Autowired 
+	LeaveService leaveService;
 	
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
@@ -94,32 +99,39 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
 		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
-		leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
+			leaveType.setStatus(Constants.RECORD_INACTIVE.toString());
+		}else {
+			leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
+		}
+		
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
 	}
-	
+	 
 	private Set<LeaveRole> getLeaveRoles(List<String> roles, LeaveType leaveType, User user) throws Exception
 	{
 		Set<LeaveRole> leaveRolesSet = new HashSet<>();
-		roles.forEach(role -> {
-			LeaveRole leaveRoles = new LeaveRole();
-			leaveRoles.setLeaveTypeid(leaveType);
-			leaveRoles.setType(Constants.LEAVE_TYPE);
+		boolean flag = leaveService.deleteAllLeaveRolesByParticularTableId(Constants.LEAVE_TYPE,leaveType.getId());
+		for(String role : roles) {
+//		roles.forEach(role -> {
+			LeaveRole leaveRole = new LeaveRole();
+			leaveRole.setLeaveTypeid(leaveType);
+			leaveRole.setType(Constants.LEAVE_TYPE);
 			try {
 				Roles rol = rolesService.getRolesById(Long.parseLong(role));
-				leaveRoles.setRoleId(rol);
+				leaveRole.setRoleId(rol);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			leaveRoles.setStatus("1");
-			leaveRoles.setCreatedDate(new Date());
-			leaveRoles.setUpdatedDate(new Date());
-			leaveRoles.setCreatedBy(user.getUserCode());
-			leaveRoles.setUpdatedBy(user.getUserCode());
-			leaveRolesSet.add(leaveRoles);
-		});
+			leaveRole.setStatus("1");
+			leaveRole.setCreatedDate(new Date());
+			leaveRole.setUpdatedDate(new Date());
+			leaveRole.setCreatedBy(user.getUserCode());
+			leaveRole.setUpdatedBy(user.getUserCode());
+			leaveRolesSet.add(leaveRole);
+		}
 		return leaveRolesSet;
 	}
 
@@ -127,6 +139,12 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	public List<LeaveType> getLeaveTypeListByLocationId(String orgLocationId)
 	{
 		return leaveTypeDao.getLeaveTypeListByLocationId(orgLocationId);
+	}
+	
+	@Override
+	public List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId)
+	{
+		return leaveTypeDao.getLeaveTypeListByLocationIdAndStatus(orgLocationId);
 	}
 
 	@Override

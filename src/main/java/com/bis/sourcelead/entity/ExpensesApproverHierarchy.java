@@ -57,17 +57,16 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
-
 
 @Column(name = "EXPENSE_STATUS")
 @Enumerated(EnumType.STRING)
@@ -100,7 +99,7 @@ private Date updatedDate;
 private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
@@ -152,6 +151,11 @@ private String userTypeVendorName;
 @Transient
 @JsonProperty
 private String expensesApproverHierarchyPurpose; 
+
+
+@Transient
+@JsonProperty
+private String userFileUrl; 
 
 public Long getId()
 {
@@ -370,6 +374,14 @@ public String getExpensesApproverHierarchyPurpose() {
 
 public void setExpensesApproverHierarchyPurpose(String expensesApproverHierarchyPurpose) {
 	this.expensesApproverHierarchyPurpose = expensesApproverHierarchyPurpose;
+}
+
+public String getUserFileUrl() {
+	return userFileUrl;
+}
+
+public void setUserFileUrl(String userFileUrl) {
+	this.userFileUrl = userFileUrl;
 }
 
 

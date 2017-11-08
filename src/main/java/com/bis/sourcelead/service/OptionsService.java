@@ -11,7 +11,9 @@ public interface OptionsService {
 
 	List<OptionsDTO> getOptionsListByLocationId(Long orgLocationId)throws Exception;
 
-	Option getOptionsById(String optionId)throws Exception;
+	Option getOptionsById(String optionId) throws Exception;
+
+	List<Long> getOptionRoleIds(Long orgLocationId) throws Exception;
 
 
 }

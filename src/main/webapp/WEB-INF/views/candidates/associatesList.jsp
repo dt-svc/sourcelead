@@ -42,7 +42,7 @@
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize> 
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
- 
+ <input type="hidden" id="noCandidates" name="noCandidates" />
 <script>
 var isAssociate = 'Y';
 var _csrfParam = '${_csrf.parameterName}';
@@ -585,15 +585,19 @@ function deleteProfileImage(candidateId){
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
+	        	 
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	 
+	        	 //refreshImageBlock(candidateId);
+	        	 //candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
 }
 </script>
-
+s')
 <%-- 
      @author : Laxman.
      this script is for refresh image block
@@ -680,7 +684,8 @@ function addFavourite(candidateId){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
 					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 //document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
 					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
 				}
 				
@@ -1118,7 +1123,8 @@ function cancel(candidateId){
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                           <li><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">Today</label></li>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
 						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>

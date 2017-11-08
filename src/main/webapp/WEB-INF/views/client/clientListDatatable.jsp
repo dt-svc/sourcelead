@@ -171,6 +171,7 @@ function getClientList(){
 	            }, {
 	                "targets": colIndex++,
 	                "data": "responderLevel",
+	                "sortable": false,
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";
 	                		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';

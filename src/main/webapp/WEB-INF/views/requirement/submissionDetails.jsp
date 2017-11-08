@@ -693,7 +693,7 @@ function getInternalInterviewsList(submissionId){
 				                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 				                    	 '</sec:authorize>';
 				                    	 if(report.proposeTimeStatus=="Y"){
-				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int" title="Propose New Time"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
 					                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
 												result = result + '			</div>';
 												result = result + ' </a>';
@@ -1505,18 +1505,6 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		//attachmentValidationFun();
 		 
 		/* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("docFile");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      $("#request_candidate").attr("disabled", false);
-	      if(docSize > 2097152){
-	    	  document.getElementById("subUploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	    	  $("#request_candidate").attr("disabled", true);
-	      }
-	    });
-	    
 	    
 	    document.getElementById("docFile").onchange = function () {
 			   //$("#uploadFile").dir(this.files[0]);
@@ -1879,10 +1867,10 @@ function savedCommentAndCount(candidateId,submissionId){
 <script type="text/javascript">
 function interviewFeedback(interviewId,templateId,id){
 	$("#mask_inner").fadeIn();
-	//$('.content').show();
-	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
-	//$(this).next('.content').slideDown();
+	$(".reSchPop").removeClass("reSchPopActive");
+	$(".proposeTimePop").removeClass("proposeTimePopActive");
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -2434,7 +2422,7 @@ function pipelineList(requirementId){
 	$("#offerMadeli").removeClass("pipeline-active");
 	$("#rejectedli").removeClass("pipeline-active");
 	$("#applicantli").addClass("pipeline-active");
-	filterReq(requirementId,submissionType);
+// 	filterReq(requirementId,submissionType);
 }
 </script>
 <script>

@@ -89,7 +89,7 @@ function contractList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-			                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"' title='Create Sow'>SOW</a>";
+			                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"' title='Create Sow'>SOW</a>";
 			                     if(opt.vendorMsaCreated != true){
 			                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
 			                     }

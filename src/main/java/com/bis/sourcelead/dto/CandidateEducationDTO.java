@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
-import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.LookUpData;
 
 public class CandidateEducationDTO extends CommonDTO {
 
@@ -33,7 +35,25 @@ public class CandidateEducationDTO extends CommonDTO {
 	private String scoreType;
 	
 	private String score;
-
+	
+    private String startDateStr;
+	
+	private String msg;
+	
+	private String endDateStr;
+	
+	private List<LookUpData> educationList;
+	
+	private String grade;
+	
+	private String gradeType;
+	
+	private long id;
+	
+	private LinkedHashSet<String> allAndCandidateEducations;
+	
+	private long candidateId;
+	
 	public String getName() {
 		return name;
 	}
@@ -140,6 +160,97 @@ public class CandidateEducationDTO extends CommonDTO {
 		this.score = score;
 	}
 
+	public String getStartDateStr()
+	{
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr)
+	{
+		this.startDateStr = startDateStr;
+	}
+
+	public String getMsg()
+	{
+		return msg;
+	}
+
+	public void setMsg(String msg)
+	{
+		this.msg = msg;
+	}
+
+	public String getEndDateStr()
+	{
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr)
+	{
+		this.endDateStr = endDateStr;
+	}
+
+	public List<LookUpData> getEducationList()
+	{
+		return educationList;
+	}
+
+	public void setEducationList(List<LookUpData> educationList)
+	{
+		this.educationList = educationList;
+	}
+
+	public String getGrade()
+	{
+		return grade;
+	}
+
+	public void setGrade(String grade)
+	{
+		this.grade = grade;
+	}
+
+	public String getGradeType()
+	{
+		return gradeType;
+	}
+
+	public void setGradeType(String gradeType)
+	{
+		this.gradeType = gradeType;
+	}
+
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+
+	public LinkedHashSet<String> getAllAndCandidateEducations()
+	{
+		return allAndCandidateEducations;
+	}
+
+	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations)
+	{
+		this.allAndCandidateEducations = allAndCandidateEducations;
+	}
+
+	public long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	
 
 
 }

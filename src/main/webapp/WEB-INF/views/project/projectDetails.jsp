@@ -34,8 +34,7 @@
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ projectId,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var endDateStr = "";
 						var description = "";
 						var clientName = "";
@@ -60,42 +59,42 @@
 						
 						
 						if (json.allowFreeLance != null && json.allowFreeLance != '' && json.allowFreeLance != 'undefined'
-							&& json.allowFreeLance == '1') {
+							&& json.allowFreeLance == 'true') {
 							allowFreeLance = "YES";
 				     	} else {
 				     		allowFreeLance = "NO";
 				    	}
 
 						if (json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined'
-							&& json.allowRemote == '1') {
+							&& json.allowRemote == 'true') {
 							allowRemote = "YES";
 				     	} else {
 				     		allowRemote = "NO";
 				    	}
 						
 						if (json.allowOvertime != null && json.allowOvertime != '' && json.allowOvertime != 'undefined'
-							&& json.allowOvertime == '1') {
+							&& json.allowOvertime == 'true') {
 							allowOvertime = "YES";
 				     	} else {
 				     		allowOvertime = "NO";
 				    	}
 						
 						if (json.allowTimeEntryAfterDeadLine != null && json.allowTimeEntryAfterDeadLine != '' && json.allowTimeEntryAfterDeadLine != 'undefined'
-							&& json.allowTimeEntryAfterDeadLine == '1') {
+							&& json.allowTimeEntryAfterDeadLine == 'true') {
 							allowTimeEntryAfterDeadLine = "YES";
 				     	} else {
 				     		allowTimeEntryAfterDeadLine = "NO";
 				    	}
 						
 						if (json.allowBidding != null && json.allowBidding != '' && json.allowBidding != 'undefined'
-							&& json.allowBidding == '1') {
+							&& json.allowBidding == 'true') {
 							allowBidding = "YES";
 				     	} else {
 				     		allowBidding = "NO";
 				    	}
 						
 						if (json.allowOffShore != null && json.allowOffShore != '' && json.allowOffShore != 'undefined'
-							&& json.allowOffShore == '1') {
+							&& json.allowOffShore == 'true') {
 							allowOffShore = "YES";
 				     	} else {
 				     		allowOffShore = "NO";
@@ -141,7 +140,7 @@
 							flatPercentageId = "";
 						}
 						
-						var proStatus ='';
+				 		var proStatus ='';
 						if(json.projectStatus == 'NOTSTARTED'){
 							proStatus = 'Not Started';
 						}else if(json.projectStatus == 'INPROGRESS'){
@@ -152,8 +151,7 @@
 							proStatus = 'Completed';
 						}else if(json.projectStatus == 'DROPPED'){
 							proStatus = 'Dropped';
-						}
-						
+						} 
 						
 						
 						var result = "";
@@ -164,7 +162,7 @@
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
 						
-						if(json.orgLocationsId.id == '${SourceLeadWeb_orgLocations.id}'){
+						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
 						    result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 							result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 		   		    		result = result +'</sec:authorize>';
@@ -194,28 +192,13 @@
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Manager 1:</strong><span>';
-
-						for (var j = 0; j < json.managersList.length; j++) {
-							var manager = json.managersList[j];
-							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
-							}
-						}
-						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
-						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
+						if (json.manager2Name != null && json.manager2Name != "" && json.manager2Name != "undefined") {
 							result = result	+ '<div class="project_details_cta">';
 							result = result	+ '	<strong>Manager 2:</strong><span>';
-
-							for (var j = 0; j < json.managersList.length; j++) {
-								var manager = json.managersList[j];
-								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
-								}
-							}
+							result = result + '	<span title="'+json.manager2Name+'">'+json.manager2Name+'</span><div class="clearfix"></div>';
 							result = result	+ '</span><div class="clearfix"></div>';
 							result = result + '	</div>';
 						}
@@ -245,6 +228,12 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Allow Freelance Developers:</strong>';
 						result = result + '<span>'+allowFreeLance+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Timesheet Attachment Required:</strong>';
+						result = result + '<span>'+isTimesheetAttachmentRequired+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 
@@ -278,9 +267,11 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta">';
+						result = result + '<div class="project_details_cta project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
-						result = result + '<span title="'+description+'">'+ description +'</span><div class="clearfix"></div>';
+						
+						result = result + '<div class="descriptionStyle">'+description+' </div>';
+						
 						result = result + '</div>';
 						
 						result = result + '<div class="clearfix"></div>';
@@ -320,9 +311,8 @@
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+ projectId,
-					success : function(data) {
-						var json = JSON.parse(data);
-
+					success : function(json) {
+						
 						var endDateStr = "";
 						var description = "";
 						var invoiceFrequency = "";
@@ -336,28 +326,34 @@
                         var allowOffShore  = "";
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
-                        if(json.allowRemote != "undefined" && 	json.allowRemote == true){
+                        
+                        
+                        
+                        if(json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined' && json.allowRemote == 'true'){
                         	allowRemote = "checked";
                         }
-                        if(json.allowOvertime != "undefined" && json.allowOvertime == true){
+					
+					    if (json.allowOvertime != null && json.allowOvertime != '' && json.allowOvertime != 'undefined' && json.allowOvertime == 'true'){
                         	allowOvertime = "checked";
                         }
-                        if(json.allowFreeLance != "undefined" && json.allowFreeLance == true){
+		
+						if (json.allowFreeLance != null && json.allowFreeLance != '' && json.allowFreeLance != 'undefined' && json.allowFreeLance == 'true'){
                         	allowFreeLance = "checked";
                         }
-                        if(json.allowOffShore != "undefined" && json.allowOffShore == true){
+                        
+						if (json.allowOffShore != null && json.allowOffShore != '' && json.allowOffShore != 'undefined' && json.allowOffShore == 'true'){
                         	allowOffShore = "checked";
                         }
-                        if(json.allowTimeEntryAfterDeadLine != "undefined" && 	json.allowTimeEntryAfterDeadLine == true){
+						
+						if (json.allowTimeEntryAfterDeadLine != null && json.allowTimeEntryAfterDeadLine != '' && json.allowTimeEntryAfterDeadLine != 'undefined' && json.allowTimeEntryAfterDeadLine == 'true'){
                         	allowTimeEntryAfterDeadLine = "checked";
                         }
-                        if(json.allowBidding != "undefined" && 	json.allowBidding == true){
+                        
+						if (json.allowBidding != null && json.allowBidding != '' && json.allowBidding != 'undefined' && json.allowBidding == 'true'){
                         	allowBidding = "checked";
                         }
                         
-                        
-						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
-								&& json.isTimesheetAttachmentRequired == '1') {
+						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined' && json.isTimesheetAttachmentRequired == '1'){
 							isTimesheetAttachmentRequired = "Y";
 					     } else {
 					    	 isTimesheetAttachmentRequired = "N";
@@ -388,12 +384,13 @@
 						} else {
 							projectSequeneNumber = "";
 						}
+						
 
 						var result = "";
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
 						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
-						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="projectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
@@ -401,32 +398,32 @@
 						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();" field-name="Status" data-validation="required">';
 						result = result	+ '<option value="">Select Status</option>';
 						if (json.projectStatus == 'NOTSTARTED') {
-							result = result	+ '<option selected >Not Started</option>';
+							result = result	+ '<option selected value="Not Started">Not Started</option>';
 						} else {
-							result = result + '<option>Not Started</option>';
+							result = result + '<option value="Not Started">Not Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
-							result = result	+ '<option selected>In-Progress</option>';
+							result = result	+ '<option selected value="In-Progress">In-Progress</option>';
 						} else {
-							result = result + '<option>In-Progress</option>';
+							result = result + '<option value="In-Progress">In-Progress</option>';
 						}
 
 						if (json.projectStatus == 'COMPLETED') {
-							result = result	+ '<option selected>Completed</option>';
+							result = result	+ '<option selected value="Completed">Completed</option>';
 						} else {
-							result = result + '<option>Completed</option>';
+							result = result + '<option value="Completed">Completed</option>';
 						}
 
 						if (json.projectStatus == 'ONHOLD') {
-							result = result	+ '<option selected>On-Hold</option>';
+							result = result	+ '<option selected value="On-Hold">On-Hold</option>';
 						} else {
-							result = result + '<option>On-Hold</option>';
+							result = result + '<option value="On-Hold">On-Hold</option>';
 						}
 						if (json.projectStatus == 'DROPPED') {
-							result = result	+ '<option selected>Dropped</option>';
+							result = result	+ '<option selected value="Dropped">Dropped</option>';
 						} else {
-							result = result + '<option>Dropped</option>';
+							result = result + '<option value="Dropped">Dropped</option>';
 						}
 						
 
@@ -449,15 +446,22 @@
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
 							var manager = json.managersList[j];
+							if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
+								var managerName = manager.firstName +'' + manager.lastName ;
+							}else{
+								var managerName = manager.firstName;
+							}
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >" + manager.name + " ("+manager.userType+")</option>";
 							} else {
-								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "  ("+manager.userType+")</option>";
+
 							}
 						}
 						result = result + '</select>';
 						result = result + '</div>';
+						
 						
 						if (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" &&  json.managerLevel1UserType != "Admin") { 
 							if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
@@ -478,6 +482,7 @@
 						result = result + '</div>';
 						
 						result = result + '</div>';
+						
 
 						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
 							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="demo" >';
@@ -487,18 +492,22 @@
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
 							result = result    +'<option value="">-Select Manager-</option>';
+							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
+								var managerName2 = manager.name;
 								if (json.manager2 == manager.id) {
 									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+									result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 +"  ("+manager.userType+")</option>";
 								} else {
 
-									result = result	+ "<option value="+manager.id+" >"+ manager.firstName + " "+ manager.lastName + "</option>";
+									result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 								}
+							}
 							}
 							result = result + '</select>';
 							result = result + '</div>';
+							
 
 						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project </label>';
@@ -600,10 +609,10 @@
 						
 							
 						result = result + '<div class="row mt5" id="rateIdDiv" style="display:none;">';
-						result = result + '<div class="col-md-5 paddingRight" id="flatPercentageId" name="flatPercentageId" >';
-						result = result + '<select class="form-control input-sm">';
-						result = result  +' <option '+(json.overtimeRateType == "flat" ? "selected" : '') +'>FLAT</option>';
-						result = result  +' <option '+(json.overtimeRateType == "percentage" ? "selected" : '') +'>PERCENTAGE</option>';
+						result = result + '<div class="col-md-5 paddingRight"  >';
+						result = result + '<select class="form-control input-sm" id="flatPercentageId" name="flatPercentageId">';
+						result = result  +' <option value="flat" '+(json.overtimeRateType == "flat" ? "selected" : '') +' >FLAT</option>';
+						result = result  +' <option value="percentage"  '+(json.overtimeRateType == "percentage" ? "selected" : '') +' >PERCENTAGE</option>';
 						
 						result = result + '</select>';
 						result = result + '</div>';
@@ -769,15 +778,11 @@ function projectStatus(){
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
 
 		if ($('#editProject_form').validate(false, validationSettings)) {
-			var frm = $('#editProject_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
+			var formData = getFormData("editProject_form");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&ProjectId=" + projectId,
+						data: formData,
+						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId=" + projectId,
 						success : function(data) {
 							$("#selector2").removeAttr("style");
 	            			$("#selector2").css({ display: "block" });
@@ -902,8 +907,7 @@ function projectStatus(){
 					url : sourceleadUrl
 							+ "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="
 							+ currentApproverId,
-					success : function(data) {
-						var json = JSON.parse(data);
+					success : function(json) {
 						var output = "";
 						output = output
 								+ "<option value=''>-Select Manager-</option>";
@@ -981,8 +985,7 @@ function showLevel2Div(){
 						.ajax({
 							type : "POST",
 							url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
-							success : function(data) {
-								var json = JSON.parse(data);
+							success : function(json) {
 								var output = "";
 								output = output
 										+ "<option value=''>-Select Manager-</option>";
