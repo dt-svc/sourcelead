@@ -357,10 +357,10 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId;
-			//document.getElementById("logoutForm").submit();
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
+			document.getElementById("logoutForm").submit();
 		}
 </script>
 
@@ -375,6 +375,8 @@ function preventTabkey(e){
 <body>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
+  <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
+   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocations.id}"/>
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
