@@ -586,16 +586,6 @@ function toggleAssociates(source) {
 	  } else {
 		  checkedAssociatedUsers[$(this).data("id")] = "";
 	  }
-//       associateUsers[associateUsers.length] = $(this).data("id");
-//       checkedAssociatedUsers[i] = $(this).val();
-// 	  if(!checkboxes[i].checked){
-// 			  var index = checkedAssociatedUsers.indexOf($(checkboxes[i]).val());
-// 			if (index !== -1){
-// 				 checkedAssociatedUsers.splice(index, 1);
-// 				 checkedAssociatedUsers.shift(); 
-// 			} 
-			 
-// 		   }
   });
 }
 </script>

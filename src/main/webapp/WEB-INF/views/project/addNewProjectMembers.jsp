@@ -709,13 +709,18 @@ function candidatesPagination(sourceleadUrl,url){
  	        			currentRate = "-----";
  	        		}
  	        		
- 	        		 for(var e in associateUsers) {
- 	    	  			 if(report.id  == associateUsers[e]) {
- 	    	  				 flag = true;
- 	    	  				 break;
- 	    	  			 }
- 	    	  		 }
- 	    	  		 
+ 	        		 for(var e in checkedAssociatedUsers) {
+ 	     	    	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+ 	     				   continue;
+ 	     	    	   if(e === report.id+"") {
+ 	     	    		   if(!$("#checkAllAssociates").is(":checked"))
+ 	     	    		 	checkOrUncheckParent($('#associatesListPagination').DataTable().data());
+ 	     	    	   	flag = true;
+ 	     	    	   	break;
+ 	     	    	   }
+ 	        		 }
+ 	        		 if(!flag)
+ 	        			$("#checkAllAssociates").removeAttr('checked');
  	    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" value="'+report.id+','+candidate+','+payrate+','+currentRateCurrency+','+currentRateType+'"  data-id="'+report.id+'"  onchange="checkAssociateUsers(this)"  type="checkbox" name="associates[]"  class="myAssociatesCheckbox" ></td>';
  		              return result;
  		              
@@ -869,6 +874,9 @@ function candidatesPagination(sourceleadUrl,url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     },
+	     "initComplete": function( settings, json ) {
+	    	 checkOrUncheckParent(json.data);
 	     }
     } );
     $("#associatesListPagination").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -879,22 +887,33 @@ function candidatesPagination(sourceleadUrl,url){
     	   }
     	});
 }
+
+function checkOrUncheckParent(data) {
+	$("#checkAllAssociates").removeProp("checked");
+	   var count =0;
+	 for(var e in checkedAssociatedUsers) {
+	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+		   continue;
+	   for(var f in data) {
+   	   if(e === data[f].id+"") {
+   		count ++;
+   	   }
+		}
+	 }
+	 if(count == 10) {
+		$("#checkAllAssociates").prop("checked", "checked");
+	 }
+}
 </script>
 
 <script>
-var associateUsers = [];
-var checkedAssociatedUsers = [];
+var checkedAssociatedUsers = {};
 function checkAssociateUsers(elem) {
 	if($(elem).is(":checked")) {
-		 var checkbox_value = $(elem).data("id");
-		 associateUsers[associateUsers.length] = checkbox_value;
-		 var checkedUsers = $(elem).val();
-		 checkedAssociatedUsers[checkedAssociatedUsers.length] = $(elem).val();
-	}else{
-		const index = checkedAssociatedUsers.indexOf($(elem).val());
-		if (index !== -1) {
-			checkedAssociatedUsers.splice(index, 1);
-		} 
+		checkedAssociatedUsers[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#checkAllAssociates").removeProp('checked');
+		checkedAssociatedUsers[$(elem).data("id")] = "";
 	}
 }
 </script>
@@ -903,18 +922,18 @@ function checkAssociateUsers(elem) {
 <script>
 function toggleAssociates(source) {
   var checkboxes = document.querySelectorAll('input[class="myAssociatesCheckbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-           checkboxes[i].checked = source.checked;
-           var checkbox_value = $(checkboxes[i]).data("id");
-           associateUsers[associateUsers.length] = checkbox_value;
-  		   checkedAssociatedUsers[i] = $(checkboxes[i]).val();
-  		   
-  		   if(!checkboxes[i].checked){
-  			  associateUsers = [];
-  			 checkedAssociatedUsers = [];
-  		   }
-    }
+  if($(source).is(":checked"))
+	  $('input[class="myAssociatesCheckbox"]').prop('checked', 'checked');
+  else 
+	  $('input[class="myAssociatesCheckbox"]').removeProp('checked');
+  
+  $('input[class="myAssociatesCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+	      checkedAssociatedUsers[$(this).data("id")] = $(this).val();
+	  } else {
+		  checkedAssociatedUsers[$(this).data("id")] = "";
+	  }
+  });
 }
 </script>
 
@@ -935,6 +954,9 @@ function removeStartDateValidation(rowId){
 		
 		
 		   for(var e in checkedAssociatedUsers) {
+			   
+			   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+				   continue;
 			   
 		    var checkbox_value = checkedAssociatedUsers[e].split(",");
 		   
