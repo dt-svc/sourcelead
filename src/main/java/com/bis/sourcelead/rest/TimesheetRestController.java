@@ -2524,11 +2524,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		            }
 			    	//save  mutliple attachment in timesheet submissison attachment.
-		            TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+		            
 		            if(tsDTO.getFileInfo() != null){
 		            	 for(FileInfo file:tsDTO.getFileInfo()) {
-			            	 tsd.setTimesheetSubmissions(timesheetSubmissions);
 							FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+							TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+							tsd.setTimesheetSubmissions(timesheetSubmissions);
 							tsd.setFileUrl(file.getFileURL());
 							tsd.setFileName(file.getFileName());
 							tsd.setFileContentType(file.getContentType());
