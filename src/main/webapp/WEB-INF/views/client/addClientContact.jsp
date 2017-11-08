@@ -350,7 +350,7 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-	 getOwners();
+// 	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
@@ -703,10 +703,20 @@ function getRolesList(){
 					{
 			        		 var opt = json[i];
 		        		if(opt.id == SourceLeadWeb_userId){
-		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.fullName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 		        		else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 					}
 		        	$("#owner").empty();
