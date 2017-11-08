@@ -2354,7 +2354,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 							for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 								if(!isNullOrEmpty(tsd.getFileName())){
 										documentBuffer.append("<strong id='"+tsd.getId()+"document'>");
-										documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append(">");
+										documentBuffer.append("<a class='downicon'").append("href='"+tsd.getFileUrl()+"'").append("download>");
 										documentBuffer.append("<i class='glyphicon glyphicon-save'></i>");
 										documentBuffer.append(" <input type='button' class='padIcon' value='"+tsd.getFileName()+"'>");
 										documentBuffer.append("</a>");
@@ -2524,11 +2524,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		            }
 			    	//save  mutliple attachment in timesheet submissison attachment.
-		            TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+		            
 		            if(tsDTO.getFileInfo() != null){
 		            	 for(FileInfo file:tsDTO.getFileInfo()) {
-			            	 tsd.setTimesheetSubmissions(timesheetSubmissions);
 							FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+							TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+							tsd.setTimesheetSubmissions(timesheetSubmissions);
 							tsd.setFileUrl(file.getFileURL());
 							tsd.setFileName(file.getFileName());
 							tsd.setFileContentType(file.getContentType());

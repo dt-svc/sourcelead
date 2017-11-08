@@ -377,10 +377,11 @@ function discordApplicant(){
 <script type="text/javascript">
  function isCoolingOff(requirementId){
 	var candidateEmail =   $("input[name=EmailId]").val();
-	var reqCoolingOffPeriod = document.getElementById("reqCoolingOffPeriod").value;
+	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod, 
+	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
 	    success: function(data) {
 	    	if(data == "true"){
 	    		isCoolingOffAlert();
@@ -949,23 +950,23 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
-		        	 $("input[name=FirstName]").val(json['firstName']);
-		        	 $("input[name=EmailId]").val(json['email']);
-		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
+		        	     
+	        		$("input[name=FirstName]").val(json['firstName']);
+	        	    $("input[name=EmailId]").val(json['email']);
+	        	    $("input[name=EmailId]").attr('readonly', 'readonly'); 
 		        	 
-		        	 if(json['email'] != null && json['email'] != "" && json['email'] != 'email'){
+		        	if(json['email'] != null && json['email'] != "" && json['email'] != 'email'){
 		        		 var requirementId = $("#requirementId").val();
 		        		 isCoolingOff(requirementId);
-		        	 }
+		        	 } 
 		        	 
-		        	 if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
+		       	     if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] != 'undefined'){
 		        		 $("input[name=LastName]").val(json['lastName']);
 		        	 }else{
 		        		 $("input[name=LastName]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
+		        	  if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
 		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
 		        	 }else{
 		        		 $("input[name=PhoneNumber]").val(''); 
@@ -977,7 +978,7 @@ function getCandidateDetails(){
 		        		 $("input[name=AlternateNumber]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
+		        	   if(json['employer'] != null && json['employer'] != "" && json['employer'] != 'undefined'){
 		        		 $("input[name='Current/LastCompany']").val(json['employer']);
 		        	 }else{
 		        		 $("input[name='Current/LastCompany']").val(''); 
@@ -995,23 +996,35 @@ function getCandidateDetails(){
 		        		 $("input[name=Education]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#submissionLocation").val(json['location']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#submissionLocation").val('');
+		        	 }
+
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("#submissionCountry").val(json['country']);
+		        	 }else{
+		        		 $("#submissionCountry").val('');
 		        	 }
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates(json['state']);
+		        		 $("#submissionState").val(json['state']);
 		        	 }else{
-		        		 $("select[name=state]").val('');
+		        		 $("#submissionState").val('');
 		        	 }
 		        	 
+		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getSubmissionCandidateCities(json['city']);
+		        		 $("#submissionCity").val(json['city']);
 		        	 }else{
-		        		 $("select[name=city]").val('');
+		        		 $("#submissionCity").val('');
+		        	 }
+		        	 
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#submissionZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#submissionZipCode").val('');
 		        	 }
 		        
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
@@ -1076,7 +1089,7 @@ function getCandidateDetails(){
 		        	 
 		        	 if(json['currentRateCurrency'] != null && json['currentRateCurrency'] != "" && json['currentRateCurrency'] != 'undefined'){
 		        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
-		        	 }
+		        	 } 
 		        	 
 		        },
 		    });

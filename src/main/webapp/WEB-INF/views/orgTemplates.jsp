@@ -102,6 +102,38 @@
 		</div>
 	</div>
 	
+	
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-briefcase fa-2x text-success"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-success">Job Template</h2>
+		<p>Manage Your Job Templates</p>
+		<span>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/addTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="/template" />">View</a>
+			</sec:authorize>
+		</span>
+		</div>
+	</div>
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-address-card-o fa-2x text-info"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-info">Interview Template</h2>
+		<p>Manage Your Interview Templates</p>
+		<span>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/interViewFeedBackTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="/interViewFeedBackTemplate" />">View</a>
+			</sec:authorize>
+		</span>
+		</div>
+	</div>
+	
 	<div class="clearfix"></div>
 </section>
     

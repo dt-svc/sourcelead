@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','clientLatitude','clientLongitude','invite');
  };
 </script>
 <!-- <script>
@@ -297,12 +297,12 @@ function getVendorDetails(){
 							<div class="col-md-9" id="locationField">
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
-										id="clientLocation" name="location"
+										id="vendorLocation" name="location"
 										placeholder="Enter your Location" type="text"
 										field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+										onClick="refreshGoogleApiLocation('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode');"></i>
 								</div>
 							</div>
 						</div>
@@ -320,7 +320,7 @@ function getVendorDetails(){
 						<div class="form-group" id="countryDiv" style="display: block;">
 							<label class="col-md-3">Country</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientCountry" name="country"
+								<input class="form-control" id="vendorCountry" name="country"
 									placeholder="Enter your Country" value="${loginCountryName}"
 									type="text" readonly></input>
 							</div>
@@ -337,7 +337,7 @@ function getVendorDetails(){
 						<div class="form-group" id="stateDiv" style="display: block;">
 							<label class="col-md-3">State</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientState" name="state"
+								<input class="form-control" id="vendorState" name="state"
 									placeholder="Enter your State" type="text" readonly></input>
 							</div>
 						</div>
@@ -354,7 +354,7 @@ function getVendorDetails(){
 						<div class="form-group" id="cityDiv" style="display: block;">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientCity" name="city"
+								<input class="form-control" id="vendorCity" name="city"
 									placeholder="Enter your City" type="text" readonly></input>
 							</div>
 						</div>
@@ -371,13 +371,13 @@ function getVendorDetails(){
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
 							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
-								<input class="form-control" id="clientZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+								<input class="form-control" id="vendorZipCode" name="zipcode"
+									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
 							</div>
 						</div>
 
 						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-							<label class="col-md-3">ZipCode2</label>
+							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
 									placeholder="Enter your Zip code" type="text" readonly ></input>
@@ -724,7 +724,7 @@ function getOrgDetails()
 			      	}
 			      	
 			      	if(json['location'] != null && json['location'] != ''){
-			      	$('#clientLocation').attr("data-validation-optional", "true");  
+			      	$('#vendorLocation').attr("data-validation-optional", "true");  
 			      	document.getElementById("locationDiv").style.display="none";
    	        		document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
