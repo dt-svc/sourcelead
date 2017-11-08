@@ -873,7 +873,12 @@ public class SubmissionsRestController {
 		StringBuilder sb = new StringBuilder();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
-		requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		if(requirement.getParentRequirement() != null && StringUtils.isNotEmpty(requirement.getParentRequirement().getReleasedBy())){
+			User releasedUser = userService.getUserById(Long.parseLong(requirement.getParentRequirement().getReleasedBy()));
+			requirement.setSubmitToClientToMailId(releasedUser.getEmail());
+		}else{
+			requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		}
 		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 				requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
 		 }
