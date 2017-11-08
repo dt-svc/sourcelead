@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalDao {
@@ -19,7 +20,7 @@ public interface ExpensesApprovalDao {
   
     User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId,String reason,User loginUser, String type, String isSuperUser);
     
-    Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
+    Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason,OrgLocations location) throws Exception;
     
     ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
     
