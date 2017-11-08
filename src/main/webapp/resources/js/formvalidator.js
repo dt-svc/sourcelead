@@ -148,8 +148,10 @@
                     }
 
                     if(attachKeyupEvent) {
-                        $element.bind('keyup', function() {
-                            $(this).doValidate(language, settings, false);
+                        $element.bind('keyup', function(event) {
+                        	if($(this).val() === "" || $(this).val() === " " || event.which !== 32) {
+                        		$(this).doValidate(language, settings, false);
+                        	}	
                         });
                     }
                 }
@@ -876,7 +878,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
 jQueryFormUtils.validate = function(value, el, language, config, form) {
 
 	if(el.attr('type') && el.attr('type').toLowerCase() !== "password" && el.attr('type').toLowerCase() !== "file")
-		el.val(el.val().trim());
+		el.val(el.val().trim().replace(/  +/g,' '));
     var optional = el.attr("data-validation-optional");
     
     // test if a checkbox forces this element to be validated

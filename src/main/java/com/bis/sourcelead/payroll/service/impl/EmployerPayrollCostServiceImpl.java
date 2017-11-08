@@ -276,7 +276,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	@Override
 	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
 		
-		List<UserPayroll> userPayrollList = null;
+		List<UserPayroll> userPayrollList = new ArrayList<>();
 		if(jsonObj.has("payrollCycle")){
 			Date[] dates = null;
 			String payrollCycle = jsonObj.getString("payrollCycle");
@@ -289,10 +289,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			Date startDate = dates[0];
 			Date endDate = dates[1];
 			
-			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
-			if(userPayrollList == null || userPayrollList.isEmpty()){
+//			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//			if(userPayrollList.size() >= 0){
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
 				if(projectMembersList !=null && projectMembersList.size() >0){
+					long i = 1;
 					for(ProjectMembers pm:projectMembersList){
 						StringBuilder sb = new StringBuilder();
 						double amount = 0;
@@ -302,9 +303,10 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							System.out.println("--------");
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
-							if(pm.getEmployee() !=null) {
-								userPayroll.setEmpId(pm.getEmployee().getEmployeeId());	
-								userPayroll.setUserId(pm.getEmployee().getUser());
+							userPayroll.setId(i);
+							if(pm.getProjectMemberCandidteId() !=null) {
+								userPayroll.setEmpId(pm.getProjectMemberCandidteId().getId().toString());	
+								userPayroll.setUserId(pm.getProjectMemberCandidteId().getConsultantUser());
 							}
 							userPayroll.setOrgLocationId(orgLocation);
 							if(pm.getProjectMemberCandidteId().getLastName() !=null){
@@ -335,13 +337,14 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							userPayroll.setUpdatedBy(user.getUserCode());
 							userPayroll.setUpdatedDate(new Date());
 							userPayroll.setStatus("1");
-							userPayrollService.saveUserPayroll(userPayroll);
+							userPayrollList.add(userPayroll);
+//							userPayrollService.saveUserPayroll(userPayroll);
 						}
 						
-					}
-					
+//					}
+					i++;
 				}
-				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
 			}
 			
 			
