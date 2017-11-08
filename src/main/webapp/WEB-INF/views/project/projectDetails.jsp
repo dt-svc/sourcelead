@@ -453,9 +453,9 @@
 							}
 							if (json.manager1 == manager.id) {
 								selected = 'selected';
-								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >"	+ manager.name + " </option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" "+selected+" >" + manager.name + " ("+manager.userType+")</option>";
 							} else {
-								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "</option>";
+								result = result	+ "<option value="+manager.id+","+manager.userType+" >"+ manager.name + "  ("+manager.userType+")</option>";
 
 							}
 						}
@@ -495,17 +495,13 @@
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
-								if(manager.lastName != null && manager.lastName != '' && manager.lastName != 'undefined'){
-									var managerName2 = manager.firstName +'' + manager.lastName ;
-								}else{
-									var managerName2 = manager.firstName;
-								}
+								var managerName2 = manager.name;
 								if (json.manager2 == manager.id) {
 									selected = 'selected';
-									result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 + "</option>";
+									result = result	+ "<option value="+manager.id+" "+selected+" >"+ managerName2 +"  ("+manager.userType+")</option>";
 								} else {
 
-									result = result	+ "<option value="+manager.id+" >"+ managerName2 + "</option>";									 
+									result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 								}
 							}
 							}
