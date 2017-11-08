@@ -771,14 +771,23 @@ public class CandidateListRestController {
 		candidateDTO.setSummary(can.getSummary());
 		candidateDTO.setFileUrl(can.getFileUrl());
 		candidateDTO.setMobilePhone(can.getMobilePhone());
+		candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
 		candidateDTO.setSkillsName(can.getSkillsName());
 		candidateDTO.setRateType(can.getRateType());
 		candidateDTO.setDesignationType(can.getDesignationType());
 		candidateDTO.setExpectedRate(can.getExpectedRate());
 		candidateDTO.setCurrentRate(can.getCurrentRate());
 		candidateDTO.setEmail(can.getEmail());
+		candidateDTO.setNoticePeriod(can.getNoticePeriod());
+		candidateDTO.setDesignation(can.getDesignation());
+		candidateDTO.setPrimarySkill(can.getPrimarySkill());
+		candidateDTO.setAddress(can.getAddress());
+		candidateDTO.setExperienceMonths(can.getExperienceMonths());
+		candidateDTO.setExperienceYears(can.getExperienceYears());
+		candidateDTO.setZipcode(can.getZipCode());
 		return candidateDTO;
 	}
+	 
 
 	/**
 	 * This Method is for deleting CandidateImage
