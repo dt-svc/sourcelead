@@ -277,17 +277,42 @@ public class ClientRestController {
 	
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=true) String email,
+		    		@RequestParam(value="orgRelationId", required=true) Long orgRelationId,
+		    		@RequestParam(value="contactType", required=true) String contactType) throws Exception {
 			 
+			 String  result = "Valid Email";
 			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 
 			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
 			 if(userRole == null){
-				 return "Valid Email";
+				 User spocuser = userService.findByEmail(email);
+				 if(spocuser != null) {
+					 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+					 if(orgSpocList != null && orgSpocList.size() > 0) {
+						 for(OrgSpoc orgSpoc : orgSpocList) {
+							 if(contactType.equalsIgnoreCase("vendor")) {
+								 if(orgSpoc.getVendorUser().getId().equals(spocuser.getId())) {
+									 result = "Invalid Spoc";
+									 break;
+								 }
+							 }
+							 
+							 if(contactType.equalsIgnoreCase("client")) {
+								 if(orgSpoc.getClientUser().getId().equals(spocuser.getId())) {
+									 result = "Invalid Spoc";
+									 break;
+								 }
+							 }
+						 }
+						 
+					 }
+				 }
 			 }else{
-				 return "Invalid Email";
+				result = "Invalid Email";
 			 }
 			 
+			 return result;
 		 }
 		 
 		
