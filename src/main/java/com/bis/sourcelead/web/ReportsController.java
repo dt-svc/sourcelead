@@ -62,7 +62,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
     }	
 		
 	
-	@RequestMapping(value = "/userReports")
+	@RequestMapping(value = "/reportsDashboard")
 	public ModelAndView userReports(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
