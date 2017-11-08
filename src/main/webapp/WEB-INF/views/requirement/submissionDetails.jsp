@@ -1867,10 +1867,10 @@ function savedCommentAndCount(candidateId,submissionId){
 <script type="text/javascript">
 function interviewFeedback(interviewId,templateId,id){
 	$("#mask_inner").fadeIn();
-	//$('.content').show();
-	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
-	//$(this).next('.content').slideDown();
+	$(".reSchPop").removeClass("reSchPopActive");
+	$(".proposeTimePop").removeClass("proposeTimePopActive");
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({

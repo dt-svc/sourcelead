@@ -552,8 +552,10 @@ result = result + '<div class="project_tabs mb">';
 	 					 $('#endDate'+jsonData.id).datepicker({
 			    		      dateFormat: finalDateFormatResourceListDisplay,
 //			    		      minDate: dt,
-			    		      maxDate: endDate,
+			    		      maxDate: projectEndDate,
 			    		      minDate: selected,
+			    		      changeMonth: true,
+			    			  changeYear: true, 
 			    		      showOn: 'focus',
 		    	              showButtonPanel: true,
 		    	              closeText: 'Clear',
