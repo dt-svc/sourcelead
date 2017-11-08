@@ -9,6 +9,8 @@ import com.bis.sourcelead.annotations.Required;
 
 public class CandidateDTO extends SearchDTO{
 
+	private Long id;
+	
 	private String candidateId;
 	
 	private String staticPath;
@@ -189,6 +191,22 @@ public class CandidateDTO extends SearchDTO{
 	private int profilePercentage;
 	 
 	private String candidateCreationType;
+	
+	private String userRole;
+	
+	private String reportingManager;
+	 
+	private String resumeUUID;
+	
+	private Long orgLocationId;
+	
+	private String resourceType;
+	
+	private  String selectedAssociates;
+	
+	private String projectUUID;
+	
+	private String roles;
 
 
 	public String getCandidateId() {
@@ -907,6 +925,78 @@ public class CandidateDTO extends SearchDTO{
 	public void setCandidateCreationType(String candidateCreationType)
 	{
 		this.candidateCreationType = candidateCreationType;
+	}
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public String getSelectedAssociates() {
+		return selectedAssociates;
+	}
+
+	public void setSelectedAssociates(String selectedAssociates) {
+		this.selectedAssociates = selectedAssociates;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	
