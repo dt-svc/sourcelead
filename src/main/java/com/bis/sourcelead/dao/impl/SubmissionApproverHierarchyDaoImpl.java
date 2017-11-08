@@ -550,6 +550,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		User loginUser = userDao.getUserById(approverUserId);
 		ProjectMembers projectMembers =projectMembersDao.getProjectMemberById(projectMemberId);
+		String actionPerformedBy = null;
+		if(projectMembers != null && projectMembers.getProjectMemberCandidteId()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null  && StringUtils.isNotEmpty(projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName())){
+			actionPerformedBy = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName();
+		}else{
+			actionPerformedBy = loginUser.getFullName();
+		}
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
@@ -583,7 +589,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy(""+loginUser.getFullName());
+            	 	sah.setActionPerformedBy(""+actionPerformedBy);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -595,7 +601,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	 sah.setReopenReason(null);
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
-	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
+	            	 sah.setActionPerformedBy(""+actionPerformedBy);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -625,7 +631,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
 	            				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
 	            				approver.setSubmissionStatus(Submission_Status.REJECTED);
-	            				approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            				approver.setActionPerformedBy(" "+actionPerformedBy);
 	            				approver.setRejectedReason(rejectedReason);
 	            				approver.setReopenReason("");
 	            				approver.setReopenedUser(null);
@@ -639,7 +645,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             				    approver.getHeirarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
 	            					 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
@@ -648,7 +654,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             					     || (approver.getHeirarchyId().getProjectClientsId().getLevel() ==  sah.getHeirarchyId().getProjectClientsId().getLevel() && sah.getHeirarchyId().getLevel()==(maxLevel))){
 	            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");

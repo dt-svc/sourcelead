@@ -1289,7 +1289,8 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    $.ajax({
 	    type: "POST",
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+encodeMsg+"&approvalStatus=REJECTED",       
-	    success: function(data) {    
+	    success: function(data) { 
+	    	
 	   	   // approvalList();
 	       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 	    	   var table = $('#example').DataTable();
@@ -1298,10 +1299,9 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	   	   else{
 	   		  	  $("#row"+projectMemberId).empty();
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
-	 	    	  $("#status"+projectMemberId).html("REJECTED");
+	 	    	  $("#status"+projectMemberId).html("Rejected");
 	 	    	  $("#action"+projectMemberId).empty();
 	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
-	 	    	  $("#row"+projectMemberId).hide();
 	   	   }
 	   	   cancelRejectSubmission(projectMemberId);
 	   	    pagination();
@@ -1350,14 +1350,10 @@ function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
-		 var firstName =  '${SourceLeadWeb_user.firstName}';
-		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-			firstName = '';
+		 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 locationName = '';
 		 }
-		 var lastName = '${SourceLeadWeb_user.lastName}';
-		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-			  lastName = '';
-	     }
 		$("#row"+projectMemberId).empty();
 		$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
 	    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
@@ -1374,8 +1370,8 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        	 else{
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
-			    	 $("#status"+projectMemberId).html("APPROVED");
-			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+firstName+" "+lastName+"</b>"); 
+			    	 $("#status"+projectMemberId).html("Approved");
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
 		    	 
 		    }

@@ -22,12 +22,13 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -40,6 +41,8 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -57,7 +60,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
@@ -181,6 +183,12 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	LookUpDataDao lookUpDataDao;
 
 	/**
 	 * @author VenkatKesav
@@ -297,6 +305,20 @@ public class ClientServiceImpl implements ClientService {
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
+			
+			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    for(LookUpData lookUpData:lookUpExpCatList){
+			    ExpensesCategory expensesCategory = new ExpensesCategory();
+			    expensesCategory.setExpensesName(lookUpData.getName());
+			    expensesCategory.setAmountType("Flat");
+			    expensesCategory.setOrgLocationId(clientOrgLocations);
+			    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+				expensesCategory.setCreatedBy(user.getUserCode());
+				expensesCategory.setCreatedDate(commonUtil.currentDate());
+				expensesCategory.setUpdatedBy(user.getUserCode());
+				expensesCategory.setUpdatedDate(commonUtil.currentDate());
+				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
 			newlyRegistred = "Y";
