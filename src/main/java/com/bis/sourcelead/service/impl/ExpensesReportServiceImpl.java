@@ -39,11 +39,9 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ExpensesReportService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -68,10 +66,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
-	private OrgRelationsService orgRelationsService;
-	
-	@Autowired
 	private CommonUtil commonUtil;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesReportServiceImpl.class);
 	
@@ -195,7 +191,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			        document.open();
 
 			        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-			        BaseColor myColor = WebColors.getRGBColor("#000000");
+			        @SuppressWarnings("deprecation")
+					BaseColor myColor = WebColors.getRGBColor("#000000");
 			        boldFont.setColor(myColor);
 			        StringBuilder userStyle = new StringBuilder();
 			        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("_EXPRORT_REPORTS");
@@ -230,7 +227,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			            PdfPCell cell = new PdfPCell();
 			            cell.setGrayFill(0.9f);
 			            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-			            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+			            @SuppressWarnings("deprecation")
+						BaseColor myBorderColor = WebColors.getRGBColor("#808080");
 			            cell.setBackgroundColor(myBorderColor);
 			            table.addCell(cell);
 			        }
@@ -334,50 +332,60 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				 Float expenseUnApprovedAmount = 0f;
 				 Float claimedExpenseApprovedAmount = 0f;
 				 Float claimedExpenseUnApprovedAmount = 0f;
-				 Float claimedExpenseAmount = 0f;
 				 if(count == 0)
 					 projectMember.setMonthsStringFormat(dateList);
 				 List<Expenses> expenses  = getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),convertedStartDate,convertedEndDate);
 				 List<Expenses> expensesClaimendAmount  = getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
 				 if(expenses != null && !expenses.isEmpty()){
 				 for(Expenses exp:expenses){
-					 if(null != projectMember.getEmployee()){
+					 if(null != projectMember.getProjectMemberCandidteId()){
 							if(null != projectMember.getEmployee().getEmployeeId()){
 								expensesArray[0] = (exp.getProjectMembers().getEmployee().getEmployeeId());
+							}else {
+								expensesArray[0] = ("--");
 							}
-							if(null != projectMember.getEmployee().getUser()){
-								if(null != projectMember.getEmployee().getUser().getLastName()){
+							if(null != projectMember.getProjectMemberCandidteId()){
+								if(null != projectMember.getProjectMemberCandidteId().getLastName()){
 									StringBuilder nameBuilder = new StringBuilder();
-									expensesArray[1] = nameBuilder.append(projectMember.getEmployee().getUser().getFirstName()).append(projectMember.getEmployee().getUser().getLastName()).toString();
+									expensesArray[1] = nameBuilder.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString();
 								}else{
-									expensesArray[1] = projectMember.getEmployee().getUser().getFirstName();
+									expensesArray[1] = projectMember.getProjectMemberCandidteId().getFirstName();
 								}
 								
-								if(null != projectMember.getEmployee().getUser().getEmail()){
-									expensesArray[2] = projectMember.getEmployee().getUser().getEmail();
+								if(null !=projectMember.getProjectMemberCandidteId().getEmail()){
+									expensesArray[2] = projectMember.getProjectMemberCandidteId().getEmail();
 								}else{
 									expensesArray[2] = "--";
 								}
-								if(null != projectMember.getEmployee().getUser().getMobilePhone()){
-									expensesArray[3] = projectMember.getEmployee().getUser().getMobilePhone();
+								if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+									expensesArray[3] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 								}else{
 									expensesArray[3] = "--";
 								}
 							}
-							if(null != projectMember.getEmployee().getUserEmploymentType()){
-								expensesArray[4] = exp.getProjectMembers().getEmployee().getUserEmploymentType();
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
+								expensesArray[4] = projectMember.getProjectMemberCandidteId().getDesignationType();
 							}else{
 								expensesArray[4] = "--";
 							}
+
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+			     			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+			     			  	expensesArray[5] = orgRelation.getResponderLocationId().getOrgLocationName();
+			     			  	expensesArray[6] = orgRelation.getResponderLocationId().getUser().getFullName();
+			           	     }else{
+			           	    	expensesArray[5] = "--";
+								expensesArray[6] = "--";
+			           	     }
 							
-							 if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+							 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
 									expensesArray[5] = orgRelation.getResponderLocationId().getOrg().getOrgName();
 									expensesArray[6] = orgRelation.getResponderLocationId().getOrg().getUser().getFirstName();
 							 }else{
 								 expensesArray[5] = "--";
 								 expensesArray[6] = "--";
-							 }
+							 }*/
 							
 							if(null != projectMember.getProjects()){
 								expensesArray[7] = projectMember.getProjects().getProjectName();
@@ -386,11 +394,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							}
 						}
 					 
-						 if(exp.getClientName() != null){
-							 expensesArray[8] = exp.getClientName();
+						 if(projectMember.getProjectClientsId() != null && projectMember.getProjectClientsId().getOrgRelationId() !=null && projectMember.getProjectClientsId().getOrgRelationId().getClientName() != null){
+							 expensesArray[8] = projectMember.getProjectClientsId().getOrgRelationId().getClientName();
 						 }else{
 							 expensesArray[8] ="--"; 
 						 }
+						 
 						 Date d = new Date(exp.getEndDate().getTime());
 						if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
 							 Float approvedTotal = 0f;
@@ -971,50 +980,50 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				 List<Expenses> expensesClaimendAmount  = getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
 				 if(expenses != null && !expenses.isEmpty()){
 				 for(Expenses exp:expenses){
-					 if(null != projectMember.getEmployee()){
+					 if(null != projectMember.getProjectMemberCandidteId()){
 							if(null != projectMember.getEmployee().getEmployeeId()){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
 							}
-							if(null != projectMember.getEmployee().getUser()){
-								if(null != projectMember.getEmployee().getUser().getLastName()){
+							if(null != projectMember.getProjectMemberCandidteId()){
+								if(null !=projectMember.getProjectMemberCandidteId().getLastName()){
 									StringBuilder nameBuilder = new StringBuilder();
-									writeRow.createCell(1).setCellValue(nameBuilder.append(projectMember.getEmployee().getUser().getFirstName()).append(projectMember.getEmployee().getUser().getLastName()).toString());
+									writeRow.createCell(1).setCellValue(nameBuilder.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
 									 createExcelsheet.autoSizeColumn(1);
 								}else{
-									writeRow.createCell(1).setCellValue(projectMember.getEmployee().getUser().getFirstName());
+									writeRow.createCell(1).setCellValue(projectMember.getProjectMemberCandidteId().getFirstName());
 								}
 								
-								if(null != projectMember.getEmployee().getUser().getEmail()){
-									writeRow.createCell(2).setCellValue( projectMember.getEmployee().getUser().getEmail());
+								if(null != projectMember.getProjectMemberCandidteId().getEmail()){
+									writeRow.createCell(2).setCellValue( projectMember.getProjectMemberCandidteId().getEmail());
 									 createExcelsheet.autoSizeColumn(2);
 								}else{
 									writeRow.createCell(2).setCellValue("--");
 								}
-								if(null != projectMember.getEmployee().getUser().getMobilePhone()){
-									writeRow.createCell(3).setCellValue(projectMember.getEmployee().getUser().getMobilePhone());
+								if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+									writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
 									 createExcelsheet.autoSizeColumn(3);
 								}else{
 									writeRow.createCell(3).setCellValue("--");
 								}
 							}
-							if(null != projectMember.getEmployee().getUserEmploymentType()){
-								writeRow.createCell(4).setCellValue(exp.getProjectMembers().getEmployee().getUserEmploymentType());
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
+								writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 								 createExcelsheet.autoSizeColumn(4);
 							}else{
 								writeRow.createCell(4).setCellValue("--");
 							}
 							
-							 if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
-									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-									writeRow.createCell(5).setCellValue( orgRelation.getResponderLocationId().getOrg().getOrgName());
-									 createExcelsheet.autoSizeColumn(5);
-									writeRow.createCell(6).setCellValue(orgRelation.getResponderLocationId().getOrg().getUser().getFirstName());
-									 createExcelsheet.autoSizeColumn(6);
-							 }else{
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+								 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+								writeRow.createCell(5).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
+								 createExcelsheet.autoSizeColumn(5);
+								writeRow.createCell(6).setCellValue(orgRelation.getResponderLocationId().getUser().getFullName());
+								 createExcelsheet.autoSizeColumn(6);
+							}else{
 								 writeRow.createCell(5).setCellValue("--");
 								 writeRow.createCell(6).setCellValue("--");
-							 }
+							}
 							
 							if(null != projectMember.getProjects()){
 								writeRow.createCell(7).setCellValue(projectMember.getProjects().getProjectName());
@@ -1024,12 +1033,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							}
 						}
 					 
-						 if(exp.getClientName() != null){
-							 writeRow.createCell(8).setCellValue(exp.getClientName());
+					 	if(projectMember.getProjectClientsId() != null && projectMember.getProjectClientsId().getOrgRelationId() !=null && projectMember.getProjectClientsId().getOrgRelationId().getClientName() != null){
+							 writeRow.createCell(8).setCellValue( projectMember.getProjectClientsId().getOrgRelationId().getClientName());
 							 createExcelsheet.autoSizeColumn(8);
-						 }else{
+						}else{
 							 writeRow.createCell(8).setCellValue("--"); 
-						 }
+						}
 						 Date d = new Date(exp.getEndDate().getTime());
 						if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
 							 Float approvedTotal = 0f;

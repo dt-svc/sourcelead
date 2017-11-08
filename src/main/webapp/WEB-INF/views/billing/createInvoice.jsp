@@ -885,7 +885,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '+1d');
-			            dt.setDate(dt.getDate() + 1);
+			            dt.setDate(dt.getDate());
 			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			            getEstimatedHours(maxRowNum);
 			            
@@ -902,7 +902,7 @@ function cancel(){
 				  onSelect : function(selected) {
 					  
 					  var dt = $(this).datepicker('getDate', '-1d');
-			            dt.setDate(dt.getDate() - 1);
+			            dt.setDate(dt.getDate());
 			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			            getEstimatedHours(maxRowNum);
 					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
@@ -1989,7 +1989,11 @@ function saveInvoice(saveType){
     		     			location.replace(sourceleadUrl+"/invoiceList");
     		     			$("#selector1").removeAttr("style");
 				    		$("#selector1").css({ display: "block" });
-				    	    $("#msgDiv").html("Successfully you have created a Invoice..");
+				    		if(saveType == 'SENT'){
+				    			$("#msgDiv").html("Successfully you have sent a Invoice..");
+				    		}else if(saveType == 'DRAFT'){
+				    			$("#msgDiv").html("Invoice saved Successfully..");
+				    		}
     		     			msgFadein();
 		  				}
 		  			   }); 
