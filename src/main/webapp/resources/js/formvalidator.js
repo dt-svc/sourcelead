@@ -877,7 +877,7 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
  */
 jQueryFormUtils.validate = function(value, el, language, config, form) {
 
-	if(el.attr('type') && el.attr('type').toLowerCase() !== "password" && el.attr('type').toLowerCase() !== "file")
+	if((el.attr('type') && el.attr('type').toLowerCase() == "text") || el.is("textarea"))
 		el.val(el.val().trim().replace(/  +/g,' '));
     var optional = el.attr("data-validation-optional");
     
