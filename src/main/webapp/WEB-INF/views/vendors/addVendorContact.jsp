@@ -531,7 +531,7 @@ function validateEmail(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var vendorName = document.getElementById("vendorName").value;
 	var orgRelationId = vendorName.split(",")[0];
-	if(email != null && orgRelationId != null){
+	if(email != null && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",

@@ -350,13 +350,13 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-// 	 getOwners();
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	if(email != null){
+	var vendorName = document.getElementById("vendorName").value;
+	var orgRelationId = vendorName.split(",")[0];
+	if(email != null  && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -364,6 +364,12 @@ function validateEmail(){
 					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
+					
+				}else if(result == 'Invalid Spoc') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as client contact</span>");
+					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as client contact");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
