@@ -24,6 +24,7 @@ import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -210,10 +211,15 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception {
+	public Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason,OrgLocations location) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		User loginUser = userDao.getUserById(approverUserId);
-		
+		String actionPerformedBy= "";
+		if(location != null && StringUtils.isNotEmpty(location.getOrgLocationName())){
+			actionPerformedBy =location.getOrgLocationName();
+		}else{
+			actionPerformedBy = loginUser.getFullName();
+		}
 		/*
 		 *  get ExpensesApproverHierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
@@ -255,7 +261,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    			expenseStatus.add(Submission_Status.REJECTED.getValue());
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy(""+loginUser.getFullName());
+            	 	sah.setActionPerformedBy(""+actionPerformedBy);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -268,7 +274,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	            	 sah.setReopenReason(null);
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
-	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
+	            	 sah.setActionPerformedBy(""+actionPerformedBy);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -292,7 +298,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	    			session.saveOrUpdate(expenses);
                 				approver.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
                 				approver.setExpenseStatus(Submission_Status.REJECTED);
-                				approver.setActionPerformedBy(" "+loginUser.getFullName());
+                				approver.setActionPerformedBy(" "+actionPerformedBy);
                 				approver.setRejectedReason(rejectedReason);
                 				approver.setReopenReason("");
                 				approver.setReopenedUser(null);
@@ -310,7 +316,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                      	    			 session.saveOrUpdate(expenses);
     	            				 	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
-    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
@@ -323,7 +329,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                       	    			  session.saveOrUpdate(expenses);
                 					      approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
-    	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+    	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
