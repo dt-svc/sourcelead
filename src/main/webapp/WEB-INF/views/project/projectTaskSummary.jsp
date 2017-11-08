@@ -225,7 +225,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 						</div>
 						
 						<!-- Document Modal Pop -->
-						<div class="modal-Time document clearfix"> 
+						<div class="modal-Time document clearfix" style="margin-bottom: 45px;"> 
 						  <div id="addDocumentId"></div>
 						  <div id="editDocumentId"></div>
 						</div>
