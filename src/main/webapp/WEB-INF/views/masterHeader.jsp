@@ -57,7 +57,7 @@
 
 <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
-<c:if test='${viewPage == "reports/userReports"}'>
+<c:if test='${viewPage == "reports/reportsDashboard"}'>
 	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
@@ -532,7 +532,7 @@ function preventTabkey(e){
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	            <li class="reportsH">
-					<a title="Reports" href="<c:url value='${sourceleadUrl}/userReports'/>"><i class="fa fa-pie-chart"></i></a>
+					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
             </c:if>
             
