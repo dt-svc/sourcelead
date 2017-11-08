@@ -80,7 +80,7 @@ window.onload = function () {
 		  	  '</sec:authorize>';
 		  	
 		  	
-		  	  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		  	 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
 		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
 				  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
 				      	 result = result + '<li id="projectTaskTab"><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
@@ -89,6 +89,9 @@ window.onload = function () {
 				  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 				  	'</sec:authorize>';
 			  	'</sec:authorize>';
+		  	 }
+	  	   
+		  	if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 			  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
 				'</sec:authorize>';

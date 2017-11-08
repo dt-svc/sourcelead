@@ -50,6 +50,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -248,6 +249,18 @@ public class CommonUtil {
 		if(tasksList != null && !tasksList.isEmpty()){
 			for(ProjectTasks task :tasksList){
 				task.setProjectId(projects);
+				if (!Constants.HOLIDAY.equalsIgnoreCase(task.getTaskName()) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(task.getTaskName()) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(task.getTaskName())) {
+					task.setBillableType(Constants.TASK_NON_BILLABLE);
+				} else {
+					task.setBillableType(Constants.TASK_BILLABLE);
+				}
+				LookUpData taskTypeLookUpData = new LookUpData();
+				taskTypeLookUpData.setId(1060L);
+				task.setTaskType(taskTypeLookUpData);
+				LookUpData taskStatusLookUpData = new LookUpData();
+				taskStatusLookUpData.setId(1069L);
+				task.setTaskStatus(taskStatusLookUpData);
+				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setCreatedBy(user.getCreatedBy());
 				task.setCreatedDate(new Date());
 				task.setUpdatedDate(new Date());

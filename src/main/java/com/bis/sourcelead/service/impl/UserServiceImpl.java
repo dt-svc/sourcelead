@@ -301,7 +301,7 @@ public class UserServiceImpl implements UserService {
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
-				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+				candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate);
 				
 			}else{
 				candidate.setConsultantUser(user);
@@ -648,8 +648,7 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("firstName", user.getFirstName());	 
 		 }
 		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		 globalVarsMap.put("administratorFirstName", loginUser.getFullName());
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();

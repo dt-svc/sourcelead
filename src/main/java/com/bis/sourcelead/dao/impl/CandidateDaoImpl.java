@@ -655,8 +655,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "
-				+ " and (candidate.consultantUser IS NULL OR candidate.consultantUser.id <> :userId) "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+				+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -1112,7 +1112,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
 		}
 		
-		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' ) and candidate.orgLocationId.id = :orgLocationsId ";
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm where pm.projectClientsId.orgLocationsId.id = :orgLocationsId and pm.projectClientsId.projectId.id = :projectId and pm.status = '1' ) and candidate.orgLocationId.id = :orgLocationsId ";
 		
 		// Dont delete this logic., It will be used further
 		/*String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
