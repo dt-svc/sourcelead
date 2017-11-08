@@ -257,7 +257,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
-		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
