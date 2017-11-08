@@ -46,8 +46,8 @@ function getDayWiseReports(){
 </section>
 
 
-<div style="overflow: auto;" class=" vendor_wrap"> 
-   <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
+<div class="vendor_wrap"> 
+   <div class="pull-left reportBtns reportBtns_custom mt5">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
@@ -72,7 +72,7 @@ function getDayWiseReports(){
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		<div class="clearfix"></div>
   </div>
-      
+      <div class="clearfix mb10"></div>
       <div class="candidate_wrap_table recruiterReports_table">
         <div id="usersList" class="datatable_filter"></div>
       </div> 
@@ -159,9 +159,7 @@ function getCustomReports(){
 	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
 	         success :function(data) {
 	        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	                	
             	     $("#usersList").empty();
-                     $("#usersList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
                 	 var result = "";
                 	 result = result +"<table id='reportPagination' class='display' cellspacing='0' width='99.9%' >"; 
                      result = result +"<thead>"; 
@@ -263,7 +261,9 @@ function getCustomReports(){
                      result = result +" </tbody>";
                      result = result +"</table>"; 
                      $("#noRecruiters").val('');
+                     alert(result);
                      $("#usersList").append(result); 
+                    
                      reportpagination();
              	}
 	        },

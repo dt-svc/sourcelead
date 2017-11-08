@@ -25,7 +25,7 @@
            <i class="fa fa-address-book-o fa-2x text-primary"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-primary">Applicant Template</h2>
+		<h2 class="text-primary">Applicant</h2>
 		<p>Manage Your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
@@ -42,7 +42,7 @@
            <i class="fa fa-object-ungroup fa-2x text-info"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-info">Contract Template</h2>
+		<h2 class="text-info">Contract</h2>
 		<p>Manage Your Contract Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
@@ -59,7 +59,7 @@
            <i class="fa fa-handshake-o fa-2x text-success"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-success">Onboard Template</h2>
+		<h2 class="text-success">Onboard</h2>
 		<p>Manage Your Onboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
@@ -76,7 +76,7 @@
            <i class="fa fa-sign-out fa-2x text-danger"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-danger">Offboard Template</h2>
+		<h2 class="text-danger">Offboard</h2>
 		<p>Manage Your Offboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
@@ -93,7 +93,7 @@
            <i class="fa fa-suitcase fa-2x text-warning"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-warning">Vendor Onboard Template</h2>
+		<h2 class="text-warning">Vendor Onboard</h2>
 		<p>Manage Your Vendor Onboard Templates</p>
 		<span>
 			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/addNewVendorOnboardTemplate'/>">Add</a> 
@@ -108,7 +108,7 @@
            <i class="fa fa-briefcase fa-2x text-success"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-success">Job Template</h2>
+		<h2 class="text-success">Job</h2>
 		<p>Manage Your Job Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
@@ -123,7 +123,7 @@
            <i class="fa fa-address-card-o fa-2x text-info"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-info">Interview Template</h2>
+		<h2 class="text-info">Interview</h2>
 		<p>Manage Your Interview Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
