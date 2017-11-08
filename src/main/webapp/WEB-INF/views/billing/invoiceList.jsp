@@ -530,7 +530,7 @@ function prepareInvoiceList(url,locationdateForList){
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
-	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Reference Id</th>                    ';
 	result = result +'         <th>Client Name</th>           ';
 	result = result +'         <th>Contact</th>               ';
 	result = result +'         <th>Project Name</th>   ';

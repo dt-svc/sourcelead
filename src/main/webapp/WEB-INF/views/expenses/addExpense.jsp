@@ -114,8 +114,8 @@
 <div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="totalAmount" value="${expenses.totalAmount > 0 ? expenses.totalAmount : '00.00' }" class="ReadTextFli valid" readonly="readonly">
 </div>
+<div class="pull-left" id="exceedSpan"></div>
 </div>
-	<div class="pull-left" id="exceedSpan"></div>
 	<a href="javascript:addExpenseRow('emp');" id="addExpenseItemButton" data-id="emp" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
@@ -163,7 +163,7 @@
 						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						   <c:if test="${pm.id == expenses.projectMemberId}">
+						   <c:if test="${pm.projectId == expenses.projectId}">
 				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
 				 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 				 	    	 </c:forEach>
@@ -227,7 +227,7 @@
 			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
-			                             <a class='downicon' href='${entryDoc.fileURL}'>
+			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
@@ -291,22 +291,67 @@ function removeWhiteSpacesMyExp(rowCount){
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			 var projectStartDate = $("#projectStartDateExpensesId").val();
+             var start = projectStartDate.split("-");
+             if(locationDate.match("yyyy-MM-dd")){
+          	   var d1 = new Date(start[0], start[1] - 1, start[2]);
+  		    }if(locationDate.match("dd-MM-yyyy")){
+  		    	var d1 = new Date(start[2], start[1] - 1, start[0]);
+  		    }if(locationDate.match("MM-dd-yyyy")){
+  		    	var d1 = new Date(start[2], start[0] - 1, start[1]);
+  		    }if(locationDate.match("yyyy-dd-MM")){
+  		    	var d1 = new Date(start[0], start[2] - 1, start[1]);
+  		    }
+  		    var projectEndDate = $("#projectEndDateExpensesId").val();
+            var end = projectEndDate.split("-");
+            if(locationDate.match("yyyy-MM-dd")){
+       	    var d2 = new Date(end[0], end[1] - 1, end[2]);
+		    }if(locationDate.match("dd-MM-yyyy")){
+		    	var d2 = new Date(end[2], end[1] - 1, end[0]);
+		    }if(locationDate.match("MM-dd-yyyy")){
+		    	var d2 = new Date(end[2], end[0] - 1, end[1]);
+		    }if(locationDate.match("yyyy-dd-MM")){
+		    	var d2 = new Date(end[0], end[2] - 1, end[1]);
+		    }
+		    
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
+			var date_validation = "true";
 			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
 				for(var i = 1; i < maxRecCount; i++){
-				   if($("#divEntityTsRow"+i).is(':visible'))
-				   {
+				    var categoryDate = $("#categoryDate"+i).val();
+				    if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				    	    var category = categoryDate.split("-");
+				            if(locationDate.match("yyyy-MM-dd")){
+				       	    var d3 = new Date(category[0], category[1] - 1, category[2]);
+						    }if(locationDate.match("dd-MM-yyyy")){
+						    	var d3 = new Date(category[2], category[1] - 1, category[0]);
+						    }if(locationDate.match("MM-dd-yyyy")){
+						    	var d3 = new Date(category[2], category[0] - 1, category[1]);
+						    }if(locationDate.match("yyyy-dd-MM")){
+						    	var d3 = new Date(category[0], category[2] - 1, category[1]);
+						    }
+						    if(d1<=d3 && d3<=d2){
+						    	date_validation = "false";
+						    }
+				    }
+				    if($("#divEntityTsRow"+i).is(':visible'))
+				    {
 					   validation_required = "false";
-				   }
+				    }
 				}
 			}
-			if(validation_required == "true"){
-				$("#exceedSpan") .html( "<p class='textWarning small'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
+			if(date_validation == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
+				return false;
+			}
+			else if(validation_required == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
 			else{
+				alert("entered..");
 				$("#submitForApprovalExpensesId").prop('disabled', true);
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
