@@ -226,7 +226,7 @@
 			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
-			                             <a class='downicon' href='${entryDoc.fileURL}'>
+			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
