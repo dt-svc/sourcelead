@@ -474,7 +474,7 @@ public class TimesheetApprovalRestController {
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
 		    		 String  v = entry.getValue();
-					tdSpanLength =tdSpanLength+1;
+					tdSpanLength =tdSpanLength+2;
 			        Date weekStartDate;
 			        Date weekEndDate;
 					try {

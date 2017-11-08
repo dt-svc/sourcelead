@@ -433,7 +433,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder attachmentBuilder=new StringBuilder();
+            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
+            {
             emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	         }
+	       else
+	        {
+	    	   emailMessage.setFromName(loginUser.getFirstName());
+	        }
+            
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
             // setting the class filed values
