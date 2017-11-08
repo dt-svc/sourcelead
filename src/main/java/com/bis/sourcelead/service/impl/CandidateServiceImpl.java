@@ -1598,9 +1598,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
