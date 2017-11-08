@@ -321,14 +321,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			 $("#rejectReasonDiv").empty();
 		     var rowHtmlContent =  $("#row"+expenseId).html();
 		     
-		     var firstName =  '${SourceLeadWeb_user.firstName}';
-			 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-				firstName = '';
+		     var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+			 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+				 locationName = '';
 			 }
-			 var lastName = '${SourceLeadWeb_user.lastName}';
-			 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-				  lastName = '';
-		     }
 			 $("#row"+expenseId).empty();
 			 $("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
 		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
@@ -346,7 +342,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 	    	  $("#row"+expenseId).html(rowHtmlContent);
 		 	    	  $("#status"+expenseId).html("REJECTED");
 		 	    	  $("#action"+expenseId).empty();
-		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
 		   	   }
 		      }
 		    }); 
@@ -416,14 +412,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
   function approveExpenseByExpenseId(expenseId,tdSpanSize,from){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+expenseId).html();
-		 var firstName =  '${SourceLeadWeb_user.firstName}';
-		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-			firstName = '';
+	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 locationName = '';
 		 }
-		 var lastName = '${SourceLeadWeb_user.lastName}';
-		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-			  lastName = '';
-	     }
 		$("#row"+expenseId).empty();
 		$("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
 	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
@@ -439,8 +431,8 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	        	 else{
 	        		 $("#row"+expenseId).empty();
 			    	 $("#row"+expenseId).html(rowHtmlContent);
-			    	 $("#status"+expenseId).html("APPROVED");
-			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+firstName+" "+lastName+"</b>"); 
+			    	 $("#status"+expenseId).html("Approved");
+			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
 		    	 
 		    }
