@@ -188,7 +188,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
