@@ -1397,7 +1397,7 @@ function getVendors(){
 				 var opt = invoiceDocumentsList[i]; 
 	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -1575,7 +1575,7 @@ function getVendorContacts(vendorContactId){
 		var opt = json[i];
 		
 		var selected = '';
-		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spoc){
+		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
 			selected = 'selected';
 		}
 		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
