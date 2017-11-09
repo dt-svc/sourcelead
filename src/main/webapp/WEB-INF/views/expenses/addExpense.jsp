@@ -79,7 +79,7 @@
 							</c:forEach>
 						</select>
 						</c:if>
-						<input type="hidden" id="projectIdHidden" value="" name="projectId">
+						<input type="hidden" id="projectMemberIdHidden" value="" name="projectMemberId">
 					</div>
 				</div>
 
@@ -367,8 +367,8 @@ function removeWhiteSpacesMyExp(rowCount){
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
 				
-				var  pmIdValue = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
-				$("#projectIdHidden").val(pmIdValue);
+				var  pmIdValue = $("#projectMemberId option").eq($("#projectMemberId").prop("selectedIndex")).val();
+				$("#projectMemberIdHidden").val(pmIdValue);
 				
 				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
