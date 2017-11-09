@@ -123,6 +123,7 @@ function candDocumentsList(candidateId){
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
 	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a class="glyphicon glyphicon-download-alt" target="_blank" download href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
