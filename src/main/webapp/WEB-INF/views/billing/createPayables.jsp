@@ -469,10 +469,8 @@ function remove(){
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
 		if(invoiceDocumentsList.length > 0){
-			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
 				 var opt = invoiceDocumentsList[i]; 
-	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
 	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
@@ -484,6 +482,19 @@ function remove(){
 			 
 			 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
+		}else{
+			 <c:forEach var="doc" items="${documents}">
+				 result = result +"<strong id='invoiceDocument${doc.id}'>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+				 result = result +"<input type='button' value='${doc.fileName}'>";
+				 result = result +"</a>";
+				 result = result +"</strong>";
+         	</c:forEach>
+			
+			 
+			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+			
 		}
     	
 	}
@@ -495,7 +506,7 @@ function remove(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -732,7 +743,7 @@ function remove(){
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }

@@ -131,6 +131,10 @@ public class InvoiceController {
 		}
 		
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getParentInvoiceId() != null) {
+			List<InvoiceDocument> docs = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getParentInvoiceId().getId());
+			model.addObject("documents" , docs);
+		}
 		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
