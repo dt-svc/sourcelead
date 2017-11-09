@@ -59,7 +59,7 @@
 	             <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-	
+	                   <c:if test="${submissionStatus != 'SUBMITTED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -68,6 +68,18 @@
 							       <option  ${expenses.masterCandidateId == projMembers.masterCandidateId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
+						</c:if>
+						<c:if test="${submissionStatus == 'SUBMITTED'}">
+						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
+							       <option  ${expenses.masterCandidateId == projMembers.masterCandidateId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
+							</c:forEach>
+						</select>
+						</c:if>
+						<input type="hidden" id="projectMemberIdHidden" value="" name="projectMemberId">
 					</div>
 				</div>
 
@@ -351,10 +363,12 @@ function removeWhiteSpacesMyExp(rowCount){
 				return false;
 			}
 			else{
-				alert("entered..");
 				$("#submitForApprovalExpensesId").prop('disabled', true);
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
+				var  pmIdValue = $("#projectMemberId option").eq($("#projectMemberId").prop("selectedIndex")).val();
+				$("#projectMemberIdHidden").val(pmIdValue);
 				
 				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
