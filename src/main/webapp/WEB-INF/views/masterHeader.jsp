@@ -454,9 +454,11 @@ function preventTabkey(e){
 	           <c:if test="${userTabs.tabName == 'Vendors'}">
 	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Projects'}">
+	           
+	         <!--   commented by laxman because client based project querys are not implemented -->
+	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
-	           </c:if>
+	           </c:if> --%>
 	           
 	           <c:if test="${userTabs.tabName == 'Associates List'}">
 	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>

@@ -648,11 +648,13 @@ function getStatus(){
 // 		    var formData = new FormData(form); 
 		    
 		    var formData = getFormData1("project_form");
-		    if(formData.get("estimatedBudget") === "") {
-		    	formData.set("estimatedBudget","0");
+		    var estimatedBudget = document.getElementById("estimatedBudget").value;
+		    var estimatedHours = document.getElementById("estimatedHours").value;
+		    if(estimatedBudget === "") {
+		    	formData["estimatedBudget"] = "0";
 		    }
-		    if(formData.get("estimatedHours") === "") {
-		    	formData.set("estimatedHours","0");
+		    if(estimatedHours === "") {
+		    	formData["estimatedHours"] = "0";
 		    }
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
