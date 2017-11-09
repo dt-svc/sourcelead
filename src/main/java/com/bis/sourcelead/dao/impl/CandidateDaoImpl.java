@@ -655,8 +655,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "
-				+ " and (candidate.consultantUser IS NULL OR candidate.consultantUser.id <> :userId) "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+				+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
