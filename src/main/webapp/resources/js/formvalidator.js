@@ -877,9 +877,14 @@ jQueryFormUtils.validateInput = function(el, language, config, form) {
  */
 jQueryFormUtils.validate = function(value, el, language, config, form) {
 
-	if((el.attr('type') && el.attr('type').toLowerCase() == "text") || el.is("textarea"))
+	if((el.attr('type') && el.attr('type').toLowerCase() == "text") || el.is("textarea")){
+		if(el.is("texarea")){
+	        removeEmptyLines(ele)
+		}
 		el.val(el.val().trim().replace(/  +/g,' '));
+	}
     var optional = el.attr("data-validation-optional");
+    
     
     // test if a checkbox forces this element to be validated
     var validationDependsOnCheckedInput = false;

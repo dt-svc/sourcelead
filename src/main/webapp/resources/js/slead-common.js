@@ -314,3 +314,13 @@ function getJSDateFormat(locationDate){
 	  }
 	  return jsDateFormat;
 }
+function removeEmptyLines(ele) { //removeEmptyLines($(".."))
+	if($(ele).is(":visible")) {
+		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
+		if($(ele).val().endsWith("\n")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
+		} else if($(ele).val().endsWith("\r")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
+		}
+	}	
+}
