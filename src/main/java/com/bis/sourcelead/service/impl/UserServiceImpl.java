@@ -649,7 +649,8 @@ public class UserServiceImpl implements UserService {
 		 }
 		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
 //		 globalVarsMap.put("administratorFirstName", loginUser.getFullName());
-		 globalVarsMap.put("loginUser",loginUser.getFullName());
+		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
+		 globalVarsMap.put("loginUser",loginUserFullName);
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
