@@ -2738,6 +2738,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#state').val(''); 
 	    $('#city').val(''); 
 	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
+	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");

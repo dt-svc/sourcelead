@@ -723,8 +723,10 @@ function clearSearch(){
 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
+		 $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
+		 
 	    $('#orgNameAdvanced').val(''); 
-	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");

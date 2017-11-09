@@ -320,7 +320,7 @@ $(document).ready(function(){
            <div class="form-group" id="descriptionDiv"  style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
+					<textarea class="form-control" rows="3" id="mainDescription" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
@@ -1069,6 +1069,14 @@ function contractTypeLabels(){
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -1125,6 +1133,14 @@ function contractTypeLabels(){
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1161,6 +1177,14 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1200,6 +1224,14 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1279,6 +1311,14 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 	}
 	
 	if(contractType == "Full time offer"){
@@ -1354,6 +1394,14 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation-optional');
 		$('#candiRatePer').attr('data-validation',"required");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		getRequirements("Vendor SOW");
 	}
@@ -1729,7 +1777,7 @@ function flush(){
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
