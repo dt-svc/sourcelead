@@ -533,14 +533,13 @@ function employeePagination(){
 
 <script>
 function removeEmployer(candidateemployerId, candidateId){
-	
 	alertMessageforEmp(candidateemployerId, candidateId);
 }
 </script>
 
 <script type="text/javascript">
 function cancelEmployeers(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
@@ -550,14 +549,14 @@ function cancelEmployeers(){
 function alertMessageforEmp(candidateemployerId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_emp_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Employer</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmp("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEmployeers();'></b>";
 	result = result +"	</div>";
 	$("#deleteEmp1PopUp").empty();
 	$("#deleteEmp1PopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_emp_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -597,7 +596,7 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");
 								 $("#popUpDivEmp").removeClass("edit-details-active");
-								 $("#remove_user_pop, .project_inn_mask").fadeOut();
+								 $("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
 							}
