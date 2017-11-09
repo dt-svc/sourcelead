@@ -512,15 +512,15 @@ public class LeaveDaoImpl implements LeaveDao{
 	}
 
 
-	/*@Override
+	@Override
 	@Transactional
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if("Holiday".equalsIgnoreCase(fromTable))
+		/*if("Holiday".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.holidayName = :name ";
-		else if("Shift".equalsIgnoreCase(fromTable))
+		else*/ if("Shift".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.shiftName = :name ";
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
@@ -533,7 +533,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			return false;
 		}
 		
-	}*/
+	}
 
 
 	@Override

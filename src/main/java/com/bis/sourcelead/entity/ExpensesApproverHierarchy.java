@@ -152,6 +152,9 @@ private String userTypeVendorName;
 @JsonProperty
 private String expensesApproverHierarchyPurpose; 
 
+@Transient
+@JsonProperty
+private String expenseLocationCode;
 
 @Transient
 @JsonProperty
@@ -382,6 +385,14 @@ public String getUserFileUrl() {
 
 public void setUserFileUrl(String userFileUrl) {
 	this.userFileUrl = userFileUrl;
+}
+
+public String getExpenseLocationCode() {
+	return expenseLocationCode;
+}
+
+public void setExpenseLocationCode(String expenseLocationCode) {
+	this.expenseLocationCode = expenseLocationCode;
 }
 
 

@@ -247,11 +247,11 @@ overflow-x: auto;
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
           </div>
