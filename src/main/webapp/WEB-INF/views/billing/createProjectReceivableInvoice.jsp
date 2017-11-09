@@ -106,17 +106,17 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             </div> -->
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;</span></label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress"
-                    name="billingAddress" data-validation="required" field-name="Invoice Address"></textarea>
+                    name="billingAddress" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
               </div>
             </div>
             <div class="form-group">
-							<label class="col-md-3">Account Details<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Account Details<span class="text-danger">&nbsp;</span></label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details" data-validation="required" field-name="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
 							</div>
 			</div>
           </div>
@@ -411,7 +411,7 @@ function populateInlineItemsGrid(data){
             /*  result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="lineItems['+i+'].user">'; */
              result = result +' </td>';
              result = result +'  <td class="tblminwidth-150">';
-             result = result +' <textarea type="text" class="form-control input-sm" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
+             result = result +' <textarea type="text" class="form-control input-sm" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="required validate_length length1-100" field-name="Description"></textarea>';
              result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -557,9 +557,9 @@ function populateInlineItemsGrid1(data){
     	 
     	 result = result +'  <td>';
     	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="required validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
     	 }else{
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="required validate_length length1-100" field-name="Description"></textarea>';
     	 }
          
          result = result +'  </td>';
