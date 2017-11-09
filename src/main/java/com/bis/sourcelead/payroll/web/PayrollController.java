@@ -224,5 +224,29 @@ public class PayrollController {
 					return model;
 
 				}
+			 
+			 	/**
+				 * Returns search based payroll reports
+				 * @param request
+				 * @return ModelAndView
+				 * @throws Exception 
+				 */
+				 @RequestMapping(value = "/searchBasedReport")
+					public ModelAndView searchBasedReport(HttpServletRequest request) throws Exception {
+					 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					 ModelAndView model = new ModelAndView();	
+					 if(sessionData == null)
+						{
+							sessionData = new SessionMaintainanceData();
+						}
+						//sessionData.setNav(Constants.PAYROLL);
+						request.getSession().setAttribute("sessionData",sessionData);
+						
+						model.setViewName("payroll/searchPayrollReport");
+						model.addObject("sourceleadUrl", sourceleadUrl);
+						return model;
+
+					}
+
 
 }
