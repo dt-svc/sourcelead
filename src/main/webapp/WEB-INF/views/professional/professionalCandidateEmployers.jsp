@@ -531,11 +531,6 @@ function employeePagination(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 
-<script>
-function removeEmployer(candidateemployerId, candidateId){
-	alertMessageforEmp(candidateemployerId, candidateId);
-}
-</script>
 
 <script type="text/javascript">
 function cancelEmployeers(){
@@ -546,7 +541,7 @@ function cancelEmployeers(){
 <div id="deleteEmp1PopUp"></div> 
 
 <script type="text/javascript">
-function alertMessageforEmp(candidateemployerId, candidateId){
+function removeEmployer(candidateemployerId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_emp_pop' class='remove_user_pop remove_user_pop_a'>";
