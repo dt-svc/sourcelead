@@ -1176,6 +1176,12 @@ function contractTypeLabels(){
 		
 		$("#orgRelationId").val(''); 
 		$('#orgRelationId').trigger("chosen:updated");
+
+		$("#jurisdiction").val(''); 
+		$('#jurisdiction').trigger("chosen:updated");
+		
+		$("#description").val(''); 
+		$('#description').trigger("chosen:updated");
 		
 		$("#vendorContact").val(''); 
 		$('#vendorContact').trigger("chosen:updated");
