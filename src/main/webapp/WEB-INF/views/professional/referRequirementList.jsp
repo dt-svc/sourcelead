@@ -41,7 +41,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Contacts List</h2>
     </div>
-    <div class="pull-right brud-crum">Contacts List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -173,7 +173,7 @@ function contactsPagination(url,sourceleadUrl){
 	    	  	"data": "contactName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
+	    	  		  result = result + '<td data-title="Id"><div class="tbldata-dotdot"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -181,7 +181,7 @@ function contactsPagination(url,sourceleadUrl){
               "data": "email",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+opt.email+'">'+opt.email+'</div></td>';
+            	  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</div></td>';
 	              return result;
               		
               }
@@ -196,7 +196,7 @@ function contactsPagination(url,sourceleadUrl){
             	  }else{
             		  phone = '------';
             	  }
-            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+phone+'">'+phone+'</div></td>';
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-50" title="'+phone+'">'+phone+'</div></td>';
 	              return result;
               		
               }

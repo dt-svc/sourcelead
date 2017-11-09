@@ -33,14 +33,14 @@ window.onload = function() {
 			<div class="pull-left">
 				<h2>Vendors Report </h2>
 			</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
 </section>
 
 
 <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head">
-<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
+      <div class="timesheet_head clearfix">
+<div class="pull-left reportBtns reportBtns_custom mt5">
 <h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
@@ -69,8 +69,8 @@ window.onload = function() {
 	
         <div class="clearfix"></div>
       </div>
-  
- <div class="clearfix">
+   </div>
+ <div class="clearfix mt10"></div>
 <section class="candidate_wrap_table recruiterReports_table">
 
 <div id="vendorReportsDiv" class="datatable_filter"></div>
@@ -78,9 +78,9 @@ window.onload = function() {
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 
 </section>    
- </div>
+ 
       
- </div>
+
 
 
   </div>

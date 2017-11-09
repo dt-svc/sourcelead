@@ -443,7 +443,7 @@ function getViewInvoice(){
 						var doc = report.invoiceDocumentsList[j]; 
 						result = result +'	                  <div class="clearfix attachfile_invoice">                                               ';
 						result = result +'	                      <p class="pull-left" title="'+doc.fileName+'">'+doc.fileName+'</p>                                         ';
-						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+doc.fileUrl+"\' title='download'></a><a class='fa fa-eye ml10' onClick='viewFile(\""+doc.fileUrl+"\",\""+doc.fileName+"\",\""+doc.fileContentType+"\");'title='preview'></a></i>";
+						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+doc.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+doc.fileUrl+"\",\""+doc.fileName+"\",\""+doc.fileContentType+"\");'title='preview'></a></i>";
 						result = result +'	                  </div>                                                                                  ';
 		    		}
 				}
