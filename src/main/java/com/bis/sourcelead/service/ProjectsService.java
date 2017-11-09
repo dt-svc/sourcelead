@@ -103,6 +103,8 @@ public interface ProjectsService {
 		void saveOrUpdateProjectElkDocument(Projects projects) throws Exception;
 		
 		Integer getProjectCountByOrgLocationId(Long orgLocationId)throws Exception;
+		
+		Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId,String userCode)throws Exception;
 
 		List<Object> getAllUniversalSearchProjectsList(OrgLocations orgLocations, String searchValue) throws Exception;
 		

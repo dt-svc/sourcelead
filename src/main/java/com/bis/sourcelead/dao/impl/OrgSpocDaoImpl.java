@@ -422,7 +422,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			 
-			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
 			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;

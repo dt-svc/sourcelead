@@ -820,11 +820,17 @@ function getContactEmails(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
+		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    { 
-		    	 
+		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
+		    		this.placeholder = this.value;
+		    		this.value = "";
+		    	} else {
+		    		this.placeholder = "";
+		    	}
+		    	
 		    	 var enterEmailArray = this.value.split(/[ ,]+/);
 		    	 if(enterEmailArray.length > 1){
 	        		 for (var i=0; i < enterEmailArray.length; i++) {
