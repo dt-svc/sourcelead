@@ -65,7 +65,7 @@
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
-							       <option  ${expenses.masterCandidateId == projMembers.masterCandidateId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
+							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
 						</c:if>
@@ -75,7 +75,7 @@
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
-							       <option  ${expenses.masterCandidateId == projMembers.masterCandidateId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
+							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
 						</c:if>
