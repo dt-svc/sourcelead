@@ -546,6 +546,7 @@ public class ContractController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("docList",contractRequestDocumentsList);
 		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);

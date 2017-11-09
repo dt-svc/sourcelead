@@ -253,7 +253,6 @@ if ($('#upload_form').validate(false, validationSettings)){
  		    	}
  		    },
  		   error: function(e){
- 			  alert(e);
 	        }
 	 });
 	 

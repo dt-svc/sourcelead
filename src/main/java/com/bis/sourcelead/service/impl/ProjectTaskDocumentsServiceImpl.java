@@ -100,15 +100,19 @@ public class ProjectTaskDocumentsServiceImpl implements ProjectTaskDocumentsServ
 		projectTaskDoc.setProjectTaskId(projectTask);
 		projectTaskDoc.setStatus(Constants.CANDIDATE_ACTIVE);
 		
-		FileInfo fileInfo = projectTasksDTO.getFileInfo().get(0);
-		if (projectTasksDTO.getFileInfo() != null) {
-			projectTaskDoc.setFileURL(fileInfo.getFileURL());
-			projectTaskDoc.setFileName(fileInfo.getFileName());
-			projectTaskDoc.setFileType(fileInfo.getContentType());
+		if(projectTasksDTO.getFileInfo() != null) {
+			FileInfo fileInfo = projectTasksDTO.getFileInfo().get(0);
+			if (projectTasksDTO.getFileInfo() != null) {
+				projectTaskDoc.setFileURL(fileInfo.getFileURL());
+				projectTaskDoc.setFileName(fileInfo.getFileName());
+				projectTaskDoc.setFileType(fileInfo.getContentType());
+			}
+			FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
 		}
 		
+		
 		ProjectTaskDocuments projectDoc  = projectTaskDocumentDao.updateProjectTaskDocuments(projectTaskDoc);
-		FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
+		
 		
 		if(documentId != null) {
 		     activitySummary.append(oldProjectTaskDoc.getFileName()).append(" to ").append(projectDoc.getFileName());
