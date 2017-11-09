@@ -50,6 +50,7 @@
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
+					<c:if test="${submissionStatus != 'SUBMITTED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" >
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -59,6 +60,18 @@
 							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
 						</select>
+					</c:if>
+					<c:if test ="${submissionStatus == 'SUBMITTED'}">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
+							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projects" items="${expEntry.projectsList}">
+							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<input type="hidden" id="projectIdHidden" value="" name="projectId">
 					</div>
 				</div> 
                 <div class="form-group">
@@ -576,6 +589,9 @@ function removeWhiteSpaces(rowCount){
 				   }
 				}
 			}
+			var  pmIdValue = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
+			$("#projectIdHidden").val(pmIdValue);
+
 			if(date_validation == "true"){
 				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
 				return false;
