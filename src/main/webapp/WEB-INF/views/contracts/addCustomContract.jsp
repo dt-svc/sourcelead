@@ -562,8 +562,8 @@ $(document).ready(function(){
 </div>
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
-			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="document[REPLACEROWID].description"
-			 name="REPLACEROWIDdescription"></textarea>
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			 name="document[REPLACEROWID].description"></textarea>
 	</div>
 </div>
 
