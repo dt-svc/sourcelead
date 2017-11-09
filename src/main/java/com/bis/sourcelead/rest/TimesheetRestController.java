@@ -925,9 +925,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 monDayDTO.setEditable(true);
 		 }
-		 monDayDTO.setTotalHours(monDayTotalHours.toString());
-		 monDayDTO.setBillableHours(monDayBillableHours.toString());
-		 monDayDTO.setNonBillableHours(monDayNonBillableHours.toString());
+		 monDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(monDayTotalHours));
+		 monDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(monDayBillableHours));
+		 monDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(monDayNonBillableHours));
 		 weekDays.add(monDayDTO);
 		 
 		 
@@ -939,9 +939,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 tuesDayDTO.setEditable(true);
 		 }
-		 tuesDayDTO.setTotalHours(tuesDayTotalHours.toString());
-		 tuesDayDTO.setBillableHours(tuesDayBillableHours.toString());
-		 tuesDayDTO.setNonBillableHours(tuesDayNonBillableHours.toString());
+		 tuesDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(tuesDayTotalHours));
+		 tuesDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(tuesDayBillableHours));
+		 tuesDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(tuesDayNonBillableHours));
 		 weekDays.add(tuesDayDTO);
 		 
 		 
@@ -953,9 +953,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 wedDayDTO.setEditable(true);
 		 }
-		 wedDayDTO.setTotalHours(wedDayTotalHours.toString());
-		 wedDayDTO.setBillableHours(wedDayBillableHours.toString());
-		 wedDayDTO.setNonBillableHours(wedDayNonBillableHours.toString());
+		 wedDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(wedDayTotalHours));
+		 wedDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(wedDayBillableHours));
+		 wedDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(wedDayNonBillableHours));
 		 weekDays.add(wedDayDTO);
 		 
 		 
@@ -967,9 +967,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 thursDayDTO.setEditable(true);
 		 }
-		 thursDayDTO.setTotalHours(thursDayTotalHours.toString());
-		 thursDayDTO.setBillableHours(thursDayBillableHours.toString());
-		 thursDayDTO.setNonBillableHours(thursDayNonBillableHours.toString());
+		 thursDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(thursDayTotalHours));
+		 thursDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(thursDayBillableHours));
+		 thursDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(thursDayNonBillableHours));
 		 weekDays.add(thursDayDTO);
 		 
 		 
@@ -981,9 +981,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 friDayDTO.setEditable(true);
 		 }
-		 friDayDTO.setTotalHours(friDayTotalHours.toString());
-		 friDayDTO.setBillableHours(friDayBillableHours.toString());
-		 friDayDTO.setNonBillableHours(friDayNonBillableHours.toString());
+		 friDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(friDayTotalHours));
+		 friDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(friDayBillableHours));
+		 friDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(friDayNonBillableHours));
 		 weekDays.add(friDayDTO);
 		 
 		 
@@ -995,37 +995,37 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }else{
 			 satDayDTO.setEditable(true);
 		 }
-		 satDayDTO.setTotalHours(satDayTotalHours.toString());
-		 satDayDTO.setBillableHours(satDayBillableHours.toString());
-		 satDayDTO.setNonBillableHours(satDayNonBillableHours.toString());
+		 satDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(satDayTotalHours));
+		 satDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(satDayBillableHours));
+		 satDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(satDayNonBillableHours));
 		 weekDays.add(satDayDTO);
 		 
 		 WeekDaysDTO sunDayDTO	= new WeekDaysDTO();
 		 sunDayDTO.setDate(SundayDate);
 		 sunDayDTO.setDayOfTheDate("Sun");
 		 if(disbleCondition7.toString().equalsIgnoreCase("disabled")){
-			 sunDayDTO.setEditable(false);
+			 sunDayDTO.setEditable(false); 
 		 }else{
 			 sunDayDTO.setEditable(true);
 		 }
-		 sunDayDTO.setTotalHours(sunDayTotalHours.toString());
-		 sunDayDTO.setBillableHours(sunDayBillableHours.toString());
-		 sunDayDTO.setNonBillableHours(sunDayNonBillableHours.toString());
+		 sunDayDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(sunDayTotalHours));
+		 sunDayDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(sunDayBillableHours));
+		 sunDayDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(sunDayNonBillableHours));
 		 weekDays.add(sunDayDTO);
 
 		 tsDTO.setWeekDays(weekDays);
 		 if(ts != null && StringUtils.isNotBlank(ts.getTotalHours()))
 			 totalHours = Float.parseFloat(ts.getTotalHours());
-		 tsDTO.setTotalHours(totalHours.toString());
+		 tsDTO.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
 		 
 		 if(ts != null &&StringUtils.isNotBlank(ts.getBillableHours()))
 			 billableHours = Float.parseFloat(ts.getBillableHours());
-		 tsDTO.setBillableHours(billableHours.toString());
+		 tsDTO.setBillableHours(CommonUtil.getHoursDisplayFormat(billableHours));
 		 
 		 if(ts != null && StringUtils.isNotBlank(ts.getNonBillableHours()))
 			 nonBillableHours = Float.parseFloat(ts.getNonBillableHours());
 		 
-		 tsDTO.setNonBillableHours(nonBillableHours.toString());
+		 tsDTO.setNonBillableHours(CommonUtil.getHoursDisplayFormat(nonBillableHours));
 		 /**
 		  * Project Task List
 		  */
@@ -1667,18 +1667,18 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	        	else if(isReopenButtonVisible && (from.equalsIgnoreCase("approver") || from.equalsIgnoreCase("dashboard")) && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
-	        			timesheetEntriesDiv.append(" <i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
-	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
-		        		timesheetEntriesDiv.append(" </i>");
+	        			timesheetEntriesDiv.append("<i class='pull-right glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append("<div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append("</i>");
 	        		}
 	        		timesheetEntriesDiv.append("<p class='pull-right ml' style='width: 87px;'>Re-Open Request sent</p>");
 		        }
 	        	else if(isReopenButtonVisible && (from.equalsIgnoreCase("approver") || from.equalsIgnoreCase("dashboard")) && isSahReopened && isSuperUser && null != sah.getReopenedUser()){
 	        		//to show re-open reason
 	        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
-	        			timesheetEntriesDiv.append(" <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
-	        			timesheetEntriesDiv.append(" <div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
-		        		timesheetEntriesDiv.append(" </i>");
+	        			timesheetEntriesDiv.append("<i class='pull-right  glyphicon glyphicon-comment rejectedHover'>");
+	        			timesheetEntriesDiv.append("<div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>").append(sah.getReopenReason()).append("</div>");
+		        		timesheetEntriesDiv.append("</i>");
 	        		}
 	        		 timesheetEntriesDiv.append("<div class='pull-right  sm text-center reopen'>").append(" <label class='clearfix reopen-label'>RE-OPEN</label><i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenTimeSheetBySuperUser(\"")
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
@@ -1686,7 +1686,8 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	                .append(projectMemberId).append("\",\"").append(sah.getReopenedUser().getId()).append("\",\"").append(weekStartDate+"To"+weekEndDate)
 	                .append("\");'></i></div>");
 	        	}
-	        	timesheetEntriesDiv.append("&nbsp;&nbsp;<b  "+innerStyleWidth+" class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<b  "+innerStyleWidth+" class='proj_active "+pullRightClass+"'>").append(submissionStatus).append("</b>");
+	        	timesheetEntriesDiv.append("<div class='clearfix'></div>");
 	        	timesheetEntriesDiv.append("</div>");
 	        }
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){

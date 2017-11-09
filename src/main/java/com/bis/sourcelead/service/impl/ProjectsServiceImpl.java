@@ -2299,6 +2299,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocationsId, clientOrgLocationId);
 			}
 
+			@Override
+			public Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId, String userCode) throws Exception {
+				return projectsDao.getProjectCountByOrgLocationIdAndUserCode(orgLocationId, userCode);
+			}
+
 
 
 }

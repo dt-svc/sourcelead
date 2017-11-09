@@ -10,10 +10,10 @@ function getFormData(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			indexed_array[n['name']] = n['value'];
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
 		else
-			indexed_array[n['name']] = n['value'].trim();
+			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
 }
@@ -23,10 +23,10 @@ function getFormData1(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var formData = new FormData();
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			formData.append(n['name'], n['value']);
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
 		else
-			formData.append(n['name'], n['value'].trim());
+			formData.append(n['name'], n['value']);
 	});
 	return formData;
 }
@@ -286,4 +286,15 @@ function applyResumeData(json) {
 	 }		
 	$("#candidateEducation").append(internalOutput);
 	$("#loading").removeAttr("style");
+}
+
+function removeEmptyLines(ele) { //removeEmptyLines($(".."))
+	if($(ele).is(":visible")) {
+		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
+		if($(ele).val().endsWith("\n")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
+		} else if($(ele).val().endsWith("\r")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
+		}
+	}	
 }
