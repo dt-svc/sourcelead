@@ -1663,7 +1663,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+					Candidate candidate = projectMember.getProjectMemberCandidteId();
 					if (null != candidate) {
 						projectMember.setCandidateId(candidate.getId());
 						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
@@ -1739,12 +1739,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
 				if (null != projectMember.getProjectMemberCandidteId()) {
 					StringBuilder empName = new StringBuilder();
-					if (null != projectMember.getEmployee().getUser().getFirstName()
-							&& null != projectMember.getEmployee().getUser().getLastName()) {
-						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+					if (null != projectMember.getProjectMemberCandidteId().getFirstName() && null != projectMember.getProjectMemberCandidteId().getLastName()) {
+						empName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
 					}
 					else {
-						empName.append(projectMember.getEmployee().getUser().getFirstName());
+						empName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
 					projectMember.setUserId(projectMember.getProjectMemberCandidteId().toString());
@@ -1769,7 +1768,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append(":").append(arr[1]);
 					}
 					projectMember.setTotalHours(sb.toString());
-					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+					Candidate candidate = projectMember.getProjectMemberCandidteId();
 					if (null != candidate) {
 						projectMember.setCandidateId(candidate.getId());
 						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
