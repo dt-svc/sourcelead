@@ -387,7 +387,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						 String nonBillable = getTotalHours( (long) (Math.round(nonBillableHours)));
 						 String grandtotal = getTotalHours(grandTotalHours);
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getProjectMemberCandidteId(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
-						file = new File(fileName.append(projectMember.getMasterCandidateId()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
+						 if(projectMember.getMasterCandidateId() != null) {
+							 if(projectMember.getMasterCandidateId().getLastName() != null) {
+							     file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append(projectMember.getMasterCandidateId().getLastName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString()); 
+							 }else {
+								 file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
+							 }
+						 }
 						FileOutputStream fos = new FileOutputStream(file);
 						try {
 							wb.write(fos);
@@ -526,6 +532,21 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 Cell cell10 = writeRow.createCell(4);
 		 cell10.setCellValue(totalHours); 
 		 cell10.setCellStyle(style);
+		 
+		 writeRow = createExcelsheet.createRow(5);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell12 = writeRow.createCell(0);
+		 cell12.setCellValue("Phone Number :");
+		 cell12.setCellStyle(style);
+		 
+		 Cell cell13 = writeRow.createCell(1);
+		 cell13.setCellValue(user.getMobilePhone()); 
+		 cell13.setCellStyle(style);
+		 
+		 
+		 
 		 //=================================================
 		 
 		return createExcelsheet = setExcelHeader(createExcelsheet,style,createExcelworkbook);

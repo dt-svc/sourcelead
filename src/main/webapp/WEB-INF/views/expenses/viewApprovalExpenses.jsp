@@ -182,7 +182,7 @@
 					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 					                        <c:if test = '${entryDoc.status == 1}'>
 						                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-						                               <a class='downicon' href='${entryDoc.fileURL}'>
+						                               <a class='downicon' href='${entryDoc.fileURL}' download>
 							                                 <i class='glyphicon glyphicon-save'></i>
 												             <input type='button' value='${entryDoc.fileName}'/>
 												        </a>

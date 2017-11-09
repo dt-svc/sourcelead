@@ -56,7 +56,7 @@
 							result = result+ '<td><div class="tbldata-dotdot-me"><span title="'+report.fileName+'" >'+ report.fileName+ '</span></div></td>';
 							result = result+ '<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\" title="Download"></a></div></td>';
 							result = result+ '<td><div class="tbldata-dotdot-big"><span title="'+description+'" >'+description+ '</span></div></td>';
-							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.Id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.Id+','+projectId+');"></i></div></td>';
+							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.id+','+projectId+');"></i></div></td>';
 							result = result + '</tr>';
 
 						}
