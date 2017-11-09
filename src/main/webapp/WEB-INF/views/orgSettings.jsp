@@ -1350,27 +1350,27 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Company :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Company :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationName']+'</p>';
 	    	        result = result +'</div>';
 	    								 
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Website :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Website :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+website+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Country :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Country :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['country']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">State :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">State :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['state']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">City :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">City :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['city']+'</p>';
 	    	        result = result +'</div>';
 	    	        
@@ -1382,17 +1382,17 @@ function getOrgLocationDetails(orgLocationId){
 	    	        }
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Enrolled Date :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Enrolled Date :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['createdDateStr']+'</p>';
 	    	        result = result +'</div>';
 	    								
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Time Zone :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Date Format :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Date Format :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['dateFormat']+'</p>';
 	    	        result = result +'</div>';
     	        
@@ -1407,12 +1407,12 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Contact User : </label>';
+	    	        result = result +'<label class="col-md-4 text-right">Contact User : </label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserName']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Email : </label>';
+	    	        result = result +'<label class="col-md-4 text-right">Email : </label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserEmail']+'</p>';
 	    	        result = result +'</div>';
 	    	        
