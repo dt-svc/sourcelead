@@ -1563,27 +1563,27 @@ public class ClientRestController {
 			
 			//Country
 			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCountry", clientVendorDTO.getCountry()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCountry", clientVendorDTO.getCountry()));
 		    }
 			
 			
 			 //State
 			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderState", clientVendorDTO.getState()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorState", clientVendorDTO.getState()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorState", clientVendorDTO.getState()));
 		    }
 			
 			//City
 			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
 		    }
 			
 				
