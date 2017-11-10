@@ -1334,6 +1334,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		candidate.setDesignationType("C2C");
     		candidate.setStatus(Constants.RECORD_ACTIVE);
+    		candidate.setCurrentRate(requirementOffers.getAmount());
+    		candidate.setCurrentRateType(requirementOffers.getPaymentMode());
+    		candidate.setCurrentRateCurrency(requirementOffers.getPaymentType());
+    		candidate.setExpectedRate(requirementOffers.getAmount());
+    		candidate.setExpectedRateCurrencey(requirementOffers.getPaymentType());
+    		candidate.setRateType(requirementOffers.getPaymentMode());
     		
     		if(requirementSubmission.getSourceSubmission() != null){
     			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());

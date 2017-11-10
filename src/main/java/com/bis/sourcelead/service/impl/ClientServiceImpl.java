@@ -85,6 +85,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.util.Calendar;
 
 /**
  * 
@@ -532,7 +533,13 @@ public class ClientServiceImpl implements ClientService {
 	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
 	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
 	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
-	    	projects.setStartDate(new Date());
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsDefaultProject(Constants.YES);
