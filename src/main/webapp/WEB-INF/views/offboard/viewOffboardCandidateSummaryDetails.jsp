@@ -114,10 +114,8 @@ padding-left: 25px;
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID+"&locationCode="+locationCode,
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	  var json = JSON.parse(data);
-	        	 
 	        	 var result = "";
 				 result = result +'	 <div class="col-md-12 onboardLabel"> ';                                                                                         
 				 result = result +'   <div class="form-horizontal">';

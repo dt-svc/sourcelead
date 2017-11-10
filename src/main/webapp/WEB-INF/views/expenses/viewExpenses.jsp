@@ -72,7 +72,7 @@
 					 <div class="project_details_cta">
 						<strong>Client:</strong><span> 
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						  <c:if test="${pm.masterCandidateId == expenses.masterCandidateId}">
+						  <c:if test="${pm.projectId == expenses.projectId}">
 						   ${pm.clientName}
 						  </c:if>
 						</c:forEach>
