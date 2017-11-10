@@ -99,7 +99,66 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private long onBoardOfferId;
 	
+	private String userEmail;
 	
+	private long documentsCount;
+	
+	private long documentsAcceptedCount;
+	
+	private String candidateOnBoardStatus;
+	
+	private String onboardCandidateUUID;
+	
+	private String onboardSubmitted;
+	
+	public String getCandidateOnBoardStatus() {
+		return candidateOnBoardStatus;
+	}
+
+	public void setCandidateOnBoardStatus(String candidateOnBoardStatus) {
+		this.candidateOnBoardStatus = candidateOnBoardStatus;
+	}
+
+	public String getOnboardCandidateUUID() {
+		return onboardCandidateUUID;
+	}
+
+	public void setOnboardCandidateUUID(String onboardCandidateUUID) {
+		this.onboardCandidateUUID = onboardCandidateUUID;
+	}
+
+	public String getOnboardSubmitted() {
+		return onboardSubmitted;
+	}
+
+	public void setOnboardSubmitted(String onboardSubmitted) {
+		this.onboardSubmitted = onboardSubmitted;
+	}
+
+	public long getDocumentsCount() {
+		return documentsCount;
+	}
+
+	public void setDocumentsCount(long documentsCount) {
+		this.documentsCount = documentsCount;
+	}
+
+	public long getDocumentsAcceptedCount() {
+		return documentsAcceptedCount;
+	}
+
+	public void setDocumentsAcceptedCount(long documentsAcceptedCount) {
+		this.documentsAcceptedCount = documentsAcceptedCount;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
 	public long getOnBoardCandidateId() {
 		return onBoardCandidateId;
 	}
