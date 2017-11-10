@@ -1012,6 +1012,17 @@ function contractTypeLabels(){
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
 			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
+			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
@@ -1066,6 +1077,15 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Client SOW"){
@@ -1102,6 +1122,26 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			
+			
+			$("#hoursPerWeek").val('');
+			$("#paymentFrequency").val(''); 
+			$("#taxPercentageRewardValue").val('');
+			$("#taxFlatRewardValue").val('');
+			
+			$("#clientContact").val('');
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val('');
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
@@ -1141,6 +1181,22 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			
+			$("#hoursPerWeek").val('');
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");   
+			
+			$("#vendorContact").val('');
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#orgRelationId").val('');
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
@@ -1221,6 +1277,14 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 		}
 		
 	if(contractType == "Full time offer"){
@@ -1284,6 +1348,14 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 // 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
