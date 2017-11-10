@@ -600,6 +600,8 @@ function cancelAlert12(){
 	$("#rejectRequirementAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".remove_user_pop").hide();
+	$('#approverbut').show();
+	$('#rejectedbut').show();
 	
 }
 </script>
@@ -612,7 +614,7 @@ function cancelAlert12(){
 <script type="text/javascript">
 function rejectRequirementAlertMessage(status){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+/* 	result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
@@ -838,7 +840,7 @@ function viewOfferDocument(offerID,title){
 </script>
 
 
-<div class='project_inn_mask projectMask-zindex'></div>
+<!-- <div class='project_inn_mask projectMask-zindex'></div> -->
 <div id="popUp"></div>
 <div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
@@ -2383,7 +2385,6 @@ function exportPipelineToExcel(requirementId,submissionType){
           window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2409,7 +2410,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
+			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3223,7 +3224,7 @@ function loadFile(event,candidateId){
 <script type="text/javascript">
 function recommendationAlertMessage(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3297,7 +3298,7 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
+	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3331,7 +3332,7 @@ function deleteProfileImage(candidateId){
 <script type="text/javascript">
 function saveOrCancel(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";

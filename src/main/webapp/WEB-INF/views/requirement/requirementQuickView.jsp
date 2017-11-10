@@ -90,8 +90,8 @@
         <div id="details-div" class="require_wrap_details">
             	<c:if test="${requirement.requirementSubmissionStatus == 'REJECTED' }">
             	    <div class="anchor-inline">
+            	     <h5>Rejected Reason:</h5> 
 	            	    <div class="rejected_Reason"> 
-		            	    <h5>Rejected Reason:</h5>  
 		            	    <div class="mb">${!empty requirement.rejectReasonForRequirement ? requirement.rejectReasonForRequirement : ' No DATA '}</div>
 	            	    </div> 
             	    </div> 
@@ -101,7 +101,7 @@
 		           <div class="pull-left"> 
 		              <h2>Assigned Members</h2>  
 		           </div> 
-		           <div class="pull-right"> 
+		           <div class="pull-right mt10"> 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
