@@ -123,7 +123,7 @@
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
-            success :function(data) {
+            success :function(json) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
 	                	 $("#onboardingCandidatesList").empty();
@@ -142,8 +142,6 @@
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
 	                     
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
@@ -250,7 +248,7 @@
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
-            success :function(data) {
+            success :function(json) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
 	                	 $("#onboardingCandidatesList").empty();
@@ -269,8 +267,6 @@
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
 	                     
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
