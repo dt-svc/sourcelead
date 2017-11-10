@@ -1920,15 +1920,14 @@ public class ClientRestController {
 						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
 						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
 							statusAdvancedArray = clientVendorDTO.getStatus();
-						}if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
-							statusAdvancedArray = clientVendorDTO.getStatus();
+						}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
 						}
 						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
 							BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : statusAdvancedArray){
 									if(keywd.equalsIgnoreCase("Active")){
-										statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
-										statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
+										statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
 									}else{
 										  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
 									}
