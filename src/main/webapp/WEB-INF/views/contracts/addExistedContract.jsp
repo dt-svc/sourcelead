@@ -1020,6 +1020,9 @@ function contractTypeLabels(){
 			
 			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
@@ -1123,6 +1126,18 @@ function contractTypeLabels(){
 			$("#jurisdiction").val(''); 
 			$("#mainDescription").val(''); 
 			
+			
+			$("#hoursPerWeek").val('');
+			$("#paymentFrequency").val(''); 
+			$("#taxPercentageRewardValue").val('');
+			$("#taxFlatRewardValue").val('');
+			
+			$("#clientContact").val('');
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val('');
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
 			$("#approver").val('');
 			$('#approver').trigger("chosen:updated");
 			
@@ -1169,8 +1184,17 @@ function contractTypeLabels(){
 			$("#jurisdiction").val(''); 
 			$("#mainDescription").val(''); 
 			
+			$("#hoursPerWeek").val('');
+			
 			$("#approver").val('');
-			$('#approver').trigger("chosen:updated");
+			$('#approver').trigger("chosen:updated");   
+			
+			$("#vendorContact").val('');
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#orgRelationId").val('');
+			$('#orgRelationId').trigger("chosen:updated");
+			
 			
 			$("#addTaxTbl").find("tr:not(:first)").empty();
 			

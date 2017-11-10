@@ -901,6 +901,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="none";
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="none";
@@ -913,6 +914,8 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
+		
  	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="none";
@@ -925,6 +928,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -937,6 +941,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -949,6 +954,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -961,6 +967,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -973,6 +980,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1071,9 +1079,17 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
@@ -1139,6 +1155,12 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
@@ -1181,8 +1203,19 @@ function contractTypeLabels(){
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
@@ -1228,8 +1261,17 @@ function contractTypeLabels(){
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		
+		$("#hoursPerWeek").val('');
+		
 		$("#approver").val('');
-		$('#approver').trigger("chosen:updated");
+		$('#approver').trigger("chosen:updated");   
+		
+		$("#vendorContact").val('');
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val('');
+		$('#orgRelationId').trigger("chosen:updated");
+		
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
