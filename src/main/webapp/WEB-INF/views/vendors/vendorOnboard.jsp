@@ -7,7 +7,7 @@
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Vendor On-board</h2>
+			<h2>Onboarding</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
@@ -19,7 +19,7 @@
 		<div class="newPrTabs">
 		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
-				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
+				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
 				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
 				<div class="clearfix mb"></div>
@@ -95,7 +95,7 @@
 					<div class="clearfix form-horizontal inner-content req-dtls myForm">
 						<div class="row">
 							<div class="col-lg-12">
-					          <h3>Vendor Details</h3>
+					          <h3>Company Details</h3>
 					        </div>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 								
@@ -132,7 +132,7 @@
 			 		<div class="clearfix form-horizontal inner-content req-dtls myForm">
 						<div class="row">
 							<div class="col-lg-12">
-					          <h3>Company Details</h3>
+					          <h3>Additional Details</h3>
 					        </div>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 									<div class="form-group">
