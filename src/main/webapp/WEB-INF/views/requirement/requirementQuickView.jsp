@@ -98,9 +98,7 @@
           	   </c:if>
 			   <div id="rejectRequirementAlert" ></div>   
 		       <div class="clearfix"> 
-		           <div class="pull-left"> 
-		              <h2>Assigned Members</h2>  
-		           </div> 
+		             <div class="clearfix"> 
 		           <div class="pull-right"> 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
@@ -111,35 +109,16 @@
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
-					</div> 
+					</div></div>
+					<div class="collpasePannel clearfix mt10"> 
+		              <a href="javascript:void(0)" id="assignedGrid"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           </div> 
 			     </div> 
 			            
                  <div class="clearfix"> 
                  	<div class="clearfix row"> 
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
           				<div id="assignedMemberList"></div> 
-          				
-          				<%-- <div class="clearfix mt5 mb">
-						    <table class="table table-responsive table-hover clearfix mb">
-							    <thead>
-								    <tr>
-									    <th>Name</th>
-									    <th>Role</th>
-									    <th>Team</th>
-								    </tr>
-							    </thead>
-							    <tbody>
-							    	<tr>
-								    	<c:forEach var ="assignTo" items="${requirement.requirementAssignTo}" varStatus="reqStatus">
-									        <td><div class="tbldata-dotdot">${assignTo.assignedUserName}</div></td>
-									    </c:forEach>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    		</tr>
-							    <tbody>
-							</table>
-          				 </div> --%>
-          				
           				
           				
 				        <h1>Description:</h1> 
@@ -422,4 +401,13 @@ function hideButtonOnClick(){
 		$('#approverbut').hide();
 		$('#rejectedbut').hide();
 }
+</script>
+<script>
+$(function(){
+	$("#assignedMemberList").hide();
+	$("#assignedGrid").click(function(){
+		$("#assignedMemberList").slideToggle();
+		assignedMemberList(${requirement.id});
+	});
+});
 </script>

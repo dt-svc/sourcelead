@@ -6976,6 +6976,15 @@ position: absolute; left: 100%; top: 5px;
 .reportsCountNew.reportsCount_New ul li {
     width: 10% !important;
 }
+.collpasePannel a {
+ color:#333; clear:both; display: inline-block; width: 100%;	
+}
+.collpasePannel {
+	background-color: #f5f5f5; border: 1px solid #ccc; padding:0 10px; border-radius:3px 3px 0 0;
+}
+.collpasePannel .fa-sort-down {
+	font-size: 20px; padding: 4px 15px; color:#204d74;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -12,7 +12,6 @@
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
@@ -1036,13 +1035,11 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
+         success :function(json) {  
+        	 if(json != null && json != 'undefined' && json != ""){
 							var result = '';
 							result = result +'     <div class="clearfix mt5 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
