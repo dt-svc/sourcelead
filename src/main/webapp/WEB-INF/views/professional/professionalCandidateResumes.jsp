@@ -291,7 +291,7 @@ function uploadProfileResume(){
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 					            		title = opt.title;
 					            	}else{
-					            		title = opt.fileName;
+					            		title = '----';
 					            	}
 					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
 					            		description = opt.description;
