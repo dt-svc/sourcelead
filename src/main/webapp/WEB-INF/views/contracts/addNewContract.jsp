@@ -1146,7 +1146,6 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	} */
 	if(contractType == "Client MSA"){
-		alert("hello")
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
