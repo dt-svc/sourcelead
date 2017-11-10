@@ -204,7 +204,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                                <option value="${vendor.vendorNameForList}">${vendor.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -2737,6 +2737,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#country').val('${loginCountryName}'); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
+	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
