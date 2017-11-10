@@ -146,7 +146,7 @@ function submitBtn(projectId){
 			
 			/* =======================  Tasks Progress Chart ======================= */
 			result = result + '	 <div class="clearfix mt">';
-			result = result + '        	<div class="col-md-6">';
+			result = result + '        	<div class="col-md-6 mb">';
 			result = result + '	                <div class="projectDashboad-widget">';
 			result = result + '			            <div class="clearfix projectDashboad-header">';
 			result = result + '			              <h4>Tasks Progress</h4>';
@@ -1230,7 +1230,7 @@ function getTaskPercentge(data){
 	 var projectClientUUID = '${projectClientUUID}';
 	 $.post(sourceleadUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
 		var result = "";
-	    result = result + '  <div class="col-md-6">';
+	    result = result + '  <div class="col-md-6 mb">';
 		result = result + '      <!-- Overdue Work Items -->';
 		result = result + '     <div class="projectDashboad-widget">';
 		result = result + '      <div class="clearfix projectDashboad-header">';
