@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.model.ProjectDocumentBO;
 
@@ -22,4 +23,6 @@ public interface ProjectDocumentsService {
 	ProjectDocuments getDocumentById(Long porjectDocumentId)throws Exception;
 	
 	ProjectDocuments storeProjectDocuments(JSONObject jsonObj, Long projectId, MultipartFile multiFile,Long documentId) throws JSONException, Exception;
+	
+	ProjectDocuments storeProjectDocuments(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception;
 }

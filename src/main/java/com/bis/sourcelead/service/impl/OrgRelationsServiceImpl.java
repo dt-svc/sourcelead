@@ -181,8 +181,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					if(orgRelation.getResponderLocationId() !=  null){
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
-							StringBuilder sb =new StringBuilder();
-							orgRelation.setWebSite(sb.append(orgRelation.getResponderLocationId().getWebsite()).toString());
+							orgRelation.setWebSite(orgRelation.getResponderLocationId().getWebsite());
 						}
 						
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -208,9 +207,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
-						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
-							StringBuilder sb =new StringBuilder();
-							orgRelation.setWebSite(sb.append("www.").append(orgRelation.getResponderLocationId().getWebsite()).toString());
+						if(StringUtils.isNotBlank(orgRelation.getLocationId().getOrg().getWebSite())) {
+							orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 						}
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());

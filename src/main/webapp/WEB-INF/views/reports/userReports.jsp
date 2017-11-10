@@ -159,13 +159,27 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-info">Employee ROI</h4>
-                      <small class="text-muted">All Payroll Report</small>
+                      <small class="text-muted">Each Employee ROI Reports</small>
                       <div class="clearfix mt10">
                       <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/payrollReport" />">View</a>
 
                       </div>
                   </div>
-                      </div>                      
+                      </div>   
+                      
+                       <div class="col-md-3 mb">
+                  <div class="pull-left mr10">
+                      <i class="fa fa-usd fa-2x text-info"></i>
+                  </div>
+                  <div class="pull-left">
+                      <h4 class="text-info">All Employee ROI</h4>
+                      <small class="text-muted">All Employees ROI Reports</small>
+                      <div class="clearfix mt10">
+                      <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/payrollAllBalanceReport" />">View</a>
+
+                      </div>
+                  </div>
+                      </div>                    
       </div>
         </div>
       <!-- Content Area Ends--> 
