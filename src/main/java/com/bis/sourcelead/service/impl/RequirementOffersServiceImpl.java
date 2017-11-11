@@ -1238,6 +1238,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				sb.append(offer.getSubmissionId().getCandidate().getFirstName());
 			}
 			offer.setCandidateName(sb.toString());
+			offer.setSpocUserCode(offer.getSubmissionId().getCreatedBy());
 			offer.setClientName(offer.getSubmissionId().getVendorLocationId().getOrgLocationName());
 			StringBuilder vendorContactSb = new StringBuilder();
 			if(offer.getSubmissionId().getSourceSubmission() != null && offer.getSubmissionId().getSourceSubmission().getRequirement() != null && offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId() != null){

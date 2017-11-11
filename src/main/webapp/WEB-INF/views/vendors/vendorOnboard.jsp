@@ -390,15 +390,20 @@ function getVendorOnboardDetails(){
 		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 		        success: function(json) {
 		        	$("#clientName").html("<p title='"+json.clientName+"'>"+json.clientName+"</p>");
-		        	if(json.clientWebsite != null){
+		        	if(json.clientWebsite != null && json.clientWebsite != 'undefined' && json.clientWebsite != ''){
 		        		$("#website").html("<p title='"+json.clientWebsite+"'>"+json.clientWebsite+"</p>");
 		        	}else{
 		        		$("#website").html("-------");
 		        	}
 		        	
-		        	$("#location").html("<p title='"+json.clientLocation+"'>"+json.clientLocation+"</p>");
+		        	if(json.clientLocation != null && json.clientLocation != 'undefined' && json.clientLocation != ''){
+		        		$("#location").html("<p title='"+json.clientLocation+"'>"+json.clientLocation+"</p>");
+		        	}else{
+		        		$("#location").html("-------");
+		        	}
+		        
 		        	
-		        	if(json.clientAddress != null){
+		        	if(json.clientAddress != null && json.clientAddress != 'undefined' && json.clientAddress != ''){
 		        		$("#address").html("<p title='"+json.clientAddress+"'>"+json.clientAddress+"</p>");
 		        	}else{
 		        		$("#address").html("-------");
