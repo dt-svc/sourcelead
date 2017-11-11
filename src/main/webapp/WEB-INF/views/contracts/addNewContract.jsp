@@ -19,6 +19,7 @@
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+		 $("#contractType").val(contractType);
 	 	 getContractTemplates();
 	 }
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
@@ -81,7 +82,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
