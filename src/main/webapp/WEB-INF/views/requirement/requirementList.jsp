@@ -204,7 +204,7 @@ function statusvalidating(id){
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
 												<option
-													value="${report.responderLocationId.org.orgName}"
+													value="${report.locationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>

@@ -33,9 +33,9 @@
         <div id="associateRequestLoading"></div>
 	  <form:form id="assignMembers_form" name="assignMembers_form" method="post">
 				<div class="project_tabs_inn_head">
-					<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">
-					<i class="glyphicon glyphicon-plus"></i>Assign Members</a> 
-					
+					<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv" class="btn btn-primary btn-sm anchorWhite">
+					<i class="glyphicon glyphicon-search"></i>Search Associates</a> 
+					<div class="clearfix mb10"></div>
 					<div id="resourceListLoading"></div>
 					<div id="searchAssociatesList"></div>
 					
