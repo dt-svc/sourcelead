@@ -1937,8 +1937,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    						 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).toString());
 	    					 }
 	    				}else{
-	    					emailMessage.setFirstName(candidate.getFirstName());
-	    					 emailMessage.setLastName(candidate.getLastName());
+	    					emailMessage.setFirstName(interviewrUser.getFirstName());
+	    					 emailMessage.setLastName(interviewrUser.getLastName());
 	    					 emailMessage.setToEmail(interviewrUser.getEmail());
 	    					 emailMessage.setFromEmail(candidate.getEmail());
 	    					 emailMessage.setCreatedBy(user.getUserCode());
@@ -1988,9 +1988,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			//setting the class filed values
 	    			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 	    				 if(emailMessage.getLastName() != null){
-	    					 globalVarsMap.put("applicantName", emailMessage.getFirstName() +" "+emailMessage.getLastName());
+	    					 globalVarsMap.put("applicantName", candidate.getFirstName() +" "+candidate.getLastName());
 	    				 }else{
-	    					 globalVarsMap.put("applicantName", emailMessage.getFirstName());
+	    					 globalVarsMap.put("applicantName", candidate.getFirstName());
 	    				 }
 	    				 if(interviewrUser.getLastName() != null){
 	    					 globalVarsMap.put("interviewerName", interviewrUser.getFirstName() +" "+interviewrUser.getLastName());	 

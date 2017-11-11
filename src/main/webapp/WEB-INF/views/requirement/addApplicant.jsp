@@ -55,10 +55,10 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	
-/* 	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">'; */
+
 		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
 		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
-	/* '</sec:authorize>'; */
+	
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -404,7 +404,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -1224,6 +1224,7 @@ function addRequirementRecommendations(){
 	 	        dataType : 'json',
 	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 		        success: function(result) {
+		        	requirementRecommendations(requirementId)
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');

@@ -10,12 +10,6 @@
 <style>
 #billing_chartdiv {
   	width:100%; height:300px;
-}
-.reportBtns {
-    width: 65%;
-}
-.reportBtn {
-    width: 20%;
 }																		
 </style>
 
@@ -175,15 +169,15 @@ function toDate(selector) {
       <h2 class="pull-left">Applicants Reports</h2>
 		
     </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
      
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
-	  <div class="reportBtn dropdown-select">
+<div class="pull-left reportBtns reportBtns_custom mt5">
+	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 <!-- 		<option value="">-- Select --</option> -->
 		  <option value="today">Today</option>
@@ -199,7 +193,7 @@ function toDate(selector) {
 			<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
 			<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
 			</span>	
-	<div class="col-md-6">
+	<div class="col-md-7">
 		 <span class="dashboard-datepkr cusShow">
 		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 		 <p id="reportStartDate" class="ReError"></p>
@@ -230,7 +224,7 @@ function toDate(selector) {
         <div class="clearfix"></div>
       </div>
      
-   <div class="repTab1">    
+   <div class="repTab1  clearfix mt10">    
 	<div class="reportsCount">
 		<ul>
 		

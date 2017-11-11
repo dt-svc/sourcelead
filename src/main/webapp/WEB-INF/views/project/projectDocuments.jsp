@@ -56,7 +56,7 @@
 							result = result+ '<td><div class="tbldata-dotdot-me"><span title="'+report.fileName+'" >'+ report.fileName+ '</span></div></td>';
 							result = result+ '<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\" title="Download"></a></div></td>';
 							result = result+ '<td><div class="tbldata-dotdot-big"><span title="'+description+'" >'+description+ '</span></div></td>';
-							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.Id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.Id+','+projectId+');"></i></div></td>';
+							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.id+','+projectId+');"></i></div></td>';
 							result = result + '</tr>';
 
 						}
@@ -103,7 +103,7 @@ function addProjectDocument(projectId) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadProjectDocument();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
@@ -153,7 +153,15 @@ function addProjectDocument(projectId) {
  
 	}
 </script>
+<script>
+function uploadProjectDocument(){
+	fileUpload("uploadBtn", "ProjectDoument", "projectDocumentType_form");
+}
+function editUploadProjectDocument(){
+	fileUpload("uploadBtn", "ProjectDoument", "editProjectDocumentType_form");
+}
 
+</script>
 <script>
 function getDocument(projectId, documentId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -176,7 +184,7 @@ function getDocument(projectId, documentId){
 	   		 	result = result+'<div class="clearfix mb10" id="uploadDocDiv" style="display: none;">';
 	   		 	result = result+'<div class="col-md-12 validation_p">';
 	   		 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	   		 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	   		 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadProjectDocument();" ><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	   		 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	   		 	result = result+'</span> </label>';
 	   		 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document">';
@@ -235,25 +243,15 @@ function getDocument(projectId, documentId){
 <script type="text/javascript">
 	function storeProjectDocument(projectId){
 			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
-				var frm = $('#projectDocumentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#projectDocumentType_form')[0];
-	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
+		        var formData =  getFormData('projectDocumentType_form'); 
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&projectId="+projectId,
+						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
@@ -275,25 +273,15 @@ function getDocument(projectId, documentId){
 <script type="text/javascript">
 	function editStoreProjectDocument(projectId,documentId){
 			 if ($('#editProjectDocumentType_form').validate(false, validationSettings)){
-				var frm = $('#editProjectDocumentType_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				var form = $('#editProjectDocumentType_form')[0];
-	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
+		        var formData =  getFormData('editProjectDocumentType_form'); 
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&projectId="+projectId+"&documentId="+documentId,
+						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&documentId="+documentId,
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");

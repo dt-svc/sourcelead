@@ -111,7 +111,7 @@ window.onload = function() {
 		            	}
 		            	
 	                result = result +"<tr>";
-	                result = result +"  <td><div class='proj_show divmax-width' ><div class='text-center tbldata-dotdot-sm pull-left' title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</div><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' ><div class='text-center tbldata-dotdot-sm pull-left' title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</div></div></td>";
 	                result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
@@ -239,7 +239,7 @@ function toDate(selector) {
       <h2 class="pull-left">Candidate Reports</h2>
 		  
     </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Reports Dashboard</a> &raquo; Added Candidate Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Added Candidate Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

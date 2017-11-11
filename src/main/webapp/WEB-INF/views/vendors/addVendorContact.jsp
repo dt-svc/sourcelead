@@ -81,7 +81,7 @@
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
+                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -103,7 +103,7 @@
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -529,10 +529,12 @@ function validateEmail(){
 	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(email != null){
+	var vendorName = document.getElementById("vendorName").value;
+	var orgRelationId = vendorName.split(",")[0];
+	if(email != null && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -541,10 +543,18 @@ function validateEmail(){
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
+				}else if(result == 'Invalid Spoc') {
+// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as vendor contact</span>");
+// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as vendor contact");
+					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					getSpocUserDetails();
+					getOwnersList();
 					
 				}
 			},

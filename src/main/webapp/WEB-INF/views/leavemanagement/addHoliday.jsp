@@ -299,7 +299,7 @@ function validateHolidayName(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
-		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(sourceleadUrl+"/validateHolidayName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
           		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
           		$("#save_holiday").removeAttr("disabled");

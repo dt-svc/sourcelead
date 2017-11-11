@@ -277,17 +277,42 @@ public class ClientRestController {
 	
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
-		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=false) String email) throws Exception {
+		    public @ResponseBody String validateClientOrVendorEmail(@RequestParam(value="email", required=true) String email,
+		    		@RequestParam(value="orgRelationId", required=true) Long orgRelationId,
+		    		@RequestParam(value="contactType", required=true) String contactType) throws Exception {
 			 
+			 String  result = "Valid Email";
 			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 
 			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
 			 if(userRole == null){
-				 return "Valid Email";
+				 User spocuser = userService.findByEmail(email);
+				 if(spocuser != null) {
+					 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+					 if(orgSpocList != null && orgSpocList.size() > 0) {
+						 for(OrgSpoc orgSpoc : orgSpocList) {
+							 if(contactType.equalsIgnoreCase("vendor")) {
+								 if(orgSpoc.getVendorUser().getId().equals(spocuser.getId())) {
+									 result = "Invalid Spoc";
+									 break;
+								 }
+							 }
+							 
+							 if(contactType.equalsIgnoreCase("client")) {
+								 if(orgSpoc.getClientUser().getId().equals(spocuser.getId())) {
+									 result = "Invalid Spoc";
+									 break;
+								 }
+							 }
+						 }
+						 
+					 }
+				 }
 			 }else{
-				 return "Invalid Email";
+				result = "Invalid Email";
 			 }
 			 
+			 return result;
 		 }
 		 
 		
@@ -1538,27 +1563,27 @@ public class ClientRestController {
 			
 			//Country
 			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCountry", clientVendorDTO.getCountry()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCountry", clientVendorDTO.getCountry()));
 		    }
 			
 			
 			 //State
 			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderState", clientVendorDTO.getState()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorState", clientVendorDTO.getState()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorState", clientVendorDTO.getState()));
 		    }
 			
 			//City
 			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
 		    }
 			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
 		    }
 			
 				
@@ -1891,26 +1916,6 @@ public class ClientRestController {
 							boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
 						}
 						
-						//Spoc Status
-						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
-						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
-							statusAdvancedArray = clientVendorDTO.getStatus();
-						}if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
-							statusAdvancedArray = clientVendorDTO.getStatus();
-						}
-						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
-							BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
-							for(String keywd : statusAdvancedArray){
-									if(keywd.equalsIgnoreCase("Active")){
-										statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "Active"));
-										statusAdvancedBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("spocStatus", "In-Active"));
-									}else{
-										  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
-									}
-							}
-							boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
-						}
-						
 						//Invitation  Status
 						
 						List<String> invitationAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
@@ -1940,13 +1945,37 @@ public class ClientRestController {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
+				
+				String spocStatus = null;
+				//Spoc Status
+				List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+				if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
+					statusAdvancedArray = clientVendorDTO.getStatus();
+				}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+					statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
+				}
+				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
+					for(String keywd : statusAdvancedArray){
+						spocStatus = keywd;
+					}
+				}
+				
+				
+				
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
 						String json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						ClientVendorContactsIndex clientVendorContactsIndex = mapper.readValue(json, ClientVendorContactsIndex.class);
-						clientVendorContactsList.add(clientVendorContactsIndex);
+						if(spocStatus == null) {
+							clientVendorContactsList.add(clientVendorContactsIndex);
+						}else {
+							if(clientVendorContactsIndex.getSpocStatus().equalsIgnoreCase(spocStatus)) {
+								clientVendorContactsList.add(clientVendorContactsIndex);
+							}
+						}
+						
 					}
 					
 					for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){

@@ -407,7 +407,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		     }
 		
 	    } );
-	    //$("#recommendationTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("#recommendationTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
 	    $("#recommendationTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {

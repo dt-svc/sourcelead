@@ -225,7 +225,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 						</div>
 						
 						<!-- Document Modal Pop -->
-						<div class="modal-Time document clearfix"> 
+						<div class="modal-Time document clearfix" style="margin-bottom: 45px;"> 
 						  <div id="addDocumentId"></div>
 						  <div id="editDocumentId"></div>
 						</div>
@@ -924,7 +924,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result  = result + '	                <div class="input-group col-md-10 pull-left errorInptgroup">';
 					result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file"  id="uploadBtn" style="display: none;"   class="upload">';
 					result  = result + '	                    </span> </label>';
-					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" data-validation="required validate_docimgpdf">';
+					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" >';
 					result  = result + '	                </div>';
 					result  = result + '	        </div>';
 					result  = result + '	      </div>';
@@ -1027,20 +1027,15 @@ $('body').on('blur', '#addDocument_form', function() {
 <script>
 function updateDocument(documentId){
 	if ($('#updateDocument_form').validate(false, validationSettings)) {
-		var frm = $('#updateDocument_form').serializeFormJSON();
-		var jsonData = JSON.stringify(frm);
-		var form = $('#updateDocument_form')[0];
-		var formData = new FormData(form);
-		formData.append("json",jsonData)
 		var projectTaskId = '${projectTask.id}';
 	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	var userId = '${SourceLeadWeb_userId}';
 	  	$("#save_document").attr("disabled", "disabled");
 		$("#save_document").addClass('button').val('Processing..');
+		var formData = getFormData1("updateDocument_form");
 		$.ajax({
 			 type : "POST",
 			 data: formData,
-   	         contentType : 'application/json; charset=utf-8',
 	         processData: false,
 	         contentType:false, 
    	         dataType : 'json',

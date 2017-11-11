@@ -2024,7 +2024,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Override
 		@Transactional
 		public List<RequirementSubmission> getRecruiterSubmittedCandidatesCountListByStage(Long userId,
-				String submissionStatus, Date startDate, Date endDate) throws Exception {
+				String submissionStatus, Date startDateFormat, Date endDateFormat) throws Exception {
+			java.sql.Timestamp startDate = new java.sql.Timestamp(startDateFormat.getTime());
+			 java.sql.Timestamp endDate = new java.sql.Timestamp(endDateFormat.getTime());
 				 Session session = this.sessionFactory.getCurrentSession();
 				 List<RequirementSubmission>  submissionsCountList = null ;
 				 String query;
