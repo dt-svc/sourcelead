@@ -130,6 +130,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
     private Long orgRelationId;
 	
+	@Transient
+	@JsonProperty
+    private String spocUserCode;
+	
 	public Long getId() {
 		return id;
 	}
@@ -369,5 +373,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setOrgRelationId(Long orgRelationId)
 	{
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocUserCode() {
+		return spocUserCode;
+	}
+
+	public void setSpocUserCode(String spocUserCode) {
+		this.spocUserCode = spocUserCode;
 	}
 }
