@@ -198,7 +198,9 @@ function getCustomBillingReports(invoiceType){
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(data) {
-	        	 var json = JSON.parse(data);
+	        	  var json = JSON.parse(data);
+		        	 getBillingReportsChart(invoiceType,json);
+	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
 	        	 result = result +'</div>';
@@ -236,7 +238,7 @@ function getCustomBillingReports(invoiceType){
 	                $("#tab-1").empty();
 	        	   $("#tab-1").append(result);
 	        	   customBillingReportPagination();
-	        	   getCustomPayableBillingReports('payables');
+	        	   getCustomPayableBillingReports('payables'); */
 	        },
 	          
 	     });  
@@ -410,7 +412,6 @@ function getBillingReportsChart(invoiceType,json){
 	 //startatatat============
 	 var chartData = [];
 	 
-
   var firstDate = new Date();
   for (var i = 0; i < json.billingGraphBean.length; i++) { 
 		 var opt = json.billingGraphBean[i]; 
@@ -431,7 +432,7 @@ function getBillingReportsChart(invoiceType,json){
 	    }],
 	    "startDuration": 1,
 	    "graphs": [{
-	        "balloonText": "Income in [[category]] (2004): <b>[[value]]</b>",
+	        "balloonText": "Income in [[category]] : <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2004",
@@ -439,7 +440,7 @@ function getBillingReportsChart(invoiceType,json){
 	         "columnWidth":0.5,
 	        "valueField": "year2004"
 	    }, {
-	        "balloonText": "Expenses in [[category]] (2005): <b>[[value]]</b>",
+	        "balloonText": "Expenses in [[category]] : <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2005",
@@ -486,7 +487,6 @@ function getBillingReports(invoiceType){
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
-		        	 /* alert(data); */
 		        	 var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 		         }

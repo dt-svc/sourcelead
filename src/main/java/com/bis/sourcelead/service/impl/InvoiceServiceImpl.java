@@ -2064,22 +2064,22 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<BillingGraphBean> incomeExpenseList = new ArrayList<>();
 		switch (billingReportType) {
 		case Constants.THIS_MONTH:
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
-			date1 = new LocalDate(startDateUTC);
-			date2 = new LocalDate(endDateUTC);
+			/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);*/
+			date1 =monthStartDate;
+			date2 = monthEndDate;
 			break;
 		case Constants.THIS_QUARTER:
 			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
+			/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);*/
 			date1 = dates[0];
 			date2 = dates[1];
 			break;
 		case Constants.THIS_YEAR:
 			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
+			startDateUTC =currentYearDates[0].toDate();
+			endDateUTC = currentYearDates[1].toDate();
 			date1 = currentYearDates[0];
 			date2 = currentYearDates[1];
 			break;
@@ -2096,16 +2096,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
 			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
 			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
+			/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);*/
 			date1 = loastMonthStartDate;
 			date2 = lastMonthEndDate;
 			break;
 		case Constants.LAST_QUARTER:
 			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
 			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
+			/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);*/
 			date1 = quarterDates[0];
 			date2 = quarterDates[1];
 			break;
@@ -2114,28 +2114,30 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
 				if (null != finStartDate) {
 					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
-					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
-					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
-					date1 = new LocalDate(startDateUTC);
-					date2 = new LocalDate(endDateUTC);
+					/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
+					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);*/
+					date1 = new LocalDate(finStartDate);
+					date2 = new LocalDate(finEndDate);
 					;
 				}
 			} else {
 				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
-				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
+				/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
 						startDateOutputFormatter);
-				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);*/
 				date1 = financialDates[0];
 				date2 = financialDates[1];
 			}
 			break;
 		case Constants.CUSTOM:
-			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
-			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
-			date1 = localStartDate;
-			date2 = localEndDate;
+			/*LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
+			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));*/
+			/*startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);*/
+			Date localStartDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), startDate);
+			Date localEndDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), endDate);
+			date1 = new LocalDate(localStartDate);
+			date2 = new LocalDate(localEndDate);
 			break;
 		default:
 			logger.info("No Frequency");

@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
@@ -25,10 +27,10 @@ import com.bis.sourcelead.constants.Constants;
 public  class CalendarUtil {
 
 	public static void main(String[] args){
-	 System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
+	 //System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
+		System.out.println(Months.monthsBetween(new LocalDate(), new LocalDate()));
 		
-		
-		
+	 /*Months.monthsBetween(new LocalDate(), new LocalDate());*/
 	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());

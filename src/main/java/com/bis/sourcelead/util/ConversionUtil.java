@@ -121,6 +121,7 @@ public class ConversionUtil {
 				data = stream.read();
 			}
 			stream.close();
+			System.out.println(sb.toString());
 			response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -371,17 +372,26 @@ public class ConversionUtil {
 	 * @return
 	 */
 	public List<LocalDate> getAllDatesBetweenGivenDates(LocalDate date1, LocalDate date2) {
-		List<LocalDate> datesList = null;
-		if (date1 != null && date2 != null) {
-			datesList = new ArrayList<>();
-			// LocalDate date1 = new LocalDate(startDateUTC);
-			// LocalDate date2 = new LocalDate(endDateUTC);
-			while (date1.isBefore(date2)) {
-				datesList.add(date1);
-				// System.out.println(date1.toString("MMM/yyyy"));
-				date1 = date1.plus(Period.months(1));
-			}
-		}
+		
+		LocalDate start = date1.dayOfMonth().withMinimumValue();
+	     LocalDate end = date2.dayOfMonth().withMaximumValue();
+	     List<LocalDate> datesList = null;
+	     if (start != null && end != null) {
+	             datesList = new ArrayList<>();
+	             // LocalDate date1 = new LocalDate(startDateUTC);
+	             // LocalDate date2 = new LocalDate(endDateUTC);
+	             while (start.isBefore(end)) {
+	                 if(date1.isBefore(date2)) {
+	                   datesList.add(date1);
+	                 }
+	                 else {
+	                   datesList.add(date2);
+	                 }
+	                 // System.out.println(date1.toString("MMM/yyyy"));
+	                 date1 = date1.plus(Period.months(1));
+	                 start = date1;
+	             }
+	     }
 		return datesList;
 	}
 
