@@ -588,34 +588,34 @@ public class CandidateListRestController {
 
 	private List<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("address", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designation", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
 		// matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
