@@ -462,7 +462,7 @@ function displyContract(stage){
 							result = result + '    <td>--</td>';
 						}
 						 if(opt.fileURL != null && opt.fileURL !=""){
-							result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"title="Download"></a>';
+							result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"title="Download"></a>';
 		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\');"title="preview"></a>';
 						 }else{
 							 result = result + '    <td>--</td>';
