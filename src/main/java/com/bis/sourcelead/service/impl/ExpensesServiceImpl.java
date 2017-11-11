@@ -341,7 +341,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
 			            	orderedList.add(new ListItem(client.append("Client :").append(pm.getProjectClientsId().getOrgRelationId().getClientName()).toString()));	
 			            }else{
-			            	client.append("--").toString();
+			            	orderedList.add(new ListItem(client.append("Client :").append("--").toString()));
 			            }
 				        if(null != expenses.getStartDate()){
 				        	String StartDate = dateFormatter.format(expenses.getStartDate());

@@ -115,6 +115,16 @@ function myExpensesListByStage(expenseStatus){
 function employeeExpensesListByStage(expenseStatus){
 	var userSession = '${SourceLeadWeb_user.id}';
 	var orgLocationSession = '${SourceLeadWeb_orgLocationId}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
 	$.ajax({
 	    type : "GET",
 	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus+"&user="+userSession+"&orgLocation="+orgLocationSession,
@@ -126,8 +136,8 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' <th>Employee</th>';
 	    		result = result+' <th>EmploymentType</th>';
 	    		result = result+' <th>Project</th>';
-	    		result = result+' <th>Start Date</th>';
-	    		result = result+' <th>End Date</th>';
+	    		result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+				result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 	    		result = result+' <th>No of Items</th>';
 	    		result = result+' <th>Amount</th>';
 	    		result = result+' <th>Status</th>';
@@ -167,7 +177,7 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' <td><div class="sm" title='+data.expenseId.noOfExpenses+'>'+data.expenseId.noOfExpenses+'</div></td>';
 	    		result = result+' <td><div class="sm">';
 	    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	    		result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount" title='+data.expenseId.totalAmount+'>';
+	    		result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseLocationCode+'&type=view" class="ExpAmount" title='+data.expenseId.totalAmount+'>';
 	    		'</sec:authorize>';
 	    		
 	    		result = result+ data.expenseId.totalAmount;

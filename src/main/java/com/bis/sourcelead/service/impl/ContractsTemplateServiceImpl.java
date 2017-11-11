@@ -1085,6 +1085,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				fullTimeContract.setContractStatus(contracts.getContractStatus());
 			}
 			
+			if(contracts.getBillingAmount() != null){
+				fullTimeContract.setBillingAmount(contracts.getBillingAmount());
+			}
+			
 			if(contracts.getFileURL() != null){
 				fullTimeContract.setFileURL(contracts.getFileURL());
 			}

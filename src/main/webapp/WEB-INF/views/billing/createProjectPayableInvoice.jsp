@@ -103,14 +103,14 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" 
-                     name="billingAddress" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+                     name="billingAddress"></textarea>
               </div>
             </div>
             <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
 			</div>
             
@@ -506,9 +506,9 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="required validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
     	 }else{
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="lineItems['+i+'].Description" data-validation=" required validate_length length1-100" field-name="Description"></textarea>';
     	 }
          
          result = result +'  </td>';

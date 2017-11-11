@@ -389,35 +389,35 @@ function getVendorOnboardDetails(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 		        success: function(json) {
-		        	$("#clientName").html(json.clientName);
+		        	$("#clientName").html("<p title='"+json.clientName+"'>"+json.clientName+"</p>");
 		        	if(json.clientWebsite != null){
-		        		$("#website").html(json.clientWebsite);
+		        		$("#website").html("<p title='"+json.clientWebsite+"'>"+json.clientWebsite+"</p>");
 		        	}else{
 		        		$("#website").html("-------");
 		        	}
 		        	
-		        	$("#location").html(json.clientLocation);
+		        	$("#location").html("<p title='"+json.clientLocation+"'>"+json.clientLocation+"</p>");
 		        	
 		        	if(json.clientAddress != null){
-		        		$("#address").html(json.clientAddress);
+		        		$("#address").html("<p title='"+json.clientAddress+"'>"+json.clientAddress+"</p>");
 		        	}else{
 		        		$("#address").html("-------");
 		        	}
 		        	
-		        	$("#vendorName").html(json.vendorName);
+		        	$("#vendorName").html("<p title='"+json.vendorName+"'>"+json.vendorName+"</p>");
 		        	if(json.vendorWebsite != null){
-		        		$("#vendorWebsite").html(json.vendorWebsite);
+		        		$("#vendorWebsite").html("<p title='"+json.vendorWebsite+"'>"+json.vendorWebsite+"</p>");
 		        	}else{
 		        		$("#vendorWebsite").html("-------");
 		        	}
 		        	
-		        	$("#vendorLocation").html(json.vendorLocation);
+		        	$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>"+json.vendorLocation+"</p>");
 		        	
 
-		        	$("#clientContactName").html(json.clientContactName);
-		        	$("#clientContactEmail").html(json.clientContactEmail);
+		        	$("#clientContactName").html("<p title='"+json.clientContactName+"'>"+json.clientContactName+"</p>");
+		        	$("#clientContactEmail").html("<p title='"+json.clientContactEmail+"'>"+json.clientContactEmail+"</p>");
 		        	if(json.clientContactPhone != null){
-		        		$("#clientContactPhone").html(json.clientContactPhone);
+		        		$("#clientContactPhone").html("<p title='"+json.clientContactPhone+"'>"+json.clientContactPhone+"</p>");
 		        	}else{
 		        		$("#clientContactPhone").html("-------");
 		        	}

@@ -385,7 +385,9 @@ public class ProjectsController {
 				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
 				 if(projectTask.getParentTaskId() != null) {
-					 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 if(projectTask.getParentTaskId().getProjectTasksUUID() !=  null) {
+						 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 }
 					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
 				 }
 				if(projectTask.getProjectId() != null) {
