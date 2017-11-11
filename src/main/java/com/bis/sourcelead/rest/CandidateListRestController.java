@@ -763,6 +763,7 @@ public class CandidateListRestController {
 		}
 		candidateDTO.setProfilePercentage(percentage);
 		candidateDTO.setCountry(can.getCountry());
+		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setCity(can.getCity());
 		candidateDTO.setState(can.getState());
 		candidateDTO.setFirstName(can.getFirstName());
