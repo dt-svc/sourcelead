@@ -160,7 +160,13 @@ function wagesTaxpagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "checkNo",
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		return ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  		var result = "";
+	    	  		if(){
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  		}
+	    	  		return result;
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
