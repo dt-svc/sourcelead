@@ -1916,25 +1916,6 @@ public class ClientRestController {
 							boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
 						}
 						
-						//Spoc Status
-						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
-						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
-							statusAdvancedArray = clientVendorDTO.getStatus();
-						}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
-							statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
-						}
-						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty()){
-							BoolQueryBuilder statusAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
-							for(String keywd : statusAdvancedArray){
-									if(keywd.equalsIgnoreCase("Active")){
-										statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
-									}else{
-										  statusAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("spocStatus", keywd));
-									}
-							}
-							boolQueryBuilder.must(statusAdvancedBoolQueryBuilder);
-						}
-						
 						//Invitation  Status
 						
 						List<String> invitationAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "invitationAdvanced");
@@ -1964,13 +1945,37 @@ public class ClientRestController {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
+				
+				String spocStatus = null;
+				//Spoc Status
+				List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+				if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
+					statusAdvancedArray = clientVendorDTO.getStatus();
+				}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+					statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
+				}
+				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
+					for(String keywd : statusAdvancedArray){
+						spocStatus = keywd;
+					}
+				}
+				
+				
+				
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
 						String json = hit.getSourceAsString();
 						mapper.setDateFormat(df);
 						ClientVendorContactsIndex clientVendorContactsIndex = mapper.readValue(json, ClientVendorContactsIndex.class);
-						clientVendorContactsList.add(clientVendorContactsIndex);
+						if(spocStatus == null) {
+							clientVendorContactsList.add(clientVendorContactsIndex);
+						}else {
+							if(clientVendorContactsIndex.getSpocStatus().equalsIgnoreCase(spocStatus)) {
+								clientVendorContactsList.add(clientVendorContactsIndex);
+							}
+						}
+						
 					}
 					
 					for(ClientVendorContactsIndex clientVendorContactsIndex : clientVendorContactsList){
