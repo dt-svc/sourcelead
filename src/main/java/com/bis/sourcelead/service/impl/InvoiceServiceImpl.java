@@ -1662,16 +1662,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
-				if (null != projectMember.getEmployee().getUser().getId()) {
-					Candidate candidate = projectMember.getProjectMemberCandidteId();
-					if (null != candidate) {
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
-						if (null != contractList && contractList.size() > 0) {
-							projectMember.setContractsList(contractList);
+					if (null != projectMember.getProjectMemberCandidteId().getId()) {
+						Candidate candidate = projectMember.getProjectMemberCandidteId();
+						if (null != candidate) {
+							projectMember.setCandidateId(candidate.getId());
+							List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+							if (null != contractList && contractList.size() > 0) {
+								projectMember.setContractsList(contractList);
+							}
 						}
 					}
-				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
 				String billableHours = String.valueOf(sah.getBillableHours());
