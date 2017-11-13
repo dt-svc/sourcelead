@@ -19,7 +19,13 @@
 <style>
 #billing_chartdiv {
   	width:100%; height:300px;
-}																		
+}	
+.borderYellow {
+border-color: #FFFF00;
+}				
+.borderOrange {
+border-color: rgb(255, 102, 0);
+}													
 </style>
 
 <script> 
@@ -80,11 +86,11 @@ $(document).ready(function(){
                       <span class="text-info">Net Income</span>
                   </div>
                   
-                  <div class="clearfix billingCount borderGreen">
+                  <div class="clearfix billingCount borderOrange">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="receivedAmount"></span>
                       <span class="text-info">Income</span>
                   </div>
-                  <div class="clearfix billingCount borderBlue">
+                  <div class="clearfix billingCount borderYellow">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
                       <span class="text-info">Expenses</span>
                   </div>

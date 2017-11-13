@@ -121,7 +121,6 @@ public class ConversionUtil {
 				data = stream.read();
 			}
 			stream.close();
-			System.out.println(sb.toString());
 			response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -385,12 +384,14 @@ public class ConversionUtil {
 	                   datesList.add(date1);
 	                 }
 	                 else {
-	                   datesList.add(date2);
+	                   datesList.add(date2.dayOfMonth().withMinimumValue());
 	                 }
 	                 // System.out.println(date1.toString("MMM/yyyy"));
 	                 date1 = date1.plus(Period.months(1));
 	                 start = date1;
 	             }
+	             if(start.equals(end))
+	            	 datesList.add(date2.dayOfMonth().withMinimumValue());
 	     }
 		return datesList;
 	}
