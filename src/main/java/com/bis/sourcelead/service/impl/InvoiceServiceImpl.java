@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.BillingGraphBean;
 import com.bis.sourcelead.beans.BillingReportDTO;
@@ -59,19 +58,17 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
-
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -113,8 +110,6 @@ import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.JsonObject;
 
 
 @Service
