@@ -66,7 +66,7 @@ function projectTask(projectId, status) {
 	}
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';
 		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
 			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
@@ -76,7 +76,7 @@ function projectTask(projectId, status) {
 		result = result	+ '	</li>';
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';
 		
 		<c:forEach var="status" items="${taskStatusList}">     
@@ -92,7 +92,7 @@ function projectTask(projectId, status) {
 		result = result	+ '	</li>';
 		
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Task Type</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';   
 		<c:forEach var="type" items="${taskTypeList}">        
 		 

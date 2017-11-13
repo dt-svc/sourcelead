@@ -15,6 +15,7 @@
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
+	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 	 if(contractType != null && contractType != 'undefined' && contractType !=''){
@@ -42,8 +43,8 @@
 
 	 }
 	 
-	 if(relationId != null && relationId != ''){
-		 getVendorContacts();
+	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
+		 getVendorContacts(spocUserCode);
 	 }
 };
 </script>
