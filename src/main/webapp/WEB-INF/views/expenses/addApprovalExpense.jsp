@@ -537,9 +537,10 @@ function removeWhiteSpaces(rowCount){
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-			 var d1= getJSDate(projectStartDate,locationDate);
-			 var d2= getJSDate(projectEndDate,locationDate);
-		    
+			var projectStartDate = $("#projectStartDateExpensesId").val();
+			var projectEndDate = $("#projectEndDateExpensesId").val();
+			var d1= getJSDate(projectStartDate,locationDate);
+     		var d2= getJSDate(projectEndDate,locationDate);
 			var entriesCount = $('#categoryTable >thead >tr').length;
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
