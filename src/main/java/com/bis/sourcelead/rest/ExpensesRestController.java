@@ -761,6 +761,7 @@ public class ExpensesRestController {
 					}
 				}
 			}
+			expensesApproverHierarchy.setExpenseLocationCode(orgLoc.getLocationCode());
 		}
 		return expApperoverHierarchy;
 	}

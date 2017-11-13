@@ -544,10 +544,10 @@ function validateEmail(){
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Invalid Spoc') {
-					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as vendor contact</span>");
-					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as vendor contact");
+// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as vendor contact</span>");
+// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as vendor contact");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");

@@ -139,18 +139,16 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getCustomeAmount())) {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getCustomeAmount());
 							if (!paidCurrencyCode.equalsIgnoreCase(receiverCurrencyCode)) {
-								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,
-										Float.parseFloat(paidAmount));
-								BigDecimal conversionAmount = new BigDecimal(conAmount);
-								BigDecimal receiverTotalAmount = new BigDecimal(
-										Float.parseFloat(parentInvoice.getTotal()));
-								receivedAmount = receiverTotalAmount.subtract(conversionAmount);
-								BigDecimal totalAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
-								BigDecimal customAmount = new BigDecimal(
-										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
-								int res = customAmount.compareTo(totalAmount);
-								if ((conversionAmount.equals(receiverTotalAmount)) || res == -1) {
+								float conAmount = conversionUtil.convert(paidCurrencyCode, receiverCurrencyCode,Float.parseFloat(paidAmount));
+								BigDecimal paidConversionAmount = new BigDecimal(conAmount);
+								BigDecimal receiverTotalAmount = new BigDecimal(Float.parseFloat(parentInvoice.getDueAmount()));
+								receivedAmount = receiverTotalAmount.subtract(paidConversionAmount);
+//								BigDecimal totalAmount = new BigDecimal(
+//										Double.parseDouble(invoicePaymentDTO.getTotalAmount()));
+//								BigDecimal customAmount = new BigDecimal(
+//										Double.parseDouble(invoicePaymentDTO.getCustomeAmount()));
+								int res = paidConversionAmount.compareTo(receiverTotalAmount);
+								if ((receiverTotalAmount.equals(paidConversionAmount)) || res == 1) {
 									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 								}else if(commonUtil.currentDate().after(invoice.getDueDate())) {
 									invoice.setPaymentStatus(Constants.OVER_DUE);

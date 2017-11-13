@@ -125,7 +125,6 @@ public class OpenJobsRestController {
 			        
 			        BoolQueryBuilder combinedOpenToPublicAndCrowdSourcingQueryBuilder = QueryBuilders.boolQuery();
 			        combinedOpenToPublicAndCrowdSourcingQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
-			        combinedOpenToPublicAndCrowdSourcingQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
 			        boolQueryBuilder.must(combinedOpenToPublicAndCrowdSourcingQueryBuilder);
 			        boolQueryBuilder.must(combinedQueryBuilder);
 			        boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
@@ -148,14 +147,7 @@ public class OpenJobsRestController {
 				}
 				boolQueryBuilder.must(combinedQueryBuilder);
 		}else{
-				 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
-		    	 BoolQueryBuilder openJobsQueryBuilder = QueryBuilders.boolQuery();
-		    	 openJobsQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
-		    	 BoolQueryBuilder crowdSourcingJobsQueryBuilder = QueryBuilders.boolQuery();
-		    	 crowdSourcingJobsQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
-			     combinedQueryBuilder.should(openJobsQueryBuilder);
-			     combinedQueryBuilder.should(crowdSourcingJobsQueryBuilder);
-			     boolQueryBuilder.must(combinedQueryBuilder);
+			     boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 			     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
 			     
 			     //for country filter

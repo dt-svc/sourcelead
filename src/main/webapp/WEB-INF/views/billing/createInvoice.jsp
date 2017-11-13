@@ -59,8 +59,9 @@ function errRemoveClientContact(){
 		<div class="pull-left">
 			<h2>Custom Invoice</h2>
 		</div>
+		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
-	
+	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -187,7 +188,7 @@ function errRemoveClientContact(){
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
@@ -541,6 +542,18 @@ if(selectedTextInvoice =='percentage'){
 			 
 			 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
+		}else{
+			
+			 <c:forEach var="doc" items="${documents}">
+			 result = result +"<strong id='invoiceDocument${doc.id}'>";
+    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+			 result = result +"<input type='button' value='${doc.fileName}'>";
+			 result = result +"</a>";
+			 result = result +"</strong>";
+     		</c:forEach>
+     		
+     		 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
 		}
     	
 	}
@@ -552,7 +565,7 @@ if(selectedTextInvoice =='percentage'){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -773,7 +786,7 @@ if(selectedTextInvoice =='percentage'){
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }

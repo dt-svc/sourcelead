@@ -406,12 +406,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery3 = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		String subQuery4 = "";
+		if("".equalsIgnoreCase(invoiceStatus) || invoiceStatus == null || invoiceStatus.equalsIgnoreCase("undefined")){
+			subQuery4 = " and invoice.invoiceStatus <> 'Linked' ";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query =null;
 		if(invoiceType.equalsIgnoreCase("payables")){
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}else{
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 		List<Invoice> invoiceList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;

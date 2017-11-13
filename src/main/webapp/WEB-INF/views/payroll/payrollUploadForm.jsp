@@ -80,14 +80,14 @@ window.onload = function () {
                         </div>
                      
                         <div class="form-group" id="batchNumberDiv">
-                          <label class="col-md-3">Batch Number</label>
+                          <label class="col-md-3">Batch Number<span class="text-danger paddingLeft">*</label>
                           	<div class="col-md-9">
                           		<input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         	</div>
                         </div>
 
                       <div class="form-group">
-                      <label class="col-md-3">Document Type</label>
+                      <label class="col-md-3">Document Type<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9 chosenSelect_li" id="payrollTypeDiv">
                           <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
                             <option value="">Select Type</option>
@@ -103,7 +103,7 @@ window.onload = function () {
                         </div>
                         
                         <div class="form-group">
-                        <label class="col-md-3">Document Type</label>
+                        <label class="col-md-3">Upload Document<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9">
                           <div class="input-group ratetype" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
