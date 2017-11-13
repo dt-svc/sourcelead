@@ -2343,11 +2343,6 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				documentBuffer.append("<span>"); 
 				documentBuffer.append("<table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>");
 						documentBuffer.append("<tr id='divAttachmentTsRow0'>");
-						if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != 0 && (timesheetSubmissionsDocumentsList == null || timesheetSubmissionsDocumentsList.isEmpty())){
-							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='Y' />");
-						}else{
-							documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='N' />");
-						}
 						documentBuffer.append("<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)' data-validation-optional='true' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ");
 						documentBuffer.append("<input type='hidden' name='dbIsTimesheetAttachmentRequired'  id='dbIsTimesheetAttachmentRequired' value='"+isTimesheetAttachmentRequired+"' />");         
 						documentBuffer.append("</tr>");
@@ -2357,6 +2352,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				documentBuffer.append("</div>");
 			}
 			 if(ts != null){
+				   
 					timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
 					if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 							for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
@@ -2378,6 +2374,11 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 								} 
 							}
 						} 
+				}
+			    if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != 0 && (timesheetSubmissionsDocumentsList == null || timesheetSubmissionsDocumentsList.isEmpty())){
+					documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='Y' />");
+				}else{
+					documentBuffer.append("<input type='hidden' name='isTimesheetAttachmentRequired'  id='isTimesheetAttachmentRequired' value='N' />");
 				}
 		documentBuffer.append("</div>"); 
 		return documentBuffer;

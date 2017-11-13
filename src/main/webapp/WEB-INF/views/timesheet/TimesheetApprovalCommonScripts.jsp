@@ -493,7 +493,9 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		        contentType:false,
 	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
 		      success :function(result) {
-		    	  
+		    	 if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+	    			$("#timesheet_form input[data-id*=docFile]").remove();
+	    		  }
 		    	  if(status != null && status != 'undefined' && status != '' && status != 'Draft'){
 		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
 		    	  }
@@ -1479,7 +1481,7 @@ function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId,timeshe
 	result = result +"		<p>Re-open message here</p>";
 	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
 	result = result +"	</div>";
 	$("#reOpenRejectedPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1492,11 +1494,11 @@ function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequ
 	var sourceleadUrl = '${sourceleadUrl}';
 	var superUserId = '${SourceLeadWeb_superUserId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	if(reason != ""){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,	    	   
+		   	url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
 		    success: function(data) {
 		    	$("#reOpenRejectedPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -1507,14 +1509,11 @@ function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequ
 		    }
 	   });
 	}else{
-		if(reason){
-			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
 			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
 	  
-}
+
 </script>
 
 <script>

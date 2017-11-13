@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.beans.BillingGraphBean;
 import com.bis.sourcelead.beans.BillingReportDTO;
@@ -60,19 +59,17 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
-
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -115,8 +112,6 @@ import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.JsonObject;
 
 
 @Service
@@ -1667,16 +1662,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				
 				projectMember.setCandidateName(candidateName.toString());
 				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
-				if (null != projectMember.getEmployee().getUser().getId()) {
-					Candidate candidate = projectMember.getProjectMemberCandidteId();
-					if (null != candidate) {
-						projectMember.setCandidateId(candidate.getId());
-						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
-						if (null != contractList && contractList.size() > 0) {
-							projectMember.setContractsList(contractList);
+					if (null != projectMember.getProjectMemberCandidteId().getId()) {
+						Candidate candidate = projectMember.getProjectMemberCandidteId();
+						if (null != candidate) {
+							projectMember.setCandidateId(candidate.getId());
+							List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+							if (null != contractList && contractList.size() > 0) {
+								projectMember.setContractsList(contractList);
+							}
 						}
 					}
-				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
 				String billableHours = String.valueOf(sah.getBillableHours());

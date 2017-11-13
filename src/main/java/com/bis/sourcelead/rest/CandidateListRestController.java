@@ -786,6 +786,8 @@ public class CandidateListRestController {
 		candidateDTO.setExperienceMonths(can.getExperienceMonths());
 		candidateDTO.setExperienceYears(can.getExperienceYears());
 		candidateDTO.setZipcode(can.getZipCode());
+		candidateDTO.setCandidateType(can.getCandidateType());
+		candidateDTO.setStatus(can.getStatus().toString());
 		return candidateDTO;
 	}
 	 
