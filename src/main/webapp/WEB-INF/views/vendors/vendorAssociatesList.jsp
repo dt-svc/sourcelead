@@ -122,7 +122,7 @@ function vendorAssociatesList(orgRelationId){
 	
 			               	}
 			               	if(opt.candidateResumeName != null && opt.candidateResumeName != '' && opt.candidateResumeName !='undefined'){
-		               		result = result +'<td ><div title='+opt.candidateResumeName+' class="tblicons_4"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>&nbsp;&nbsp;<a class="fa fa-eye"  href="javascript:void(0)" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.candidateResumeName+'\',\''+opt.candidateResumeFileType+'\');"></a></div></td>';
+		               		result = result +'<td ><div title='+opt.candidateResumeName+' class="tblicons_4"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>&nbsp;&nbsp;<a class="fa fa-eye"  href="javascript:void(0)" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.candidateResumeName+'\',\''+opt.candidateResumeFileType+'\');"></a></div></td>';
 			               	
 			               	}
 			               	else{
