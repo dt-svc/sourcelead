@@ -3,6 +3,13 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<style>
+a.disabledLink {
+   pointer-events: none;
+   cursor: default;
+}
+</style>
  
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
  
@@ -69,19 +76,18 @@
 <div class="project_side_wrap_inn_tabs">
 
 	 <%-- var type = '${type}'; --%>
-	 
 	<!--  isDetailsTabActive
 	 isApplicantsTabActive -->
 	<ul class="project-tabs-menu">
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
 		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
 			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a class="disabledLink" href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a class="disabledLink" href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
-			<li><a href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+			<li><a class="disabledLink" href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
@@ -159,7 +165,7 @@
 					        
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
-					            	<a class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
+					            	<a download class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
 					            </c:if>
 					            <div class="clearfix"></div> 
 				            </div> 

@@ -595,47 +595,55 @@ public class CandidateOnBoardRestController {
 	   }
 	 
 	 
-	 @RequestMapping(value = "/getOnboardCandidateList")
-	 public String getOnboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
+	 @RequestMapping(value = {"/getOnboardCandidateList","rest/getOnboardCandidateList"})
+	 public List<CandidateOnBoardingDTO> getOnboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
 
-		String resultJson;
-		
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		//SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
-		List<CandidateOnBoarding> onBoardingList = new ArrayList<CandidateOnBoarding>();
+		List<CandidateOnBoardingDTO> onBoardingList = new ArrayList<CandidateOnBoardingDTO>();
 		
 		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
 			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
+				
+				CandidateOnBoardingDTO candidateOnBoardingDTO=new CandidateOnBoardingDTO();
+				
 				if(null != candidateOnBoarding.getStartDate()){
-					candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOnBoarding.getStartDate()));
+					candidateOnBoardingDTO.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOnBoarding.getStartDate()));
 				}
 				
 				StringBuilder candidateName = new StringBuilder();
 				
 				if(null != candidateOnBoarding.getLastName()){
-					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
+					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
 				}else{
-					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
+					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
+				}
+				if(null != candidateOnBoarding.getCandidateOnBoardStatus()){
+					candidateOnBoardingDTO.setCandidateOnBoardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
+				}
+				if(null != candidateOnBoarding.getOnboardCandidateUUID()){
+					candidateOnBoardingDTO.setOnboardCandidateUUID(candidateOnBoarding.getOnboardCandidateUUID());
+				}
+				if(null != candidateOnBoarding.getOnboardSubmitted()){
+					candidateOnBoardingDTO.setOnboardSubmitted(candidateOnBoarding.getOnboardSubmitted());
 				}
 				
 				if(null != candidateOnBoarding.getOnboardingUser()){
-					candidateOnBoarding.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
+					candidateOnBoardingDTO.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
 				}
 				
 				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
-				candidateOnBoarding.setDocumentsCount(documentsCount);
+				candidateOnBoardingDTO.setDocumentsCount(documentsCount);
 				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
-				candidateOnBoarding.setDocumentsAcceptedCount(acceptedDocumentsCount);
+				candidateOnBoardingDTO.setDocumentsAcceptedCount(acceptedDocumentsCount);
 				
-				onBoardingList.add(candidateOnBoarding);
+				onBoardingList.add(candidateOnBoardingDTO);
 				
 			}
 		}
 		
-		resultJson = commonUtil.toJSON(onBoardingList);
-		
-		return resultJson;
+		return onBoardingList;
 	 }
 	 
 	 

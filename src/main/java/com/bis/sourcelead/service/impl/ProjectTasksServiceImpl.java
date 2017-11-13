@@ -203,6 +203,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 		if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
 			companyShortCode = projects.getOrgLocationsId().getGeneratedUserId();
+		}else {
+			companyShortCode = "";
 		}
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder.append(companyShortCode).append(splitProjectName);

@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -92,6 +93,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class ProjectsDashboardRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -815,17 +819,11 @@ public class ProjectsDashboardRestController {
 		  * @throws Exception
 		  */
 		 @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectDocument(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "documentId", required = false) Long documentId,  MultipartHttpServletRequest request) throws Exception
+			public @ResponseBody String saveProjectDocument(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				MultipartFile multiFile = null;
-				Iterator<String> itrator = request.getFileNames();
-				if (itrator.hasNext()) {
-					multiFile = request.getFile(itrator.next());
-				}
-				if (null != projectId) {
-					projectDocumentsService.storeProjectDocuments(jsonObj, projectId,multiFile,documentId);
+			 projectsDocumentsDTO.setStaticPath(staticPath);
+				if (null != projectsDocumentsDTO.getProjectId()) {
+					projectDocumentsService.storeProjectDocuments(projectsDocumentsDTO);
 					return "success";
 				}
 				else {

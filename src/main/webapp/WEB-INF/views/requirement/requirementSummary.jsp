@@ -16,7 +16,6 @@ $(document).ready(function() {
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
-		 
 });	
 </script>
 <script>
@@ -1087,6 +1086,8 @@ function assignedMemberList(requirementId){
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
+				/* enable tabs access after complete loading of deatils page to avoid switching issues */
+        	 $('.disabledLink').removeClass('disabledLink');
                },
                  
             }); 
@@ -1435,7 +1436,7 @@ function requirementRecommendations(requirementId){
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 			 var file =  report.currentResumeName;
 			  var fileName = file.substr(0,5);
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
+		  	   result = result +'<td class="text-center"><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
 			  }else{
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 

@@ -2332,9 +2332,6 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				}
 			}
 			List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
-			 if(ts != null){
-					timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-			 }
 			StringBuilder documentBuffer = new StringBuilder();	
 			documentBuffer.append("<input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />");
 			documentBuffer.append("<div id='timesheetDocumentsId' class='timesheetDocs'>"); 
@@ -2359,7 +2356,8 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				documentBuffer.append("<i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>"); 
 				documentBuffer.append("</div>");
 			}
-			
+			 if(ts != null){
+					timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
 					if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 							for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 								if(!isNullOrEmpty(tsd.getFileName())){
@@ -2380,7 +2378,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 								} 
 							}
 						} 
-				
+				}
 		documentBuffer.append("</div>"); 
 		return documentBuffer;
 	}

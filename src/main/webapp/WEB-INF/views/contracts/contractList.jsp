@@ -1186,9 +1186,9 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
-	if(listLength == 0){
-		$(".clientContractsList").find('.dt-buttons').hide();
-	}
+// 	if(listLength == 0){
+// 		$(".clientContractsList").find('.dt-buttons').hide();
+// 	}
 	$("#contractListTableWFA1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
@@ -1226,9 +1226,9 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
-	if(listLength == 0){
-		$(".vendorContractsList").find('.dt-buttons').hide();
-	}
+// 	if(listLength == 0){
+// 		$(".vendorContractsList").find('.dt-buttons').hide();
+// 	}
 	$("#contractListTableWFA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
@@ -1267,9 +1267,9 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg,listlength){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
-	if(listLength == 0){
-		$(".applicantsContractsList").find('.dt-buttons').hide();
-	}
+// 	if(listLength == 0){
+// 		$(".applicantsContractsList").find('.dt-buttons').hide();
+// 	}
 	$("#contractListTableWFA2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
@@ -3655,7 +3655,7 @@ function CountClick(contractUUID,parentId){
 						  if(opt.fileURL != null && opt.fileURL !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
-							  result = result+' <a class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
+							  result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
 			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
