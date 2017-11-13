@@ -18,10 +18,9 @@
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
-		 $("#contractType").val(contractType);
-	 	 getContractTemplates();
-	 }
+
+	 $("#contractType").val(contractType);
+
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
 	 	 $('#billingRateType').removeAttr('data-validation');
@@ -44,6 +43,10 @@
 
 	 }
 	 
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
 	 }
@@ -1397,13 +1400,17 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   
 		
-		$("#vendorContact").val('');
 		$('#vendorContact').trigger("chosen:updated");
 		
-		$("#orgRelationId").val('');
 		$('#orgRelationId').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();

@@ -181,6 +181,7 @@ public class ContractController {
 	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addNewContract")
 	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="spocUserCode", required=false)String spocUserCode,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="type", required=false)String contType, HttpServletResponse response) throws Exception {
+		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -297,12 +298,12 @@ public class ContractController {
 				model.addObject("requirementOffer", requirementOffer);
 			}
 			
-		}else if(Constants.Vendor_SOW.equalsIgnoreCase(contType)) {
-			model.addObject("orgRelationId", orgRelationId);
-			model.addObject("contractType", Constants.Vendor_SOW);
-		}else if(Constants.VENDOR_MSA.equalsIgnoreCase(contType)) {
+		}else if("Msa".equalsIgnoreCase(type)){
 			model.addObject("orgRelationId", orgRelationId);
 			model.addObject("contractType", Constants.VENDOR_MSA);
+		}else if("Sow".equalsIgnoreCase(type)){
+			model.addObject("orgRelationId", orgRelationId);
+			model.addObject("contractType", Constants.Vendor_SOW);
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
