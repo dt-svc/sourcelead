@@ -1019,6 +1019,14 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations.setZipCode("");
 			}
 			
+			 if(StringUtils.isNotBlank(clientDTO.getAddress())){
+				 orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			 }
+			 
+			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
+				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }
+			
 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&

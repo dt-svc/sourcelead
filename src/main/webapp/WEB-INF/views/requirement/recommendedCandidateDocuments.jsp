@@ -107,7 +107,7 @@ function candDocumentsList(candidateId){
 		                    	 }
 		                    	
 		                   
-		                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
+		                   result = result+'<td><div class="tblicons"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';

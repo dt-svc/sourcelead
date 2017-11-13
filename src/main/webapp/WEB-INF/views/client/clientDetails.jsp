@@ -335,7 +335,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " data-validation-optional="true"  value="'+website+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " onblur="validateWebsite()" data-validation-optional="true"  value="'+website+'" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								
@@ -489,6 +489,7 @@ function clientEditMsgFadein(){
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		$("#save_client").attr("disabled", "disabled");
 		
 		if (website != null && website != '') {
 			//$("#save_client").attr("disabled", "disabled");
@@ -504,7 +505,6 @@ function clientEditMsgFadein(){
 						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
 						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						$("#save_client").attr("disabled", "disabled");
 						
 					} else {
 						//New WebSite class="form-control"
@@ -712,4 +712,8 @@ function getAllCities(){
   $("#selector1").fadeIn(200);
   $('#selector1').delay(2000).fadeOut('slow');
 </script> 
+
+
+
+
 <!-- End -->
