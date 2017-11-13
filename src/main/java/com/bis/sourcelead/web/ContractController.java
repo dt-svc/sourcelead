@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.org.eclipse.jdt.core.dom.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +180,8 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addNewContract")
-	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="spocUserCode", required=false)String spocUserCode,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="type", required=false) String type, HttpServletResponse response) throws Exception {
+	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="spocUserCode", required=false)String spocUserCode,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="type", required=false)String contType, HttpServletResponse response) throws Exception {
+		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
