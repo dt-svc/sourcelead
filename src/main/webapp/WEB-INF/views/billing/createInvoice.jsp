@@ -59,8 +59,9 @@ function errRemoveClientContact(){
 		<div class="pull-left">
 			<h2>Custom Invoice</h2>
 		</div>
+		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
-	
+	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
