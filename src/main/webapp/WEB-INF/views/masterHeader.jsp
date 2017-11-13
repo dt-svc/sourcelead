@@ -1590,7 +1590,7 @@ $("#searchType").selectpicker('refresh');
   <script>
   $("#invitePop").click(function(){
   $(".modalInvite").fadeIn();
-  $(".sideMask").fadeIn();
+  $(".sideMask").fadeOut();
   });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
