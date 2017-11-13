@@ -454,9 +454,11 @@ function preventTabkey(e){
 	           <c:if test="${userTabs.tabName == 'Vendors'}">
 	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Projects'}">
+	           
+	         <!--   commented by laxman because client based project querys are not implemented -->
+	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
-	           </c:if>
+	           </c:if> --%>
 	           
 	           <c:if test="${userTabs.tabName == 'Associates List'}">
 	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
@@ -530,7 +532,7 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
 	        </li>
             
-            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>

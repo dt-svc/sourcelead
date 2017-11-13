@@ -7,9 +7,9 @@
   <div id="associateRequestLoading"></div>
 <form:form id="assignMembers_form" name="assignMembers_form" method="post">
 	<div class="project_tabs_inn_head">
-		<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">
-		<i class="glyphicon glyphicon-plus"></i>Search Members</a> 
-		
+		<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv" class="btn btn-primary btn-sm anchorWhite">
+		<i class="glyphicon glyphicon-search"></i>Search Associates</a> 
+		<div class="clearfix mb10"></div>
 		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>
 		
@@ -55,8 +55,8 @@
 		                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
                      </select>
                   </div>
-                  <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_int validate_length length1-15">
+                  <div class="pull-left inputRate positionRelative errorField-am">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -87,7 +87,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">

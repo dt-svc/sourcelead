@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.GenericDao;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -18,6 +20,7 @@ import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.ProjectDocumentsService;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service("projectDocumentsService")
@@ -92,6 +95,36 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 			projectDocuments.setFileType(multiFile.getContentType());
 		}
 		 genericDao.updateProjectDocuments(projectDocuments);
+		return projectDocuments;
+	}
+
+	@Override
+	public ProjectDocuments storeProjectDocuments(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception {
+		ProjectDocuments projectDocuments  = null;
+		if(projectsDocumentsDTO.getDocumentId() != null){
+			projectDocuments =  genericDao.findById(Long.parseLong(projectsDocumentsDTO.getDocumentId()));
+		}else{
+			 projectDocuments = new ProjectDocuments();	
+		}
+		if (projectsDocumentsDTO.getDescription() != null) {
+			projectDocuments.setDescription(projectsDocumentsDTO.getDescription());
+		}
+		Projects project = new Projects();
+		project.setId(Long.parseLong(projectsDocumentsDTO.getProjectId()));
+		projectDocuments.setProjects(project);
+		projectDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
+		
+		if(projectsDocumentsDTO.getFileInfo() != null) {
+			FileInfo fileInfo = projectsDocumentsDTO.getFileInfo().get(0);
+			projectDocuments.setFileUrl(fileInfo.getFileURL());
+			projectDocuments.setFileName(fileInfo.getFileName());
+			projectDocuments.setFileType(fileInfo.getContentType());
+			FileUploadUtil.moveFile(projectsDocumentsDTO.getStaticPath(), fileInfo, "ProjectDoument");
+		}
+		
+			
+		
+		genericDao.updateProjectDocuments(projectDocuments);
 		return projectDocuments;
 	}
 	

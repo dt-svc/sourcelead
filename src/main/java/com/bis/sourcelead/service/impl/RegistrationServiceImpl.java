@@ -36,7 +36,6 @@ import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -91,9 +90,9 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.DefaultContractTemplateUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.util.Calendar;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -434,7 +433,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
 	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
 	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
-	    	projects.setStartDate(new Date());
+	    	
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
