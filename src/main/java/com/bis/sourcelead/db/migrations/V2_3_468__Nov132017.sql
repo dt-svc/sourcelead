@@ -2,9 +2,9 @@
 # Role configuration dashboard reports
 INSERT INTO `sourcelead`.`SOURCELEAD_ACTIONS` (`ID`, `ACTION_NAME`, `ACTION_ROLE`, `TAB_ID`) VALUES ('261', 'Dashboard Reports', 'ROLE_DASHBOARD_REPORTS', '11');
 
-INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('518', '2', '261');
-INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('519', '3', '261');
-INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('520', '4', '261');
+INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('512', '2', '261');
+INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('513', '3', '261');
+INSERT INTO `sourcelead`.`MODULE_ACTIONS` (`ID`, `MODULE_ID`, `ACTION_ID`) VALUES ('514', '4', '261');
 
 
 SET SQL_SAFE_UPDATES = 0;
