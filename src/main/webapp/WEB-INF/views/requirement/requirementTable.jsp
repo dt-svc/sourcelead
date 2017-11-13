@@ -31,7 +31,6 @@ function requirementListCheck(searchValue,universalRequirementSearchList,searchT
 	} 
 }
 function requirementList(searchType,sourceleadUrl){  
-	
 	    var url = '';
 	    if(searchType == 'list' || searchType == 'universalSearch'){
 	    	var filterStatus = [];

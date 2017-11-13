@@ -247,11 +247,11 @@ overflow-x: auto;
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
           </div>
@@ -723,8 +723,10 @@ function clearSearch(){
 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
+		 $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
+		 
 	    $('#orgNameAdvanced').val(''); 
-	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
