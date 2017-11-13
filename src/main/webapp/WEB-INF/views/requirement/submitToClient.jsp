@@ -90,7 +90,7 @@ function submitToClient(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			            if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
-			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\" title="Download"></a></span></div></td>';
+			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\" title="Download"></a></span></div></td>';
 			           } 
 			           
 				       else{

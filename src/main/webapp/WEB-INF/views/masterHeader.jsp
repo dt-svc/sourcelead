@@ -532,11 +532,11 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
 	        </li>
             
-            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+            <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-            </c:if>
+            </sec:authorize>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
@@ -1590,7 +1590,7 @@ $("#searchType").selectpicker('refresh');
   <script>
   $("#invitePop").click(function(){
   $(".modalInvite").fadeIn();
-  $(".sideMask").fadeIn();
+  $(".sideMask").fadeOut();
   });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();

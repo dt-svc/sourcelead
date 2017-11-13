@@ -140,7 +140,7 @@ public class SourceleadResumeParser {
 	 */
 	private String nameFinderFromParsedTextFile(String parsedString) {
 
-		String[] totalLines = parsedString.split(System.getProperty("line.separator"));
+		String[] totalLines = parsedString.split("\n");
 		String firstTenLines = "";
 		String name = "";
 		// boolean nameMatchFound = false;
