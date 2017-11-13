@@ -1157,6 +1157,8 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
@@ -1208,6 +1210,8 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#hoursPerWeek").val('');
 		$("#paymentFrequency").val(''); 
@@ -1222,6 +1226,9 @@ function contractTypeLabels(){
 		
 		$("#clientOrgRelationId").val('');
 		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
@@ -1266,8 +1273,13 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   
@@ -1278,6 +1290,8 @@ function contractTypeLabels(){
 		$("#orgRelationId").val('');
 		$('#orgRelationId').trigger("chosen:updated");
 		
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
@@ -1359,12 +1373,27 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 	}
@@ -1442,9 +1471,22 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation-optional');
 		$('#candiRatePer').attr('data-validation',"required");
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
 		
 		$("#jurisdiction").val(''); 
-		$("#mainDescription").val(''); 
+		$("#mainDescription").val('');
+		$("#startDate").val('');
+		$("#endDate").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
