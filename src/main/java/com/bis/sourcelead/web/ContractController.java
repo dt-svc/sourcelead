@@ -147,6 +147,7 @@ public class ContractController {
 	 * @return model
 	 * @throws Exception 
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_CONTRACT','ROLE_ADD_NEW_CONTRACT','ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/contractListbyStatus")
 	public ModelAndView contractListbyStatus(HttpServletRequest request) throws Exception {
 		logger.debug("display contract template page");
