@@ -160,6 +160,11 @@ function editCandidate(candidateId){
             			 	if(json.zipcode != null && json.zipcode != '' && json.zipcode != 'undefined'){
             			 		zipCode = json.zipcode;            			 		
             			 	}
+            			 	var country = '';
+            			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
+            			 		state = json.country;            			 		
+            			 	}
+            			 	
             			 	
             			 	var state = '';
             			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
@@ -195,7 +200,6 @@ function editCandidate(candidateId){
 							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
 							}
 							// If Candidate Type equals Consultant email field should be Disable mode
-							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
@@ -203,7 +207,6 @@ function editCandidate(candidateId){
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 							}
-							 
 							if(json.candidateType == "Consultant"){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
@@ -243,7 +246,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'"  placeholder="Enter your Country" type="text" readonly></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';

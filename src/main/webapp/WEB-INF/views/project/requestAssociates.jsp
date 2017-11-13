@@ -72,10 +72,11 @@
 <div class="project_side_wrap_inn_tabs clearfix">
     <div class="project_tabs_inn_head">
         	<div class="project_tabs_inn_head mt25">
-        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv">
-                   <i class="glyphicon glyphicon-plus"></i>
+        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv"  class="btn btn-primary btn-sm anchorWhite">
+                   <i class="glyphicon glyphicon-search"></i>
                    Search Associates
                </a>
+               	<div class="clearfix mb10"></div>
 			</div>
 		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>

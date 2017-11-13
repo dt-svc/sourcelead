@@ -15,6 +15,7 @@
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
+	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 	 if(contractType != null && contractType != 'undefined' && contractType !=''){
@@ -42,8 +43,8 @@
 
 	 }
 	 
-	 if(relationId != null && relationId != ''){
-		 getVendorContacts();
+	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
+		 getVendorContacts(spocUserCode);
 	 }
 };
 </script>
@@ -1146,7 +1147,6 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	} */
 	if(contractType == "Client MSA"){
-		alert("hello")
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
@@ -1177,6 +1177,9 @@ function contractTypeLabels(){
 		
 		$("#orgRelationId").val(''); 
 		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
 
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
@@ -1211,6 +1214,8 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 	}
@@ -1280,6 +1285,8 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1320,14 +1327,28 @@ function contractTypeLabels(){
 		$('#paymentFrequency').attr('data-validation',"required");
 		
 		$("#jurisdiction").val(''); 
-		$("#mainDescription").val(''); 
+		$("#mainDescription").val('');    
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
+		
 	}
 	if(contractType == "Vendor SOW"){
 		$('#candiFlatReward').removeAttr('data-validation');
@@ -1367,9 +1388,18 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#hoursPerWeek").val('');
 		
 		$("#approver").val('');
-		$('#approver').trigger("chosen:updated");
+		$('#approver').trigger("chosen:updated");   
+		
+		$("#vendorContact").val('');
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val('');
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1466,6 +1496,8 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 	}
 	if(contractType == "Full time offer"){
 		$('#candiFlatReward').removeAttr('data-validation-optional');
@@ -1545,6 +1577,8 @@ function contractTypeLabels(){
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
@@ -2038,7 +2072,7 @@ function flush(){
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
