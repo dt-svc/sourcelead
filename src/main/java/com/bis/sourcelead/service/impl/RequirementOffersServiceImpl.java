@@ -28,12 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -131,6 +133,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	CandidateResumesDao candidateResumesDao;
 
 	
 	@Override
@@ -1399,6 +1404,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setParentCandidateId(vendorCandidate);
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+	    	
+	    	if(requirementSubmission != null && requirementSubmission.getCandidateResumes() != null) {
+    			CandidateResumes resume = candidateResumesDao.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+    			if(resume != null) {
+    				CandidateResumes candResume = new CandidateResumes();
+    				candResume.setOrgLocationId(orgLocations);
+    				candResume.setCandidateId(candidate);
+    				candResume.setFileContentType(resume.getFileContentType());
+    				candResume.setFileName(resume.getFileName());
+    				candResume.setFileURL(resume.getFileURL());
+    				candResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    				candResume.setStatus(Constants.RECORD_ACTIVE);
+    				candResume.setCreatedBy(orgLocations.getCreatedBy());
+    				if(orgLocations.getDateFormat() != null) {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));	
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}else {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy", new Date()));
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}
+    				
+    				candidateResumesDao.storeCandidateResumes(candResume);
+    			}
+    		}
 	    	
 	    	if(requirementSubmission.getSourceSubmission() != null){
 	    		requirementSubmission.setVendorCandidateId(vendorCandidate);
