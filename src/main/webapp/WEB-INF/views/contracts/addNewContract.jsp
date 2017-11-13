@@ -18,9 +18,7 @@
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
-	 	 getContractTemplates();
-	 }
+	 $("#contractType").val(contractType);
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
 	 	 $('#billingRateType').removeAttr('data-validation');
@@ -43,6 +41,10 @@
 
 	 }
 	 
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
 	 }
@@ -81,7 +83,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
@@ -1396,13 +1398,17 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   
 		
-		$("#vendorContact").val('');
 		$('#vendorContact').trigger("chosen:updated");
 		
-		$("#orgRelationId").val('');
 		$('#orgRelationId').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
