@@ -1012,16 +1012,25 @@ function contractTypeLabels(){
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
 			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+
 			$("#jurisdiction").val(''); 
 			$("#mainDescription").val(''); 
 			
 			$("#approver").val('');
 			$('#approver').trigger("chosen:updated");
 			
-			$("#addTaxTbl").find("tr:not(:first)").empty();
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
 			
-			$("#clientOrgRelationId").val(''); 
-			$('#clientOrgRelationId').trigger("chosen:updated");
+			$("#clientContact").val(''); 
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
 			hideCommonSOWFields();
 		}
@@ -1077,6 +1086,12 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
 			
 			$("#jurisdiction").val(''); 
 			$("#mainDescription").val(''); 

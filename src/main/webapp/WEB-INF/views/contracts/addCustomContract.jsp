@@ -1088,8 +1088,14 @@ function contractTypeLabels(){
 		$("#clientOrgRelationId").val(''); 
 		$('#clientOrgRelationId').trigger("chosen:updated");
 		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
 		$("#clientContact").val(''); 
 		$('#clientContact').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
 		

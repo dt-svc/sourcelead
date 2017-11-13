@@ -1189,6 +1189,9 @@ function contractTypeLabels(){
 		$("#vendorContact").val(''); 
 		$('#vendorContact').trigger("chosen:updated");
 		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
 		//commented by Pavan Jampana for change request #5851(taiga Id)
 		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
