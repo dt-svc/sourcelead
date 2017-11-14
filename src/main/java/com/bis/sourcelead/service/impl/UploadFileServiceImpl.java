@@ -510,9 +510,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userRole.setUserState(Status.NOT_LOGGEDIN);
 			}
 			userRole.setUser(userExisted);
+			userRole.setIsMailSent(userImport.getIsMailChecked());
 			userRoleService.addUserRole(userRole);
 			employee.setUser(userExisted);
 			employeesService.addEmployee(employee);
+			
 			if(isMailChecked !=null){
 				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
 			}

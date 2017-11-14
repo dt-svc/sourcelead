@@ -438,7 +438,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			params.put("endDateUTC", endDateUTC);
 			subQuery = "and invoice.invoiceDate >= :startDateUTC and invoice.invoiceDate <= :endDateUTC";
 		}
-		String query = "from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
+		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
 		
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
@@ -453,7 +453,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.setCacheable(false).list();
 	}
 
 
@@ -472,7 +472,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId = :invoiceId";
+		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId.id = :invoiceId";
 		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
 		return invoicePaymentList;
 		
