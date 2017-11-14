@@ -414,6 +414,7 @@ function getSpocsList(orgRelationId){
 <script>
 function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";
+	 result = result  +'          <form role="form"  id="document_form_del" name="document_form_del" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -421,6 +422,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
+	result = result  +'                </form>                                                                                                                                ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200); 
@@ -430,7 +432,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 <script>
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#document_form_del').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
