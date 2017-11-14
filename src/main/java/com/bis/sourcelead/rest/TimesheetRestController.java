@@ -1466,7 +1466,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    User consultantUser = null;
 			 String fileUrl = "";
 			StringBuilder projectMemberName = new StringBuilder();
-			if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+			if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
 				consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
 				fileUrl = consultantUser.getFileUrl();
 			}
