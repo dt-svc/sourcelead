@@ -27,6 +27,8 @@ function prepareWagesAndTaxList(url){
 	
 	 $("#wagesAndTaxListDiv").removeAttr("style");
  	 $("#wagesAndTaxListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";
@@ -161,10 +163,10 @@ function wagesTaxpagination(url){
 	    	  	"data": "checkNo",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		if(){
+	    	  		if(opt.checkNo != null && opt.checkNo !='' && opt.checkNo != 'undefined'){
 	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
 	    	  		}else{
-	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  			result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 	    	  		}
 	    	  		return result;
 	    	  	}
