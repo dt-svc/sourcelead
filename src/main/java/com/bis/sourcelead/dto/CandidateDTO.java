@@ -208,7 +208,10 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String roles;
 
-
+	private String vendorOrgRelationId;
+	
+	private String vendorSpocId;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -998,6 +1001,24 @@ public class CandidateDTO extends SearchDTO{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	
+
+	public String getVendorOrgRelationId()
+	{
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(String vendorOrgRelationId)
+	{
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public String getVendorSpocId()
+	{
+		return vendorSpocId;
+	}
+
+	public void setVendorSpocId(String vendorSpocId)
+	{
+		this.vendorSpocId = vendorSpocId;
+	}
 }
