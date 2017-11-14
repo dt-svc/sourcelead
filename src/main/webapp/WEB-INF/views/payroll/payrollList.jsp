@@ -315,6 +315,7 @@
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
 			$("#invoiceData").removeClass('wVer');
+			
 			loadEmployeePayrollCost();
 		} else if (payrollType == "WAGE_TAX") {
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -479,7 +480,7 @@
 		$("#checksListDiv").empty();
 		$("#employeeListDiv").empty();
 		$("#invoiceDataDiv").empty();
-		runPayrollCycles();
+		//runPayrollCycles();
 
 	}
 </script>
@@ -512,6 +513,8 @@
 
 		$("#employerCostDiv").removeAttr("style");
 		$("#employerCostDiv").empty();
+		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
 		result = result +" <div class='modal-header'>";
 		result = result + " <div class='remove_search'>";

@@ -205,7 +205,7 @@ public class TimesheetSubmissionsRestController {
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
 			// SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
-			 ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pmId);
+			 ProjectMembers projectMember = projectMembersService.getProjectMemberById(pmId);
 			// DateFormat format = Constants.DF_DMY;
 			 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
 			 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
@@ -219,7 +219,7 @@ public class TimesheetSubmissionsRestController {
 		 	    )
 		 	   {
 		 		//For Employee
-		 		sendEmailNotificationToEmployeeAndApproversOfEndClient(projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName(),projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName(),  projectMember.getProjectMemberCandidteId().getConsultantUser().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
+		 		sendEmailNotificationToEmployeeAndApproversOfEndClient(projectMember.getProjectMemberCandidteId().getFirstName(),projectMember.getProjectMemberCandidteId().getLastName(),  projectMember.getProjectMemberCandidteId().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
 		 		 
 		 		//For Approvers of EndClient
 		 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
@@ -263,8 +263,8 @@ public class TimesheetSubmissionsRestController {
 			 Map<String, String> globalVarsMap = new HashMap<>();
 			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("employeeFirstName", projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName());
-			 globalVarsMap.put("employeeLastName", projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName());
+			 globalVarsMap.put("employeeFirstName", projectMember.getProjectMemberCandidteId().getFirstName());
+			 globalVarsMap.put("employeeLastName", projectMember.getProjectMemberCandidteId().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("projectName", projectMember.getProjects().getProjectName());
 			 globalVarsMap.put("frequencyType",projectMember.getProjects().getInvoiceFrequency());
