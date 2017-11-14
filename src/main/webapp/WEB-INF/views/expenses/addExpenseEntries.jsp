@@ -131,6 +131,7 @@
 				});
 	}
 </script>
+
 <script>
 function hideAndShowDetailsRow(rowId,type){
 	$(".fa-plus-square-o").toggleClass("closExp");
@@ -335,7 +336,7 @@ function addAttachment(entityRowId,from){
 
 <div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
-			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
+			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="checkAmountValue(REPLACEROWID);hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
 			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
@@ -698,6 +699,7 @@ function addExpenseRow(from){
 </script>
  <script>
 function displayCalendar(entityId){
+if('${type}' !='view'){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
 	var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -714,7 +716,7 @@ function displayCalendar(entityId){
 	else {
 		alert("Please Select StartDate & EndDate")
 	}
-	
+  } 
 }
 </script>
 
