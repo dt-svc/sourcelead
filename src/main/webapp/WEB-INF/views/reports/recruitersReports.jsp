@@ -42,12 +42,12 @@ function getDayWiseReports(){
 			<div class="pull-left">
 				<h2>Recruiters Report </h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Recruiter Reports </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Recruiter Reports </div>
 </section>
 
-
-<div style="overflow: auto;" class=" vendor_wrap"> 
-   <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
+<div class="vendor_wrap">
+<div class="timesheet_head clearfix">
+<div class="pull-left reportBtns reportBtns_custom mt5">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
@@ -63,17 +63,18 @@ function getDayWiseReports(){
 		 </div>	
 		 <span class="dashboard-datepkr cusShow">
 		 <input type="text" class="form-control" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportsStartDate" class="ReError"></p>
+		 <p id="reportsStartDate" class="ReError" style="display: none"></p>
 		 </span>
 		<span class="dashboard-datepkr cusShow">
 		<input type="text"  class="form-control" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportsEndDate" class="ReError"></p>
+		<p id="reportsEndDate" class="ReError" style="display: none"></p>
 		</span>
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		<div class="clearfix"></div>
   </div>
-      
-      <div class="candidate_wrap_table recruiterReports_table">
+     </div> 
+      <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative">
+      <div class="clearfix mb10"></div>
         <div id="usersList" class="datatable_filter"></div>
       </div> 
  </div>
@@ -149,9 +150,11 @@ function getCustomReports(){
 	var endDate = $("#ReportEndDate").val();
 	
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportsStartDate").style.display="block";
 		$("#reportsStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportsEndDate").style.display="block";
 		$("#reportsEndDate").empty().append("End Date is Required") ; 
 	}else{
 		$.ajax({
@@ -159,9 +162,7 @@ function getCustomReports(){
 	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
 	         success :function(data) {
 	        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	                	
             	     $("#usersList").empty();
-                     $("#usersList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
                 	 var result = "";
                 	 result = result +"<table id='reportPagination' class='display' cellspacing='0' width='99.9%' >"; 
                      result = result +"<thead>"; 
@@ -263,7 +264,9 @@ function getCustomReports(){
                      result = result +" </tbody>";
                      result = result +"</table>"; 
                      $("#noRecruiters").val('');
+                     alert(result);
                      $("#usersList").append(result); 
+                    
                      reportpagination();
              	}
 	        },
@@ -294,7 +297,12 @@ function custDates(){
 </script>
 <script>
 function usersList(){ 
-	var timePeriod = $('#reportTypeId').val(); 
+	var timePeriod = $('#reportTypeId').val();
+	$("#reportsStartDate").empty();
+	$("#reportsEndDate").empty();
+	document.getElementById("reportsStartDate").style.display="none";
+	document.getElementById("reportsEndDate").style.display="none";
+	$("#usersList").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod,    
@@ -413,6 +421,7 @@ function usersList(){
 	                     result = result +"</table>"; 
 	                     $("#noRecruiters").val('');
 	                     $("#usersList").append(result); 
+	                     $("#usersList").removeAttr('style'); 
 	                     reportpagination();
 			 			 
 	                	

@@ -271,8 +271,13 @@ public class ProjectsController {
 					if(projects.getEndDate() != null){
 						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 					}
+					List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations);
+					model.addObject("projectAssignMemberList", projectAssignMemberList);
 					model.addObject("projectStatus", projects.getProjectStatus());
+					
 				}
+				
+				
 				
 				if(StringUtils.isNotEmpty(projectClientUUID)){
 					ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
@@ -380,7 +385,9 @@ public class ProjectsController {
 				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
 				 model.addObject("assignedUsers", assignedUsers);
 				 if(projectTask.getParentTaskId() != null) {
-					 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 if(projectTask.getParentTaskId().getProjectTasksUUID() !=  null) {
+						 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
+					 }
 					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
 				 }
 				if(projectTask.getProjectId() != null) {

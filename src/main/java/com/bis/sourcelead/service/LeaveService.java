@@ -45,13 +45,15 @@ public interface LeaveService {
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception;
 
-//	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id, String fromDate, String toDate);
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
 
 	boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId);
 
 	void storeHolidayOrRestrictDays(OrgLocations orgLocations,User user,Object object) throws Exception;
 
 	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String string, OrgLocations orgLocations);
+
+	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
 
 
 }

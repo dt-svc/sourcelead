@@ -197,6 +197,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
 		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
 		    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CLOSED);
 		    	}
 		    }
 	    }

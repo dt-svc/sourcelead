@@ -474,7 +474,7 @@ public class TimesheetApprovalRestController {
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
 		    		 String  v = entry.getValue();
-					tdSpanLength =tdSpanLength+1;
+					tdSpanLength =tdSpanLength+2;
 			        Date weekStartDate;
 			        Date weekEndDate;
 					try {
@@ -485,13 +485,16 @@ public class TimesheetApprovalRestController {
 				}
 			}
 			
-			
+		 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+		 String fileUrl = "";
+		 if(pm != null && pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null)
+			 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 	    
 		// timesheetApprovalDiv.append("<tr id='row").append(projectMemberId).append("'>");
 			
 		 timesheetApprovalDiv.append("  <td>");
 		 timesheetApprovalDiv.append("<div class='time_appr_user'>");
-		 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append("").append("' alt='Profile Image' class='img-circle img-responsive'>");
+		 timesheetApprovalDiv.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'>");
 		 timesheetApprovalDiv.append("    <span><b  title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
 		                                             .append("<b title='").append(projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append(projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
 		                                             .append("<b title='").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append((projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?(projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
@@ -796,7 +799,7 @@ public class TimesheetApprovalRestController {
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			            	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
 			            	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
-			            	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
+			            	 timesheetApprovalDiv.append(" <div class='app_error_mes errorOverightDiv' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
 			            	 timesheetApprovalDiv.append(" </i>");
 			            	 timesheetApprovalDiv.append(" <b class='Rname' title='"+sah.getActionPerformedBy()+"'>By : ").append(sah.getActionPerformedBy());
 			            	 timesheetApprovalDiv.append(" </b>");

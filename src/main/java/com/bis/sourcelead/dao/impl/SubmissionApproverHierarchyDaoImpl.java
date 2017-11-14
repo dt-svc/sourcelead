@@ -40,7 +40,6 @@ import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Repository
 public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHierarchyDao {
@@ -551,6 +550,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		User loginUser = userDao.getUserById(approverUserId);
 		ProjectMembers projectMembers =projectMembersDao.getProjectMemberById(projectMemberId);
+		String actionPerformedBy = null;
+		if(projectMembers != null && projectMembers.getProjectMemberCandidteId()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null  && StringUtils.isNotEmpty(projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName())){
+			actionPerformedBy = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName();
+		}else{
+			actionPerformedBy = loginUser.getFullName();
+		}
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
 		 */
@@ -584,7 +589,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
-            	 	sah.setActionPerformedBy(""+loginUser.getFullName());
+            	 	sah.setActionPerformedBy(""+actionPerformedBy);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -596,7 +601,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	 sah.setReopenReason(null);
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
-	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
+	            	 sah.setActionPerformedBy(""+actionPerformedBy);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -626,7 +631,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
 	            				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
 	            				approver.setSubmissionStatus(Submission_Status.REJECTED);
-	            				approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            				approver.setActionPerformedBy(" "+actionPerformedBy);
 	            				approver.setRejectedReason(rejectedReason);
 	            				approver.setReopenReason("");
 	            				approver.setReopenedUser(null);
@@ -640,7 +645,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             				    approver.getHeirarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
 	            					 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
@@ -649,7 +654,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             					     || (approver.getHeirarchyId().getProjectClientsId().getLevel() ==  sah.getHeirarchyId().getProjectClientsId().getLevel() && sah.getHeirarchyId().getLevel()==(maxLevel))){
 	            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
-	            	            	 approver.setActionPerformedBy(" "+loginUser.getFullName());
+	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
@@ -1656,7 +1661,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
-				.setLong("projectId", projectMembers.getId()).setLong("masterCandidateId", projectMembers.getMasterCandidateId().getId()).setParameter("approvalStatus", Submission_Status.APPROVED)
+				.setLong("projectId", projectMembers.getProjects().getId()).setLong("masterCandidateId", projectMembers.getMasterCandidateId().getId()).setParameter("approvalStatus", Submission_Status.APPROVED)
 				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
 		LinkedHashMap<String, Float> monthTotals = new LinkedHashMap<>();
 		float totalHours = 0f;
@@ -1941,7 +1946,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ " left join fetch hierarchy.projectClientsId pc left join fetch sah.submissionId submission  "
 				+ "   left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  "
 				+ "  where pj.id = :projectId and mc.id = :masterCandidateId and sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate"
-				+ "  and pc.orgLocationsId.id = :locationId and (pc.level IN(select max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id) OR pc.level IN(select min(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id))"
+				+ "  and pc.orgLocationsId.id = :locationId and (pc.level IN(select max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"') OR pc.level IN(select min(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"'))"
 				+ " ");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  sahList=submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setLong("locationId", locationId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setCacheable(true).list();

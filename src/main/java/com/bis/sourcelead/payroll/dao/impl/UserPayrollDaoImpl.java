@@ -56,7 +56,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 			params.put("startDate", sqlStartDate);
 			params.put("endDate", sqlEndDate);
-			subQuery = "and userPayroll.payrollStartDate = :startDate OR userPayroll.payrollEndDate = :endDate";
+			subQuery = "and (userPayroll.payrollStartDate = :startDate OR userPayroll.payrollEndDate = :endDate)";
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();

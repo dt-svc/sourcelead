@@ -21,61 +21,117 @@
  
 <section class="landTemp">
 	<div class="landTempCta">
-		<h2>Applicant Template</h2>
+		<div class="pull-left mr10">
+           <i class="fa fa-address-book-o fa-2x text-primary"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-primary">Applicant</h2>
 		<p>Manage Your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
-			<a href="<c:url value="/orgSubmissionTemplate" />">Add Template</a> | &nbsp; 
+			<a class="btn btn-info btn-sm mr10" href="<c:url value="/orgSubmissionTemplate" />">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
-			<a href="<c:url value="/orgSubmissionTemplate" />">View List</a>
+			<a class="btn btn-primary btn-sm" href="<c:url value="/orgSubmissionTemplate" />">View</a>
 			</sec:authorize>
 		</span>
+		</div>
 	</div>
 	<div class="landTempCta">
-		<h2>Contract Template</h2>
+	<div class="pull-left mr10">
+           <i class="fa fa-object-ungroup fa-2x text-info"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-info">Contract</h2>
 		<p>Manage Your Contract Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-			<a href="<c:url value="/addContractTemplate" />">Add Template</a> | &nbsp; 
+			<a class="btn btn-info btn-sm mr10" href="<c:url value="/addContractTemplate" />">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
-			<a href="<c:url value="/orgContractTemplate" />">View List</a>
+			<a class="btn btn-primary btn-sm" href="<c:url value="/orgContractTemplate" />">View</a>
 			</sec:authorize>
-			
 		</span>
 	</div>
+	</div>
 	<div class="landTempCta nomr">
-		<h2>Onboard Template</h2>
+	<div class="pull-left mr10">
+           <i class="fa fa-handshake-o fa-2x text-success"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-success">Onboard</h2>
 		<p>Manage Your Onboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			<a href="<c:url value='/addNewOnboardTemplate'/>">Add Template</a> | &nbsp; 
+			<a class="btn btn-info btn-sm mr10" href="<c:url value='/addNewOnboardTemplate'/>">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
-			<a href="<c:url value="/onboardingTemplatesList" />">View List</a>
+			<a class="btn btn-primary btn-sm" href="<c:url value="/onboardingTemplatesList" />">View</a>
 			</sec:authorize>
 		</span>
+		</div>
 	</div>
 	<div class="landTempCta">
-		<h2>Offboard Template</h2>
+	<div class="pull-left mr10">
+           <i class="fa fa-sign-out fa-2x text-danger"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-danger">Offboard</h2>
 		<p>Manage Your Offboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
-			<a href="<c:url value='/addNewOffboardTemplate'/>">Add Template</a> | &nbsp; 
+			<a class="btn btn-info btn-sm mr10" href="<c:url value='/addNewOffboardTemplate'/>">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-			<a href="<c:url value="/offboardingTemplatesList" />">View List</a>
+			<a class="btn btn-primary btn-sm" href="<c:url value="/offboardingTemplatesList" />">View</a>
 			</sec:authorize>
 		</span>
+		</div>
 	</div>
 	<div class="landTempCta nomr">
-		<h2>Vendor Onboard Template</h2>
+	<div class="pull-left mr10">
+           <i class="fa fa-suitcase fa-2x text-warning"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-warning">Vendor Onboard</h2>
 		<p>Manage Your Vendor Onboard Templates</p>
 		<span>
-			<a href="<c:url value='/addNewVendorOnboardTemplate'/>">Add Template</a> | &nbsp; 
-			<a href="<c:url value="/vendorOnboardTemplateList" />">View List</a>
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/addNewVendorOnboardTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="/vendorOnboardTemplateList" />">View</a>
 		</span>
+		</div>
+	</div>
+	
+	
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-briefcase fa-2x text-success"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-success">Job</h2>
+		<p>Manage Your Job Templates</p>
+		<span>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/addTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="/template" />">View</a>
+			</sec:authorize>
+		</span>
+		</div>
+	</div>
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-address-card-o fa-2x text-info"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-info">Interview</h2>
+		<p>Manage Your Interview Templates</p>
+		<span>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='/interViewFeedBackTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="/interViewFeedBackTemplate" />">View</a>
+			</sec:authorize>
+		</span>
+		</div>
 	</div>
 	
 	<div class="clearfix"></div>

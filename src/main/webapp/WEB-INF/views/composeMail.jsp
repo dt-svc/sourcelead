@@ -496,99 +496,150 @@ function getUserList(teamType){
 
 
 
-
-
-
+<script>
+function getContactsList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+	 	
+  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAllContacts(this);"></th>';
+		result = result +'<th>Contact Name</th>';
+		result = result +'<th>Email</th>';
+		result = result +'<th>Source</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	result = result +'<div class="clearfix pull-right mr mb">';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getContactEmails();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +' </div>'; 
+	    $("#userList").empty();
+	    $("#userList").append(result);
+	    contactUsers = [];
+	    contactsDataTableList();
+}
+</script>
 
 
 <script>
-function getContactsList(){  
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#userList").empty(); 
-	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.ajax({
-           type : "GET",
-           url: sourceleadUrl+"/getUserContactsListForMalling?${_csrf.parameterName}=${_csrf.token}",    
-            success :function(json) {
-            	
-                 if(json.length > 0){
-               		
-			    	     $("#userList").removeAttr("style");
-	                	    var result = '';
-	                	    result = result +'<div class="clearfix popupFilter">';
-	                	  
-	                		result = result +'     <div class="mt clearfix popupFilter"><br/><br/>'; 
-	                		result = result +'       <table id="example"  class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
-	                		result = result +'           <thead>';
-	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAllUsers" onclick="toggleAll(this);"></th>';
-	                		result = result +'             <th>Contact Name</th>';
-	                		result = result +'             <th>Email</th>';
-	                		result = result +'             <th>Source</th>';
-	                		result = result +'           </tr>';
-	                		result = result +'           </thead>';
-		                    result = result +"<tbody>"; 
-		                    for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i]; 
-		                    	 result = result +'<tr>';
-		                    	 result = result +'             <td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.email+'"  type="checkbox" name="emails[]" class="myCheckbox" ></td>';
-		                    	 result = result +'             <td>'+opt.fullName+' </td>';
-		                    	 result = result +'             <td>'+opt.email+'</td>';
-		                    	 result = result +'             <td>'+opt.source+'</td>';
-		                    	 result = result +'           </tr>';
-		                    	
-	                     }
-		                    
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     result = result +'     </div>'; 
-	                 	 result = result +'     <div class="clearfix">';
-	                 	 result = result +'       </div>'; 
-	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="clearfix pull-right mr mb">';
-	                 	 result = result +'     <button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onClick="getEmails();">Add</button>';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
-	                 	 result = result +'   </div>'; 
-	                     $("#userList").append(result); 
-	                     pagination(); 
-                 }else{
-                	 $("#userList").removeAttr("style");
-  	    	         var result ="";
-		    	    
-  	    	       result = result +'<div class="modal-bodyCustom mt clearfix popupFilter">';
-	           		result = result +'     <div class="row">';
-	           		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
-	           		result = result +'         <div class="input-group">';
-	           		result = result +'           <input type="search" class="form-control" value="">';
-	           		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> </div>';
-	           		result = result +'       </div>';
-	           		result = result +'     </div>';
-	           		
-	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter"><br/><br/>'; 
-	        		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-	        		result = result +'           <thead>';
-	        		result = result +'           <tr>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"><input type="checkbox"></th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
-	        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Source</th>';
-	        		result = result +'           </tr>';
-	        		result = result +'           </thead>';
-	        		result = result +'           </table>';
-	        		result = result +'     </div>';
-	        		result = result +'     </div>';
-				    $("#userList").append(result); 
-				    pagination();  
-                }
-          },
-            
-       }); 
-  } 
+function contactsDataTableList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#contactsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 contactsPagination(url);
+}
 </script>
 
 
 
+<script>
+function contactsPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#example').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 2
+        }),
+        "columns": [
+        	{ "data": "ischeck" },
+            { "data": "contactName" },
+            { "data": "email"},
+            { "data": "source"}
+           
+        ],
+        "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "ischeck",
+    	  	"render": function(data, type, opt, meta) {
+    	  		 var result = "";
+    	  		 var flag = false;
+    	  		 
+    	  		 for(var e in contactUsers) {
+    	  			 if(opt.email+"" === contactUsers[e]) {
+    	  				 flag = true;
+    	  				 break;
+    	  			 }
+    	  		 }
+    	  		 
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
+	              return result;
+    	  	}
+         },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "contactName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "email",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+opt.email+'">'+opt.email+'</div></td>';
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "source",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
+    $("input[type=search]").hide();
+    $("#contactsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   contactsDataTableList();
+    	   }
+    	});
+}
 
+</script>
+
+<script>
+var contactUsers = [];
+function checkContactUsers(ele) {
+	if($(ele).is(":checked")) {
+		contactUsers[contactUsers.length] = $(ele).val();
+	}
+}
+</script>
 
 
 <script>
@@ -643,19 +694,42 @@ function filterTeamMembers(){
 
  <script>
 function toggleAll(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
-        
     }
+    
 $('input:checkbox:not(#checkAllUsers)').click(function() {
     if(!this.checked) {
         $('#checkAllUsers').removeAttr('checked');
     }
-});
+}); 
+    
 }
 </script>
+
+<script>
+function toggleAllContacts(source) {
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+            checkContactUsers(checkboxes[i])
+    }
+    
+$('input:checkbox:not(#checkAllUsers)').click(function() {
+    if(!this.checked) {
+        $('#checkAllUsers').removeAttr('checked');
+    }
+}); 
+    
+}
+</script>
+
+
+
+
   
 <script>
 function pagination(){
@@ -683,17 +757,38 @@ function pagination(){
 <script>
 function getEmails(){
 	
-	var oTable = $('#example').dataTable();
+ 	var oTable = $('#example').dataTable();
 	var rowcollection =  oTable.$("input[name='emails[]']:checked", {"page": "all"});
-	
-	
+	 
 	var internalOutput = "";
-	rowcollection.each(function(index,elem){
+	 rowcollection.each(function(index,elem){
 		 var checkbox_value = $(elem).val();
 		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
-	});
+	}); 
+
 	
-	 
+	    $("#emailsList").append(internalOutput);
+		$("#emailsList").trigger("chosen:updated");
+		
+		$("input[name='emails[]']:checked").removeAttr('checked');
+		$('#checkAllUsers').removeAttr('checked');
+		
+		
+}
+</script>
+
+
+
+<script>
+function getContactEmails(){
+	var internalOutput = "";
+	
+	for(var e in contactUsers) {
+		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
+			continue;
+		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
+	}
+	
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
 		
@@ -725,11 +820,17 @@ function getEmails(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
+		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    { 
-		    	 
+		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
+		    		this.placeholder = this.value;
+		    		this.value = "";
+		    	} else {
+		    		this.placeholder = "";
+		    	}
+		    	
 		    	 var enterEmailArray = this.value.split(/[ ,]+/);
 		    	 if(enterEmailArray.length > 1){
 	        		 for (var i=0; i < enterEmailArray.length; i++) {

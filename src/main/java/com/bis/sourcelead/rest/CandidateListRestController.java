@@ -588,34 +588,34 @@ public class CandidateListRestController {
 
 	private List<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("address", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designation", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
 		// matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
@@ -706,6 +706,7 @@ public class CandidateListRestController {
 			}
 		}
 		candidateDTO.setAllAndCandidateVisa(visa);
+		candidateDTO.setVisaType(can.getVisaType());
 
 		if (null != can.getExpectedRateCurrencey()) {
 			candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
@@ -740,7 +741,7 @@ public class CandidateListRestController {
 		}
 
 		if (null != can.getOrgRelationId()) {
-			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
@@ -751,7 +752,7 @@ public class CandidateListRestController {
 		}
 		if (null != can.getSpocId()) {
 			StringBuilder contactName = new StringBuilder();
-			can.setVendorSpocId(can.getSpocId().getId().toString());
+			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
 				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
@@ -762,21 +763,35 @@ public class CandidateListRestController {
 		}
 		candidateDTO.setProfilePercentage(percentage);
 		candidateDTO.setCountry(can.getCountry());
+		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setCity(can.getCity());
 		candidateDTO.setState(can.getState());
 		candidateDTO.setFirstName(can.getFirstName());
 		candidateDTO.setLastName(can.getLastName());
+		candidateDTO.setLocation(can.getLocation());
 		candidateDTO.setSummary(can.getSummary());
 		candidateDTO.setFileUrl(can.getFileUrl());
 		candidateDTO.setMobilePhone(can.getMobilePhone());
+		candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
 		candidateDTO.setSkillsName(can.getSkillsName());
 		candidateDTO.setRateType(can.getRateType());
 		candidateDTO.setDesignationType(can.getDesignationType());
 		candidateDTO.setExpectedRate(can.getExpectedRate());
 		candidateDTO.setCurrentRate(can.getCurrentRate());
 		candidateDTO.setEmail(can.getEmail());
+		candidateDTO.setNoticePeriod(can.getNoticePeriod());
+		candidateDTO.setDesignation(can.getDesignation());
+		candidateDTO.setPrimarySkill(can.getPrimarySkill());
+		candidateDTO.setAddress(can.getAddress());
+		candidateDTO.setExperienceMonths(can.getExperienceMonths());
+		candidateDTO.setExperienceYears(can.getExperienceYears());
+		candidateDTO.setZipcode(can.getZipCode());
+		candidateDTO.setCandidateType(can.getCandidateType());
+		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
 		return candidateDTO;
 	}
+	 
 
 	/**
 	 * This Method is for deleting CandidateImage
@@ -1520,23 +1535,27 @@ public class CandidateListRestController {
 							startDateUTC = TZ_DF_TS.parse(startDateString);
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-								String customStartTimeStr = null;
-								String customEndTimeStr = null;
-								if(null !=startTime){
-								 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-								}
+								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+								//DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
 								
-								if(null != endTime){
-								 customEndTimeStr = TZ_DF_CED.format(endTime);  
-								}
-								String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-								String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-								startDateUTC = TZ_DF_TS.parse(startDateString);
-								endDateUTC = TZ_DF_TS.parse(endDateString);
+								
+								
+								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
+								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
+								startDateUTC = startTime;
+								endDateUTC = endTime;
+							/*	String customStartTimeStr = null;
+								String customEndTimeStr = null;
+							if(null !=startTime){
+							 customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							}
+								
+							if(null != endTime){
+							 customEndTimeStr = TZ_DF_CED.format(endTime);  
+							}
+								String startDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), startTime);
+								String endDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), endTime);
+								*/
 							 }
 							
 						}
@@ -1617,7 +1636,8 @@ public class CandidateListRestController {
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
 						candidate.setPostedDateStr(currentDateInTimezone);
-						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						//candidate.setCandidateUpdateDateToString(currentTimeStr);
+						candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getCreatedDate()));
 						freshList.add(candidate);
 					}
 				    String reportsList = commonUtil.toJSON(freshList);

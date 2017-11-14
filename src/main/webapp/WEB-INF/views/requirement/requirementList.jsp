@@ -204,7 +204,7 @@ function statusvalidating(id){
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
 												<option
-													value="${report.responderLocationId.org.orgName}"
+													value="${report.locationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>
@@ -393,25 +393,6 @@ function statusvalidating(id){
 						<li><a href="<c:url value='/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
-
-					<li><sec:authorize
-							access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-							<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Template <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-										<a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
-									</sec:authorize> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-										<a href="<c:url value='/interViewFeedBackTemplate'/>"><i
-											class="fa fa-plus"></i>Interview</a>
-									</sec:authorize>
-								</span>
-							</div>
-						</sec:authorize></li>
 
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypop"><i

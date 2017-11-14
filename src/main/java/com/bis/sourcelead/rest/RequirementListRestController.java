@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -82,7 +81,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -106,7 +104,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.ibm.icu.text.DecimalFormat;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -1573,7 +1570,7 @@ public class RequirementListRestController {
 			requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 			requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 			requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-			if (duplicatecount.size() != 0 && duplicatecount != null) {
+			if (duplicatecount != null && !duplicatecount.isEmpty()) {
 				requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
 			}
 		}
@@ -1589,7 +1586,7 @@ public class RequirementListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/searchRequirement")
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
@@ -1929,8 +1926,10 @@ public class RequirementListRestController {
       	}
       /*	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
  		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());*/
- 		
+      	requirement.setIsLoginUserAsManager(requirementIndex.getManagerUserId());
+      	requirement.setLevel1ApproverUserId(requirementIndex.getReqLevel1ApproverUserId());
  		Boolean isLoginUserAsApprover = false;
+ 		requirement.setLevel2ApproverUserId(requirementIndex.getReqLevel2ApproverUserId());
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementIndex.getRequirementId(), user.getId());
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;

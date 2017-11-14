@@ -565,17 +565,17 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
-					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') )";
+					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') ) ";
 		}
 		
 		projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished')";
 		
 		if(projectStatusList.size() > 0 && clientIdsList.size() == 0){
-			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") and ps.projectStatus IN (:projectStatusList) "+projectModeQuery+" ";
+			query = "from Projects ps where ps.id IN (select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") and ps.projectStatus IN (:projectStatusList) "+projectModeQuery+"  ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString());
+				 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
 			}
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
@@ -588,11 +588,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			}
 		}
 		else if(clientIdsList.size() > 0 && projectStatusList.size() == 0){
-			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" ";
+			query = "from  Projects ps where ps.id IN (select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+"  ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString());
+				 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
 			}
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
@@ -605,11 +605,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			}
 		}
 		else if(projectStatusList.size() > 0 && clientIdsList.size() > 0){
-			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" and ps.projectStatus IN (:projectStatusList) ";
+			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" and ps.projectStatus IN (:projectStatusList)  ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString());
+				 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
 			}
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
@@ -623,9 +623,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}else{
 			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") "+projectModeQuery+" ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY ps.createdDate DESC");
 			}else{
-				 queryObj = session.createQuery(query + query1.toString());
+				 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
 			}
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
@@ -1055,5 +1055,24 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		 }
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId, String userCode) throws Exception {
+		logger.debug("getProjectCountByOrgLocationId start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(projects.id) from Projects projects where projects.orgLocationsId.id = :orgLocationId and projects.createdBy =:userCode";
+			
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setCacheable(true).list();
+			Integer count = 0;
+			if(projectsCount != null && !projectsCount.isEmpty()){
+					count = projectsCount.get(0).intValue();
+			}
+			return count;
+	}
+	
+	
+	 
+	
 }
 

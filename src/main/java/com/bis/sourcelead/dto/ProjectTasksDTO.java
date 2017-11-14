@@ -2,12 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-
-import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings("serial")
-public class ProjectTasksDTO implements Serializable {
+public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private Long id;
 	
 	private String taskName;
@@ -46,11 +43,21 @@ public class ProjectTasksDTO implements Serializable {
 	
 	private String staticPath;
 	
-//    private List<Map<String, String>> fileInfo;
-	
 	private List<FileInfo> fileInfo;
 	
 	private String documentName;
+	
+	private String projectId;
+	
+	private String projectTaskStatus;
+	
+	private String projectTaskType;
+	
+	private String projectTaskPriority;
+	
+	private String assignedTo;
+	
+	private String assignedMembers;
 	
 	public Long getId() {
 		return id;
@@ -167,19 +174,6 @@ public class ProjectTasksDTO implements Serializable {
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
-//	public List<FileInfo> getUploadedFileInfo() {
-//		return uploadedFileInfo;
-//	}
-//	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-//		this.uploadedFileInfo = uploadedFileInfo;
-//	}
-//	public List<Map<String, String>> getFileInfo() {
-//		return fileInfo;
-//	}
-//	public void setFileInfo(List<Map<String, String>> fileInfo) {
-//		this.fileInfo = fileInfo;
-//	}
-	
 	
 	public String getDocumentName() {
 		return documentName;
@@ -192,5 +186,41 @@ public class ProjectTasksDTO implements Serializable {
 	}
 	public void setDocumentName(String documentName) {
 		this.documentName = documentName;
+	}
+	public String getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+	public String getProjectTaskStatus() {
+		return projectTaskStatus;
+	}
+	public String getProjectTaskType() {
+		return projectTaskType;
+	}
+	public void setProjectTaskStatus(String projectTaskStatus) {
+		this.projectTaskStatus = projectTaskStatus;
+	}
+	public void setProjectTaskType(String projectTaskType) {
+		this.projectTaskType = projectTaskType;
+	}
+	public String getProjectTaskPriority() {
+		return projectTaskPriority;
+	}
+	public String getAssignedTo() {
+		return assignedTo;
+	}
+	public void setProjectTaskPriority(String projectTaskPriority) {
+		this.projectTaskPriority = projectTaskPriority;
+	}
+	public void setAssignedTo(String assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+	public String getAssignedMembers() {
+		return assignedMembers;
+	}
+	public void setAssignedMembers(String assignedMembers) {
+		this.assignedMembers = assignedMembers;
 	}
 }

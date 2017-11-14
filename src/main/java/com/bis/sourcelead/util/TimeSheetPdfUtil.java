@@ -408,7 +408,14 @@ public class TimeSheetPdfUtil {
 					 table1.addCell("");
 					 table1.addCell(table4);
 					 table1.addCell(getTotalHours(totalHours));
-			        document.addTitle("Pdf table created for TimeSheet Entries..!!");
+					 if(projectMember.getProjectMemberCandidteId()!= null) {
+						 if(projectMember.getProjectMemberCandidteId().getLastName()!= null) {
+							 StringBuilder fullname = new StringBuilder();
+							 document.addTitle(fullname.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
+						 }else {
+							 document.addTitle(projectMember.getProjectMemberCandidteId().getFirstName());
+						 }
+					 }
 			        table1.setSpacingBefore(15f);
 			        document.add(table1);
 			        logger.info("Pdf table created !!");
@@ -459,7 +466,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(Candidate user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
+	private Document prepareHeadres(Candidate candidate, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -473,7 +480,7 @@ public class TimeSheetPdfUtil {
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
 		        sbPipeHearder.append(orgLocations.getOrgLocationName()).append(" ").append("TimeSheet");
-	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet.").toString(),boldFont);
+	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            para.add("\n\n");
 	            document.add(para);
@@ -484,16 +491,18 @@ public class TimeSheetPdfUtil {
 	            table.setHorizontalAlignment(Element.ALIGN_LEFT);
 	            table.setWidths(new int[]{10,10});
 	            table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-	            if(user.getFirstName()!=null && user.getLastName()!=null){
-	            	nameSb.append(user.getFirstName()).append(" ").append(user.getLastName());
+	            if(candidate.getFirstName()!=null && candidate.getLastName()!=null){
+	            	nameSb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 	            }else{
-	            	nameSb.append(user.getFirstName());
+	            	nameSb.append(candidate.getFirstName());
 	            }
 	            table.addCell("Name : "+nameSb.toString());
 	            table.addCell("Status : "+submissionStatusStr);
-	            table.addCell("Email Id : "+user.getEmail());
+	            table.addCell("Email Id : "+candidate.getEmail());
 	            table.addCell("Billabe Hours : "+billableHours);
-	            table.addCell("Phone Number : "+user.getMobilePhone());
+	            if(candidate.getMobilePhone() != null) {
+	              table.addCell("Phone Number : "+candidate.getMobilePhone());
+	            }
 	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
 	            table.addCell("Project : "+projectName);
 	            table.addCell("Total Hours : "+totalHours);

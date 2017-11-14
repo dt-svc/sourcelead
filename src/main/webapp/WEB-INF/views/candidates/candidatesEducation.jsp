@@ -295,8 +295,8 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class=""  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative">';
+	result = result  +'	                     <select class="newSelect"  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -334,16 +334,7 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEduSave = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduSave = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduSave = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduSave = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduSave = 'yy-dd-mm'; 
-	  }
+	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 	  
 	$('#startDate').datepicker({
 	      dateFormat: finalDateFormatEduSave,
@@ -520,8 +511,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
+	result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -540,7 +531,7 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
@@ -580,52 +571,16 @@ function EditEducation(candidateId,candidateEducationId) {
 	var eduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	 var eduStartDateSplit = eduStartDate.split("-");
-	 var eduEndDateSplit = eduEndDate.split("-");
+	
 	 
 	 var finalDateFormatEduEditOneSave = '';
-	  var eduStartDateEdit = '';
-	  var eduEndDateEdit = '';
+	 
+	 // written common method in slead-common.js for date formats start
+	  var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
+	  var eduEndDateEdit = getJSDate(eduEndDate,locationDate);
 	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[2])+parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[0])+parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[0])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[2])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[2])-parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[0])-parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[0])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[2])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }
-	
-	  var finalDateFormatEduUpdate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduUpdate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-	  }
-	
+	  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+	  //end
 	
 	$('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormatEduUpdate,

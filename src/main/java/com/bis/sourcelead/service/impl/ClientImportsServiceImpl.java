@@ -1721,8 +1721,10 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		List<String> ownersList = new ArrayList<>();
 		if (client.getOwnerEmail() != null) {
 			UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(client.getOwnerEmail(), orgLocation.getId());
-			ownersList.add(ownerUser.getId().toString());
-			clientDTO.setOwner(ownersList);
+			if(ownerUser !=null) {
+				ownersList.add(ownerUser.getUser().getId().toString());
+				clientDTO.setOwner(ownersList);				
+			}
 		}else{
 			ownersList.add(user.getId().toString());
 			clientDTO.setOwner(ownersList);

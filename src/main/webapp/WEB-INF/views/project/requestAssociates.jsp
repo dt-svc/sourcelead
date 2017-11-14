@@ -72,10 +72,11 @@
 <div class="project_side_wrap_inn_tabs clearfix">
     <div class="project_tabs_inn_head">
         	<div class="project_tabs_inn_head mt25">
-        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv">
-                   <i class="glyphicon glyphicon-plus"></i>
+        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv"  class="btn btn-primary btn-sm anchorWhite">
+                   <i class="glyphicon glyphicon-search"></i>
                    Search Associates
                </a>
+               	<div class="clearfix mb10"></div>
 			</div>
 		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>
@@ -751,11 +752,11 @@ function getAssociates(){
 	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu2">';
 	result = result +'<ul class="resourcetype-filter">';
 	result = result +'<li>';
-	result = result +'<input value="hotlist" id="hotlist" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input value="hotlist" id="hotlist" name="resourceType" type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="hotlist">Hotlist</label>';
 	result = result +'</li>';
 	result = result +'<li>';
-	result = result +'<input  value="assigned" id="Assigned" name="resourceType" checked type="checkbox" onclick="getAssociatesFilter()" >';
+	result = result +'<input  value="assigned" id="Assigned" name="resourceType" type="checkbox" onclick="getAssociatesFilter()" >';
 	result = result +'<label for="Assigned">Assigned</label>';
 	result = result +'</li>';
 	result = result +'</ul>';
@@ -807,9 +808,51 @@ function getOrgLocationRoles(){
 }
 </script>
 
+
 <script>
 function getAssociatesFilter(){
-	
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='candidateDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+	 	
+  		result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
+    	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
+  		result = result +'<thead>';
+    	result = result +'<tr>';
+    	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+    	result = result +'<th>Name</th>';
+    	result = result +'<th>Primary Skill</th>';
+    	result = result +'<th>Rate</th>';
+    	result = result +'<th>Emp. Type</th>';
+    	result = result +'<th>Manager</th>';
+        result = result +'<th>Resume</th>'; 
+    	result = result +'<th>Projects</th>';
+    	result = result +'</tr>';
+    	result = result +'</thead>';
+    	result = result +"</table>";
+	    
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	result = result +'   <div class="modal-footer">';
+     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addRequestedResources();">Add</button>';
+     	result = result +'   </div>'; 
+     	$("#associatesListFilter").empty();
+	    $("#associatesListFilter").append(result);
+	    $("#associatesListLoader").removeAttr("style"); 
+	    checkedAssociatedUsers = {};
+	    candidatesDataTableList();
+}
+</script>
+
+
+<script>
+function candidatesDataTableList(){
 	var projectUUID = '${projectUUID}';
 	var roles = [];
 	$('input:checkbox[name=roles]:checked').each(function() 
@@ -844,67 +887,142 @@ function getAssociatesFilter(){
 			  }
 		  }
 	  }
+	  var searchValue = $("#candidateDataTableSearch").val();
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 candidatesPagination(sourceleadUrl,url);
 	  
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#associatesListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID, 
-	        success: function(data) {
-	        	
-	        	var json = JSON.parse(data);
-	        	
-	        	var result = '';
-	        	result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
-	        	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
-	        	result = result +'<thead>';
-	        	result = result +'<tr>';
-	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates();"></th>';
-	        	/* result = result +'<th>ID</th>'; */
-	        	result = result +'<th>Name</th>';
-	        	result = result +'<th>Primary Skill</th>';
-	        	result = result +'<th>Rate</th>';
-	        	result = result +'<th>Emp. Type</th>';
-	        	result = result +'<th>Manager</th>';
-	            result = result +'<th>Resume</th>'; 
-	        	result = result +'<th>Projects</th>';
-	        	result = result +'</tr>';
-	        	result = result +'</thead>';
-	        	result = result +'<tbody>';
-	        	
-	        	for (var i=0; i<json.length; i++){
-	        		var report = json[i];
-	        		
-	        		var candidate = '';
-	        		var primarySkill = '';
-	        		var currentRate = '';
-	        		var currentRateType = '';
-	        		var currentRateCurrency = '';
-	        		var designationType = '';
-	        		var candidateResume = '';
-	        		var payrate = ''
-	        		
-	        		
-	        		if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
-	        			candidate = report.firstName+" "+report.lastName;
-	        		}else{
-	        			candidate = report.firstName;
-	        		}
-	        		
-	        		if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefined'){
+}
+</script>
+
+<script>
+function candidatesPagination(sourceleadUrl,url){
+	var colIndex = 0;
+    $('#associatesListPagination').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 4
+        }),
+        "columns": [
+        	{ "data": "ischeck" },
+            { "data": "name" },
+            { "data": "primarySkill"},
+            { "data": "rate"},
+            { "data": "employmentType"},
+            { "data": "manager"},
+            { "data": "resume"},
+            { "data": "assignedProjectsCount"}
+           
+        ],
+        "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "ischeck",
+    	  	"render": function(data, type, report, meta) {
+    	  		 var result = "";
+    	  		 var candidate = '';
+        		 var currentRate = '';
+        		 var currentRateType = '';
+        		 var currentRateCurrency = '';
+        		 var payrate = ''
+        		 var flag = false;
+        			 if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
+ 	        			candidate = report.firstName+" "+report.lastName;
+ 	        		}else{
+ 	        			candidate = report.firstName;
+ 	        		}
+ 	        		
+ 	        		if(report.currentRate != null && report.currentRate != '' && report.currentRate != 'undefined'){
+ 	        			currentRate = report.currentRate;
+ 	        			currentRateType = report.currentRateType;
+ 	        			currentRateCurrency = report.currentRateCurrency
+ 	        			payrate = report.currentRate;
+ 	        		}else{
+ 	        			currentRate = "-----";
+ 	        		}
+ 	        		
+ 	        		 for(var e in checkedAssociatedUsers) {
+ 	     	    	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+ 	     				   continue;
+ 	     	    	   if(e === report.id+"") {
+ 	     	    		   if(!$("#checkAllAssociates").is(":checked"))
+ 	     	    		 	checkOrUncheckParent($('#associatesListPagination').DataTable().data());
+ 	     	    	   	flag = true;
+ 	     	    	   	break;
+ 	     	    	   }
+ 	        		 }
+ 	        		 if(!flag)
+ 	        			$("#checkAllAssociates").removeAttr('checked');
+ 	    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" value="'+report.id+','+candidate+','+payrate+','+currentRateCurrency+','+currentRateType+'"  data-id="'+report.id+'"  onchange="checkAssociateUsers(this)"  type="checkbox" name="associates[]"  class="myAssociatesCheckbox" ></td>';
+ 		              return result;
+ 		              
+    	  		 
+    	  	}
+         },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "name",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		
+	    	  		var candidate = "";
+	    	  		 if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
+	 	        			candidate = report.firstName+" "+report.lastName;
+	 	        		}else{
+	 	        			candidate = report.firstName;
+	 	        		}
+	    	  		
+	    	  		var result = "";
+	    	  		result = result +'<td>';
+		        	result = result +'<div title="'+candidate+'">';
+		        	
+		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+candidate+'</p>';
+		        	result = result +'<div class="show_Empdetails">';
+		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+		        	result = result +'<div class="emailvalues">';
+		        	result = result +'<p title="'+report.userRole+'"><i class="fa fa-user"></i>'+report.userRole+'</p>';
+		        	result = result +'<p title="'+report.email+'"><i class="fa fa-envelope"></i>'+report.email+'</p>';
+		        	if(report.mobilePhone != null && report.mobilePhone != '' && report.mobilePhone != 'undefined'){
+		        		result = result +'<p title="'+report.mobilePhone+'"><i class="fa fa-phone"></i>'+report.mobilePhone+'</p>';
+		        	}
+		        	result = result +'</div>';
+		        	result = result +'</div>';
+
+		        	result = result +'</div>';
+		        	result = result +'</td>';
+		            return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "primarySkill",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+            	  var primarySkill = "";
+            	  if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefined'){
 	        			primarySkill = report.primarySkill;
 	        		}else{
 	        			primarySkill = "-----"
 	        		}
-	        		
-	        		if(report.designationType != null && report.designationType != '' && report.designationType != 'undefined'){
-	        			designationType = report.designationType;
-	        		}else{
-	        			designationType = "-----"
-	        		}
-	        		
-	        		if(report.currentRate != null && report.currentRate != '' && report.currentRate != 'undefined'){
+            	  
+            	    result = result +'<td>';
+		        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
+		        	result = result +'</td>';
+	                return result;
+              		
+              }
+          },{
+	    	  "targets": colIndex++,
+              "data": "rate",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+            	  var currentRate = '';
+         		 var currentRateType = '';
+         		 var currentRateCurrency = '';
+         		 var payrate = ''
+            	  if(report.currentRate != null && report.currentRate != '' && report.currentRate != 'undefined'){
 	        			currentRate = report.currentRate;
 	        			currentRateType = report.currentRateType;
 	        			currentRateCurrency = report.currentRateCurrency
@@ -912,90 +1030,146 @@ function getAssociatesFilter(){
 	        		}else{
 	        			currentRate = "-----";
 	        		}
-	        		
-	        		 
-	        		if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-	        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
-	        		}else{
-	        			candidateResume = "-----";
-	        		} 
-	        		
-	        		    result = result +'<tr>';
-			        	result = result +'<td><input id="'+report.id+'" value="'+report.id+','+candidate+','+payrate+','+currentRateCurrency+','+currentRateType+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
-			        	/*result = result +'<td>';
-			        	 result = result +'<div><span title="0025896">0025896</span></div>'; 
-			        	result = result +'</td>';*/
-			        	result = result +'<td>';
-			        	result = result +'<div title="'+candidate+'">';
-			        	
-			        	result = result + '<p class="tbldata-dotdot-me pull-left">'+candidate+'</p>';
-			        	result = result +'<div class="show_Empdetails">';
-			        	result = result +'<i class="fa fa-ellipsis-v"></i>';
-
-			        	result = result +'<div class="emailvalues">';
-			        	result = result +'<p title="'+report.userRole+'"><i class="fa fa-user"></i>'+report.userRole+'</p>';
-			        	result = result +'<p title="'+report.email+'"><i class="fa fa-envelope"></i>'+report.email+'</p>';
-			        	if(report.mobilePhone != null && report.mobilePhone != '' && report.mobilePhone != 'undefined'){
-			        		result = result +'<p title="'+report.mobilePhone+'"><i class="fa fa-phone"></i>'+report.mobilePhone+'</p>';
-			        	}
-			        	result = result +'</div>';
-			        	result = result +'</div>';
-
-
-			        	result = result +'</div>';
-			        	result = result +'</td>';
-			      
-			        	result = result +'<td>';
-			        	result = result +'<div title="'+primarySkill+'" class="tbldata-dotdot_80">'+primarySkill+'</div>';
-			        	result = result +'</td>';
-			        	result = result +'<td>';
-			        	result = result +'<div class="tblminwidth-175">';
-			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
-			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
-			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
-			        	result = result +'</div>';
-			        	result = result +'</td>';
-			        	result = result +'<td>';
+            	  
+            	    result = result +'<td>';
+		        	result = result +'<div class="tbldata-dotdot-200">';
+		        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
+		        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
+		        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
+		        	result = result +'</div>';
+		        	result = result +'</td>';
+	                return result;
+              		
+              }
+          },{
+		    	  "targets": colIndex++,
+	              "data": "employmentType",
+	              "render": function ( data, type, report, meta ) {
+	            	    var result = "";
+	            	    var designationType = "";
+	            		if(report.designationType != null && report.designationType != '' && report.designationType != 'undefined'){
+		        			designationType = report.designationType;
+		        		}else{
+		        			designationType = "-----"
+		        		}
+	            		
+	            	    result = result +'<td>';
 			        	result = result +'<div title="'+designationType+'" class="tbldata-dotdot_80">'+designationType+'</div>';
 			        	result = result +'</td>';
-			        	result = result +'<td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "manager",
+	              "render": function ( data, type, report, meta ) {
+	            	    var result = "";
+	            	    result = result +'<td>';
 			        	result = result +'<div title="'+report.reportingManager+'" class="tbldata-dotdot_80">'+report.reportingManager+'</div>';
 			        	result = result +'</td>';
-			        	
-			        	result = result +'<td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "resume",
+	              "render": function ( data, type, report, meta ) {
+	            	    var result = "";
+	            	    var candidateResume = "";
+	            	    
+	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
+		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+		        		}else{
+		        			candidateResume = "-----";
+		        		} 
+	            	    
+	            	    result = result +'<td>';
 			        	result = result +candidateResume;
 			        	result = result +'</td>'; 
-			        
-			        	
-			        	result = result +'<td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "assignedProjectsCount",
+	              "render": function ( data, type, report, meta ) {
+	            	    var result = "";
+	            	    result = result +'<td>';
 			        	result = result +'<div title="Development" class="tblminwidth-50 projects_div">  ';                
 			        	result = result +report.assignedProjectsCount;
 			        	result = result +'</div>';
 			        	result = result +'</td>';
-			        	result = result +'</tr>';
-	        	}
-	        	
-	        	        result = result +'</tbody>';
-					    result = result +'</table>';
-					    result = result +'</div>';
-					    
-					    result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addRequestedResources();">Add</button>';
-	                 	 result = result +'   </div>'; 
-					
-						$("#associatesListFilter").empty();
-					    $("#associatesListFilter").append(result);
-					    $("#associatesListLoader").removeAttr("style"); 
-					    pagination();
-					    
-	        	}
-			   
-	        });
-	
-	
-	
-	
-	
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     },
+	     "initComplete": function( settings, json ) {
+	    	 checkOrUncheckParent(json.data);
+	     }
+    } );
+    $("#associatesListPagination").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
+    $("input[type=search]").hide();
+    $("#candidateDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   candidatesDataTableList();
+    	   }
+    	});
+}
+
+function checkOrUncheckParent(data) {
+	$("#checkAllAssociates").removeProp("checked");
+	   var count =0;
+	 for(var e in checkedAssociatedUsers) {
+	   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+		   continue;
+	   for(var f in data) {
+   	   if(e === data[f].id+"") {
+   		count ++;
+   	   }
+		}
+	 }
+	 if(count == 10) {
+		$("#checkAllAssociates").prop("checked", "checked");
+	 }
+}
+</script>
+
+<script>
+var checkedAssociatedUsers = {};
+function checkAssociateUsers(elem) {
+	if($(elem).is(":checked")) {
+		checkedAssociatedUsers[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#checkAllAssociates").removeProp('checked');
+		checkedAssociatedUsers[$(elem).data("id")] = "";
+	}
+}
+</script>
+
+
+<script>
+function toggleAssociates(source) {
+  var checkboxes = document.querySelectorAll('input[class="myAssociatesCheckbox"]');
+  if($(source).is(":checked"))
+	  $('input[class="myAssociatesCheckbox"]').prop('checked', 'checked');
+  else 
+	  $('input[class="myAssociatesCheckbox"]').removeProp('checked');
+  
+  $('input[class="myAssociatesCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+	      checkedAssociatedUsers[$(this).data("id")] = $(this).val();
+	  } else {
+		  checkedAssociatedUsers[$(this).data("id")] = "";
+	  }
+  });
 }
 </script>
 
@@ -1134,10 +1308,12 @@ function cancel(){
 		var oTable = $('#associatesListPagination').dataTable();
 		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
 		
-		   var internalOutput = "";
-		   rowcollection.each(function(index,elem){
+		   for(var e in checkedAssociatedUsers) {
 			   
-		   var checkbox_value = $(elem).val().split(",");
+			   if(!e || !checkedAssociatedUsers[e] || checkedAssociatedUsers[e] === "")
+				   continue;
+			   
+		   var checkbox_value = checkedAssociatedUsers[e].split(",");
 		   
 			var checkMaxTsRowNum = $("#maxTsRowNum").val();
 			var tbl = document.getElementById("addRequestTbl");
@@ -1274,7 +1450,7 @@ function cancel(){
 			 $("#norecordsfound").empty();
 			
 			
-		   });
+		   }
 		
 
  		
@@ -1318,20 +1494,7 @@ function getEstimatedHours(rowId){
 }
 </script>
 
-<script>
-	function toggleAssociates() {
-	var checked = document.getElementById("checkAllAssociates").checked  
-	    if(checked) {
-	        $('.myCheckbox').each(function() {
-	            this.checked = true;   
-	        });
-	    }else{
-	        $('.myCheckbox').each(function() {
-	            this.checked = false;      
-	        });         
-	    } 
-	}
-</script>
+
 
 
 

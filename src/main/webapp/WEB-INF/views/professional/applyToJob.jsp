@@ -17,7 +17,10 @@
 
 <script type="text/javascript">
    var sourceleadUrl ='${sourceleadUrl}';
+   var tokenParamName = "${_csrf.parameterName}";
+   var tokenValue = "${_csrf.token}";
 </script>
+
 
 <style>
 .viewTemplate {
@@ -497,7 +500,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1027,7 +1030,6 @@ function ApplicantNotifyRequiremnentProRecruter(){
 	 if($("#notifyToApplicantId").is(':checked')){
 		  $("#notifyToApplicantId").val("Y");
 	 }else{
-		 alert("hello else");
 		 $("#notifyToApplicantId").val("N");
 	 }
 }
@@ -1384,12 +1386,16 @@ function getResumesList(){
 </script>
 
 <script type="text/javascript">
-function getRecruiterCandidateDetails(){
-	var candidateId = document.getElementById("candidateId").value
+    function getRecruiterCandidateDetails(){
+	
+	    var candidateId = document.getElementById("candidateId").value
+	    var requirementId = $("#requirementId").val();
+		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -1560,10 +1566,14 @@ function getRecruiterCandidateDetails(){
 
 <script>
 function getCandidateDetails(){
+	
      var candidateId = '${SourceLeadWeb_candidateId}'; 
+     var requirementId = $("#requirementId").val();
+ 	 var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+ 	 
      $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		   
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	

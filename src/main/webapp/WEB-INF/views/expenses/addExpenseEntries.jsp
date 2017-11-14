@@ -35,7 +35,103 @@
  position: relative !important;
  }
  </style>
- 
+ <script>
+	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	    var finalDateFormataddExpense= getJSDateFormat(locationDate);
+		$("#projectStartDateExpensesId").datepicker("destroy");
+		$("#projectEndDateExpensesId").datepicker("destroy");
+		$('#projectStartDateExpensesId').datepicker({
+					dateFormat : finalDateFormataddExpense,
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
+						var maxRecCount = $('#maxRecCount').val();
+						if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+							var expenseEndDate = $("#projectEndDateExpensesId").val();
+							 for(var i = 2; i < maxRecCount; i=i+2){
+								 if($("#divEntityTsRow"+i).is(':visible'))
+								 {
+									    var categoryId = $("#categoryDate"+(i-1)).attr("id");
+									    if(categoryId != null && categoryId != '' && categoryId != 'undefined'){
+								    	    $("#categoryDate"+(i-1)).datepicker("option","minDate", selected);
+										    if(expenseEndDate != null && expenseEndDate != '' && expenseEndDate != 'undefined'){
+										    	$("#categoryDate"+(i-1)).datepicker("option","maxDate", expenseEndDate);
+										    }
+									    }
+							    	  
+								 }
+								else{
+									 var categoryDate = $("#categoryDate"+(i-1)).val();
+								     if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+								    	 var d1= getJSDate(selected,locationDate);
+										 var d2= getJSDate(expenseEndDate,locationDate);
+										 var d3= getJSDate(categoryDate,locationDate);
+										 if(!(d1<=d3 && d3<=d2)){
+										    	$("#categoryDateDiv"+(i-1)).addClass("ColRed");
+										 }
+										 else{
+											 $("#categoryDateDiv"+(i-1)).removeClass("ColRed");
+										 }
+								    	
+								     }
+								 } 
+							   
+							}  
+						}	    
+							 
+					}
+				});
+		$('#projectEndDateExpensesId').datepicker({
+					dateFormat : finalDateFormataddExpense,
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
+						var maxRecCount = $('#maxRecCount').val();
+						if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+							var expenseStartDate = $("#projectStartDateExpensesId").val();
+							 for(var i = 2; i < maxRecCount; i=i+2){
+								 if($("#divEntityTsRow"+i).is(':visible'))
+								   {
+									    var categoryId = $("#categoryDate"+(i-1)).attr("id");
+									    if(categoryId != null && categoryId != '' && categoryId != 'undefined'){
+									    	  $("#categoryDate"+(i-1)).datepicker("option","maxDate", selected);
+										    	if(expenseStartDate != null && expenseStartDate != '' && expenseStartDate != 'undefined'){
+											    	$("#categoryDate"+(i-1)).datepicker("option","minDate", expenseStartDate);
+											    }
+									    }
+								   
+								  }
+								 else{
+									 var categoryDate = $("#categoryDate"+(i-1)).val();
+								     if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+								    	 var d1= getJSDate(expenseStartDate,locationDate);
+										 var d2= getJSDate(selected,locationDate);
+										 var d3= getJSDate(categoryDate,locationDate);
+										 if(!(d1<=d3 && d3<=d2)){
+										    	$("#categoryDateDiv"+(i-1)).addClass("ColRed");
+										 }else{
+											 $("#categoryDateDiv"+(i-1)).removeClass("ColRed");
+										 }
+								    	
+								     }
+								 }
+							}  
+						}	    
+							 
+					}
+				});
+	}
+</script>
+
 <script>
 function hideAndShowDetailsRow(rowId,type){
 	$(".fa-plus-square-o").toggleClass("closExp");
@@ -44,6 +140,9 @@ function hideAndShowDetailsRow(rowId,type){
 		var entityId = parseInt(rowId-1);
 		 var maxRecCount = $("#maxRecCount").val();
 		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
+			 $("#addExpenseItemButton").removeAttr('href');
+			 $("#addExpenseItemButton").removeClass("btn-primary");
+			 $("#addExpenseItemButton").addClass("btn-default");
 			 for(var i = 2; i < maxRecCount; i=i+2){
 				 if(rowId != i){
 					 if($("#divEntityTsRow"+i).is(':visible'))
@@ -53,6 +152,15 @@ function hideAndShowDetailsRow(rowId,type){
 					   }
 				 }
 			  } 
+		 }
+		 else{
+			   var from = $("#addExpenseItemButton").attr('data-id');
+				if(from == null || from == '' || from == 'undefined'){
+					from = "emp";
+				}
+				$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			    $("#addExpenseItemButton").removeClass("btn-default");
+	    	    $("#addExpenseItemButton").addClass("btn-primary");
 		 }
 		
 		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
@@ -71,17 +179,27 @@ function hideAndShowDetailsRow(rowId,type){
 			 $("#0docFile"+entityId).attr('data-validation','required');
 		}
 		else{
-			$("#0docFile"+entityId).removeAttr('data-validation');
+			 $("#0docFile"+entityId).removeAttr('data-validation');
 			 $("#0docFile"+entityId).attr('data-validation-optional','true');
 		}
-		
+		displayCalendar(entityId);
 		if($("#divEntityTsRow"+rowId).is(':visible'))
 	   {
+			
 			$("#divEntityTsRow"+rowId).removeAttr('style');
 			$("#divEntityTsRow"+rowId).attr('style','display:none;');
+			
+			var from = $("#addExpenseItemButton").attr('data-id');
+			if(from == null || from == '' || from == 'undefined'){
+				from = "emp";
+			}
+			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+		    $("#addExpenseItemButton").removeClass("btn-default");
+    	    $("#addExpenseItemButton").addClass("btn-primary");
 	   }
 		else{
 			$("#divEntityTsRow"+rowId).removeAttr('style');
+			$("#categoryDateDiv"+entityId).removeClass("ColRed");   
 		}
 	}
 }
@@ -159,6 +277,14 @@ function addAttachment(entityRowId,from){
 		var  rId1 ="divEntityTsRow"+detailsRowId;
 		var r1 = document.getElementById("categoryTable").rows[rId1];
 	    
+		var from = $("#addExpenseItemButton").attr('data-id');
+		if(from == null || from == '' || from == 'undefined'){
+			from = "emp";
+		}
+		$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+	    $("#addExpenseItemButton").removeClass("btn-default");
+ 	    $("#addExpenseItemButton").addClass("btn-primary");
+		
 		//subtract row amount
 		var totlaMount = $("#expenseAmountDivId").val();
 		var expenseAmount = $("#expenseAmount"+rowId).val();
@@ -312,16 +438,7 @@ function addExpenseRow(from){
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateExpenseEntrie = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateExpenseEntrie = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateExpenseEntrie = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateExpenseEntrie = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateExpenseEntrie = 'yy-dd-mm'; 
-		  }
+		  var finalDateExpenseEntrie= getJSDateFormat(locationDate);
 		
 		   var maxRecCount = $("#maxRecCount").val();
 		   for(var i = 2; i < maxRecCount; i=i+2){
@@ -457,6 +574,10 @@ function addExpenseRow(from){
 			            </c:forEach>
 		    	    }
 		    	    
+		    	    
+		    	    $("#addExpenseItemButton").removeAttr('href');
+		    	    $("#addExpenseItemButton").removeClass("btn-primary");
+		    	    $("#addExpenseItemButton").addClass("btn-default");
 		        	$("#categoryType"+maxRowNum).empty();
 		            $("#categoryType"+maxRowNum).append(output);
 		            $('#categoryType'+maxRowNum).chosen();
@@ -475,12 +596,25 @@ function addExpenseRow(from){
 			
 		}
 	}
-	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 		    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 		        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
 		            event.preventDefault();
 		        }
-		    });	
+		    });	 */
+	 
+		    $('.allownumericwithdecimal').keydown(function (event) {
+	            if (event.shiftKey == true) {
+	                event.preventDefault();
+	            }
+	            if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+	            } else {
+	                event.preventDefault();
+	            }
+	            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+	                event.preventDefault();
+	        });
+
   }			
 </script>
 <script>
@@ -501,6 +635,13 @@ function addExpenseRow(from){
 			
 			var categoryType = $("#categoryType"+entityId).val();
 			var categoryTypeName = $("#categoryType"+entityId+" option[value='"+categoryType+"']").text();
+			
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			 var projectStartDate = $("#projectStartDateExpensesId").val();
+			 var projectEndDate = $("#projectEndDateExpensesId").val();
+			 var d1= getJSDate(projectStartDate,locationDate);
+			 var d2= getJSDate(projectEndDate,locationDate);
+			
 			var categoryDate = $("#categoryDate"+entityId).val();
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
@@ -521,6 +662,13 @@ function addExpenseRow(from){
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			$("#paidByDiv"+entityId).html(paidBy);
 			
+			if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				 var d3= getJSDate(categoryDate,locationDate);
+			    if(!(d1<=d3 && d3<=d2)){
+			    	$("#categoryDateDiv"+entityId).addClass("ColRed");
+			    }
+	        }
+			
 			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
 			$("#hideAndShowDetailsButton"+entityId).remove();
@@ -530,12 +678,19 @@ function addExpenseRow(from){
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
 			
 			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
-			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+'),"Edit"');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+',"Edit")');
 			
 			
 			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
 			$("#divEntityTsRow"+parseInt(entityId+1)).attr('style','display:none;');
 			
+			var from = $("#addExpenseItemButton").attr('data-id');
+    		if(from == null || from == '' || from == 'undefined'){
+				from = "emp";
+			}
+			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+			$("#addExpenseItemButton").removeClass("btn-default");
+	        $("#addExpenseItemButton").addClass("btn-primary");
 			return true;
 		}else{
 			return false;
@@ -544,6 +699,7 @@ function addExpenseRow(from){
 </script>
  <script>
 function displayCalendar(entityId){
+if('${type}' !='view'){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
 	var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -560,7 +716,7 @@ function displayCalendar(entityId){
 	else {
 		alert("Please Select StartDate & EndDate")
 	}
-	
+  } 
 }
 </script>
 

@@ -301,7 +301,7 @@ public class UserServiceImpl implements UserService {
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
 				}
-				candidateService.storeCandidateForUsers(candidateDTO, user, orgLocations, masterCandidate);
+				candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate);
 				
 			}else{
 				candidate.setConsultantUser(user);
@@ -648,12 +648,13 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("firstName", user.getFirstName());	 
 		 }
 		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+//		 globalVarsMap.put("administratorFirstName", loginUser.getFullName());
+		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
+		 globalVarsMap.put("loginUser",loginUserFullName);
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("login").append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);

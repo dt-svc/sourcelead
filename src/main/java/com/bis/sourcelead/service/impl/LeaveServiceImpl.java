@@ -1034,11 +1034,11 @@ public class LeaveServiceImpl implements LeaveService{
 
 	}
 
-	/*@Override
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
+	@Override
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
-		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id,fromDate,toDate);
-	}*/
+		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id);
+	}
 
 	@Override
 	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
@@ -1084,6 +1084,12 @@ public class LeaveServiceImpl implements LeaveService{
 	public List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations)
 	{
 		return leaveDao.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
+	}
+
+	@Override
+	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
+	{
+		return leaveDao.getApproversListBasedonHierarchyExceptLoginUser(loginUserId, roleId, locationId);
 	}
 
 }

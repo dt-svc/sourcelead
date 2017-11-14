@@ -1,4 +1,3 @@
-
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
@@ -10,10 +9,10 @@ function getFormData(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			indexed_array[n['name']] = n['value'];
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
 		else
-			indexed_array[n['name']] = n['value'].trim();
+			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
 }
@@ -23,10 +22,10 @@ function getFormData1(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var formData = new FormData();
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			formData.append(n['name'], n['value']);
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
 		else
-			formData.append(n['name'], n['value'].trim());
+			formData.append(n['name'], n['value']);
 	});
 	return formData;
 }
@@ -165,6 +164,7 @@ function saveCandidateImage(candidateId, formId, data){
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
 	                        		  cancel(candidateId);
+	                        		  candidateSideBar(candidateId);
 	                        	  }
 	                        	  else
 	                        		  cancel(candidateId);
@@ -189,7 +189,7 @@ function saveUserProfileImage(formId,data){
                       success: function(result) {
                     	  if(result)
                     		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-//                   		  location.replace(sourceleadUrl+"/userProfile");  
+                  		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
         return true;         
@@ -285,4 +285,42 @@ function applyResumeData(json) {
 	 }		
 	$("#candidateEducation").append(internalOutput);
 	$("#loading").removeAttr("style");
+}
+function getJSDate(date,dateFormat){
+	 var start = date.split("-");
+    if(dateFormat.match("yyyy-MM-dd")){
+	   var jsDate = new Date(start[0], start[1] - 1, start[2]);
+	    }if(dateFormat.match("dd-MM-yyyy")){
+	    	var jsDate = new Date(start[2], start[1] - 1, start[0]);
+	    }if(dateFormat.match("MM-dd-yyyy")){
+	    	var jsDate = new Date(start[2], start[0] - 1, start[1]);
+	    }if(dateFormat.match("yyyy-dd-MM")){
+	    	var jsDate = new Date(start[0], start[2] - 1, start[1]);
+	    }
+	    return jsDate;
+}
+
+
+function getJSDateFormat(locationDate){
+	 var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  return jsDateFormat;
+}
+function removeEmptyLines(ele) { //removeEmptyLines($(".."))
+	if($(ele).is(":visible")) {
+		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
+		if($(ele).val().endsWith("\n")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
+		} else if($(ele).val().endsWith("\r")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
+		}
+	}	
 }

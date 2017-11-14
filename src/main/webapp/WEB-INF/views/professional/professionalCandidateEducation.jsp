@@ -317,17 +317,7 @@ function addEducation(candidateId) {
 	}
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat1 = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat1 = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat1 = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat1 = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat1 = 'yy-dd-mm'; 
-	  }
-	  
+	  var finalDateFormat1 = getJSDateFormat(locationDate);
 	  
 	  $('#startDate').datepicker({
 	      dateFormat: finalDateFormat1,
@@ -553,50 +543,12 @@ function EditEducation(candidateId,candidateEducationId) {
 	var proEduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	var proEduStartDateSplit = proEduStartDate.split("-");
-	 var proEduEndDateSplit = proEduEndDate.split("-");
-	 
-	 var finalDateFormatEduEditOneSave = '';
-	  var eduStartDateEdit = '';
-	  var eduEndDateEdit = '';
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[2])+parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[0])+parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[0])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[2])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
-	  }
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[2])-parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[0])-parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[0])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[2])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
-	  }
-	  var finalDateFormat3 = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat3 = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat3 = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat3 = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat3 = 'yy-dd-mm'; 
-	  }
+	
+	 // written common method in slead-common.js for date formats start
+	  var eduStartDateEdit = getJSDate(proEduStartDate,locationDate);
+	  var eduEndDateEdit = getJSDate(proEduEndDate,locationDate);
+	  var finalDateFormat3 = getJSDateFormat(locationDate);
+	  //end
 	  
 	  $('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormat3,
@@ -750,7 +702,7 @@ $('body').on('blur', '#education_form', function() {
   
   <script type="text/javascript">
 function deleteEduPopup(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+		$("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
@@ -760,14 +712,14 @@ function deleteEduPopup(){
 function removeEducation(candidateEducationId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_Edu_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Education</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_Edu_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -811,7 +763,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
+             			$("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			eduMsgFadeinFunction();
 			    	}
