@@ -128,8 +128,10 @@ function invoiceDetailsPagination(url){
               "data": "number",
               "render": function ( data, type, opt, meta ) {
             	var result = "";
+            	var numberTotal = opt.number
+            	var	twoPlacedFloat = parseFloat(numberTotal).toFixed(0);
             	  if(opt.number !=null && opt.number !='' && opt.number !='undefined'){
-						 result = result + ' <td><div class="tblminwidth-75">'+opt.number+'</div></td>';
+						 result = result + ' <td><div class="tblminwidth-75">'+twoPlacedFloat+'</div></td>';
 					}else{
 						 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 					}
@@ -188,8 +190,10 @@ function invoiceDetailsPagination(url){
                     "data": "rate",
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
+                    	var rateTotal = opt.rate;
+                    	var twoPlacedFloat = parseFloat(rateTotal).toFixed(2);
                     	if(opt.rate !=null && opt.rate !='' && opt.rate !='undefined'){
-							result = result + '<td><div class="tblminwidth-75">$ '+opt.rate+'</div></td>';
+							result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
 						}
@@ -200,10 +204,12 @@ function invoiceDetailsPagination(url){
                       "data": "qty",
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
+                    	  var qtytotal = opt.qty;
+                    	  var twoPlacedFloat = parseFloat(qtytotal).toFixed(0);
                     	  if(opt.qty !=null && opt.qty !='' && opt.qty !='undefined'){
-								result = result + '<td><div class="tblminwidth-75">$ '+opt.qty+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75"> '+twoPlacedFloat+'</div></td>';
 							}else{
-								result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
+								result = result + ' <td><div class="tblminwidth-75"> 0.00</div></td>';
 							}
                     	  return result;
                       }
@@ -212,8 +218,10 @@ function invoiceDetailsPagination(url){
                         "data": "amount",
                         "render": function ( data, type, opt, meta ) {
                         	var result = "";
+                        	var amountTotal = opt.amount;
+                        	var twoPlacedFloat = parseFloat(amountTotal).toFixed(2); 
                         	if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
-								result = result + '<td><div class="tblminwidth-75">$ '+opt.amount+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">$ '+twoPlacedFloat+'</div></td>';
 							}else{
 								result = result + ' <td><div class="tblminwidth-75">$ 0.00</div></td>';
 							}
