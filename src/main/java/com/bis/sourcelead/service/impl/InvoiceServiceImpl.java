@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -91,6 +92,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -173,6 +175,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	AddExpensesDao addExpensesDao;
+	
+	@Autowired
+	InvoicePaymentService invoicePaymentService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2051,7 +2056,6 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		LocalDate today = LocalDate.now();
 		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
 		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
-		List<Invoice> invoiceList = null;
 		Date startDateUTC = null;
 		Date endDateUTC = null;
 		LocalDate date1 = null;
@@ -2059,22 +2063,18 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<BillingGraphBean> incomeExpenseList = new ArrayList<>();
 		switch (billingReportType) {
 		case Constants.THIS_MONTH:
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
-			date1 = new LocalDate(startDateUTC);
-			date2 = new LocalDate(endDateUTC);
+			date1 =monthStartDate;
+			date2 = monthEndDate;
 			break;
 		case Constants.THIS_QUARTER:
 			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
 			date1 = dates[0];
 			date2 = dates[1];
 			break;
 		case Constants.THIS_YEAR:
 			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
+			startDateUTC =currentYearDates[0].toDate();
+			endDateUTC = currentYearDates[1].toDate();
 			date1 = currentYearDates[0];
 			date2 = currentYearDates[1];
 			break;
@@ -2091,16 +2091,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
 			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
 			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
 			date1 = loastMonthStartDate;
 			date2 = lastMonthEndDate;
 			break;
 		case Constants.LAST_QUARTER:
 			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
 			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
 			date1 = quarterDates[0];
 			date2 = quarterDates[1];
 			break;
@@ -2109,28 +2105,21 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
 				if (null != finStartDate) {
 					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
-					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
-					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
-					date1 = new LocalDate(startDateUTC);
-					date2 = new LocalDate(endDateUTC);
+					date1 = new LocalDate(finStartDate);
+					date2 = new LocalDate(finEndDate);
 					;
 				}
 			} else {
 				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
-				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
-						startDateOutputFormatter);
-				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
 				date1 = financialDates[0];
 				date2 = financialDates[1];
 			}
 			break;
 		case Constants.CUSTOM:
-			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
-			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
-			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
-			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
-			date1 = localStartDate;
-			date2 = localEndDate;
+			Date localStartDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), startDate);
+			Date localEndDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), endDate);
+			date1 = new LocalDate(localStartDate);
+			date2 = new LocalDate(localEndDate);
 			break;
 		default:
 			logger.info("No Frequency");
@@ -2141,26 +2130,25 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		double receivedAmt = 0;
 		double payableAmt = 0;
 		double netAmount = 0;
-		invoiceList = invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(), startDateUTC, endDateUTC);
+		
+		Date sDate = date1.toDate();
+		Date eDate = date2.toDate();
+		
+		
+		List<InvoicePayment>   paymentList = invoicePaymentService.getInvoicePaymentListByOrgloactionIdAndDates(orgLocation.getId(), sDate, eDate);
 		BillingReportDTO billingReportDTO = new BillingReportDTO();
-		boolean isReceivableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(),
-				21L);
-		boolean isPayableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(),
-				22L);
+		boolean isReceivableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(), 21L);
+		boolean isPayableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(), 22L);
 
-		for (Invoice invoice : invoiceList) {
-			if ((Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())
-					&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
-							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())))
+		for (InvoicePayment invoicePayment : paymentList) {
+			if ((Constants.RECEIVABLE.equalsIgnoreCase(invoicePayment.getInvoiceId().getInvoiceType())
+					&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())
+							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())))
 					&& isReceivableAccessYes) {
 
 				try {
-					List<InvoicePayment> invoicePaymentList = invoiceDao.getPaymentHistroyByInvoiceId(invoice.getId());
-					if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
-						double recievableAmount = invoicePaymentList.stream()
-								.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+						double recievableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
 						receivedAmt = receivedAmt + recievableAmount;
-					}
 
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -2168,12 +2156,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 			} else if (isPayableAccessYes) {
 				try {
-					List<InvoicePayment> invoicePaymentList = invoiceDao.getPaymentHistroyByInvoiceId(invoice.getId());
-					if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
-						double payableAmount = invoicePaymentList.stream()
-								.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+						double payableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
 						payableAmt = payableAmt + payableAmount;
-					}
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
@@ -2182,26 +2166,21 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<LocalDate> dates = conversionUtil.getAllDatesBetweenGivenDates(date1, date2);
 		for (LocalDate localStartDate : dates) {
 			BillingGraphBean billingGraphBean = new BillingGraphBean();
-			billingGraphBean.setDate(localStartDate.toString("MMM-yy"));
+			billingGraphBean.setDate(localStartDate.toString("MMM-yyyy"));
 			double incomeAmount = 0;
 			double expensesAmount = 0;
-			for (Invoice invoice : invoiceList) {
-				LocalDate invoiceDate = new LocalDate(invoice.getInvoiceDate());
-				if ((Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())
-						&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
-								|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())))
+			for (InvoicePayment invoicePayment : paymentList) {
+				LocalDate invoiceDate = new LocalDate(invoicePayment.getPaymentDate());
+				if ((Constants.RECEIVABLE.equalsIgnoreCase(invoicePayment.getInvoiceId().getInvoiceType())
+						&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())
+								|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())))
 						&& isReceivableAccessYes) {
 					try {
 						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
 						if ((invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate))
 								|| (invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate))) {
-							List<InvoicePayment> invoicePaymentList = invoiceDao
-									.getPaymentHistroyByInvoiceId(invoice.getId());
-							if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
-								double income = invoicePaymentList.stream()
-										.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+								double income = Double.parseDouble(invoicePayment.getPaymentAmount());
 								incomeAmount = incomeAmount + income;
-							}
 						}
 
 					} catch (Exception e) {
@@ -2212,13 +2191,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
 						if (invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate)
 								|| invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate)) {
-							List<InvoicePayment> invoicePaymentList = invoiceDao
-									.getPaymentHistroyByInvoiceId(invoice.getId());
-							if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
-								double expenses = invoicePaymentList.stream()
-										.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+								double expenses = Double.parseDouble(invoicePayment.getPaymentAmount());
 								expensesAmount = expensesAmount + expenses;
-							}
 						}
 					} catch (Exception e) {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
