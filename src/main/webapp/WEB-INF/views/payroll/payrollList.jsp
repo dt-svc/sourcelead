@@ -478,6 +478,7 @@
 		$("#hrDeductionsListDiv").empty();
 		$("#checksListDiv").empty();
 		$("#employeeListDiv").empty();
+		$("#invoiceDataDiv").empty();
 		runPayrollCycles();
 
 	}
