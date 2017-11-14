@@ -370,7 +370,6 @@ function selectCategory(){
 		        	 var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 alert(opt.jobTitle);
 		        	 for(var i=0;i<json.length;i++){
 		        		 var opt = json[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
