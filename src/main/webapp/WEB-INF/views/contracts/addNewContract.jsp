@@ -1396,6 +1396,9 @@ function contractTypeLabels(){
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   
