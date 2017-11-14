@@ -511,6 +511,8 @@ function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
@@ -579,11 +581,11 @@ function getCustomReports(){
 	var endDate = $("#ExportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
 		document.getElementById("reportStartDate").style.display="block";
-		$("#reportStartDate").append("Start Date is Required") ; 
+		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
 		document.getElementById("reportEndDate").style.display="block";
-		$("#reportEndDate")append("End Date is Required") ; 
+		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
 		$.ajax({
