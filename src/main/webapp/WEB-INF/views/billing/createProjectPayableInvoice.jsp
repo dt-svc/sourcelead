@@ -87,15 +87,29 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
+              <c:if test="${!empty isDraft}">
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name" disabled="disabled">
+              </select>
+              </c:if>
+                <c:if test="${empty isDraft}">
                 <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
               </select>
+              </c:if>
+              <input type="hidden" id="clientProjectIdHidden" value="" name="projectId">
               </div>
             </div>
            <div class="form-group">
               <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
+               <c:if test="${! empty isDraft}">
+                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled="disabled">
+              </select>
+              </c:if>
+               <c:if test="${empty isDraft}">
                 <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
               </select>
+              </c:if>
+              <input type="hidden" id="clientProjectFrequencyHidden" value="" name="frequency">
               </div>
             </div>
               
@@ -231,12 +245,11 @@ function getProjectsList(projectName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+	//var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>--Select Project--</option>";
-	for (var i=0; i<json.length; i++)
-	{
+	for (var i=0; i<json.length; i++){
 	var opt = json[i];
 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
@@ -251,7 +264,7 @@ function getProjectsList(projectName){
 	},
 	});
 
-	}
+}
 </script>
 
 <!-- Get Project Frequency Based on project id -->
@@ -1122,6 +1135,12 @@ function calculateTaxDiscount(){
 function saveInvoice(saveType){
          
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
+        	var  pmIdValueClient = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
+  			$("#clientProjectIdHidden").val(pmIdValueClient);
+  			
+  			var  frequencyvalue = $("#frequency option").eq($("#frequency").prop("selectedIndex")).val();
+  			$("#clientProjectFrequencyHidden").val(frequencyvalue);
+        	 
  	 	     var formData = getFormData("project_payable_invoice_form");
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	     
@@ -1239,8 +1258,8 @@ function toDate(selector) {
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
 		           	 
 		           	 $('#vendorCurrency').val(json['vendorCurrency']);
-		           	getVendorContacts(json['vendorContactId']);
-		           	getProjectsList(json['projectName']);
+		           	getVendorContacts(json['vendorContactId'],json['projectName']);
+// 		           	getProjectsList(json['projectName']);
 		           	getProjectFrequency(json['invoiceFrequency'],json['id']);
 		           	getProjectAssignedMem1(json['invoiceLineItemsList']);
 		           	$("#invoiceId").val(json['invoiceId']);
@@ -1295,8 +1314,9 @@ $(document).ready(function(){
 		loadInvoiceDetails(invoiceUUID);
 	}else{
 		getVendors();
-		getProjectsList();
+// 		getProjectsList();
 	}
+	
 	
 });
 </script>
@@ -1561,7 +1581,7 @@ function errInvoiceDate(){
 
 <!-- Get Vendor contacts based on vendor -->
 <script>
-function getVendorContacts(vendorContactId){
+function getVendorContacts(vendorContactId,projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 		type : "GET",
@@ -1589,7 +1609,7 @@ function getVendorContacts(vendorContactId){
 	document.getElementById("bottomGrid").style.display="none";
 	document.getElementById("lineItemAddRows").style.display="none";
 	document.getElementById("tableBody").style.display="none";
-	getProjectsList();
+	getProjectsList(projectName);
 	}
 </script>
 
