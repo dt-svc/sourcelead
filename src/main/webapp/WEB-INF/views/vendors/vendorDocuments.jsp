@@ -475,18 +475,19 @@ function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
-        	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	output = output + "<option value=''>Vendor Contact</option>"; 
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+	        		var opt = json.data[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
