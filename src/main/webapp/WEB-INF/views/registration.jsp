@@ -303,8 +303,19 @@ window.onload = function () {
         <div id="professional" class="tab-pane fade in active">
            <form:form class="login-form clearfix"  id="professionalRegistration_form"  name="professionalRegistration_form" method="post" >     
             <div class="clearfix social_icons">
-            <span class="col-md-12 text-muted text-center small">Continue with</span>
-            <div id ="proffessionalConnect"></div>
+            <span class="col-md-12 text-muted text-center small">Continue with</span> <div class="clearfix"></div>
+            <div id ="proffessionalConnect" >
+                  <div class="SocialIcons">
+                     <ul>
+            		    <li onclick="socialinviter.socialconnect.auth('googleplus');"><i class="fa fa-google-plus"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB"><i class="fa fa-facebook"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW"><i class="fa fa-twitter"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN"><i class="fa fa-linkedin"></i></li>
+            			<div class="clearfix"></div>
+            		</ul>
+                  </div>
+            </div>
+            	<div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
             <div class=" text-muted small mb10 text-center clearfix">
@@ -372,7 +383,19 @@ window.onload = function () {
         <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >     
             <div class="clearfix social_icons">
             <span class="col-md-12 text-muted text-center small">Continue with</span>
-            <div id ="recruiterConnect"></div>
+            <div class="clearfix"></div>
+            <div id ="recruiterConnect" >
+                  <div class="SocialIcons">
+                     <ul>
+            		    <li onclick="socialinviter.socialconnect.auth('googleplus');"><i class="fa fa-google-plus"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB"><i class="fa fa-facebook"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW"><i class="fa fa-twitter"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN"><i class="fa fa-linkedin"></i></li>
+            			<div class="clearfix"></div>
+            		</ul>
+                  </div>
+            </div>
+            	<div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
             <div class=" text-muted small mb10 text-center clearfix">
@@ -590,14 +613,14 @@ function resetCredentials(type){
 	$("#proffessionalConnect").removeAttr('type');
 	$("#recruiterConnect").removeAttr('type');
 	
-	if(type != null && type != '' && type != 'undefined' && type == 'Recruiter'){
+	/* if(type != null && type != '' && type != 'undefined' && type == 'Recruiter'){
 		$("#recruiterConnect").attr('class','socialinviter holder break');
 		$("#recruiterConnect").attr('type','socialconnect');
 	}
 	else{
-		$("#proffessionalConnect").attr('class','socialinviter holder break');
+		/* $("#proffessionalConnect").attr('class','socialinviter holder break');
 		$("#proffessionalConnect").attr('type','socialconnect');
-	}
+	} */
 }
 </script>
 
@@ -1176,6 +1199,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 $("#includedContent").load("~/views/privacyPolicyDocument.jsp"); 
 });  */
 </script>
+
 
 
 <jsp:include page="socialinviterscripts.jsp" />
