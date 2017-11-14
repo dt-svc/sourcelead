@@ -788,6 +788,7 @@ public class CandidateListRestController {
 		candidateDTO.setZipcode(can.getZipCode());
 		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
 		return candidateDTO;
 	}
 	 
