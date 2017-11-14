@@ -15,11 +15,12 @@
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
+	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
-	 	 getContractTemplates();
-	 }
+
+	 $("#contractType").val(contractType);
+
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
 	 	 $('#billingRateType').removeAttr('data-validation');
@@ -42,8 +43,12 @@
 
 	 }
 	 
-	 if(relationId != null && relationId != ''){
-		 getVendorContacts();
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
+	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
+		 getVendorContacts(spocUserCode);
 	 }
 };
 </script>
@@ -80,7 +85,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
@@ -1146,7 +1151,6 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	} */
 	if(contractType == "Client MSA"){
-		alert("hello")
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
@@ -1177,6 +1181,9 @@ function contractTypeLabels(){
 		
 		$("#orgRelationId").val(''); 
 		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
 
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
@@ -1186,6 +1193,9 @@ function contractTypeLabels(){
 		
 		$("#vendorContact").val(''); 
 		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
 		
 		//commented by Pavan Jampana for change request #5851(taiga Id)
 		/* $('#flatReward').removeAttr('data-validation-optional');
@@ -1211,6 +1221,8 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 	}
@@ -1280,6 +1292,8 @@ function contractTypeLabels(){
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1320,14 +1334,28 @@ function contractTypeLabels(){
 		$('#paymentFrequency').attr('data-validation',"required");
 		
 		$("#jurisdiction").val(''); 
-		$("#mainDescription").val(''); 
+		$("#mainDescription").val('');    
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
 		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
+		
 	}
 	if(contractType == "Vendor SOW"){
 		$('#candiFlatReward').removeAttr('data-validation');
@@ -1367,9 +1395,25 @@ function contractTypeLabels(){
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
-		$('#approver').trigger("chosen:updated");
+		$('#approver').trigger("chosen:updated");   
+		
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1459,12 +1503,25 @@ function contractTypeLabels(){
 		//$('#overtimeRateType').removeAttr('data-validation');
 		//$('#overtimeRateType').attr('data-validation-optional',"true");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
 		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 	}
 	if(contractType == "Full time offer"){
@@ -1540,11 +1597,25 @@ function contractTypeLabels(){
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
@@ -2038,7 +2109,7 @@ function flush(){
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";

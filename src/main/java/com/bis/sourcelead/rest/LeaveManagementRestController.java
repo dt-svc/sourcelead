@@ -250,15 +250,27 @@ public class LeaveManagementRestController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersList);
 		   
+		   List<User> appUser = new ArrayList<>();
 		   List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(loginUser.getId(), roleId, orgLocations.getId());
 			if(approversList !=null) {
 				for (User user : approversList) {
+					boolean flag = false;
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 					if(userRole != null){
+						String roles = userRole.getRoles().getActionId();
+						String[] sa = roles.split(",");
+						for (String s : sa) {
+							if("238".equalsIgnoreCase(s)) {
+								flag = true;
+								break;
+							}
+						}
 						user.setUserType(userRole.getUserType());
+						if(flag)
+							appUser.add(user);
 					}
 				}
-				 model.addObject("approverList", approversList);
+				 model.addObject("approverList", appUser);
 			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
@@ -835,7 +847,7 @@ public class LeaveManagementRestController {
 		 * @throws Exception
 		 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-		@RequestMapping(value = {"/applyLeave","/rest/applyLeave"}, method = RequestMethod.POST)
+		@RequestMapping(value = {"/saveApplyLeave","/rest/saveApplyLeave"}, method = RequestMethod.POST)
 		@ResponseBody
 		public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
 	

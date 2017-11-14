@@ -3721,6 +3721,9 @@ position: relative; z-index: 99;
 .padding_right {
 padding-right: 0!important;
 }
+.padding_left {
+padding-left: 0!important;
+}
 .customscorePop .col-md-4{
     min-height:20px
 }
@@ -6235,6 +6238,9 @@ background-position: center; background-size: 200px; position: relative;top:-8px
 .timesheet_head.timesheet_headul-custom ul li {
 	margin: 0; top:8px;
 }
+.timesheet_head.timesheet_headul-custom ul ul li {
+       top:0;
+}
 .taskview_wrapinn {
     padding: 10px; background: #fff; margin: 0px; border: 1px solid #ddd; border-radius: 3px;
 }
@@ -6354,6 +6360,9 @@ background-position: center; background-size: 200px; position: relative;top:-8px
 }
 .generateButtons a:hover{
     text-decoration: underline;
+}
+.OverdueWorkItems {
+       overflow-y:auto; height: 200px; 
 }
 .OverdueWorkItems table tr {
     border-bottom: 1px solid #ededed; border-radius: 0 0 0 0 !important;
@@ -6770,7 +6779,6 @@ h4.header-align {
 	font-weight: 400;
 }
 .vendorrep_div {
-	
 }
 .vendorrep_innerdiv h2{
 	margin-top: 10px;
@@ -6788,7 +6796,7 @@ ul.heightScroll {
 background: #f1f1f1;
 }
 .timeBalance-scroll {
-       height: 255px; padding:15px 0; overflow-y: scroll; width:100%;
+    height: 255px; padding:15px 0; overflow-y: scroll; width:100%;
 }
 .timeBalance-scroll .col-md-2 {
 border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px;
@@ -6976,6 +6984,90 @@ position: absolute; left: 100%; top: 5px;
 .reportsCountNew.reportsCount_New ul li {
     width: 10% !important;
 }
+.contactlist-table table tr td {
+	padding: 5px 10px; transition: all 0.3s ease-in-out;
+}
+.contactlist-table table tr:hover {
+	background-color: #EEEEEE;
+}
+.errorField-am p.jquery_form_error_message {
+       background-color: #fff; position: absolute; bottom:-5px; left:0%; font-size: 11px; padding: 0!important;
+}
+/* Contact List email */
+.contact_head {
+	 border-bottom: 1px solid #ededed; margin-bottom: 5px;
+}
+.actionEd-Del .fa{
+	color:#9E9E9E; padding:2px 3px; transition: all 0.3s ease-in-out;
+}
+.contactlist-table table tr:hover .actionEd-Del .fa {
+	border: 1px solid #9E9E9E; border-radius: 3px;
+}
+.contactlist-table table tr:hover .actionEd-Del .fa-pencil {
+	color: #1565C0; border: 1px solid #1565C0;
+}
+.contactlist-table table tr:hover .actionEd-Del .fa-trash-o {
+	color: #E53935; border: 1px solid #E53935;
+}
+.showCheckbox {
+	position: absolute; top: 0px; left: 0px; background-color: #EEEEEE; width: 35px; height: 35px; display: none;
+	vertical-align: middle; transition: all 0.3s ease-in-out;
+}
+.showCheckbox input[type="checkbox"] {
+	position: absolute; top: 5px; left: 35%; 
+}
+.contactlist-table table tr:hover .showCheckbox {
+	display: block;
+}
+.contactUsername {
+	width: 300px; float: left;
+}
+.contactUsername .userImage {
+	width: 35px; height: 35px; margin-right: 10px;
+}
+.contactName {
+	position: relative; top:5px;text-align: left;
+}
+.contactUsername .userImage img{
+	height: 100%; width: auto;
+}
+.contactlist-table table {
+	border-collapse:collapse; border: 1px solid #f9f9f9; width: 100%; padding: 0 15px;
+}
+.contactlist-grid {
+	padding:10px 15px 15px; background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+}
+.email_search input[type="text"] {
+	border: transparent; background-color: transparent; border-bottom: 1px solid #BDBDBD; padding: 6px 5px;
+	background-image: url("../images/search-icon.png"); background-repeat: no-repeat; background-position: 98% center;
+    background-size: 15px; 
+}
+.manageLables-div {
+	position: absolute; left: 2%; width: 250px; background-color: #F5F5F5; padding:10px  15px; z-index: 9999;
+	box-shadow: 1px 1px 5px #9E9E9E; min-height: 200px; max-height: 400px; overflow-y: auto; top: 15%; display: none;
+}
+.manageLables-div .closemld {
+	position: absolute; right:10px; top: 0; font-size: 20px; color: #6E0002;
+}
+.manageLables-div ul li{
+	padding: 5px 0; clear: both; display: inline-block; width: 100%; cursor: pointer;
+}
+.manageLables-div ul li .folder-ed {
+	display: none;
+}
+.manageLables-div ul li:hover .folder-ed {
+	display: block;
+}
+.collpasePannel a {
+ color:#333; clear:both; display: inline-block; width: 100%;	
+}
+.collpasePannel {
+	background-color: #f5f5f5; border: 1px solid #ccc; padding:0 10px; border-radius:3px 3px 0 0;
+}
+.collpasePannel .fa-sort-down {
+	font-size: 20px; padding: 4px 15px; color:#204d74;
+}
+/* Contact List email */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

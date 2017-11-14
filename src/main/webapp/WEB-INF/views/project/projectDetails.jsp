@@ -170,21 +170,12 @@
 						
 	   		    		result = result + '</div>';
 	   		    		
-						result = result	+ '<div class="project_details_cta">';
-						result = result + '<strong>Status:</strong><span>';
-						result = result +  proStatus;
-						result = result + '</span>';
-						result = result	+ '</div><div class="clearfix"></div>';
-						
-						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
-						result = result + '<div class="clearfix"></div>';
-
-						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+	   		    		result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 						result = result + '<strong>Project Id:</strong>';
 						result = result + '<span>'+projectSequeneNumber+'</span>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
-
+						
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
 						result = result + '	<strong>Project name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
@@ -210,6 +201,17 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Status:</strong><span>';
+						result = result +  proStatus;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
+						result = result + '<div class="clearfix"></div>';
+
+						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
 						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
@@ -273,6 +275,8 @@
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						
 						result = result + '</div>';
+						
+						}
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
