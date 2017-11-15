@@ -307,7 +307,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
-			result = result +'         <th>Invoice ID</th>                    ';
+			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Client Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
