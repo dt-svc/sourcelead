@@ -165,7 +165,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }
 	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
-	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    	    result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
@@ -610,6 +610,7 @@ function removeResumeDiv(){
 <script>
 function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
+	result = result  +'          <form role="form"  id="doc_form" name="document_delete" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -617,6 +618,7 @@ function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
+	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -633,7 +635,7 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	 if ($('#doc_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",

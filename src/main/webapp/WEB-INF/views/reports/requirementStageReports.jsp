@@ -167,6 +167,7 @@ function getRequirementStageCounts(){
 		        	var  filledclosedRequirementsCount = json.filledclosedRequirementsCount;
 		        	var  unfilledclosedRequirementsCount = json.unfilledclosedRequirementsCount;
 		        	var  rejectedRequirementsCount = json.rejectedRequirementsCount;
+		        	var  closedRequirementsCount = json.closedRequirementsCount;
 		        	
 		        	
 		        	if(newRequirementCount>0){
@@ -213,9 +214,13 @@ function getRequirementStageCounts(){
 	                      $("#unfilledclosedRequirementsCount").text("("+unfilledclosedRequirementsCount+")");
 	                  }else{
 	                      $("#unfilledclosedRequirementsCount").html("(0)");
+	                  }if(closedRequirementsCount>0){
+	                      $("#closedRequirementsCount").text("("+closedRequirementsCount+")");
+	                  }else{
+	                      $("#closedRequirementsCount").html("(0)");
 	                  }
 	        	  
-		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount);
+		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount,closedRequirementsCount);
 	          },
 	          
 	     }); 
@@ -280,7 +285,7 @@ function getRequirementStageList(){
       <h2 class="pull-left">Job Stages Reports</h2>
 		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/userReports'/>">Dashboard Reports</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -332,6 +337,8 @@ function getRequirementStageList(){
                				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementStageList();">Filled Closed</li>
                				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementStageList();">Unfilled Closed</li>
                				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementStageList();">Rejected</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementStageList();">Closed</li>
+               				
 		              </ul>
 		    </div>
         </li>
@@ -341,7 +348,7 @@ function getRequirementStageList(){
   
  <div class="repTab1">  
       
-	<div class="reportsCount reportsCountNew">
+	<div class="reportsCount reportsCountNew reportsCount_New">
 		<ul>
 			<li title="NEW">
 				<span><i class="fa fa-pencil"></i></span><b id="newRequirementCount"></b>
@@ -369,6 +376,9 @@ function getRequirementStageList(){
 			</li>
 			<li title="REJECTED">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedRequirementsCount"></b>
+			</li>
+			<li title="CLOSED">
+				<span><i class="fa fa-window-close"></i></span><b id="closedRequirementsCount"></b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -693,7 +703,7 @@ function getCustomReports(){
 <script src="resources/reports/light.js"></script>  -->
 
 <script>
-function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount){
+function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount,closedCount){
 	var chart = AmCharts.makeChart( "chartdiva", {
 		  "type": "pie",
 		  "theme": "light",
@@ -742,6 +752,11 @@ function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount
 			  "value": rejectedCount,
 			  "color":"#da3838",
 			  "black":"#000"
+		  },{
+			  "Stage": "Closed ("+closedCount+")",
+			  "value": closedCount,
+			  "color":"#C62828",
+			  "black":"#000"
 		  } ],
 		  "valueField": "value",
 		  "titleField": "Stage",
@@ -772,3 +787,4 @@ $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {
     e.stopPropagation();
 });	
 </script>  	
+<jsp:include page="../masterFooter.jsp" />

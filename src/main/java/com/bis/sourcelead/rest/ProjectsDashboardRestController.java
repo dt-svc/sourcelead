@@ -38,7 +38,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -91,6 +93,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class ProjectsDashboardRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -315,11 +320,30 @@ public class ProjectsDashboardRestController {
 		 */
 		 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
 		 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
-		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
-			 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
+		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,
+				 @RequestParam(value="taskStatus", required=false) String taskStatus,HttpServletRequest request) throws Exception {
+				List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
 			 return taskList;
 		 }
 				 
+		 
+		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
+		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
+			 
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
+				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default descending order
+				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+				}
+				projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectTasksDTO.setSortOrder(sortColumnOrder);
+				ResponseList<ProjectTasksDTO>  taskList=tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
+			 return taskList;
+		 }
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId
@@ -700,12 +724,10 @@ public class ProjectsDashboardRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/getProjectDocumentsList")
-		public String getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+		public List<ProjectDocuments> getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
 		{
-			String resultJson;
 			List<ProjectDocuments> projectDocumentList = projectDocumentsService.getProjectDocumentsListByProjectIdId(projectId);
-			resultJson = commonUtil.toJSON(projectDocumentList);
-			return resultJson;
+			return projectDocumentList;
 		}
 	 /**
 	  * @author Laxman
@@ -797,17 +819,11 @@ public class ProjectsDashboardRestController {
 		  * @throws Exception
 		  */
 		 @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectDocument(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "documentId", required = false) Long documentId,  MultipartHttpServletRequest request) throws Exception
+			public @ResponseBody String saveProjectDocument(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				MultipartFile multiFile = null;
-				Iterator<String> itrator = request.getFileNames();
-				if (itrator.hasNext()) {
-					multiFile = request.getFile(itrator.next());
-				}
-				if (null != projectId) {
-					projectDocumentsService.storeProjectDocuments(jsonObj, projectId,multiFile,documentId);
+			 projectsDocumentsDTO.setStaticPath(staticPath);
+				if (null != projectsDocumentsDTO.getProjectId()) {
+					projectDocumentsService.storeProjectDocuments(projectsDocumentsDTO);
 					return "success";
 				}
 				else {

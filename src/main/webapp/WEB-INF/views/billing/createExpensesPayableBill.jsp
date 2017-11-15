@@ -60,7 +60,7 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bill List</a> &raquo; Project Based Bill</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -1004,7 +1004,7 @@ function getVendors(){
 				 var opt = invoiceDocumentsList[i]; 
 	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";

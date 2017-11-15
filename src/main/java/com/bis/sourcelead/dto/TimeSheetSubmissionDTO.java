@@ -18,6 +18,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private List<TimesheetEntriesDTO> timesheetEntries;
 	
+	private List<Long> removedDocumentIds;
+	
 	private List<FileInfo> fileInfo;
 	
 	private String billableHours;
@@ -255,6 +257,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setResponseStatus(String responseStatus) {
 		this.responseStatus = responseStatus;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
 	}
 
 	

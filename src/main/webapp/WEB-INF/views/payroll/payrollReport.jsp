@@ -14,8 +14,11 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Employee Payroll Invoice</h2>
       </div>
-      <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a>
-      <div class="pull-right brud-crum">Home &raquo; Employee Payroll Invoice</div>
+
+<%--       <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a> --%>
+ <%--  <a href="<c:url value='/searchBasedReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Search Based Report</a>--%>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Employee Payroll Invoice </div>
+
     </section>
     <section class="project_side_wrap_inn_tabs payroll-invoice">
         <div class="clearfix mb">
@@ -1019,6 +1022,7 @@ function finalBalance(){
 			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
 			        	result = result + '  <div class="payrollinvoice-generate">';
 			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
+			        	result = result + '  <div class="payrollinvoice-header">';
 			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
 			        	result = result + '<tr>';
 			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
@@ -1032,6 +1036,7 @@ function finalBalance(){
 			        	result = result + '<td class="bg-success">$ '+data.due+'</td>';
 			        	result = result + '</tr>';
 			        	result = result + '</table>';
+			        	result = result + '  </div>';
 			        	
 			        	
 			        	
@@ -1122,6 +1127,21 @@ function finalBalance(){
 			        
 			    });
 }
+</script>
+
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	$("#tab-1").show();
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

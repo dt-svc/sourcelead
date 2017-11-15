@@ -31,7 +31,6 @@ function requirementListCheck(searchValue,universalRequirementSearchList,searchT
 	} 
 }
 function requirementList(searchType,sourceleadUrl){  
-	
 	    var url = '';
 	    if(searchType == 'list' || searchType == 'universalSearch'){
 	    	var filterStatus = [];
@@ -313,17 +312,31 @@ function jpagination(url,sourceleadUrl){
 			         "render": function (data, type, opt, meta) {
 			        	        var contains = false;
 			        	        var isAllow = false;
+			        	        var approver = false;
 			         		    var result = "";
 			         		   result = result +"<td><div style='width:75px'>";
 			         		   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
 			         		   var userId = '${SourceLeadWeb_user.id}';
-			         		   if(opt.managerUserId != null && opt.managerUserId != '' && opt.managerUserId != 'undefined'){
-			         			   if(opt.managerUserId.id == userId){
-			         				  contains = true;
+			         		  if((opt.level1ApproverUserId != null && opt.level1ApproverUserId != '' && opt.level1ApproverUserId != 'undefined') || (opt.level2ApproverUserId != null && opt.level2ApproverUserId !='' && opt.level2ApproverUserId != 'undefined')){ 
+			         		 if(opt.level2ApproverUserId != null && opt.level2ApproverUserId !=''){
+			         			 if(userId == opt.level2ApproverUserId){
+									   approver = true;
+								  } 
+			         		 }else{
+			         			  for(var a = 0;a< opt.level1ApproverUserId.length ; a++){
+ 								  if(userId == opt.level1ApproverUserId[a]){
+ 									   approver = true;
+ 								  }
+ 							   }
+			         		 }
+			         		  }
+			         		   if(opt.isLoginUserAsManager != null && opt.isLoginUserAsManager != '' && opt.isLoginUserAsManager != 'undefined'){
+			         			   if(opt.isLoginUserAsManager == userId){
+			         				   contains = true;
 			         			   }
 			         		   }
 			         		   
-			         		   if(contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
+			         		   if(approver == true || contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
 			         			  isAllow = true;
 			         		   }
 			         		   if(isAllow == true){

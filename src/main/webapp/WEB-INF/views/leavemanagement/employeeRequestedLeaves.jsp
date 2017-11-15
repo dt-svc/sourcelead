@@ -42,7 +42,7 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-     <div id="loading"></div> 
+     <div id="appRejLoading"></div>
     <div class="clients_wrap_table datatable_filter">
     <div class='remove_search mt10'>
 		 <input type='text' placeholder='Search' id='requestedEmployeesTableSearch'/>
@@ -279,9 +279,11 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 		 } 
 	 }    
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
-			  $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
+			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();
+						$("#appRejLoading").removeAttr("style");
 			 			$("#remove_user_pop, .side_mask").fadeOut();
 			 			$("#selector1").removeAttr("style");
 			    		 $("#selector1").css({ display: "block" });
@@ -446,7 +448,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<label class="col-md-2 control-label"><b>Attachment:</b></label>';
              result = result +' <div class="col-md-8">';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-				 result = result+'<div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+				 result = result+'<div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
             	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a></div>';
              }else{
             	 result = result +'<span>--</span>'; 

@@ -28,12 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -131,6 +133,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	CandidateResumesDao candidateResumesDao;
 
 	
 	@Override
@@ -433,7 +438,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder attachmentBuilder=new StringBuilder();
+            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
+            {
             emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	         }
+	       else
+	        {
+	    	   emailMessage.setFromName(loginUser.getFirstName());
+	        }
+            
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
             // setting the class filed values
@@ -1230,6 +1243,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				sb.append(offer.getSubmissionId().getCandidate().getFirstName());
 			}
 			offer.setCandidateName(sb.toString());
+			offer.setSpocUserCode(offer.getSubmissionId().getCreatedBy());
 			offer.setClientName(offer.getSubmissionId().getVendorLocationId().getOrgLocationName());
 			StringBuilder vendorContactSb = new StringBuilder();
 			if(offer.getSubmissionId().getSourceSubmission() != null && offer.getSubmissionId().getSourceSubmission().getRequirement() != null && offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId() != null){
@@ -1326,6 +1340,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		candidate.setDesignationType("C2C");
     		candidate.setStatus(Constants.RECORD_ACTIVE);
+    		candidate.setCurrentRate(requirementOffers.getAmount());
+    		candidate.setCurrentRateType(requirementOffers.getPaymentMode());
+    		candidate.setCurrentRateCurrency(requirementOffers.getPaymentType());
+    		candidate.setExpectedRate(requirementOffers.getAmount());
+    		candidate.setExpectedRateCurrencey(requirementOffers.getPaymentType());
+    		candidate.setRateType(requirementOffers.getPaymentMode());
     		
     		if(requirementSubmission.getSourceSubmission() != null){
     			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
@@ -1384,6 +1404,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setParentCandidateId(vendorCandidate);
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+	    	
+	    	if(requirementSubmission != null && requirementSubmission.getCandidateResumes() != null) {
+    			CandidateResumes resume = candidateResumesDao.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+    			if(resume != null) {
+    				CandidateResumes candResume = new CandidateResumes();
+    				candResume.setOrgLocationId(orgLocations);
+    				candResume.setCandidateId(candidate);
+    				candResume.setFileContentType(resume.getFileContentType());
+    				candResume.setFileName(resume.getFileName());
+    				candResume.setFileURL(resume.getFileURL());
+    				candResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    				candResume.setStatus(Constants.RECORD_ACTIVE);
+    				candResume.setCreatedBy(orgLocations.getCreatedBy());
+    				if(orgLocations.getDateFormat() != null) {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));	
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}else {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy", new Date()));
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}
+    				
+    				candidateResumesDao.storeCandidateResumes(candResume);
+    			}
+    		}
 	    	
 	    	if(requirementSubmission.getSourceSubmission() != null){
 	    		requirementSubmission.setVendorCandidateId(vendorCandidate);

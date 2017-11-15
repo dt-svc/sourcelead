@@ -40,7 +40,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-info">Recruiters</h4>
-                      <small class="text-muted">All Recruiters Reports</small>
+                      <small class="text-muted">All Recruiters Report</small>
                       <div class="clearfix mt10">
                            <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/recruitersReports" />">View</a>
                       </div>
@@ -55,7 +55,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-muted">Vendors</h4>
-                      <small class="text-muted">All Vendors Reports</small>
+                      <small class="text-muted">All Vendors Report</small>
                       <div class="clearfix mt10">
                        <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/vendorsReports" />">View</a>
 
@@ -69,8 +69,8 @@
                       <i class="fa fa-money fa-2x text-primary"></i>
                   </div>
                   <div class="pull-left">
-                      <h4 class="text-primary">Billing</h4>
-                      <small class="text-muted">All Billing Reports</small>
+                      <h4 class="text-primary">Finance</h4>
+                      <small class="text-muted">Finance Report</small>
                       <div class="clearfix mt10">
                        <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/billingReports" />">View</a>
                       </div>
@@ -83,7 +83,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-danger">Jobs Posted</h4>
-                      <small class="text-muted">All Job Posted Reports</small>
+                      <small class="text-muted">All Jobs Posted Report</small>
                       <div class="clearfix mt10">
                            <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/requirementListForReports" />">View</a>
                       </div>
@@ -95,7 +95,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-warning">Jobs Stages</h4>
-                      <small class="text-muted">All Job Stages Reports</small>
+                      <small class="text-muted">All Job Stages Report</small>
                       <div class="clearfix mt10">
                            <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/requirementStagesListForReports" />">View</a>
                       </div>
@@ -107,7 +107,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-success">Applicants Received</h4>
-                      <small class="text-muted">All Received Applicants Reports</small>
+                      <small class="text-muted">All Received Applicants Report</small>
                       <div class="clearfix mt10">
                            <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/applicantsReceivedListForReports" />">View</a>
                       </div>
@@ -119,7 +119,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-muted">Expenses</h4>
-                      <small class="text-muted">All Expenses Reports</small>
+                      <small class="text-muted">All Expenses Report</small>
                       <div class="clearfix mt10">
                            <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/expensesReportsList" />">View</a>
                       </div>
@@ -131,7 +131,7 @@
                   </div>
                   <div class="pull-left">
                       <h4 class="text-info">TimeSheet</h4>
-                      <small class="text-muted">All TimeSheet Reports</small>
+                      <small class="text-muted">All TimeSheets Report</small>
                       <div class="clearfix mt10">
                        <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/timeSheetReports" />">View</a>
 
@@ -144,14 +144,42 @@
                       <i class="fa fa-group fa-2x text-info"></i>
                   </div>
                   <div class="pull-left">
-                      <h4 class="text-info">Added Candidates</h4>
-                      <small class="text-muted">All Added Candidates Reports</small>
+                      <h4 class="text-info">Candidates Added</h4>
+                      <small class="text-muted">All Candidates Report</small>
                       <div class="clearfix mt10">
                       <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/candidateListForReports" />">View</a>
 
                       </div>
                   </div>
-                      </div>                      
+                      </div>  
+                      
+                      <div class="col-md-3 mb">
+                  <div class="pull-left mr10">
+                      <i class="fa fa-usd fa-2x text-info"></i>
+                  </div>
+                  <div class="pull-left">
+                      <h4 class="text-info">Employee ROI</h4>
+                      <small class="text-muted">Each Employee ROI Reports</small>
+                      <div class="clearfix mt10">
+                      <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/payrollReport" />">View</a>
+
+                      </div>
+                  </div>
+                      </div>   
+                      
+                       <div class="col-md-3 mb">
+                  <div class="pull-left mr10">
+                      <i class="fa fa-usd fa-2x text-info"></i>
+                  </div>
+                  <div class="pull-left">
+                      <h4 class="text-info">All Employee ROI</h4>
+                      <small class="text-muted">All Employees ROI Reports</small>
+                      <div class="clearfix mt10">
+                      <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/payrollAllBalanceReport" />">View</a>
+
+                      </div>
+                  </div>
+                      </div>                    
       </div>
         </div>
       <!-- Content Area Ends--> 

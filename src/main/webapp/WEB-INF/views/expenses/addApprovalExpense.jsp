@@ -50,6 +50,7 @@
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
+					<c:if test="${submissionStatus != 'SUBMITTED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" >
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -59,6 +60,18 @@
 							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
 						</select>
+					</c:if>
+					<c:if test ="${submissionStatus == 'SUBMITTED'}">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
+							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projects" items="${expEntry.projectsList}">
+							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<input type="hidden" id="projectIdHidden" value="" name="projectId">
 					</div>
 				</div> 
                 <div class="form-group">
@@ -114,9 +127,9 @@
 <div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
 </div>
+<div class="pull-left" id="exceedSpan"></div>
 </div>
-	<div class="pull-left" id="exceedSpan"></div>
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow("approver");'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
+	<a href="javascript:addExpenseRow('approver');"  data-id="approver" id="addExpenseItemButton" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
@@ -137,14 +150,14 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.dateOccurred}</div></td>
-			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.categoryName}">${entry.categoryName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.categoryAmount}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
-			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
+			           <td><div id="categoryDateDiv${(2*(entryCount.count))-1}">${entry.dateOccurred}</div></td>
+			           <td><div id="categoryTypeDiv${(2*(entryCount.count))-1}" title="${entry.categoryName}">${entry.categoryName}</div></td>
+			           <td><div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			           <td><div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div></td>
+			           <td><div id="expenseRateType${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div></td>
+			           <td><div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div></td>
+			           <td><div id="paidByDiv${(2*(entryCount.count))-1}">${entry.paidBy}</div></td>
+			           <td><div id="hideAndShowDetailsDiv${(2*(entryCount.count))-1}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
@@ -153,13 +166,13 @@
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 			          <td colspan="8">
 				         <div class="expDetails">
-				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
+				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 							<div class="col-md-4 minHeight chosen-custom">
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
+						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
@@ -172,15 +185,15 @@
 					</div>
 							<div class="col-md-4 minHeight">
 								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].dateOccurred"  class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+								<input type="text" id="receiptIssuedBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-								<select id="paymentMode${entryCount.count}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
+								<select id="paymentMode${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 								         <option value="">Select Mode</option>
 								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option  ${entry.paymentMode == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
@@ -188,23 +201,23 @@
 								</select>
 							</div>	
 							
-		                  <div id="amountDiv${entryCount.count}" class='col-md-4 minHeight valid_ation'>
+		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-											 <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+											 <select class='btn btn-info' id='expenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
 												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
 									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									              </c:forEach>
 										  </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${entryCount.count}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
 		                 <div class="col-md-4 minHeight">
 								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
-								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
+								<select class="chosen-select form-control" id="paidBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
 								         <option value="" disabled>Select Paid By</option>
 								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
 							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
@@ -214,7 +227,7 @@
 		                 
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight minHe'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -226,11 +239,11 @@
 			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
-			                             <a class='downicon' href='${entryDoc.fileURL}'>
+			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
-								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count});deleteAttchment(${entryDoc.fileDbId})" />
+								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
@@ -268,7 +281,12 @@
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+			<c:if test ="${!empty expenses.id}">
+				 <input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+			</c:if>
+			<c:if test ="${empty expenses.id}">
+				<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/expensesApprovalList'/>' "  >
+			</c:if>
 		</div>
    </div>
   </div>
@@ -291,12 +309,23 @@ $.ajax({
 </script>
 
 <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+/* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
             event.preventDefault();
         }
-    });	
+    });	 */
+    $('.allownumericwithdecimal').keydown(function (event) {
+        if (event.shiftKey == true) {
+            event.preventDefault();
+        }
+        if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+        } else {
+            event.preventDefault();
+        }
+        if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+            event.preventDefault();
+    });    
 </script>
 
 <script>
@@ -321,9 +350,9 @@ function rejectReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Re-open Reject message here</p>";
-	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
 	result = result +"	</div>";
 	$("#reOpenRejectedPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -342,11 +371,11 @@ function storeReopenRejectedReason(expenseId,reOpenedUserId){
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	if(reason !== ""){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
+		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
@@ -368,46 +397,36 @@ function reOpenMyExpense(expenseId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Re-open Reject message here</p>";
-	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeWhiteSpacesAdd();notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
-</script>
-<script type="text/javascript">
-function removeWhiteSpacesAdd(){
- var el = $("#reOpenReason").val();
- var reopenval = el.replace(/(^\s*)|(\s*$)|((\r?\n|\r)+\s)/gi,"");
- $("#reOpenReason").val(reopenval);
- 
-}
+
 </script>
 
 
 <script>
 function notifyReopenExpense(expenseId){
 	var reason = document.getElementById("reOpenReason").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	if(reason !== ""){
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
 	   });
 	}else{
-		if(reason){
-			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
+		
 			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
-	  
-}
+
 </script>
 
 <script>
@@ -507,19 +526,40 @@ function removeWhiteSpaces(rowCount){
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			var projectStartDate = $("#projectStartDateExpensesId").val();
+			var projectEndDate = $("#projectEndDateExpensesId").val();
+			var d1= getJSDate(projectStartDate,locationDate);
+     		var d2= getJSDate(projectEndDate,locationDate);
 			var entriesCount = $('#categoryTable >thead >tr').length;
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
+			var date_validation = "true";
 			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
 				for(var i = 1; i < maxRecCount; i++){
+					var categoryDate = $("#categoryDate"+i).val();
+				    if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				    	    var d3= getJSDate(categoryDate,locationDate);
+						    if(d1<=d3 && d3<=d2){
+						    	date_validation = "false";
+						    }
+				    }
+				    
 				   if($("#divEntityTsRow"+i).is(':visible'))
 				   {
 					   validation_required = "false";
 				   }
 				}
 			}
-			if(validation_required == "true"){
-				$("#exceedSpan") .html( "<p class='textWarning small'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
+			var  pmIdValue = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
+			$("#projectIdHidden").val(pmIdValue);
+
+			if(date_validation == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
+				return false;
+			}
+			else if(validation_required == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
 			else{
@@ -607,48 +647,6 @@ $('#projectEndDateExpensesId').val('');
 $("#projectMemberId").val('')
 }
 </script>
-
-<script>
-	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatEduUpdate = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatEduUpdate = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-		  }
-		$("#projectStartDateExpensesId").datepicker("destroy");
-		$("#projectEndDateExpensesId").datepicker("destroy");
-		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : finalDateFormatEduUpdate,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
-						removeErrStr();
-					}
-				});
-		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : finalDateFormatEduUpdate,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
-						removeErrEnd();
-					}
-				});
-	}
-</script>
-
 <script>
 function expensesDateCheck(){
 	$('#dateError').remove();
@@ -706,14 +704,14 @@ function getAmountValueCategory(rowId){
 if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
-	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
-		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
-	}else{
-		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
-	}
-   }	
+		if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+			$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		}else{
+			$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		}
+     }	
   }
-
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -92,8 +92,8 @@ function candidateShortList(requirementId){
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
-			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
-			        	   result = result + '<td><div class="tbldata-dotdot_80"><a class="glyphicon glyphicon-download-alt" href=\"'+report.candidateResumes.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+report.candidateResumes.fileURL+'\',\''+report.candidateResumes.fileName+'\',\''+report.candidateResumes.fileContentType+'\');"></a></span></div></td>';
+			           if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+			        	   result = result + '<td><div class="tbldata-dotdot_80"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';

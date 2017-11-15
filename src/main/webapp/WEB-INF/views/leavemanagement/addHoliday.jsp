@@ -56,8 +56,9 @@ $(document).ready(function() {
      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
+    <div id="holidayLoading"></div>
     <form id="holiday_form" name="holiday_form" method="post">
-    <input type="hidden" name="holidayId" value="${holidayDTO.id}"/>
+    <input type="hidden" name="holidayId" id="holidayId" value="${holidayDTO.id}"/>
       <div class="clearfix form-horizontal inner-content">
         <div class="clearfix">
           <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -207,10 +208,10 @@ $(document).ready(function() {
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
-		  	$("#holiday_form").attr("disabled", "disabled");
-			$("#holiday_form").addClass('button').val('Processing..');
+		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-					location.replace(sourceleadUrl+ "/viewHoliday");
+				$("#holidayLoading").removeAttr("style");	
+				location.replace(sourceleadUrl+ "/viewHoliday");
 			});
 			return true;
 		} else {
@@ -298,7 +299,7 @@ function validateHolidayName(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
-		$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(sourceleadUrl+"/validateHolidayName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
           		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
           		$("#save_holiday").removeAttr("disabled");

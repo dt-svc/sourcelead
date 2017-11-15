@@ -61,22 +61,15 @@ function closeCertificatePopup(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#employers_form').validate(false, validationSettings)) {
-			
 			//It will escape all the special characters
 			var formData = getFormData('employers_form');
 			$.ajax({
 						type : "POST",
 						data : formData,
 						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-						success : function(json) {
+						success : function(data) {
 
-							if (json != null && json != 'undefined'
-									&& json != "") {
-// 								if (data.indexOf('Sign In') >= 0) {
-// 									location.replace(sourceleadUrl);
-// 								} else if (data.indexOf('exception') >= 0) {
-// 									location.replace(sourceleadUrl  + "/errorPage");
-// 								} else {
+							if (data != null && data != 'undefined'	&& data != "") {
 									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
 			            			 if(data<50){
 			            			   $("#perVal").removeClass('progress-bar-success');
@@ -102,11 +95,8 @@ function closeCertificatePopup(){
 
 			            			$("#quickDisVal").empty();
 			            			$("#quickDisVal").append(data+'%');
-									
-									$("#popUpDivEmp").removeClass(
-											"edit-details-active");
+			            			closeCertificatePopup();
 									candidateEmployersList(candidateId);
-// 								}
 							}
 
 						},
@@ -732,8 +722,8 @@ function employeePagination(){
 
 		            			$("#quickDisVal").empty();
 		            			$("#quickDisVal").append(data+'%');
-								$("#popUpDivEmp").removeClass(
-										"edit-details-active");
+								$("#popUpDivEmp").removeClass("edit-details-active");
+								closeCertificatePopup();
 								candidateEmployersList(candidateId);
 							}
 						}

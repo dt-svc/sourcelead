@@ -466,7 +466,7 @@ public class RequirementController {
 
 	}
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
@@ -553,11 +553,17 @@ public class RequirementController {
 					}
 				}
 			}
-			
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 		Boolean isLoginUserAsApprover = false;
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(isAdmin || isManager){
+			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
+		}else{
+			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		}
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;
+			requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
 		}
 		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 		
@@ -580,7 +586,6 @@ public class RequirementController {
 			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isTeamMember",isTeamMember);
 			
-			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
 			model.addObject("isAdmin",isAdmin);
@@ -654,7 +659,7 @@ public class RequirementController {
 	
 	
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummaryView")
 	public ModelAndView requirementSummaryView(HttpServletRequest request, @RequestParam(value="requirementUUID", required=false)String requirementUUID, @RequestParam(value="interviewId", required=false)Long interviewId) throws Exception {
 

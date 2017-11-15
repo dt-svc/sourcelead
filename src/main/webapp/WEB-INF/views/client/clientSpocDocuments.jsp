@@ -118,7 +118,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
@@ -414,6 +414,7 @@ function getSpocsList(orgRelationId){
 <script>
 function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";
+	 result = result  +'          <form role="form"  id="document_form_del" name="document_form_del" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -421,6 +422,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
+	result = result  +'                </form>                                                                                                                                ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200); 
@@ -430,7 +432,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 <script>
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#document_form_del').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",

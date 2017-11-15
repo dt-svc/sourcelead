@@ -52,9 +52,9 @@ function errRemoveVendorContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Bill</h2>
+			<h2>Vendor Bill</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Custom Based Bill</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bill List</a> &raquo; Custom Based Bill</div>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -133,14 +133,14 @@ function errRemoveVendorContact(){
 							<label class="col-md-3">Billing Address</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address" data-validation="validate_length length1-100" field-name="Billing Address"></textarea>
+									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									 name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+									 name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
 						</div>
 						
@@ -188,7 +188,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
@@ -469,12 +469,10 @@ function remove(){
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
 		if(invoiceDocumentsList.length > 0){
-			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
 				 var opt = invoiceDocumentsList[i]; 
-	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -484,6 +482,19 @@ function remove(){
 			 
 			 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
+		}else{
+			 <c:forEach var="doc" items="${documents}">
+				 result = result +"<strong id='invoiceDocument${doc.id}'>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+				 result = result +"<input type='button' value='${doc.fileName}'>";
+				 result = result +"</a>";
+				 result = result +"</strong>";
+         	</c:forEach>
+			
+			 
+			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+			
 		}
     	
 	}
@@ -495,7 +506,7 @@ function remove(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -732,7 +743,7 @@ function remove(){
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -844,7 +855,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '+1d');
-						dt.setDate(dt.getDate() + 1);
+						dt.setDate(dt.getDate());
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 						getEstimatedHours(maxRowNum);
 			 	  }
@@ -856,7 +867,7 @@ function cancel(){
 			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '-1d');
-						dt.setDate(dt.getDate() - 1);
+						dt.setDate(dt.getDate());
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 						getEstimatedHours(maxRowNum);
 			 	  }
@@ -1906,7 +1917,11 @@ function saveInvoice(saveType){
 	    		     			location.replace(sourceleadUrl+"/payablesList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
-					    	    $("#msgDiv").html("Successfully you have created a Bill..");
+					    		if(saveType == 'SENT'){
+					    			$("#msgDiv").html("Successfully you have sent a Bill..");
+					    		}else if(saveType == 'DRAFT'){
+					    			$("#msgDiv").html("Bill saved Successfully..");
+					    		}
 	    		     			msgFadein();
 			  				}
 			  			   }); 

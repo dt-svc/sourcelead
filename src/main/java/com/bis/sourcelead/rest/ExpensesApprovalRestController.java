@@ -159,7 +159,7 @@ public class ExpensesApprovalRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason);
+	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
 	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
 	 	if(eah != null && eah.getExpenseId() != null){
 	 		 String submissionStatusStr = eah.getExpenseId().getExpenseStatus().getValue();
@@ -168,7 +168,7 @@ public class ExpensesApprovalRestController {
 		 		     || submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))
 		 	    )
 		 	   {
-	 			    ProjectMembers projectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(eah.getExpenseId().getProjectMembers().getId());
+	 			    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(eah.getExpenseId().getProjectMembers().getId());
 	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());

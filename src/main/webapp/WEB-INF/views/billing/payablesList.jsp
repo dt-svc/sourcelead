@@ -56,11 +56,11 @@ $(document).ready(function(){
 			</div>
 		</c:if>
 		<div class="pull-left">
-			<h2>Payables</h2>
+			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Payables List
+			&raquo; Bill List
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -584,7 +584,7 @@ function preparePayableList(url,orgLocationDate){
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
-	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Reference Id</th>                    ';
 	result = result +'         <th>Vendor Name</th>           ';
 	result = result +'         <th>Contact</th>               ';
 	result = result +'         <th>Project Name</th>          ';

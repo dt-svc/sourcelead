@@ -38,10 +38,9 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user">
+                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf');">
                    <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
-                	<%-- ${dept.id  == departmentId ? 'selected' : ''} --%>
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                 	</c:forEach>
                 </select>
@@ -246,9 +245,14 @@ function removeEndValid(){
  		
  		
  <script type="text/javascript">
- function getPieChartBasedOnUser(){
+ function getPieChartBasedOnUser(onbehalf){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var userId = '${SourceLeadWeb_userId}';
+	 var userId ='';
+	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
+		 userId = $("#user").val();
+	 }else{
+		 userId = '${SourceLeadWeb_userId}';
+	 }
 	 $.ajax({
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
@@ -367,7 +371,7 @@ function applyLeave(){
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/applyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
 			if(data == true){
 				location.replace(sourceleadUrl+ "/leaveManagementReports");
 			}
@@ -463,7 +467,7 @@ function validateMaxLeave(data){
 	
 }
 </script>
-
+<div class='comMask'></div>
 <script>
 function validateDate(){
 	$('.warMess').hide();
@@ -474,6 +478,7 @@ function validateDate(){
 	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
 		if(data != null){
 			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
+			$(".comMask").fadeIn();
 		}else{
 			$('.warMess').hide();
 		}
@@ -482,7 +487,13 @@ function validateDate(){
 
 function closedate(){
 $(".warMess").fadeOut();
+$(".comMask").fadeOut();
 };
+$(".comMask").click(function()
+{
+	$(".comMask").fadeOut();
+	$(".warMess").fadeOut();
+		});
 
 
 </script>
@@ -508,6 +519,7 @@ function getApproversList(){
 	$('#approverUser').trigger("chosen:updated");
 }
 </script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />

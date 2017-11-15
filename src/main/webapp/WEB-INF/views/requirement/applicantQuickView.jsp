@@ -17,9 +17,8 @@ function applicantQuickViewProfile(submissionId,candidateId){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	
-               var json = JSON.parse(data);
+        	 if(data != null){  
+              var json = JSON.parse(data);
  	    	   
  	    	   if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
 			 		designationType =json.designationType+',';

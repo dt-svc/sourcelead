@@ -44,9 +44,9 @@ $(document).ready(function(){
 			</div>
 	     </c:if>
       <div class="pull-left">
-        <h2>Receivables</h2>
+        <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
@@ -530,7 +530,7 @@ function prepareInvoiceList(url,locationdateForList){
  	result = result + '<table id="invoiceListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
-	result = result +'         <th>ID</th>                    ';
+	result = result +'         <th>Reference Id</th>                    ';
 	result = result +'         <th>Client Name</th>           ';
 	result = result +'         <th>Contact</th>               ';
 	result = result +'         <th>Project Name</th>   ';

@@ -204,7 +204,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                                <option value="${vendor.vendorNameForList}">${vendor.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -244,11 +244,11 @@ border:none; background-color: none !important; padding:0 5px !important;
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
             </div>
@@ -1744,7 +1744,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		
-		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Bills</a></li>';
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
@@ -1921,8 +1921,8 @@ function getVendorOrgname(vendorOrgname){
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Vendor Zip Code:</strong>';
-							if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-								result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
+							if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+								result = result + '<span>'+json.zipcode+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
@@ -2737,6 +2737,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#country').val('${loginCountryName}'); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
+	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");

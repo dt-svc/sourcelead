@@ -57,10 +57,36 @@ public class CandidateOffBoardingDTO implements Serializable {
 	
 	private long offboardUserId;
 	
+	private String offboardUUID;
 	
+	private String offBoardStatus;
 	
+	private String offboardSubmitted;
 	
-	
+	public String getOffboardSubmitted() {
+		return offboardSubmitted;
+	}
+
+	public void setOffboardSubmitted(String offboardSubmitted) {
+		this.offboardSubmitted = offboardSubmitted;
+	}
+
+	public String getOffBoardStatus() {
+		return offBoardStatus;
+	}
+
+	public void setOffBoardStatus(String offBoardStatus) {
+		this.offBoardStatus = offBoardStatus;
+	}
+
+	public String getOffboardUUID() {
+		return offboardUUID;
+	}
+
+	public void setOffboardUUID(String offboardUUID) {
+		this.offboardUUID = offboardUUID;
+	}
+
 	public long getOffboardUserId() {
 		return offboardUserId;
 	}

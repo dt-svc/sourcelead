@@ -141,9 +141,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String empEmail;
 	
+	@JsonProperty
 	@Transient
 	private String startDate;
 	
+	@JsonProperty
 	@Transient
 	private String endDate;
 	
@@ -1285,6 +1287,8 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getClaimedExpenseTotal() {
+		if(claimedExpenseTotal == null)
+			claimedExpenseTotal = 0f;
 		return claimedExpenseTotal;
 	}
 

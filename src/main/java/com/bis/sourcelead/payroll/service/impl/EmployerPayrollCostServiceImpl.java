@@ -276,7 +276,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	@Override
 	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
 		
-		List<UserPayroll> userPayrollList = null;
+		List<UserPayroll> userPayrollList = new ArrayList<>();
 		if(jsonObj.has("payrollCycle")){
 			Date[] dates = null;
 			String payrollCycle = jsonObj.getString("payrollCycle");
@@ -289,31 +289,36 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			Date startDate = dates[0];
 			Date endDate = dates[1];
 			
-			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
-			if(userPayrollList == null || userPayrollList.isEmpty()){
+//			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//			if(userPayrollList.size() >= 0){
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
 				if(projectMembersList !=null && projectMembersList.size() >0){
+					long i = 1;
 					for(ProjectMembers pm:projectMembersList){
 						StringBuilder sb = new StringBuilder();
 						double amount = 0;
 						double finalAmount = 0;
 						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
+							System.out.println("--------");
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
-							userPayroll.setEmpId(pm.getEmployee().getEmployeeId());
-							userPayroll.setUserId(pm.getEmployee().getUser());
+							userPayroll.setId(i);
+							if(pm.getProjectMemberCandidteId() !=null) {
+								userPayroll.setEmpId(pm.getProjectMemberCandidteId().getId().toString());	
+								userPayroll.setUserId(pm.getProjectMemberCandidteId().getConsultantUser());
+							}
 							userPayroll.setOrgLocationId(orgLocation);
-							if(pm.getEmployee().getUser().getLastName() !=null){
-								sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+							if(pm.getProjectMemberCandidteId().getLastName() !=null){
+								sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(pm.getProjectMemberCandidteId().getLastName());
 							}else{
-								sb.append(pm.getEmployee().getUser().getFirstName());
+								sb.append(pm.getProjectMemberCandidteId().getFirstName());
 							}
 							userPayroll.setEmployeeName(sb.toString());
 							userPayroll.setTotalHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)));
 							userPayroll.setHalfHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)/2));
-							if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
-								double payRateD =  Double.parseDouble(pm.getEmployee().getRate());
+							if(pm.getPayRate() !=null){
+								double payRateD =  pm.getPayRate();
 								userPayroll.setPayRate(df.format(payRateD));
 								 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 								 finalAmount = amount;
@@ -332,13 +337,14 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							userPayroll.setUpdatedBy(user.getUserCode());
 							userPayroll.setUpdatedDate(new Date());
 							userPayroll.setStatus("1");
-							userPayrollService.saveUserPayroll(userPayroll);
+							userPayrollList.add(userPayroll);
+//							userPayrollService.saveUserPayroll(userPayroll);
 						}
 						
-					}
-					
+//					}
+					i++;
 				}
-				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
 			}
 			
 			
@@ -348,11 +354,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 	private double getAmount(float halgHours, ProjectMembers pm) {
 		double amount = 0;
-		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
+		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
 			amount = halgHours*rate;
-		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
+		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
 			amount = rate/2;
 		}
 		return amount;

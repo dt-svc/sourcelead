@@ -33,14 +33,14 @@ window.onload = function() {
 			<div class="pull-left">
 				<h2>Vendors Report </h2>
 			</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Dashboard Reports</a> &raquo; Vendors Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
 </section>
 
 
 <div class="timesheet_out">
-    <div class="vendor_wrap">
-      <div class="timesheet_head">
-<div class="pull-left reportBtns reportBtns_custom mt5 mb10">
+    <div class="vendor_wrap positionRelative">
+      <div class="timesheet_head clearfix">
+<div class="pull-left reportBtns reportBtns_custom mt5">
 <h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
@@ -58,29 +58,27 @@ window.onload = function() {
 	 <div id="dateShow" style="display:none">
 	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="vendorStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="vendorreportStartDate" class="ReError"></p>
+	 <p id="vendorreportStartDate" class="ReError" style="display: none"></p>
 	 </span>
 	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="vendorEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="vendorreportEndDate" class="ReError"></p>
+	<p id="vendorreportEndDate" class="ReError" style="display: none"></p>
 	</span>
 	<span class=""><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getVendorCustomReports();" /></span>
 	</div>
 	
         <div class="clearfix"></div>
       </div>
-  
- <div class="clearfix">
-<section class="candidate_wrap_table recruiterReports_table">
-
+   </div>
+ 
+<section class="candidate_wrap_table recruiterReports_table minHeight">
+<div class="clearfix mt10"></div>
 <div id="vendorReportsDiv" class="datatable_filter"></div>
-
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
-
 </section>    
- </div>
+ 
       
- </div>
+
 
 
   </div>
@@ -88,8 +86,10 @@ window.onload = function() {
 </section>
 <script>
 function getVendorsReportList(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty();
+	$('#vendorreportStartDate').empty();
+	$('#vendorreportEndDate').empty();
+	document.getElementById("vendorreportStartDate").style.display="none";
+	document.getElementById("vendorreportEndDate").style.display="none";
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
@@ -679,9 +679,11 @@ function getVendorCustomReports(){
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("vendorreportStartDate").style.display="block";
 		$("#vendorreportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("vendorreportEndDate").style.display="block";
 		$("#vendorreportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
