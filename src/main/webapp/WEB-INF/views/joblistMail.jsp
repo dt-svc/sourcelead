@@ -298,6 +298,7 @@ function jobListChange(type){
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
+	    allJobs = [];
 	    jobsDataTableList(type);
 }
 </script>
@@ -346,12 +347,12 @@ function jobsPagination(url,type){
     	  		 var flag = false;
     	  		
     	  	  for(var e in allJobs) {
-    	  			 if(opt.jobTitle+"" === allJobs[e]) {
+    	  			 if(opt.requirementId+"" === allJobs[e].split(",")[0]) {
     	  				 flag = true;
     	  				 break;
     	  			 }
     	  		 } 
-    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.requirementId+'" value="'+opt.jobTitle+'" onchange="checkAllJobs(this)"  type="checkbox" name="jobTitle[]"  class="myCheckbox" ></td>';
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.requirementId+'" value="'+opt.requirementId+','+opt.jobTitle+'" onchange="checkJob(this)"  type="checkbox" name="jobTitle[]"  class="myCheckbox" ></td>';
     	  		
     	  		  return result;
     	  	}
@@ -485,14 +486,12 @@ $('input:checkbox:not(#checkAllJobs)').click(function() {
 <script>
 function getCheckedJobs(){
 	
-	var oTable = $('#jobsDataTable').dataTable();
-	var rowcollection =  oTable.$("input[name='jobTitle[]']:checked", {"page": "all"});
-	
 	var internalOutput = "";
-	rowcollection.each(function(index,elem){
-		 var checkbox_value = $(elem).val().split(",");
-		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[0]+"</option>";
-	});
+	 for(var e in allJobs) {
+		 var checkbox_value = allJobs[e].split(",");
+		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+	  }
+	
 	    $("#selectedJobs").append(internalOutput);
 		$("#selectedJobs").trigger("chosen:updated");
 		
@@ -504,7 +503,7 @@ function getCheckedJobs(){
 
 <script>
 var allJobs = [];
-function checkAllJobs(ele) {
+function checkJob(ele) {
 	if($(ele).is(":checked")) {
 		allJobs[allJobs.length] = $(ele).val();
 	}
@@ -640,6 +639,7 @@ function toggleVendors(source) {
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
+            checkVendors(checkboxes[i]);
         
     }
 $('input:checkbox:not(#checkAllVendors)').click(function() {
@@ -682,7 +682,7 @@ function vendorsList(){
      	result = result +' </div>'; 
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
-	   
+	    vendorList = [];
 	    vendorsDataTableList();
 }
 </script>
@@ -726,10 +726,16 @@ function vendorsPagination(url){
     	  	"data": "ischeck",
     	  	"render": function(data, type, opt, meta) {
     	  		 var result = "";
-    	  		 var flag = false;
+    	  		   var flag = false;
+    	  		   
+	   	  		   for(var e in vendorList) {
+	   	  			 if(opt.orgRelationId+"" === vendorList[e]) {
+	   	  				 flag = true;
+	   	  				 break;
+	   	  			 }
+	   	  		 } 
     	  		
-    	  		 /*  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="" value="" onchange="checkAllVendors(this)"  type="checkbox" name=""  class="myCheckbox" ></td>';  */
-    	  		  result = result +'<td>&nbsp;&nbsp;<input id="'+opt.orgRelationId+'" value="'+opt.orgRelationId+'"  type="checkbox" name="orgRelationIds[]" class="myCheckbox" ></td>';
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.orgRelationId+'" value="'+opt.orgRelationId+'" onchange="checkVendors(this)"   type="checkbox" name="orgRelationIds[]" class="myCheckbox" ></td>';
     	  		  return result;
     	  	}
          },{
@@ -803,7 +809,7 @@ function vendorsPagination(url){
 		     }], 
 		     
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"lengthMenu": [[2, 15, 20], [2, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
@@ -973,6 +979,15 @@ var contactUsers = [];
 function checkContactUsers(ele) {
 	if($(ele).is(":checked")) {
 		contactUsers[contactUsers.length] = $(ele).val();
+	}
+}
+</script>
+
+<script>
+var vendorList = [];
+function checkVendors(ele){
+	if($(ele).is(":checked")) {
+		vendorList[vendorList.length] = $(ele).val();
 	}
 }
 </script>
@@ -1225,9 +1240,10 @@ function getContactEmails(){
 	var orgRelationIds = [];
 	var internalOutput = "";
 	
-	 $("input[name='orgRelationIds[]']:checked").each( function (i) {
-		 orgRelationIds[i] = $(this).val();
-	});
+	 for(var e in vendorList) {
+		 orgRelationIds[e] = vendorList[e];
+	  }
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
