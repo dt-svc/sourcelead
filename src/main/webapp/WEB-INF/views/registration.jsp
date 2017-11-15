@@ -287,7 +287,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="company_logo pull-left mb10"><a href="<c:url value='/openRequirements'/>"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
@@ -307,10 +307,10 @@ window.onload = function () {
             <div id ="proffessionalConnect" >
                   <div class="SocialIcons">
                      <ul>
-            		    <li onclick="socialinviter.socialconnect.auth('googleplus');"><i class="fa fa-google-plus"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW"><i class="fa fa-twitter"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN"><i class="fa fa-linkedin"></i></li>
+            		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
                   </div>
@@ -387,10 +387,10 @@ window.onload = function () {
             <div id ="recruiterConnect" >
                   <div class="SocialIcons">
                      <ul>
-            		    <li onclick="socialinviter.socialconnect.auth('googleplus');"><i class="fa fa-google-plus"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW"><i class="fa fa-twitter"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN"><i class="fa fa-linkedin"></i></li>
+            		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+            			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
                   </div>
