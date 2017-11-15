@@ -857,8 +857,8 @@ function removeEmployer(candidateemployerId, candidateId){
 		} else if (document.getElementById("endDateDiv").style.display == 'none') {
 			
 			document.getElementById("endDateDiv").style.display = 'block';
-			$("#endYear").attr("data-validation", "required");
-			$("#endMonth").attr("data-validation", "required");
+			/* $("#endYear").attr("data-validation", "required");
+			$("#endMonth").attr("data-validation", "required"); */
 		}
 
 	}
@@ -881,8 +881,8 @@ function removeEmployer(candidateemployerId, candidateId){
 		}else {
 			
 			document.getElementById("endDateEditDiv").style.display = '';
-			$("#endYearEdit").attr("data-validation", "required");
-			$("#endMonthEdit").attr("data-validation", "required");
+		/* 	$("#endYearEdit").attr("data-validation", "required");
+			$("#endMonthEdit").attr("data-validation", "required"); */
 			
 			 var exisitngEndYear;
 			 if ($('#exisitngEndYear').length)

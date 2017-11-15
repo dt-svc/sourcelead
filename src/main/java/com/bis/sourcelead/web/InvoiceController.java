@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +75,7 @@ public class InvoiceController {
  * @return model
  * @throws Exception
  */
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/createInvoice")
 	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type , @RequestParam(value="orgRelationId", required=false) Long orgRelationId ,HttpServletRequest request) throws Exception {
 		
@@ -145,6 +147,7 @@ public class InvoiceController {
 			model.setViewName("billing/createInvoice");
 		}
 		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
+		model.addObject("isDraft",invoice.getId());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -160,6 +163,7 @@ public class InvoiceController {
 	 * @return modelView
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_INVOICE')")
 	@RequestMapping(value = "/viewInvoice")
 	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -187,7 +191,7 @@ public class InvoiceController {
 	return model;
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/invoiceList")
 	public ModelAndView createInvoice(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		
@@ -245,7 +249,7 @@ public class InvoiceController {
 	
 	
 	
-
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
@@ -278,7 +282,7 @@ public class InvoiceController {
 	return model;
 	}
 
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_INVOICE')")
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
 	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		
