@@ -35,7 +35,7 @@ public class Constants {
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
-	public static final String DATEOFJOIN = "Date of Join (DD-MM-YYYY)";
+	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
@@ -375,10 +375,6 @@ public class Constants {
 	public static final String MODULE_TIMESHEET_STR = "4";
 	public static final int TAB_VENDOR = 9;
 	public static final int TAB_BILLING = 20;
-	public static final int TAB_RECEIVABLE = 21;
-	public static final int TAB_PAYABLE = 22;
-	public static final int TAB_MYEXPENSES = 24;
-	public static final int TAB_EXPENSEAPPROVAL = 25;
 	public static final int TAB_CLIENT = 7;
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
@@ -553,6 +549,7 @@ public class Constants {
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
 	public static final String ELK_PROJECT_INDEX = "projects";
 	public static final String ELK_PROJECT_TYPE = "project";
 	public static final String ELK_CANDIDATE_INDEX = "candidates";
@@ -567,6 +564,7 @@ public class Constants {
 	public static final String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
 	public static final String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 	public static final String ELK_CAMPAIGN_INDEX = "campaigns";
+	public static final String Campaigns = "Campaigns";
 	public static final String ELK_CAMPAIGN_TYPE = "campaign";
 	public static final String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
 	public static final String CANDIDATE = "Candidate";

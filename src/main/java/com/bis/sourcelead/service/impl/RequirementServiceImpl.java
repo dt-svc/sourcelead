@@ -45,6 +45,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
@@ -65,7 +66,6 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -3329,4 +3329,23 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 		return data;
    }
+	
+	@Override
+	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId) throws Exception
+	{
+		return requirementDao.getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(orglocationId);
+	}
+
+	@Override
+	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId, Long userId) throws Exception
+	{
+		return requirementDao.getAllAssinedRequirementsOrgLocationIdAndUserId(orglocationId, userId);
+	}
+
+	@Override
+	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO, Long orglocationId, Long userId,String dateFormat) throws Exception
+	{
+		return requirementDao.getAllRequirementsForJobCampaing(requirementDTO, orglocationId, userId,dateFormat);
+	}
+	
 }

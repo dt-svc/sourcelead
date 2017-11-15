@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -158,6 +159,13 @@ public interface RequirementService {
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception;
 	
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception;
+	
+	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId)throws Exception;
+	
+	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId,Long userId)throws Exception;
+	
+	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO,Long orglocationId,Long userId,String dateFormat)throws Exception;
+	
 	/*
 	 * public boolean addGeneratedIdRecordsToJobsForOldRecords(Long
 	 * orglocationId) throws Exception;

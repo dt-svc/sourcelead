@@ -150,6 +150,12 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 		return requirementAssignToDao.getAllAssignedRequirementByOrglocationIdAndTeamId(orgLocationId,teamId);
 	}
 	
+	@Override
+	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId, Long orgLocationId) throws Exception
+	{
+		return requirementAssignToDao.getAllAssignRequirementByUserIdAndOrglocationId(userId, orgLocationId);
+	}
+	
 	
 	/**
 	 * Returns date format as string
@@ -166,5 +172,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 	return currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(dateFormat,converteDate);
 	
 }
+
+	
 	
 }

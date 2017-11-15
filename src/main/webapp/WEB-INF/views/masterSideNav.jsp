@@ -296,6 +296,10 @@
           <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
           	</c:if>	
           	
+          	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+               <li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>
+          	</sec:authorize>	
+          	
         </ul>
       </div>
     </div>

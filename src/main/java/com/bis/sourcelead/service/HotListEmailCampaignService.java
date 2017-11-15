@@ -10,5 +10,6 @@ public interface HotListEmailCampaignService {
 
 	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
 	
+	public void sendJobListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
 	
 }

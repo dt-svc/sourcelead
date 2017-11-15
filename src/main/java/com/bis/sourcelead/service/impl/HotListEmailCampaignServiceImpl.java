@@ -12,9 +12,6 @@ import java.util.regex.Pattern;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,11 +21,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
@@ -263,6 +258,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 	userMailBox.setIsFavourite(0);
 	userMailBox.setUuid(UUID);
 	userMailBox.setStatus(1);
+	userMailBox.setMailType(2);
 	userMailBox.setNameFields(nameFields);
 	userMailBox.setCreatedBy(user.getUserCode());
 	userMailBox.setCreatedDate(new Date());
@@ -403,5 +399,12 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			Matcher matcher = pattern.matcher(email);
 			return matcher.matches();
 		}
+
+	@Override
+	public void sendJobListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation, MultipartFile multiFile) throws Exception
+	{
+		// TODO Auto-generated method stub
+		
+	}
 
 }

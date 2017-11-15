@@ -42,18 +42,25 @@
 		  
 		      <div class="dropdown mb10 mailBtn">
 					<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					
+					<c:if test="${mailType == 'mails'}">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 						Compose
+						</button>
+					</c:if>
+					
+					<c:if test="${mailType == 'hotcampaigns'}">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+						Campaigns
 							&nbsp;&nbsp;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-						 <sec:authorize access="hasRole('ROLE_MAIL_BOX')">
-						  <li><a href="${sourceleadUrl}/composeMail">Mail</a></li>
-						  </sec:authorize>
 						  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 						  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+						  	<li><a href="${sourceleadUrl}/joblistMail">Job Campaign</a></li>
 						  </sec:authorize>
 						</ul>
+					</c:if>
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
