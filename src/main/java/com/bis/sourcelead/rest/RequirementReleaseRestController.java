@@ -228,7 +228,7 @@ public class RequirementReleaseRestController {
 		}
 	    List<OrgRelationDTO> orgRelationslist = new ArrayList<>();
 		for (OrgRelations orgRelation : vandorsListByOrgLocationIdDuplicate) {
-			OrgRelationDTO OrgRelationsDTO = new OrgRelationDTO();
+			OrgRelationDTO orgRelationsDTO = new OrgRelationDTO();
 			/*
 			 * isCyclicRelease variable is for to check the vendor org is owner
 			 * for parent requirement or not (@Venkat Kesav)
@@ -268,81 +268,83 @@ public class RequirementReleaseRestController {
 			}
 			else {
 				if (orgRelation.getLocationId().getId().equals(orgLocations.getId())) {
-					OrgRelationsDTO.setOrgRelationId(orgRelation.getId());
-					OrgRelationsDTO.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-					OrgRelationsDTO.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
-					OrgRelationsDTO.setCountry(orgRelation.getResponderLocationId().getCountry());
-					OrgRelationsDTO.setState(orgRelation.getResponderLocationId().getState());
-					OrgRelationsDTO.setCity(orgRelation.getResponderLocationId().getCity());
-					OrgRelationsDTO.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					orgRelationsDTO.setOrgRelationId(orgRelation.getId());
+					orgRelationsDTO.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+					orgRelationsDTO.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelationsDTO.setCountry(orgRelation.getResponderLocationId().getCountry());
+					orgRelationsDTO.setState(orgRelation.getResponderLocationId().getState());
+					orgRelationsDTO.setCity(orgRelation.getResponderLocationId().getCity());
+					orgRelationsDTO.setVendorlocationId(orgRelation.getResponderLocationId().getId());
 					if (orgRelation.getInitiatorLevel() != null) {
-						OrgRelationsDTO.setLevel(orgRelation.getInitiatorLevel());
+						orgRelationsDTO.setLevel(orgRelation.getInitiatorLevel());
 					}
 					else {
-						OrgRelationsDTO.setLevel("");
+						orgRelationsDTO.setLevel("");
 					}
 					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(), orgLocations.getId(), "Client", "Active,New,Contracted", orgRelation.getId().toString(), "", vendorOrgLocationsIds);
 					int nonAssignedCount = 0;
-					OrgRelationsDTO.setNoOfContatcs(String.valueOf(0));
+					orgRelationsDTO.setNoOfContatcs(String.valueOf(0));
 					if (!contactsList.isEmpty()) {
-						OrgRelationsDTO.setNoOfContatcs(String.valueOf(contactsList.size()));
+						orgRelationsDTO.setNoOfContatcs(String.valueOf(contactsList.size()));
 						for (OrgSpoc orgSpoc : contactsList) {
 							List<Requirement> reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(orgRelationDTO.getRequirementId()), orgSpoc.getId());
 							if (reqList.size() > 0) {
 								orgSpoc.setReleasedRequirement("true");
 								Requirement requi = reqList.get(0);
-								OrgRelationsDTO.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requi.getCreatedDate()));
+								orgRelationsDTO.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requi.getCreatedDate()));
 							}
 							else {
 								orgSpoc.setReleasedRequirement("false");
 								nonAssignedCount = nonAssignedCount + 1;
 							}
 						}
-						OrgRelationsDTO.setNoOfNonReleasedContacts(String.valueOf(nonAssignedCount));
+						orgRelationsDTO.setNoOfNonReleasedContacts(String.valueOf(nonAssignedCount));
+						orgRelationslist.add(orgRelationsDTO);
 					}
 					else {
-						vandorsListByOrgLocationIdDuplicate.remove(orgRelation);
+//						vandorsListByOrgLocationIdDuplicate.remove(orgRelation);
+						orgRelationslist.remove(orgRelationsDTO);
 					}
 				}
 				if (orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())) {
-					OrgRelationsDTO.setOrgRelationId(orgRelation.getId());
-					OrgRelationsDTO.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-					OrgRelationsDTO.setOrgName(orgRelation.getLocationId().getOrgLocationName());
-					OrgRelationsDTO.setCountry(orgRelation.getLocationId().getCountry());
-					OrgRelationsDTO.setState(orgRelation.getLocationId().getState());
-					OrgRelationsDTO.setCity(orgRelation.getLocationId().getCity());
-					OrgRelationsDTO.setVendorlocationId(orgRelation.getLocationId().getId());
+					orgRelationsDTO.setOrgRelationId(orgRelation.getId());
+					orgRelationsDTO.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+					orgRelationsDTO.setOrgName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelationsDTO.setCountry(orgRelation.getLocationId().getCountry());
+					orgRelationsDTO.setState(orgRelation.getLocationId().getState());
+					orgRelationsDTO.setCity(orgRelation.getLocationId().getCity());
+					orgRelationsDTO.setVendorlocationId(orgRelation.getLocationId().getId());
 					if (orgRelation.getResponderLevel() != null) {
-						OrgRelationsDTO.setLevel(orgRelation.getResponderLevel());
+						orgRelationsDTO.setLevel(orgRelation.getResponderLevel());
 					}
 					else {
-						OrgRelationsDTO.setLevel("");
+						orgRelationsDTO.setLevel("");
 					}
 					List<OrgSpoc> contactsList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(user.getId(), orgLocations.getId(), "Client", "Active,New,Contracted", orgRelation.getId().toString(), "", vendorOrgLocationsIds);
 					int nonAssignedCount = 0;
-					OrgRelationsDTO.setNoOfContatcs(String.valueOf(0));
+					orgRelationsDTO.setNoOfContatcs(String.valueOf(0));
 					if (!contactsList.isEmpty()) {
-						OrgRelationsDTO.setNoOfContatcs(String.valueOf(contactsList.size()));
+						orgRelationsDTO.setNoOfContatcs(String.valueOf(contactsList.size()));
 						for (OrgSpoc orgSpoc : contactsList) {
 							List<Requirement> reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(orgRelationDTO.getRequirementId()), orgSpoc.getId());
 							if (reqList.size() > 0) {
 								orgSpoc.setReleasedRequirement("true");
 								Requirement requi = reqList.get(0);
-								OrgRelationsDTO.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requi.getCreatedDate()));
+								orgRelationsDTO.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requi.getCreatedDate()));
 							}
 							else {
 								orgSpoc.setReleasedRequirement("false");
 								nonAssignedCount = nonAssignedCount + 1;
 							}
 						}
-						OrgRelationsDTO.setNoOfNonReleasedContacts(String.valueOf(nonAssignedCount));
+						orgRelationsDTO.setNoOfNonReleasedContacts(String.valueOf(nonAssignedCount));
+						orgRelationslist.add(orgRelationsDTO);
 					}
 					else {
-						vandorsListByOrgLocationIdDuplicate.remove(orgRelation);
+						orgRelationslist.remove(orgRelationsDTO);
 					}
 				}
 			}
-			orgRelationslist.add(OrgRelationsDTO);
 		}
 		response.setRecordsFiltered(responseList.getRecordsFiltered());
 		response.setRecordsTotal(responseList.getRecordsTotal());
