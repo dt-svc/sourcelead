@@ -1744,7 +1744,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		
-		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Bills</a></li>';
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';

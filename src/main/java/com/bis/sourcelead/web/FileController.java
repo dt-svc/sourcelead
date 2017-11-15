@@ -274,6 +274,16 @@ public class FileController {
 		return "resume-upload";
 	}
 	
+	@RequestMapping("/check-session")
+	@ResponseBody
+	public String checkSession(HttpServletRequest request) {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(loginOrgLocation != null)
+			return "YES";
+		else
+		return "NO";
+	}
+	
 	@RequestMapping("/bulk-resume-import-log")
 	@ResponseBody
 	public String uploadStatus(HttpServletRequest request, String uploadid) {
