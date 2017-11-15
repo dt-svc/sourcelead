@@ -26,6 +26,8 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private TimeSheetSubmissionDTO timesheetSubmission;
 	
+	private String timesheetFor;
+	
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
 		return projectMembersList;
@@ -97,7 +99,12 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.timesheetSubmission = timesheetSubmission;
 	}
 
-	
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
 
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
     
 }

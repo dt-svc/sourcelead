@@ -25,6 +25,8 @@ function prepareBisChecksList(url){
 	
 	 $("#checksListDiv").removeAttr("style");
  	 $("#checksListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='clearfix col-md-12 mb10'>";
  	result = result +'<a href="/sourcelead/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
