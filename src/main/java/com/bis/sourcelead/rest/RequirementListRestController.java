@@ -187,15 +187,13 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementById", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody Requirement getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
+		Requirement requirement = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (requirementId != null && !requirementId.isEmpty()) {
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-			User intiatorUser = userService.getUserById(requirement.getCreatedBy().getId());
-			 //SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			 if(requirement.getCreatedDate()!=null){
 					requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 				}
@@ -291,26 +289,8 @@ public class RequirementListRestController {
 			}
 			
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
-			
-			// UnWanted Code
-			/*
-			 * Boolean isLoginUserAsTeamMember = requirementAssignToService.
-			 * checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(
-			 * Long.parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.
-			 * toString());
-			 * 
-			 * 
-			 * 
-			 * Boolean isLoginUserAsManager = requirementService.
-			 * checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.
-			 * parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString
-			 * ());
-			 */
-			resultJson = commonUtil.toJSON(requirement);
 		}
-		return resultJson;
+		return requirement;
 	}
 	
 	/**
@@ -329,12 +309,11 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementAssignedListByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody List<RequirementAssignTo> getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
 		List<RequirementAssignTo> requirementAssignToList = new ArrayList<RequirementAssignTo>();
 		if (requirementId != null && !requirementId.isEmpty()) {
-			Collection<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			List<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 			if (requirementAssignToListdb != null && !requirementAssignToListdb.isEmpty()) {
 				for (RequirementAssignTo assing : requirementAssignToListdb) {
 					RequirementAssignTo ra = new RequirementAssignTo();
@@ -358,12 +337,8 @@ public class RequirementListRestController {
 					requirementAssignToList.add(ra);
 				}
 			}
-			resultJson = commonUtil.toJSON(requirementAssignToList);
 		}
-		else {
-			resultJson = "failure";
-		}
-		return resultJson;
+		return requirementAssignToList;
 	}
 	
 	/**
