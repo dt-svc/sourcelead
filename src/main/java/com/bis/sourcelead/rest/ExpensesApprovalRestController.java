@@ -168,7 +168,7 @@ public class ExpensesApprovalRestController {
 		 		     || submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))
 		 	    )
 		 	   {
-	 			    ProjectMembers projectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(eah.getExpenseId().getProjectMembers().getId());
+	 			    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(eah.getExpenseId().getProjectMembers().getId());
 	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());

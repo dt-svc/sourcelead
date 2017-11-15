@@ -174,7 +174,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 						if (null != projectMember.getProjectMemberCandidteId()) {
 							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
 							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
-							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+							if(pmWithUser != null && null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
 								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
 								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
