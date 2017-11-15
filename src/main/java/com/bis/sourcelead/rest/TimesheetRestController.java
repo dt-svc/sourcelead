@@ -2066,7 +2066,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	}
 	
 	
-	public StringBuilder getSubmissionStatusDiv(OrgLocations loc,SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth,Long superUserId,boolean isSahReopened,boolean isSuperUser,Long projectId,Long masterCandidateId){
+	public StringBuilder getSubmissionStatusDiv(OrgLocations loc,SubmissionApproverHierarchy sah ,Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String weekStartDate,String weekEndDate,String from,boolean isSahApproved,String pullRightClass,String styleWidth,String innerStyleWidth,Long superUserId,boolean isSahReopened,boolean isSuperUser,Long projectId,Long masterCandidateId) throws Exception{
 		
 		   Submission_Status submissionStatus = sah.getSubmissionStatus();
 		   String submissionStatusStr = submissionStatus.getValue();
@@ -2086,6 +2086,11 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		   
 		    timesheetEntriesDiv.append("<input type='hidden' name='timesheetSubmissionStatus'  id='timesheetSubmissionStatus' value='"+submissionStatusStr+"' >");
 		    timesheetEntriesDiv.append("<input type='hidden' name='isSuperUser'  id='isSuperUser' value='"+isSuperUser+"' >");
+		    
+		    
+		    TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);
+		    timesheetEntriesDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='"+ts.getTotalHours()+"' >");
+		    
 		    
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");

@@ -299,13 +299,12 @@ public class InvoiceRestController {
     
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects> getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectsList = projectsService.getClientProjectsByOrgRelationId(orgRelationId,loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(projectsList);
- 	  return resultJson;
+// 	  resultJson = commonUtil.toJSON(projectsList);
+ 	  return projectsList;
  	}
     
     @RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
@@ -792,8 +791,8 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
-				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
-				if (null != projectMember.getEmployee().getUser().getId()) {
+				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
+				if (null != projectMember.getProjectMemberCandidteId().getId()) {
 //					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != projectMember.getProjectMemberCandidteId()){
 						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
@@ -938,13 +937,13 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
+     	//String resultJson;
      	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
- 	    resultJson = commonUtil.toJSON(projectList);
- 	    return resultJson;
+ 	   // resultJson = commonUtil.toJSON(projectList);
+ 	    return projectList;
  	}
 	
 	/**

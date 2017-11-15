@@ -165,20 +165,7 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 
 
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-if(locationList.match("yyyy-MM-dd")){
-	expensesApprvListDate = 'YYYY-MM-DD';
-}if(locationList.match("dd-MM-yyyy")){
-	expensesApprvListDate = 'DD-MM-YYYY'; 
-}if(locationList.match("MM-dd-yyyy")){
-	expensesApprvListDate = 'MM-DD-YYYY'; 
-}if(locationList.match("yyyy-dd-MM")){
-	  expensesApprvListDate = 'YYYY-DD-MM'; 
-}
-
-
-
-
-
+ var expensesApprvListDate = getJSDateFormat(locationList);
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
@@ -315,7 +302,7 @@ $.ajax({
 function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 var msg = $("#reject"+expenseId+"message").val(); 
 		 var encodeMsg = msg;
-		 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
+		 if(encodeMsg !== ""){
 			 cancelRejectExpense(expenseId);
 			 var encodeMsg = encodeURIComponent(msg);
 			 $("#rejectReasonDiv").empty();
@@ -330,7 +317,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
+		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
 		    success: function(data) {    
 		   	   // approvalList();
 		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
@@ -382,9 +369,9 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    $("#reject"+expenseId+"message").val(''); 
 	    var result = "";
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
-		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" onkeydown="return (event.keyCode!=13);"></textarea>';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" "></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
-		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+expenseId+'message\'));acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);
@@ -645,18 +632,8 @@ function expensesCancel(){
 
 <script>
 	$(function() {
-		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatexpApprvList = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatexpApprvList = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatexpApprvList = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatexpApprvList = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatexpApprvList = 'yy-dd-mm'; 
-		  }
+		var finalDateFormatexpApprvList = getJSDateFormat(locationDate);
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 

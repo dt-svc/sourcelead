@@ -303,7 +303,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="vendorInvoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
-			result = result +'         <th>Bill ID</th>                    ';
+			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Vendor Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
