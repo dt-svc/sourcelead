@@ -766,7 +766,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teMonDTO.setEditable(true);
 						 }
-						 teMonDTO.setHours(te.getMonHours());
+						 teMonDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getMonHours().replace(":", "."))));
 						 teMonDTO.setComments(te.getMoncomments());
 						 entriesDTOList.add(teMonDTO);
 						 monDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getMonHours().replace(":", ".")), monDayTotalHours);
@@ -789,7 +789,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 							 teTueDTO.setEditable(true);
 						 }
 						 teTueDTO.setHours(te.getTueHours());
-						 teTueDTO.setComments(te.getTuecomments());
+						 teTueDTO.setComments(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getTueHours().replace(":", "."))));
 						 entriesDTOList.add(teTueDTO);
 						 tuesDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getTueHours().replace(":", ".")), tuesDayTotalHours);
 						 if(StringUtils.isNotBlank(billableType) && billableType.equalsIgnoreCase("Non-Billable")){
@@ -811,7 +811,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teWedDTO.setEditable(true);
 						 }
-						 teWedDTO.setHours(te.getWedHours());
+						 teWedDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getWedHours().replace(":", "."))));
 						 teWedDTO.setComments(te.getWedcomments());
 						 entriesDTOList.add(teWedDTO);
 						 wedDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getWedHours().replace(":", ".")), wedDayTotalHours);
@@ -833,7 +833,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teThuDTO.setEditable(true);
 						 }
-						 teThuDTO.setHours(te.getThuHours());
+						 teThuDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getThuHours().replace(":", "."))));
 						 teThuDTO.setComments(te.getThucomments());	   
 						 entriesDTOList.add(teThuDTO);
 						 thursDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getThuHours().replace(":", ".")), thursDayTotalHours);
@@ -855,7 +855,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teFriDTO.setEditable(true);
 						 }
-						 teFriDTO.setHours(te.getFriHours());
+						 teFriDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getFriHours().replace(":", "."))));
 						 teFriDTO.setComments(te.getFricomments());	   
 						 entriesDTOList.add(teFriDTO);
 						 friDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getFriHours().replace(":", ".")), friDayTotalHours);
@@ -877,7 +877,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teSatDTO.setEditable(true);
 						 }
-						 teSatDTO.setHours(te.getSatHours());
+						 teSatDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getSatHours().replace(":", "."))));
 						 teSatDTO.setComments(te.getSatcomments());	   		              
 						 entriesDTOList.add(teSatDTO);
 						 satDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSatHours().replace(":", ".")), satDayTotalHours);
@@ -899,7 +899,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 						 }else{
 							 teSunDTO.setEditable(true);
 						 }
-						 teSunDTO.setHours(te.getSunHours());
+						 teSunDTO.setHours(CommonUtil.getHoursDisplayFormat(Float.parseFloat(te.getSunHours().replace(":", "."))));
 						 teSunDTO.setComments(te.getSuncomments());	 
 						 entriesDTOList.add(teSunDTO);	
 						 sunDayTotalHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSunHours().replace(":", ".")), sunDayTotalHours);
@@ -910,8 +910,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 							sunDayBillableHours = CommonUtil.getCombinedHours(Float.parseFloat(te.getSunHours().replace(":", ".")), sunDayBillableHours);
 						 }
 					}
-				    tsDTO.setTimesheetEntries(entriesDTOList);
+				    
 		}
+		  tsDTO.setTimesheetEntries(entriesDTOList);
 		  
 		 /**
 		  * Current Week Days 
@@ -1042,10 +1043,10 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		if(StringUtils.isNotEmpty(currentFrequencyEndDate)){
 			Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyEndDate.replaceAll("/", "-"));
 			if(frequencyEndDate.equals(actualEndDate)){
+				List<FileInfo> fileInfoList = new ArrayList<>();
 					List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 					if(ts != null){
 						timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-						List<FileInfo> fileInfoList = new ArrayList<>();
 						if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 								for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 									FileInfo fileInfo = new FileInfo();
@@ -1056,9 +1057,10 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									fileInfo.setContentType(tsd.getFileContentType());
 									fileInfoList.add(fileInfo);
 								}
-								tsDTO.setFileInfo(fileInfoList);
+								
 							} 
-					}
+				   	}
+					tsDTO.setFileInfo(fileInfoList);
 					 if(isFillMyTimeSheet 
 					    		&&!isNullOrEmpty(approvalStatus)
 					    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user")) 
