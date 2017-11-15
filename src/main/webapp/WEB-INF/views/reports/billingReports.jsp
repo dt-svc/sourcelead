@@ -40,9 +40,9 @@ $(document).ready(function(){
 
 <section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>Billing Reports </h2>
+				<h2>Finance Reports </h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Billing Reports </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Finance Reports </div>
 </section>
 
 
@@ -50,7 +50,7 @@ $(document).ready(function(){
 
    <div class="timesheet_head">
 <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
-<h4 class="pull-left mr">Billing Report</h4>
+<h4 class="pull-left mr">Finance Report</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
