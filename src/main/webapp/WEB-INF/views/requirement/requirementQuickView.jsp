@@ -122,7 +122,7 @@ a.disabledLink {
 					<div class="collpasePannel clearfix mt10"> 
 		              <a href="javascript:void(0)" id="assignedGrid"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
 		           </div> 
-			     </div> 
+			      
 			            
                  <div class="clearfix"> 
                  	<div class="clearfix row"> 
@@ -306,7 +306,7 @@ a.disabledLink {
            
                  </div> 	
                </div> 
-           
+           </div>
                </div> 
              </div> 
       </div>
