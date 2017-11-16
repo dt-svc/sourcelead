@@ -134,9 +134,53 @@
 <script>
 function hideAndShowDetailsRow(rowId,type){
 	$(".fa-plus-square-o").toggleClass("closExp");
+	var entityId = parseInt(rowId-1);
+	var previousCategory = $("#categoryTypeDivInput"+entityId).val();
+	var previousCategoryDate = $("#categoryDateDivInput"+entityId).val();
+	var previousReceiptIssuedBy = $("#receiptIssuedByDivInput"+entityId).val();
+	var previousPaymentmode = $("#paymentModeDivInput"+entityId).val();
+	var previousRateType = $("#expenseRateTypeDivInput"+entityId).val();
+	var previousAmount = $("#expenseAmountDivInput"+entityId).val();
+	var previousDesc = $("#entryDesDivInput"+entityId).val();
+	var previousPaidBy = $("#paidByDivInput"+entityId).val();
+	var categoryType = $("#categoryType"+entityId).val();
+	      if(previousCategory != null && previousCategory != '' && previousCategory != 'undefined' && categoryType != previousCategory){
+		    $("#categoryType"+entityId).val(previousCategory).trigger("chosen:updated");
+	}  
+	var categoryDate = $("#categoryDate"+entityId).val();
+           if(previousCategoryDate != null && previousCategoryDate != '' && previousCategoryDate != 'undefined' && categoryDate !=previousCategoryDate ){
+    	    $("#categoryDate"+entityId).val(previousCategoryDate);
+	}
+	var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
+    if(previousReceiptIssuedBy != null && previousReceiptIssuedBy != '' && previousReceiptIssuedBy != 'undefined' && receiptIssuedBy != previousReceiptIssuedBy){
+    	$("#receiptIssuedBy"+entityId).val(previousReceiptIssuedBy);
+	}else if(previousReceiptIssuedBy == null || previousReceiptIssuedBy == '' || previousReceiptIssuedBy == 'undefined' ){
+		$("#receiptIssuedBy"+entityId).val('');
+	}
+	var paymentMode = $("#paymentMode"+entityId).val();
+    if(previousPaymentmode != null && previousPaymentmode != '' && previousPaymentmode != 'undefined' && paymentMode != previousPaymentmode){
+    	$("#paymentMode"+entityId).val(previousPaymentmode);
+	}
+	var expenseRateType = $("#expenseRateType"+entityId).val();
+    if(previousRateType != null && previousRateType != '' && previousRateType != 'undefined' &&  expenseRateType != previousRateType){
+    	$("#expenseRateType"+entityId).val(previousRateType);
+	}
+	var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
+    if(previousAmount != null && previousAmount != '' && previousAmount != 'undefined' && expenseAmount != previousAmount ){
+    	$("#expenseAmount"+entityId).val(previousAmount);
+	}
+
+	var descriptions = $("#entryDes"+entityId).val();
+    if(previousDesc != null && previousDesc != '' && previousDesc != 'undefined' &&   descriptions != previousDesc){
+    	 $("#entryDes"+entityId).val(previousDesc);
+	}
+	
+	var paidBy = $("#paidBy"+entityId).val();
+    if(previousPaidBy != null && previousPaidBy != '' && previousPaidBy != 'undefined' &&  paidBy !=previousPaidBy){
+    	$("#paidBy"+entityId).val(previousPaidBy).trigger("chosen:updated");
+	}
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		var validation_required = "true";
-		var entityId = parseInt(rowId-1);
 		 var maxRecCount = $("#maxRecCount").val();
 		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
 			 $("#addExpenseItemButton").removeAttr('href');
@@ -311,25 +355,33 @@ function addAttachment(entityRowId,from){
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
+    <input type='hidden' id="categoryDateDivInputREPLACEROWID"/>
     <div id="categoryDateDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td2" style="display: none; float: left;">
+    <input type='hidden' id="categoryTypeDivInputREPLACEROWID"/>
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
+    <input type='hidden' id="entryDesDivInputREPLACEROWID"/>
+    <input type='hidden' id="receiptIssuedByDivInputREPLACEROWID"/>
    <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot-me">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
+    <input type='hidden' id="expenseAmountDivInputREPLACEROWID"/>
     <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
+    <input type='hidden' id="expenseRateTypeDivInputREPLACEROWID"/>
     <div id="expenseRateTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
+    <input type='hidden' id="paymentModeDivInputREPLACEROWID" />
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
 
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
+    <input type='hidden' id="paidByDivInputREPLACEROWID" />
     <div id="paidByDivREPLACEROWID">--</div>
 </div>
 
@@ -660,6 +712,15 @@ function addExpenseRow(from){
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			$("#paidByDiv"+entityId).html(paidBy);
+			
+			$("#categoryTypeDivInput"+entityId).val(categoryType);
+			$("#categoryDateDivInput"+entityId).val(categoryDate);
+			$("#receiptIssuedByDivInput"+entityId).val(receiptIssuedBy);
+			$("#paymentModeDivInput"+entityId).val(paymentMode);
+			$("#expenseRateTypeDivInput"+entityId).val(expenseRateType);
+			$("#expenseAmountDivInput"+entityId).val(expenseAmount);
+			$("#entryDesDivInput"+entityId).val(descriptions);
+			$("#paidByDivInput"+entityId).val(paidBy);
 			
 			if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
 				 var d3= getJSDate(categoryDate,locationDate);
