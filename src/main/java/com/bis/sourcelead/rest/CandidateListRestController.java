@@ -741,7 +741,7 @@ public class CandidateListRestController {
 		}
 
 		if (null != can.getOrgRelationId()) {
-			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
@@ -752,7 +752,7 @@ public class CandidateListRestController {
 		}
 		if (null != can.getSpocId()) {
 			StringBuilder contactName = new StringBuilder();
-			can.setVendorSpocId(can.getSpocId().getId().toString());
+			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
 				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
@@ -787,6 +787,8 @@ public class CandidateListRestController {
 		candidateDTO.setExperienceYears(can.getExperienceYears());
 		candidateDTO.setZipcode(can.getZipCode());
 		candidateDTO.setCandidateType(can.getCandidateType());
+		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
 		return candidateDTO;
 	}
 	 

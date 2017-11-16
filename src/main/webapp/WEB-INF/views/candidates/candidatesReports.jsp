@@ -263,11 +263,11 @@ function toDate(selector) {
 	 <div class="cusShow pull-left">
 	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
+	 <p id="reportStartDate" class="ReError" style="display: none"></p>
 	 </span>
 	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
+	<p id="reportEndDate" class="ReError" style="display: none"></p>
 	</span>
 	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	</div>
@@ -396,7 +396,8 @@ function reset(){
 function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
-	
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var ownersList = $("#user").val();
 	var userList = "";
 	if(ownersList != null && ownersList != ''){
@@ -405,6 +406,7 @@ function getDayWiseReports(){
 	 var reportType = $("#reportTypeId").val(); 
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
+	
 	if(reportType != "custom"){
 	$.ajax({
          type : "POST",
@@ -443,9 +445,11 @@ function getCustomReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}else{
 		$.ajax({

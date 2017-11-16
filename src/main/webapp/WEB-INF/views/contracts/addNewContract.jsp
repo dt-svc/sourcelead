@@ -18,9 +18,9 @@
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
-	 	 getContractTemplates();
-	 }
+
+	 $("#contractType").val(contractType);
+
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
 	 	 $('#billingRateType').removeAttr('data-validation');
@@ -43,6 +43,10 @@
 
 	 }
 	 
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
 	 }
@@ -72,7 +76,16 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+		                    <option ${contract.contractType == 'NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType == 'NSA' ? 'selected' : ''}>NSA</option>
+		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+		                 </select>
 				    </c:when>
 				    <c:otherwise>
 				    <c:if test = "${!empty contractType}">
@@ -81,7 +94,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
@@ -1392,17 +1405,24 @@ function contractTypeLabels(){
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   
 		
-		$("#vendorContact").val('');
 		$('#vendorContact').trigger("chosen:updated");
 		
-		$("#orgRelationId").val('');
 		$('#orgRelationId').trigger("chosen:updated");
 		
 		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();

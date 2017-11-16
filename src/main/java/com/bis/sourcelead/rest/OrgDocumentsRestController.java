@@ -174,13 +174,13 @@ public class OrgDocumentsRestController {
 		
 		
 		if(orgDocument != null){
-			orgDocumentDTO.setOrgSpocsList(orgSpocsList);
+			
 			orgDocumentDTO.setOwnersList(ownersList);
 			orgDocumentDTO.setId(orgDocument.getId().toString());
 			orgDocumentDTO.setFileName(orgDocument.getFileName());
 			orgDocumentDTO.setDocName(orgDocument.getDocName());
 			orgDocumentDTO.setContractType(orgDocument.getContractType());
-			orgDocumentDTO.setOrgSpocsList(orgDocument.getOrgSpocsList());
+			orgDocumentDTO.setOrgSpocsList(orgSpocsList);
 			orgDocumentDTO.setSpocUser(orgDocument.getSpocUser());
 			orgDocumentDTO.setStartDateStr(orgDocument.getStartDateStr());
 			orgDocumentDTO.setEndDateStr(orgDocument.getEndDateStr());

@@ -12,7 +12,6 @@
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
@@ -1037,13 +1036,11 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
+         success :function(json) {  
+        	 if(json != null && json != 'undefined' && json != ""){
 							var result = '';
 							result = result +'     <div class="clearfix mt5 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
@@ -1086,8 +1083,6 @@ function assignedMemberList(requirementId){
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
-				/* enable tabs access after complete loading of deatils page to avoid switching issues */
-        	 $('.disabledLink').removeClass('disabledLink');
                },
                  
             }); 
@@ -3301,7 +3296,7 @@ function deleteImage(candidateId){
 	var result = "";
 	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
