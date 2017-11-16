@@ -130,7 +130,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			orgDocuments.setEndDate(endDate);
 		}
 		
-		if(StringUtils.isNotBlank(clientDocumentsDTO.getDescription())){
+		if(clientDocumentsDTO.getDescription() != null){
 			orgDocuments.setDescription(clientDocumentsDTO.getDescription());
 		}
 		
