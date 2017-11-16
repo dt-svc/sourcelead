@@ -126,9 +126,9 @@
 
 
 <div id="divTaskTd2" style="display: none; float: left;">
-	<div class="tbldata-dotdot-sm">
+	<div class="tbldata-dotdot-me">
          <small class="pull-left"><div id="REPLACEROWIDpayRateCurrency"></div></small>
-         <div class="tbldata-dotdot-100 pull-left" id="REPLACEROWIDpayRate" ></div>
+         <div class="tblminwidth-150 pull-left text-center" id="REPLACEROWIDpayRate" ></div>
          <small class="pull-right"><div id="REPLACEROWIDpayRateType" ></div></small>
 	</div>
 	
@@ -817,7 +817,7 @@ function getAssociatesFilter(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
-  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+  		result = result +'<div class="clearfix popupFilter">'; 
 	 	
   		result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
     	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
