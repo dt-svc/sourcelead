@@ -304,47 +304,56 @@ var count = 1;
 				alert("Please select resume(s)");
 				return;
 			}
-			uploadid = new Date().getTime();
-			getUploadStatus();
-			data1.append("uploadid", uploadid);
-			$(".browseProgress").show();
-			$("#progressBar").html('0%');
-			$(".progress div").css("width", "0%");
-			$(".editText").html("");
-			$.ajax({
-				  xhr: function() {
-				    var xhr = new window.XMLHttpRequest();
-					$("#progressText").html('Please wait while uploading files...');
-				    xhr.upload.addEventListener("progress", function(evt) {
-				      if (evt.lengthComputable) {
-				        var percentComplete = evt.loaded / evt.total;
-				        percentComplete = parseInt(percentComplete * 100);
-				        $("#progressBar").html(percentComplete+'%');
-				        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
-				        if (percentComplete === 100) {
-				        		$("#progressText").html('Please wait while parsing the uploaded files...');
-				        		$(".progress div").css("width",  "0%");
-				        		$("#progressBar").html('0%');
-				        }
+			//var sourceleadUrl ='${sourceleadUrl}';
+			$.post("check-session", {}, function(data) {
+				if(data === "YES") {
+					uploadid = new Date().getTime();
+					getUploadStatus();
+					data1.append("uploadid", uploadid);
+					$(".browseProgress").show();
+					$("#progressBar").html('0%');
+					$(".progress div").css("width", "0%");
+					$(".editText").html("");
+					$.ajax({
+						  xhr: function() {
+						    var xhr = new window.XMLHttpRequest();
+							$("#progressText").html('Please wait while uploading files...');
+						    xhr.upload.addEventListener("progress", function(evt) {
+						      if (evt.lengthComputable) {
+						        var percentComplete = evt.loaded / evt.total;
+						        percentComplete = parseInt(percentComplete * 100);
+						        $("#progressBar").html(percentComplete+'%');
+						        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
+						        if (percentComplete === 100) {
+						        		$("#progressText").html('Please wait while parsing the uploaded files...');
+						        		$(".progress div").css("width",  "0%");
+						        		$("#progressBar").html('0%');
+						        }
 
-				      }
-				    }, false);
+						      }
+						    }, false);
 
-				    return xhr;
-				  },
-				  url: 'upload-resumes',
-				  type: "POST",
-				  processData: false,
-				  contentType: false,
-				  data: data1,
-				  success: function(result) {
-				    console.log(result);
-				  },
-				  error: function(request) {
-					  uploadid = 0;
-					  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
-				  }
-				});
+						    return xhr;
+						  },
+						  url: 'upload-resumes',
+						  type: "POST",
+						  processData: false,
+						  contentType: false,
+						  data: data1,
+						  success: function(result) {
+						    console.log(result);
+						  },
+						  error: function(request) {
+							  uploadid = 0;
+							  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
+						  }
+						});
+				} else {
+					alert("No Session found");
+					location.href='/sourcelead/login';
+				}
+			});
+			
 		});
 		
 	});
