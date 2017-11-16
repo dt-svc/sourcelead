@@ -110,7 +110,8 @@ public class CandidateIndexHelper {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
-				candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
+				//candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileURL());
 				candidateIndex.setResumeContent("");
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){

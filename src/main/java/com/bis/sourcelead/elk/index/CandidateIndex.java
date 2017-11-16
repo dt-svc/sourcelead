@@ -190,8 +190,6 @@ public class CandidateIndex implements Serializable {
 	
 	private String action;
 	
-	private String recommendationFileUrl;
-	
 	private String resumeName;
 	
 	
@@ -950,14 +948,6 @@ public class CandidateIndex implements Serializable {
 
 	public void setAction(String action) {
 		this.action = action;
-	}
-
-	public String getRecommendationFileUrl() {
-		return recommendationFileUrl;
-	}
-
-	public void setRecommendationFileUrl(String recommendationFileUrl) {
-		this.recommendationFileUrl = recommendationFileUrl;
 	}
 
 	public String getResumeName() {
