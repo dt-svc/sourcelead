@@ -598,7 +598,7 @@ function vendorContactPaginationUrl(url){
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'GET',
-          pages: 1
+          pages: 10
         }),
         "columns": [
         	{ "data": "" },
@@ -712,7 +712,7 @@ function vendorContactPaginationUrl(url){
 		     	}
   		  }],
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[1, 15, 20], [1, 15, 20]],
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
