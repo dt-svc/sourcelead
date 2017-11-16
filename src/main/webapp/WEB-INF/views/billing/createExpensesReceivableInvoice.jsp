@@ -303,7 +303,6 @@ function getClientContacts(){
 
 <script>
 function getProjectsList(projectName){
-	alert("hai");
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",

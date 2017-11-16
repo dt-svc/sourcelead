@@ -292,8 +292,8 @@ function getProjectsList(projectName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
 	for (var i=0; i<json.length; i++)

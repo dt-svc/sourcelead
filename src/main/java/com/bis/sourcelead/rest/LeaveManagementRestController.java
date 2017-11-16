@@ -904,7 +904,7 @@ public class LeaveManagementRestController {
 	{
 		String leavePolicy = null;
 		 LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-		 if(leaveType !=null && "Y".equalsIgnoreCase(leaveType.getVisibilityToAllUsers())) {
+		 if(leaveType !=null && "Y".equalsIgnoreCase(leaveType.getVisibilityToAllUsers()) && "Y".equalsIgnoreCase(leaveType.getLeavePolicy())) {
 			 leavePolicy = leaveType.getPolicyDescription();
 		 }
 		return leavePolicy;
