@@ -76,7 +76,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                         <li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Tier-1" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 1</label></li>
 						<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="Tier-2" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 2</label></li>
 						<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="Tier-3" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 3</label></li>
-	-					<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Tier-4" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 4</label></li>
+						<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Tier-4" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 4</label></li>
               			<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Tier-5" onclick="getVendorLists();"><label>&nbsp;&nbsp; Tier 5</label></li>
                        </ul>
                     </div>
@@ -598,7 +598,7 @@ function vendorContactPaginationUrl(url){
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'GET',
-          pages: 10
+          pages: 1
         }),
         "columns": [
         	{ "data": "" },
@@ -712,7 +712,7 @@ function vendorContactPaginationUrl(url){
 		     	}
   		  }],
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"lengthMenu": [[1, 15, 20], [1, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
