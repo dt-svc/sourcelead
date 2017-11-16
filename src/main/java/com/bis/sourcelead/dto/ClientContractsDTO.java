@@ -95,6 +95,7 @@ public class ClientContractsDTO {
 	private String tempUUID;
 	private Long approverUserId;
 	private Long ownerUser;
+	private String templateId;
 	
 	public Long getId()
 	{
@@ -915,4 +916,15 @@ public class ClientContractsDTO {
 	{
 		this.ownerUser = ownerUser;
 	}
+
+	public String getTemplateId()
+	{
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId)
+	{
+		this.templateId = templateId;
+	}
+	
 }
