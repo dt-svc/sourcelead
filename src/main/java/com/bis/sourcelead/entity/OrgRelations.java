@@ -216,39 +216,51 @@ public class OrgRelations implements Serializable{
 	private String paymentRemittanceEmail;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfContatcs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfContatcsForCampaign;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfReleasedJobs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfNonReleasedContacts;
 	
 	@Transient
+	@JsonProperty
 	private String locationOrgname;
 	
 	@Transient
+	@JsonProperty
 	private String locationWebsite;
 	
 	@Transient
+	@JsonProperty
 	private String locationCountry;
 	
 	@Transient
+	@JsonProperty
 	private String locationState;
 	
 	@Transient
+	@JsonProperty
 	private String locationCity;
 	
 	@Transient
+	@JsonProperty
 	private String responderId;
 	
 	@Transient
+	@JsonProperty
 	private String locationID;
 	
 	@Transient
+	@JsonProperty
 	private String level;
 	
 	@Transient

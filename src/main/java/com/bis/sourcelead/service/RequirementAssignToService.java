@@ -31,5 +31,7 @@ public interface RequirementAssignToService {
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId, Date startDateUTC,Date endDateUTC)throws Exception;
 	
 	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,Long teamId);
+	
+	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
 
 }
