@@ -440,7 +440,8 @@ function empInvoiceDetails(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -457,7 +458,8 @@ function empChecksListPagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -579,7 +581,8 @@ function wagesAndTaxEmpTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -712,6 +715,7 @@ function accountDeductionsEmpTablePagination(){
        }
     });
     $("#accontDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -921,6 +925,7 @@ function hrDeductionsEmpTablePagination(){
        }
     });
     $("#hrDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
