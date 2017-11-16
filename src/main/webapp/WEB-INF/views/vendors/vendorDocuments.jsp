@@ -501,8 +501,8 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
+		    	//var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -521,9 +521,10 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     				 $('#contractType').trigger("chosen:updated");
     			 }
     			 
+    			     			 
     			 if(json.orgSpocsList != null && json.orgSpocsList != "" && json.orgSpocsList != "undefined" && json.orgSpocsList.length > 0){
     				 $('#spoc').empty();
-    		         $('#spoc').append('<option value="">Client Contact</option>');
+    		         $('#spoc').append('<option value="">Vendor Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
