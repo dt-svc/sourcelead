@@ -1187,9 +1187,18 @@ $(document).ready(function () {
 
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatJobSave = getJSDateFormat(locationDate);
+	  var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
 	  $('#closedDate').datepicker({
-	      dateFormat: finalDateFormatJobSave,
+	      dateFormat: jsDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
 	  	  minDate: 1,
