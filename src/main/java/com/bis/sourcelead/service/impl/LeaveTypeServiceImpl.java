@@ -51,7 +51,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveTypeDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
 		LeaveType leaveType = null;
-		if(StringUtils.isNotBlank(leaveTypeDTO.getLeaveTypeId())){
+		if(leaveTypeDTO.getLeaveTypeId() != null && !"".equalsIgnoreCase(leaveTypeDTO.getLeaveTypeId())){
 			leaveType = leaveTypeDao.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 			leaveType.setUpdatedBy(user.getUserCode());
 			leaveType.setUpdatedDate(new Date());
@@ -62,18 +62,18 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		}
 		
 		leaveType.setOrgLocations(orgLocation);
-		if (StringUtils.isNotBlank(leaveTypeDTO.getName())) {
+		if (leaveTypeDTO.getName() != null) {
 			leaveType.setName(leaveTypeDTO.getName());
 		}
-		if (StringUtils.isNotBlank(leaveTypeDTO.getDuration()))
+		if (leaveTypeDTO.getDuration() != null)
 			leaveType.setDuration(leaveTypeDTO.getDuration());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getHours()))
+		if (leaveTypeDTO.getHours() != null)
 			leaveType.setHours(leaveTypeDTO.getHours());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getHoursType()))
+		if (leaveTypeDTO.getHoursType() != null)
 			leaveType.setTypeOfHours(leaveTypeDTO.getHoursType());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getBillingType()))
+		if (leaveTypeDTO.getBillingType() != null)
 			leaveType.setLeaveType(leaveTypeDTO.getBillingType());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getDepartment())) {
+		if (leaveTypeDTO.getDepartment() != null && !"".equalsIgnoreCase(leaveTypeDTO.getDepartment())) {
 			Department dep = departmentService.getDepartmentById(Long.parseLong(leaveTypeDTO.getDepartment()));
 			leaveType.setDepartmentId(dep);
 		}
@@ -81,23 +81,26 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			Set<LeaveRole> leaveRolesSet = getLeaveRoles(leaveTypeDTO.getRoles(), leaveType, user);
 			leaveType.setLeaveTypeRolesSet(leaveRolesSet);
 		}
-		if (StringUtils.isNotBlank(leaveTypeDTO.getApplicableToUsers()))
+		if (leaveTypeDTO.getApplicableToUsers() != null)
 			leaveType.setApplicableToUsers(leaveTypeDTO.getApplicableToUsers());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getCarryforward()))
+		if (leaveTypeDTO.getCarryforward() != null)
 			leaveType.setLeavesCarryforward(leaveTypeDTO.getCarryforward());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getNoOfLeavesPerYear()))
+		if (leaveTypeDTO.getNoOfLeavesPerYear() != null)
 			leaveType.setNumbefrOfLeavesPeryear(leaveTypeDTO.getNoOfLeavesPerYear());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getNoOfLeavesPerMonth()))
+		if (leaveTypeDTO.getNoOfLeavesPerMonth() != null)
 			leaveType.setNumbefrOfLeavesPerMonth(leaveTypeDTO.getNoOfLeavesPerMonth());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getDescription()))
+		if (leaveTypeDTO.getDescription() != null)
 			leaveType.setDescription(leaveTypeDTO.getDescription());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicy()))
+		if (leaveTypeDTO.getLeavePolicy() != null){
 			leaveType.setLeavePolicy(leaveTypeDTO.getLeavePolicy());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getPolicyName()))
+		}else{
+			leaveType.setLeavePolicy("");
+		}
+		if (leaveTypeDTO.getPolicyName() != null)
 			leaveType.setPolicyName(leaveTypeDTO.getPolicyName());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getVisibilityToAllUsers()))
+		if (leaveTypeDTO.getVisibilityToAllUsers() != null)
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
-		if (StringUtils.isNotBlank(leaveTypeDTO.getLeavePolicyDescription()))
+		if (leaveTypeDTO.getLeavePolicyDescription() != null)
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
 		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
 			leaveType.setStatus(Constants.RECORD_INACTIVE.toString());

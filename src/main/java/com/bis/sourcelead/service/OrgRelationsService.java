@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -66,4 +70,8 @@ public interface OrgRelationsService {
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
 	
 	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
+	
+	ResponseList<OrgSpoc>  getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long id, Long orgLocationId, String relationType,String vendorStatus, List<Long> vendorOrgLocationsIds) throws Exception;
+
+	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
 }
