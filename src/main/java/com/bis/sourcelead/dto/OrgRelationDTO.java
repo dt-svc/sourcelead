@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class OrgRelationDTO implements Serializable{
+public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -60,7 +60,17 @@ public class OrgRelationDTO implements Serializable{
 	
 	private Long orgRelationId;
 	
+	private String requirementId;
 	
+	private String vendorStatus;
+	
+	private String initiatorLevel;
+	
+	private String  noOfContatcs;
+
+	private String  stringDate;
+	
+	private String noOfNonReleasedContacts;
 
 	public Long getId() {
 		return id;
@@ -276,5 +286,53 @@ public class OrgRelationDTO implements Serializable{
 
 	public void setOrgRelationId(Long orgRelationId) {
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getVendorStatus() {
+		return vendorStatus;
+	}
+
+	public void setVendorStatus(String vendorStatus) {
+		this.vendorStatus = vendorStatus;
+	}
+
+	public String getInitiatorLevel() {
+		return initiatorLevel;
+	}
+
+	public void setInitiatorLevel(String initiatorLevel) {
+		this.initiatorLevel = initiatorLevel;
+	}
+
+	public String getNoOfContatcs() {
+		return noOfContatcs;
+	}
+
+	public void setNoOfContatcs(String noOfContatcs) {
+		this.noOfContatcs = noOfContatcs;
+	}
+
+	public String getStringDate() {
+		return stringDate;
+	}
+
+	public void setStringDate(String stringDate) {
+		this.stringDate = stringDate;
+	}
+
+	public String getNoOfNonReleasedContacts() {
+		return noOfNonReleasedContacts;
+	}
+
+	public void setNoOfNonReleasedContacts(String noOfNonReleasedContacts) {
+		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
 	}
 }
