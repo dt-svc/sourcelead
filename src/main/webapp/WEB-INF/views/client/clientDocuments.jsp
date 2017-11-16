@@ -163,7 +163,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
+	                    	    result = result+'	 <td><div class="tblicons tblminwidth-150">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
 	                    	    result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';

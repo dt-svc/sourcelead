@@ -1454,22 +1454,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User candidateUser,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception
 	{
-		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(candidateUser.getId(), orgLocations.getId());
 		if(null == candidate){
 			candidate = new Candidate();
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 			candidate.setOrgLocationId(orgLocations);
 			candidate.setCandidateType(Constants.CANDIDATE);
-			candidate.setFirstName(user.getFirstName());
-			candidate.setLastName(user.getLastName());
+			candidate.setFirstName(candidateUser.getFirstName());
+			candidate.setLastName(candidateUser.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
-			candidate.setEmail(user.getEmail());
+			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
-			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCreatedBy(loginUser.getUserCode());
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRate())){
 				candidate.setCurrentRate(addUserDTO.getRate());
@@ -1506,7 +1506,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
-				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
 				candidate.setParentCandidateId(vendorCandidate);
 				}else{
 				candidate.setOrgRelationId(null);
@@ -1524,7 +1524,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
 		candidateDao.storeCandidate(candidate);
