@@ -61,8 +61,8 @@ public class BisUserMapping implements Serializable {
 	@Column(name = "FIXEDPAY")
 	private double fixedPay;
 	
-//	@Column(name = "INSURANCE")
-//	private double insurance;
+	@Column(name = "INSURANCE")
+	private double insurance;
 	
 	@Column(name = "DED")
 	private double ded;
@@ -73,8 +73,8 @@ public class BisUserMapping implements Serializable {
 	@Column(name = "PAYROLL_DIFFERENCE")
 	private double payrollDifference;
 	
-//	@Column(name = "IMMIGRATION")
-//	private String immigration;
+	@Column(name = "IMMIGRATION")
+	private String immigration;
 	
 	@Column(name = "COMMENTS"  ,columnDefinition = "TEXT default NULL")
 	private String comments;
@@ -202,13 +202,13 @@ public class BisUserMapping implements Serializable {
 		this.fixedPay = fixedPay;
 	}
 
-//	public double getInsurance() {
-//		return insurance;
-//	}
-//
-//	public void setInsurance(double insurance) {
-//		this.insurance = insurance;
-//	}
+	public double getInsurance() {
+		return insurance;
+	}
+
+	public void setInsurance(double insurance) {
+		this.insurance = insurance;
+	}
 
 	public double getDed() {
 		return ded;
@@ -234,13 +234,13 @@ public class BisUserMapping implements Serializable {
 		this.payrollDifference = payrollDifference;
 	}
 
-//	public String getImmigration() {
-//		return immigration;
-//	}
-//
-//	public void setImmigration(String immigration) {
-//		this.immigration = immigration;
-//	}
+	public String getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(String immigration) {
+		this.immigration = immigration;
+	}
 
 	public String getComments() {
 		return comments;
