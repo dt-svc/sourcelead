@@ -1206,8 +1206,6 @@ $(document).ready(function () {
 	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
 	  	}
 	  });
-	  
- 
 </script>
 
 <script>
