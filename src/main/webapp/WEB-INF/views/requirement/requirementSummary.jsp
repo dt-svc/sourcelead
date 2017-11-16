@@ -1083,8 +1083,6 @@ function assignedMemberList(requirementId){
       					$("#assignedMemberList").empty();
       				    $("#assignedMemberList").append(result); 
                       }
-				/* enable tabs access after complete loading of deatils page to avoid switching issues */
-        	 $('.disabledLink').removeClass('disabledLink');
                },
                  
             }); 
