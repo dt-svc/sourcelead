@@ -440,7 +440,6 @@ function getOrgDetails()
 			      	if(json['zipCode'] != null && json['zipCode'] != ''){
 			      	document.getElementById("zipCodeDiv").style.display="none";
    	        		document.getElementById("orgZipCodeDiv").style.display="";
-   	        		    $("#orgZipCode").val(json['zipCode']);
 			      	}
    	        	}
    			 },

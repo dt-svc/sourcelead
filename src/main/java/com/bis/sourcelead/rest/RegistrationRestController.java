@@ -690,6 +690,42 @@ public class RegistrationRestController {
 	   }
 	   
 	   
+	   
+	   @RequestMapping(value = "/validateRegiseredCompanyName", method = RequestMethod.GET)
+	   public @ResponseBody String validateRegiseredCompanyName(
+	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
+			String status = null;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			if(!loginOrgLocation.getOrgLocationName().equalsIgnoreCase(companyName)) {
+				boolean flag = false;
+				try {
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+					if(null != orgLocationsList){
+						for(OrgLocations orgLocations : orgLocationsList){
+							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+								flag = true;
+							}
+						}
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		   
+		   if(flag == true){
+			   status = "Company Duplicated";
+		   }else{
+			   status = "success";
+		   }
+		}else {
+			 status = "success";
+		}
+		   
+       return status;
+	   }
+	   
+	   
 	   @RequestMapping(value = "/getUserDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getUserDetails(@RequestParam(value="email", required=false) String email,
 	    		@RequestParam(value="json", required=false) String json) {
