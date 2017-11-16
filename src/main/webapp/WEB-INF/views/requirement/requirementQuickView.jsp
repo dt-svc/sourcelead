@@ -4,13 +4,6 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-a.disabledLink {
-   pointer-events: none;
-   cursor: default;
-}
-</style>
- 
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
@@ -82,12 +75,12 @@ a.disabledLink {
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
 		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
 			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a class="disabledLink" href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a  href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a class="disabledLink" href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
-			<li><a class="disabledLink" href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
