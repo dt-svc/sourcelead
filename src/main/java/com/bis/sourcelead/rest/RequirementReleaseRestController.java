@@ -135,27 +135,15 @@ public class RequirementReleaseRestController {
 		    	for(OrgSpoc contact : contactList.getData()){
 		    		OrgSpocDTO orgSpocDto = new OrgSpocDTO();
 			    	List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(orgSpocDTO.getRequirementId()), contact.getId());
-					if(reqList.size()>0){
-						orgSpocDto.setReleasedRequirement("true");
-			    	for(Requirement req11 : reqList){
-			    		orgSpocDto.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req11.getCreatedDate()));
-					}
-					}else{
-						orgSpocDto.setReleasedRequirement("false");	
-					}
-			    	if(contact.getVendorUser().getFirstName() != null && contact.getVendorUser().getFirstName() != "" && contact.getVendorUser().getLastName() != null && contact.getVendorUser().getLastName() != "" ){
-						StringBuilder spocNameSB3 = new StringBuilder();
-						orgSpocDto.setSpocName(spocNameSB3.append(contact.getVendorUser().getFirstName()).append(" ").append(contact.getVendorUser().getLastName()).toString());
-					}else{
-						orgSpocDto.setSpocName(contact.getVendorUser().getFirstName());
-					}
-			    	
-			    	StringBuilder ownerName = new StringBuilder();
-			    	if(null != contact.getClientUser() && null != contact.getClientUser().getLastName() &&  "" != contact.getClientUser().getLastName()){
-			    		orgSpocDto.setOwnerName(ownerName.append(contact.getClientUser().getFirstName()).append(" ").append(contact.getClientUser().getLastName()).toString());
-			    	}else{
-			    		orgSpocDto.setOwnerName(ownerName.append(contact.getClientUser().getFirstName()).toString());
-			    	}
+						if(reqList.size()>0){
+							orgSpocDto.setReleasedRequirement("true");
+				    	for(Requirement req11 : reqList){
+				    		orgSpocDto.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req11.getCreatedDate()));
+						}
+						}else{
+							orgSpocDto.setReleasedRequirement("false");	
+						}
+						orgSpocDto.setId(contact.getId());
 						orgSpocDto.setSpocEmail(contact.getVendorUser().getEmail());
 						orgSpocDto.setSpocName(contact.getVendorUser().getFullName());
 						orgSpocDto.setSpocMobilePhone(contact.getVendorUser().getMobilePhone());

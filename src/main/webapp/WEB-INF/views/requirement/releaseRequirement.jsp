@@ -360,28 +360,20 @@ function copyToClipboard(elem) {
 <script>
 function releaseTo(){
 		var contactsIds = new Array();
-		var contactsTable = $('#candidatePagination').DataTable();
-		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		 for(var e in checkedVendorContacts) {
+			 if(!e || !checkedVendorContacts[e] || checkedVendorContacts[e] === "")
+				   continue;
+			 contactsIds.push(checkedVendorContacts[e]);
+		 }
+		 
 		var requirementUUID = '${requirementUUID}';
-		contactsRowcollection.each(function()		
-		{
-			contactsIds.push($(this).attr('id'));
-		});
-	
-	   
+		
 	    var vendorIds = new Array();
-	    var vendorTable = $('#vendorPagination').DataTable();
-		var vendorRowcollection =  vendorTable.$(".vendorcheckbox:checked", {"page": "all"});
-		vendorRowcollection.each(function()		
-		{
-			vendorIds.push($(this).attr('id'));
-		});
-	    
-	    /* var vendorIds = new Array();
-	    $('input:checkbox[name=vendorcheckbox]:checked').each(function() 
-	    {
-	    	vendorIds.push($(this).attr('id'));
-	    }); */
+	    for(var e in checkedVendors) {
+			 if(!e || !checkedVendors[e] || checkedVendors[e] === "")
+				   continue;
+			 vendorIds.push(checkedVendors[e]);
+		 }
 	    
 	    var isPublic = $("#isPublicId").val();
 	    var isCrowdScourcing = $("#isCrowdScourcingId").val();
@@ -399,7 +391,7 @@ function releaseTo(){
 	 			$("#releaseBtn").prop('value', 'Processing');
 	 		    var sourceleadUrl ='${sourceleadUrl}';
 	 		    var requirementId = '${requirementId}';
-	 			 $.ajax({
+	 		 	 $.ajax({
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
@@ -569,7 +561,7 @@ function prepareReleaseVendorContactList(url){
     result = result +'<table id="vendorContactPagination" class="display" cellspacing="0" width="100%">';
    	result = result +'<thead>';
    	result = result +'<tr>';
-    result = result +'<th class="text-center"><input type="checkbox" id="contactscheckbox" onclick="toggle(this);"/></th>'; 
+    result = result +'<th class="text-center"><input type="checkbox" id="contactscheckbox" onclick="toggleVendorContacts(this);"/></th>'; 
    	result = result +'  <th>Name</th>';
    	result = result +'  <th>Email</th>';
    	result = result +' <th>Phone</th>';
@@ -587,6 +579,7 @@ function prepareReleaseVendorContactList(url){
    	$("#vendorContacts").empty();
 	$("#vendorContacts").append(result);
 	$("#vendorContactsLoaderDiv").removeAttr("style");
+	checkedVendorContacts = {};
 	vendorContactPaginationUrl(url);
 }
 function vendorContactPaginationUrl(url){
@@ -618,9 +611,28 @@ function vendorContactPaginationUrl(url){
 	   	        	$("input[name='vendorStatus']:checkbox").attr('checked',false);
 	   	        	$("#vendorSelected").show();
 	    	  		var result = "";
-	    	  		if(report.releasedRequirement =="false"){
-		        			result = result +'  <td><input class="contactscheckbox" name="contactscheckbox" type="checkbox" id="'+report.id+'"/></td>';
-		        		}
+	    	  		var flag = false;
+	    	  		if(report.releasedRequirement =="true"){
+   	        			result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
+   	        		}
+   	        		if(report.releasedRequirement =="false"){
+   	        			
+   	        		 for(var e in checkedVendorContacts) {
+	   	     	    	   if(!e || !checkedVendorContacts[e] || checkedVendorContacts[e] === "")
+	   	     				   continue;
+	   	     	    	   if(e === report.id+"") {
+	   	     	    		    if(!$("#contactscheckbox").is(":checked"))
+	   	     	    		 	//checkOrUncheckParent($('#vendorContactPagination').DataTable().data()); 
+	   	     	    	   	flag = true;
+	   	     	    	   	break;
+	   	     	    	   }
+	   	        		 }
+	   	        		 if(!flag)
+	   	        			$("#contactscheckbox").removeAttr('checked');
+	   	        		 
+   	        			result = result +'  <td><input'+(flag ? " checked='checked'" : "")+' class="contactscheckbox" name="contactscheckbox"  type="checkbox" id="'+report.id+'" data-id="'+report.id+'" value="'+report.id+'" onchange="checkVendorContacts(this)"/></td>';
+   	        		}
+   	        		 
 	    	  		 return result;
 	    	  	}
 	      } ,{
@@ -716,7 +728,7 @@ function vendorContactPaginationUrl(url){
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
@@ -816,7 +828,7 @@ function prepareReleaseVendorList(url){
     result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
    	result = result +'<thead>';
    	result = result +'<tr>';
-    result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
+    result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggleVendors(this);"/></th>'; 
    	result = result +'  <th>Name</th>';
    	result = result +'  <th>Location</th>';
    	result = result +' <th>Released On</th>';
@@ -830,11 +842,14 @@ function prepareReleaseVendorList(url){
    	$("#vendor").empty();
     $("#vendor").append(result);
 	$("#vendorLoaderDiv").removeAttr("style");
+	checkedVendors = {};
+	
 	vendorPaginationUrl(url);
 	
 }
 function vendorPaginationUrl(url){
 	var colIndex = 0;
+	var vendorCheckListResult = "";
     $('#vendorPagination').DataTable( { 
 	  "processing": true,
       "serverSide": true,
@@ -857,23 +872,39 @@ function vendorPaginationUrl(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "",
 	    	  	"render": function(data, type, report, meta) {
-	    	  		var vendorCheckListResult = "";
+	    	  		
 	    	  		 if(report.noOfContatcs != 0){
-   	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.orgRelationId+'" name="vendorSelected" value ="'+report.id+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
+   	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.orgRelationId+'" name="vendorSelected" value ="'+report.orgRelationId+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
    	        		}
 	    	  		 $("#vendorReleaseCheckList").empty();
            	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult); 
-           	    	 
+           	     
            	    	$("#vendorStatus").show();
            	     	$("#vendorSelected").hide();
            	     	$("input[name='vendorSelected']:checkbox").attr('checked',false);
            	     	
            	  	    $("#vendorContacts").empty();  
 	    	  		var result = "";
+	    	  		var flag = false;
+	    	  		
 	    	  		if(report.noOfNonReleasedContacts == 0){
    	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
 	        		}else{
-	        			result = result +'  <td><input class = "vendorcheckbox" name="vendorcheckbox" type="checkbox" id="'+report.orgRelationId+'" /></td>';
+	        			
+	        			 for(var e in checkedVendors) {
+	   	     	    	   if(!e || !checkedVendors[e] || checkedVendors[e] === "")
+	   	     				   continue;
+	   	     	    	   if(e === report.orgRelationId+"") {
+	   	     	    		    if(!$("#checkbox1").is(":checked"))
+	   	     	    		 	//checkOrUncheckParent($('#vendorPagination').DataTable().data()); 
+	   	     	    	   	flag = true;
+	   	     	    	   	break;
+	   	     	    	   }
+	   	        		 }
+	   	        		 if(!flag)
+	   	        			$("#checkbox1").removeAttr('checked');
+	        			
+	        			result = result +'  <td><input'+(flag ? " checked='checked'" : "")+' class = "vendorcheck" name="vendorcheckbox" type="checkbox" id="'+report.orgRelationId+'" data-id="'+report.orgRelationId+'" value="'+report.orgRelationId+'" onchange="checkVendors(this)"/></td>';
 	        		}
 	    	  		 return result;
 	    	  	}
@@ -973,11 +1004,14 @@ function vendorPaginationUrl(url){
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     },
+	     "initComplete": function( settings, json ) {
+	    	// checkOrUncheckParent(json.data);
 	     }
     } );
     $("#vendorPagination").wrap("<div class='overflow_Auto width100percnt'></div>"); 
@@ -990,177 +1024,50 @@ function vendorPaginationUrl(url){
 }
 
 
-/* function getVendorLists(){
-	var vendorStatus = [];
-	$('input:checkbox[name=vendorStatus]:checked').each(function() 
-    {
-		vendorStatus.push($(this).val());
-    });
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	var loginOrgLocId = '${loginOrgLocId}';
-	var requirementId = '${requirementId}';
-	$("#vendorLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.ajax({
-		   	type: "GET",
-		    url: sourceleadUrl+"/getVendorListsForReleaseRequirement?requirementId="+requirementId+"&vendorStatus="+vendorStatus, 	   
-   		    success: function(json) {
-   		    	alert("length"+json.length)
-	           	        	var result = "";
-	                        result = result +'<div class="require_wrap_table release-jobs-tbl overflow_inherint">';
-	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
-	           	        	result = result +'<thead>';
-	           	        	result = result +'<tr>';
-	           	            result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
-	           	        	result = result +'  <th>Name</th>';
-	           	        	result = result +'  <th>Location</th>';
-	           	        	result = result +' <th>Released On</th>';
-	           	        	result = result +' <th>No. of contacts</th>';
-	           	        	result = result +' <th>Level</th>';
-	           	        	result = result +' <th>Release</th>';
-	           	        	result = result +'</tr>';
-	           	        	result = result +'</thead>';
-	           	        	result = result +'<tbody>';
-	           	        	var vendorCheckListResult = "";
-	           	        	for (var i=0; i<json.length; i++)
-	           				{  
-	           	        		var report = json[i];
-	           	        		if(report.noOfContatcs != 0){
-	           	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.id+'" name="vendorSelected" value ="'+report.id+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
-	           	        		}
-	           	        		
-	           	        		var location = "";
-	           	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
-	           	        			location = report.country+", "+report.state+", "+report.city;
-	           	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-	           	        			location = report.country+", "+report.state;
-	           	        		}else{
-	           	        			location = report.country;
-	           	        		}
-	           	        		
-	           	        		result = result +'<tr>';
-	           	        	    
-	           	        	 	if(report.noOfNonReleasedContacts == 0){
-	           	        	 		result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-	        	        		}else{
-	        	        			result = result +'  <td><input class = "vendorcheckbox" name="vendorcheckbox" type="checkbox" id="'+report.id+'" /></td>';
-	        	        		}
-	           	        	 
-	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
-	           	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
-	           	        			result = result +'</div>';
-	           	        			result = result +'</td>';
-	           	        		}else{
-	           	        			result = result +'<td><div>--</div></td>';
-	           	        		}
-	           	        		
-	           	        		if(location != null && location  != '' && location  != 'undefined'){
-	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
-	           	        			result = result +'<span title="'+location+'">'+location+'</span>';
-	           	        			result = result +'</div>';
-	           	        			result = result +'</td>';
-	           	        		}else{
-	           	        			result = result +'<td><div>--</div></td>';
-	           	        		}
-	           	        		result = result +'<td>';
-			        			if(null != report.stringDate && '' != report.stringDate && 'undefined' != report.stringDate){
-			        				result = result +'<div title="'+report.stringDate+'"><span>'+report.stringDate+'</span></div>';
-			        			}else{
-			        				result = result +'<div title=""><span>---</span></div>';
-			        			}
-			        			result = result +'</td>';
-	        	       		result = result +'<td><div class="tbldata-dotdot-sm">'+report.noOfContatcs+'</div></td>';
-	        	       		result = result +' <td><div class="tbldata-dotdot-sm"><span  title="'+report.level+'">'+report.level+'</span></td>';
-	        	       		result = result +'<td>';
-	        	       		
-	        	       		if(report.noOfNonReleasedContacts == 0){
-	                			result = result +'<div><b class="proj_active">Released</b></div>';
-	                		}else if(report.noOfNonReleasedContacts > 0){
-									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-										result = result +'<div id="releaseToVendorIconDiv'+report.id+'"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
-									'</sec:authorize>';
-									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-										result = result +'<div class="fa fa-bullhorn"></div>';
-									'</sec:authorize>';
-	                		}
-	        	       		
-	                		result = result +'</td>';
-	           	        	result = result +'</tr>';
-	           				}
-	           	        	result = result +'</tbody>';
-	           	        	result = result +'</table>';
-	           	        	result = result +' </div>';
-	           	        	
-	           	        	$("#vendorStatus").show();
-	           	        	$("#vendorSelected").hide();
-	           	        	$("input[name='vendorSelected']:checkbox").attr('checked',false);
-	           	        	
-	           	    	    $("#vendorContacts").empty();  
-	           	    	 	$("#vendor").empty();
-	           	    	    $("#vendor").append(result);
-	           	    	 	$("#vendorLoaderDiv").removeAttr("style");
-	           	    	 	vendorPagination();
-	           	    	 $("#vendorReleaseCheckList").empty();
-	           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult);
-	   		    	 
-   		    },
-	 });
-} */	
+function checkOrUncheckParent(data) {
+	$("#checkbox1").removeProp("checked");
+	   var count = 0;
+	 for(var e in checkedvendors) {
+	   if(!e || !checkedvendors[e] || checkedvendors[e] === "")
+		   continue;
+	   for(var f in data) {
+   	   if(e === data[f].id+"") {
+   		count ++;
+   	   }
+		}
+	 }
+	 if(count == 10) {
+		$("#checkbox1").prop("checked", "checked");
+	 }
+}
+
 </script>
 
 
 
 <script>
-function vendorPagination(){  
-   	$('#vendorPagination').DataTable( { 
-       	"scrollCollapse": false,
-       	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-       	"bLengthChange": false,
-       	"bDestroy": true,
-       	"ordering": true,
-       	"oLanguage": {
-        		"sSearch": "",
-        		 "sZeroRecords": "", "sEmptyTable": ""
-        	}
-       } );
+var checkedVendors = {};
+function checkVendors(elem) {
+	if($(elem).is(":checked")) {
+		checkedVendors[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#checkbox1").removeProp('checked');
+		checkedVendors[$(elem).data("id")] = "";
+	}
 }
 </script>
 
 <script>
-function candidatePagination(){ 
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+var checkedVendorContacts = {};
+function checkVendorContacts(elem) {
+	if($(elem).is(":checked")) {
+		checkedVendorContacts[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#contactscheckbox").removeProp('checked');
+		checkedVendorContacts[$(elem).data("id")] = "";
+	}
 }
 </script>
-<!-- 
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script>  -->
 
 
 
@@ -1233,6 +1140,47 @@ $('input:checkbox:not(#checkbox1)').click(function() {
 });
 }
 </script>
+
+
+<script>
+function toggleVendors(source) {
+  var checkboxes = document.querySelectorAll('input[class="vendorcheck"]');
+  if($(source).is(":checked"))
+	  $('input[class="vendorcheck"]').prop('checked', 'checked');
+  else 
+	  $('input[class="vendorcheck"]').removeProp('checked');
+  
+  $('input[class="vendorcheck"]').each(function(i) {
+	  if($(this).is(":checked")) {
+	      checkedVendors[$(this).data("id")] = $(this).val();
+	  } else {
+		  checkedVendors[$(this).data("id")] = "";
+	  }
+  });
+}
+
+
+function toggleVendorContacts(source){
+	  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
+	  if($(source).is(":checked"))
+		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
+	  else 
+		  $('input[class="contactscheckbox"]').removeProp('checked');
+	  
+	  $('input[class="contactscheckbox"]').each(function(i) {
+		  if($(this).is(":checked")) {
+		      checkedVendorContacts[$(this).data("id")] = $(this).val();
+		  } else {
+			  checkedVendorContacts[$(this).data("id")] = "";
+		  }
+	  });
+}
+</script>
+
+
+
+
+
 
 <script>
 
