@@ -54,7 +54,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
           <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
 
           <div class="content clearfix">
-            <div class="vendor_wrap overflow_Auto">
+            <div class="vendor_wrap">
               <div class="col-md-7 radioInline zIndex">
                 <!-- <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
                   <option id="cont" value ="releaseByContact">Release By Contact</option>
@@ -367,7 +367,6 @@ function releaseTo(){
 		 }
 		 
 		var requirementUUID = '${requirementUUID}';
-		
 	    var vendorIds = new Array();
 	    for(var e in checkedVendors) {
 			 if(!e || !checkedVendors[e] || checkedVendors[e] === "")
@@ -408,6 +407,7 @@ function releaseToOneContact(contactscheckboxId){
 	$("#" + contactscheckboxId).prop('checked', true);
 	$("#releaseToClientIconDiv"+contactscheckboxId).empty();
 	$("#releaseToClientIconDiv"+contactscheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
+	checkedVendorContacts[contactscheckboxId] = contactscheckboxId;
 	releaseTo();
 }
 
@@ -417,6 +417,7 @@ function releaseToOneVendor(vendorcheckboxId){
 	
 	$("#releaseToVendorIconDiv"+vendorcheckboxId).empty();
 	$("#releaseToVendorIconDiv"+vendorcheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
+	checkedVendors[vendorcheckboxId] = vendorcheckboxId;
 	releaseTo();
 }
 </script>
@@ -724,7 +725,7 @@ function vendorContactPaginationUrl(url){
 		     	}
   		  }],
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"lengthMenu": [[4, 15, 20], [4, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
