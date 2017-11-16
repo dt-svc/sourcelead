@@ -139,10 +139,11 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OrgLocations> orgLocationsList = null;
-		Query citiesListQuery= session.createQuery("from OrgLocations orgloc left join fetch orgloc.org");
-		orgLocationsList=citiesListQuery.list();
-		return orgLocationsList;
+
+		String query = "from OrgLocations orgloc left join fetch orgloc.org ";
+		
+		List<OrgLocations> locationList = session.createQuery(query).setCacheable(true).list();
+		return locationList;
 	}
 
 	@Override
@@ -316,6 +317,24 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			String query = "from OrgLocations orgLocations where orgLocations.org.id = :orgId";
 			List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("orgId", orgId).list();
 		return orgLocations;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgLocations orgLocations where  orgLocations.orgLocationName = :orgLocationName");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgLocationName", orgLocationName).setCacheable(true).list();
+	     
+	        OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
 	}
 
 }
