@@ -1120,13 +1120,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
    }
    @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/rest/saveTimesheetEntries", method = RequestMethod.POST)
-	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetEntries(TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetEntries(@RequestBody TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		 	
 			String status = "";
 			String savingType = "";
@@ -1270,21 +1269,23 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		            LinkedList<FileInfo> fileInfoList = new LinkedList<>();
 		            if(tsDTO.getFileInfo() != null){
 		            	 for(FileInfo file:tsDTO.getFileInfo()) {
-		            		FileInfo freshFile = file;
-							FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
-							TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
-							tsd.setTimesheetSubmissions(timesheetSubmissions);
-							tsd.setFileUrl(file.getFileURL());
-							tsd.setFileName(file.getFileName());
-							tsd.setFileContentType(file.getContentType());
-							tsd.setStatus(Constants.CANDIDATE_ACTIVE);
-							tsd.setCreatedDate(CommonUtil.currentDate());
-			                tsd.setCreatedBy(loginUser.getUserCode());
-			                tsd.setUpdatedDate(CommonUtil.currentDate());
-			                tsd.setUpdatedBy(loginUser.getUserCode());
-			                tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
-			                freshFile.setFileDbId(tsd.getId().toString());
-			                fileInfoList.add(freshFile);
+		            		 FileInfo freshFile = file;
+		            		 if(StringUtils.isEmpty(file.getFileDbId())){
+		            			 FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+									TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
+									tsd.setTimesheetSubmissions(timesheetSubmissions);
+									tsd.setFileUrl(file.getFileURL());
+									tsd.setFileName(file.getFileName());
+									tsd.setFileContentType(file.getContentType());
+									tsd.setStatus(Constants.CANDIDATE_ACTIVE);
+									tsd.setCreatedDate(CommonUtil.currentDate());
+					                tsd.setCreatedBy(loginUser.getUserCode());
+					                tsd.setUpdatedDate(CommonUtil.currentDate());
+					                tsd.setUpdatedBy(loginUser.getUserCode());
+					                tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+					                freshFile.setFileDbId(tsd.getId().toString());
+		            		 }
+			                 fileInfoList.add(freshFile);
 			            }
 		            }
 		            tsDTO.setFileInfo(fileInfoList);
@@ -1509,7 +1510,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									&&  projectMember.getProjects() != null
 									&& frequencyStartDate != null
 									&& frequencyEndDate != null ){
-								sendEmailToManagerAtTimesheetSubmissions(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgCode);
+								sendEmailToManagerAtTimesheetSubmissions(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId(),frequencyStartDate,frequencyEndDate,loginUser,loginOrgLocation,loginOrgLocation.getOrgCode());
 							}
 						}
 					}
