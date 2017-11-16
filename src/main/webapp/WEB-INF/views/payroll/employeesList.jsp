@@ -25,6 +25,8 @@ function prepareEmployeeList(url){
 	
 	 $("#employeeListDiv").removeAttr("style");
  	 $("#employeeListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";

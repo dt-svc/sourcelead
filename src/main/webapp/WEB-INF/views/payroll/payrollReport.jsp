@@ -440,7 +440,8 @@ function empInvoiceDetails(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -457,7 +458,8 @@ function empChecksListPagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -579,7 +581,8 @@ function wagesAndTaxEmpTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -712,6 +715,7 @@ function accountDeductionsEmpTablePagination(){
        }
     });
     $("#accontDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -921,6 +925,7 @@ function hrDeductionsEmpTablePagination(){
        }
     });
     $("#hrDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -1022,6 +1027,7 @@ function finalBalance(){
 			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
 			        	result = result + '  <div class="payrollinvoice-generate">';
 			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
+			        	result = result + '  <div class="payrollinvoice-header">';
 			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
 			        	result = result + '<tr>';
 			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
@@ -1035,6 +1041,7 @@ function finalBalance(){
 			        	result = result + '<td class="bg-success">$ '+data.due+'</td>';
 			        	result = result + '</tr>';
 			        	result = result + '</table>';
+			        	result = result + '  </div>';
 			        	
 			        	
 			        	
@@ -1125,6 +1132,21 @@ function finalBalance(){
 			        
 			    });
 }
+</script>
+
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	$("#tab-1").show();
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

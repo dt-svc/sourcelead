@@ -42,8 +42,8 @@ $(document).ready(function(){
              <div class="col-md-5">
              <label class="col-md-3">Org Users</label>
                <div class="col-md-9" id="errOrgUserIdDiv">
-               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required" onchange="removeOrgValidation();">
-                <option value="" selected>-Select Org Users-</option>
+               <select class="chosen-select" data-placeholder="Select Org User" id="slUserId" name="slUserId" field-name="Org User" data-validation="required" onchange="removeOrgValidation();">
+                <option value="" selected>-Select Org User-</option>
 	            <c:forEach var="users" items="${usersList}">
 					<option value="${users.id}">${users.firstName} ${users.lastName}</option>
 				</c:forEach>
@@ -150,7 +150,8 @@ function userMappingTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 

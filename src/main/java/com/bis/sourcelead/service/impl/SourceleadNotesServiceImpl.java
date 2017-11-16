@@ -104,7 +104,8 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		}
 		if (StringUtils.isNotBlank(sourceleadNotesDTO.getCategoryType())) {
 			sourceleadNotes.setCategoryType(sourceleadNotesDTO.getCategoryType());
-			if (Constants.NOTES_JOBS.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType())) {
+			if (Constants.NOTES_JOBS.equalsIgnoreCase(sourceleadNotesDTO.getCategoryType()) && (sourceleadNotesDTO.getVendorcontact()!=null)) {
+				
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(sourceleadNotesDTO.getVendorcontact()));
 				sourceleadNotes.setRequirementId(requirement);
 			}

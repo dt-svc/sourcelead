@@ -131,6 +131,7 @@
 				});
 	}
 </script>
+
 <script>
 function hideAndShowDetailsRow(rowId,type){
 	$(".fa-plus-square-o").toggleClass("closExp");
@@ -759,6 +760,7 @@ function addExpenseRow(from){
 </script>
  <script>
 function displayCalendar(entityId){
+if('${type}' !='view'){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
 	var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -775,7 +777,7 @@ function displayCalendar(entityId){
 	else {
 		alert("Please Select StartDate & EndDate")
 	}
-	
+  } 
 }
 </script>
 
