@@ -573,6 +573,9 @@ public class RequirementController {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
 		
+		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
+		
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
