@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -17,6 +20,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private List<WeekDaysDTO> weekDays;
 	
 	private List<TimesheetEntriesDTO> timesheetEntries;
+	
+	private List<Long> removedDocumentIds;
 	
 	private List<FileInfo> fileInfo;
 	
@@ -255,6 +260,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setResponseStatus(String responseStatus) {
 		this.responseStatus = responseStatus;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
 	}
 
 	

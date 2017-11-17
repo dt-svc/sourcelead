@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -25,6 +28,8 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	private String currentTimeSubFrequency;
 	
 	private TimeSheetSubmissionDTO timesheetSubmission;
+	
+	private String timesheetFor;
 	
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
@@ -97,7 +102,12 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.timesheetSubmission = timesheetSubmission;
 	}
 
-	
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
 
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
     
 }

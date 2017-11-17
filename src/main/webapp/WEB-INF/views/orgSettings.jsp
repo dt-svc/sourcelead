@@ -415,7 +415,7 @@ function cancelOrgImg(){
                             </div>
                 			<div class="form-group">
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
-                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
+                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
             			</div>            			
         			</div>
