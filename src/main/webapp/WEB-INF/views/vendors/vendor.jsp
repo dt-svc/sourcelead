@@ -442,8 +442,7 @@ function getVendorDetails(){
 							<div class="col-md-9">
 								<select class="form-control" id="PaymentTermId"
 									name="paymentTerms">
-									<option selected="selected" disabled value="">Select
-										Payment Term</option>
+									<option selected="selected" disabled value="">Select Payment Term</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
 									<option value="30 days">30 days</option>
@@ -618,38 +617,6 @@ function getVendorDetails(){
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	$( "#orgLocationId" ).val( '' );
-	
-	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val(''); 
-	
-	$("#orgCountry").val('');
-	$("#orgState").val('');
-	$("#orgCity").val('');
-	$("#orgCity").val('');
-	$("#orgLocation").val('');
-	$("#orgZipCode").val('');
-	
-	document.getElementById("countryDiv").style.display="";
-	document.getElementById("orgCountryDiv").style.display="none";
-	
-	document.getElementById("stateDiv").style.display="";
-	document.getElementById("orgStateDiv").style.display="none";
-	
-	document.getElementById("cityDiv").style.display="";
-	document.getElementById("orgCityDiv").style.display="none";
-	
-	document.getElementById("locationDiv").style.display="";
-	document.getElementById("orgLocationDiv").style.display="none";
-	
-	document.getElementById("zipCodeDiv").style.display="";
-	document.getElementById("orgZipCodeDiv").style.display="none";
-	
-	/* $("#role" ).val('');
-	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display=""; */
-	document.getElementById("userRoleDiv").style.display="none";
-	
 	$.ajax({                           
     	type: "POST",
     	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
@@ -689,6 +656,36 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	
+$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val(''); 
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
+	$("#orgCity").val('');
+	$("#orgLocation").val('');
+	$("#orgZipCode").val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	document.getElementById("locationDiv").style.display="";
+	document.getElementById("orgLocationDiv").style.display="none";
+	
+	document.getElementById("zipCodeDiv").style.display="";
+	document.getElementById("orgZipCodeDiv").style.display="none";
+	
+	document.getElementById("userRoleDiv").style.display="none";
+	
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
 	var orgLocationId = document.getElementById("orgLocationId").value;
@@ -733,7 +730,6 @@ function getOrgDetails()
 			      	if(zipCode != null && zipCode != ""){
 			      		document.getElementById("zipCodeDiv").style.display="none";
 	   	        		document.getElementById("orgZipCodeDiv").style.display="";
-	   	        	    $("#orgZipCode").val(json['zipCode']);
 			      	}
 			      	
    	        	}

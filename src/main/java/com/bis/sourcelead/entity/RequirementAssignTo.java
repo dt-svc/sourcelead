@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_ASSIGN_TO")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementAssignTo")
@@ -63,18 +65,23 @@ import org.hibernate.annotations.NotFoundAction;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@JsonProperty
 	@Transient
 	private String assignedUserName;
 	
+	@JsonProperty
 	@Transient
 	private Long teamOwnerId;
 	
+	@JsonProperty
 	@Transient
 	private String applicantCount;
 	
+	@JsonProperty
 	@Transient
 	private String assignedUserRole;
 	
+	@JsonProperty
 	@Transient
 	private String teamName;
 

@@ -19,6 +19,7 @@
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 
+	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){

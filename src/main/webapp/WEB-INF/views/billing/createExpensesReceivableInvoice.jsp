@@ -303,7 +303,6 @@ function getClientContacts(){
 
 <script>
 function getProjectsList(projectName){
-	alert("hai");
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
@@ -1026,7 +1025,7 @@ function calculateDisCount(){
        //=======================================
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);

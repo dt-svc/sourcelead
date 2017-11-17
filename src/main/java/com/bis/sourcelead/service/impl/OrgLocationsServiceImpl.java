@@ -321,4 +321,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	{
 		return orgLocationsDao.userList(orgId);
 	}
+
+@Override
+public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception {
+	return orgLocationsDao.getOrgLocationsByOrgLocationName(orgLocationName);
+}
 }

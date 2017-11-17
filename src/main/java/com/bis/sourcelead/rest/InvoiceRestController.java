@@ -1402,7 +1402,8 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId);
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId,loginOrgCurrencyCode);
 		if(invoiceList !=null){
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}
