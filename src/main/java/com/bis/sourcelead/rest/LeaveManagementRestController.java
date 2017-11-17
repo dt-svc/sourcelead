@@ -833,6 +833,12 @@ public class LeaveManagementRestController {
 			 restrictDay.setStatus("0");
 			 restrictDay.setDeleteReason(reason);
 			 restrictDayDao.storeRestrictedDay(restrictDay);
+			 
+			 List<HolidayAndRestrictday> list = leaveService.getHolidayOrRestrictDaysListById(restrictDay.getId(),"RestrictDay");
+			 for(HolidayAndRestrictday day : list){
+				 day.setStatus("0");
+				 leaveDao.storeHolidayAndRestrictDays(day);
+			 }
 			  isDeleted = true;
 		 }
 		return isDeleted;
@@ -969,6 +975,13 @@ public class LeaveManagementRestController {
 		 if(deleteHoliday !=null) {
 			 deleteHoliday.setStatus("0");
 			 holidayDAO.saveDeleteHoliday(deleteHoliday);
+			 
+			 List<HolidayAndRestrictday> list = leaveService.getHolidayOrRestrictDaysListById(deleteHoliday.getId(),"holiday");
+			 for(HolidayAndRestrictday day : list){
+				 day.setStatus("0");
+				 leaveDao.storeHolidayAndRestrictDays(day);
+			 }
+			 
 			 isDeleted = true;
 		 }
 		return isDeleted;
@@ -1360,8 +1373,18 @@ public class LeaveManagementRestController {
 		
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
 		List<Date> daysList = new ArrayList<>();
+		Set<Long> roleIds = new HashSet<>();
 		for(HolidayAndRestrictday day : list){
-			daysList.add(day.getDay());
+			if (!"Y".equalsIgnoreCase(day.getRestrictDay().getApplicableToAll())) {
+				List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(day.getRestrictDay().getId());
+				for (LeaveRole leaveRole : leaveRoleList) {
+					roleIds.add(leaveRole.getRoleId().getId());
+				}
+			}else if (roleIds.contains(roleId)) {
+				daysList.add(day.getDay());
+			} else {
+				daysList.add(day.getDay());
+			}
 		}
 		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
 		int i=0;
