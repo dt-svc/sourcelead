@@ -236,11 +236,15 @@ public class ClientRestController {
 	    		@RequestParam(value="orgName", required=false) String orgName,
 	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
-			Org org = orgService.getOrgByOrgName(orgName);
 			OrgLocations orgLocations = null;
-			if(org != null && orgLocationId != null){
+			if(orgLocationId != null){
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+			}else {
+				orgLocations = orgLocationService.getOrgLocationsByOrgLocationName(orgName);
+				if(orgLocations != null) {
+					orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+				}
 			}
 			return commonUtil.toJSON(orgLocations);
 			
@@ -1467,6 +1471,9 @@ public class ClientRestController {
 		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("initiatorType", responderType));
 		 
+		
+		 
+		 
 		 BoolQueryBuilder responderQueryBuilderCount = QueryBuilders.boolQuery();
 		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
 		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderType", responderType));
@@ -1562,9 +1569,9 @@ public class ClientRestController {
 			}
 			
 			//Country
-			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
-		    }
+//			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+//		    }
 			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCountry", clientVendorDTO.getCountry()));
@@ -1572,18 +1579,18 @@ public class ClientRestController {
 			
 			
 			 //State
-			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
-		    }
-			
+//			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+//		    }
+//			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getState())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorState", clientVendorDTO.getState()));
 		    }*/
 			
 			//City
-			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
-		    }
+//			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
+//		    }
 			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));

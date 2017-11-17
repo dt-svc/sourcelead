@@ -493,7 +493,9 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		        contentType:false,
 	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
 		      success :function(result) {
-		    	  
+		    	 if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+	    			$("#timesheet_form input[data-id*=docFile]").remove();
+	    		  }
 		    	  if(status != null && status != 'undefined' && status != '' && status != 'Draft'){
 		    		  timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,savingType);
 		    	  }

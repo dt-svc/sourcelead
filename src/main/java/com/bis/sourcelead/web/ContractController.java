@@ -32,7 +32,6 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.rest.ContractRestController;
-import com.bis.sourcelead.rest.ExpensesRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -179,7 +177,8 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addNewContract")
-	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="spocUserCode", required=false)String spocUserCode,@RequestParam(value="orgRelationId", required=false) Long orgRelationId, HttpServletResponse response) throws Exception {
+	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="spocUserCode", required=false)String spocUserCode,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,@RequestParam(value="type", required=false)String type, HttpServletResponse response) throws Exception {
+		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -296,6 +295,12 @@ public class ContractController {
 				model.addObject("requirementOffer", requirementOffer);
 			}
 			
+		}else if("Msa".equalsIgnoreCase(type)){
+			model.addObject("orgRelationId", orgRelationId);
+			model.addObject("contractType", Constants.VENDOR_MSA);
+		}else if("Sow".equalsIgnoreCase(type)){
+			model.addObject("orgRelationId", orgRelationId);
+			model.addObject("contractType", Constants.Vendor_SOW);
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
@@ -329,13 +334,13 @@ public class ContractController {
 		if(StringUtils.isNotBlank(spocUserCode))
 			model.addObject("spocUserCode", spocUserCode);
 		
-		if(orgRelationId != null && "null".equalsIgnoreCase(contractUUID)){
-			model.addObject("orgRelationId", orgRelationId);
-			model.addObject("contractType", Constants.VENDOR_MSA);
-		}else {
-			model.addObject("orgRelationId", orgRelationId);
-			model.addObject("contractType", Constants.Vendor_SOW);
-		}
+//		if(orgRelationId != null && "null".equalsIgnoreCase(contractUUID)){
+//			model.addObject("orgRelationId", orgRelationId);
+//			model.addObject("contractType", Constants.VENDOR_MSA);
+//		}else {
+//			model.addObject("orgRelationId", orgRelationId);
+//			model.addObject("contractType", Constants.Vendor_SOW);
+//		}
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);

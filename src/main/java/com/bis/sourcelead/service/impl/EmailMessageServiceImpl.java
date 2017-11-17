@@ -166,8 +166,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-		props.put("smtp.sendgrid.net", "secure.emailsrvr.com");
-		/*props.put("mail.smtp.localhost", "localhost");*/
+		props.put("mail.smtp.host", "secure.emailsrvr.com");
+		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -176,6 +176,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
+
 
 		Session session = Session.getDefaultInstance(props, new Authenticator() {
 			@Override

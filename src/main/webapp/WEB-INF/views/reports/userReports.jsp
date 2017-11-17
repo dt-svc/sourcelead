@@ -69,8 +69,8 @@
                       <i class="fa fa-money fa-2x text-primary"></i>
                   </div>
                   <div class="pull-left">
-                      <h4 class="text-primary">Billing</h4>
-                      <small class="text-muted">Billing Report</small>
+                      <h4 class="text-primary">Finance</h4>
+                      <small class="text-muted">Finance Report</small>
                       <div class="clearfix mt10">
                        <a class="btn btn-primary btn-sm" title="View" href="<c:url value="/billingReports" />">View</a>
                       </div>
