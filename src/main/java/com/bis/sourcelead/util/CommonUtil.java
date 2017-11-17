@@ -218,6 +218,14 @@ public class CommonUtil {
 			return date;
 	}
 	
+	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
+		DateTime dt = new DateTime(date);
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		DateTime dtus = dt.withZone(dtZone); 
+		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+		return dateWithTimezone;
+	}
+	
 	
 	public  Date  dateFromElk(String dateString){
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
