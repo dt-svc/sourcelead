@@ -816,12 +816,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		 }
 
 		if(StringUtils.isNotEmpty(currentFrequencyEndDate)){
+			List<FileInfo> fileInfoList = new ArrayList<>();
 			Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyEndDate.replaceAll("/", "-"));
 			if(frequencyEndDate.equals(actualEndDate)){
 					List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = null;
 					if(ts != null){
 						timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-						List<FileInfo> fileInfoList = new ArrayList<>();
+						
 						if(timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()){
 								for(TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList){
 									FileInfo fileInfo = new FileInfo();
@@ -832,9 +833,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									fileInfo.setContentType(tsd.getFileContentType());
 									fileInfoList.add(fileInfo);
 								}
-								tsDTO.setFileInfo(fileInfoList);
 							} 
 					}
+					
 					 if(isFillMyTimeSheet 
 					    		&&!isNullOrEmpty(approvalStatus)
 					    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user")) 
@@ -854,6 +855,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			    	tsDTO.setWeekComment(ts.getWeekcomments());
 				}
 			}
+			tsDTO.setFileInfo(fileInfoList);
 		}
 		 if( isFillMyTimeSheet) {
 		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user")) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
@@ -1120,7 +1122,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
    }
    @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/rest/saveTimesheetEntries", method = RequestMethod.POST)
-	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetEntries(@RequestBody TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetEntries(@RequestBody TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request) throws Exception {
 			
 			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1292,7 +1294,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		            
 		            if(tsDTO.getRemovedDocumentIds() != null && !tsDTO.getRemovedDocumentIds().isEmpty()){
 		            	for(Long removedId :tsDTO.getRemovedDocumentIds()){
-		            		deleteSubmissionDocument(removedId, response);
+		            		deleteSubmissionDocument(removedId);
 		            	}
 		            }
 		            LinkedList<TimesheetEntries> entriesList = new LinkedList<>();
@@ -1343,9 +1345,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 								}
 								timesheetEntries.setMoncomments(teDTO.getComments());
 							}
+							else{
+								timesheetEntries.setMonHours("00:00");
+							}
 							
 							//For Tuesday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Tue")){
+							 if (teDTO.getDayOfTheDate().equalsIgnoreCase("Tue")){
 								String tueHours = teDTO.getHours();
 								if(!isNullOrEmpty(tueHours)){
 									timesheetEntries.setTueHours(tueHours);
@@ -1360,10 +1365,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									timesheetEntries.setTueHours("00:00");
 								}
 								timesheetEntries.setTuecomments(teDTO.getComments());
+							}else{
+								timesheetEntries.setTueHours("00:00");
 							}
 
 							//For wednesday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Wed")){
+							 if (teDTO.getDayOfTheDate().equalsIgnoreCase("Wed")){
 								String wedHours = teDTO.getHours();
 								if(!isNullOrEmpty(wedHours)){
 									timesheetEntries.setWedHours(wedHours);
@@ -1380,8 +1387,11 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 								}
 								timesheetEntries.setWedcomments(teDTO.getComments());
 							}
+							 else{
+								 timesheetEntries.setWedHours("00:00");
+							 }
 							//For thursday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Thu")){
+							 if (teDTO.getDayOfTheDate().equalsIgnoreCase("Thu")){
 								String thuHours = teDTO.getHours();
 								if(!isNullOrEmpty(thuHours)){
 									timesheetEntries.setThuHours(thuHours);
@@ -1397,10 +1407,12 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									timesheetEntries.setThuHours("00:00");
 								}
 								timesheetEntries.setThucomments(teDTO.getComments());
+							}else{
+								timesheetEntries.setThuHours("00:00");
 							}
 							
 							//For friday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Fri")){
+						   if (teDTO.getDayOfTheDate().equalsIgnoreCase("Fri")){
 								String friHours = teDTO.getHours();
 								if(!isNullOrEmpty(friHours)){
 									timesheetEntries.setFriHours(friHours);
@@ -1415,11 +1427,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									timesheetEntries.setFriHours("00:00");
 								}
 								timesheetEntries.setFricomments(teDTO.getComments());
+							}else{
+								timesheetEntries.setFriHours("00:00");
 							}
 							 
 							
 							//For saturday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Sat")){
+							 if (teDTO.getDayOfTheDate().equalsIgnoreCase("Sat")){
 								String satHours = teDTO.getHours();
 								if(!isNullOrEmpty(satHours)){
 									timesheetEntries.setSatHours(satHours);
@@ -1434,11 +1448,13 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									timesheetEntries.setSatHours("00:00");
 								}
 								timesheetEntries.setSatcomments(teDTO.getComments());
+							}else{
+								timesheetEntries.setSatHours("00:00");
 							}
 							
 							
 							//For sunday Hours
-							else if (teDTO.getDayOfTheDate().equalsIgnoreCase("Sun")){
+						     if (teDTO.getDayOfTheDate().equalsIgnoreCase("Sun")){
 								String sunHours = teDTO.getHours();
 								if(!isNullOrEmpty(sunHours)){
 									timesheetEntries.setSunHours(sunHours);
@@ -1454,6 +1470,8 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 									timesheetEntries.setSunHours("00:00");
 								}
 								timesheetEntries.setSuncomments(teDTO.getComments());
+							}else{
+								timesheetEntries.setSunHours("00:00");
 							}
 		            		entriesMap.put(taskId,timesheetEntries);
 		            	}
@@ -2090,8 +2108,11 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		    
 		    
 		    TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);
+		    if(ts != null)
 		    timesheetEntriesDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='"+ts.getTotalHours()+"' >");
 		    
+		    else
+		    	timesheetEntriesDiv.append("<input type='hidden' name='totalHours'  id='totalHours' value='0' >");
 		    
 			if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()))){
 		    	timesheetEntriesDiv.append("<b class='proj_new "+pullRightClass+"'>").append(submissionStatus).append("</b>");
@@ -3611,7 +3632,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
-	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId ,HttpServletResponse response) throws Exception {
+	    public String deleteSubmissionDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId) throws Exception {
 	        
 	            /*TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());*/
 				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);

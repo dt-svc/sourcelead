@@ -300,7 +300,6 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 						double finalAmount = 0;
 						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
-							System.out.println("--------");
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
 							userPayroll.setId(i);
@@ -352,11 +351,17 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		return userPayrollList;
 	}
 
-	private double getAmount(float halgHours, ProjectMembers pm) {
+	private double getAmount(float hours, ProjectMembers pm) {
 		double amount = 0;
 		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getPayRateType())){
 			double rate = pm.getPayRate();
-			amount = halgHours*rate;
+			String hr = String.valueOf(hours);
+			String[] hh = hr.split("\\.");
+			double hrs = Double.parseDouble(hh[0]);
+			double minutes = Double.parseDouble(hh[1]);
+			double totalHourMin = hrs * 60;
+			double totMinutes = totalHourMin + minutes;
+			amount = totMinutes * (rate/60);
 		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getPayRateType())){
 			double rate = pm.getPayRate();
 			amount = rate/2;

@@ -776,7 +776,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				ownerName.append("---");
 			}
-			
+			if(contracts.getContractsTemplate() != null){
+			venContractsDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
 			venContractsDto.setOwnerName(ownerName.toString());
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
@@ -920,6 +922,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorName.append("---");
 			}
 			clientConDto.setVendorContactName(vendorName.toString());
+			if(contracts.getContractsTemplate() != null){
+			clientConDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
 			
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
@@ -1041,7 +1046,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				ownerName.append("---");
 			}
 			fullTimeContract.setOwnerName(ownerName.toString());
-		
+			
+			if(contracts.getContractsTemplate() != null){
+			fullTimeContract.setTemplateId(contracts.getContractsTemplate().getId().toString());
+			}
+			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		//	SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();

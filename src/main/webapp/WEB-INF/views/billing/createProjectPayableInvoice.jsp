@@ -543,7 +543,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<div class="tbldata-dotdot_80">';
+    	 result = result +'<div class="tbldata-dotdot_80 validationTxt">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
     		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="lineItems['+i+'].rate" value='+opt.rate+' placeholder="Rate"  data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
@@ -1006,7 +1006,7 @@ function calculateDisCount(){
        //=======================================
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
