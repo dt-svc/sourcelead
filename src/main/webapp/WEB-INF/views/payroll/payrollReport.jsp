@@ -149,7 +149,7 @@ function redirect() {
 	 $("#tab-1").show();
 //   $(".project-tabs-menu a").click(function(event) {
       event.preventDefault();
-      $("#menuli").removeClass("current");
+      $("#menuli li").removeClass("current");
       $("#wtsli").addClass("current");
       
 //   });

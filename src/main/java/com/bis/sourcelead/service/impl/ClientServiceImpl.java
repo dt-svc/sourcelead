@@ -219,6 +219,15 @@ public class ClientServiceImpl implements ClientService {
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
 
 		String newlyRegistred = "N";
+		
+		
+		if (StringUtils.isBlank(clientDTO.getOrgLocationId())) {
+			OrgLocations invitedOrgLocation = orgLocationService.getOrgLocationsByOrgLocationName(clientDTO.getOrgName());
+			if(invitedOrgLocation != null) {
+				clientDTO.setOrgLocationId(invitedOrgLocation.getId().toString());
+			}
+		}
+		
 	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
