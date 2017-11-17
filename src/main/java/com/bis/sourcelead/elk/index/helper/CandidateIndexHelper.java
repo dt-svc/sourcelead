@@ -31,6 +31,15 @@ public class CandidateIndexHelper {
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			candidateIndex.setFirstName(candidate.getFirstName());
 			candidateIndex.setLastName(candidate.getLastName());
+			
+			if(StringUtils.isNoneBlank(candidate.getLastName())) {
+				StringBuilder fullName = new StringBuilder();
+				fullName = fullName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+				candidateIndex.setFullName(fullName.toString());
+			}else {
+				candidateIndex.setFullName(candidate.getFirstName());
+			}
+			
 			candidateIndex.setEmail(candidate.getEmail());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());
 			candidateIndex.setMobilePhone(candidate.getMobilePhone());

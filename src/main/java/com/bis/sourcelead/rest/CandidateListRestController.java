@@ -590,6 +590,7 @@ public class CandidateListRestController {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
