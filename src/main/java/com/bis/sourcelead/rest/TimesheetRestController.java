@@ -172,8 +172,17 @@ public class TimesheetRestController {
 	@Value("${static.path}")
 	private String staticPath;
 	
+	
 	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
 	public TimesheetEntryDetailsDTO getTimesheetEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+	{
+		return getTimesheetEntryDetails(eedDTO, request);
+		
+	}
+	
+	
+	@RequestMapping(value = "/getTimesheetEntryDetails")
+	public TimesheetEntryDetailsDTO getTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
 		TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
