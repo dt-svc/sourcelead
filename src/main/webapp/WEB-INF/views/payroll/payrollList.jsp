@@ -36,22 +36,14 @@
 		method="post">
 		<section class="contrHead">
 			<ul id="parentUl">
-				<li title="Employer Payroll Cost"><a class="wVer"
-					id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer
-						Payroll</a></li>
-				<li title="Employee list"><a id="empList"
-					onclick="getEmployeeList();">Master Data</a></li>
-				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi"
-					onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-				<li title="Account Deductions"><a id="accountDedLi"
-					onclick="accountDeductionsList();">Account Deductions</a></li>
-				<li title="HR Deductions"><a id="HrdedLi"
-					onclick="hrDeductionsList();">HR Deductions</a></li>
+				<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
+				<!-- <li title="Employee list"><a id="empList" onclick="getEmployeeList();">Master Data</a></li> -->
+				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
+				<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
+				<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
 				<li title="Checks"><a id="BisChecks" onclick="bisChecksList();">Payments</a></li>
-				<li title="InvoiceDetails"><a id="invoiceData"
-					onclick="getInvoiceDetails();">Invoice Details</a></li>
-				<li title="Paylist"><a id="paylistLi"
-					onclick="showPayrollDiv();">Run Payroll</a></li>
+				<li title="InvoiceDetails"><a id="invoiceData" onclick="getInvoiceDetails();">Invoice Details</a></li>
+				<li title="Paylist"><a id="paylistLi" onclick="showPayrollDiv();">Generate Payroll</a></li>
 				<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 			</ul>
 			<div class="clearfix"></div>

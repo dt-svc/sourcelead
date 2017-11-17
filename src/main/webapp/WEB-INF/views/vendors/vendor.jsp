@@ -733,7 +733,6 @@ function getOrgDetails()
 			      	if(zipCode != null && zipCode != ""){
 			      		document.getElementById("zipCodeDiv").style.display="none";
 	   	        		document.getElementById("orgZipCodeDiv").style.display="";
-	   	        	    $("#orgZipCode").val(json['zipCode']);
 			      	}
 			      	
    	        	}

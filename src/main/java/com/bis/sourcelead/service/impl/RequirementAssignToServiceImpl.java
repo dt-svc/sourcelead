@@ -166,5 +166,10 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 	return currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(dateFormat,converteDate);
 	
 }
+
+	@Override
+	public Integer getRequirementAssignToListCountByRequirementId(Long requirementId) throws Exception {
+		return requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirementId);
+	}
 	
 }
