@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
+import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,6 +34,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -82,6 +85,9 @@ public class TimesheetController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
+	
 	/**
 	 * @author naresh bolisetty and sarath kumar
 	 * @since  jan 27 2017
@@ -123,6 +129,10 @@ public class TimesheetController {
 			
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
+			
+			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
+			TimesheetEntryDetailsDTO tsdto  =timesheetRestController.getTimesheetEntryDetailsWeb(eedDTO,request);
+			model.addObject("timesheetEmployeeDTO",tsdto);
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheet");
