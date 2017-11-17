@@ -1,12 +1,16 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -22,6 +26,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,6 +34,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.OrgLocationService;
 
 @Repository
 public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
@@ -44,6 +50,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Autowired
 	AddExpensesDao addExpensesDao;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	
 	@Value("${SourceLead.100}")
@@ -72,7 +81,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus, Date startDateUTC, Date endDateUTC) {
+	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length) throws Exception {
+		ResponseList<ExpensesApproverHierarchy> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
@@ -115,6 +125,39 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			endDateSubQuery = "and (sah.expenseId.endDate <= :endDateUTC)";
 			  params.put("endDateUTC",endDateUTC);
 		}
+		
+		StringBuilder query1 = new StringBuilder();
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+	        Matcher matcher = pattern.matcher(searchValue);
+		   query1.append(" and (sah.expenseId.purpose like '%" + searchValue + "%' ")
+				.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
+				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
+				.append("OR (concat(sah.expenseId.projectMembers.projectMemberCandidteId.firstName,sah.expenseId.projectMembers.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
+				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
+				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
+				if(matcher.matches() == false) {
+					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )");
+				}
+			    
+				if(matcher.matches() == true) {
+					java.sql.Date sqlDate = null;
+					if(searchValue.contains("/")||(searchValue.contains("-"))) {
+						String replacedValue = searchValue.replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%'")
+					      .append("OR sah.expenseId.startDate like '" + sqlDate + "' ")
+					      .append("OR sah.expenseId.endDate like '" + sqlDate + "')");
+				}
+		   
+		   
+		  }
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
 				+ " left join fetch pm.masterCandidateId mc left join fetch pm.employee emp left join fetch emp.user user where "
@@ -129,30 +172,87 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+") "
-				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+"  ORDER BY sah.id DESC ";
+				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString()+"  ORDER BY sah.id DESC ";
 		
-		
+		String countFrom = "";
+		if(length>0) {
+			     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where"
+					+ " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId"
+					+ " and ( ("
+					+ "      sah.hierarchyId.approverUserId.id = :userId and "
+					+ "       (     (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id IS NOT NULL and sah.hierarchyId.level = '2' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')))) "
+					+ "          OR (((sah.expenseId.projectMembers.employee.user.id IS NULL) OR (sah.expenseId.projectMembers.employee.user.id  IS NOT NULL and sah.hierarchyId.level = '1' and sah.expenseId.projectMembers.employee.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
+					+ "       )"
+					+ "      ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+						+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "
+						+ "   (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' ))  "
+						+ "     ) "
+						+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+"  "+query1.toString();
+		}
+		 
 		params.put("userId",userId);
 		params.put("orgLocationId",orgLocationId);
 		
+		/*List<Long> filteredCountlist  = session.*/
+		
 		Query query = session.createQuery(from);
+		
+		Query countQuery =null;
+		if(length>0) {
+			countQuery =session.createQuery(countFrom);
+		}
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("userId")){
 				query.setParameter(str, (long) params.get(str));
+				if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));
 			}if(str.equalsIgnoreCase("startDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter( str, (Date) params.get(str) );
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter( str, (Date) params.get(str) );
 			}
 			if(str.equalsIgnoreCase("orgLocationId")){
 				query.setParameter(str, (long) params.get(str));
+				if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));
 			}
 			
         }
-		List<ExpensesApproverHierarchy> tslist = query.setCacheable(true).list();
-	    return tslist;
+		
+		List<ExpensesApproverHierarchy> tslist = query.setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		response.setData(tslist); 
+		
+		List<Long> countList  = null;
+		if(countQuery != null) {
+			countList  = countQuery.setCacheable(true).list();
+		}
+		int recordsTotal=0;
+		if(countList != null && !countList.isEmpty()) {
+			recordsTotal = countList.iterator().next().intValue();
+		}
+		response.setRecordsTotal(recordsTotal);
+		
+		int recordsFiltered = 0;
+		if(tslist != null && !tslist.isEmpty()) {
+			recordsFiltered = tslist.size();
+		}
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(recordsFiltered);
+		}
+		else {
+			response.setRecordsFiltered(recordsTotal);
+		}
+		
+	    return response;
 		/*@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return tslist;*/
