@@ -94,7 +94,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		if (leaveTypeDTO.getLeavePolicy() != null){
 			leaveType.setLeavePolicy(leaveTypeDTO.getLeavePolicy());
 		}else{
-			leaveType.setLeavePolicy(Constants.NO);
+			leaveType.setLeavePolicy("");
 		}
 		if (leaveTypeDTO.getPolicyName() != null)
 			leaveType.setPolicyName(leaveTypeDTO.getPolicyName());
