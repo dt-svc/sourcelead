@@ -7102,6 +7102,10 @@ z-index: 9999; display:none;
     margin-bottom: 0; font-size: 12px;
 }
 /* Advanced Search new Styels */
+.mxrateerror p.jquery_form_error_message {
+ position: relative; bottom: -15px; text-align: left; min-height: 30px;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
