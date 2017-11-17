@@ -421,9 +421,7 @@ $(document).ready(function () {
                 <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Min Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 <input type="text" class="form-control input-sm" id="maxRate" name="maxRate" field-name="Max Rate" placeholder="Max Rate" value="${requirement.maxRate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
-                 <div class="row" id="rateValidateId">
-                  <input type="hidden" name="rateValidation" id="rateValidation">
-              </div> 
+                
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
@@ -450,6 +448,9 @@ $(document).ready(function () {
                    
                   </select>
                 </div>
+              </div>
+              <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
             </div>
           </div>
