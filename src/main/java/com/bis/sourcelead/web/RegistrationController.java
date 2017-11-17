@@ -332,6 +332,7 @@ public class RegistrationController {
 				
 				if(null != orgLocations.getUser()){
 					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
+					if(userRole != null)
 					model.addObject("userState",userRole.getUserState());
 				}
 				
