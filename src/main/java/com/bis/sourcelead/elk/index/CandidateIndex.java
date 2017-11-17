@@ -18,6 +18,8 @@ public class CandidateIndex implements Serializable {
 	private String firstName;
 
 	private String lastName;
+	
+	private String fullName;
 
 	private String email;
 
@@ -956,6 +958,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setResumeName(String resumeName) {
 		this.resumeName = resumeName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 }
