@@ -1357,14 +1357,14 @@ public class LeaveManagementRestController {
 	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "roleId", required = false) Long roleId,
+			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "leaveId", required = false) String leaveId) throws Exception {
 
-		boolean isValid = false;
-		List<RestrictDay> restrictDayList = new ArrayList<>();
 		String isTrue = null;
 		StringBuilder sb = null ;
+		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
@@ -1380,9 +1380,10 @@ public class LeaveManagementRestController {
 				for (LeaveRole leaveRole : leaveRoleList) {
 					roleIds.add(leaveRole.getRoleId().getId());
 				}
-			}else if (roleIds.contains(roleId)) {
-				daysList.add(day.getDay());
-			} else {
+				 if (roleIds.contains(userRole.getRoles().getId())) {
+					daysList.add(day.getDay());
+				}
+			}else {
 				daysList.add(day.getDay());
 			}
 		}
@@ -1394,7 +1395,7 @@ public class LeaveManagementRestController {
 			for(Date d : daysList){
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
 				if(i != daysList.size()-1){
-					sb.append(",");
+					sb.append(", ");
 				}
 				i++;
 			}
