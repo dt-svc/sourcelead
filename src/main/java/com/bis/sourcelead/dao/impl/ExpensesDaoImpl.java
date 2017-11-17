@@ -19,7 +19,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ProjectMembers;
 
@@ -50,7 +52,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC){
+	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length){
+		ResponseList<Expenses> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
@@ -101,23 +104,87 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		}
 		*/
 		
+		StringBuilder query1 = new StringBuilder();
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+		  query1.append(" and (expenses.expenseId like '%" + searchValue + "%' ")
+		  		.append("OR expenses.purpose like '" + searchValue + "%' ")
+		  		.append("OR expenses.projects.projectName like '%" + searchValue + "%' )")
+				/*.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
+				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
+				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
+				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
+				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ")
+				.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )")*/;
+		  
+		}
+		
+		
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" and expenses.status = '1'";
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 		params.put("masterCandidateId",masterCandidateId);
 		
+		
+		String countFrom = "";
+		if(length>0) {
+			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
+		   params.put("masterCandidateId",masterCandidateId);
+		}
+		
 		Query query = session.createQuery(from);
+		
+		Query countQuery =null;
+		if(length>0) {
+			countQuery =session.createQuery(countFrom);
+		}
+		
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("masterCandidateId")){
 				query.setParameter(str, (long) params.get(str));
+				if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));
 			}if(str.equalsIgnoreCase("startDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter(str, (Date) params.get(str));
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter(str, (Date) params.get(str));
 			}
         }
-		return query.setCacheable(true).list();
+		
+		
+		
+		List<Expenses> tslist = query.setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		response.setData(tslist); 
+		
+		List<Long> countList  = null;
+		if(countQuery != null) {
+			countList  = countQuery.setCacheable(true).list();
+		}
+		int recordsTotal=0;
+		if(countList != null && !countList.isEmpty()) {
+			recordsTotal = countList.iterator().next().intValue();
+		}
+		response.setRecordsTotal(recordsTotal);
+		
+		int recordsFiltered = 0;
+		if(tslist != null && !tslist.isEmpty()) {
+			recordsFiltered = tslist.size();
+		}
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(recordsFiltered);
+		}
+		else {
+			response.setRecordsFiltered(recordsTotal);
+		}
+		
+		
+		
+		return response;
 		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
 		return expensesList;*/
 	}
