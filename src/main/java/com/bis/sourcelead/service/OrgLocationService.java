@@ -25,7 +25,7 @@ public interface OrgLocationService {
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
 
-	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
 
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception;
 
@@ -54,6 +54,8 @@ public interface OrgLocationService {
 	public boolean validateOrgShortCode(String orgShortId);
 	
 	public List<OrgLocations> userList(Long orgId) throws Exception;
+	
+	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
 
 
 }

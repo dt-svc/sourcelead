@@ -198,7 +198,7 @@ function cancelOrgImg(){
 				<div class="col-xs-12 col-sm-9 col-md-9">
 					<div class="row">
 						<div class="col-md-7">
-							<div class="form-group">
+							<div class="form-group" id="companyNameDiv">
 							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
@@ -450,25 +450,24 @@ function validateCompanyName(){
 		 $( "#save_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+       	            url: sourceleadUrl+"/validateRegiseredCompanyName?companyName="+companyName,
 			        success: function(data) {
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {
 		        			//Existed company
 		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
-		    	    		$('input#companyName').attr('class','error form-control');
-		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
-		    				$('input#companyName').attr('record-exist','yes');
-		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
+		    	    		$('input#orgLocationCompanyName').attr('class','error form-control');
+		    	    		$("input#orgLocationCompanyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
+		    				$('input#orgLocationCompanyName').attr('record-exist','yes');
+		    				$('input#orgLocationCompanyName').attr('record-exist-errorMsg',company+' '+result+''); 
 		    				$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
-		    				$("#save_button").removeAttr("disabled");
 			        	}
 			        	else{
 			        		//New company
 			        		$("#save_button").removeAttr("disabled");
-				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#orgLocationCompanyName').removeAttr( "class record-exist record-exist-errormsg");
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
-							$('input#companyName').attr('class','valid form-control');
+							$('input#orgLocationCompanyName').attr('class','valid form-control');
 							$( "#save_button" ).removeAttr("style");
 							$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
 							$( "#save_button" ).click(function() {
@@ -1587,7 +1586,7 @@ function createOrg(){
 	result = result +'<div class="form-group" id="companyNameDiv">';
 	result = result +'<label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-9">';
-	result = result +'<input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />';
+	result = result +'<input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateRegisterCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />';
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
@@ -1926,7 +1925,7 @@ function getTimezonesList(){
 </script>
 
 <script type="text/javascript">
-function validateCompanyName(){
+function validateRegisterCompanyName(){
 	var con = document.getElementById("companyName").value;
 	var company = document.getElementById("companyName").value;
 	var companyName = encodeURIComponent(con);
