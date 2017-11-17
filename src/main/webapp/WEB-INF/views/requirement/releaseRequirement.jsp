@@ -725,7 +725,7 @@ function vendorContactPaginationUrl(url){
 		     	}
   		  }],
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[4, 15, 20], [4, 15, 20]],
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
