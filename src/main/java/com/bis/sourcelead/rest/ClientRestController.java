@@ -292,7 +292,7 @@ public class ClientRestController {
 			 if(userRole == null){
 				 User spocuser = userService.findByEmail(email);
 				 if(spocuser != null) {
-					 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+				/*	 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
 					 if(orgSpocList != null && orgSpocList.size() > 0) {
 						 for(OrgSpoc orgSpoc : orgSpocList) {
 							 if(contactType.equalsIgnoreCase("vendor")) {
@@ -310,7 +310,8 @@ public class ClientRestController {
 							 }
 						 }
 						 
-					 }
+					 }*/
+					 return "Valid Email";
 				 }
 			 }else{
 				result = "Invalid Email";
