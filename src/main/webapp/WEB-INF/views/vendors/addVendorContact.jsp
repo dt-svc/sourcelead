@@ -564,6 +564,23 @@ function validateEmail(){
 }
 </script>
 
+
+
+<!-- <script>
+function getVendorOnboarded(){
+	 var vendorName = document.getElementById("vendorName").value;
+	 var orgLocationId = vendorName.split(',');
+	 var orgRelationId = orgLocationId[0];
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		 type: "GET",
+	        url: sourceleadUrl+"/getVendorOnboardStatus?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 
+	        success: function(result) {
+	        },
+	 }); 
+}
+</script> -->
+
 <script type="text/javascript">
  function getOwners() {
 	 var email = document.getElementById("email").value; 
