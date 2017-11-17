@@ -449,13 +449,16 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 				manualAdvance = checksList.stream().mapToDouble(c->c.getAdvance()).sum();
 				 generalExpenses = checksList.stream().mapToDouble(c->c.getGeneralExpenses()).sum();
 				 vendorPayment = checksList.stream().mapToDouble(c->c.getVendorPayments()).sum();
+				 
+				 healthcareInsurance = checksList.stream().filter(m->(m.getHealthInsurance() !=null) ).mapToDouble(m->Double.parseDouble(m.getHealthInsurance())).sum();
+				 immigration = checksList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();
 			}
 			
-			List<BisUserMapping> masterList = bisUserMappingService.getMasterListByEmpId(empId, orgLocations);
-			if(masterList !=null && masterList.size() >0){
-				healthcareInsurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
-				 immigration = masterList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();	
-			}
+//			List<BisUserMapping> masterList = bisUserMappingService.getMasterListByEmpId(empId, orgLocations);
+//			if(masterList !=null && masterList.size() >0){
+//				  healthcareInsurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
+//				 immigration = masterList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();	
+//			}
 			
 		}
 		payrollBalance.setIncome(df.format(income));
