@@ -1,12 +1,16 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,7 +34,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.service.OrgLocationService;
 
 @Repository
 public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
@@ -46,6 +50,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Autowired
 	AddExpensesDao addExpensesDao;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	
 	@Value("${SourceLead.100}")
@@ -74,7 +81,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length) {
+	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length) throws Exception {
 		ResponseList<ExpensesApproverHierarchy> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
@@ -121,15 +128,34 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 		StringBuilder query1 = new StringBuilder();
 		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
-		  query1.append(" and (sah.expenseId.purpose like '%" + searchValue + "%' ")
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+	        Matcher matcher = pattern.matcher(searchValue);
+		   query1.append(" and (sah.expenseId.purpose like '%" + searchValue + "%' ")
 				.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
 				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
 				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
-				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ")
-				.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )");
-		  
-		}
+				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
+				if(matcher.matches() == false) {
+					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )");
+				}
+			    
+				if(matcher.matches() == true) {
+					java.sql.Date sqlDate = null;
+					if(searchValue.contains("/")||(searchValue.contains("-"))) {
+						String replacedValue = searchValue.replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%'")
+					      .append("OR sah.expenseId.startDate like '" + sqlDate + "' ")
+					      .append("OR sah.expenseId.endDate like '" + sqlDate + "')");
+				}
+		   
+		   
+		  }
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"

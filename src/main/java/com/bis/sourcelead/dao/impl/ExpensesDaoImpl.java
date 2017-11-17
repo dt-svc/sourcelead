@@ -1,10 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -16,13 +20,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 
 @SuppressWarnings("rawtypes")
@@ -33,10 +36,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	private SessionFactory sessionFactory;
 	
 	@Autowired
-	private CandidateDao candidateDao;
-	
-	@Autowired
 	private ProjectMembersDao projectMembersDao;
+	
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -52,7 +53,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length){
+	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length,OrgLocations orgloc) throws ParseException{
 		ResponseList<Expenses> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
@@ -106,18 +107,29 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		
 		StringBuilder query1 = new StringBuilder();
 		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
-		  query1.append(" and (expenses.expenseId like '%" + searchValue + "%' ")
-		  		.append("OR expenses.purpose like '" + searchValue + "%' ")
-		  		.append("OR expenses.projects.projectName like '%" + searchValue + "%' )")
-				/*.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
-				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
-				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
-				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
-				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ")
-				.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )")*/;
+			 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+		     Matcher matcher = pattern.matcher(searchValue);
+		     	 query1.append(" and (expenses.expenseId like '%" + searchValue + "%' ")
+		     	 	   .append("OR expenses.purpose like '" + searchValue + "%' ")
+		     	 	   .append("OR expenses.expenseStatus like '" + searchValue + "%' ");
+		     	 	 if(matcher.matches() == false) {
+		     	 		query1.append("OR expenses.projects.projectName like '%" + searchValue + "%')");
+		     	 	 }
+					if(matcher.matches() == true) {
+						java.sql.Date sqlDate = null;
+						if(searchValue.contains("/")||(searchValue.contains("-"))) {
+							String replacedValue = searchValue.replaceAll("/", "-");
+								SimpleDateFormat format = new SimpleDateFormat(orgloc.getDateFormat());
+						        java.util.Date utilDate = format.parse(replacedValue);
+						        sqlDate = new java.sql.Date(utilDate.getTime());
+						}
+						query1.append("OR expenses.projects.projectName like '%" + searchValue + "%'")
+						      .append("OR expenses.startDate like '" + sqlDate + "' ")
+						      .append("OR expenses.endDate like '" + sqlDate + "' )");
+			
+					}
 		  
 		}
-		
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();

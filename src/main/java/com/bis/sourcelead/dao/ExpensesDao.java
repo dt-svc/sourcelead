@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import com.bis.sourcelead.entity.OrgLocations;
  */
 public interface ExpensesDao {
 	
-	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId,String expenseStatus, Date startDateUTC, Date endDateUTC, String searchValue, int start, int length);
+	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId,String expenseStatus, Date startDateUTC, Date endDateUTC, String searchValue, int start, int length, OrgLocations orgLoc) throws ParseException;
 	public List<Expenses> getIndividualExpense(Long orgLocId,Long loginUserId,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 	public Expenses getExpenseById(long id);

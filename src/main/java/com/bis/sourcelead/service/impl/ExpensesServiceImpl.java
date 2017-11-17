@@ -131,7 +131,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 				endDateUTC = TZ_DF_TS.parse(endDateString);
 			}
 			//orgLoc.getId(),loginUser.getId()
-		ResponseList<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC,searchValue,start,length);
+		ResponseList<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC,searchValue,start,length,orgLoc);
 
 		return expensesList;
 
