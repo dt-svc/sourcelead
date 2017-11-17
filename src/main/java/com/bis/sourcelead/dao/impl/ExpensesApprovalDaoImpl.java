@@ -133,6 +133,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		   query1.append(" and (sah.expenseId.purpose like '%" + searchValue + "%' ")
 				.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
 				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
+				.append("OR (concat(sah.expenseId.projectMembers.projectMemberCandidteId.firstName,sah.expenseId.projectMembers.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
 				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
 				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
