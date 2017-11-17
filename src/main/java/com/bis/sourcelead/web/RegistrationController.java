@@ -225,7 +225,7 @@ public class RegistrationController {
 					if(!isNullOrEmpty(spocUUID)){
 						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
 						if(null != orgSpoc){
-							orgLocations.setUser(orgSpoc.getVendorUser());
+							orgLocations.setUser(orgSpoc.getClientUser());
 						}
 					}
 					
