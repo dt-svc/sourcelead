@@ -1365,6 +1365,7 @@ public class LeaveManagementRestController {
 		}
 		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
 		int i=0;
+		Collections.sort(daysList);
 		if(daysList.size() > 0){
 			sb = new StringBuilder();
 			for(Date d : daysList){
