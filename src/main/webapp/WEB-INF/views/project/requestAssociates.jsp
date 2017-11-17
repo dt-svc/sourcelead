@@ -35,7 +35,7 @@
          <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
-              <label class="col-md-3">Request Id </label>
+              <label class="col-md-3">Request Id <span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
                   <div class="form-icon">
 		                <input type="text" class="form-control pull-left" name="requestId" id="requestId" data-validation="required" field-name="Project Id">
