@@ -201,7 +201,7 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot_80">
+	<div class="tbldata-dotdot_80 validationTxt">
 		<input type="text"
 			class="form-control input-sm"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
