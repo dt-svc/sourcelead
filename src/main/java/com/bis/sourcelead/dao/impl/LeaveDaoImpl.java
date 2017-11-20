@@ -585,7 +585,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date to =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
+		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc left join fetch day.restrictDay left join fetch day.holiday  where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", from).setParameter("toDate", to).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
 	}
