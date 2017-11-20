@@ -273,11 +273,12 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
+        Date date = new Date();
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
-			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			candidate.setCreatedBy(user.getUserCode());
 			
 			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
@@ -534,7 +535,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsAssociate(Constants.NO);
 		}
 		candidate.setUpdatedBy(user.getUserCode());
-		candidate.setUpdatedDate(commonUtil.currentDate());
+		candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		/*
