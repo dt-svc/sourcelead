@@ -20,6 +20,18 @@
 clients_wrap {
 overflow-x: auto;
 }
+/* .side-bar {
+z-index: 8;
+}
+.main-header {
+z-index: 5;
+}
+.advancedsearch-mask {
+z-index: 9;
+}
+.cand-advsrch {
+z-index: 1;
+} */
 </style>
 <body>
 
@@ -56,8 +68,14 @@ overflow-x: auto;
   <div class="timesheet_out">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+            </div>
+            </div>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+         <h5 class="headerAdsrch">Advanced Search 
+          <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          </h5>
+          <div class="addInner">
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -84,9 +102,6 @@ overflow-x: auto;
             </div>
             <div class="row">
 	            <div id="vendorListAdvanced">
-		              <div class="col-md-12">
-		                <h4>Details:</h4>
-		              </div>
 		              <div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
@@ -243,7 +258,7 @@ overflow-x: auto;
             </div>  
               
             </div>
-            <div class="row form-footer mt">
+            <div class="row clearfix">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
@@ -255,9 +270,9 @@ overflow-x: auto;
               	</div>
             </div>
           </div>
+          </div>
+          </div>
           </form:form>
-        </div>
-        </div>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
 <!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
@@ -362,8 +377,9 @@ overflow-x: auto;
 			</div>
          </div>
 	</section>
+	
+	<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 </body>
-
 
 
 <script type="text/javascript">
@@ -2145,11 +2161,9 @@ function exportContactToExcel(){
 <script>
 // Edit pop
 $(document).ready(function() {	
-	
     $("#edit-client, #btnClose").click(function() {
         $(".user_summary_edit").slideUp(100);
     });
-		
 });
 </script> 
 
@@ -2195,11 +2209,16 @@ $('#selector').delay(2000).fadeOut('slow');
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  
+		  $(".advancedsearch-mask").fadeIn();
 		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 </script>
 	
  
