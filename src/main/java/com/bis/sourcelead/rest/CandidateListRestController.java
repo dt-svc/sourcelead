@@ -418,10 +418,9 @@ public class CandidateListRestController {
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
-			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
+	        Date endDate1 = commonUtil.orgLocationCommonDate(newDate, loginOrgLocation);
+	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), endDate1);
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
 		}
 		
 		// Rate Type
