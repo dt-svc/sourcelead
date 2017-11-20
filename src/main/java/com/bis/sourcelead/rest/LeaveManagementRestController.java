@@ -1375,15 +1375,19 @@ public class LeaveManagementRestController {
 		List<Date> daysList = new ArrayList<>();
 		Set<Long> roleIds = new HashSet<>();
 		for(HolidayAndRestrictday day : list){
-			RestrictDay res = restrictDayService.getRestrictDayById(day.getRestrictDay().getId());
-			if (!"Y".equalsIgnoreCase(res.getApplicableToAll())) {
-				List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(res.getId());
-				for (LeaveRole leaveRole : leaveRoleList) {
-					roleIds.add(leaveRole.getRoleId().getId());
-				}
-				 if (roleIds.contains(userRole.getRoles().getId())) {
-					daysList.add(day.getDay());
-				}
+			if(day.getRestrictDay() !=null) {
+				RestrictDay res = restrictDayService.getRestrictDayById(day.getRestrictDay().getId());
+				if (!"Y".equalsIgnoreCase(res.getApplicableToAll())) {
+					List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(res.getId());
+					for (LeaveRole leaveRole : leaveRoleList) {
+						roleIds.add(leaveRole.getRoleId().getId());
+					}
+					 if (roleIds.contains(userRole.getRoles().getId())) {
+						daysList.add(day.getDay());
+					}
+			}else {
+				daysList.add(day.getDay());
+			}
 			}else {
 				daysList.add(day.getDay());
 			}
