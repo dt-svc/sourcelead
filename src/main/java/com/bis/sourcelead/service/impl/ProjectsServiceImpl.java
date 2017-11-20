@@ -932,8 +932,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects projects = getProjectById(projectId);
 		ProjectsDTO projectsDTO = new ProjectsDTO();
 		
-		String resultJson =null;
-		
 		if(projects.getCreatedDate() != null){
 			projectsDTO.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
 		}
@@ -1074,7 +1072,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
 		projectsDTO.setProjectName(projects.getProjectName());
 		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
-		
+		projectsDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
+		projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
 		if(projects.getFlatPercent() != null) {
 			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
 		}

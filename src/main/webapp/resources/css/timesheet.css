@@ -5790,3 +5790,14 @@ left: 25% !important;
 /*    Responsive CSS    */
 
 /*    Responsive CSS    */
+
+
+.timBtnWidth {
+	width: 240px;
+}
+.timBtnWidth b {
+	width: 47%; margin: 0px 3% 0px 0px; float: left;
+}
+.timBtnWidth .glyphicon-comment {
+	float: left; top: 5px
+}

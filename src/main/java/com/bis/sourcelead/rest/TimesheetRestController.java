@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
@@ -172,8 +173,32 @@ public class TimesheetRestController {
 	@Value("${static.path}")
 	private String staticPath;
 	
+	/***
+	 * @purpose : Getting ProjectList For Login User (Step - 1)
+	 * @param eedDTO
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
-	public TimesheetEntryDetailsDTO getTimesheetEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+	public TimesheetEntryDetailsDTO getTimesheetEntryDetailsMobile(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+	{
+		return getTimesheetEntryDetails(eedDTO, request);
+		
+	}
+	
+	@RequestMapping(value = "/getTimesheetEntryDetails")
+	public ModelAndView getTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request); 
+		 model.addObject("timesheetEntryDetailsDTO",tedDTO);
+		 model.addObject("timesheetSubmissionDTO",tedDTO.getTimesheetSubmission());
+		 model.setViewName("timesheet/timesheetProjects");
+		 return model;
+		
+	}
+	private TimesheetEntryDetailsDTO getTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
 		TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -191,30 +216,15 @@ public class TimesheetRestController {
 		}
 		
 		/**
-		 * Getting List Of Projects & TimesheetFrequencies
+		 * Getting List Of Projects For LoginUser
 		 */
-		timesheetEntryDetailsDTO = getProjectMemberAndTimesheetFrequenciesList(eedDTO, timesheetEntryDetailsDTO, orgLocations, candidate, request);
-		String currentTimeFrequency = timesheetEntryDetailsDTO.getCurrentTimeFrequency();
-		eedDTO.setCurrentTimeFrequency(currentTimeFrequency);
-		
-		/**
-		 * Getting List Of TimesheetSubFrequencies w.r.t TimesheetFrequency
-		 */
-		
-		timesheetEntryDetailsDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, timesheetEntryDetailsDTO, currentTimeFrequency, orgLocations);
-		String currentTimeSubFrequency = timesheetEntryDetailsDTO.getCurrentTimeSubFrequency();
-		eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
-		eedDTO.setProjectsId(timesheetEntryDetailsDTO.getProjectId());
-		eedDTO.setProjectMembersId(timesheetEntryDetailsDTO.getProjectMemberId());
-		eedDTO.setMasterCandidatesId(timesheetEntryDetailsDTO.getMasterCandidateId());
-		
-		TimeSheetSubmissionDTO ts = timesheetSubmissionDetails(eedDTO, request);
-		timesheetEntryDetailsDTO.setTimesheetSubmission(ts);
+		timesheetEntryDetailsDTO = getProjectListForLoginUser(eedDTO, timesheetEntryDetailsDTO, orgLocations, candidate, request);
 		return timesheetEntryDetailsDTO;
 		
-}
-	
-public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,OrgLocations orgLocations,Candidate candidate,HttpServletRequest request) throws Exception {
+ }
+
+
+ private TimesheetEntryDetailsDTO getProjectListForLoginUser(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,OrgLocations orgLocations,Candidate candidate,HttpServletRequest request) throws Exception {
 		Map<String,String>  timesheetFrequencyMap  = null;
 		Long projectMemberId = eedDTO.getProjectMembersId();
 		Long projectId = eedDTO.getProjectsId();
@@ -248,17 +258,70 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 				}
 			}
-		/*else{
-			 ProjectMembers pm = projectMembersService.getProjectMemberById(eedDTO.getProjectMembersId());
-			 if(projectId == null || masterCandidateId == null){
-				 projectId =         pm.getProjects().getId();
-				 masterCandidateId = pm.getMasterCandidateId().getId();
-			 }
-			 if(pm != null)
-			 timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,orgLocations,"view");
-		}*/
+		timesheetEntryDetailsDTO.setTimeFrequencies(timesheetFrequencyMap);
 		timesheetEntryDetailsDTO.setProjectMembersList(pmDTOList);
-		LinkedHashMap<String,String> timeFrequencies = new LinkedHashMap<>();
+		timesheetEntryDetailsDTO.setProjectMemberId(projectMemberId);
+		timesheetEntryDetailsDTO.setProjectId(projectId);
+		timesheetEntryDetailsDTO.setMasterCandidateId(masterCandidateId);
+		
+		eedDTO.setProjectMembersId(projectMemberId);
+		eedDTO.setProjectsId(projectId);
+		eedDTO.setMasterCandidatesId(masterCandidateId);
+		/**
+		 * Getting TimesheetFrequencyList For Selected Project
+		 */
+		timesheetEntryDetailsDTO = getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
+		
+		return timesheetEntryDetailsDTO;
+   }
+ 
+ /**
+  * @purpose : Getting TimesheetFrequencyList For Selected Project(Step - 2)
+  * @param eedDTO
+  * @param request
+  * @return
+  * @throws Exception
+  */
+ @RequestMapping(value = "/rest/getTimesheetfrequencyList")
+ public TimesheetEntryDetailsDTO getTimesheetfrequencyListMobile(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+ {
+	 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
+	 return getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO, request);
+ }
+ @RequestMapping(value = "/getTimesheetfrequencyList")
+ public ModelAndView getTimesheetfrequencyListWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+ {
+	 ModelAndView model = new ModelAndView();
+	 TimesheetEntryDetailsDTO timesheetEntryDetailsDTO = new TimesheetEntryDetailsDTO();
+	 timesheetEntryDetailsDTO =  getTimesheetFrequencyList(eedDTO, timesheetEntryDetailsDTO,request);
+	 model.addObject("timesheetSubmissionDTO",timesheetEntryDetailsDTO.getTimesheetSubmission());
+	 model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("timesheet/timesheetfrequencyList");
+	 return model;
+ }
+  private TimesheetEntryDetailsDTO getTimesheetFrequencyList(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,HttpServletRequest request) throws Exception {
+	     User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 if(loginUser == null && eedDTO.getUserId() != null){
+			loginUser = userService.getUserById(eedDTO.getUserId());
+		 }
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 if(orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())){
+			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		 }
+		
+		 Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		 if(candidate == null && loginUser != null &&  orgLocations != null) {
+			 candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
+		 }
+	  
+	    Long projectMemberId = eedDTO.getProjectMembersId();
+		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
+		Map<String,String>  timesheetFrequencyMap = timesheetEntryDetailsDTO.getTimesheetFrequencyMap();
+		    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty()){
+		    	timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,orgLocations,"view");
+	    }
+	    LinkedHashMap<String,String> timeFrequencies = new LinkedHashMap<>();
 		String currentTimeFrequency = eedDTO.getCurrentTimeFrequency();
 		//For List Of Frequencies 
 		if(StringUtils.isEmpty(currentTimeFrequency)){
@@ -304,15 +367,23 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 				}
 			}
 		}
-		timesheetEntryDetailsDTO.setProjectMemberId(projectMemberId);
-		timesheetEntryDetailsDTO.setProjectId(projectId);
-		timesheetEntryDetailsDTO.setMasterCandidateId(masterCandidateId);
+		
 		timesheetEntryDetailsDTO.setTimeFrequencies(timeFrequencies);
 		timesheetEntryDetailsDTO.setCurrentTimeFrequency(currentTimeFrequency);
+		
+		eedDTO.setCurrentTimeFrequency(currentTimeFrequency);
+		
+		/**
+		 * Getting Timehsheet Sub-FrequencyList For Selected Timesheet Frequency
+		 */
+		timesheetEntryDetailsDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, timesheetEntryDetailsDTO, currentTimeFrequency, orgLocations,request);
+		
+	   TimeSheetSubmissionDTO ts = getTimesheetSubmissionDetails(eedDTO, request);
+	   timesheetEntryDetailsDTO.setTimesheetSubmission(ts);
 		return timesheetEntryDetailsDTO;
-	}
+  }
 	
-  private TimesheetEntryDetailsDTO getTimesheetSubFrequencyListByCurrentFrequency(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,String currentTimeFrequency,OrgLocations orgLocations) throws Exception{
+  private TimesheetEntryDetailsDTO getTimesheetSubFrequencyListByCurrentFrequency(TimesheetExpenseEntryDetailsUtilDTO eedDTO,TimesheetEntryDetailsDTO timesheetEntryDetailsDTO,String currentTimeFrequency,OrgLocations orgLocations,HttpServletRequest request) throws Exception{
 	  LinkedHashMap<String,String> timeSubFrequencies = new LinkedHashMap<>();
 	   
       String[] frequency = currentTimeFrequency.split("To");
@@ -366,9 +437,9 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			 
 			 timesheetEntryDetailsDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 			 timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
+			 eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
         }
 	  }	
-    
 	  return timesheetEntryDetailsDTO;
   }
   
@@ -456,11 +527,36 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
        }
        return statusMap;
     }
+ 
   
-   @RequestMapping(value = "/rest/timesheetSubmissionDetails")
-   private TimeSheetSubmissionDTO timesheetSubmissionDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception {
-	 
-	   
+  /**
+   * @purpose : Getting TimesheetSubmission Details For Current-TimesheetFrequency and Current-TimesheetSubFrequency(Step - 3)
+   * @param eedDTO
+   * @param request
+   * @return
+   * @throws Exception
+   */
+  @RequestMapping(value = "/rest/getTimesheetSubmissionDetails")
+  public TimeSheetSubmissionDTO  getTimesheetSubmissionDetailsMobile(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+  {
+	  return getTimesheetSubmissionDetails(eedDTO, request);
+  }
+  @RequestMapping(value = "/getTimesheetSubmissionDetails")
+  public ModelAndView getTimesheetSubmissionDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
+  {
+	  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  if(orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())){
+		orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+	  }
+	 TimesheetEntryDetailsDTO  timesheetEntryDetailsDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, new TimesheetEntryDetailsDTO(), eedDTO.getCurrentTimeFrequency(), orgLocations,request);
+	 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
+	 ModelAndView model = new ModelAndView();
+     model.addObject("timesheetSubmissionDTO",tsDTO);
+     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+	 model.setViewName("timesheet/timeSheetSubmission");
+	 return model;
+  }
+   private TimeSheetSubmissionDTO getTimesheetSubmissionDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception {
 	    Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 	    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		Boolean isFillMemberTimesheet = commonUtil.hasRole("ROLE_FILL_MEMBER_TIMESHEETS");	
@@ -499,6 +595,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 	   if(projectMemberId != null && StringUtils.isNotEmpty(currentTimeFrequency) && StringUtils.isNotEmpty(currentTimeSubFrequency)){
 		    ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		    HashMap<String,String> statusMap = getTimesheetStatusByTimeSubFrequency(projectMember, timesheetFor, currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet);
+		    tsDTO.setTimeSubFrequency(currentTimeSubFrequency);
 		    tsDTO.setTimesheetStatus(statusMap.get("STATUS"));
 		    tsDTO.setReopenReason(statusMap.get("REOPEN_REASON"));
 		    tsDTO.setModifyButtonVisible(Boolean.getBoolean(statusMap.get("IS_MODIFY_BUTTON_VISIBLE")));
