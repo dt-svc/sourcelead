@@ -1909,6 +1909,7 @@ function createAlert(requirementUUID){
         	  var country = '';
         	  var city = '';
         	  var zipCode ='';
+        	  var rate = '';
         	  if(json['location'] != null && json['location'] != '' && json['location'] != 'undefined'){
         		  location = json['location'];
         	  }
@@ -1923,6 +1924,9 @@ function createAlert(requirementUUID){
         	  }
         	  if(json['zipCode'] != null && json['zipCode'] != '' && json['zipCode'] != 'undefined'){
         		  zipCode = json['zipCode'];
+        	  }
+        	  if(json['maxRate'] != null && json['maxRate'] != '' && json['maxRate'] != 'undefined'){
+        		  rate = json['maxRate']
         	  }
         	 result = "";
         	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
@@ -2050,7 +2054,7 @@ function createAlert(requirementUUID){
         	 result = result +'               </select>';
         	 result = result +'               </div>';
         	 
-        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['maxRate']+'" class="form-control" placeholder="Rate">';
+        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
         	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
         	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type" data-validation-optional="true">';
         	 result = result +'                   <option value="">Rate Per</option>';
