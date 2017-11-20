@@ -823,7 +823,28 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 globalVarsMap.put("loginUserName","--");
 			 }                       
 		 
+		 if(requirement.getJobType()!= null && !"".equalsIgnoreCase(requirement.getJobType())){
+			 globalVarsMap.put("jobType", requirement.getJobType());
+			 }else{
+				 globalVarsMap.put("jobType","--");
+			 }
 		 
+		 if(requirement.getIndustryName()!= null && !"".equalsIgnoreCase(requirement.getIndustryName())){
+			 globalVarsMap.put("industryName", requirement.getIndustryName());
+			 }else{
+				 globalVarsMap.put("industryName","--");
+			 }
+		 
+		 if(requirement.getClientName()!= null && !"".equalsIgnoreCase(requirement.getClientName())){
+			 globalVarsMap.put("clientName", requirement.getClientName());
+			 }else{
+				 globalVarsMap.put("clientName","--");
+			 }
+		 if(requirement.getVisaType()!= null && !"".equalsIgnoreCase(requirement.getVisaType())){
+			 globalVarsMap.put("visaType", requirement.getVisaType());
+			 }else{
+				 globalVarsMap.put("visaType","--");
+			 }
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
