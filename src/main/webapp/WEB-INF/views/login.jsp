@@ -48,6 +48,9 @@
 	    	<c:if test="${!empty login_blocked_user_error}">
 	         		<div class="error"><font color="red">Your User has blocked. Please contact your admin</font></div>
 	    	</c:if>
+	    	<c:if test="${!empty email_notVerified_error}">
+	         		<div class="error"><font color="red">Your Email is not verified.   <a class="pull-right" title="Resend Verification Link">Resend</a></font></div>
+	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
 			         <span><font color="green">${msg}</font></span>

@@ -1,20 +1,26 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -58,7 +65,11 @@ import com.google.gson.GsonBuilder;
 @PropertySource("${propertyLocation:app.properties}")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
-	@Autowired
+	 
+	@Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
+	
+	 @Autowired
 	 RegistrationService registrationService;
 	
 	 @Autowired
@@ -269,6 +280,13 @@ public class RegistrationRestController {
 			 HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveProfessional(csuRegistrationDTOO,contactUUID);
+		 Long profUserId = null;
+		if (result.contains("success")) {
+			String s2[] = result.split("success");
+			profUserId = Long.parseLong(s2[s2.length - 1]);
+			result = "success";
+		}
+		SourceLeadSessionManager.setSessionAttribute(request, "profUserId", profUserId);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
@@ -279,6 +297,13 @@ public class RegistrationRestController {
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
+		 Long recUserId = null;
+			if (result.contains("success")) {
+				String s2[] = result.split("success");
+				recUserId = Long.parseLong(s2[s2.length - 1]);
+				result = "success";
+			}
+			SourceLeadSessionManager.setSessionAttribute(request, "profUserId", recUserId);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
@@ -775,6 +800,70 @@ public class RegistrationRestController {
 		resultJson = commonUtil.toJSON(regOrgsLocationsList);
 		return resultJson;
 
+	}
+	    
+	    
+	@RequestMapping(value = "/activateEmail", method = RequestMethod.GET)
+	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		String status = "";
+		User user = userService.getUserByVerficationUUID(token);
+		if(user != null){
+			Date uuidSentTime = user.getUrlSentTime();
+			Calendar cal = Calendar.getInstance(); // creates calendar
+			Date current = cal.getTime();
+		    cal.setTime(uuidSentTime); // sets calendar time/date
+		    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+		    Date addedDtime = cal.getTime();
+			if((current.after(uuidSentTime) && current.before(addedDtime)) || current.equals(addedDtime)){
+				String isVerified = user.getIsVerified();
+				if(Constants.NO.equalsIgnoreCase(isVerified)){
+					user.setIsVerified(Constants.YES);
+					user.setUpdatedDate(new Date());
+					userService.addUser(user);
+					if(Constants.INDIVIDUAL_RECRUITER.equalsIgnoreCase(user.getUserType()))
+						registrationService.sendEmailToIndividualRecruiter(user);
+					else
+						registrationService.sendEmailToProfessional(user);
+					status = "success";
+					// verified click to login
+				}else{
+					status = "already Verified";
+				}
+			}else{
+				//url expiry
+				status = "expired";
+			}
+		}else{
+			//home page
+			status = "home";
+		}
+		model.addObject("status", status);
+		model.addObject("userId",user.getId());
+		model.addObject("token",token);
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		
+		model.setViewName("verifyAccount");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/resendVerificationEmail", method = RequestMethod.GET)
+	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = userService.getUserById(userId);
+		if (Constants.NO.equalsIgnoreCase(user.getIsVerified())) {
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			userService.addUser(user);
+			registrationService.sendActivationEmail(user);
+			return "success";
+		}
+		else {
+			return "failure";
+		}
 	}
 	   
 	   

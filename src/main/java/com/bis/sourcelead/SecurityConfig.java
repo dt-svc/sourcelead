@@ -166,7 +166,9 @@ public class SecurityConfig  {
     			.antMatchers("/viewAllJobAlerts").permitAll()
     			.antMatchers("/getAllJobsAlertList").permitAll()
     			.antMatchers("/upload/*").permitAll()
-    			
+    			.antMatchers("/activateEmail").permitAll()
+    			.antMatchers("/verifyAccount").permitAll()
+    			.antMatchers("/resendVerificationEmail").permitAll()
     			.antMatchers("/viewJobSummaryDocumentDocView").permitAll()
     			.antMatchers("/getActionHistoryList").permitAll()
     			.antMatchers("/getRestActionHistoryList").permitAll()

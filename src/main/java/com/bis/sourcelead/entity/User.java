@@ -190,6 +190,15 @@ public class User implements Serializable{
 	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
 	private String registerOptionalServiceId;
 	
+	@Column(name = "VERIFICATION_UUID")
+	private String verificationUUID;
+    
+    @Column(name = "IS_VERIFIED")
+	private String isVerified;
+    
+    @Column(name = "URL_SENTTIME")
+	private Date urlSentTime;
+	
 	@Transient
 	private String isPrimaryAdmin;
 
@@ -762,5 +771,35 @@ public class User implements Serializable{
 
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
+	}
+
+	public String getVerificationUUID()
+	{
+		return verificationUUID;
+	}
+
+	public void setVerificationUUID(String verificationUUID)
+	{
+		this.verificationUUID = verificationUUID;
+	}
+
+	public String getIsVerified()
+	{
+		return isVerified;
+	}
+
+	public void setIsVerified(String isVerified)
+	{
+		this.isVerified = isVerified;
+	}
+
+	public Date getUrlSentTime()
+	{
+		return urlSentTime;
+	}
+
+	public void setUrlSentTime(Date urlSentTime)
+	{
+		this.urlSentTime = urlSentTime;
 	}
 }

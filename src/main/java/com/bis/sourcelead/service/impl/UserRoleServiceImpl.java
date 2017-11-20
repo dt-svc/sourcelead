@@ -587,4 +587,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
 	}
 
+	@Override
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		return userRoleDao.getUserRoleByVerficationUUID(uuid);
+	}
+
 }

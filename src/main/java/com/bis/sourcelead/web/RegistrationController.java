@@ -479,17 +479,24 @@ public class RegistrationController {
 		  String[] registeredEmail = email.split("[@]"); 
 		  EmailDomains emailDomains = emailDomainsService.getEmailDomainsByDomainName(registeredEmail[1]);
 		  
+		  String status = "";
 		  if(null != emailDomains){
-			  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
-			  if(null == userRole){
-				  return "Success";
+			  User user = userService.findByEmail(email);
+			  if(user != null){
+				  status = "User found";
+				  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+				  if(null == userRole){
+					  status = "Success";
+				  }else{
+					  status = "Invalid";
+				  }
 			  }else{
-				  return "Invalid";
-			  } 
+				  status = "Not found";
+			  }
 		  }else{
-			  return "Invalid Domain";
+			  status = "Invalid Domain";
 		  }
-		  
+		  return status;
 	   }
 	  
 	  
@@ -525,6 +532,19 @@ public class RegistrationController {
 		  }else{
 			  return "Invalid";
 		  }
+	   }
+	  
+	  @RequestMapping(value = "/verifyAccount",  method = RequestMethod.GET)
+	   public ModelAndView verifyAccount(@RequestParam(value="requirementUUID", required=false) String requirementUUID,@RequestParam(value="referUUID", required=false) String referUUID) throws Exception {
+		  
+		  ModelAndView model = new ModelAndView();
+		  if(referUUID != null)
+			  model.addObject("referUUID", referUUID);
+		  if(requirementUUID != null)
+			  model.addObject("requirementUUID", requirementUUID);
+		  model.addObject("sourceleadUrl", sourceleadUrl);
+		  model.setViewName("verifyAccount");
+		  return model;
 	   }
 	  
 	 

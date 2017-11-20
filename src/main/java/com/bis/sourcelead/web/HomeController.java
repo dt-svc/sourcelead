@@ -33,11 +33,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -64,6 +66,9 @@ public class HomeController {
 	 
 	 @Autowired
 	 OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 UserService userService;
 	 
 	 @Autowired
 	 OrgSpocService orgSpocService;
@@ -165,11 +170,13 @@ public class HomeController {
 	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+			@RequestParam(value = "token", required = false) String token,
 			@RequestParam(value = "referUUID", required = false) String referUUID,HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
+
 			if(isNullOrEmpty(requirementUUID)){
 				return new ModelAndView("redirect:/dashboard");
 			}else{
@@ -186,6 +193,11 @@ public class HomeController {
 			 if (logout != null) {
 					model.addObject("msg", "You've been logged out successfully.");
 			 }
+			 
+			 if(token != null){
+					User user = userService.getUserByVerficationUUID(token);
+					model.addObject("username", user.getUserName());
+				}
 			 
 			 String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPasswordSucessfulMsg");
 	  			if(!isNullOrEmpty(msg)){

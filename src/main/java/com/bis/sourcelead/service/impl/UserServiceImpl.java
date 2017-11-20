@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
-		user.setCreatedDate(new Date());
+//		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
 		return userDao.addUser(user);
 	}
@@ -1377,6 +1377,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
 			throws Exception {
 		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
+	}
+
+	@Override
+	public User getUserByVerficationUUID(String token)
+	{
+		return userDao.getUserByVerficationUUID(token);
 	}
 	
 }

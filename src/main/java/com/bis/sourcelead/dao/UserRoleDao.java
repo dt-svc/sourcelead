@@ -103,4 +103,6 @@ public interface UserRoleDao {
 	public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
 	
 	UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
+
+	public UserRole getUserRoleByVerficationUUID(String uuid);
 }

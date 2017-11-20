@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import com.bis.sourcelead.enums.Status;
 
@@ -117,6 +118,18 @@ public class UserRole implements Serializable {
 	
     @Column(name = "EXTENSION_NUMBER")
 	private String extensionNumber;
+    
+    @Column(name = "VERIFICATION_UUID")
+	private String verificationUUID;
+    
+    @Column(name = "IS_VERIFIED")
+	private String isVerified;
+    
+    @Column(name = "URL_SENTTIME")
+	private Date urlSentTime;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 
 	@Transient
 	private String userRoleName;
@@ -846,5 +859,44 @@ public class UserRole implements Serializable {
 	{
 		this.extensionNumber = extensionNumber;
 	}
-	
+
+	public String getVerificationUUID()
+	{
+		return verificationUUID;
+	}
+
+	public void setVerificationUUID(String verificationUUID)
+	{
+		this.verificationUUID = verificationUUID;
+	}
+
+	public String getIsVerified()
+	{
+		return isVerified;
+	}
+
+	public void setIsVerified(String isVerified)
+	{
+		this.isVerified = isVerified;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+
+	public Date getUrlSentTime()
+	{
+		return urlSentTime;
+	}
+
+	public void setUrlSentTime(Date urlSentTime)
+	{
+		this.urlSentTime = urlSentTime;
+	}
 }

@@ -34,7 +34,11 @@ public interface RegistrationService {
     public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception;
 	
 	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception;
+	
+	public void sendEmailToProfessional(User user) throws Exception;
 
-
+	public void sendActivationEmail(User user) throws Exception;
+	
+	public void sendEmailToIndividualRecruiter(User user) throws Exception;
 
 }

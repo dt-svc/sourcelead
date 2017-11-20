@@ -730,5 +730,20 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 
+	@Override
+	@Transactional
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		userRole = session.createQuery("from UserRole userRole where userRole.verificationUUID = :uuid").setString("uuid", uuid).setCacheable(true).list();
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		}
+		else {
+			return null;
+		}
+	}
+
 	
 }

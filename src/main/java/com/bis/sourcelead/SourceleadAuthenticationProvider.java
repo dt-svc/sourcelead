@@ -89,6 +89,8 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           }
           else if((userRole == null) || (userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.INACTIVE))){
         	  throw new BadCredentialsException("login_inActive_error");
+          }else if(Constants.NO.equalsIgnoreCase(user.getIsVerified())){
+        	  throw new BadCredentialsException("email_notVerified_error");
           }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
