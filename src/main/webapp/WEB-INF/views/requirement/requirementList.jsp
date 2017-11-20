@@ -44,10 +44,18 @@ $(document).ready(function() {
 /*.tbldata-dotdot span{
 max-width:220px;
 } */
+/* .side-bar { */
+/* z-index: 8; */
+/* } */
+/* .main-header { */
+/* z-index: 99; */
+/* } */
+/* .advancedsearch-mask { */
+/* z-index: 99; */
+/* } */
 .clsDatePicker {
 	z-index: 100000 !important;
 }
-
 .side-bar .side-nav ul li span {
 	display: inline-block;
 	float: none;
@@ -76,6 +84,7 @@ max-width:220px;
 .require_wrap_table select {
 	width: 100% !important;
 }
+
 </style>
 <script>
  window.onload = function() { 
@@ -118,12 +127,15 @@ function statusvalidating(id){
 				onClick="openPop();loadChosenRequirementScripts();"> Advanced
 				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
 			</a>
+			</div>
 			<form:form id="requirement_form" name="requirement_form"
 				enctype='multipart/form-data'>
-				<div class="cand-advsrch-popup reqadvsrch candAdvsrch">
+				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+				<h5 class="headerAdsrch">Advanced Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
-
+				</h5>
+				<div class="addInner">
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
@@ -292,18 +304,17 @@ function statusvalidating(id){
 							</div>
 						</div>
 					</div>
-					<div class="row form-footer">
-						<div class="pull-right mr">
+					<div class="clearfix">
+						<div class="pull-right">
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Clear" id="clear_search"
 								onclick="clearSearch();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
+					</div>
 				</div>
 			</form:form>
-
-		</div>
 	</div>
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
@@ -426,7 +437,7 @@ function statusvalidating(id){
 	
 	
 </section>
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 <!-- 
 
@@ -596,10 +607,16 @@ function getActions(){
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
 		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 	</script>
 
 
