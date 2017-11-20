@@ -3347,5 +3347,11 @@ public class RequirementServiceImpl implements RequirementService {
 	{
 		return requirementDao.getAllRequirementsForJobCampaing(requirementDTO, orglocationId, userId,dateFormat);
 	}
+
+	@Override
+	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception
+	{
+		return requirementDao.getAllCampaignRequirementsByIdsList(requirementIds);
+	}
 	
 }

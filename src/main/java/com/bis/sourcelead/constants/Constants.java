@@ -121,6 +121,7 @@ public class Constants {
 	public static final String OFFER_REJECTED = "Offer Rejected";
 	public static final String OFFER_REJECTED_NOTIFICATION = "Offer Rejected Notification";
 	public static final String HOT_LIST_CAMPAIGN = "HotListCampaign";
+	public static final String JOB_LIST_CAMPAIGN = "JobListCampaign";
 	public static final String EMAIL_TO_USERS = "EmailToUsers";
 	public static final String EMAIL_CAMPAIGN = "EmailCampaign";
 	public static final String CLIENTORVENDORMAIL = "ClientOrVendorMail";

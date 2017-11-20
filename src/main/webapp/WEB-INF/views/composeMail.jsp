@@ -50,7 +50,7 @@ display: none;
       <div class="pull-left">
         <h2>Compose Mail</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox/mails'/>"> Mailbox</a>
 			&raquo; Compose Email</div>
     </section>
     

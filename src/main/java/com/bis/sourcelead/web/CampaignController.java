@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.james.mime4j.dom.address.Mailbox;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -130,7 +132,7 @@ public class CampaignController {
 	
 	/**
 	 * get Jobs list
-	 * @param candidatesListType
+	 * @param jobCampaignType
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -159,37 +161,27 @@ public class CampaignController {
 	}
 	
 	
-	/**
-	 * get Jobs list
-	 * @param candidatesListType
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getVendorsForCampaign", method = RequestMethod.GET)
-	public @ResponseBody ResponseList<OrgRelationDTO> getVendorsForCampaign(OrgRelationDTO orgRelationDTO,@RequestParam(value="jobCampaignType", required=true) String jobCampaignType,
-			HttpServletRequest request) throws Exception {
-
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    
-	    String[] tableColumns = {"ischeck", "responderOrgName", "responderCity", "createdBy","releasedJobsCount", "noContacts"};
-	    int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default referContactsDTO order
-		if(orgRelationDTO.getOrder() != null && !orgRelationDTO.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(orgRelationDTO.getOrder().get(0).get("column"));
-			sortColumnOrder = orgRelationDTO.getOrder().get(0).get("dir");
-		}
-		orgRelationDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		orgRelationDTO.setSortOrder(sortColumnOrder);
-		orgRelationDTO.setJobCampaignType(jobCampaignType);
+	@RequestMapping(value = "/viewAllJobCampaigns")
+ 	public ModelAndView viewAllJobCampaigns(@RequestParam(value="jobCampaignUUID", required=false) String jobCampaignUUID,HttpServletRequest request) throws Exception {
+		    ModelAndView model = new ModelAndView();
+		    
+ 			model.setViewName("viewAllJobCampaigns");
+ 			model.addObject("jobCampaignUUID",jobCampaignUUID);
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	@RequestMapping(value = "/jobCampaignSummary")
+	public ModelAndView jobCampaignSummary(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
 		
-		ResponseList<OrgRelationDTO> vendorsList =null;
-	    
-	//	ResponseList<OrgRelationDTO> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-	   
-		return vendorsList;
+	 ModelAndView model = new ModelAndView();
+	 model.setViewName("jobCampaignSummary");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementUUID", requirementUUID);
+	 return model;
+		
 	}
+	
 	
 	
 }

@@ -34,7 +34,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
+import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.TeamService;
@@ -117,6 +120,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	ReferContactsService referContactsService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -194,14 +200,14 @@ public class MailBoxRestController {
 	/**
 	 * This method for jobs campaigns
 	 * 
-	 * @param hotListEmailCampaignDTO
+	 * @param jobListEmailCampaignDTO
 	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
 	
 	@RequestMapping(value = "/sendJobListCampaign", method = RequestMethod.POST)
-	public String sendJobListCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
+	public String sendJobListCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -209,10 +215,10 @@ public class MailBoxRestController {
 	        multiFile = request.getFile(itrator.next());
 		}
 		
-		hotListEmailCampaignDTO.setStaticPath(staticPath);
+		jobListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		hotListEmailCampaignService.sendJobListEmailCampaign(hotListEmailCampaignDTO, user, orgLocation,multiFile);
+		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation,multiFile);
 		return "success";
 	}
 	
@@ -778,7 +784,21 @@ public class MailBoxRestController {
     	}
         
         
-
+    	@RequestMapping(value = "/getAllJobCampaignsList", method = RequestMethod.GET)
+     	public List<RequirementDTO> getAllJobCampaignsList(@RequestParam(value="jobCampaignUUID", required=false) String jobCampaignUUID) throws Exception {
+    		   
+    		List<Long> requirementIds = new ArrayList<>();
+    		UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(jobCampaignUUID);
+    		if(mailBox != null && mailBox.getRequirementId() != null){
+    			String[] reqIds = mailBox.getRequirementId().split(",");
+    			for(int i=0; i<reqIds.length; i++){
+    				requirementIds.add(Long.valueOf(reqIds[i]));
+    			}
+    		}
+    		
+    		List<RequirementDTO> requirementDTOList = requirementService.getAllCampaignRequirementsByIdsList(requirementIds);
+    		return requirementDTOList;
+     	}
 
 	 
 	 public String toJSON(Object obj){

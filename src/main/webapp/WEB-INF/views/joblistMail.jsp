@@ -41,18 +41,16 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/campaigns/hotcampaigns'/>"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
-    
-    
    
     <div class="content-area clearfix">
     <div id="mailLoading"></div>
     <div id ="popUp"></div>
     <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  >
+       <form:form id="joblistCampaign_form" name="joblistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -110,7 +108,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
           <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" data-placeholder="&nbsp;Enter Subject" class="form-control input-sm">
           </div>
         </div>
         
@@ -118,10 +116,10 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-success small">Jobs</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-            <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;" id="selectedJobs">
+            <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="jobListChange('myjobs')" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
@@ -134,11 +132,11 @@ display: none;
                   <div class="modal-body clearfix">
                     <div class="clearfix">
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="mailBoxJob" name="users" value="myjobs" checked onclick="jobListChange('myjobs')"><strong class="paddingLeft">My Jobs</strong></label>
+               	    <input  type="radio" id="myJobsRadio" name="users" value="myjobs" checked onclick="jobListChange('myjobs')"><strong class="paddingLeft">My Jobs</strong></label>
                	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" value="openJobs" onclick="jobListChange('openJobs')"><strong class="paddingLeft">All Jobs</strong></label>
+               	    <input type="radio" id="allJobsRadio" name="users" value="openJobs" onclick="jobListChange('openJobs')"><strong class="paddingLeft">All Jobs</strong></label>
                     
-					<span class="dropdown ml">
+					<!-- <span class="dropdown ml">
 					  <span class="dropdown-toggle cursorPointer" type="button" data-toggle="dropdown"><strong>Status</strong>
 					  <span class="caret"></span></span>
 					  <ul class="dropdown-menu paddingLeft paddingRight">
@@ -146,13 +144,10 @@ display: none;
 					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Job type</label></li>
 					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Client</label></li>
 					  </ul>
-					</span>
+					</span> -->
                     
                     </div>
-                     
-                  
                   <!-- <div id="mailBoxJobsList" class="mailFil datatable_filter"></div> -->
-                  
                     <div class="clearfix">
                      <div id="mailBoxJobsList" class="datatable_filter"></div>
                     </div>
@@ -208,30 +203,73 @@ display: none;
         <div class="col-md-12 clearfix mt">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
-              <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-success" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
          </form:form>
       </div>
-      
-      
     </div>
-   
-    
     
   </section>
   
-  
   <script src="resources/js/nicEdit.js"></script> 
   
+   <script type="text/javascript">
+	function sendJobListCampaign() {
+		
+		if ($('#joblistCampaign_form').validate(false, validationSettings)){ 
+		nicEditors.findEditor('bodytext').saveContent();
+  		
+		 var form = $('#joblistCampaign_form')[0];
+  		 var formData = new FormData(form)
+  		 var toEmails =  $('#emailsList').val();
+  		 var otherEmails =  $('#otherEmails').val();
+  		
+  	    if(toEmails == null && otherEmails == null){
+  	    	alertMailerMsg();
+  	    }else{
+	  	    	
+	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  			$.ajax({
+	  				type : "POST",
+	  	    	    data: formData,
+	  	    	    enctype: 'multipart/form-data',
+	  		        processData: false,
+	  		        contentType:false, 
+	  				url : sourceleadUrl+"/sendJobListCampaign?${_csrf.parameterName}=${_csrf.token}",
+	  				success : function(result) {
+	  						location.replace(sourceleadUrl+"/campaigns/hotcampaigns");
+	  				},
+	  			}); 
+	  	    
+  	    }
+		 return true
+		 
+		}else{
+			return false;
+		  }
+	}
+	
+	$('body').on('blur', '#joblistCampaign_form', function() {
+		$("#joblistCampaign_form").showHelpOnFocus();
+		$("#joblistCampaign_form").validateOnBlur(false, validationSettings);  
+   });
+</script>
   
   <script>
   function selectRadio(){
 	  document.getElementById("vendorCheck").checked = true;
 	  document.getElementById("contactsCheck").checked = false;
 	 $("#vendorListType").val('listbyVendor');
+  }
+  
+  
+  function selectJobsRadio(){
+	  document.getElementById("myJobsRadio").checked = true;
+	  document.getElementById("allJobsRadio").checked = false;
+	  jobListChange('myjobs');
   }
   </script>
    
@@ -246,9 +284,6 @@ $(function(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 	       
-	       
-	    
-	       
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
@@ -257,7 +292,7 @@ $(function(){
 
 $(function() {
 	$("#attachfileBtn").change(function() {
-		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "hotlistCampaign_form");
+		fileUpload("attachfileBtn", "Joblist Campaign Documents", "joblistCampaign_form");
 	});
  });
  
@@ -269,10 +304,8 @@ function jobListChange(type){
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='jobsDataTableSearch'/>";
 	 	result = result +"</div>";
-	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
-	 	
   		result = result +'<table id="jobsDataTable" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -287,7 +320,6 @@ function jobListChange(type){
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
-	    
 	    result = result +'</div>'; 
     	result = result +'<div class="clearfix">';
     	result = result +'</div>'; 
@@ -298,12 +330,10 @@ function jobListChange(type){
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
-	    allJobs = [];
+	    allJobs = {};
 	    jobsDataTableList(type);
 }
 </script>
-
-
 
 <script>
 function jobsDataTableList(type){
@@ -314,7 +344,6 @@ function jobsDataTableList(type){
 	 jobsPagination(url,type);
 }
 </script>
-
 
 <script>
 function jobsPagination(url,type){
@@ -352,7 +381,7 @@ function jobsPagination(url,type){
     	  				 break;
     	  			 }
     	  		 } 
-    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.requirementId+'" value="'+opt.requirementId+','+opt.jobTitle+'" onchange="checkJob(this)"  type="checkbox" name="jobTitle[]"  class="myCheckbox" ></td>';
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.requirementId+'" data-id="'+opt.requirementId+'" value="'+opt.requirementId+','+opt.jobTitle+'" onchange="checkJob(this)"  type="checkbox" name="jobTitle[]"  class="myJobsCheckbox" ></td>';
     	  		
     	  		  return result;
     	  	}
@@ -397,6 +426,20 @@ function jobsPagination(url,type){
 	              }
 		     },{
 		    	  "targets": colIndex++,
+	              "data": "location",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    var location="";
+	            	    if(opt.location != null && opt.location !='' && opt.location != 'undefined'){
+	            	    	location = opt.location;
+	            	    }else{
+	            	    	location = "----";
+	            	    }
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
 	              "data": "rate",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
@@ -408,14 +451,6 @@ function jobsPagination(url,type){
 	   	           	      }
 	            	    
 	            		result = result + '<td><div class="tblminwidth-75"><span title="'+rate+'">'+rate+'</span></div></td>';
-	            		return result;
-	              }
-		     },{
-		    	  "targets": colIndex++,
-	              "data": "location",
-	              "render": function ( data, type, opt, meta ) {
-	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.location+'">'+opt.location+'</span></div></td>';
 	            		return result;
 	              }
 		     },{
@@ -467,18 +502,22 @@ function jobsPagination(url,type){
 </script>
 
 <!-- for job selection script stars -->
+
+
 <script>
 function toggleJobs(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-        
-    }
-$('input:checkbox:not(#checkAllJobs)').click(function() {
-    if(!this.checked) {
-        $('#checkAllJobs').removeAttr('checked');
-    }
+var checkboxes = document.querySelectorAll('input[class="myJobsCheckbox"]');
+if($(source).is(":checked"))
+	  $('input[class="myJobsCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myJobsCheckbox"]').removeProp('checked');
+
+$('input[class="myJobsCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  allJobs[$(this).data("id")] = $(this).val();
+	  } else {
+		  allJobs[$(this).data("id")] = "";
+	  }
 });
 }
 </script>
@@ -521,7 +560,6 @@ function checkJob(ele) {
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-			
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
@@ -547,8 +585,6 @@ function checkJob(ele) {
 				        		 select.append(option);
 					             select.find(option).prop('selected', true);
 				        		 $("#otherEmails").trigger("chosen:updated");
-				        
-				           
 			        		
 				        } 
 		    	 }
@@ -583,8 +619,6 @@ function checkJob(ele) {
 		    	 }
 		    
 		    });
-		    
-		    
 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -594,8 +628,6 @@ function checkJob(ele) {
 				$this.next().css({'width': '100%'});
 });
 </script> 
-
-
 
   <script>
 //upload file script -laptop-shiftA
@@ -614,7 +646,6 @@ $('.dropdown-menu').click(function(e) {
     e.stopPropagation();
 });
 </script>
-
 
 <script>
 	  function vendorListChange(){
@@ -635,18 +666,39 @@ $('.dropdown-menu').click(function(e) {
 
 <script>
 function toggleVendors(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-            checkVendors(checkboxes[i]);
-        
-    }
-$('input:checkbox:not(#checkAllVendors)').click(function() {
-    if(!this.checked) {
-        $('#checkAllVendors').removeAttr('checked');
-    }
+var checkboxes = document.querySelectorAll('input[class="myVendorCheckbox"]');
+if($(source).is(":checked"))
+	  $('input[class="myVendorCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myVendorCheckbox"]').removeProp('checked');
+
+$('input[class="myVendorCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  vendorList[$(this).data("id")] = $(this).val();
+	  } else {
+		  vendorList[$(this).data("id")] = "";
+	  }
 });
+}
+</script>
+
+
+<script>
+function toggleVendorContacts(source) {
+
+if($(source).is(":checked"))
+	  $('input[class="myVendorContactsCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myVendorContactsCheckbox"]').removeProp('checked');
+
+$('input[class="myVendorContactsCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  vendorcontactsList[$(this).data("id")] = $(this).val();
+	  } else {
+		  vendorcontactsList[$(this).data("id")] = "";
+	  }
+});
+
 }
 </script>
 
@@ -656,10 +708,8 @@ function vendorsList(){
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='vendorDataTableSearch'/>";
 	 	result = result +"</div>";
-	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
-	 	
   		result = result +'<table id="vendorDataTable" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -682,11 +732,10 @@ function vendorsList(){
      	result = result +' </div>'; 
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
-	    vendorList = [];
+	    vendorList = {};
 	    vendorsDataTableList();
 }
 </script>
-
 
 <script>
 function vendorsDataTableList(){
@@ -699,7 +748,6 @@ function vendorsDataTableList(){
 	 
 }
 </script>
-
 
 <script>
 function vendorsPagination(url){
@@ -735,7 +783,7 @@ function vendorsPagination(url){
 	   	  			 }
 	   	  		 } 
     	  		
-    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.orgRelationId+'" value="'+opt.orgRelationId+'" onchange="checkVendors(this)"   type="checkbox" name="orgRelationIds[]" class="myCheckbox" ></td>';
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.orgRelationId+'" data-id="'+opt.orgRelationId+'" value="'+opt.orgRelationId+'" onchange="checkVendors(this)"   type="checkbox" name="orgRelationIds[]" class="myVendorCheckbox" ></td>';
     	  		  return result;
     	  	}
          },{
@@ -809,7 +857,7 @@ function vendorsPagination(url){
 		     }], 
 		     
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[2, 15, 20], [2, 15, 20]],
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
@@ -830,7 +878,6 @@ function vendorsPagination(url){
 }
 
 </script>
-
 
 
 <script>
@@ -884,8 +931,6 @@ function contactsDataTableList(){
 }
 </script>
 
-
-
 <script>
 function contactsPagination(url){
 	var colIndex = 0;
@@ -919,7 +964,7 @@ function contactsPagination(url){
 	   	  			 }
 	   	  		 } 
    	  		 
-   	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
+   	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
 	              return result;
     	  	}
          },{
@@ -973,7 +1018,6 @@ function contactsPagination(url){
 
 </script>
 
-
 <script>
 var contactUsers = [];
 function checkContactUsers(ele) {
@@ -984,10 +1028,21 @@ function checkContactUsers(ele) {
 </script>
 
 <script>
-var vendorList = [];
+var vendorList = {};
 function checkVendors(ele){
 	if($(ele).is(":checked")) {
-		vendorList[vendorList.length] = $(ele).val();
+		vendorList[$(ele).data("id")] = $(ele).val();
+	}
+}
+</script>
+
+
+
+<script>
+var vendorcontactsList = {};
+function checkVendorsContacts(ele){
+	if($(ele).is(":checked")) {
+		vendorcontactsList[$(ele).data("id")] = $(ele).val();
 	}
 }
 </script>
@@ -1009,27 +1064,9 @@ $('input:checkbox:not(#checkAllContacts)').click(function() {
 });
 }
 </script>
-  
-
 <!-- End -->
 
  <!-- Vendor contacts List Starts Here-->
- 
- <script>
-function toggleVendorContacts(source) {
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-        
-    }
-$('input:checkbox:not(#checkAllVendorContacts)').click(function() {
-    if(!this.checked) {
-        $('#checkAllVendorContacts').removeAttr('checked');
-    }
-});
-}
-</script>
 
 <script>
 function vendorContactList(){
@@ -1062,12 +1099,12 @@ function vendorContactList(){
      	result = result +' </div>'; 
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
+	    vendorcontactsList = {}
 	    vendorContactDataTableList();
 	    
 	   
 }
 </script>
-
 
 <script>
 function vendorContactDataTableList(){
@@ -1080,7 +1117,6 @@ function vendorContactDataTableList(){
 </script>
 
 <script>
-	
 	function vendorContactpagination(url){
 		var colIndex = 0;
 		 $('#vendorconDataTable').DataTable( { 
@@ -1106,13 +1142,13 @@ function vendorContactDataTableList(){
 		    	  		 var result = "";
 		    	  		 var flag = false;
 		    	  		
-		    	  	 /*  for(var e in allvendorcontacts) {
-		    	  			 if(opt.emails+"" === allvendorcontacts[e]) {
+		    	  	   for(var e in vendorcontactsList) {
+		    	  		   if(report.spocEmail+"" === vendorcontactsList[e]) {
 		    	  				 flag = true;
 		    	  				 break;
 		    	  			 }
-		    	  		 }  */
-		    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" value="'+report.spocEmail+'" onchange=""  type="checkbox" name="contactEmails[]"  class="myCheckbox" ></td>'; 
+		    	  		 }  
+		    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" data-id="'+report.id+'" value="'+report.spocEmail+'" onchange="checkVendorsContacts(this);"  type="checkbox" name="contactEmails[]"  class="myVendorContactsCheckbox" ></td>'; 
 		    	  		
 		    	  		  return result;
 		    	  	}
@@ -1190,21 +1226,19 @@ function vendorContactDataTableList(){
 
  <!-- Vendor contacts List Ends Here Here-->
 
-
-
 <script>
 function getVendorContactEmails(){
 	
-	var oTable = $('#vendorconDataTable').dataTable();
-	var rowcollection =  oTable.$("input[name='contactEmails[]']:checked", {"page": "all"});
-	
 	
 	var internalOutput = "";
-	rowcollection.each(function(index,elem){
-		 var checkbox_value = $(elem).val();
-		 internalOutput = internalOutput+"<option value='" +checkbox_value+ "' selected>"+checkbox_value+"</option>";
-	});
-	 
+	
+	 for(var e in vendorcontactsList) {
+		 if(vendorcontactsList[e] == 'Email' || vendorcontactsList[e] == 'Notification' || vendorcontactsList[e] == 'on')
+				continue;
+		 internalOutput = internalOutput+"<option value='" +vendorcontactsList[e]+ "' selected>"+vendorcontactsList[e]+"</option>";
+	  }
+	
+	
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
 		
@@ -1213,7 +1247,6 @@ function getVendorContactEmails(){
 		
 }
 </script>
-
 
 <script>
 function getAllEmailContacts(){
@@ -1237,12 +1270,15 @@ function getAllEmailContacts(){
 
 <script>
 function getContactEmails(){
-	var orgRelationIds = [];
+	var orgRelationIds = new Array();
 	var internalOutput = "";
 	
 	 for(var e in vendorList) {
-		 orgRelationIds[e] = vendorList[e];
+		 if(vendorList[e] == 'Email' || vendorList[e] == 'Notification' || vendorList[e] == 'on')
+				continue;
+		 orgRelationIds.push(vendorList[e])
 	  }
+	 
 	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -1266,6 +1302,5 @@ function getContactEmails(){
      }); 
 	 
 }
-
 </script>
 <jsp:include page="masterFooter.jsp" />

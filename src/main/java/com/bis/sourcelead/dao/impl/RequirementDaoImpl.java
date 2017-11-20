@@ -1783,5 +1783,29 @@ public class RequirementDaoImpl implements RequirementDao {
 			return response;
 	}
 
+	@Override
+	@Transactional
+	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception
+	{
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement where requirement.id IN (:requirementIds) )";
+		List<Requirement> requirementList  =  session.createQuery(query).setParameterList("requirementIds",requirementIds).setCacheable(true).list();
+		
+		if(requirementList != null && requirementList.size() > 0){
+			for(Requirement requirement : requirementList){
+				RequirementDTO requirementDTO = new RequirementDTO();
+				requirementDTO.setJobTitle(requirement.getJobTitle());
+				requirementDTO.setLocation(requirement.getLocation());
+				requirementDTO.setJobType(requirement.getJobType());
+				requirementDTO.setSkills(requirement.getSkills());
+				requirementDTO.setRequirementUUID(requirement.getRequirementUUID());
+				requirementDTOList.add(requirementDTO);
+			}
+		}
+		
+		return requirementDTOList;
+	}
+
 	
 }
