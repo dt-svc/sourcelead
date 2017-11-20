@@ -109,6 +109,8 @@ public class TimesheetController {
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
 			
+			
+			
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -130,12 +132,11 @@ public class TimesheetController {
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
 			
-			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
-			TimesheetEntryDetailsDTO tsdto  =timesheetRestController.getTimesheetEntryDetailsWeb(eedDTO,request);
-			model.addObject("timesheetEmployeeDTO",tsdto);
+			/*model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("timesheet/timesheet");*/
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/timesheet");
+			model.setViewName("timesheet/timesheetRedefined");
 			return model;
 
 	}
