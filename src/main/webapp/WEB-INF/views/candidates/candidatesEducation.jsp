@@ -334,16 +334,7 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEduSave = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduSave = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduSave = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduSave = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduSave = 'yy-dd-mm'; 
-	  }
+	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 	  
 	$('#startDate').datepicker({
 	      dateFormat: finalDateFormatEduSave,
@@ -580,52 +571,16 @@ function EditEducation(candidateId,candidateEducationId) {
 	var eduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	 var eduStartDateSplit = eduStartDate.split("-");
-	 var eduEndDateSplit = eduEndDate.split("-");
+	
 	 
 	 var finalDateFormatEduEditOneSave = '';
-	  var eduStartDateEdit = '';
-	  var eduEndDateEdit = '';
+	 
+	 // written common method in slead-common.js for date formats start
+	  var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
+	  var eduEndDateEdit = getJSDate(eduEndDate,locationDate);
 	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[2])+parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[0])+parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[0])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[2])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[2])-parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[0])-parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[0])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[2])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }
-	
-	  var finalDateFormatEduUpdate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduUpdate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-	  }
-	
+	  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+	  //end
 	
 	$('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormatEduUpdate,

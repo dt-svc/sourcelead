@@ -104,10 +104,12 @@ public class RequirementInterviewRestController {
 		
 		List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		for(User userList:interviewersList){
-			UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
-			if(!Constants.EMPLOYEE.equals(user.getUserType())){
+			/*UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
+		   */
+			interviewersNewList.add(userList);
+			/*if(!Constants.EMPLOYEE.equals(user.getUserType())){
 				interviewersNewList.add(userList);
-			}
+			}*/
 		}
 		resultJson = commonUtil.toJSON(interviewersNewList);
 		return resultJson;

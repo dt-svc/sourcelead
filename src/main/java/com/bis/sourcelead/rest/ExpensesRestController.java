@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.helper.ExpenseCategoryDTOConverter;
 import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
@@ -134,13 +135,20 @@ public class ExpensesRestController {
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
-	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
-    public List<ExpensesDTO> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/rest/getExpensesList")
+    public ResponseList<ExpensesDTO> getExpensesListForMobile(@RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
+		return getExpensesList( elDTO, request);
+    }
+	
+	
+	
+	@RequestMapping(value = "/getExpensesList")
+    public ResponseList<ExpensesDTO> getExpensesList( ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception
     {
         
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		ResponseList<ExpensesDTO> response = new ResponseList<ExpensesDTO>(); 
 		if(orgLoc == null){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
 		}
@@ -151,9 +159,9 @@ public class ExpensesRestController {
         if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
             expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
         }
-        List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
+        ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate(),elDTO.getSearchValue(),elDTO.getStart(),elDTO.getLength());
         List<ExpensesDTO> expensesDTOList = new ArrayList<>();
-        for(Expenses expenses :expensesList){
+        for(Expenses expenses :expensesList.getData()){
             Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
             for(ExpensesApproverHierarchy eah :hierarchyList){
                 if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
@@ -170,8 +178,8 @@ public class ExpensesRestController {
             }
             expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
         }
-        
-        return expensesDTOList;
+        response.setData(expensesDTOList);
+        return response;
     }	
 	
 	/**
@@ -632,9 +640,9 @@ public class ExpensesRestController {
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser, expenseStatus, startDate, endDate);
-		if (expensesList != null && expensesList.size() > 0) {
-			for (Expenses ex : expensesList) {
+		ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser, expenseStatus, startDate, endDate,null,0,0);
+		if (expensesList != null) {
+			for (Expenses ex : expensesList.getData()) {
 				if (null != ex.getProjectMembers()) {
 					ex.setProjectName(ex.getProjectMembers().getProjects().getProjectName());
 				}
@@ -646,10 +654,10 @@ public class ExpensesRestController {
 				}
 			}
 			if (type.equalsIgnoreCase("PDF")) {
-				file = expensesService.exportAllMyExpensesToPdf(expensesList, orgLoc, loginUser);
+				file = expensesService.exportAllMyExpensesToPdf(expensesList.getData(), orgLoc, loginUser);
 			}
 			else {
-				file = expensesService.exportAllMyExpensesToExcel(expensesList, orgLoc);
+				file = expensesService.exportAllMyExpensesToExcel(expensesList.getData(), orgLoc);
 			}
 		}
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -745,7 +753,7 @@ public class ExpensesRestController {
 						if (null != projectMember.getProjectMemberCandidteId()) {
 							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
 							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
-							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+							if(pmWithUser != null && null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
 								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
 								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}

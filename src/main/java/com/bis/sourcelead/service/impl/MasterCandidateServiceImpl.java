@@ -62,7 +62,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		
 		// Tihs for add applicant
-		/*if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+		if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 			email = jsonObj.getString("EmailId");
 		}
 		
@@ -72,7 +72,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
 			phoneNumber = jsonObj.getString("AlternateNumber");
-		}*/
+		}
 		
 		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
 		

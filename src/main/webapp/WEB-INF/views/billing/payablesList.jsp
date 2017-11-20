@@ -56,11 +56,11 @@ $(document).ready(function(){
 			</div>
 		</c:if>
 		<div class="pull-left">
-			<h2>Payables</h2>
+			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Payables List
+			&raquo; Bill List
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
