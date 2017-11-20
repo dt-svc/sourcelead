@@ -257,6 +257,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 				      .list();
 	}
 
+
     
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -270,6 +271,23 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			      .setLong("orgLocationId", orgLocationId)
 			      .setCacheable(true)
 			      .list();
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer getRequirementAssignToListCountByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*)from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId";
+		List<Long>  requirementAssignToCount = session.createQuery(query.toString()).setLong("requirementId", requirementId) .setCacheable(true) .list();
+		Integer count = 0;
+		if(null != requirementAssignToCount && !requirementAssignToCount.isEmpty()){
+		count = requirementAssignToCount.get(0).intValue();
+		}
+		return count;
+			 
+
 	}
 }
 

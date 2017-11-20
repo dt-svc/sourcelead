@@ -170,7 +170,12 @@
 						
 	   		    		result = result + '</div>';
 	   		    		
-
+	   		    		result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+						result = result + '<strong>Project Id:</strong>';
+						result = result + '<span>'+projectSequeneNumber+'</span>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
 						result = result + '	<strong>Project name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
@@ -207,12 +212,6 @@
 						result = result + '<div class="clearfix"></div>';
 
 						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
-						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
-						result = result + '<strong>Project Id:</strong>';
-						result = result + '<span>'+projectSequeneNumber+'</span>';
-						result = result + '<div class="clearfix"></div>';
-						result = result + '</div>';
-						
 						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
@@ -576,7 +575,6 @@
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 						result = result + '</div>';
 						
-						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Invoice Frequency<span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
@@ -590,10 +588,10 @@
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
-						result = result  +' <option '+(json.timesheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-						result = result  +'	<option '+(json.timesheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +' <option '+(json.timeSheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.timeSheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
 						result = result + '</div>';
 				 

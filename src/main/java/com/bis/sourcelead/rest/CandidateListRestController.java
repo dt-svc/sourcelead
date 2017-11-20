@@ -418,10 +418,8 @@ public class CandidateListRestController {
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
-			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
+	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
 		}
 		
 		// Rate Type
@@ -590,6 +588,7 @@ public class CandidateListRestController {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
@@ -741,7 +740,7 @@ public class CandidateListRestController {
 		}
 
 		if (null != can.getOrgRelationId()) {
-			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
@@ -752,7 +751,7 @@ public class CandidateListRestController {
 		}
 		if (null != can.getSpocId()) {
 			StringBuilder contactName = new StringBuilder();
-			can.setVendorSpocId(can.getSpocId().getId().toString());
+			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
 				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
@@ -787,6 +786,8 @@ public class CandidateListRestController {
 		candidateDTO.setExperienceYears(can.getExperienceYears());
 		candidateDTO.setZipcode(can.getZipCode());
 		candidateDTO.setCandidateType(can.getCandidateType());
+		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
 		return candidateDTO;
 	}
 	 

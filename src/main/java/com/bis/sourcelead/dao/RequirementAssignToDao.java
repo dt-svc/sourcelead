@@ -11,7 +11,6 @@ public interface RequirementAssignToDao {
 	
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId)  throws Exception;
 	
-	
 	public boolean deleteRequirementAssignToByRequirementId(Long requirementId)throws Exception;
 	
 	public Integer getAssignedTeamMembersCountByTeamMemberUserId(Long assignUserId,String jobType);
@@ -35,5 +34,6 @@ public interface RequirementAssignToDao {
 	 */
 	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId,Long orgLocationId) throws Exception;
 
+	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
 	
 }

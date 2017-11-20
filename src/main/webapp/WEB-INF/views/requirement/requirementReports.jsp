@@ -10,25 +10,30 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getRequirementList();
+	getDayWiseReports();
 	}
 </script>
 
-<script>
+<!-- <script>
 function getRequirementList(){
 		var sourceleadUrl ='${sourceleadUrl}';
 	    var status = "";
 	    var clients = "";
+	    var reportType = $("#reportTypeId").val();
+	    var startDate = $("#ExportStartDate").val();
+		var endDate = $("#ExportEndDate").val();
+		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
-	          success :function(data) {
+	          //url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&status="+status+"&clients="+clients,    
+	            url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	        	 success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
 	          
 	     }); 
 }
-</script>
+</script> -->
 <script>
 function prepareReportDataDiv(data){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
@@ -145,6 +150,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+	$("#requirementReportsDiv12").removeAttr('style');
+
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
@@ -268,11 +275,11 @@ function toDate(selector) {
 	 <div class="cusShow pull-left">
 	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
+	 <p id="reportStartDate" class="ReError" style="display:none"></p>
 	 </span>
 	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
+	<p id="reportEndDate" class="ReError" style="display:none"></p>
 	</span>
 	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	</div>
@@ -552,12 +559,14 @@ $(".reminder").click(function(){
 function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType!="custom"){
-	$.ajax({
+		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
@@ -587,11 +596,12 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{

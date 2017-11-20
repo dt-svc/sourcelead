@@ -18,6 +18,8 @@ public class CandidateIndex implements Serializable {
 	private String firstName;
 
 	private String lastName;
+	
+	private String fullName;
 
 	private String email;
 
@@ -189,8 +191,6 @@ public class CandidateIndex implements Serializable {
 	private String fileContentType;
 	
 	private String action;
-	
-	private String recommendationFileUrl;
 	
 	private String resumeName;
 	
@@ -952,20 +952,20 @@ public class CandidateIndex implements Serializable {
 		this.action = action;
 	}
 
-	public String getRecommendationFileUrl() {
-		return recommendationFileUrl;
-	}
-
-	public void setRecommendationFileUrl(String recommendationFileUrl) {
-		this.recommendationFileUrl = recommendationFileUrl;
-	}
-
 	public String getResumeName() {
 		return resumeName;
 	}
 
 	public void setResumeName(String resumeName) {
 		this.resumeName = resumeName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 }

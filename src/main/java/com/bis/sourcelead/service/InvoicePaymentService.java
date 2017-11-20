@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -17,4 +18,7 @@ public interface InvoicePaymentService {
 	List<InvoicePayment>  getInvoicePaymentList(Long invoiceId)throws Exception;
 
 	InvoicePayment invoicePaymentById(Long id)throws Exception;
+	
+	List<InvoicePayment> getInvoicePaymentListByOrgloactionIdAndDates(Long orgLocationId,Date startDate,Date endDate) throws Exception;
+
 }

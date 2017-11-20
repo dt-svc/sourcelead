@@ -173,13 +173,13 @@ public class ProjectsRestController {
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
 		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
-			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
+			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		    projectAdditionalDetailsDTO.setSaveType(saveType);
 		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		   
+		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
 		    return "success";
 	    }
        

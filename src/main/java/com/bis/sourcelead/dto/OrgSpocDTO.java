@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.User;
 
-public class OrgSpocDTO {
+public class OrgSpocDTO extends SearchDTO implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	private long id;
 	
@@ -111,6 +113,8 @@ public class OrgSpocDTO {
 	private String vendorCurrency;
 	
 	private String clientCurrency;
+	
+	private String requirementId;
 
 	public long getId()
 	{
@@ -611,6 +615,12 @@ public class OrgSpocDTO {
 	{
 		this.clientCurrency = clientCurrency;
 	}
-	
-	
+
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
 }

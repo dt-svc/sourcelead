@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,6 +229,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	@Override
 	public InvoicePayment invoicePaymentById(Long id) throws Exception {
 		return invoicePaymentDao.invoicePaymentById(id);
+	}
+
+	@Override
+	public List<InvoicePayment> getInvoicePaymentListByOrgloactionIdAndDates(Long orgLocationId, Date startDate, Date endDate) throws Exception {
+		return invoicePaymentDao.getInvoicePaymentListByOrgloactionIdAndDates(orgLocationId, startDate, endDate);
 	}
 
 }

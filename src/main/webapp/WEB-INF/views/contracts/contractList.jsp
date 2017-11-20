@@ -453,7 +453,9 @@ function preparedContractListDraft(json){
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
-		     			result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     			if(report.templateId != null && report.templateId != '' && report.templateId != 'undefined'){
+		     				result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     			}
 		     		}else{
 		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 		     		}
@@ -538,7 +540,9 @@ function preparedContractListDraft(json){
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
 	     		  if(output.typeOfContract == "New"){
+	     			 if(output.templateId != null && output.templateId != '' && output.templateId != 'undefined'){
 	     			 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     			 }
 	     		  }else{
 	     		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	     		  }
@@ -624,7 +628,9 @@ function preparedContractListDraft(json){
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
+		     			if(appReport.templateId != null && appReport.templateId != '' && appReport.templateId != 'undefined'){
 		     			res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     			}
 		     		}else{
 		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		     		}

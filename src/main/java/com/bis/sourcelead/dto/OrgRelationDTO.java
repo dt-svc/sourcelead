@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class OrgRelationDTO implements Serializable{
+public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -62,7 +62,6 @@ public class OrgRelationDTO implements Serializable{
 	
 	private Long orgRelationId;
 	
-	//data table
 	
     private String sortColumn;
 	
@@ -78,7 +77,17 @@ public class OrgRelationDTO implements Serializable{
 	 
 	private int length;
 	
+	private String requirementId;
 	
+	private String vendorStatus;
+	
+	private String initiatorLevel;
+	
+	private String  noOfContatcs;
+
+	private String  stringDate;
+	
+	private String noOfNonReleasedContacts;
 
 	public Long getId() {
 		return id;
@@ -296,6 +305,7 @@ public class OrgRelationDTO implements Serializable{
 		this.orgRelationId = orgRelationId;
 	}
 
+
 	public String getSortColumn()
 	{
 		return sortColumn;
@@ -366,4 +376,52 @@ public class OrgRelationDTO implements Serializable{
 		this.length = length;
 	}
 	
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getVendorStatus() {
+		return vendorStatus;
+	}
+
+	public void setVendorStatus(String vendorStatus) {
+		this.vendorStatus = vendorStatus;
+	}
+
+	public String getInitiatorLevel() {
+		return initiatorLevel;
+	}
+
+	public void setInitiatorLevel(String initiatorLevel) {
+		this.initiatorLevel = initiatorLevel;
+	}
+
+	public String getNoOfContatcs() {
+		return noOfContatcs;
+	}
+
+	public void setNoOfContatcs(String noOfContatcs) {
+		this.noOfContatcs = noOfContatcs;
+	}
+
+	public String getStringDate() {
+		return stringDate;
+	}
+
+	public void setStringDate(String stringDate) {
+		this.stringDate = stringDate;
+	}
+
+	public String getNoOfNonReleasedContacts() {
+		return noOfNonReleasedContacts;
+	}
+
+	public void setNoOfNonReleasedContacts(String noOfNonReleasedContacts) {
+		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
+	}
+
 }
