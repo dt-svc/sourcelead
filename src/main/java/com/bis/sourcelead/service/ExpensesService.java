@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -12,7 +13,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesService {
 	
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser, String expenseStatus, String startDate, String endDate) throws Exception;
+	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser, String expenseStatus, String startDate, String endDate, String searchValue, int start, int length) throws Exception;
 
 	public List<Expenses> getIndividualExpense(OrgLocations orgLoc, User loginUser, String expenseId);
 
