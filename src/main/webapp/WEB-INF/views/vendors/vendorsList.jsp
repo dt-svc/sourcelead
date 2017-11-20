@@ -43,9 +43,16 @@ border:none; background-color: none !important; padding:0 5px !important;
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </div>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+          
+          <h5 class="headerAdsrch">Advanced Search
+          <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </h5>
+          
+          
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
-           
+          <div class="addInner"> 
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -252,10 +259,10 @@ border:none; background-color: none !important; padding:0 5px !important;
               	</div>
               
             </div>
+            </div>
+            </div>
             </form:form>
           </div>
-        </div>
-        </div>
 <!-- Advanced Search Ends -->
 
 
@@ -2620,14 +2627,22 @@ function cancelTermination(){
 	}
 </script> 
 
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+
 <script>
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
+    $(".advancedsearch-mask").fadeOut();
     };
     function openPop(){
     $("div.cand-advsrch-popup").toggle();
+    $(".advancedsearch-mask").fadeIn();
     };
+	function closeAdsrch(){
+		$("div.cand-advsrch-popup").fadeOut();
+		$(".advancedsearch-mask").fadeOut();
+	};
 </script> 
 
 <script>
