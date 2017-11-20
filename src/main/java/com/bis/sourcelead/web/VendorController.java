@@ -268,6 +268,10 @@ public class VendorController {
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
 			model.addObject("vendorList", vandorsListByOrgLocationId);
+			
+			/*List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);*/
+			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

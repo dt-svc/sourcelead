@@ -236,11 +236,15 @@ public class ClientRestController {
 	    		@RequestParam(value="orgName", required=false) String orgName,
 	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
-			Org org = orgService.getOrgByOrgName(orgName);
 			OrgLocations orgLocations = null;
-			if(org != null && orgLocationId != null){
+			if(orgLocationId != null){
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+			}else {
+				orgLocations = orgLocationService.getOrgLocationsByOrgLocationName(orgName);
+				if(orgLocations != null) {
+					orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+				}
 			}
 			return commonUtil.toJSON(orgLocations);
 			
@@ -288,7 +292,7 @@ public class ClientRestController {
 			 if(userRole == null){
 				 User spocuser = userService.findByEmail(email);
 				 if(spocuser != null) {
-					 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+				/*	 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
 					 if(orgSpocList != null && orgSpocList.size() > 0) {
 						 for(OrgSpoc orgSpoc : orgSpocList) {
 							 if(contactType.equalsIgnoreCase("vendor")) {
@@ -306,7 +310,8 @@ public class ClientRestController {
 							 }
 						 }
 						 
-					 }
+					 }*/
+					 return "Valid Email";
 				 }
 			 }else{
 				result = "Invalid Email";

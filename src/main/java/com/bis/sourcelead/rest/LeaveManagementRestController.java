@@ -833,6 +833,12 @@ public class LeaveManagementRestController {
 			 restrictDay.setStatus("0");
 			 restrictDay.setDeleteReason(reason);
 			 restrictDayDao.storeRestrictedDay(restrictDay);
+			 
+			 List<HolidayAndRestrictday> list = leaveService.getHolidayOrRestrictDaysListById(restrictDay.getId(),"RestrictDay");
+			 for(HolidayAndRestrictday day : list){
+				 day.setStatus("0");
+				 leaveDao.storeHolidayAndRestrictDays(day);
+			 }
 			  isDeleted = true;
 		 }
 		return isDeleted;
@@ -904,7 +910,7 @@ public class LeaveManagementRestController {
 	{
 		String leavePolicy = null;
 		 LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-		 if(leaveType !=null && "Y".equalsIgnoreCase(leaveType.getVisibilityToAllUsers())) {
+		 if(leaveType !=null && "Y".equalsIgnoreCase(leaveType.getVisibilityToAllUsers()) && "Y".equalsIgnoreCase(leaveType.getLeavePolicy())) {
 			 leavePolicy = leaveType.getPolicyDescription();
 		 }
 		return leavePolicy;
@@ -969,6 +975,13 @@ public class LeaveManagementRestController {
 		 if(deleteHoliday !=null) {
 			 deleteHoliday.setStatus("0");
 			 holidayDAO.saveDeleteHoliday(deleteHoliday);
+			 
+			 List<HolidayAndRestrictday> list = leaveService.getHolidayOrRestrictDaysListById(deleteHoliday.getId(),"holiday");
+			 for(HolidayAndRestrictday day : list){
+				 day.setStatus("0");
+				 leaveDao.storeHolidayAndRestrictDays(day);
+			 }
+			 
 			 isDeleted = true;
 		 }
 		return isDeleted;
@@ -1344,14 +1357,14 @@ public class LeaveManagementRestController {
 	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "roleId", required = false) Long roleId,
+			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "leaveId", required = false) String leaveId) throws Exception {
 
-		boolean isValid = false;
-		List<RestrictDay> restrictDayList = new ArrayList<>();
 		String isTrue = null;
 		StringBuilder sb = null ;
+		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
@@ -1360,8 +1373,24 @@ public class LeaveManagementRestController {
 		
 		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate,toDate,orgLocations);
 		List<Date> daysList = new ArrayList<>();
+		Set<Long> roleIds = new HashSet<>();
 		for(HolidayAndRestrictday day : list){
-			daysList.add(day.getDay());
+			if(day.getRestrictDay() !=null) {
+				RestrictDay res = restrictDayService.getRestrictDayById(day.getRestrictDay().getId());
+				if (!"Y".equalsIgnoreCase(res.getApplicableToAll())) {
+					List<LeaveRole> leaveRoleList = leaveService.getLeaveRolesByRestrictDayId(res.getId());
+					for (LeaveRole leaveRole : leaveRoleList) {
+						roleIds.add(leaveRole.getRoleId().getId());
+					}
+					 if (roleIds.contains(userRole.getRoles().getId())) {
+						daysList.add(day.getDay());
+					}
+			}else {
+				daysList.add(day.getDay());
+			}
+			}else {
+				daysList.add(day.getDay());
+			}
 		}
 		daysList = new ArrayList<Date>(new HashSet<Date>(daysList));
 		int i=0;
@@ -1371,7 +1400,7 @@ public class LeaveManagementRestController {
 			for(Date d : daysList){
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
 				if(i != daysList.size()-1){
-					sb.append(",");
+					sb.append(", ");
 				}
 				i++;
 			}

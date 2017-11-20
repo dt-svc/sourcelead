@@ -102,9 +102,7 @@
 				<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea id="txtEditor" name="templateContent" value=""
-								class="form-control newContrtextarea"
-								data-validation-optional="true"></textarea>
+							<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required" ></textarea>
 						</div>
 
 

@@ -1052,6 +1052,7 @@ public class LeaveServiceImpl implements LeaveService{
 		if(object instanceof Holiday){
 			Holiday holiday = (Holiday) object;
 			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
+			deleteAllHolidayOrRestrictDayById(holiday.getId(),"Holiday");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setHoliday(holiday);
@@ -1061,11 +1062,13 @@ public class LeaveServiceImpl implements LeaveService{
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
 				day.setUpdatedDate(new Date());
+				day.setStatus(Constants.RECORD_ACTIVE.toString());
 				leaveDao.storeHolidayAndRestrictDays(day);
 			}
 		}else{
 			RestrictDay restrict = (RestrictDay) object;
 			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(restrict.getStartDate(), restrict.getEndDate(), orgLocations.getDateFormat());
+			deleteAllHolidayOrRestrictDayById(restrict.getId(),"RestrictDay");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setRestrictDay(restrict);
@@ -1075,9 +1078,16 @@ public class LeaveServiceImpl implements LeaveService{
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
 				day.setUpdatedDate(new Date());
+				day.setStatus(Constants.RECORD_ACTIVE.toString());
 				leaveDao.storeHolidayAndRestrictDays(day);
 			}
 		}
+	}
+
+	public void deleteAllHolidayOrRestrictDayById(String id, String type)
+	{
+		leaveDao.deleteAllHolidayOrRestrictDayById(id, type);
+		
 	}
 
 	@Override
@@ -1090,6 +1100,18 @@ public class LeaveServiceImpl implements LeaveService{
 	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
 	{
 		return leaveDao.getApproversListBasedonHierarchyExceptLoginUser(loginUserId, roleId, locationId);
+	}
+
+	@Override
+	public List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type)
+	{
+		return leaveDao.getHolidayOrRestrictDaysListById(id, type);
+	}
+
+	@Override
+	public List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId) throws Exception
+	{
+		return leaveDao.getLeaveRolesByRestrictDayId(restrictDayId);
 	}
 
 }

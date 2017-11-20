@@ -1,21 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +14,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Timezone;
-import com.bis.sourcelead.entity.UserLoginLogoutSession;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -47,6 +32,9 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -111,11 +99,11 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			// saving the Activity Time based on the time zone 
 			Date date = new Date();
-			DateTime dt = new DateTime(date);
+			/*DateTime dt = new DateTime(date);
 			DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
 			DateTime dtus = dt.withZone(dtZone); 
-			Date dateWithTimezone = dtus.toLocalDateTime().toDate();
-			actionHistory.setActionTime(dateWithTimezone);
+			Date dateWithTimezone = dtus.toLocalDateTime().toDate();*/
+			actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
 			try {
 				if (actionHistory != null) {
 					session.saveOrUpdate(actionHistory);
