@@ -43,3 +43,7 @@
 .er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
     width: 100px;
 }
+
+.experienceMonths .disabled{
+display: block !important;
+}

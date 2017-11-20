@@ -210,7 +210,22 @@ function getOrgDetails()
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
-	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_phone validate_length length2-20" data-validation-optional="true">
+	               <div class="row">
+	                <div class="col-md-6 paddingRight">
+	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_phone validate_length length9-20" data-validation-optional="true">
+	                </div>
+	                
+		             
+		              <div class="col-md-6 paddingLeft erMesMid">
+			             <div class="row">
+			             <label class="col-md-5">Extension </label>
+			             <div class="col-md-7 posSta">
+			             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
+			             </div>
+			             </div>
+		             </div>
+	              
+	              </div>
 	              </div>
 	            </div>
 	            
@@ -219,7 +234,7 @@ function getOrgDetails()
 	              <div class="col-md-9">
 	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
-		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+		                       <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach>
 	                </select>
 	              </div>
@@ -335,13 +350,13 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-	 getOwners();
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	if(email != null){
+	var vendorName = document.getElementById("vendorName").value;
+	var orgRelationId = vendorName.split(",")[0];
+	if(email != null  && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -349,6 +364,12 @@ function validateEmail(){
 					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
+					
+				}else if(result == 'Invalid Spoc') {
+// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as client contact</span>");
+// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as client contact");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -688,10 +709,20 @@ function getRolesList(){
 					{
 			        		 var opt = json[i];
 		        		if(opt.id == SourceLeadWeb_userId){
-		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 		        		else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 					}
 		        	$("#owner").empty();

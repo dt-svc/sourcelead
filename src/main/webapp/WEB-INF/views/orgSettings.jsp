@@ -198,7 +198,7 @@ function cancelOrgImg(){
 				<div class="col-xs-12 col-sm-9 col-md-9">
 					<div class="row">
 						<div class="col-md-7">
-							<div class="form-group">
+							<div class="form-group" id="companyNameDiv">
 							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
@@ -415,7 +415,7 @@ function cancelOrgImg(){
                             </div>
                 			<div class="form-group">
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
-                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
+                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
             			</div>            			
         			</div>
@@ -450,25 +450,24 @@ function validateCompanyName(){
 		 $( "#save_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+       	            url: sourceleadUrl+"/validateRegiseredCompanyName?companyName="+companyName,
 			        success: function(data) {
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {
 		        			//Existed company
 		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
-		    	    		$('input#companyName').attr('class','error form-control');
-		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
-		    				$('input#companyName').attr('record-exist','yes');
-		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
+		    	    		$('input#orgLocationCompanyName').attr('class','error form-control');
+		    	    		$("input#orgLocationCompanyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
+		    				$('input#orgLocationCompanyName').attr('record-exist','yes');
+		    				$('input#orgLocationCompanyName').attr('record-exist-errorMsg',company+' '+result+''); 
 		    				$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
-		    				$("#save_button").removeAttr("disabled");
 			        	}
 			        	else{
 			        		//New company
 			        		$("#save_button").removeAttr("disabled");
-				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#orgLocationCompanyName').removeAttr( "class record-exist record-exist-errormsg");
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
-							$('input#companyName').attr('class','valid form-control');
+							$('input#orgLocationCompanyName').attr('class','valid form-control');
 							$( "#save_button" ).removeAttr("style");
 							$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
 							$( "#save_button" ).click(function() {
@@ -908,7 +907,7 @@ function loadSignature(){
 							result = result + '<div class="col-md-3"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm"></div>';
 						}
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:19.66666667%;">';
 						result = result + '<select name="fontFamily'+opt.id+'" class="form-control input-sm">';
 						for (var j=0; j<json.fontFamilyList.length; j++)
 	 					{
@@ -922,7 +921,7 @@ function loadSignature(){
 						result = result + '</select>';
 						result = result + '</div>';
 						
-						result = result + '<div class="col-md-2 select-field">';
+						result = result + '<div class="col-md-2 select-field" style="width:13.66666667%;">';
 						result = result + '<select name="fontsize'+opt.id+'" class="form-control input-sm">';
 						for (var k=0; k<json.fontFamilyList.length; k++)
 	 					{
@@ -1350,27 +1349,27 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Company :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Company :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationName']+'</p>';
 	    	        result = result +'</div>';
 	    								 
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Website :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Website :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+website+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Country :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Country :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['country']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">State :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">State :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['state']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">City :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">City :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['city']+'</p>';
 	    	        result = result +'</div>';
 	    	        
@@ -1382,17 +1381,17 @@ function getOrgLocationDetails(orgLocationId){
 	    	        }
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Enrolled Date :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Enrolled Date :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['createdDateStr']+'</p>';
 	    	        result = result +'</div>';
 	    								
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Time Zone :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Date Format :</label>';
+	    	        result = result +'<label class="col-md-4 text-right">Date Format :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['dateFormat']+'</p>';
 	    	        result = result +'</div>';
     	        
@@ -1407,12 +1406,12 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Contact User : </label>';
+	    	        result = result +'<label class="col-md-4 text-right">Contact User : </label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserName']+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
-	    	        result = result +'<label class="col-md-4">Email : </label>';
+	    	        result = result +'<label class="col-md-4 text-right">Email : </label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserEmail']+'</p>';
 	    	        result = result +'</div>';
 	    	        
@@ -1587,7 +1586,7 @@ function createOrg(){
 	result = result +'<div class="form-group" id="companyNameDiv">';
 	result = result +'<label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-9">';
-	result = result +'<input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />';
+	result = result +'<input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateRegisterCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />';
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
@@ -1702,38 +1701,6 @@ function createOrg(){
 				result = result +'         </div>';
 				result = result +'       </div>';
 						        
-				
-				/* 
-	            result = result +' <div class="form-group">';
-	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9 dropdown-select">';
-	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
-	            result = result +'<option value="" >Select Location</option>';
-	            result = result +'<option value="Australia">Australia</option>';
-	            result = result +'<option value="France">France</option>';
-	            result = result +'<option value="India">India</option>';
-	            result = result +'<option value="Singapore">Singapore</option>';
-	            result = result +'<option value="United Kingdom">United Kingdom</option>';
-	            result = result +'<option value="United States">United States</option>';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Country</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-          
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-							
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
-	            result = result +'</div>';
-	            result = result +'</div>'; */
-			
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Address</label>';
 	            result = result +'<div class="col-md-9">';
@@ -1958,7 +1925,7 @@ function getTimezonesList(){
 </script>
 
 <script type="text/javascript">
-function validateCompanyName(){
+function validateRegisterCompanyName(){
 	var con = document.getElementById("companyName").value;
 	var company = document.getElementById("companyName").value;
 	var companyName = encodeURIComponent(con);

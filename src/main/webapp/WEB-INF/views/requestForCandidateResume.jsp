@@ -29,6 +29,7 @@
 
  <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="resources/js/slead-common.js"></script> 
 <script>
 		$(document).ready(function() { 
 			var UUID = '${UUID}';
@@ -38,7 +39,9 @@
 			
 		});
 </script>
-
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
 <style>
 body {
 background-color:#e1e6fa;
@@ -97,14 +100,15 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
 								  <input type="text" class="form-control input-sm" data-validation-optional="true" field-name="Phone" placeholder="Phone" id="phone" name="phone" data-validation="validate_Space validate_int validate_length length9-20">
 								  </div>
 								    <div class="clearfix"></div>
-						          <div class="col-md-6 mt">
+						          <div class="col-md-6 mt attachment">
 						            <div class="input-group">
-						              <label class="input-group-btn"> <b class="btn btn-default"><i class="fa fa-paperclip"></i>
-						                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip ColWhite"></i>
+						                <input type="file"  style="display: none;"  id="attachfileBtn" class="upload">
 						                </b> </label>
 						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">
 						            </div>
 						          </div>
+						          
 								  <div class="clearfix"></div>
 								  <div class="col-md-6 mt">
 									  <textarea class="form-control" rows="5" data-validation-optional="true" name="comment" placeholder="Comment" id="comment"></textarea>	
@@ -128,7 +132,14 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
 </div>
 </body>
 </html>
+<script>
+$(function() {
+	$("#attachfileBtn").change(function() {
+		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "candidate_form" ,"" ,"${orgId}","${orgLocationId}");
+	});
+ });
 
+</script>
 <script type="text/javascript">
 function alertCandidates(){
 	
@@ -165,16 +176,11 @@ function cancel(){
 
 <script type="text/javascript">
 	function sendRequest() {
-			var sourceleadUrl = '${sourceleadUrl}';
 			var UUID = '${UUID}';
 			if ($('#candidate_form').validate(false, validationSettings)){ 
 			$('#candidateButtonId').attr('disabled','disabled');
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-		    var form = $('#candidate_form')[0];
-	  		var formData = new FormData(form)
+			 
+	  		var formData = getFormData1("candidate_form");
 			
 			 var candidatesIds = [];
 			 var oTable = $('#candidateTable').dataTable();
@@ -189,12 +195,9 @@ function cancel(){
 				   $.ajax({
 					    type : "POST",
 			    	    data: formData,
-			    	    contentType : 'application/json; charset=utf-8',
-			    	    enctype: 'multipart/form-data',
 				        processData: false,
 				        contentType:false, 
-			    	    dataType : 'json',
-							url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidatesIds="+candidatesIds+"&UUID="+UUID,
+						url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&candidatesIds="+candidatesIds+"&UUID="+UUID,
 							success : function(result) {
 								
 								if(result == 'success'){
@@ -382,4 +385,4 @@ document.getElementById("attachfileBtn").onchange = function () {
 		};
 	})(jQuery);
 </script>
-
+<script type="text/javascript" src='resources/js/slead-common.js'></script>

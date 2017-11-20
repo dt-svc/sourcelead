@@ -386,6 +386,7 @@ public class RequirementOfferRestController {
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
 				      }
+					  requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
 					  setofferStatus ="success";
 			    }
 			 }

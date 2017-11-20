@@ -17,9 +17,8 @@ function applicantQuickViewProfile(submissionId,candidateId){
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	
-               var json = JSON.parse(data);
+        	 if(data != null){  
+              var json = JSON.parse(data);
  	    	   
  	    	   if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
 			 		designationType =json.designationType+',';
@@ -400,16 +399,16 @@ function reqQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#reqQvcertificationSubmission").empty();
 	                	 var result = "";
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certifications</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
+// 							var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
 								if(i < 3){
-		                    	var opt = json[i];  
+		                    	var opt = json.data[i];  
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){

@@ -11,6 +11,7 @@
 <script>
 // project side bar tabs
 $(document).ready(function() {
+	// to flush files from form
 	timesheetEntriesDiv();
 });
 </script>  
@@ -1005,7 +1006,8 @@ function validateUploadFile(id)
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+   		 	 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+   		 	 fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","","","");
 	      }
 	  }
 	  else{
@@ -1139,22 +1141,19 @@ function newSaveTimesheet(status,savingType){
 		 $(".project_inn_mask").fadeOut(200);
 	      var frm = $('#timesheet_form').serializeFormJSON();
           var sourceleadUrl ='${sourceleadUrl}';
-		   var mydata = JSON.stringify(frm);
-		   mydata = mydata.replace(/[{}]/g, "");
-		   mydata = encodeURIComponent(mydata);
+		  var mydata = JSON.stringify(frm);
+		  mydata = mydata.replace(/[{}]/g, "");
+		  mydata = encodeURIComponent(mydata);
 		
 		   var form = $('#timesheet_form')[0];
 		   var formData = new FormData(form); 
 		   var submissionIds = $("#submissionId").val();
 		   
 	   $.ajax({
-	          type : "POST",
-    	      data: formData,
-    	      contentType : 'application/json; charset=utf-8',
-    	      enctype: 'multipart/form-data',
-	          processData: false,
-	          contentType:false,
-    	      dataType : 'json',
+		    type : "POST",
+   	        data: formData,
+	        processData: false,
+	        contentType:false,
 	      	  url: sourceleadUrl+"/newSaveTimesheet?${_csrf.parameterName}=${_csrf.token}&json="+mydata+"&status="+status+"&savingType="+savingType,		
 		      success :function(result) {
 		    	  $(".time_btn").removeAttr("disabled");
@@ -1163,6 +1162,9 @@ function newSaveTimesheet(status,savingType){
 		    	  maskme();
 		    	  var startDate = $("#tabStartDate").val();
 		    	  var endDate = $("#tabEndDate").val();
+	    		  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+	    			$("#timesheet_form input[data-id*=docFile]").remove();
+	    		  }
 		    	  if(startDate != null && startDate != '' && startDate != 'undefined' && 
 		    			  endDate != null && endDate != '' && endDate != 'undefined'){
 		    		  timesheetDivAfterSaving(startDate,endDate,status);
@@ -1257,6 +1259,5 @@ function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,sub
 }
 </script>
  <!-- this script is for save Timesheet -->  
- 
-      
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>   
     

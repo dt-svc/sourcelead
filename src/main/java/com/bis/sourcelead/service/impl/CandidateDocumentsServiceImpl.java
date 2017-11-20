@@ -1,23 +1,27 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -78,6 +82,11 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateDocuments.setDescription(candidateDocumentsDTO.getDescription());
+				}else {
+					if(candidateDocuments != null && candidateDocuments.getDescription() != null && candidateDocuments.getDescription() != "" && !candidateDocuments.getDescription().equalsIgnoreCase(candidateDocumentsDTO.getDescription())){
+						activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
+					candidateDocuments.setDescription(null);
 				}
 				// for professional user add is confidential Y/N
 				if (StringUtils.isNotBlank(candidateDocumentsDTO.getIsConfidential())
@@ -108,7 +117,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						
 						candidateDocuments.setFileURL(fileInfo.getFileURL());;
 							//candidate.setFileName(fileInfo.getFileName());
-							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "documents");
+							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "candidateDocuments");
 					}
 				}
 				
@@ -192,8 +201,64 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_DOCUMENTS_UPDATED, activitySummary.toString(), "CANDIDATE");
 			
+			saveOrUpdateCandidateElkDocumentWithDocumentDetails(candidateId,orgLocationId);
 		}
 		return candidateDocuments;
+	}
+	
+	@Override
+	@Async
+	public void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId,Long orgLocationId) throws Exception
+	{
+		if(null != candidateId){
+				CandidateIndex candidateIndex = new CandidateIndex();
+				candidateIndex.setCandidateId(candidateId);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			    sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());
+		}
+	}
+	
+	
+	
+	@Override
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception
+	{
+		List<CandidateDocuments> docList = candidateDocumentsDao.getCandidateDocumentsListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		ResponseList<CandidateDocumentsDTO> candiDocDtoList = new ResponseList<>();
+		List<CandidateDocumentsDTO> candiDocList = new ArrayList<>();
+		for(CandidateDocuments doc : docList){
+			CandidateDocumentsDTO docDto = new CandidateDocumentsDTO();
+			docDto.setId(doc.getId().toString());
+			if(StringUtils.isNotBlank(doc.getDocumentOtherType()))
+				docDto.setDocumentOtherType(doc.getDocumentOtherType());
+			if(StringUtils.isNotBlank(doc.getDocumentType()))			
+				docDto.setDocumentType(doc.getDocumentType());
+			if(StringUtils.isNotBlank(doc.getIsConfidential()))		
+				docDto.setIsConfidential(doc.getIsConfidential());
+			if(StringUtils.isNotBlank(doc.getFileName()))		
+				docDto.setFileName(doc.getFileName());
+			if(StringUtils.isNotBlank(doc.getFileURL()))	
+				docDto.setFileURL(doc.getFileURL());
+			if(StringUtils.isNotBlank(doc.getFileContentType()))	
+				docDto.setFileContentType(doc.getFileContentType());
+			if(StringUtils.isNotBlank(doc.getDescription()))	
+				docDto.setDescription(doc.getDescription());
+			if(StringUtils.isNotBlank(doc.getDocumentUUID()))	
+				docDto.setDocumentUUID(doc.getDocumentUUID());
+			if(StringUtils.isNotBlank(doc.getDocUploadStatus()))	
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if(doc.getRequestedDocumentsId() != null)	
+				docDto.setRequestDocumentId(doc.getRequestedDocumentsId().getId().longValue());
+			if(StringUtils.isNotBlank(doc.getDocUploadStatus()))	
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if(StringUtils.isNotBlank(doc.getRequestedDocRejectedReason()))	
+				docDto.setRequestedDocRejectedReason(doc.getRequestedDocRejectedReason());
+			candiDocList.add(docDto);
+		}
+		
+		candiDocDtoList.setData(candiDocList);
+		return candiDocDtoList;
 	}
 	
 	@Override

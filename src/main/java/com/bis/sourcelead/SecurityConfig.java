@@ -83,6 +83,9 @@ public class SecurityConfig  {
     	@Autowired
     	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
     	
+    	@Autowired
+    	SourceleadLogoutSuccessHandler sourceleadLogoutSuccessHandler;
+    	
         @Override
         protected void configure(HttpSecurity http) throws Exception {
         	http
@@ -162,10 +165,18 @@ public class SecurityConfig  {
     			.antMatchers("/uploadRequestedDocuments").permitAll()
     			.antMatchers("/viewAllJobAlerts").permitAll()
     			.antMatchers("/getAllJobsAlertList").permitAll()
-				
+    			.antMatchers("/upload/*").permitAll()
+
+    			.antMatchers("/viewAllJobCampaigns").permitAll()
+    			.antMatchers("/getAllJobCampaignsList").permitAll()
+    			.antMatchers("/jobCampaignSummary").permitAll()
+    			
     			.antMatchers("/viewJobSummaryDocumentDocView").permitAll()
     			.antMatchers("/getActionHistoryList").permitAll()
-    			.antMatchers("/upload/*").permitAll()
+    			.antMatchers("/getRestActionHistoryList").permitAll()
+    			.antMatchers("/getRestLocationActionHistoryList").permitAll()
+    			.antMatchers("/check-session").permitAll()
+    			.antMatchers("/").permitAll()
     			
     			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
     			.antMatchers("/**").fullyAuthenticated()
@@ -176,7 +187,7 @@ public class SecurityConfig  {
     			.passwordParameter("password")
     			.failureHandler(sourceleadAuthenticationFailureHandler)
     			.successHandler(sourceleadAuthenticationSuccessHandler)
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
+    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().exceptionHandling().accessDeniedPage("/403")
     			.and().csrf().disable();

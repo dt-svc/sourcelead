@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 
@@ -24,4 +25,12 @@ public interface ProjectMembersHistoryDao {
 
 	ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId) throws Exception;
 
+	void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception;
+	
+	ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId(Long projectClientsId,Long projectMemberId) throws Exception;
+	
+	List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId) throws Exception;
+	
+	ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,Long orgLocationId) throws Exception;
+	
 }

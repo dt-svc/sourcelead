@@ -195,14 +195,14 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<select class="form-control selectpicker experienceMonths" id="experienceMonths" name="experienceMonths">
              		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
@@ -416,8 +416,8 @@
                </div>
                 </div>
          </div>
-        
-        
+        <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="import">
         <div class="clearfix"></div>
       </div> 
     </div>
@@ -451,7 +451,6 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		rateValidations();
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -460,34 +459,23 @@
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		 if ($('#candidate_form').validate(false, validationSettings)){ 
+		if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-			
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidate_form')[0];
-      		var formData = new FormData(form); 
-			
-			$("#store_candidate").attr("disabled", "disabled");
-			$("#store_candidate").addClass('button').val('Processing..');
+			    var form = $('#candidate_form')[0];
+	      		var formData = new FormData(form); 
+				$("#store_candidate").attr("disabled", "disabled");
+				$("#store_candidate").addClass('button').val('Processing..');
 
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&"+$($('#candidate_form')[0]).serialize(),
-						success : function(result) {
-								location.replace(sourceleadUrl+"/candidatesList");
+				$.ajax({
+						 type : "POST",
+						 data: formData,
+			    	     processData: false,
+			    	     contentType:false,
+			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
+						        success : function(result) {
+									location.replace(sourceleadUrl+"/candidatesList");
 						},
-					});
+				});
 			return true;
 		 }else{ 
 				return false;
@@ -710,123 +698,25 @@ function validate_fileupload(fileName)
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
-		 function disableMonths() {
-		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	/*  $('#experienceMonths').attr("disabled", true);
-		             $('#experienceMonths').val("disabled", true); */
-		         }else{
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	 $("#experienceMonths").attr("disabled", false); 
-		         }
-		     });
-		 }
-		   
- 
-	      var selectedFile = document.getElementById("uploadBtn");
-	      selectedFile.addEventListener("change", function() {
-	      	 $("#uploadFile").focus();
-	      	 if(validate_fileupload(this.value)){
-	      		 
-	      		 var docSize = this.files[0].size;
-	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	     	      
-	     	      if(docSize > 2097152){
-	     	    	  document.getElementById("uploadFile").value = '';
-	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	     		var form = $('#candidate_form')[0];
-	       		var formData = new FormData(form); 
-	     		   $.ajax({
-	     					type : "POST",
-	     	        	    data: formData,
-	     	        	    contentType : 'application/json; charset=utf-8',
-	     	        	    enctype: 'multipart/form-data',
-	     	    	        processData: false,
-	     	    	        contentType:false,
-	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
-	     					success : function(data) {
-	     						var json = JSON.parse(data);
-	     						var name = json.name;
-	     						var firstName = '';
-	     						var lastName = '';
-	     						if(name != null && name != 'undefined' && name != ''){
-	     							 firstName = name.split(".")[0]; 
-	     							 lastName = name.split(".")[1]; 
-	     							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-	     									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-	     								 firstName = name;
-	     							 }
-	     						}
-	     						
-	     						$("#firstName").val(firstName);
-	     						$("#lastName").val(lastName);
-	     						$("#email").val(json.email);
-	     						$("#mobilePhone").val(json.phoneNumbers);
-	     						validateCandidateEmail();
-	     						$("#candidateSkills").empty();
-	     						 var internalOutput = "";
-	     						var skills = json.skills;
-	     						 <c:forEach var="skill" items="${skillsList}">
-		     						var existed = 0;
-		     						if(skills != null && skills != 'undefined' && skills != ''){
-		     							var str_array = skills.split(',');
-		     							for(var i = 0; i < str_array.length; i++) {
-		     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		     							  if(str_array[i] == "${skill.name}"){
-		     								 existed = 1;
-		     								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-		     							  }
-		     							}
-		     						}
-		     						if(existed == 0){
-		     							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-					                }
-	     	                     </c:forEach>
-	     						
-	     						$("#candidateSkills").append(internalOutput);
-	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		$("#candidateEducation").trigger("chosen:updated");
-	     		        		
-	     		        		$("#candidateEducation").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="edu" items="${educationsList}">
-	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-	     	                     </c:forEach>
-	     						var edu = json.edu;
-	     						if(edu != null && edu != 'undefined' && edu != ''){
-	     							var str_array = edu.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateEducation").append(internalOutput);
-	     		        		
-	     						$("#loading").removeAttr("style");
-	     						
-	     					},
-	     				});
-	      	 }
-	      	 }
-	      });
-
-	     /* upload file script */
-	     document.getElementById("uploadBtn").onchange = function () {
-	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-	     };
+ function disableMonths(){
+ $("#experienceYears").change(function() {
+     if ($('#experienceYears').val()=='50'){
+    	 $("#experienceMonths").val('');
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $('#experienceMonths').attr("disabled", "disabled");
+    	
+     }else{
+    	 $('#experienceMonths').val("");  
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $("#experienceMonths").attr("disabled", false); 
+     }
+ });
+}
+    /* upload file script */
+    document.getElementById("uploadBtn").onchange = function () {
+    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+      // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+    };
 
  
 </script>
@@ -977,21 +867,32 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        //	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
 		 }); 
  }
- $(function() {
-		$("#uploadBtn").change(function() {
-			fileUpload("uploadBtn", "resumes", "candidate_form");
-		});
-	 });
+  
+   var educationList = [];
+   var skillList = [];
+   $(function() {
+	 var i= 0;
+	 <c:forEach var="skill" items="${skillsList}">
+	 	skillList[i++] = "${skill.name}";
+	 </c:forEach>
+	 var i= 0;
+	 <c:forEach var="edu" items="${educationsList}">
+	 	educationList[i++] = "${edu.name}";
+	 </c:forEach>
+	 
+	 uploadResumeOnSelect("candidate_form");
+	 
+ });
  </script>

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.beans.AssignedRequirementReports;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Timezone;
 
@@ -31,5 +30,10 @@ public interface RequirementAssignToService {
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId, Date startDateUTC,Date endDateUTC)throws Exception;
 	
 	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,Long teamId);
+	
+	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId,Long orgLocationId) throws Exception;
+
+	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
+
 
 }

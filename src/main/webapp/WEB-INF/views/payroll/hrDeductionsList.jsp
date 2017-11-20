@@ -26,6 +26,8 @@ function prepareHrDeductionsList(url){
 	
 	 $("#hrDeductionsListDiv").removeAttr("style");
  	 $("#hrDeductionsListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";
@@ -242,8 +244,8 @@ function getHrDeductionDetails(hrDedId,empName){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
-			        success: function(data) {
-					var result = "";				        	
+			        success: function(json) {
+					var result = "";
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
 					result = result + '<tr>';
@@ -253,7 +255,6 @@ function getHrDeductionDetails(hrDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];

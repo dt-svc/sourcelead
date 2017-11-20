@@ -685,11 +685,11 @@ function getCustomReports(){
 	});		
 	</script>
 
-<script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+<%-- <script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 <script src="resources/reports/pie.js?staticTime=${staticTime}"></script>
 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}s" type="text/css" media="all" />
-<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+<script src="resources/reports/light.js?staticTime=${staticTime}"></script> --%>
   
      <script>
      function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount,backoutCount){

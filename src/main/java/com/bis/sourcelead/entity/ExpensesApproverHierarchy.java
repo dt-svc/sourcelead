@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,12 +19,15 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
 * This class is used to keep track of the approver hierarchy for Expenses.
@@ -53,15 +57,16 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(fetch = FetchType.LAZY)
+@ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
-
 
 @Column(name = "EXPENSE_STATUS")
 @Enumerated(EnumType.STRING)
@@ -95,6 +100,7 @@ private String updatedBy;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
 
@@ -107,34 +113,52 @@ private String reopenReason;
 private String reopenRejectedReason;
 
 @Transient
+@JsonProperty
 private long expensesUserid;
 
 @Transient
+@JsonProperty
 private String expenseStartDateString;
 
 @Transient
+@JsonProperty
 private String expenseEndDateString;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserFirstNameLastName;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserEmail;
 
 @Transient
+@JsonProperty
 private String expensesEmployeeUserId;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserType;
 
 @Transient
+@JsonProperty
 private String expensesProjectName; 
 
 @Transient
+@JsonProperty
 private String userTypeVendorName;
 
 @Transient
+@JsonProperty
 private String expensesApproverHierarchyPurpose; 
+
+@Transient
+@JsonProperty
+private String expenseLocationCode;
+
+@Transient
+@JsonProperty
+private String userFileUrl; 
 
 public Long getId()
 {
@@ -353,6 +377,22 @@ public String getExpensesApproverHierarchyPurpose() {
 
 public void setExpensesApproverHierarchyPurpose(String expensesApproverHierarchyPurpose) {
 	this.expensesApproverHierarchyPurpose = expensesApproverHierarchyPurpose;
+}
+
+public String getUserFileUrl() {
+	return userFileUrl;
+}
+
+public void setUserFileUrl(String userFileUrl) {
+	this.userFileUrl = userFileUrl;
+}
+
+public String getExpenseLocationCode() {
+	return expenseLocationCode;
+}
+
+public void setExpenseLocationCode(String expenseLocationCode) {
+	this.expenseLocationCode = expenseLocationCode;
 }
 
 

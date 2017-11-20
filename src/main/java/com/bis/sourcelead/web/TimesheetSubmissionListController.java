@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,20 +163,42 @@ public class TimesheetSubmissionListController {
 								}
 							}
 							
-				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
+						 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
+						 String fileUrl  = "";
+						 if(pmWithUser.getProjectMemberCandidteId() != null && pmWithUser.getProjectMemberCandidteId().getConsultantUser() != null 
+								 && StringUtils.isNotEmpty(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl())){
+							 fileUrl = pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
+						 }
+							 
+						 ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
 						 sb.append("<tr id='row").append(projectMember.getId()).append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)).append("To").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
-						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
-						 sb.append("    <span><b title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</b>")
-						                           .append("<b title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</b>")
-                                                   .append("<b title='").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("'>").append((projectMember.getEmployee().getUser().getMobilePhone() != null) ?(projectMember.getEmployee().getUser().getMobilePhone()) : "").append("</b>")
+						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'>");
+						 sb.append("    <span><b title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append( projectMember.getProjectMemberCandidteId().getFullName()).append("</b>")
+						                           .append("<b title='").append( projectMember.getProjectMemberCandidteId().getEmail()).append("'>").append( projectMember.getProjectMemberCandidteId().getEmail()).append("</b>")
+                                                   .append("<b title='").append(( projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?( projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("'>").append(( projectMember.getProjectMemberCandidteId().getMobilePhone() != null) ?( projectMember.getProjectMemberCandidteId().getMobilePhone()) : "").append("</b>")
 						                                             .append("</span>");
 						 sb.append("   <div>");
 						 sb.append(" </td>");
 						 sb.append("	<td><div class='tbldata-dotdot-sm'>").append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</span></div></td>");
 					     
-					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
+					     //sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
+					     
+						  if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+						    	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+			     						if(projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() != null){
+			     							sb.append("<td><div>").append(projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getOrgLocationName()).append("</div></td>");
+			     						}
+			     					}
+			     					if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+			     						if(projectMember.getProjectClientsId().getOrgRelationId().getLocationId() != null){
+			     							sb.append("<td><div>").append(projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getOrgLocationName()).append("</div></td>");
+			     						}
+			     					}
+						     }else{
+						    	    sb.append("<td><div>").append("--").append("</div></td>");
+						     }
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 					     sb.append("<td><div id='datefrequency"+projectMember.getId()+"'>");
 				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+" To "+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)+"</span>");
@@ -183,7 +206,7 @@ public class TimesheetSubmissionListController {
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
 					     Float estimatedTotalHours = 0f;
-					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getId(),actualStartDate,actualEndDate);
+					     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId(),loginOrgLocations.getId(),actualStartDate,actualEndDate);
 					     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 					    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 					    	    	  long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());

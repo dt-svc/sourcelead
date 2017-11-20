@@ -44,10 +44,18 @@ $(document).ready(function() {
 /*.tbldata-dotdot span{
 max-width:220px;
 } */
+/* .side-bar { */
+/* z-index: 8; */
+/* } */
+/* .main-header { */
+/* z-index: 99; */
+/* } */
+/* .advancedsearch-mask { */
+/* z-index: 99; */
+/* } */
 .clsDatePicker {
 	z-index: 100000 !important;
 }
-
 .side-bar .side-nav ul li span {
 	display: inline-block;
 	float: none;
@@ -76,6 +84,7 @@ max-width:220px;
 .require_wrap_table select {
 	width: 100% !important;
 }
+
 </style>
 <script>
  window.onload = function() { 
@@ -118,12 +127,15 @@ function statusvalidating(id){
 				onClick="openPop();loadChosenRequirementScripts();"> Advanced
 				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
 			</a>
+			</div>
 			<form:form id="requirement_form" name="requirement_form"
 				enctype='multipart/form-data'>
-				<div class="cand-advsrch-popup reqadvsrch candAdvsrch">
+				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+				<h5 class="headerAdsrch">Advanced Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
-
+				</h5>
+				<div class="addInner">
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
@@ -198,13 +210,13 @@ function statusvalidating(id){
 										<c:forEach var="report" items="${add_clientList}">
 											<c:if test="${report.locationId.id == loginOrgLocId}">
 												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
+													value="${report.responderLocationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
 											</c:if>
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
 												<option
-													value="${report.id},${report.responderLocationId.org.orgName}"
+													value="${report.locationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>
@@ -218,9 +230,9 @@ function statusvalidating(id){
 								<div class="clearfix adv-srh-chosen">
 									<select class="chosen-select" name="country" id="country"
 										field-name="Country">
+										<option value="">---select Country---</option>
 										<c:forEach var="cntry" items="${countryList}">
-											<option value="${cntry.name}"
-												${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+											<option value="${cntry.name}">${cntry.name}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -232,9 +244,9 @@ function statusvalidating(id){
 									<select class="chosen-select" name="state" id="state"
 										field-name="State">
 										<option value="">---select state---</option>
-										<c:forEach var="state" items="${statesList}">
+										<%-- <c:forEach var="state" items="${statesList}">
 											<option value="${state.stateName}">${state.stateName}</option>
-										</c:forEach>
+										</c:forEach> --%>
 									</select>
 								</div>
 							</div>
@@ -292,18 +304,17 @@ function statusvalidating(id){
 							</div>
 						</div>
 					</div>
-					<div class="row form-footer">
-						<div class="pull-right mr">
+					<div class="clearfix">
+						<div class="pull-right">
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Clear" id="clear_search"
 								onclick="clearSearch();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
+					</div>
 				</div>
 			</form:form>
-
-		</div>
 	</div>
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
@@ -394,25 +405,6 @@ function statusvalidating(id){
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
 
-					<li><sec:authorize
-							access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-							<a onclick="getActions();" class="action"
-								href="javascript:void(0)">Template <i
-								class="fa fa-caret-down"></i>
-							</a>
-							<div class="action-pop">
-								<span> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-										<a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
-									</sec:authorize> <sec:authorize
-										access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-										<a href="<c:url value='/interViewFeedBackTemplate'/>"><i
-											class="fa fa-plus"></i>Interview</a>
-									</sec:authorize>
-								</span>
-							</div>
-						</sec:authorize></li>
-
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypop"><i
 							class="glyphicon glyphicon-export"></i>
@@ -445,7 +437,7 @@ function statusvalidating(id){
 	
 	
 </section>
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 <!-- 
 
@@ -615,10 +607,16 @@ function getActions(){
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
 		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 	</script>
 
 
@@ -792,8 +790,12 @@ function clearSearch(){
 	$('#requirementStatu').val('').trigger('chosen:updated');
 	$('#updatedOn').val('').trigger('chosen:updated');
 	$('#client').val('').trigger('chosen:updated');
-	/* $('#country').val('').trigger('chosen:updated'); */
+	$('#country').val('').trigger('chosen:updated');
+	$('#state').empty();
+	$('#state').append('<option value="">---select city---</option>');
 	$('#state').val('').trigger('chosen:updated');
+	$('#city').empty();
+	$('#city').append('<option value="">---select city---</option>');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');

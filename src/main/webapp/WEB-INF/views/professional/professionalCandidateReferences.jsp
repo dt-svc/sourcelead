@@ -112,8 +112,8 @@
 						result = result + "</thead>";
 						result = result + "<tbody>";
 
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
+						for (var i = 0; i < json.data.length; i++) {
+							var opt = json.data[i];
 							result = result + ' <tr>';
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
@@ -287,9 +287,9 @@
 		result = result + '</div>';
 
 		result = result + '<div class="clearfix mb10">';
-		result = result + '<div class="col-md-12">';
+		result = result + '<div class="col-md-12" id="EmailIdDiv">';
 		result = result
-				+ '<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+				+ '<input type="text" name="email" field-name="Email" id="referenceEmail" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" onblur="validateReferenceEmail('+candidateId+');" placeholder="Email *">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -412,10 +412,8 @@
 	        	closePopup();
 	        	$("#popUpDiv").removeClass("edit-details-active");
 				$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
-				$("#refMsgDiv").html("Success!! New Candidate References added");
+				$("#selector10").css({display : "block"});
+				$("#refMsgDiv").html("Success!! New References added");
 				candReferencesList(candidateId);
 				refMsgFadein();
 	        });
@@ -501,13 +499,10 @@
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "") {
 							$("#selector10").removeAttr("style");
-							$("#selector10").css({
-								display : "block"
-							});
+							$("#selector10").css({display : "block"});
 							$("#refMsgDiv").html("Reference deleted");
 							$("#popUpDiv").removeClass("edit-details-active");
-							$("#remove_user_pop_reference, .project_inn_mask")
-									.fadeOut();
+							$("#remove_user_pop_reference, .project_inn_mask").fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
 						}
@@ -538,9 +533,7 @@
 	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
+				$("#selector10").css({display : "block"});
 				$("#refMsgDiv").html("Reference details updated");
 				closePopup();
 				candReferencesList(candidateId);
@@ -599,16 +592,16 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+												+ '<input type="text" name="name" field-name="Name"  value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *" >';
 										result = result + '</div>';
 										result = result + '</div>';
 
 										result = result
 												+ '<div class="clearfix mb10">';
 										result = result
-												+ '<div class="col-md-12">';
+												+ '<div class="col-md-12" id="EmailIdDiv">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
+												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateEditReferenceEmail('+candidateId+','+json.id+');">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -687,7 +680,7 @@
 												+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
 
 										result = result
-												+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('
+												+ '<button type="button"  id="Edit_candidateReference"  onClick ="updateCandidateReference('
 												+ candidateId
 												+ ','
 												+ refId
@@ -775,4 +768,63 @@
 			$('#designationValEdit').removeAttr("data-validation");
 		}
 	}
+</script>
+
+<script>
+function validateEditReferenceEmail(candidateId,candidateReferenceId){
+	var email = document.getElementById("referenceEmail").value.trim();
+	if(email.match(/^[^\s-](.*)*$/) !== null){
+		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+		if (email != null && email != "") {
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+ "/validateReferenceEmailByCadidateId?${_csrf.parameterName}=${_csrf.token}&email="+ email+"&candidateId="+candidateId+"&candidateReferenceId="+candidateReferenceId,
+						success : function(data) {
+							if (data == true) {
+								$("input#referenceEmail").after("<p class='jquery_form_error_message'>"+ email+ " is Already Existed</span>");
+								document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
+								document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
+								$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
+	 							$("#Edit_candidateReference").attr("disabled", "disabled");
+			    				
+							} else {
+	 							$("#Edit_candidateReference").removeAttr("disabled");
+								$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
+								
+							}
+						},
+					});
+	    	}
+		}
+}
+function validateReferenceEmail(candidateId){
+	var email = document.getElementById("referenceEmail").value.trim();
+	 //space value  consider this condition 
+	if(email.match(/^[^\s-](.*)*$/) !== null){
+	$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	if (email != null && email != "") {
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+ "/validateReferenceEmailByCadidateId?${_csrf.parameterName}=${_csrf.token}&email="+ email+"&candidateId="+candidateId,
+					success : function(data) {
+						if (data == true) {
+							$("input#referenceEmail").after("<p class='jquery_form_error_message'>"+ email+ " is Already Existed</span>");
+							document.getElementById("referenceEmail").setAttribute('record-exist', 'yes');
+							document.getElementById("referenceEmail").setAttribute('record-exist-errorMsg',email+ ' is Already Existed');
+							$('input#referenceEmail').removeAttr( "record-exist record-exist-errorMsg");
+							$("#save_ref").attr("disabled", "disabled");
+		    				
+						} else {
+							$("#save_ref").removeAttr("disabled");
+							$('input#referenceEmail').removeAttr("record-exist record-exist-errormsg");
+							
+						}
+					},
+				});
+    	}
+	}
+	 
+	
+}
+
 </script>

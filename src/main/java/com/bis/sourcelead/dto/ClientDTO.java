@@ -47,7 +47,7 @@ public class ClientDTO {
 	
 	private String billingAddress;
 	
-	private String PaymentTerm;
+	private String paymentTerms;
 	
 	@Required(desc = "email")
 	@Email
@@ -60,9 +60,13 @@ public class ClientDTO {
 	
 	private String phoneNumber;
 	
+	private String extensionNumber;
+	
 	private String spocStatus;
 	
 	private List<String> owner;
+	
+	private List<String> templateId;
 	
 	private String OwnerUserId;
 	
@@ -97,6 +101,8 @@ public class ClientDTO {
 	private AddUserDTO addUserDTO;
 	
 	private CandidateDTO candidateDTO;
+	
+	private String UUID;
 	
 	
 	public String getOrgName() {
@@ -213,11 +219,14 @@ public class ClientDTO {
 	public void setBillingAddress(String billingAddress) {
 		this.billingAddress = billingAddress;
 	}
-	public String getPaymentTerm() {
-		return PaymentTerm;
+
+	public String getPaymentTerms()
+	{
+		return paymentTerms;
 	}
-	public void setPaymentTerm(String paymentTerm) {
-		PaymentTerm = paymentTerm;
+	public void setPaymentTerms(String paymentTerms)
+	{
+		this.paymentTerms = paymentTerms;
 	}
 	public String getEmail() {
 		return email;
@@ -242,6 +251,15 @@ public class ClientDTO {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 	public String getSpocStatus() {
 		return spocStatus;
@@ -357,6 +375,18 @@ public class ClientDTO {
 	}
 	public void setExistingSpocUserId(String existingSpocUserId) {
 		this.existingSpocUserId = existingSpocUserId;
+	}
+	public List<String> getTemplateId() {
+		return templateId;
+	}
+	public void setTemplateId(List<String> templateId) {
+		this.templateId = templateId;
+	}
+	public String getUUID() {
+		return UUID;
+	}
+	public void setUUID(String uUID) {
+		UUID = uUID;
 	}
 	
 }

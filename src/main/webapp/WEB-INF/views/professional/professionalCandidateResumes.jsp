@@ -176,28 +176,14 @@ function addResume(candidateId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   }); */	
 	 
 	 	/* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
-		   //$("#uploadFile").dir(this.files[0]);
-	    	//document.getElementById("uploadFile").value = this.value;
 	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 	  
 	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
 	    
 }
 </script>
@@ -230,43 +216,17 @@ function uploadProfileResume(){
          		$("#add_resume" ).addClass('button').val('Processing..');
 		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
 		        	closeResumePopup();
+		        	$("#selector2").removeAttr("style");
+         			$("#selector2").css({ display: "block" });
+         			if(resumeId != null){
+         			$("#resumeMsgDiv").html("Resume details updated");
+         			}else{
+         			$("#resumeMsgDiv").html("Success!! New Resume added");
+         			}
 		        	candidateResumesList(candidateId);
-			 		resMsgFadeinResumes();
+			 		resumesMsgFadein();
 		        });
-				/* $.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&resumeId="+resumeId,
-						success : function(result) {
-							$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-
-	            			$("#disVal").empty();
-	            			$("#disVal").append(result+'%');
-							 	$("#popUpDivResume").removeClass("edit-details-active");
-		             			$("#selector2").removeAttr("style");
-		             			$("#selector2").css({ display: "block" });
-		             			if(resumeId != null){
-		             				$("#resumeMsgDiv").html("Resume details updated");
-		             			}else{
-		             				$("#resumeMsgDiv").html("Success!! New Resume added");
-		             			}		             			
-						 		candidateResumesList(candidateId);
-						 		resumesMsgFadein();
-						},
-					}); */
+				
 					return true;
 			 }else{ 
 					return false;
@@ -307,20 +267,10 @@ function uploadProfileResume(){
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
-			success : function(data) {
-				if (data != null && data != 'undefined' && data != "" && data != '[]') {
-					var json = JSON.parse(data);
-        			 /* for (var i = 0; i < 1; i++) {
-                         var val= json[i];
-                         var opt = "";
-                         if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                             opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                             opt  = opt + '</div>';
-                             }                                
-                                 $("#msgDiv3").empty();
-                                 $("#msgDiv3").append(opt);
-                         } */
+			success : function(json) {
+				if (json != null && json != 'undefined' && json != "" && json != '[]') {
+// 					var json = JSON.parse(data);
+        			 
 							result = result+'<table  class="display" cellspacing="0" width="100%">';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
@@ -333,15 +283,15 @@ function uploadProfileResume(){
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
+				             for (var i = 0; i < json.data.length; i++) {
+				            	 	resumesCount = json.data.length;
+					            	var opt = json.data[i];
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 					            		title = opt.title;
 					            	}else{
-					            		title = opt.fileName;
+					            		title = '----';
 					            	}
 					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
 					            		description = opt.description;
@@ -359,10 +309,9 @@ function uploadProfileResume(){
 					            	}else{
 					            		candidateResumeUpdateDateToString = '----';
 					            	} 
-					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" download title="Download"></a></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
@@ -423,6 +372,7 @@ function deleteResume(candidateId, resumeId){
 
 <script type="text/javascript">
 function deleteResume(candidateId, resumeId){
+	$("#deleteResumePopUp").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -433,7 +383,6 @@ function deleteResume(candidateId, resumeId){
 	$("#deleteResumePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
-
 }
 </script>
 
@@ -452,7 +401,7 @@ function deleteSelectedResume(candidateId, resumeId){
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
 		    success: function(data) {
-		    	
+		    	candidateResumesList(candidateId);
 		    	if(data != null && data != 'undefined' && data != ""){
 		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
         			 if(data<50){
@@ -471,7 +420,6 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#selector2").css({ display: "block" });
      			 $("#resumeMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 candidateResumesList(candidateId);
     			 deleteResumePopUp();
     			 resumesMsgFadein();
     			 

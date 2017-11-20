@@ -58,7 +58,7 @@ public class ExpensesEntries implements Serializable {
 	private PaymentModes paymentMode;
 
 	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "expensesEntriesId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "expensesEntriesId")
 	//@Fetch(FetchMode.SELECT)
 	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
 
@@ -70,6 +70,9 @@ public class ExpensesEntries implements Serializable {
 
 	@Column(name = "AMOUNT")
 	private Float amount;
+	
+	@Column(name = "PAID_BY")
+	private String paidBy;
 
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -246,4 +249,13 @@ public class ExpensesEntries implements Serializable {
 		this.expenseIndList = expenseIndList;
 	}
 
+	public String getPaidBy() {
+		return paidBy;
+	}
+
+	public void setPaidBy(String paidBy) {
+		this.paidBy = paidBy;
+	}
+	
+	
 }

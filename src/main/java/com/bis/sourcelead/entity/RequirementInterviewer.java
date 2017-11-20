@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEWER", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
@@ -59,12 +61,15 @@ import org.hibernate.annotations.NotFoundAction;
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String interviewerName;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackDate;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackStatus;
 	
 	@Transient

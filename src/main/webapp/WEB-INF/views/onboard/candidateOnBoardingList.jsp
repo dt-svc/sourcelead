@@ -123,7 +123,7 @@
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
-            success :function(data) {
+            success :function(json) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
 	                	 $("#onboardingCandidatesList").empty();
@@ -138,14 +138,10 @@
 	                     result = result +"    <th>Date Of Join<br>(<small class='custom-small'>"+candOnBoardListDate+"</small>)</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
 	                     result = result +"    <th>Onboard Status</th>"; 
-	                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 	                     result = result +"    <th>Actions</th>"; 
-	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     
-	                     var json = JSON.parse(data);
 	                     
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
@@ -163,13 +159,13 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
-	                    	 '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
+	                    
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }
-	                    	 '</sec:authorize>';
+	                 
 	                    	 
 	                    	 result = result +"</td>";
 	                    	 
@@ -201,7 +197,6 @@
                     			
                     		 }
                     		 
-                    		  '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
                     		 if(opt.candidateOnBoardStatus == 'Accepted'){
                     			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }else  if(opt.candidateOnBoardStatus == 'Rejected'){
@@ -213,7 +208,6 @@
                         			 result = result	+ '<td><div>-----</div></td>';
                         		 }
                     		 }
-                    		  '</sec:authorize>';  
                     
 		                     
 		                     result = result +"</tr>";
@@ -254,7 +248,7 @@
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
-            success :function(data) {
+            success :function(json) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
 	                	 $("#onboardingCandidatesList").empty();
@@ -274,8 +268,6 @@
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
-	                     
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 var joiningDate = '';
@@ -287,13 +279,13 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
-	                    	 '<sec:authorize access="hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
+	                   
 		                    	 if(opt.offboardSubmitted == 'N'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }else if(opt.offboardSubmitted == 'Y'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }
-	                    	 '</sec:authorize>';
+	                  
 	                    	 
 	                    	 result = result +"</td>";
 	                    	 
@@ -335,6 +327,10 @@ function onboardingPagenation(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"aoColumnDefs": [{
+		           'bSortable': false,
+		           'aTargets': 5
+				}],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

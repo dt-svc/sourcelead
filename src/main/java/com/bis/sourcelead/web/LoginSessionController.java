@@ -177,7 +177,7 @@ public class LoginSessionController {
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		ModelAndView model = new ModelAndView();
 		Collection<Tabs> tabsList = null;
-		Integer associatesTabsCount = 0;
+		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
 		

@@ -75,7 +75,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		OrgLocations orgLocations = session.get(OrgLocations.class, id);
 		return orgLocations;*/
 		   Session session = this.sessionFactory.getCurrentSession();
-	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.org org "
+	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.user left join fetch orgLocations.org org "
 	       		+ " left join fetch org.user left join fetch orgLocations.timezone where orgLocations.id =:id ");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("id", id).list();
@@ -139,10 +139,11 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OrgLocations> orgLocationsList = null;
-		Query citiesListQuery= session.createQuery("from OrgLocations orgloc left join fetch orgloc.org");
-		orgLocationsList=citiesListQuery.list();
-		return orgLocationsList;
+
+		String query = "from OrgLocations orgloc left join fetch orgloc.org ";
+		
+		List<OrgLocations> locationList = session.createQuery(query).setCacheable(true).list();
+		return locationList;
 	}
 
 	@Override
@@ -195,7 +196,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3)";
+		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' ";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
@@ -297,7 +298,15 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return false;
 	}
 
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id <> '1' and orgLocations.id NOT IN (:orgLocationId) ";
+		List orgLocList = session.createQuery(query).setParameterList("orgLocationId", orgLocationId).setCacheable(true).list();
+		return orgLocList;
+	}
 	
 	
 	@Override
@@ -309,4 +318,23 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("orgId", orgId).list();
 		return orgLocations;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception {
+		
+		  Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgLocations orgLocations where  orgLocations.orgLocationName = :orgLocationName");
+		  
+	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgLocationName", orgLocationName).setCacheable(true).list();
+	     
+	        OrgLocations orgLocation = null;
+			if(orgLocations != null && !orgLocations.isEmpty())
+			{
+				orgLocation = (OrgLocations) orgLocations.iterator().next();
+			}
+			
+			return orgLocation;
+	}
+
 }

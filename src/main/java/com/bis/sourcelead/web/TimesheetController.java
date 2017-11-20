@@ -150,7 +150,7 @@ public class TimesheetController {
 		  	 String weekEndDateTimeSheet = frequencyDate[1].trim();
 		  	 Date startDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDateTimeSheet.replaceAll("/", "-"));
 			 Date endDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDateTimeSheet.replaceAll("/", "-"));
-			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(userId, projectMemberId, startDateTimeSheet, endDateTimeSheet);
+			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(userId, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId(),orgLocations.getId(),startDateTimeSheet, endDateTimeSheet);
 			String approvalStatus = subApproverHierarchy.getSubmissionApprovalStatus().getValue();
 		    	//DateFormat format = simpleDateFormat;
 			if(approvalStatus.equalsIgnoreCase("new") || subApproverHierarchy.getReopenRejectedReason() != null){

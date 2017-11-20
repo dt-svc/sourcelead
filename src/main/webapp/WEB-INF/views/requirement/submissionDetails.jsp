@@ -408,10 +408,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       if(json.submissionStatus == 'BACKOUT'){
-		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
@@ -693,7 +693,7 @@ function getInternalInterviewsList(submissionId){
 				                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 				                    	 '</sec:authorize>';
 				                    	 if(report.proposeTimeStatus=="Y"){
-				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int" title="Propose New Time"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
 					                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
 												result = result + '			</div>';
 												result = result + ' </a>';
@@ -1216,7 +1216,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1505,18 +1505,6 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		//attachmentValidationFun();
 		 
 		/* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("docFile");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      $("#request_candidate").attr("disabled", false);
-	      if(docSize > 2097152){
-	    	  document.getElementById("subUploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	    	  $("#request_candidate").attr("disabled", true);
-	      }
-	    });
-	    
 	    
 	    document.getElementById("docFile").onchange = function () {
 			   //$("#uploadFile").dir(this.files[0]);
@@ -1879,17 +1867,16 @@ function savedCommentAndCount(candidateId,submissionId){
 <script type="text/javascript">
 function interviewFeedback(interviewId,templateId,id){
 	$("#mask_inner").fadeIn();
-	//$('.content').show();
-	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
-	//$(this).next('.content').slideDown();
+	$(".reSchPop").removeClass("reSchPopActive");
+	$(".proposeTimePop").removeClass("proposeTimePopActive");
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
 	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
-		success: function(data) {
-			var json = JSON.parse(data);
+		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
 			result = result +"<table id='requirementApproverPagination' cellspacing='0' width='100%' class='mt10'>"; 
@@ -2093,9 +2080,9 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	}
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
 	//result = result + '				<label id="notMail"><input type="checkbox" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
-	result = result + '				<span class="Pmess" id="notifyOthersDiv" style="display: none;">';
-	result = result + '			    <input type="hidden" class="form-control input-sm" placeholder="mail id" id="notificationToOthersEmails" name="notificationToOthersEmails"> ';
-	result = result + '<ul id="mails" class="form-control" ></ul>';
+	result = result + '				<span class="Pmess" id="notifyOthersDivFeedBack" style="display: none;">';
+	result = result + '			    <input type="hidden" class="form-control input-sm" placeholder="mail id" id="notificationToOthersEmailsFeedBack" name="notificationToOthersEmails"> ';
+	result = result + '<ul id="mailsFeedBack" class="form-control" ></ul>';
 	result = result + '				</span>  ';
 	result = result + '			  </div>  ';
 	result = result + '						<div class="clearfix"></div> ';
@@ -2234,12 +2221,13 @@ function rescheduleInterClose(){
  
 <script>
 function getNotifyToOtersVal(){
-    if(document.getElementById('notificationToOthers').checked) {
+	var checked = $("input[Id=notificationToOthers]:checked").val();
+    if(checked == 'on') {
         $("#notificationToOthers").val('Y');
-        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+        $("#notifyOthersDivFeedBack").find('p.jquery_form_error_message').remove();
     }else{
         $("#notificationToOthers").val('N');
-        $("#notifyOthersDiv").find('p.jquery_form_error_message').remove();
+        $("#notifyOthersDivFeedBack").find('p.jquery_form_error_message').remove();
         $("#add_interview").removeAttr("disabled");
     }
 }
@@ -2247,12 +2235,12 @@ function getNotifyToOtersVal(){
 </script>
 <script>
 function showOthersDiv(){
-	var isNofityToOthers = document.getElementById("notificationToOthers").checked;
-	if (isNofityToOthers) {
-		document.getElementById("notifyOthersDiv").style.display = '';
-		 $('#mails').tagit({
+	var isNofityToOthers = $("input[Id=notificationToOthers]:checked").val();
+	if (isNofityToOthers || isNofityToOthers == 'on') {
+		document.getElementById("notifyOthersDivFeedBack").style.display = 'block';
+		 $('#mailsFeedBack').tagit({
 		       singleField: true,
-		       singleFieldNode: $('#notificationToOthersEmails')
+		       singleFieldNode: $('#notificationToOthersEmailsFeedBack')
 		       ,placeholderText:"Enter emails"
 		       ,allowDuplicates: false
 		    	,afterTagAdded: function(evt, ui){
@@ -2265,8 +2253,8 @@ function showOthersDiv(){
 	         }
 		   });
 	}else {
-		document.getElementById("notifyOthersDiv").style.display = 'none';
-		$('#mails').tagit('removeAll');
+		document.getElementById("notifyOthersDivFeedBack").style.display = 'none';
+		$('#mailsFeedBack').tagit('removeAll');
 	}
 }
 </script>
@@ -2277,7 +2265,7 @@ function checkEmail(email) {
 }
 
 function checkEmails(){
-	var emails = document.getElementById("notificationToOthersEmails").value;
+	var emails = document.getElementById("notificationToOthersEmailsFeedBack").value;
 	var emailArray = emails.split(",");
 	var invEmails = "";
 	for(i = 0; i <= (emailArray.length - 1); i++){
@@ -2291,30 +2279,30 @@ function checkEmails(){
 	
 	if(invEmails != "" && invEmails.length != 3 && invEmails != null && invEmails !="undefined" && invEmails !="\n"){
 	      $("#add_interview").attr("disabled", "disabled");
-		  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
-		  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>"  +invEmails+" Invalid emails</span>");
-		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
-		  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg',invEmails+' Invalid emails'); 
+		  $('#notifyOthersDivFeedBack').find('p.jquery_form_error_message').remove();
+		  $("input#notificationToOthersEmailsFeedBack").after("<p class='jquery_form_error_message'>"  +invEmails+" Invalid emails</span>");
+		  document.getElementById("notificationToOthersEmailsFeedBack").setAttribute('record-exist','yes');
+		  document.getElementById("notificationToOthersEmailsFeedBack").setAttribute('record-exist-errorMsg',invEmails+' Invalid emails'); 
 	}else{
-		$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
-		$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+		$('input#notificationToOthersEmailsFeedBack').removeAttr( "record-exist record-exist-errormsg");
+		$('#notifyOthersDivFeedBack').find('p.jquery_form_error_message').remove(); 
         $("#add_interview").removeAttr("disabled");
 	}
 }
 </script> 
 <script>
 function validateOtherMail(){
-var dataNotify =document.getElementById("notificationToOthersEmails").value;
+var dataNotify =document.getElementById("notificationToOthersEmailsFeedBack").value;
 var isNofityToOthers = document.getElementById("notificationToOthers").value;
 if((dataNotify == '' || dataNotify == 0)){
 	  $("#add_interview").attr("disabled", "disabled");
-	  $('#notifyOthersDiv').find('p.jquery_form_error_message').remove();
-	  $("input#notificationToOthersEmails").after("<p class='jquery_form_error_message'>Please enter Email</span>");
-	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist','yes');
-	  document.getElementById("notificationToOthersEmails").setAttribute('record-exist-errorMsg','Please enter Email'); 
+	  $('#notifyOthersDivFeedBack').find('p.jquery_form_error_message').remove();
+	  $("input#notificationToOthersEmailsFeedBack").after("<p class='jquery_form_error_message'>Please enter Email</span>");
+	  document.getElementById("notificationToOthersEmailsFeedBack").setAttribute('record-exist','yes');
+	  document.getElementById("notificationToOthersEmailsFeedBack").setAttribute('record-exist-errorMsg','Please enter Email'); 
 }else{
-	$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
-	$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+	$('input#notificationToOthersEmailsFeedBack').removeAttr( "record-exist record-exist-errormsg");
+	$('#notifyOthersDivFeedBack').find('p.jquery_form_error_message').remove(); 
     $("#add_interview").removeAttr("disabled");
 }
 }
@@ -2395,6 +2383,7 @@ $("#notMail").click(function(){
 function reActivateApplicant(submissionId,candidateId,requirementId,type){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#reactiveApplicant").attr("disabled","disabled");
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -2434,7 +2423,7 @@ function pipelineList(requirementId){
 	$("#offerMadeli").removeClass("pipeline-active");
 	$("#rejectedli").removeClass("pipeline-active");
 	$("#applicantli").addClass("pipeline-active");
-	filterReq(requirementId,submissionType);
+// 	filterReq(requirementId,submissionType);
 }
 </script>
 <script>

@@ -16,13 +16,13 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Planning</a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -111,6 +111,7 @@ function getRequestedAssociatesList(){
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
+				
 				
 				
 				 for(var i=0; i<json.newResourceRequestList.length; i++){

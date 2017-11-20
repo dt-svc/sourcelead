@@ -25,6 +25,8 @@ function prepareBisChecksList(url){
 	
 	 $("#checksListDiv").removeAttr("style");
  	 $("#checksListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='clearfix col-md-12 mb10'>";
  	result = result +'<a href="/sourcelead/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
@@ -46,6 +48,8 @@ function prepareBisChecksList(url){
 	result = result + '<th>General Expenses</th>';
 	result = result + '<th>Vendor Payments</th>';
 	result = result + '<th>Electronic Withdrawals</th>';
+	result = result + '<th>Insurance</th>';
+	result = result + '<th>Immigration</th>';
 	result = result + '<th>Payroll Chks</th>';
 	result = result + '<th>Amount</th>';
 	result = result + '<th>Check No</th>';
@@ -84,6 +88,8 @@ function checksPagination(url){
             { "data": "generalExpenses"},
             { "data": "vendorPayments"},
             { "data": "electronicWithdrawals"},
+            { "data": "healthInsurance"},
+            { "data": "immigration"},
             { "data": "payrollChecks"},
             { "data": "amount"},
             { "data": "checkNo"}
@@ -222,6 +228,30 @@ function checksPagination(url){
                         	 return result;
                         }
                       },{
+                          "targets": colIndex++,
+                          "data": "healthInsurance",
+                          "render": function ( data, type, opt, meta ) {
+                          	var result = "";
+                          	if(opt.healthInsurance !=null && opt.healthInsurance !='' && opt.healthInsurance !='undefined'){
+  									result = result + '<td><div class="tblminwidth-75">'+opt.healthInsurance+'</div></td>';
+  								}else{
+  									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+  								}
+                          	 return result;
+                          }
+                        },{
+                          "targets": colIndex++,
+                          "data": "immigration",
+                          "render": function ( data, type, opt, meta ) {
+                          	var result = "";
+                          	if(opt.immigration !=null && opt.immigration !='' && opt.immigration !='undefined'){
+  									result = result + '<td><div class="tblminwidth-75">'+opt.immigration+'</div></td>';
+  								}else{
+  									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+  								}
+                          	 return result;
+                          }
+                        },{
                           "targets": colIndex++,
                           "data": "payrollChecks",
                           "render": function ( data, type, opt, meta ) {

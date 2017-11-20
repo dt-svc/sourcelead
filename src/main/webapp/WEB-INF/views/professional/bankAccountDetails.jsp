@@ -57,7 +57,8 @@
 			   <div class="row mt">
 				<div class="col-md-6">
 					<div class="form-group">
-					<label class="col-md-4">A/C Holder Name</label>
+					<label class="col-md-4">A/C Holder Name<span
+							class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-8">
 					  <input type="text" name="accountHolderName" value="${bankAccounts.accountHolderName}" field-name="A/C Holder Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
 					</div>
@@ -90,19 +91,22 @@
 		
 				<div class="col-md-6">
 						  <div class="form-group">
-							<label class="col-md-4">Bank Name</label>
+							<label class="col-md-4">Bank Name<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							  <input type="text" name="bankName" field-name="Bank Name" value="${bankAccounts.bankName}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
-							<label class="col-md-4">Account Number</label>
+							<label class="col-md-4">Account Number<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							  <input type="text" name="accountNumber" field-name="Account Number" value="${bankAccounts.accountNumber}" class="form-control" data-validation="required validate_Space validate_int validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group">
-							<label class="col-md-4" id="code">Code</label>
+							<label class="col-md-4" id="code">Code<span
+							class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8">
 							   <input type="text" name="bankCode" id="bankCode" field-name="Bank Code" value="${bankAccounts.bankCode}" class="form-control"  />
 							</div>
@@ -172,33 +176,30 @@ function getCurrency(){
 </script>
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   };  
          $('body').on('submit', '#bankAccount_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		
         		e.preventDefault();
-            	
-        		var frm = $('#bankAccount_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
-         		
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         		  	$.ajax({
+         		var formData = getFormData1("bankAccount_form");
+  
+         		$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/saveBankAccountDetails?&${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+          	      data: formData,
+ 		          processData: false,
+ 		          contentType:false, 
+                	  url: sourceleadUrl+"/saveBankAccountDetails?"+tokenParamName+"="+tokenValue+"",
                   	success: function(result) {
                   		location.replace(sourceleadUrl+"/bankAccountDetails");
 			        },  
                }); 
-                
-            	    return true;
+            	  return true;
             }
             else{
             	return false;	

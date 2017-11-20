@@ -27,7 +27,7 @@
                 <th>Position Type</th>
                 <th>Attachment</th>
                 <th>Offered On</th>
-                <th>Current Status</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -50,8 +50,8 @@
               </span></div></td>
                <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
-	                <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	                <a class="fa fa-eye ml10" onclick="viewInterviewListResumes('${reqSub.submissionId.candidateResumes.resumeUUID}','${reqSub.submissionId.candidateResumes.fileName}')"></a>
+	                <a target="_blank" href="${reqSub.submissionId.candidateResumes.fileURL}"/><i class='fa fa-download'></i></a>
+	               <a href="javascript:void(0)" onclick="viewFile('${reqSub.submissionId.candidateResumes.fileURL}','${reqSub.submissionId.candidateResumes.fileName}','${reqSub.submissionId.candidateResumes.fileContentType}');" class="fa fa-eye ml10 paddingRight"></a>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
@@ -106,10 +106,10 @@
               </span></div></td> 
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
-	            	  ${reqSub.submissionId.submissionStatus}
+	               <c:if test="${not empty reqSub.toStage}">
+	            	 ${reqSub.toStage}
 	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
+	              <c:if test="${empty reqSub.toStage}">
 	             	 --
 	              </c:if>
               </span></div></td>
@@ -168,4 +168,4 @@ window.onload = function () {
  };
  
 </script>
-
+<jsp:include page="../masterFooter.jsp" />

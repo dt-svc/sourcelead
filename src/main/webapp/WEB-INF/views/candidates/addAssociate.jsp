@@ -195,7 +195,7 @@
 									<select class="form-control selectpicker" id="experienceYears"
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
-										<c:forEach begin="0" end="25" varStatus="loop">
+										<c:forEach begin="0" end="50" varStatus="loop">
 											<option>${loop.index}</option>
 										</c:forEach>
 									</select>
@@ -454,6 +454,9 @@
 					<div class="clearfix"></div>
 				</div>
 			</div>
+			<!-- this "candidateCreationType" field is used for candidate creation type -->
+         			<input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
+			
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
@@ -770,7 +773,7 @@ function validate_fileupload(fileName)
  <script type="text/javascript">
  function disableMonths() {
      $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
+         if ($("#experienceYears").val() == '50'){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').selectpicker('refresh');
         	 $('#experienceMonths').attr("disabled", true);
@@ -959,12 +962,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        //	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -1018,12 +1021,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 			            	}else{

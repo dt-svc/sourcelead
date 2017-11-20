@@ -9,7 +9,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 
-	public class AddUserDTO {
+	public class AddUserDTO extends CommonDTO {
 
 		@Required(desc = "first name")
 		private String firstName;
@@ -122,6 +122,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String EmailId;
 		
 		private String phoneNumber;
+		
+		private String extensionNumber;
 		
 		private String assignReportingManagers;
 		
@@ -564,6 +566,16 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setPhoneNumber(String phoneNumber) {
 			this.phoneNumber = phoneNumber;
+		}
+		
+		public String getExtensionNumber()
+		{
+			return extensionNumber;
+		}
+
+		public void setExtensionNumber(String extensionNumber)
+		{
+			this.extensionNumber = extensionNumber;
 		}
 
 		public String getAssignReportingManagers() {

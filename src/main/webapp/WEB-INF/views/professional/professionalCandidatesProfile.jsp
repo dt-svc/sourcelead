@@ -83,9 +83,9 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	 //var json = JSON.parse(data);
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -477,13 +477,12 @@ function editCandidate(candidateId){
 <script>
 function professionalProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null ){  
+              	//var json = JSON.parse(data);
 							var result ="";
 							var checked = "";
 							
@@ -593,13 +592,12 @@ function professionalProfile(candidateId){
 							
 							
 	                     result = result +'<div class="clearfix">';
-							
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
 							$.each( json.allAndCandidateVisa, function( i, visa ){
 								  var existed = 0;
 					                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
-						                var res = [];
+						                var res = []; 
 						                res = json.visaType.split(",");
 						                res.forEach(function(item) {
 						                	if(visa == item){
@@ -918,7 +916,6 @@ function removeSkillPopUp(candidateId){
 --%>         
 <script type="text/javascript">
 	function upDateCandidate(candidateId) {
-	
 		var expectedRate = document.getElementById("expectedRate").value; 
 		 if(expectedRate != null && expectedRate != ""){
 			 $('#expectedRateType').removeAttr('data-validation-optional');
@@ -928,7 +925,6 @@ function removeSkillPopUp(candidateId){
 			 $('#expectedRateType').removeAttr('data-validation');
 			 $('#expectedRateType').attr("data-validation-optional","true"); 
 		 }
-		 
 		 
 		 var expectedRateType =  document.getElementById("expectedRateType").value; 
 		 if(expectedRateType != null && expectedRateType != "" && expectedRateType != 'undefined'){
@@ -1099,8 +1095,8 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					success : function(json) {
+						if (json != null && json != 'undefined' && json != "" && json != '[]') {
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
@@ -1108,9 +1104,9 @@ function removeSkillById(candidateId, skillId){
 								result = result +'          <div class="row">';
 								result = result +'            <div class="col-md-12">';
 								result = result +'              <ul class="list-unstyled personal-info">';
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+							//	var json = JSON.parse(data);
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -1123,12 +1119,6 @@ function removeSkillById(candidateId, skillId){
 									}
 									
 									
-								/* 	 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									} */
-									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										startYear=   opt.startYear  +' To '+opt.endYear;
 									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
@@ -1138,12 +1128,6 @@ function removeSkillById(candidateId, skillId){
 									}else{
 										startYear = " ";
 									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
-									} */
 									
 									result = result +'   <li>';
 									result = result +'   <div class="clearfix">';
@@ -1170,10 +1154,10 @@ function removeSkillById(candidateId, skillId){
 <script>
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GER",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#educationSubmissionDetailsList").empty();
 	                	 var result = "";
 	                	 
@@ -1185,9 +1169,9 @@ function educationSubmissionProfile(candidateId){
 							result = result +'              <ul class="list-unstyled personal-info">';
 							
 							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
+						//	 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.data.length; i++) { 
+		                    	 var opt = json.data[i];  
 		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    		        EducationName = opt.name;
 		                    	    }else{
@@ -1254,8 +1238,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1264,9 +1248,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -1309,29 +1293,6 @@ function certificationSubmissionProfile(candidateId){
 </script>
 <script>
 $('.selectpicker').selectpicker('refresh');
-
-/* function getAllSkills(candidateId){
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-		$.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getSkillsExcludeExistingSkills?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.name+ "'>"+opt.name+"</option>";
-				}
-	        	$("#skillName").empty();
-		        $("#skillName").append(output);
-		        $('#skillName').trigger("chosen:updated");
-	        },
-	    });
-	
-} */
-
 
 </script>    
      

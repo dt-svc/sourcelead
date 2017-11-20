@@ -1,10 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,8 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 
 @SuppressWarnings("rawtypes")
 @Repository
@@ -26,6 +34,10 @@ public class ExpensesDaoImpl implements ExpensesDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ProjectMembersDao projectMembersDao;
+	
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -41,7 +53,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId, String expenseStatus, Date startDateUTC, Date endDateUTC){
+	public ResponseList<Expenses> getAllExpenses(Long masterCandidateId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length,OrgLocations orgloc) throws ParseException{
+		ResponseList<Expenses> response = new ResponseList<>();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
@@ -92,28 +105,98 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		}
 		*/
 		
+		StringBuilder query1 = new StringBuilder();
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+			 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+		     Matcher matcher = pattern.matcher(searchValue);
+		     	 query1.append(" and (expenses.expenseId like '%" + searchValue + "%' ")
+		     	 	   .append("OR expenses.purpose like '" + searchValue + "%' ")
+		     	 	   .append("OR expenses.expenseStatus like '" + searchValue + "%' ");
+		     	 	 if(matcher.matches() == false) {
+		     	 		query1.append("OR expenses.projects.projectName like '%" + searchValue + "%')");
+		     	 	 }
+					if(matcher.matches() == true) {
+						java.sql.Date sqlDate = null;
+						if(searchValue.contains("/")||(searchValue.contains("-"))) {
+							String replacedValue = searchValue.replaceAll("/", "-");
+								SimpleDateFormat format = new SimpleDateFormat(orgloc.getDateFormat());
+						        java.util.Date utilDate = format.parse(replacedValue);
+						        sqlDate = new java.sql.Date(utilDate.getTime());
+						}
+						query1.append("OR expenses.projects.projectName like '%" + searchValue + "%'")
+						      .append("OR expenses.startDate like '" + sqlDate + "' ")
+						      .append("OR expenses.endDate like '" + sqlDate + "' )");
+			
+					}
+		  
+		}
+		
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" ";
-		params.put("loginUserId",loginUserId);
-		params.put("orgLocId",orgLocId);
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
+		params.put("masterCandidateId",masterCandidateId);
+		
+		
+		String countFrom = "";
+		if(length>0) {
+			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
+		   params.put("masterCandidateId",masterCandidateId);
+		}
 		
 		Query query = session.createQuery(from);
+		
+		Query countQuery =null;
+		if(length>0) {
+			countQuery =session.createQuery(countFrom);
+		}
+		
 		for (String str : query.getNamedParameters())
         {
-			if(str.equalsIgnoreCase("loginUserId")){
+			if(str.equalsIgnoreCase("masterCandidateId")){
 				query.setParameter(str, (long) params.get(str));
+				if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));
 			}if(str.equalsIgnoreCase("startDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter(str, (Date) params.get(str));
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
+				if(countQuery != null)
+				countQuery.setParameter(str, (Date) params.get(str));
 			}
-			if(str.equalsIgnoreCase("orgLocId")){
-				query.setParameter(str, (long) params.get(str));
-			}
-			
         }
-		return query.setCacheable(true).list();
+		
+		
+		
+		List<Expenses> tslist = query.setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		response.setData(tslist); 
+		
+		List<Long> countList  = null;
+		if(countQuery != null) {
+			countList  = countQuery.setCacheable(true).list();
+		}
+		int recordsTotal=0;
+		if(countList != null && !countList.isEmpty()) {
+			recordsTotal = countList.iterator().next().intValue();
+		}
+		response.setRecordsTotal(recordsTotal);
+		
+		int recordsFiltered = 0;
+		if(tslist != null && !tslist.isEmpty()) {
+			recordsFiltered = tslist.size();
+		}
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(recordsFiltered);
+		}
+		else {
+			response.setRecordsFiltered(recordsTotal);
+		}
+		
+		
+		
+		return response;
 		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
 		return expensesList;*/
 	}
@@ -160,7 +243,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Expenses  expense =  null;
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
 		if(null != expensesList && expensesList.size() >0){
 			expense = expensesList.get(0);
 		}
@@ -171,13 +254,23 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@Transactional
 	public List getExpensesByProjectMemberId(Long projectMemberId,String invoiceType) {
 		Session session = this.sessionFactory.getCurrentSession();
+		Long masterCandidateId = 0l;
+		Long projectId = 0l;
+		if(projectMemberId != null) {
+			try {
+				ProjectMembers pm = projectMembersDao.getProjectMemberById(projectMemberId);
+				masterCandidateId = pm.getMasterCandidateId().getId();
+				projectId = pm.getProjects().getId();
+			} catch (Exception e) {}
+			
+		}
 		String subQuery ="";
 		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
 			subQuery = "expenses.billingRecievableStatus IS NULL";
 		}else {
-			subQuery = "expenses.billingPayableStatus IS NULL";
+			subQuery = "expenses.billingPayableStatus IS NULL";  
 		}
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where pm.id =:projectMemberId and "+subQuery).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where project.id =:projectId and mc.id = :masterCandidateId and "+subQuery).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setCacheable(true).list();
 		
 		return expensesList;
 	}

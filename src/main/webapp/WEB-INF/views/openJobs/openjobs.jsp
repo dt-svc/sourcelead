@@ -1282,7 +1282,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -2258,16 +2258,14 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
-        		
-        		var frm = $('#create_alert_form').serializeFormJSON();
-        		var con = JSON.stringify(frm);
-        		con = con.replace(/[{}]/g, ""); 
-        		//It will escape all the special characters
-        	    var jsonData = encodeURIComponent(con);
-
+        	    var formData = getFormData1("create_alert_form");
+        	    
         		$.ajax({
-        					type : "POST",
-        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+		        		    type : "POST",
+							data: formData,
+			  		        processData: false,
+			  		        contentType:false, 
+        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
         							location.replace(sourceleadUrl+"/openRequirementsRedirect");
         					},

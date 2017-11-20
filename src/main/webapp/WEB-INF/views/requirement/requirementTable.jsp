@@ -285,7 +285,7 @@ function jpagination(url,sourceleadUrl){
 			         "render": function ( data, type, opt, meta ) {
 			         		var result = "";
 			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+" "+opt.manager+"'>"+opt.manager+"</div></td>";
+			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
 		         	        }else{
 		         	      	 result = result +"<td><div>----</div></td>";
 		         	        }
@@ -312,17 +312,31 @@ function jpagination(url,sourceleadUrl){
 			         "render": function (data, type, opt, meta) {
 			        	        var contains = false;
 			        	        var isAllow = false;
+			        	        var approver = false;
 			         		    var result = "";
 			         		   result = result +"<td><div style='width:75px'>";
 			         		   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
 			         		   var userId = '${SourceLeadWeb_user.id}';
-			         		   if(opt.managerUserId != null && opt.managerUserId != '' && opt.managerUserId != 'undefined'){
-			         			   if(opt.managerUserId.id == userId){
-			         				  contains = true;
+			         		  if((opt.level1ApproverUserId != null && opt.level1ApproverUserId != '' && opt.level1ApproverUserId != 'undefined') || (opt.level2ApproverUserId != null && opt.level2ApproverUserId !='' && opt.level2ApproverUserId != 'undefined')){ 
+			         		 if(opt.level2ApproverUserId != null && opt.level2ApproverUserId !=''){
+			         			 if(userId == opt.level2ApproverUserId){
+									   approver = true;
+								  } 
+			         		 }else{
+			         			  for(var a = 0;a< opt.level1ApproverUserId.length ; a++){
+ 								  if(userId == opt.level1ApproverUserId[a]){
+ 									   approver = true;
+ 								  }
+ 							   }
+			         		 }
+			         		  }
+			         		   if(opt.isLoginUserAsManager != null && opt.isLoginUserAsManager != '' && opt.isLoginUserAsManager != 'undefined'){
+			         			   if(opt.isLoginUserAsManager == userId){
+			         				   contains = true;
 			         			   }
 			         		   }
 			         		   
-			         		   if(contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
+			         		   if(approver == true || contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
 			         			  isAllow = true;
 			         		   }
 			         		   if(isAllow == true){
@@ -346,7 +360,7 @@ function jpagination(url,sourceleadUrl){
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				result = result +"<option value='OPEN'>OPEN</option>";
+			         			
 
 			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
 			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";

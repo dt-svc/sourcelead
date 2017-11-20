@@ -2,6 +2,9 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 
@@ -60,5 +63,12 @@ public interface OrgRelationsDao {
 	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 	
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
+	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
+	
+	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
+	
+	ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus, Long tabId, List<Long> vendorOrgLocationsIds);
+
 
 }

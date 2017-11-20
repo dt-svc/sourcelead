@@ -51,6 +51,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.ClientVendorUploadDTO;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -68,6 +70,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 
 /**
  * 
@@ -99,6 +102,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	private OrgLocationService orgLocationService;
 	@Autowired
 	private ClientImportDao clientImportDao;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
 	
 	@Override
 	public String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailSent, String responderType) throws Exception
@@ -177,14 +183,20 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						client.setPhone(mobileNumer);
 					}
-					if (row.getCell(10) != null
-							&& !"".equalsIgnoreCase(row.getCell(10).toString())) {
-						String status = getCellValueAsString(row.getCell(10), fname);
-						client.setStatus(status);;
+					
+					if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+						String extensionNumber = getCellValueAsString(row.getCell(10), fname);
+						client.setPhone(extensionNumber);
 					}
+					
 					if (row.getCell(11) != null
 							&& !"".equalsIgnoreCase(row.getCell(11).toString())) {
-						client.setOwner(row.getCell(11).toString());
+						String status = getCellValueAsString(row.getCell(11), fname);
+						client.setStatus(status);;
+					}
+					if (row.getCell(12) != null
+							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
+						client.setOwner(row.getCell(12).toString());
 					}
 					else {
 						client.setOwner(user.getEmail());
@@ -475,6 +487,11 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (clientObject.getPhone() != null) {
 			clientDTO.setPhoneNumber(clientObject.getPhone());
 		}
+		
+		if(clientObject.getExtensionNumber() !=null){
+			clientDTO.setExtensionNumber(clientObject.getExtensionNumber());
+		}
+		
 		if (clientObject.getStatus() != null) {
 			clientDTO.setSpocStatus(clientObject.getStatus());
 		}
@@ -757,9 +774,10 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		excelHeader.createCell(7).setCellValue(Constants.LAST_NAME);
 		excelHeader.createCell(8).setCellValue(Constants.EMAIL);
 		excelHeader.createCell(9).setCellValue(Constants.PHONE);
-		excelHeader.createCell(10).setCellValue(Constants.STATUS);
-		excelHeader.createCell(11).setCellValue(Constants.OWNER);
-		excelHeader.createCell(12).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(10).setCellValue(Constants.EXTENSION_NUMBER);
+		excelHeader.createCell(11).setCellValue(Constants.STATUS);
+		excelHeader.createCell(12).setCellValue(Constants.OWNER);
+		excelHeader.createCell(13).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
@@ -879,32 +897,42 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		else {
 			writeRow.createCell(9).setCellValue("");
 		}
+		
 		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-			if (!fname.endsWith("xlsx")) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 10));
-			}
-			else {
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 10, createExcelsheet));
-			}
 			writeRow.createCell(10).setCellValue(row.getCell(10).toString());
 		}
 		else {
-			if (!fname.endsWith("xlsx")) {
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 10));
-			}
-			else {
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 10, createExcelsheet));
-			}
 			writeRow.createCell(10).setCellValue("");
 		}
+		
+		
 		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			if (!fname.endsWith("xlsx")) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 11));
+			}
+			else {
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 11, createExcelsheet));
+			}
 			writeRow.createCell(11).setCellValue(row.getCell(11).toString());
 		}
 		else {
+			if (!fname.endsWith("xlsx")) {
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.STATUS_DROPDOWN, 11));
+			}
+			else {
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.STATUS_DROPDOWN, 11, createExcelsheet));
+			}
 			writeRow.createCell(11).setCellValue("");
 		}
+		
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			writeRow.createCell(12).setCellValue(row.getCell(12).toString());
+		}
+		else {
+			writeRow.createCell(12).setCellValue("");
+		}
 		if (client.getReason() != null) {
-			writeRow.createCell(12).setCellValue(client.getReason());
+			writeRow.createCell(13).setCellValue(client.getReason());
 		}
 	}
 	
@@ -1044,13 +1072,13 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (ownersList.length > 0) {
 			namedCell.setRefersToFormula("hidden!$A$1:$A$" + ownersList.length);
 			DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 11, 11);
+			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 12, 12);
 			HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));
 			realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN, 5, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 10, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 14, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 11, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 15, "xls"));
 			realSheet.addValidationData(validation);
 		}
 		File file = new File("vendors_contacts_Import.xls");
@@ -1149,13 +1177,13 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		if (ownersList.length > 0) {
 			namedCell.setRefersToFormula("hidden!$A$1:$A$" + ownersList.length);
 			DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
-			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 11, 11);
+			CellRangeAddressList addressList = new CellRangeAddressList(1, 500, 12, 12);
 			HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
 			workbook.setSheetHidden(1, true);
 			realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN, 2, "xls"));
 			realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN, 5, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 10, "xls"));
-			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 14, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN, 11, "xls"));
+			realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS, 15, "xls"));
 			realSheet.addValidationData(validation);
 		}
 		// realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
@@ -1257,29 +1285,35 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						bulkClientVendors.setPhone(mobileNumer);
 					}
-					if (row.getCell(10) != null
-							&& !"".equalsIgnoreCase(row.getCell(10).toString())) {
-						String status = getCellValueAsString(row.getCell(10), fname);
-						bulkClientVendors.setStatus(status);
+					
+					if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
+						String extensionNumber = getCellValueAsString(row.getCell(10), fname);
+						bulkClientVendors.setExtensionNumber(extensionNumber);
 					}
+					
 					if (row.getCell(11) != null
 							&& !"".equalsIgnoreCase(row.getCell(11).toString())) {
-						bulkClientVendors.setOwnerEmail(row.getCell(11).toString());
+						String status = getCellValueAsString(row.getCell(11), fname);
+						bulkClientVendors.setStatus(status);
+					}
+					if (row.getCell(12) != null
+							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
+						bulkClientVendors.setOwnerEmail(row.getCell(12).toString());
 					}
 					else {
 						bulkClientVendors.setOwnerEmail(user.getEmail());
 					}
-					if (row.getCell(12) != null
-							&& !"".equalsIgnoreCase(row.getCell(12).toString())) {
-						bulkClientVendors.setClientAddress(row.getCell(12).toString());
-					}
 					if (row.getCell(13) != null
 							&& !"".equalsIgnoreCase(row.getCell(13).toString())) {
-						bulkClientVendors.setBillingAddress(row.getCell(13).toString());
+						bulkClientVendors.setClientAddress(row.getCell(13).toString());
 					}
 					if (row.getCell(14) != null
 							&& !"".equalsIgnoreCase(row.getCell(14).toString())) {
-						String paymentTerms = getCellValueAsString(row.getCell(14), fname);
+						bulkClientVendors.setBillingAddress(row.getCell(14).toString());
+					}
+					if (row.getCell(15) != null
+							&& !"".equalsIgnoreCase(row.getCell(15).toString())) {
+						String paymentTerms = getCellValueAsString(row.getCell(15), fname);
 						bulkClientVendors.setPaymentTerm(paymentTerms);
 					}
 					if ("Client".equalsIgnoreCase(responderType)) {
@@ -1333,11 +1367,12 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 										if (Constants.LAST_NAME.equalsIgnoreCase(row.getCell(7).getStringCellValue())) {
 											if (Constants.EMAIL_ID_BULK_IMPORT.equalsIgnoreCase(row.getCell(8).getStringCellValue())) {
 												if (Constants.PHONE_NUMBER_BULK_IMPORT.equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
-													if (Constants.STATUS.equalsIgnoreCase(row.getCell(10).getStringCellValue())) {
-														if (Constants.OWNER.equalsIgnoreCase(row.getCell(11).getStringCellValue())) {
-															if (Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
-																if (Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
-																	if (Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(14).getStringCellValue())) {
+												if(Constants.EXTENSION_NUMBER.equalsIgnoreCase(row.getCell(10).getStringCellValue())){	
+													if (Constants.STATUS.equalsIgnoreCase(row.getCell(11).getStringCellValue())) {
+														if (Constants.OWNER.equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
+															if (Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
+																if (Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(14).getStringCellValue())) {
+																	if (Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(15).getStringCellValue())) {
 																		isValid = true;
 																	}
 																}
@@ -1345,6 +1380,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 														}
 													}
 												}
+											  }
 											}
 										}
 									}
@@ -1359,7 +1395,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	}
 	
 	@Override
-	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocations, User user, Org org, String isMailSent, String responderType) throws Exception
+	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocations, User user, Org org, String isMailSent, String responderType) throws Exception
 	{
 		List<BulkClientDetails> importClietDetails = clientImportDao.getbulkClientDetailsByOrgLocationId(orgLocations.getId(), responderType, user);
 		List<BulkClientDetails> duplicateClietDetails = new ArrayList<>();
@@ -1417,7 +1453,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												duplicateClietDetails.add(clientOrVendor);
 											}
 											else {
-												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
+												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), vendorLocations.getId());
 												if (userRole == null) {
 													List<OrgRelations> vandorsListByOrgLocationId;
 													if ("Client".equalsIgnoreCase(responderType)) {
@@ -1427,7 +1463,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 														vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 													}
 													OrgLocations orgLocation = null;
-													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation,user);
 													try {
 														orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 														vandorsListByOrgLocationId.clear();
@@ -1454,7 +1490,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 													vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 												}
 												OrgLocations orgLocation = null;
-												ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation);
+												ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, vandorsListByOrgLocationId, orgLocations, clientOrVendor.getOrgName(), "contact", orgLocation,user);
 												try {
 													orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, orgRelations.getId().toString(), "", responderType, org);
 													vandorsListByOrgLocationId.clear();
@@ -1509,11 +1545,18 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												}
 												else {
 													OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 													try {
-														clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
+														clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
+														OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 														clientOrVendor.setRecordStatus("1");
 														clientImportDao.saveClientVendorExcelData(clientOrVendor);
+														
+														if ("Vendor".equalsIgnoreCase(responderType)) {
+															User spocUser = userDao.getUserById(invitedOrgLocation.getVendorSpocId());
+															VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
+															vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,spocUser,orgLocations);
+														}
 													} catch (Exception e) {
 														logger.error(ExceptionUtils.getFullStackTrace(e));
 													}
@@ -1536,11 +1579,19 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 						else {
 							
 							OrgLocations mainOrgLocation = validateSourceleadOrg(clientOrVendor.getOrgName(), org);
-							ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation);
+							ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 							try {
-								clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
+								clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
+								OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 								clientOrVendor.setRecordStatus("1");
 								clientImportDao.saveClientVendorExcelData(clientOrVendor);
+								
+								if ("Vendor".equalsIgnoreCase(responderType)) {
+									User spocUser = userDao.getUserById(invitedOrgLocation.getVendorSpocId());
+									VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
+									vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,spocUser,orgLocations);
+								}
+								
 							} catch (Exception e) {
 								logger.error(ExceptionUtils.getFullStackTrace(e));
 							}
@@ -1559,7 +1610,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		return duplicateClietDetails;
 	}
 	
-	private ClientDTO populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation) throws Exception
+	private ClientDTO populateJsonObjectTemp(BulkClientDetails client, String isMailSent, List<OrgRelations> orgList, OrgLocations orgLocation, String orgName, String type, OrgLocations mainOrgLocation,User user) throws Exception
 	{
 		
 		String roleTypeId = "";
@@ -1657,13 +1708,27 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			addUserDTO.setPhoneNumber(client.getPhone());
 			candidateDTO.setPhoneNumber(client.getPhone());
 		}
+		
+		if(client.getExtensionNumber() !=null){
+			clientDTO.setExtensionNumber(client.getExtensionNumber());
+			addUserDTO.setExtensionNumber(client.getExtensionNumber());
+		}
+		
 		if (client.getStatus() != null) {
 			clientDTO.setSpocStatus(client.getStatus());
 		}
-		/*if (client.getOwnerEmail() != null) {
+	
+		List<String> ownersList = new ArrayList<>();
+		if (client.getOwnerEmail() != null) {
 			UserRole ownerUser = userRoleService.getUserDetailsByEmailAndLocationId(client.getOwnerEmail(), orgLocation.getId());
-			clientDTO.setOwner(ownerUser.getUser().getId());
-		}*/
+			if(ownerUser !=null) {
+				ownersList.add(ownerUser.getUser().getId().toString());
+				clientDTO.setOwner(ownersList);				
+			}
+		}else{
+			ownersList.add(user.getId().toString());
+			clientDTO.setOwner(ownersList);
+		}
 		// if(!"org".equals(type)){
 		if (client.getEmail() != null) {
 			clientDTO.setEmail(client.getEmail());
@@ -1689,7 +1754,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			clientDTO.setBillingAddress(client.getBillingAddress());
 		}
 		if (null != client.getPaymentTerm() && !"".equalsIgnoreCase(client.getPaymentTerm())) {
-			clientDTO.setPaymentTerm(client.getPaymentTerm());
+			clientDTO.setPaymentTerms(client.getPaymentTerm());
 		}
 		
 		clientDTO.setAddUserDTO(addUserDTO);
@@ -1792,7 +1857,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	{
 		BulkClientDetails bulkClientDetails = clientImportDao.getbulkClientByrecordIdAndOrgLocationId(Long.parseLong(recordId), orgLocation.getId(), responderType);
 		OrgLocations mainOrgLocation = validateSourceleadOrg(bulkClientDetails.getOrgName(), org);
-		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", null, orgLocation, bulkClientDetails.getOrgName(), "org", mainOrgLocation,user);
 		try {
 			clientService.storeClient(clientDTO , clientDTO.getAddUserDTO(), clientDTO.getCandidateDTO(), user, orgLocation, responderType, org);
 			bulkClientDetails.setRecordStatus("1");
@@ -1891,7 +1956,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 			vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgName(orgName, orgLocation.getId());
 		}
 		OrgLocations mainOrgLocations = null;
-		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations);
+		ClientDTO clientDTO = populateJsonObjectTemp(bulkClientDetails, "Y", vandorsListByOrgLocationId, orgLocation, orgName, "org", mainOrgLocations,user);
 		try {
 			orgSpocService.addVendorContacts(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocation, orgRelationId.toString(), "", responderType, org);
 			vandorsListByOrgLocationId.clear();

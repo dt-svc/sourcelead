@@ -85,6 +85,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
+	private String fileURL;
+	
 	@Transient
 	private String offboardDocumentType;
 	
@@ -230,7 +233,11 @@ private static final long serialVersionUID = 1L;
 		this.offboardPackDocumentsList = offboardPackDocumentsList;
 	}
 
-	
-	
-	
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
 }

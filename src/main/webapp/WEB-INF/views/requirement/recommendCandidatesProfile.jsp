@@ -46,9 +46,9 @@ function editCandidate(candidateId){
 	  $.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-	         success :function(data) {  
-	              if(data != null && data != 'undefined' && data != ""){  
-	              	 var json = JSON.parse(data);
+	         success :function(json) {  
+	              if(json != null){  
+	              	// var json = JSON.parse(data);
 	            			 	var lastName = '';
 	            			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
 	            			 		lastName = json.lastName;            			 		
@@ -321,21 +321,21 @@ function editCandidate(candidateId){
 								result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
 								result = result + '<option value="">Select Year</option>';
 								
-								<c:forEach var="i" begin="0" end="24" >
+								<c:forEach var="i" begin="0" end="49" >
 									result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
 								</c:forEach>
 								
-								if(json.experienceYears == "25"){
-									result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
+								if(json.experienceYears == "50"){
+									result = result  +'<option value="50" '+ (json.experienceYears == "50" ? "selected" : '') +'>50</option>';
 								}else{
-									result = result  +'<option>25</option>';
+									result = result  +'<option>50</option>';
 								}
 								
 								result = result + '</select>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-								if(json.experienceYears == "25"){
+								if(json.experienceYears == "50"){
 								result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
 								result = result + '<option  value="">Select Months</option>';
 								
@@ -501,18 +501,27 @@ function deleteCandidate(candidateId){
 	  var requirementId = $("#requirementId").val();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidate",        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidates",        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
-            			 requirementRecommendations(requirementId);
-            		 }
+//             		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//             		 else if (data.indexOf('exception') >= 0) {
+//             			 location.replace(sourceleadUrl+"/errorPage");
+//             		 }
+//             		 else{
+            			 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            			 
+            			 setTimeout(function () {
+            				requirementRecommendations(requirementId);
+             			 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+             			 	$(".side_mask").fadeOut();
+             			 	$(".project_inn_mask").fadeOut();
+                           }, 100);
+            			 
+            			 
+//             		 }
                 }
                  },
               }); 
@@ -610,16 +619,16 @@ function candidateProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
+         success :function(json) {  
+              if(json != null){  
+              //	var json = JSON.parse(data);
+            		 /* if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
             		 else if (data.indexOf('exception') >= 0) {
             			 location.replace(sourceleadUrl+"/errorPage");
             		 }
-            		 else{ 
+            		 else{  */
 							var result ="";
 							var summary= "";
 							if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
@@ -848,7 +857,7 @@ function candidateProfile(candidateId){
 								 
 							     event.preventDefault();
 								   
-            		 }
+            		/*  } */
               }else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
@@ -1047,15 +1056,15 @@ function candidateSkillsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
+          success :function(json) {
+               if(json != null){
+             		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		 }
-             		 else{
+             		 else{ */
 	                	 $("#candidateSkillList").empty();
 	                	 var result = "";
                 	     result = result + '      <table class="table table-responsive table-hover clearfix">';
@@ -1068,7 +1077,7 @@ function candidateSkillsList(candidateId){
                 		 result = result + '          </tr>';
                 		 result = result + '        </thead>';
                 		 result = result + '        <tbody>';
-	                     var json = JSON.parse(data);
+	                    // var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) {  
 	                    	 var opt = json[i];   
 	                    	    result = result + '<tr>';
@@ -1176,8 +1185,8 @@ function candidateSkillsList(candidateId){
 	                     
 	                     $("#candidateSkills").trigger("chosen:updated");
 	                     
-	                     
-			    	} 
+	                /*      
+			    	}  */
                }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -1291,7 +1300,7 @@ If Experience Years 25+ when months will be Disabled
 <script>
  function disableMonths() {
 	
-         if ($("#experienceYears").val() == "25"){
+         if ($("#experienceYears").val() == "50"){
              $("#experienceMonths").attr("disabled", true);
              $("#experienceMonths").val("disabled", true);
          }else{
@@ -1582,8 +1591,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1592,9 +1601,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -1773,12 +1782,12 @@ function employementType(){
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-			        success: function(data) {
-			        	var json = JSON.parse(data);
+			        success: function(json) {
+			        //	var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
 			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
-			             for(var i=0;i<json.length;i++){
-			            	 var opt = json[i];
+			             for(var i=0;i<json.data.length;i++){
+			            	 var opt = json.data[i];
 			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 				            	}else{

@@ -131,7 +131,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("getOrgSpocById start");
-		orgSpocs = session.createQuery("from OrgSpoc where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorLocationId left join fetch spoc.clientLocationId  where spoc.id = :id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
 		logger.debug("getOrgSpocById end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -224,7 +224,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgSpoc> orgSpocs = new ArrayList<OrgSpoc>();
 		logger.debug("getSpocBySpocUUID start");
-		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.UUID = :spocUUID " ).setCacheable(true).setString( "spocUUID", spocUUID ).setCacheable(true).list();
+		orgSpocs = session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser left join fetch spoc.ownerUser where spoc.UUID = :spocUUID " ).setCacheable(true).setString( "spocUUID", spocUUID ).setCacheable(true).list();
 		logger.debug("getSpocBySpocUUID end");
 		if (orgSpocs.size() > 0) {
 			return orgSpocs.get(0);
@@ -354,9 +354,9 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			
 			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
 			   }else{
-				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
+				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			
 			    spocsList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
@@ -422,7 +422,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			 
-			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
 			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;
@@ -615,6 +615,50 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 				flag = true;
 			} 
 			return flag;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getClientUserByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long clientUserId)
+				throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id = :clientUserId and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+			List<OrgSpoc> spocsList = query.setLong("clientUserId", clientUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId, Long assignUserId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc  where spoc.vendorUser.id = :assignUserId and spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+			List<OrgSpoc> spocsList = query.setLong("assignUserId", assignUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId)
+				throws Exception {
+			
+	        logger.debug("In OrgSpocDaoImpl getSpocListByVendorUserIdAndOrgRelationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where orgrelation.id = :orgRelationId and spoc.vendorUser.id = :vendorUserId and spoc.status = '1' "); 
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("vendorUserId", vendorUserId).setCacheable(true).list();
+			return spocsList;
 		}
 
 }

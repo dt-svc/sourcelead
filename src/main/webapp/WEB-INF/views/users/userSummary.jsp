@@ -16,6 +16,12 @@
 #editUserDiv .user_summary_edit_cta {
 min-height: 65px;
 }
+.edit_role_pop.editrole-custom {
+height: 450px; overflow-y: auto;
+}
+.assignroles.changeRole {
+max-height: inherit !important;
+}
 
 </style>
 
@@ -42,16 +48,9 @@ min-height: 65px;
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat = 'yy-dd-mm'; 
-	  }
+	 // written common method in slead-common.js for date formats start 
+	 var finalDateFormat = getJSDateFormat(locationDate);
+	  
 	 getUserSummaryDetails(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
@@ -232,7 +231,7 @@ $(document).ready(function(){
 				     result = result + ' </div>';
 				     
 				     
-				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
+				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
 				     result = result + ' <div class="user_summary_edit_cta">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
@@ -256,7 +255,7 @@ $(document).ready(function(){
 				result = result + '	 <div class="user_details_cta_img">';
 				result = result + '		       <div class="user_change_img">';
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src="+json.user.fileUrl+" alt='image'>";
+					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
 				}else{
 					result = result +                  "<img data-id= 'userProfileImage'  src='resources/images/userprofile-img.png' alt='image'>";
 				}
@@ -300,6 +299,14 @@ $(document).ready(function(){
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
+					
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -376,7 +383,7 @@ $(document).ready(function(){
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				<strong>RoleChangeReason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>Role Change Reason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
@@ -512,7 +519,14 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.reportingManagers.length; i++)
 		    					{ 
 							    	reportingManagers = json.reportingManagers[i];
-							    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(reportingManagers.lastName != null){
+							    		fullName = reportingManagers.firstName+" "+reportingManagers.lastName;
+							    	}else{
+							    		fullName = reportingManagers.firstName;
+							    	}
+							    	
+							    	result = result+"<option value='"+reportingManagers.id+"'>"+fullName+"&nbsp;("+reportingManagers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -526,7 +540,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-info">'+json.assignedAsClientOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="clientUserDiv">';
@@ -536,7 +550,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.clientUsersList.length; i++)
 		    					{
 							    	clientOwnerAndSpoc = json.clientUsersList[i];
-							    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(clientOwnerAndSpoc.lastName != null){
+							    		fullName = clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName;
+							    	}else{
+							    		fullName = clientOwnerAndSpoc.firstName;
+							    	}
+							    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+fullName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -550,7 +570,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Client Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
+						    result = result + '<p>Assigned as Vendor Owner and Spoc<strong class="label label-primary">'+json.assignedAsVendorOwnerOrSpocCount+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="vendorUserDiv">';
@@ -560,7 +580,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.vendorUsersList.length; i++)
 		    					{
 							    	vendorOwnerAndSpoc = json.vendorUsersList[i];
-							    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(vendorOwnerAndSpoc.lastName != null){
+							    		fullName = vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName;
+							    	}else{
+							    		fullName = vendorOwnerAndSpoc.firstName;
+							    	}
+							    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+fullName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -584,7 +610,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.requirementManagersList.length; i++)
 		    					{
 							    	managerUsers = json.requirementManagersList[i];
-							    	result = result+"<option value='"+managerUsers.id+"'>"+managerUsers.firstName+" "+managerUsers.lastName+"&nbsp;("+managerUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(managerUsers.lastName != null){
+							    		fullName = managerUsers.firstName+" "+managerUsers.lastName;
+							    	}else{
+							    		fullName = managerUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+managerUsers.id+"'>"+fullName+"&nbsp;("+managerUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -607,7 +639,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.requirementApproversList.length; i++)
 		    					{
 							    	approversUsers = json.requirementApproversList[i];
-							    	result = result+"<option value='"+approversUsers.id+"'>"+approversUsers.firstName+" "+approversUsers.lastName+"&nbsp;("+approversUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(approversUsers.lastName != null){
+							    		fullName = approversUsers.firstName+" "+approversUsers.lastName;
+							    	}else{
+							    		fullName = approversUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+approversUsers.id+"'>"+fullName+"&nbsp;("+approversUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -632,7 +670,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.teamOwnersList.length; i++)
 		    					{
 							    	teamOwnerUsers = json.teamOwnersList[i];
-							    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(teamOwnerUsers.lastName != null){
+							    		fullName = teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName;
+							    	}else{
+							    		fullName = teamOwnerUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+fullName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -657,7 +701,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.projectApproversList.length; i++)
 		    					{
 							    	projectApproverUsers = json.projectApproversList[i];
-							    	result = result+"<option value='"+projectApproverUsers.id+"'>"+projectApproverUsers.firstName+" "+projectApproverUsers.lastName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(projectApproverUsers.lastName != null){
+							    		fullName = projectApproverUsers.firstName+" "+projectApproverUsers.lastName;
+							    	}else{
+							    		fullName = projectApproverUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+projectApproverUsers.id+"'>"+fullName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -682,7 +732,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.clientDocumentsOwnerList.length; i++)
 		    					{
 							    	clientDocumentsOwnerUsers = json.clientDocumentsOwnerList[i];
-							    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(clientDocumentsOwnerUsers.lastName != null){
+							    		fullName = clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName;
+							    	}else{
+							    		fullName = clientDocumentsOwnerUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+fullName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -707,7 +763,13 @@ function getChangeRole(userId,userRoleId){
 							    for (var i=0; i<json.vendorDocumentsOwnerList.length; i++)
 		    					{
 							    	vendorDocumentsOwnerUsers = json.vendorDocumentsOwnerList[i];
-							    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
+							    	var fullName = "";
+							    	if(vendorDocumentsOwnerUsers.lastName != null){
+							    		fullName = vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName;
+							    	}else{
+							    		fullName = vendorDocumentsOwnerUsers.firstName;
+							    	}
+							    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+fullName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
 									
 		    					}
 							    result = result + '</select>';
@@ -718,14 +780,14 @@ function getChangeRole(userId,userRoleId){
 				
 				
 				
-				    result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
+				    result = result + '<div class="col-md-12 mb10" id="reasonDiv">';
 				    result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
 				  	
 				  	 result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '</div>';
 				      result = result + '<div class="clearfix"></div>';
-					  result = result + '<div class="user_summary_edit_cta clearfix">';
+					  result = result + '<div class="user_summary_edit_cta clearfix pull-right">';
 					  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
 					  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 					  result = result + '</div>';
@@ -1282,6 +1344,7 @@ $("#editRoleDetailsList").empty();
 			    var lastName = "";
 			    var rate = "";
 			    var mobilePhone = "";
+			    var extensionNumber="";
 			    var dailyHours = "";
 			    var emailId= "";
 			    var manager = "";
@@ -1308,6 +1371,10 @@ $("#editRoleDetailsList").empty();
 				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					mobilePhone = json.user.mobilePhone;
+				}
+				
+				if(json.user.extensionNumber != null && json.user.extensionNumber != "" && json.user.extensionNumber != 'undefined'){
+					extensionNumber = json.user.extensionNumber;
 				}
 				
 				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
@@ -1340,24 +1407,40 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
+					
+					result = result + ' <div class="row">';
+					
+					result = result + ' <div class="col-md-7 posSta phoneErrorvalid">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
+					result = result + ' <div class="col-md-5 errBotValEdit">';
+					result = result + ' <label>Extension</label>';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">';
+					result = result + ' </div>';
+					result = result + ' </div>';
 					
-					if(json.userState == "NOT_LOGGEDIN"){
+					result = result + ' </div>';
+					
+/* 					if(json.userState == "NOT_LOGGEDIN"){
 						
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
+						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
 						result = result + ' </div>';
 					
 					}
 					else{
 						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="EmailId" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 						result = result + ' </div>';
-					}
+					} */
+					
+					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+					result = result + ' </div>';
 					
 					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
@@ -1579,12 +1662,12 @@ function updateUserDesignationOtherType(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{
@@ -1660,7 +1743,7 @@ function removeUser(userId){
 	$("#removeUserList").empty(); 
 	
 	
-	//$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({
 	    	type: "POST",
@@ -1692,7 +1775,12 @@ function removeUser(userId){
 								    for (var i=0; i<json.reportingManagers.length; i++)
 			    					{
 								    	reportingManagers = json.reportingManagers[i];
-								    	result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	if(reportingManagers.lastName != null && reportingManagers.lastName != 'undefined' && reportingManagers.lastName != ''){
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}else{
+								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}
+								    	
 										
 			    					}
 								    result = result + '</select>';
@@ -1715,7 +1803,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.clientUsersList.length; i++)
 				    					{
 									    	clientOwnerAndSpoc = json.clientUsersList[i];
-									    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(clientOwnerAndSpoc.lastName != null){
+									    		fullName = clientOwnerAndSpoc.firstName+" "+clientOwnerAndSpoc.lastName;
+									    	}else{
+									    		fullName = clientOwnerAndSpoc.firstName;
+									    	}
+									    	result = result+"<option value='"+clientOwnerAndSpoc.id+"'>"+fullName+"&nbsp;("+clientOwnerAndSpoc.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1739,7 +1833,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.vendorUsersList.length; i++)
 				    					{
 									    	vendorOwnerAndSpoc = json.vendorUsersList[i];
-									    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(vendorOwnerAndSpoc.lastName != null){
+									    		fullName = vendorOwnerAndSpoc.firstName+" "+vendorOwnerAndSpoc.lastName;
+									    	}else{
+									    		fullName = vendorOwnerAndSpoc.firstName;
+									    	}
+									    	result = result+"<option value='"+vendorOwnerAndSpoc.id+"'>"+fullName+"&nbsp;("+vendorOwnerAndSpoc.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1763,7 +1863,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.requirementManagersList.length; i++)
 				    					{
 									    	managerUsers = json.requirementManagersList[i];
-									    	result = result+"<option value='"+managerUsers.id+"'>"+managerUsers.firstName+" "+managerUsers.lastName+"&nbsp;("+managerUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(managerUsers.lastName != null){
+									    		fullName = managerUsers.firstName+" "+managerUsers.lastName;
+									    	}else{
+									    		fullName = managerUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+managerUsers.id+"'>"+fullName+"&nbsp;("+managerUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1786,7 +1892,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.requirementApproversList.length; i++)
 				    					{
 									    	approversUsers = json.requirementApproversList[i];
-									    	result = result+"<option value='"+approversUsers.id+"'>"+approversUsers.firstName+" "+approversUsers.lastName+"&nbsp;("+approversUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(approversUsers.lastName != null){
+									    		fullName = approversUsers.firstName+" "+approversUsers.lastName;
+									    	}else{
+									    		fullName = approversUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+approversUsers.id+"'>"+fullName+"&nbsp;("+approversUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1811,7 +1923,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.teamOwnersList.length; i++)
 				    					{
 									    	teamOwnerUsers = json.teamOwnersList[i];
-									    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(teamOwnerUsers.lastName != null){
+									    		fullName = teamOwnerUsers.firstName+" "+teamOwnerUsers.lastName;
+									    	}else{
+									    		fullName = teamOwnerUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+teamOwnerUsers.id+"'>"+fullName+"&nbsp;("+teamOwnerUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1836,7 +1954,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.projectApproversList.length; i++)
 				    					{
 									    	projectApproverUsers = json.projectApproversList[i];
-									    	result = result+"<option value='"+projectApproverUsers.id+"'>"+projectApproverUsers.firstName+" "+projectApproverUsers.lastName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(projectApproverUsers.lastName != null){
+									    		fullName = projectApproverUsers.firstName+" "+projectApproverUsers.lastName;
+									    	}else{
+									    		fullName = projectApproverUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+projectApproverUsers.id+"'>"+fullName+"&nbsp;("+projectApproverUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1861,7 +1985,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.clientDocumentsOwnerList.length; i++)
 				    					{
 									    	clientDocumentsOwnerUsers = json.clientDocumentsOwnerList[i];
-									    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(clientDocumentsOwnerUsers.lastName != null){
+									    		fullName = clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName;
+									    	}else{
+									    		fullName = clientDocumentsOwnerUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+fullName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';
@@ -1886,7 +2016,13 @@ function removeUser(userId){
 									    for (var i=0; i<json.vendorDocumentsOwnerList.length; i++)
 				    					{
 									    	vendorDocumentsOwnerUsers = json.vendorDocumentsOwnerList[i];
-									    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
+									    	var fullName = "";
+									    	if(vendorDocumentsOwnerUsers.lastName != null){
+									    		fullName = vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName;
+									    	}else{
+									    		fullName = vendorDocumentsOwnerUsers.firstName;
+									    	}
+									    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+fullName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
 											
 				    					}
 									    result = result + '</select>';

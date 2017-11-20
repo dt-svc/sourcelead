@@ -32,7 +32,7 @@ window.onload = function () {
                   
                   <!-- <ul class="popdiv_two"> -->
                   <li>
-                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
+                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
                   <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
@@ -80,30 +80,29 @@ window.onload = function () {
                         </div>
                      
                         <div class="form-group" id="batchNumberDiv">
-                          <label class="col-md-3">Batch Number</label>
+                          <label class="col-md-3">Batch Number<span class="text-danger paddingLeft">*</label>
                           	<div class="col-md-9">
                           		<input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         	</div>
                         </div>
 
                       <div class="form-group">
-                      <label class="col-md-3">Document Type</label>
+                      <label class="col-md-3">Document Type<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9 chosenSelect_li" id="payrollTypeDiv">
                           <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
                             <option value="">Select Type</option>
-                            <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
+                            <option value="EMPLOYEE_PAYROLL">Employer Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
-                             <option value="BIS_USERS">Employees</option>
-                             <option value="BIS_CHECKS">Checks</option>
+                             <option value="BIS_CHECKS">Payments</option>
                               <option value="INVOICE">Invoice Data</option>
                           </select>
                         </div>
                         </div>
                         
                         <div class="form-group">
-                        <label class="col-md-3">Document Type</label>
+                        <label class="col-md-3">Upload Document<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9">
                           <div class="input-group ratetype" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File

@@ -42,7 +42,7 @@
 <style type="text/css">
 
 .actionHistory {
-margin-top: 75px; padding:10px; border: 1px solid #ddd;
+margin-top: 52px; padding:10px; border: 1px solid #ddd;
 }
 </style>
 
@@ -51,7 +51,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript.void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="<c:url value='/login'/>" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -63,10 +63,11 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <div class="clearfix"></div>
   <section class="container actionHistory">
   <h4>Actions Performed</h4>
-  <div class="clients_wrap_table">
+  <div class="clients_wrap_table hisOutWrap">
+  	<div id="actionHistoryOrgList" class="clearfix clients_wrap_table overflow_inherint"></div>
 	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">
-<div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
+<div class="welSiO" onclick="location.href='<c:url value='/login'/>'" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 <%-- 	<a href="<c:url value='/login'/>" class="btn btn-primary" title="Go to Loginpage">Go to Login <i class="fa fa-arrow-right paddingLeft"></i></a> --%>
 </div>
 </div>
@@ -77,7 +78,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
 
 <script> 
  window.onload = function() {
-	 var userSessionId = '${userLoginSession.id}';
+	 var userSessionId = '${userSessionId}';
 actionHistoryList(userSessionId);
  };
 </script>
@@ -85,15 +86,54 @@ actionHistoryList(userSessionId);
 <script>
 function actionHistoryList(userSessionId){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId,    
+           url: sourceleadUrl+"/getRestLocationActionHistoryList?userSessionId="+userSessionId,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
             	     else{
+            	    	 var outPut = ""; 
+            	    	 var orgLocation = "";
+            	    	 outPut = outPut + '<div class="project_wrap">';
+            	    	 outPut = outPut + '<div class="timesheet_head">';
+            	    	 outPut = outPut + '	<div class="ContrBut">';
+            	    	 
+            	    	 for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var activeClass = "";
+	                    	 if(i==0){
+	                    		 activeClass = "class='active Activation'";
+	                    		 orgLocation = opt.orgLocations.id;
+	                    	 }
+	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation('+userSessionId+','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
+            	    	 }
+            	    	 
+            	    	outPut = outPut + '		</div>';
+	                    $("#actionHistoryOrgList").append(outPut);
+	                    actionHistoryListByOrgLocation(userSessionId, orgLocation);
+            	     }
+          		},
+            
+       });  
+  } 
+  
+</script>
+
+<script>
+function actionHistoryListByOrgLocation(userSessionId, orgLocation){  
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $.ajax({
+           type : "GET",
+           url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId+"&orgLocation="+orgLocation,    
+            success :function(json) {
+            	     if(json.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            	     else{
+            	    	 
             	    	 $("#actionHistoryLoading").removeAttr("style");
 	                	 $("#actionHistoryList").empty();
 	                	 var result = "";
@@ -107,12 +147,11 @@ function actionHistoryList(userSessionId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     /* var json = JSON.parse(data); */
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 
-	                    	 	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
+	                    	   	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
 	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>"; 
@@ -125,17 +164,16 @@ function actionHistoryList(userSessionId){
 	                    	    }
 	                    	    
 	                    	    if(opt.actionPerformed != null && opt.actionPerformed !='' && opt.actionPerformed !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-big textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
+	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>";
 	                    	    }
-	                    	    
-	                    	   
-	                    	    
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
+	                     result = result +"</table>";
+	                     result = result + '</div>';
+	                     result = result + '</div>';
 	                     $("#actionHistoryLoading").removeAttr("style");
 	                     $("#actionHistoryList").append(result); 
 	                     actionHistoryPagenation(); 
@@ -147,6 +185,7 @@ function actionHistoryList(userSessionId){
   } 
 </script>   
 
+
  <script>
 function actionHistoryPagenation(){ 
 	 $('#actionHistoryPagenation').DataTable( { 
@@ -157,7 +196,8 @@ function actionHistoryPagenation(){
 	    	"ordering": true,
 	    	"oLanguage": {
 	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
+					"sZeroRecords" : "",
+					"sEmptyTable" : ""
 	       }
 	    });
 	 $('#actionHistoryPagenation').wrap('<div class="overflow_Auto width100percnt"></div>');
@@ -173,19 +213,8 @@ var validationSettings = {
 	};
 </script>
           
-   <script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>   
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+      
 
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>   
 
 <script type="text/javascript">
 	(function($) {
@@ -206,7 +235,17 @@ var validationSettings = {
 			return o;
 		};
 	})(jQuery);
-</script>          
+</script> 
+
+	<script>
+		function enableTabs(orgLocationsId) {
+			$('[id^=shift]').each(function() {
+	                this.className = '';   
+	            });
+			document.getElementById('shift' + orgLocationsId + '').className = 'active';
+		};
+	</script>
+         
 
 </body>
 </html>

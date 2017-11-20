@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -130,6 +133,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	CandidateResumesDao candidateResumesDao;
 
 	
 	@Override
@@ -432,7 +438,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder attachmentBuilder=new StringBuilder();
+            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
+            {
             emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	         }
+	       else
+	        {
+	    	   emailMessage.setFromName(loginUser.getFirstName());
+	        }
+            
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
             // setting the class filed values
@@ -1229,6 +1243,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				sb.append(offer.getSubmissionId().getCandidate().getFirstName());
 			}
 			offer.setCandidateName(sb.toString());
+			offer.setSpocUserCode(offer.getSubmissionId().getCreatedBy());
 			offer.setClientName(offer.getSubmissionId().getVendorLocationId().getOrgLocationName());
 			StringBuilder vendorContactSb = new StringBuilder();
 			if(offer.getSubmissionId().getSourceSubmission() != null && offer.getSubmissionId().getSourceSubmission().getRequirement() != null && offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId() != null){
@@ -1253,9 +1268,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					}
 					currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orglocation.getDateFormat(),converteDate);
 					offer.setDateOfJoiningStr(currentDateInTimezone);
-					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+					/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 					String time = localDateFormat.format(converteDate);
-					offer.setDateOfJoiningStr(time);
+					offer.setDateOfJoiningStr(time);*/
 				}
 			}
 			
@@ -1278,7 +1293,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		RequirementSubmission clientSubmission = null;
 		Candidate candidate = null; 
-		
+		MasterCandidate masterCandidte = null;
 		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
     			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
 			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
@@ -1291,10 +1306,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		if(candidate == null){
 			candidate = new Candidate();
-			MasterCandidate masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
+			masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
     		if(masterCandidte != null){
     			candidate.setMasterCandidateId(masterCandidte);
     		}
+		}
     		
     		
     		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOffers.getSubmissionId().getId());
@@ -1305,6 +1321,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setLastName(templateFields.getLastName());
 		    		candidate.setEmail(templateFields.getEmailId());
 		    		candidate.setMobilePhone(templateFields.getPhoneNumber());
+		    		candidate.setLocation(templateFields.getLocation());
 		    		candidate.setCountry(templateFields.getCountry());
 		    		candidate.setState(templateFields.getState());
 		    		candidate.setCity(templateFields.getCity());
@@ -1323,6 +1340,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		candidate.setDesignationType("C2C");
     		candidate.setStatus(Constants.RECORD_ACTIVE);
+    		candidate.setCurrentRate(requirementOffers.getAmount());
+    		candidate.setCurrentRateType(requirementOffers.getPaymentMode());
+    		candidate.setCurrentRateCurrency(requirementOffers.getPaymentType());
+    		candidate.setExpectedRate(requirementOffers.getAmount());
+    		candidate.setExpectedRateCurrencey(requirementOffers.getPaymentType());
+    		candidate.setRateType(requirementOffers.getPaymentMode());
     		
     		if(requirementSubmission.getSourceSubmission() != null){
     			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
@@ -1353,11 +1376,61 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
+    		candidate.setStatus(1);
+    		
+    		Candidate vendorCandidate = null;
+    		
+    		if(requirementSubmission.getSourceSubmission() != null){
+    		vendorCandidate = candidateService.findByCandidateEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());
+    		if(vendorCandidate == null){
+    			vendorCandidate = new Candidate();
+    			MasterCandidate vendorMasterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getCandidate().getMobilePhone());
+    			if(vendorMasterCandidate != null){
+        			vendorCandidate.setMasterCandidateId(vendorMasterCandidate);
+        		}
+    			vendorCandidate.setOrgLocationId(requirementSubmission.getSourceSubmission().getOrgLocations());
+    			vendorCandidate.setCandidateType("Candidate");
+    			vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    			vendorCandidate.setFirstName(requirementSubmission.getSourceSubmission().getCandidate().getFirstName());
+    			vendorCandidate.setLastName(requirementSubmission.getSourceSubmission().getCandidate().getLastName());
+    			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
+    			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
+    			vendorCandidate.setStatus(1);
+    			candidateService.saveOrUpdateCandidate(vendorCandidate);
+    			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+    		 }
+    		}
+    		
+    		candidate.setParentCandidateId(vendorCandidate);
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 	    	
+	    	if(requirementSubmission != null && requirementSubmission.getCandidateResumes() != null) {
+    			CandidateResumes resume = candidateResumesDao.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+    			if(resume != null) {
+    				CandidateResumes candResume = new CandidateResumes();
+    				candResume.setOrgLocationId(orgLocations);
+    				candResume.setCandidateId(candidate);
+    				candResume.setFileContentType(resume.getFileContentType());
+    				candResume.setFileName(resume.getFileName());
+    				candResume.setFileURL(resume.getFileURL());
+    				candResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    				candResume.setStatus(Constants.RECORD_ACTIVE);
+    				candResume.setCreatedBy(orgLocations.getCreatedBy());
+    				if(orgLocations.getDateFormat() != null) {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));	
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}else {
+    					candResume.setCreatedDate(commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy", new Date()));
+    					candResume.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+    				}
+    				
+    				candidateResumesDao.storeCandidateResumes(candResume);
+    			}
+    		}
+	    	
 	    	if(requirementSubmission.getSourceSubmission() != null){
-	    		requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+	    		requirementSubmission.setVendorCandidateId(vendorCandidate);
 		    	requirementSubmission.setCandidate(candidate);
 		    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 	    	}else{
@@ -1372,12 +1445,180 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    			}
 	    	}
     		
-		}
+		
 		return candidate;
 		
 	}
 
+	@Override
+	public void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception
+	{
+		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
+		OrgLocations orgloc = orgLocationService.getOrgLocations(requirementOffers.getSubmissionId().getOrgLocations().getId());
+		RequirementSubmissionTemplateFields tempFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
+	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		EmailMessage emailMessage = new EmailMessage();
+		StringBuilder toUserSb = new StringBuilder();
+		if(StringUtils.isNotBlank(touser.getLastName())){
+			toUserSb.append(touser.getFirstName()).append(" ").append(touser.getLastName());
+		}else{
+			toUserSb.append(touser.getFirstName());
+		}
+		emailMessage.setFirstName(touser.getFirstName());
+		emailMessage.setLastName(touser.getLastName());
+		emailMessage.setToEmail(touser.getEmail());
+		emailMessage.setFromEmail(tempFields.getEmailId());
+		StringBuilder contactBuilder=new StringBuilder();
+		if(StringUtils.isNotBlank(tempFields.getLastName())){
+			emailMessage.setFromName(contactBuilder.append(tempFields.getFirstName()).append(" ").append(tempFields.getLastName()).toString());
+		}else{
+			emailMessage.setFromName(contactBuilder.append(tempFields.getFirstName()).toString());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+			
+			if(StringUtils.isNotBlank(tempFields.getLastName())){
+				StringBuilder applicantNameBuilder=new StringBuilder();
+				globalVarsMap.put("applicantName",applicantNameBuilder.append(tempFields.getFirstName()).append("").append(tempFields.getLastName()).toString());	
+			}
+			else{
+				globalVarsMap.put("applicantName",tempFields.getFirstName());	
+			}
+			if(requirementOffers.getSubmissionId() != null && requirementOffers.getSubmissionId().getRequirement() != null){
+				StringBuilder reqSb = new StringBuilder();
+				if(StringUtils.isNotBlank(requirementOffers.getSubmissionId().getRequirement().getJobId()))
+					globalVarsMap.put("jobTitle", reqSb.append(requirementOffers.getSubmissionId().getRequirement().getJobId()).append(" - ").append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+				else
+					globalVarsMap.put("jobTitle", reqSb.append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+			}
+			else{
+				globalVarsMap.put("jobTitle", "---");
+			}
+			
+			globalVarsMap.put("orgUser", toUserSb.toString());
+			
+			if(null != requirementOffers.getDateOfJoining() ){
+			requirementOffers.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),(requirementOffers.getDateOfJoining())));	
+			globalVarsMap.put("joinDate", requirementOffers.getDateOfJoiningStr());
+			}
+			else{
+			globalVarsMap.put("joinDate", "---");
+			}
+		
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_ACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_ACCEPT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgloc.getOrg(),orgloc);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage,orgloc.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		
+       String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+       notificationScenario.setBody(notificationbody);
+       
+       String actionLink = "";
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+		
+	}
+	
+	@Override
+	public void sendApplicantOfferRejectMail(RequirementOffers requirementOffers) throws Exception
+	{
+		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
+		OrgLocations orgloc = orgLocationService.getOrgLocations(requirementOffers.getSubmissionId().getOrgLocations().getId());
+		RequirementSubmissionTemplateFields tempFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
+	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		EmailMessage emailMessage = new EmailMessage();
+		StringBuilder toUserSb = new StringBuilder();
+		if(StringUtils.isNotBlank(touser.getLastName())){
+			toUserSb.append(touser.getFirstName()).append(" ").append(touser.getLastName());
+		}else{
+			toUserSb.append(touser.getFirstName());
+		}
+		emailMessage.setFirstName(touser.getFirstName());
+		emailMessage.setLastName(touser.getLastName());
+		emailMessage.setToEmail(touser.getEmail());
+		emailMessage.setFromEmail(tempFields.getEmailId());
+		StringBuilder contactBuilder=new StringBuilder();
+		if(StringUtils.isNotBlank(tempFields.getLastName())){
+			emailMessage.setFromName(contactBuilder.append(tempFields.getFirstName()).append(" ").append(tempFields.getLastName()).toString());
+		}else{
+			emailMessage.setFromName(contactBuilder.append(tempFields.getFirstName()).toString());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+			
+			if(StringUtils.isNotBlank(tempFields.getLastName())){
+				StringBuilder applicantNameBuilder=new StringBuilder();
+				globalVarsMap.put("applicantName",applicantNameBuilder.append(tempFields.getFirstName()).append("").append(tempFields.getLastName()).toString());	
+			}
+			else{
+				globalVarsMap.put("applicantName",tempFields.getFirstName());	
+			}
+			if(requirementOffers.getSubmissionId() != null && requirementOffers.getSubmissionId().getRequirement() != null){
+				StringBuilder reqSb = new StringBuilder();
+				if(StringUtils.isNotBlank(requirementOffers.getSubmissionId().getRequirement().getJobId()))
+					globalVarsMap.put("jobTitle", reqSb.append(requirementOffers.getSubmissionId().getRequirement().getJobId()).append(" - ").append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+				else
+					globalVarsMap.put("jobTitle", reqSb.append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+			}
+			else{
+				globalVarsMap.put("jobTitle", "---");
+			}
+			
+			globalVarsMap.put("orgUser", toUserSb.toString());
+			
+			if(null != requirementOffers.getRejectedReason()){
+				globalVarsMap.put("reason", requirementOffers.getRejectedReason());
+			}
+			else{
+				globalVarsMap.put("reason", "---");
+			}
+		
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_REJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_REJECT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgloc.getOrg(),orgloc);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage,orgloc.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		
+       String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+       notificationScenario.setBody(notificationbody);
+       
+       String actionLink = "";
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+		
+	}
 
 }

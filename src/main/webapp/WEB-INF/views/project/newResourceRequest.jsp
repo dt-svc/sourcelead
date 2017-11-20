@@ -161,14 +161,15 @@
          <h2 class="pull-left">New Resource Request</h2>
         <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector" style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+		         <i class="fa fa-check-circle"></i><span>${msg}</span> 
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Project Summary</a> &raquo; New Resource Request</div>
         </section>
 	   
 		   <div class="content-area content-new clearfix">
 		   <div id="associateRequestLoading"></div>	
+		   <div id="choicepopUp"></div>	
 		     <form:form id="add_newResource_form" name="add_newResource_form" >
 		        <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${currencyCode}"> 	 
 			    <div class="row form-horizontal mt myForm">
@@ -209,6 +210,7 @@
 			
 			<div class="project_side_wrap_inn_tabs mt clearfix">
 			    <input type="hidden"  name="maxRecCount" id="maxRecCount" value="1">
+			    <input type="hidden"  name="maxRowCount" id="maxRowCount" value="0">
 			    <div class="project_tabs_inn_head">
 			        <a href="javascript:addResourceInfo()" class="AdRes"><i class="glyphicon glyphicon-plus"></i>Add</a>
 			    </div>
@@ -251,7 +253,7 @@
 					<div class="pull-right">
 					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
 					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
-					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" class="btn btn-default ml">
 					</div>
 				  </div>
 			</div>    	    
@@ -391,6 +393,11 @@
 			
 			$("#cancelResourceRequestButton"+maxRowNum).removeAttr('onclick');
 			$("#cancelResourceRequestButton"+maxRowNum).attr('onclick','hideAndShowDetailsRow('+maxRowNum+',"Hide")');
+			
+			
+			
+			var maxRowCount = parseInt($("input[name = 'maxRowCount']").val());
+			$("input[name = 'maxRowCount']").val(maxRowCount + 1);
 			
 			
 			//role
@@ -731,6 +738,10 @@ function removeRow(rowId){
 	var totalBudget = totalEstimatedBudget - estimatedBudget; 
 	$("#totalEstBudget").val(totalBudget);
 	
+	var maxRowCount = parseInt($("input[name = 'maxRowCount']").val());
+	$("input[name = 'maxRowCount']").val(maxRowCount - 1);
+
+	
 	
 	$("#resourceInfoContent"+rowId).empty();
 	document.getElementById('divResourceTsRow' + rowId).style.display = 'none';
@@ -823,20 +834,32 @@ function saveNewResourceRequest(saveType){
 		  	formData.append("json",jsonData);
   			var sourceleadUrl ='${sourceleadUrl}';
   			var projectUUID = '${projectUUID}';
-	  		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		$.ajax({
-					type : "POST",
-	  	    	    data: formData,
-	  	    	    contentType : 'application/json; charset=utf-8',
-	  		        processData: false,
-	  		        contentType:false, 
-	  	    	    dataType : 'json',
-					url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
-					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
-					},
-				});  
-  		       return true;
+  			var projectClientUUID = '${projectClientUUID}';
+	  		
+  			var maxRowCount = $("#maxRowCount").val();
+			
+  			if(maxRowCount > 0){
+  				$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		  		$.ajax({
+  						type : "POST",
+  		  	    	    data: formData,
+  		  	    	    contentType : 'application/json; charset=utf-8',
+  		  		        processData: false,
+  		  		        contentType:false, 
+  		  	    	    dataType : 'json',
+  						url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
+  						success : function(result) {
+  							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+  						},
+  					});
+  		  	return true;
+  			
+  			}else{
+  	 			 alertMessage();
+  	 			 return false;
+  			}
+  		  
+  		       
 	      }else{
 		       return false;
 	    }
@@ -846,6 +869,30 @@ $('body').on('blur', '#add_newResource_form', function() {
 	$("#add_newResource_form").validateOnBlur(false, validationSettings);
 });
 
+</script>
+
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Add atleast one resource request</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
 </script>
 	
 <script type="text/javascript">
@@ -1064,28 +1111,22 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 function getApproversList(approverId){
 var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
-	    		success: function(data) {
-	        	var json = JSON.parse(data);
+	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
-		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		     			fullname = opt.firstName+" "+opt.lastName;
-		     		}else{
-		     			fullname = opt.firstName;
-		     		}
-		     		
+		     				     		
 		     		if(approverId != null && approverId != '' && approverId != 'undefined' && approverId == opt.id){
 		     			var selected = 'selected';
-		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.name+" ("+opt.userRole+")</option>";
 		     		}else{
-		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     			output = output + "<option value='" +opt.id+ "'>"+opt.name+" ("+opt.userRole+")</option>";
 		     		} 
 	     		}
 	     		$("#approver").empty();
@@ -1311,8 +1352,6 @@ function editChangeRole(e,rowId){
 function removeValidation(){
 	$('#errApprover').find('p.jquery_form_error_message').remove(); 
 }
-
-
 </script>
  <jsp:include page="../masterFooter.jsp" />	
 </html>

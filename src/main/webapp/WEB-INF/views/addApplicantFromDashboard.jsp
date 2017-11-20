@@ -8,6 +8,8 @@
 <script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
@@ -45,6 +47,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
+	
 	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
 	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
 	result = result + '</div>';	
@@ -52,7 +55,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 	result = result + '<div class="input-group" id="uploadFileGroup">';
-	result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
 	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
@@ -164,7 +167,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-	result = result + '			        <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
 	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
@@ -931,10 +934,12 @@ function getCandidateSelectionType(){
 function getCandidateDetails(){
 	var candidateId = document.getElementById("candidateId").value
 	var sourceleadUrl ='${sourceleadUrl}';
+	var requirementId = $("#requirementId").val();
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -1399,10 +1404,8 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
-		        		
+		        success: function(json) {
+		        	
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("input[name=FirstName]").val(json.firstName);
 		        			$("input[name=FirstName]").attr("readonly", "readonly");
@@ -1440,11 +1443,7 @@ function validate_fileupload(fileName)
 		        			if(phno == ''){
 		        				$("input[name=PhoneNumber]").val('');
 		        			}
-		        			
-		        			
-		        		}
-		        		
-		        	}
+		        	   }
 		        },
 		    });
 	 }else{
@@ -1665,12 +1664,12 @@ function validate_fileupload(fileName)
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
 		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorContact').trigger("chosen:updated");
@@ -1678,4 +1677,15 @@ function validate_fileupload(fileName)
 		 }); 
  }
  </script>
+ 
+ <script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
+<script>
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
  

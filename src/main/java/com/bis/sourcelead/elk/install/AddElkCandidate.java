@@ -71,6 +71,13 @@ public class AddElkCandidate{
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
 					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
 					candidateIndex.setLastName(rs.getString("LAST_NAME"));
+					
+					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
+						candidateIndex.setFullName(rs.getString("FIRST_NAME")+" "+rs.getString("LAST_NAME"));
+					}else {
+						candidateIndex.setFullName(rs.getString("FIRST_NAME"));
+					}
+					
 					candidateIndex.setEmail(rs.getString("EMAIL"));
 					candidateIndex.setAlternateEmail(rs.getString("ALTERNATE_EMAIL"));
 					candidateIndex.setMobilePhone(rs.getString("MOBILE_PHONE"));
@@ -255,6 +262,9 @@ public class AddElkCandidate{
 									 candidateIndex.setCurrentResumeId(rs4.getLong("ID"));
 									 candidateIndex.setCurrentResumeName(rs4.getString("FILE_NAME"));
 									 candidateIndex.setResumeContent("");
+									 candidateIndex.setFileUrl(rs4.getString("FILE_URL"));
+									 candidateIndex.setFileContentType(rs4.getString("FILE_CONTENT_TYPE"));
+									 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
 							    }
 		    	           }
 		    	    }

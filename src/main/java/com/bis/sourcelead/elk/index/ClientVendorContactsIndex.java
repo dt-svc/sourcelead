@@ -78,9 +78,15 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String action;
 	
+	private String onboardUUID;
+	
+	private String notificationUUID;
 	
 	
-	public Long getOwnerUserId() {
+	private String checkbox;
+	
+	
+	public Long getOwnerUserId() { 
 		return ownerUserId;
 	}
 
@@ -364,6 +370,34 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	
+
+	public String getOnboardUUID() {
+		return onboardUUID;
+	}
+
+	public void setOnboardUUID(String onboardUUID) {
+		this.onboardUUID = onboardUUID;
+	}
+
+	public String getNotificationUUID() {
+		return notificationUUID;
+	}
+
+	public void setNotificationUUID(String notificationUUID) {
+		this.notificationUUID = notificationUUID;
+	}
+
+	public String getCheckbox()
+	{
+		return checkbox;
+	}
+
+	public void setCheckbox(String checkbox)
+	{
+		this.checkbox = checkbox;
 	}
 	
 }

@@ -20,6 +20,18 @@
 clients_wrap {
 overflow-x: auto;
 }
+/* .side-bar {
+z-index: 8;
+}
+.main-header {
+z-index: 5;
+}
+.advancedsearch-mask {
+z-index: 9;
+}
+.cand-advsrch {
+z-index: 1;
+} */
 </style>
 <body>
 
@@ -56,8 +68,14 @@ overflow-x: auto;
   <div class="timesheet_out">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+            </div>
+            </div>
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+         <h5 class="headerAdsrch">Advanced Search 
+          <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          </h5>
+          <div class="addInner">
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -84,9 +102,6 @@ overflow-x: auto;
             </div>
             <div class="row">
 	            <div id="vendorListAdvanced">
-		              <div class="col-md-12">
-		                <h4>Details:</h4>
-		              </div>
 		              <div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
@@ -243,21 +258,21 @@ overflow-x: auto;
             </div>  
               
             </div>
-            <div class="row form-footer mt">
+            <div class="row clearfix">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
           </div>
+          </div>
+          </div>
           </form:form>
-        </div>
-        </div>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
 <!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
@@ -352,7 +367,7 @@ overflow-x: auto;
 
 
        <div class="side_mask"><div class="proj_close"></div></div>
-		<div class="clients_side_wrap">
+		<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
@@ -362,8 +377,9 @@ overflow-x: auto;
 			</div>
          </div>
 	</section>
+	
+	<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 </body>
-
 
 
 <script type="text/javascript">
@@ -723,8 +739,10 @@ function clearSearch(){
 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
+		 $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
+		 
 	    $('#orgNameAdvanced').val(''); 
-	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
@@ -733,7 +751,7 @@ function clearSearch(){
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
 	    $("#excludeKeyWord").empty();
-	    $("#orgNameAdvanced").empty();
+// 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
 
@@ -937,7 +955,7 @@ function pagination(){
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\',\'ROLE_VIEW_EDIT_INVOICE\')">';
-		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
+		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Invoices</a></li>';
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1948,7 +1966,7 @@ function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
@@ -2143,11 +2161,9 @@ function exportContactToExcel(){
 <script>
 // Edit pop
 $(document).ready(function() {	
-	
     $("#edit-client, #btnClose").click(function() {
         $(".user_summary_edit").slideUp(100);
     });
-		
 });
 </script> 
 
@@ -2193,11 +2209,16 @@ $('#selector').delay(2000).fadeOut('slow');
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  
+		  $(".advancedsearch-mask").fadeIn();
 		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 </script>
 	
  

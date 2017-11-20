@@ -1,19 +1,16 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementRateSubmissionNegotiationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,7 +44,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -191,10 +188,10 @@ public class SubmissionsRateRestController {
 //	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
-	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) String submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
+	public @ResponseBody String storeNegotiation(RequirementRateSubmissionNegotiationDTO reqRateSubNegotiationDTO,@RequestParam(value = "submissionId", required = false) String submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
 	 
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		/*String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(jsonc);*/
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
@@ -206,11 +203,11 @@ public class SubmissionsRateRestController {
 		RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(Long.parseLong(submissionId));
 		
 		requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
-		if(jsonObj.has("rateProposal")){
-			requirementRateSubmissionNegotiation.setExpectedRate(jsonObj.getString("rateProposal"));
+		if(StringUtils.isNoneBlank(reqRateSubNegotiationDTO.getRateProposal())){
+			requirementRateSubmissionNegotiation.setExpectedRate(reqRateSubNegotiationDTO.getRateProposal());
 		}
-		if(jsonObj.has("rateType")){
-			requirementRateSubmissionNegotiation.setExpectedRateType(jsonObj.getString("rateType"));
+		if(StringUtils.isNoneBlank(reqRateSubNegotiationDTO.getRateType())){
+			requirementRateSubmissionNegotiation.setExpectedRateType(reqRateSubNegotiationDTO.getRateType());
 		}
 		if(null != pastRequirementRateSubmissionNegotiation){
 			requirementRateSubmissionNegotiation.setCurrentRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
@@ -219,8 +216,8 @@ public class SubmissionsRateRestController {
 		
 		requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 		requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
-		if(jsonObj.has("comment") && jsonObj.getString("comment") != null && "" != jsonObj.getString("comment")){
-			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment").trim());
+		if(StringUtils.isNoneBlank(reqRateSubNegotiationDTO.getComment())){
+			requirementRateSubmissionNegotiation.setRateReason(reqRateSubNegotiationDTO.getComment().trim());
 		}
 		
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);

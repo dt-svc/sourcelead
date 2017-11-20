@@ -6,22 +6,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +30,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.impl.InvoiceServiceImpl;
 import com.google.gson.Gson;
 /**
  * 
@@ -375,17 +371,28 @@ public class ConversionUtil {
 	 * @return
 	 */
 	public List<LocalDate> getAllDatesBetweenGivenDates(LocalDate date1, LocalDate date2) {
-		List<LocalDate> datesList = null;
-		if (date1 != null && date2 != null) {
-			datesList = new ArrayList<>();
-			// LocalDate date1 = new LocalDate(startDateUTC);
-			// LocalDate date2 = new LocalDate(endDateUTC);
-			while (date1.isBefore(date2)) {
-				datesList.add(date1);
-				// System.out.println(date1.toString("MMM/yyyy"));
-				date1 = date1.plus(Period.months(1));
-			}
-		}
+		
+		LocalDate start = date1.dayOfMonth().withMinimumValue();
+	     LocalDate end = date2.dayOfMonth().withMaximumValue();
+	     List<LocalDate> datesList = null;
+	     if (start != null && end != null) {
+	             datesList = new ArrayList<>();
+	             // LocalDate date1 = new LocalDate(startDateUTC);
+	             // LocalDate date2 = new LocalDate(endDateUTC);
+	             while (start.isBefore(end)) {
+	                 if(date1.isBefore(date2)) {
+	                   datesList.add(date1);
+	                 }
+	                 else {
+	                   datesList.add(date2.dayOfMonth().withMinimumValue());
+	                 }
+	                 // System.out.println(date1.toString("MMM/yyyy"));
+	                 date1 = date1.plus(Period.months(1));
+	                 start = date1;
+	             }
+	             if(start.equals(end))
+	            	 datesList.add(date2.dayOfMonth().withMinimumValue());
+	     }
 		return datesList;
 	}
 
@@ -400,9 +407,17 @@ public class ConversionUtil {
 		return formatter.format(date);
 	}
 	
-	public static String getDateAsddMMMYYYYHHMMSS(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+	public static String getDateAsddMMMYYYYHHMMSS(Date date,ZoneId zoneId) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss a");
+		formatter.setTimeZone(TimeZone.getTimeZone(zoneId));
 		return formatter.format(date);
+		
+	}
+	
+	public static String getActionDateddMMMYYYYHHMMSS(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss a");
+		return formatter.format(date);
+		
 	}
 
 	public Date getDateFromMMDDYYY_HHMMSS(String dateStr) {

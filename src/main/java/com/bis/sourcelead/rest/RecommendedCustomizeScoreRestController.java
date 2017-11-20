@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.CandidateCompareDTO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -265,9 +266,9 @@ public class RecommendedCustomizeScoreRestController {
 	 */
 	@RequestMapping(value = {"/getCandidatesToCompare","/rest/getCandidatesToCompare" }, method = RequestMethod.GET)
 	@ResponseBody
-	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidatesSelected", required = false) String candidatesSelected) throws Exception
+	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidatesSelected", required = false) String candidatesSelected,CandidateDTO candidateDTO) throws Exception
 	{
-		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId,candidatesSelected);
+		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId,candidatesSelected,candidateDTO);
 		return candidateCompare;
 	}
 	

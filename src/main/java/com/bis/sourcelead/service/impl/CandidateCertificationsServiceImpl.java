@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,32 +128,19 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidFrom())) {
 					try {
 						
-						//String pattern = "dd-MM-yyyy";
-                        //DateFormat format = LoginSessionController.DATEFORMAT;
-                        
                         Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidFrom());
                         candidatecertificate.setValidFrom(validFrom);
 						
-						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-						if(jsonObject.getString("validFrom") != null && jsonObject.getString("validFrom") != ""){
-						candidatecertificate.setValidFrom(sdf.parse(jsonObject.getString("validFrom")));
-						}*/
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
-						//String pattern = "dd-MM-yyyy";
-						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
                         Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),candidateCertificationDTO.getValidTo());
                         candidatecertificate.setValidTo(validTo);
 						
-						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
-						if(jsonObject.getString("validTo") != null && jsonObject.getString("validTo") != ""){
-						candidatecertificate.setValidTo(sdf.parse(jsonObject.getString("validTo")));
-						}*/
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -282,6 +271,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				for(CandidateCertifications cert :certificationList){
 					certList.add(cert.getName());
 				}
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 				candidateIndex.setCertifications(certList);
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());

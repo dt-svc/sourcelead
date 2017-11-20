@@ -157,8 +157,11 @@ function addContractNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined')
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content comments-notes">';
@@ -351,7 +354,7 @@ function displyContract(stage){
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				if(null != json.requirementName && "" != json.requirementName && 'undefined' != json.requirementName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
@@ -458,9 +461,9 @@ function displyContract(stage){
 						else{
 							result = result + '    <td>--</td>';
 						}
-						 if(opt.docFile != null && opt.docFile !=""){
-							result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
-		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
+						 if(opt.fileURL != null && opt.fileURL !=""){
+							result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"title="Download"></a>';
+		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\');"title="preview"></a>';
 						 }else{
 							 result = result + '    <td>--</td>';
 						 }
@@ -528,7 +531,7 @@ function displyContract(stage){
 			
 			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Payment Frequency</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
 				result = result +	'	</div>';
 			}

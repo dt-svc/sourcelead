@@ -20,6 +20,8 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="NOTIFICATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="notifications")
@@ -90,14 +92,17 @@ public class Notifications implements Serializable{
 	
 	//to get only time from datetime
 	@Transient
+	@JsonProperty
 	private String time;
 	
 	//to get only date from datetime
 	@Transient
+	@JsonProperty
 	private String dateValue;
 	
 	//to calculate days
 	@Transient
+	@JsonProperty
 	private String calDays;
 	
 	//to notification count
@@ -105,6 +110,7 @@ public class Notifications implements Serializable{
 	private Long notificationCount;
 
 	@Transient
+	@JsonProperty
 	private String notificationFirstName;
 	
 	@Transient
@@ -115,6 +121,7 @@ public class Notifications implements Serializable{
 	
 	
 	@Transient
+	
 	private String notificationUserType;
 	
 	@Transient

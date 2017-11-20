@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -39,6 +42,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -46,11 +50,11 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -79,6 +83,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	private ExpensesService expensesService;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -96,11 +103,14 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
 
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception {
+	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 	//	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
@@ -122,9 +132,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
 		}
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus, startDateUTC, endDateUTC);
-		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
-			
+		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus, startDateUTC, endDateUTC,searchValue,start,length);
+		LinkedList<ExpensesApproverHierarchy> freshEahList = new LinkedList<>();
+		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy.getData()){
+			Expenses expenses = expensesApproverHierarchy.getExpenseId();
+			expenses.setLocationsCode(expensesApproverHierarchy.getExpenseId().getOrgLocationId().getLocationCode());
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
 				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
 				expensesApproverHierarchy.setExpenseEndDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getEndDate()));
@@ -146,18 +158,13 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
 							
-					
-					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee()) {
-						
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId() && !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId())){
-								expensesApproverHierarchy.setExpensesEmployeeUserId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getEmployeeId());
-							}else{
-								expensesApproverHierarchy.setExpensesEmployeeUserId("--");
-							}
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType())){
-								String empType = expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType();
+					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
+					if (null !=projectMember.getProjectMemberCandidteId()) {
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgLocations().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgRelationId().getId());
+									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
 									expensesApproverHierarchy.setExpenseEmpUserType(empType);
 								 }else{
@@ -167,15 +174,13 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpenseEmpUserType("--");
 							}
 						
-						if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser()) {
-							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName()){
-								StringBuilder firstLastName = new StringBuilder();
-								expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(firstLastName.append(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName()).append("").append(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName()).toString());
-							}else{
-								expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());	
+						if (null != projectMember.getProjectMemberCandidteId()) {
+							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
+							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
+							if(pmWithUser != null && null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
+								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
-								expensesApproverHierarchy.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getEmail());
-								expensesApproverHierarchy.setExpensesUserid(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getId());
 						}
 						
 						if (null != expensesApproverHierarchy.getExpenseId()) {
@@ -185,11 +190,17 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
 							}
 						}
+						Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
+						if(StringUtils.isNotEmpty(expensesApproverHierarchy.getReopenRejectedReason()) && !isadmin){
+							expensesApproverHierarchy.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
+						}
+						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
 					}
 				}
 			}
-
+			freshEahList.add(expensesApproverHierarchy);
 		 }
+		expApperoverHierarchy.setData(freshEahList);
 		return expApperoverHierarchy;
 	}
 
@@ -207,8 +218,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
-			String rejectedReason) throws Exception {
-		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
+			String rejectedReason,OrgLocations location) throws Exception {
+		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location);
 	}
 
 
@@ -379,10 +390,13 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				
-				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				expenseArray[12] = submissionStatus.getValue();
+				    if(eah.getReopenRejectedReason()!= null) {
+				    	expenseArray[12] = "Rejected";
+				    }else {
+				    	expenseArray[12] = submissionStatus.getValue();	
+				    }
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -545,10 +559,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
                 createExcelsheet.autoSizeColumn(11);
 			}
 			if(null != expenseId.getExpenseStatus()){
-				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId());
+				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
+			    if(eah.getReopenRejectedReason()!= null) {
+			    	writeRow.createCell(12).setCellValue("Rejected");
+			    }else {
 				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
 				createExcelsheet.autoSizeColumn(12);
+			    }
 			}
 			if(null != ex.getActionPerformedBy()){
 				writeRow.createCell(13).setCellValue(ex.getActionPerformedBy());
@@ -563,6 +581,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
 	}
 
+	@Override
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId){
+		return expensesApprovalDao.isReopenButtonVisibleForLoginOrg(expenseId, locationsId);
+	}
 
 	@Override
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
@@ -577,8 +599,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	
 	@Override
 	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,
-			Long expenseId) throws Exception {
-		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
+			Long expenseId,Long locationsId) throws Exception {
+		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId,locationsId);
 	}
 
 
@@ -610,7 +632,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				//setting the class filed values
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
+				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);

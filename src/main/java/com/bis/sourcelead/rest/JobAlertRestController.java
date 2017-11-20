@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.JobAlertDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.JobAlert;
@@ -78,11 +79,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		 
     @RequestMapping(value = "/storeJobAlert", method = RequestMethod.POST)
-   	public @ResponseBody  void storeJobAlert(@RequestParam(value="json", required=false) String json,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
-       	 String json1 = "{"+json+"}";
-   		    JSONObject jsonObj = new JSONObject(json1);
-       	  String jobAlert =  jobAlertService.saveJobAlert(jsonObj);
+       	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
    	}
     
     

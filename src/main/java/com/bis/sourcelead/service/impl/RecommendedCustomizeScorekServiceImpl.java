@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.beans.CandidateCompareDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RecommendedCustomizeScoreDao;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -151,15 +153,17 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	}
 
 	@Override
-	public CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId,String candidatesSelected) throws Exception
+	public CandidateCompareDTO getCandidateListToCompare(Long requirementId, Long orgLocationId,String candidatesSelected,CandidateDTO candidateDTO) throws Exception
 	{
 		OrgLocations orglocation = orgLocationService.getOrgLocations(orgLocationId);
 		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		List<CandidateIndex> candidateList = null;
+		List<CandidateIndex> totalCandidateList = null;
 		RecommendedCustomizeScore recommendedCustomizeScore = getRecommendedCustomizeScoreByRequirementId(requirementId);
 		if (null != recommendedCustomizeScore) {
-			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,candidatesSelected);
+			ResponseList<CandidateIndex> responseList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,candidatesSelected,candidateDTO);
+			candidateList = responseList.getData();
 		}
 		if (requirement != null) {
 			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
@@ -209,7 +213,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 				CandidateIndex candidate = candidateList.get(i);
 				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
 				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
-				if(candidateResume != null){
+				if(candidateResume != null){ 
 					candidate.setCurrentResumeId(candidateResume.getId());
 					candidate.setFileUrl(candidateResume.getFileURL());
 					candidate.setCurrentResumeName(candidateResume.getFileName());
@@ -220,6 +224,10 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 				candidate.setProfilePercentage(percentage);
 			}
 			candidateCompare.setCandidateList(candidateList);
+			
+		/*	ResponseList<CandidateIndex> responseList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null,candidateDTO);
+			totalCandidateList = responseList.getData();
+			candidateCompare.setTotalCandidateList(totalCandidateList);*/
 		}
 		return candidateCompare;
 	}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -11,9 +12,9 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalService {
 
-	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception;
+	ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus, String startDate, String endDate, String searchValue,int start,int length) throws Exception;
 	
-	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception;
+	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId,Long locationsId) throws Exception;
 	
 	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId) throws Exception;
 	
@@ -23,11 +24,13 @@ public interface ExpensesApprovalService {
 	  
     //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
     
-	Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
+	Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason,OrgLocations location) throws Exception;
 	
 	ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
 	
 	Boolean isTheExpenseTotallyApproved(Long expenseId);
+	
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId);
 	
 	ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
 	

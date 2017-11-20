@@ -107,6 +107,16 @@ public class UserRole implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "IS_MAIL_SENT")
+	@Enumerated(EnumType.STRING)
+	private Status isMailSent;
+	
+	@Column(name = "PHONE_NUMBER")
+	private String phoneNumber;
+	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
 
 	@Transient
 	private String userRoleName;
@@ -196,6 +206,9 @@ public class UserRole implements Serializable {
 	private String userEmail;
 
 	@Transient
+	private String mobilePhone;
+	
+	@Transient
 	List<Roles> rolesList;
 
 	@Transient
@@ -236,9 +249,6 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private Long userId;
-
-	@Transient
-	private String isMailSent;
 
 	@Transient
 	private String vendorOrgRelationId;
@@ -642,14 +652,6 @@ public class UserRole implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getIsMailSent() {
-		return isMailSent;
-	}
-
-	public void setIsMailSent(String isMailSent) {
-		this.isMailSent = isMailSent;
-	}
-
 	public Org getOrgId() {
 		return orgId;
 	}
@@ -806,4 +808,43 @@ public class UserRole implements Serializable {
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
+
+	public String getMobilePhone()
+	{
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone)
+	{
+		this.mobilePhone = mobilePhone;
+	}
+
+	public Status getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(Status isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public String getPhoneNumber()
+	{
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber)
+	{
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
+	}
+	
 }

@@ -40,21 +40,35 @@
 			Compose
 		  </a>  --%>
 		  
-		  <div class="dropdown mb10 mailBtn">
+		      <div class="dropdown mb10 mailBtn">
+					<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+					
+					<c:if test="${mailType == 'mails'}">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+						Compose
+						</button>
+					</c:if>
+					
+					<c:if test="${mailType == 'hotcampaigns'}">
 					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" data-toggle="dropdown"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-					Compose
-						&nbsp;&nbsp;<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu">
-					 <sec:authorize access="hasRole('ROLE_MAIL_BOX')">
-					  <li><a href="${sourceleadUrl}/composeMail">Mail</a></li>
-					  </sec:authorize>
-					  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-					  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
-					  </sec:authorize>
-					  <!-- <li><a href="#">Requirements</a></li> -->
-					</ul>
-				  </div> 
+						Campaigns
+							&nbsp;&nbsp;<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+						  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+						  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+						  	<li><a href="${sourceleadUrl}/joblistMail">Job Campaign</a></li>
+						  </sec:authorize>
+						</ul>
+					</c:if>
+					</c:if>
+					
+					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+						Compose
+						</button>
+					</c:if>
+			  </div> 
 
           <div class="mail-box">
             <div class="mail-box-header">
@@ -65,8 +79,12 @@
                 <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <c:if test="${inboxUnreadMailsCount > 0}"><span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span></c:if>
                 <li id="sentActive" class=""><a href="#sent" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
                 <li id="starredActive" class=""><a href="#starred" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
+                <c:if test="${mailType == 'hotcampaigns'}">
                 <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <c:if test="${requestedUnreadMailsCount > 0}"><span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></c:if></a></li> 
+                </c:if>
                 <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
+                <li id="settingsActive" class=""><a href="#settings" onclick="getEmialSettings();"><i class="fa fa-cog"></i> Settings</a></li>
+                
               </ul>
             </div>
             <!-- /.box-body -->
@@ -169,13 +187,13 @@
 	  }
 	  
 	  setActiveTab(type)
-	  
+	  var mailType = '${mailType}';
 	  
 	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	  
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type,    
+          url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type+"&mailType="+mailType,    
            success :function(data) {
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -240,7 +258,7 @@
 		              			 }
 			              			
 		              			
-		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\')">'+opt.subject+'</a></td>';
+		              			result = result +'<td class="mailbox-subject '+isMailRead+'"><a href="#" onclick="getEmailDetails(\''+opt.uuid+'\',\''+type+'\',\''+mailType+'\')">'+opt.subject+'</a></td>';
 		              			result = result +'<td class="mailbox-date">'+opt.calDays+'</td>';
 		              			result = result +'</tr>';
 		                    }
@@ -300,43 +318,70 @@ function pagination(){
 <script>
 function setActiveTab(type){
 	
+	var mailType = '${mailType}';
+	
 	if(type == 'Inbox'){
 		  document.getElementById("sentActive").removeAttribute("class")
 		  document.getElementById("starredActive").removeAttribute("class")
-		  document.getElementById("requestedActive").removeAttribute("class")
+		  if(mailType == 'hotcampaigns'){
+			  document.getElementById("requestedActive").removeAttribute("class")
+		  }
 		  document.getElementById("trashActive").removeAttribute("class")
+		  document.getElementById("settingsActive").removeAttribute("class")
 		  document.getElementById('inboxActive').className = 'active'
 	}
 	
 	else if(type == 'Sent'){
 		  document.getElementById("sentActive").className = 'active'
 		  document.getElementById("starredActive").removeAttribute("class")
-		  document.getElementById("requestedActive").removeAttribute("class")
+		  if(mailType == 'hotcampaigns'){
+			  document.getElementById("requestedActive").removeAttribute("class") 
+		  }
 		  document.getElementById("trashActive").removeAttribute("class")
+		  document.getElementById("settingsActive").removeAttribute("class")
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
 	
 	else if(type == 'Starred'){
 		  document.getElementById("starredActive").className = 'active'
 		  document.getElementById("sentActive").removeAttribute("class")
-		  document.getElementById("requestedActive").removeAttribute("class")
+		  if(mailType == 'hotcampaigns'){
+			  document.getElementById("requestedActive").removeAttribute("class")  
+		  }
 		  document.getElementById("trashActive").removeAttribute("class")
+		  document.getElementById("settingsActive").removeAttribute("class")
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
 	
 	else if(type == 'Requested'){
-		  document.getElementById("requestedActive").className = 'active'
+		 if(mailType == 'hotcampaigns'){
+			 document.getElementById("requestedActive").className = 'active' 
+		 }
 		  document.getElementById("sentActive").removeAttribute("class")
 		  document.getElementById("starredActive").removeAttribute("class")
 		  document.getElementById("trashActive").removeAttribute("class")
 		  document.getElementById('inboxActive').removeAttribute("class")
+		   document.getElementById("settingsActive").removeAttribute("class")
 	}
 	
 	else if(type == 'Trash'){
 		  document.getElementById("trashActive").className = 'active'
 		  document.getElementById("sentActive").removeAttribute("class")
 		  document.getElementById("starredActive").removeAttribute("class")
-		  document.getElementById("requestedActive").removeAttribute("class")
+		  if(mailType == 'hotcampaigns'){
+			  document.getElementById("requestedActive").removeAttribute("class")
+		  }
+		  document.getElementById('inboxActive').removeAttribute("class")
+		  document.getElementById("settingsActive").removeAttribute("class")
+	}
+	else if(type == 'Settings'){
+		  document.getElementById("settingsActive").className = 'active'
+		  document.getElementById("trashActive").removeAttribute("class")
+		  document.getElementById("sentActive").removeAttribute("class")
+		  document.getElementById("starredActive").removeAttribute("class")
+		  if(mailType == 'hotcampaigns'){
+			  document.getElementById("requestedActive").removeAttribute("class")
+		  }
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
 	 
@@ -356,10 +401,10 @@ function addFavourite(mailboxId){
 			url : sourceleadUrl+"/saveMailAsFavourite?${_csrf.parameterName}=${_csrf.token}&mailboxId="+mailboxId,
 			success : function(result) {
 				if(checked){
-					 document.getElementById("favourite"+mailboxId).removeAttribute("class")
+					 document.getElementById("favourite"+mailboxId).removeAttribute("class");
 					 document.getElementById("favourite"+mailboxId).className = 'star-rating mailbox-rating positionRelative activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+mailboxId).removeAttribute("class")
+					 document.getElementById("favourite"+mailboxId).removeAttribute("class");
 					 document.getElementById("favourite"+mailboxId).className = 'star-rating mailbox-rating positionRelative' 
 				}
 				
@@ -465,10 +510,10 @@ function getEmailDetails(uuid,type){
 	 document.getElementById("inbox").style.display="none";
 	 
 	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
-	 
+	 var mailType = '${mailType}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
+		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type+"&mailType="+mailType,
 		success : function(data) {
 			
 			 var json = JSON.parse(data);
@@ -502,7 +547,7 @@ function getEmailDetails(uuid,type){
 			    result = result +'<div class="mailbox-read-info">';
 			    result = result +'<h3>'+opt.subject+'</h3>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
-			    result = result +'<h5>To: '+opt.toMail+'' 
+			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
 			    result = result +'</div>	';
 
@@ -537,7 +582,7 @@ function getEmailDetails(uuid,type){
 	   			}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
-	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadMailAttachment?UUID='+opt.uuid+'\"></a> ';
+	   				result = result +'<div class="require_wrap_details_cta require_uploadfile"><b>Attachment:</b> <span>'+opt.fileName+'</span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a> ';
 	   			    result = result +'<div class="clearfix"></div>';
 	   				result = result +'</div>';
 	   				result = result +'<div class="clearfix"></div>';
@@ -549,15 +594,11 @@ function getEmailDetails(uuid,type){
               }else{
             	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
               }
-	   			 
-
-  			  
             
             $("#mailBoxList").empty(); 
             $("#mailDetails").empty(); 
             $("#mailDetails").append(result);
             $("#mailContentLoading").removeAttr("style"); 
-   				  
 
              }
 			
@@ -566,6 +607,13 @@ function getEmailDetails(uuid,type){
 	
 }
 
+</script>
+
+
+<script>
+function getEmialSettings(){
+	setActiveTab('Settings');
+}
 </script>
 
 <script>
@@ -605,7 +653,5 @@ function forwardEmailToHotMail(uuid){
 	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeHotMail");  
 }
 </script>
-
-
 
 <jsp:include page="masterFooter.jsp" />

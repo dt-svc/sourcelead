@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dao.JobAlertDao;
+import com.bis.sourcelead.dto.JobAlertDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -51,85 +53,70 @@ public class JobAlertServiceImpl implements JobAlertService{
 	}
 
 	@Override
-	public String saveJobAlert(JSONObject jsonObj) throws Exception {
+	public String saveJobAlert(JobAlertDTO  jobAlertDTO) throws Exception {
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	JobAlert jobAlert = null;
-	 	if(jsonObj.has("savedJobAlertId") && !"".equalsIgnoreCase(jsonObj.getString("savedJobAlertId"))){
-	 		jobAlert = jobAlertDao.getJobAlertById(Long.valueOf(jsonObj.getString("savedJobAlertId")));
-	 		
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getSavedJobAlertId())){
+	 		jobAlert = jobAlertDao.getJobAlertById(Long.valueOf(jobAlertDTO.getSavedJobAlertId()));
 	 	}else{
 	 		jobAlert = new JobAlert();
 		 	jobAlert.setJobAlertUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	 	}
 	 	
-	 	
-	 	if(jsonObj.has("alertTitle") && !"".equalsIgnoreCase(jsonObj.getString("alertTitle"))){
-	 		jobAlert.setAlertTitle(jsonObj.getString("alertTitle"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getAlertTitle())){
+	 		jobAlert.setAlertTitle(jobAlertDTO.getAlertTitle());
 		}
-	 	if(jsonObj.has("email") && !"".equalsIgnoreCase(jsonObj.getString("email"))){
-	 		jobAlert.setEmail(jsonObj.getString("email"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getEmail())){
+	 		jobAlert.setEmail(jobAlertDTO.getEmail());
 		}else{
 			jobAlert.setEmail(user.getEmail());
 		}
-	 	if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-	 		jobAlert.setCountry(jsonObj.getString("country"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getCountry())){
+	 		jobAlert.setCountry(jobAlertDTO.getCountry());
 		}
 	 	
-	 	if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
-	 		jobAlert.setState(jsonObj.getString("state"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getState())){
+	 		jobAlert.setState(jobAlertDTO.getState());
 		}
 	 	
-	 	if(jsonObj.has("city") && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-	 		jobAlert.setCity(jsonObj.getString("city"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getCity()) ){
+	 		jobAlert.setCity(jobAlertDTO.getCity());
 		}
 	 	
-	 	if(jsonObj.has("location") && !"".equalsIgnoreCase(jsonObj.getString("location"))){
-	 		jobAlert.setLocation(jsonObj.getString("location"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getLocation())){
+	 		jobAlert.setLocation(jobAlertDTO.getLocation());
 		}
 	 	
-		if(jsonObj.has("zipcode") && !"".equalsIgnoreCase(jsonObj.getString("zipcode"))){
-	 		jobAlert.setZipCode(jsonObj.getString("zipcode"));
+		if(StringUtils.isNotBlank(jobAlertDTO.getZipcode())){
+	 		jobAlert.setZipCode(jobAlertDTO.getZipcode());
 		}
 	 	
-	 	if(jsonObj.has("experience") && !"".equalsIgnoreCase(jsonObj.getString("experience"))){
-	 		jobAlert.setExperience(jsonObj.getString("experience"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getExperience())){
+	 		jobAlert.setExperience(jobAlertDTO.getExperience());
 		}
 	 	
-	 	if(jsonObj.has("rateCurrency") && !"".equalsIgnoreCase(jsonObj.getString("rateCurrency"))){
-	 		jobAlert.setRateCurrency(jsonObj.getString("rateCurrency"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getRateCurrency())){
+	 		jobAlert.setRateCurrency(jobAlertDTO.getRateCurrency());
 		}
 	 	
-	 	
-	 	if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
-	 		jobAlert.setRate(jsonObj.getString("rate"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getRate())){
+	 		jobAlert.setRate(jobAlertDTO.getRate());
 		}
 	 	
-	 	if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
-	 		jobAlert.setRateType(jsonObj.getString("rateType"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getRateType())){
+	 		jobAlert.setRateType(jobAlertDTO.getRateType());
 		}
 	 	
-	 	if(jsonObj.has("industry") && !"".equalsIgnoreCase(jsonObj.getString("industry"))){
-	 		jobAlert.setIndustryName(jsonObj.getString("industry"));
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getIndustry())){
+	 		jobAlert.setIndustryName(jobAlertDTO.getIndustry());
 		}
 	 	
-	 	if(jsonObj.has("skills")){
-			String skillId =null;
-			try{
-				JSONArray jsonArray = jsonObj.getJSONArray("skills");
-				skillId = jsonArray.toString();
-			}
-			catch(JSONException e){
-				skillId =jsonObj.getString("skills");
-			}
-			skillId = skillId.replaceAll("\\[", "").replaceAll("\\]","");
-			
-			
-			skillId = skillId.replaceAll("\"", "");
-			jobAlert.setSkillsName(skillId);
-	  	 
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getSkills())){
+			jobAlert.setSkillsName(jobAlertDTO.getSkills());
 		}
-	 	if(jsonObj.has("duration") && !"".equalsIgnoreCase(jsonObj.getString("duration"))){
-	 		jobAlert.setDuration(jsonObj.getString("duration"));
+	 	
+	 	if(StringUtils.isNotBlank(jobAlertDTO.getDuration())){
+	 		jobAlert.setDuration(jobAlertDTO.getDuration());
 		}
 	 	if(null != user){
 	 		jobAlert.setUserId(user);

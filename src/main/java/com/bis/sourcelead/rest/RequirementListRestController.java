@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.EmployerPayrollCostDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -82,7 +81,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -106,7 +104,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.ibm.icu.text.DecimalFormat;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -190,15 +187,13 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementById", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody Requirement getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
+		Requirement requirement = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (requirementId != null && !requirementId.isEmpty()) {
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-			User intiatorUser = userService.getUserById(requirement.getCreatedBy().getId());
-			 //SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			 if(requirement.getCreatedDate()!=null){
 					requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 				}
@@ -294,26 +289,8 @@ public class RequirementListRestController {
 			}
 			
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
-			
-			// UnWanted Code
-			/*
-			 * Boolean isLoginUserAsTeamMember = requirementAssignToService.
-			 * checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(
-			 * Long.parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.
-			 * toString());
-			 * 
-			 * 
-			 * 
-			 * Boolean isLoginUserAsManager = requirementService.
-			 * checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.
-			 * parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString
-			 * ());
-			 */
-			resultJson = commonUtil.toJSON(requirement);
 		}
-		return resultJson;
+		return requirement;
 	}
 	
 	/**
@@ -332,12 +309,11 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementAssignedListByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody List<RequirementAssignTo> getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
 		List<RequirementAssignTo> requirementAssignToList = new ArrayList<RequirementAssignTo>();
 		if (requirementId != null && !requirementId.isEmpty()) {
-			Collection<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
+			List<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 			if (requirementAssignToListdb != null && !requirementAssignToListdb.isEmpty()) {
 				for (RequirementAssignTo assing : requirementAssignToListdb) {
 					RequirementAssignTo ra = new RequirementAssignTo();
@@ -361,12 +337,8 @@ public class RequirementListRestController {
 					requirementAssignToList.add(ra);
 				}
 			}
-			resultJson = commonUtil.toJSON(requirementAssignToList);
 		}
-		else {
-			resultJson = "failure";
-		}
-		return resultJson;
+		return requirementAssignToList;
 	}
 	
 	/**
@@ -761,19 +733,19 @@ public class RequirementListRestController {
 						}
 					}
 					String candidateName = "";
-					if (requirementSubmissionTemplateFields != null) {
-						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
+					if (requirementSubmission.getCandidate() != null) {
+						if (!isNullOrEmpty(requirementSubmission.getCandidate().getLastName())) {
 							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+							candidateName = candidateNameSB.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString();
 						}
 						else {
-							candidateName = requirementSubmissionTemplateFields.getFirstName();
+							candidateName = requirementSubmission.getCandidate().getFirstName();
 						}
 						requirementSubmission.setCandidateName(candidateName);
-						requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
+						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
 						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+						requirementSubmission.setPhoneNumber(requirementSubmission.getCandidate().getMobilePhone());
 					}
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
@@ -1573,7 +1545,7 @@ public class RequirementListRestController {
 			requirementSubmissionCounts.setNumOfRejected(numOfRejected);
 			requirementSubmissionCounts.setSubmittedCount(requirementSubmissions.size());
 			requirementSubmissionCounts.setNumOfRequestSent(numOfRequestSent);
-			if (duplicatecount.size() != 0 && duplicatecount != null) {
+			if (duplicatecount != null && !duplicatecount.isEmpty()) {
 				requirementSubmissionCounts.setDuplicateCount(duplicatecount.size());
 			}
 		}
@@ -1589,7 +1561,7 @@ public class RequirementListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/searchRequirement")
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
@@ -1724,7 +1696,7 @@ public class RequirementListRestController {
 		if(StringUtils.isNotEmpty(search.getClient()) || StringUtils.isNotEmpty(search.getFilterClients())){
 			String clients = "";
 			if(StringUtils.isNotEmpty(search.getClient())){
-				clients = search.getRequirementStatus();
+				clients = search.getClient();
 			}
 			else{
 				clients = search.getFilterClients();
@@ -1811,6 +1783,8 @@ public class RequirementListRestController {
 					RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 					Requirement	requirement = getData(requirementIndex,user,orgLocation);
 	            	if(requirement !=null){
+	            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+	            		requirement.setTotalApplicants(applicantsCount);
 	            		reqList.add(requirement);
 	            	}
 	            }
@@ -1856,9 +1830,9 @@ public class RequirementListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+//				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
 			}
 			return matchQueryBuilderList; 
 	 }
@@ -1927,8 +1901,10 @@ public class RequirementListRestController {
       	}
       /*	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
  		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());*/
- 		
+      	requirement.setIsLoginUserAsManager(requirementIndex.getManagerUserId());
+      	requirement.setLevel1ApproverUserId(requirementIndex.getReqLevel1ApproverUserId());
  		Boolean isLoginUserAsApprover = false;
+ 		requirement.setLevel2ApproverUserId(requirementIndex.getReqLevel2ApproverUserId());
 		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementIndex.getRequirementId(), user.getId());
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;

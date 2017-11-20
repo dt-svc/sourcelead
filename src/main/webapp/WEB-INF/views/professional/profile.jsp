@@ -126,12 +126,6 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 primarySkill = " --- ";
 		    	 }
-		    	/*  if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
-		    		 skillsName = json.skillsName;
-		    	 }else{
-		    		 skillsName = " --- ";
-		    		 
-		    	 } */
 		    	 
 		    	 if(json.experienceYears != null  && json.experienceYears != '' && json.experienceYears != 'undefiend'){
 		    		 experienceYears = json.experienceYears +' Years';

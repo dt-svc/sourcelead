@@ -116,10 +116,10 @@ public class InvoicePdfHelper {
 
 				StringBuilder address = new StringBuilder();
 				if (null != orgLocation.getCity()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState())
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",")
 							.append(orgLocation.getCity()).toString();
 				} else if (null != orgLocation.getState()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).toString();
 				} else {
 					address.append(orgLocation.getCountry()).toString();
 				}
@@ -155,11 +155,11 @@ public class InvoicePdfHelper {
 
 				StringBuilder clientAddress = new StringBuilder();
 				if (null != orgRel.getResponderLocationId().getCity()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
-							.append(orgRel.getResponderLocationId().getState())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
+							.append(orgRel.getResponderLocationId().getState()).append(",")
 							.append(orgRel.getResponderLocationId().getCity()).toString();
 				} else if (null != orgRel.getResponderLocationId().getState()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
 							.append(orgRel.getResponderLocationId().getState()).toString();
 				} else {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
@@ -234,8 +234,8 @@ public class InvoicePdfHelper {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					} else {
-						if (invoiceLineItems.getUser() != null) {
-							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER,
+						if (invoiceLineItems.getCandidate() != null) {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER,
 									font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -256,14 +256,14 @@ public class InvoicePdfHelper {
 						}
 
 					} else {
-						if (null != invoiceLineItems.getUser()) {
+						if (null != invoiceLineItems.getCandidate()) {
 							table.addCell(getCell(
-									name.append(invoiceLineItems.getUser().getFirstName()).append(" ")
-											.append(invoiceLineItems.getUser().getLastName()).toString(),
+									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
+											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
 									Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+									getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 						}
 					}
 
@@ -388,7 +388,12 @@ public class InvoicePdfHelper {
 						}
 					}
 				}
-
+				
+				
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append("Grand Total :" + countryCurrency + "   " + invoice.getTotal());
 				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append(System.getProperty("line.separator"));
@@ -446,10 +451,10 @@ public class InvoicePdfHelper {
 
 				StringBuilder address = new StringBuilder();
 				if (null != orgLocation.getCity()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState())
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",")
 							.append(orgLocation.getCity()).toString();
 				} else if (null != orgLocation.getState()) {
-					address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();
+					address.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).toString();
 				} else {
 					address.append(orgLocation.getCountry()).toString();
 				}
@@ -485,11 +490,11 @@ public class InvoicePdfHelper {
 
 				StringBuilder clientAddress = new StringBuilder();
 				if (null != orgRel.getResponderLocationId().getCity()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
-							.append(orgRel.getResponderLocationId().getState())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
+							.append(orgRel.getResponderLocationId().getState()).append(",")
 							.append(orgRel.getResponderLocationId().getCity()).toString();
 				} else if (null != orgRel.getResponderLocationId().getState()) {
-					clientAddress.append(orgRel.getResponderLocationId().getCountry())
+					clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(",")
 							.append(orgRel.getResponderLocationId().getState()).toString();
 				} else {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
@@ -562,8 +567,8 @@ public class InvoicePdfHelper {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					} else {
-						if (invoiceLineItems.getUser() != null) {
-							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER,
+						if (invoiceLineItems.getCandidate() != null) {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER,
 									font10));
 						} else {
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -572,8 +577,7 @@ public class InvoicePdfHelper {
 					StringBuffer name = new StringBuffer();
 
 					if (null != invoiceLineItems.getCandidate()) {
-						if (invoiceLineItems.getCandidate().getFirstName() != null
-								&& invoiceLineItems.getCandidate().getLastName() != null) {
+						if (invoiceLineItems.getCandidate().getLastName() != null) {
 							table.addCell(getCell(
 									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
 											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
@@ -584,14 +588,14 @@ public class InvoicePdfHelper {
 						}
 
 					} else {
-						if (null != invoiceLineItems.getUser()) {
+						if (null != invoiceLineItems.getCandidate()) {
 							table.addCell(getCell(
-									name.append(invoiceLineItems.getUser().getFirstName()).append(" ")
-											.append(invoiceLineItems.getUser().getLastName()).toString(),
+									name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ")
+											.append(invoiceLineItems.getCandidate().getLastName()).toString(),
 									Element.ALIGN_CENTER, font10));
 						} else {
 							table.addCell(
-									getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+									getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 						}
 					}
 
@@ -717,6 +721,10 @@ public class InvoicePdfHelper {
 					}
 				}
 
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
+				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append("Grand Total :" + countryCurrency + "   " + invoice.getTotal());
 				grandTotal.append(System.getProperty("line.separator"));
 				grandTotal.append(System.getProperty("line.separator"));
@@ -793,6 +801,7 @@ public class InvoicePdfHelper {
 		PdfPCell cell = new PdfPCell();
 		cell.setUseAscender(true);
 		cell.setUseAscender(true);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		Paragraph p = new Paragraph(value, font);
 		p.setAlignment(alignLeft);
 		cell.addElement(p);

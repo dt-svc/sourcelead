@@ -108,14 +108,15 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -123,9 +124,21 @@
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
+                   <div class="row">
+                    <div class="col-md-6 paddingRight">
                     <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
+                    </div>
+                    <div class="col-md-6 paddingLeft erMesMid">
+                    <div class="row">
+                    <label class="col-md-5">Extension </label>
+                    <div class="col-md-7 posSta">
+                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
+                    </div>
+                    </div>
+                    </div>
+                     </div>
                   </div>
                 </div> 
                 
@@ -303,7 +316,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
@@ -321,12 +334,12 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
@@ -459,6 +472,7 @@ function getEmployeementType(designationType){
 		
 		    var formData = getFormData("createUser_form");
 			$("#createUser_form").attr("disabled", "disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 				location.replace(sourceleadUrl+"/usersList");	
@@ -558,9 +572,7 @@ function getEmployeementType(designationType){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
@@ -587,7 +599,6 @@ function getEmployeementType(designationType){
 		        			 //$("#phone").val('');
 		        		}
 		        		
-		        	}
 		        },
 		    });
 	 }else{
@@ -730,12 +741,12 @@ function getAssociateUserDetails(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{
@@ -844,16 +855,9 @@ function getAssociateUserDetails(){
 <script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat = 'yy-dd-mm'; 
-	  }
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
 	  $('#DateofJoin').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -881,7 +885,12 @@ function getAssociateUserDetails(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		if(opt.lastName !=null && opt.lastName !='undefined' && opt.lastName !=''){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"&nbsp;("+opt.userType+")</option>";
+			        		}
+			        		
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);

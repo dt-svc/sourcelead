@@ -30,8 +30,10 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
@@ -42,7 +44,7 @@ public class OrgLocations implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -159,6 +161,11 @@ public class OrgLocations implements Serializable{
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
+    
+    @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
+    @Type(type="text")
+	private String billingAddress;
+    
     @Transient
     private String orgName;
     
@@ -201,6 +208,18 @@ public class OrgLocations implements Serializable{
     @Transient
     private SimpleDateFormat locFullFormDateFormatter;
     
+    @Transient
+    @JsonProperty
+    private Long vendorOrgRelationId;
+    
+    @Transient
+    @JsonProperty
+    private Long vendorSpocId;
+    
+    @Transient
+    @JsonProperty
+    private Long vendorOnboardId;
+   
    
 	public Timezone getTimezone() {
 		return timezone;
@@ -608,6 +627,13 @@ public class OrgLocations implements Serializable{
 
 
 	public String getDateFormat() {
+		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
+			if((StringUtils.isNotEmpty(location) && location.contains("INDIA")) ||  StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+				dateFormat =  "dd-MM-yyyy";
+			}else{
+				dateFormat =  "MM-dd-yyyy";
+			}
+		}
 		return dateFormat;
 	}
 
@@ -619,6 +645,13 @@ public class OrgLocations implements Serializable{
 	public SimpleDateFormat getLocFullFormDateFormatter() {
 		if(StringUtils.isNotEmpty(dateFormat)){
 			locFullFormDateFormatter = new SimpleDateFormat(dateFormat);
+		}
+		if((StringUtils.isNotEmpty(location) || StringUtils.isNotEmpty(country)) && StringUtils.isEmpty(dateFormat)){
+			if(( StringUtils.isNotEmpty(location) && location.contains("INDIA")) || StringUtils.isNotEmpty(country) && country.equalsIgnoreCase("INDIA")){
+				   locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_DMY;
+			}else{
+				locFullFormDateFormatter = (SimpleDateFormat) Constants.DF_MDY;
+			}
 		}
 		return locFullFormDateFormatter;
 	}
@@ -634,6 +667,38 @@ public class OrgLocations implements Serializable{
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public Long getVendorSpocId() {
+		return vendorSpocId;
+	}
+
+	public void setVendorSpocId(Long vendorSpocId) {
+		this.vendorSpocId = vendorSpocId;
+	}
+
+	public Long getVendorOnboardId() {
+		return vendorOnboardId;
+	}
+
+	public void setVendorOnboardId(Long vendorOnboardId) {
+		this.vendorOnboardId = vendorOnboardId;
 	}
 	
 }

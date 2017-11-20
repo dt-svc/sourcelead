@@ -28,7 +28,7 @@
 		      				<div id="viewReqTemplateDiv" class="mt clearfix">
 						     </div>
 						     <div class="modal-body pb">  
-						    <div id="formatedTextone"></div>
+						    <div id="formatedTextone" class="align-paragraph"></div>
 						    </div>
 		      </div>
           </div>

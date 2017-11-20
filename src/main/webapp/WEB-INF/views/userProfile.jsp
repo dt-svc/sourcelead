@@ -139,13 +139,13 @@ function resetProfile(){
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length2-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -422,7 +422,7 @@ function deleteImage(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
@@ -510,25 +510,17 @@ var validationSettings = {
          $('body').on('submit', '#passwordSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-            		
-            		var frm = $('#passwordSettings_form').serializeFormJSON();
-                	var con = JSON.stringify(frm);
-    			    con = con.replace(/[{}]/g, ""); 
-    			    
-    			    //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-            		
+        		    var formData = getFormData("passwordSettings_form");
             		var sourceleadUrl ='${sourceleadUrl}';
             		
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             		
                     $.ajax({
                 	      type: "POST",
-                	      contentType : 'application/json; charset=utf-8',
-                	      dataType : 'json',
-                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}",
+                      	  data: formData,
                         	success: function(result) {
-    			        	 if(result == 'home'){
+    			        	 if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -561,6 +553,9 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#profileSettings_form', function(e){
+        	 var userId = '${SourceLeadWeb_user.id}';
+        	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        	 
         	  if ($('#profileSettings_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
             		
@@ -571,9 +566,9 @@ var validationSettings = {
                     $.ajax({
                 	      type: "POST",
                 	      data: formData,
-                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}",
+                      	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
                         	success: function(result) {
-    			        	 if(result == 'home'){
+    			        	 if(result != null){
     			        		location.replace(sourceleadUrl+"/userProfile");  
     			        	}
     			        },  

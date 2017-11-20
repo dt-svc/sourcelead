@@ -81,7 +81,7 @@
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
+                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
@@ -103,7 +103,7 @@
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -132,16 +132,32 @@
                   <div class="form-group">
 	              <label class="col-md-3">Phone Number</label>
 	              <div class="col-md-9">
+	              <div class="row">
+	              <div class="col-md-6 paddingRight">
 	                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
 	              </div>
+	              
+	              <div class="col-md-6 paddingLeft erMesMid">
+			             <div class="row">
+			             <label class="col-md-5">Extension </label>
+			             <div class="col-md-7 posSta">
+			             <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_extno validate_length length1-5" data-validation-optional="true">
+			             </div>
+			             </div>
+		             </div>
+		             
+	              </div>
+	              </div>
 	            </div>
+	            
+	            
 	            
 	             <div class="form-group">
 	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
 	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                 <c:forEach var="user" items="${userList}">
-		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach> 
 	                </select>
 	              </div>
@@ -492,7 +508,7 @@ function validateClientName(){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
-					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						location.replace(sourceleadUrl+ "/addVendorContact");
 					});
 			return true;
@@ -513,10 +529,12 @@ function validateEmail(){
 	 getOwners();
 	var email = document.getElementById("email").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(email != null){
+	var vendorName = document.getElementById("vendorName").value;
+	var orgRelationId = vendorName.split(",")[0];
+	if(email != null && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -525,10 +543,18 @@ function validateEmail(){
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
+				}else if(result == 'Invalid Spoc') {
+// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as vendor contact</span>");
+// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as vendor contact");
+					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					getSpocUserDetails();
+					getOwnersList();
 					
 				}
 			},
@@ -537,6 +563,23 @@ function validateEmail(){
 	}
 }
 </script>
+
+
+
+<!-- <script>
+function getVendorOnboarded(){
+	 var vendorName = document.getElementById("vendorName").value;
+	 var orgLocationId = vendorName.split(',');
+	 var orgRelationId = orgLocationId[0];
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		 type: "GET",
+	        url: sourceleadUrl+"/getVendorOnboardStatus?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 
+	        success: function(result) {
+	        },
+	 }); 
+}
+</script> -->
 
 <script type="text/javascript">
  function getOwners() {
@@ -567,10 +610,10 @@ function validateEmail(){
 							{
 					        	    var opt = json[i];
 					        		if(opt.id == SourceLeadWeb_userId){
-					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+"</option>";
 					        		}
 					        		else{
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
 					        		}
 			                }
 		        	}
@@ -730,10 +773,10 @@ function getRolesList(){
 					{
 		        		 var opt = json[i];
 			        		if(opt.id == SourceLeadWeb_userId){
-			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";
+			        			output = output + "<option value='" +opt.id+ "' selected>"+opt.fullName+"</option>";
 			        		}
 			        		else{
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
 			        		}
 					}
 		        	$("#owner").empty();

@@ -191,6 +191,13 @@ public class SubmissionsRestController {
 		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
 		candidate.setProfilePercentage(percentage);
 		
+		boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateId, requirementId);
+		if(isSumbitted == true){
+			candidate.setIsCandidateSubmitted(Constants.YES);
+		}else{
+			candidate.setIsCandidateSubmitted(Constants.NO);
+		}
+		
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
 		if(candidateResume != null){
 			candidate.setResumeUUID(candidateResume.getResumeUUID());
@@ -374,6 +381,7 @@ public class SubmissionsRestController {
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedDate(new Date());
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+			SourceLeadSessionManager.setSessionAttribute(request, "SubmissionTemplateCreateMsg", "Success!! New Submission Template created");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -424,6 +432,9 @@ public class SubmissionsRestController {
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+			requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
+			requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
 			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -484,6 +495,7 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
 			
 			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
 				requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());
@@ -683,10 +695,10 @@ public class SubmissionsRestController {
 		emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
 		emailMessage.setLastName(requirement.getManagerUserId().getLastName());
 		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
-		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setFromEmail("donotreply@sourcelead.com");
 		emailMessage.setCreatedBy(user.getUserCode());
 		StringBuilder userNameSB = new StringBuilder();
-		emailMessage.setFromName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+//		emailMessage.setFromName(userNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -861,7 +873,12 @@ public class SubmissionsRestController {
 		StringBuilder sb = new StringBuilder();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		requirement.setSubmitToClientFromMailId(user.getEmail());
-		requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		if(requirement.getParentRequirement() != null && StringUtils.isNotEmpty(requirement.getParentRequirement().getReleasedBy())){
+			User releasedUser = userService.getUserById(Long.parseLong(requirement.getParentRequirement().getReleasedBy()));
+			requirement.setSubmitToClientToMailId(releasedUser.getEmail());
+		}else{
+			requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
+		}
 		/*if(requirement.getSpocId().getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 				requirement.setSubmitToClientToMailId(requirement.getSpocId().getClientUser().getEmail());
 		 }
@@ -879,8 +896,7 @@ public class SubmissionsRestController {
 
 		if (requirement != null && requirement.getParentRequirement() != null) {
 			if(requirement != null && requirement.getParentRequirement().getManagerUserId() != null){
-				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFirstName()).append(" ")
-				.append(requirement.getParentRequirement().getManagerUserId().getLastName()).append("</p>")
+				sb.append("<p>").append("Hi,").append(requirement.getParentRequirement().getManagerUserId().getFullName()).append("</p>")
 				.append("<p>").append(fullName).append(" submitted the applicants for the").append(" ")
 				.append(requirement.getJobTitle()).append("</p>")
 				.append("<p>").append("Total no.of submitted applicants :").append(submissions.length).append("<p>");

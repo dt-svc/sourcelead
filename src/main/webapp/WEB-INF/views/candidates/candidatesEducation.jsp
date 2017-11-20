@@ -114,29 +114,9 @@ function candidateEducationList(candidateId){
 		  canEduDatePattern = 'YYYY-DD-MM'; 
 	  }
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-            /*    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{ */
-             			var json = JSON.parse(data);
-             			/* for (var i = 0; i < 1; i++) {
-                            var val= json[i];
-                            var opt = "";
-                                    if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                                            opt  = opt + '<div class="success_pop" id="selector4" style="display: block;">';
-                                            opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                                            opt  = opt + '</div>';
-                                            }
-                                    $("#msgDiv1").empty();
-                                    $("#msgDiv1").append(opt);
-                            } */
+          success :function(json) {
              			 
 	                	 $("#candidateEducationList").empty();
 	                	 var result = "";
@@ -156,8 +136,8 @@ function candidateEducationList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    	 result  = result + '<td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
@@ -315,8 +295,8 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class=""  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative">';
+	result = result  +'	                     <select class="newSelect"  name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -353,18 +333,8 @@ function addEducation(candidateId) {
 	
 	function educationStartDate(){
 	}
-	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEduSave = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduSave = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduSave = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduSave = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduSave = 'yy-dd-mm'; 
-	  }
+	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 	  
 	$('#startDate').datepicker({
 	      dateFormat: finalDateFormatEduSave,
@@ -390,9 +360,7 @@ function addEducation(candidateId) {
 	        }
 	  });
 	
-	/* $(".addUser-org").click(function(){
-		 $(".edit-details").toggleClass("edit-details-active");
-	 }); */
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -454,12 +422,13 @@ function addEducation(candidateId) {
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({	type : "POST",
 				url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
-				success : function(data) {
-					var json = JSON.parse(data);
+				success : function(json) {
+					//var json = JSON.parse(data);
 					var specialization = "";
 					var grade = "";
 					var institute = "";
 					var address  = "";
+					
 					if(json.specialization !=null && json.specialization !='undefined' && json.specialization !=''){
 						specialization = json.specialization;
 					}
@@ -475,29 +444,21 @@ function EditEducation(candidateId,candidateEducationId) {
 					if(json.address !=null && json.address !='undefined' && json.address !=''){
 						address = json.address;
 					}
-					
-					if (data != null && data != 'undefined' && data != "") {
-						if (data.indexOf('Sign In') >= 0) {
-							location.replace(sourceleadUrl);
-						} else if (data.indexOf('exception') >= 0) {
-							location.replace(sourceleadUrl + "/errorPage");
-						} else {	
-	var result = "";
-	result = result  +'<!-- Popup Div -->';
-	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
-		                /*  for (var j = 0; j < json.educationList.length; j++) {
-								var education = json.educationList[j];
-								   if(education.name == json.name){
-									   result = result+'<option value=\"'+education.name+'\" selected >'+education.name+'</option>';
-								  }else{
-									   result = result+'<option value=\"'+education.name+'\" >'+education.name+'</option>';
-				   		 	      } 
-							} */
+					if (json != null && json != 'undefined' && json != "") {
+// 						if (json.indexOf('Sign In') >= 0) {
+// 							location.replace(sourceleadUrl);
+// 						} else if (json.indexOf('exception') >= 0) {
+// 							location.replace(sourceleadUrl + "/errorPage");
+// 						} else {
+							var result = "";
+							result = result  +'<!-- Popup Div -->';
+							result = result  +'          <form role="form"  id="education_form" name="educatio(n_form" method="post" > ';
+							result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+							result = result  +'                <div class="form-horizontal clearfix"> ';
+							result = result  +'   ';
+							result = result  +'                  <div class="clearfix mb10"> ';
+							result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
+		               
 						
 				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
 							  var existed = 0;
@@ -550,8 +511,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
+	result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="scoreType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -570,7 +531,7 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
@@ -610,59 +571,16 @@ function EditEducation(candidateId,candidateEducationId) {
 	var eduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	 var eduStartDateSplit = eduStartDate.split("-");
-	 var eduEndDateSplit = eduEndDate.split("-");
+	
 	 
 	 var finalDateFormatEduEditOneSave = '';
-	  var eduStartDateEdit = '';
-	  var eduEndDateEdit = '';
+	 
+	 // written common method in slead-common.js for date formats start
+	  var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
+	  var eduEndDateEdit = getJSDate(eduEndDate,locationDate);
 	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[2])+parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[1])-parseInt(1), parseInt(eduStartDateSplit[0])+parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduStartDateEdit = new Date(eduStartDateSplit[2], parseInt(eduStartDateSplit[0])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduStartDateEdit = new Date(eduStartDateSplit[0], parseInt(eduStartDateSplit[2])-parseInt(1), parseInt(eduStartDateSplit[1])+parseInt(1));
-	  }
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[2])-parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[1])-parseInt(1), parseInt(eduEndDateSplit[0])-parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduEndDateEdit = new Date(eduEndDateSplit[2], parseInt(eduEndDateSplit[0])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduEndDateEdit = new Date(eduEndDateSplit[0], parseInt(eduEndDateSplit[2])-parseInt(1), parseInt(eduEndDateSplit[1])-parseInt(1));
-	  }
-	
-	/* var datepickerStartDate = toDate("#startDateEdit");
-	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-	
-	var datepickerEndDate = toDate("#endDateEdit");
-	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-	
-	
-	  var finalDateFormatEduUpdate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduUpdate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-	  }
-	
+	  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+	  //end
 	
 	$('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormatEduUpdate,
@@ -721,7 +639,7 @@ function EditEducation(candidateId,candidateEducationId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 		
 }
-					}
+// 					}
 			},
 
 		});
@@ -795,58 +713,11 @@ function candidateEducationStore(candidateId){
        			candidateEducationList(candidateId);
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
+       			setTimeout(function(){
+		 			candidateList();					 			
+		 		},100);
 		        });
-			/* $.ajax({
-					type : "POST",
-					data : con,
-					processData: false,
-	    	        contentType: true,
-					url : sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-					success :function(data) {  
-				                 if(data != null && data != 'undefined' && data != ""){
-				               		if( data.indexOf('Sign In') >= 0){
-							    		location.replace(sourceleadUrl);
-							    	}
-				               		else if (data.indexOf('exception') >= 0) {
-				               			 location.replace(sourceleadUrl+"/errorPage");
-				               		}
-				               		else{
-				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-				            			 if(data<50){
-				            			   $("#perVal").removeClass('progress-bar-success');
-				            			   $("#perVal").addClass("progress-bar-danger");
-				            			 }
-				            			 if(data>=50){
-				            				 $("#perVal").removeClass("progress-bar-danger");
-				            				 $("#perVal").addClass("progress-bar-success");
-				            			 }
-				            			 $("#disVal").empty();
-				            			$("#disVal").append(data+'%');
-				            			// for quick view bar update
-				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-					          			 if(data<50){
-						          			   $("#quickPerVal").removeClass('progress-bar-success');
-						          			   $("#quickPerVal").addClass("progress-bar-danger");
-						          			 }
-						          			 if(data>=50){
-						          				 $("#quickPerVal").removeClass('progress-bar-danger');
-						          				 $("#quickPerVal").addClass("progress-bar-success");
-						          			 }
-
-				            			$("#quickDisVal").empty();
-				            			$("#quickDisVal").append(data+'%');
-				            			
-				               		    $("#popUpDiv").removeClass("edit-details-active");
-				            			$("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Success!! New Education added");
-				               			candidateEducationList(candidateId);
-				               			eduMsgFadeinFunction();
-				               			qveducationSubmission(candidateId);
-							    	}
-				                 }   
-				      }, 
-		    }); */
+			
 			return true; 
 		} else {
 			return false;
@@ -966,6 +837,9 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			eduMsgFadeinFunction();
+             			 setTimeout(function(){
+ 				 			candidateList();					 			
+ 				 	    },100);
 			    	}
                } 
         },
@@ -1081,13 +955,6 @@ function clearSearchKeyEducation() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		}; */
-		
 		
 		if ($('#education_form').validate(false,
 				validationSettings)) {
@@ -1112,6 +979,9 @@ function clearSearchKeyEducation() {
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
+							setTimeout(function(){
+					 			candidateList();					 			
+					 		},100);
 						},
 					}); 
 			return true;

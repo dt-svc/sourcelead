@@ -313,7 +313,7 @@ function requirementDetails(requirementUUID){
 				 result = result +'                </div>';
 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 		            	result = result +'                  <div class="clearfix"></div>';
 						 result = result +'                </div>';   
 				 }
@@ -718,15 +718,17 @@ function clearRatediv(){
 
 function proposeNewRate(submissionId, candidateId) {
 	 if ($('#rate_form').validate(false, validationSettings)){
-			var type = "Candidate";
-			var frm = $('#rate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-		    var jsonData = encodeURIComponent(con);
+		 
+		    var type = "Candidate";
+		    var formData = getFormData1("rate_form");
 		    $("#add_rate").attr("disabled", "disabled");
+		    
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&type="+type,
+			processData: false,
+		    contentType:false, 
+			data: formData,
+			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},
@@ -927,18 +929,12 @@ function getContactsCount(){
 </script>
 
 
-
 <script type="text/javascript">
 $('body').on('submit', '#referToContacts', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
+      var formData = $($('#referToContacts')[0]).serialize();
      
-      var frm = $('#referToContacts').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
@@ -946,7 +942,9 @@ $('body').on('submit', '#referToContacts', function(e){
 	 	
 	 	  $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data: formData,
+		    	processData :false,
+		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelReferPopUp();
 		        },
@@ -970,24 +968,22 @@ $('body').on('submit', '#referToContacts', function(e){
 $('body').on('submit', '#referToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
-     
-      var frm = $('#referToJob_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	      $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(result) {
-		        	cancelReferPopUp();
-		        },
-		    });  
+		var formData = getFormData1("referToJob_form");
+    		
+		       $.ajax({
+    					type : "POST",
+    					 data: formData,
+    	  		         processData: false,
+    	  		         contentType:false, 
+    					url : sourceleadUrl+"/submitReferToJob?"+tokenParamName+"="+tokenValue+"",
+    					success : function(result) {
+    						cancelReferPopUp();
+    					},
+    				});
       return true; 
     }
     else{

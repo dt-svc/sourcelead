@@ -137,5 +137,9 @@ public interface UserDao {
 	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId,User user,Long tabId) throws Exception;
 	
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId,Long userId) throws Exception;
+	
+	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
 
 }

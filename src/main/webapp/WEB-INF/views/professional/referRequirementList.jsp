@@ -5,7 +5,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-s<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
 $(document).ready(function() {
@@ -42,7 +41,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Contacts List</h2>
     </div>
-    <div class="pull-right brud-crum">Contacts List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -50,19 +49,6 @@ $(document).ready(function() {
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
-            <!-- <li id="contactLevel">
-		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
-		                	<div id="contactsFilterPop" class="approved_pop" style="display: none;">
-		                    	<ul>
-									<li><input id="c6" type="checkbox" name="clinetLevel" value="Tier-1" onclick="getClientDetails();"><label>Accepted</label></li>
-									<li><input id="c7" type="checkbox" name="clinetLevel" value="Tier-2" onclick="getClientDetails();"><label>Rejected</label></li>
-									<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-3" onclick="getClientDetails();"><label>Sent</label></li>
-		               				<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-4" onclick="getClientDetails();"><label>Received</label></li>
-		               				<li><input id="c9" type="checkbox" name="clinetLevel" value="Tier-5" onclick="getClientDetails();"><label>New</label></li>
-		                        </ul>
-		                    </div>                	
-		                </li>
-             -->
             
             
             <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
@@ -121,7 +107,135 @@ $(document).ready(function() {
 <jsp:include page="../masterFooter.jsp" />
 <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
 
+
 <script>
+function refercontactList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix">';
+  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'<th>Contact Name</th>';
+		result = result +'<th>Email</th>';
+		result = result +'<th>Phone</th>';
+		result = result +'<th>Source</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>';
+	    $("#refercontactListDiv").empty();
+	    $("#refercontactListDiv").append(result);
+	    
+	    contactsDataTableList();
+}
+</script>
+
+
+<script>
+function contactsDataTableList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#contactsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue;
+	 contactsPagination(url);
+}
+</script>
+
+
+
+<script>
+function contactsPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#example').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 2
+        }),
+        "columns": [
+            { "data": "contactName" },
+            { "data": "email"},
+            { "data": "source"}
+           
+        ],
+        "columnDefs": [{
+	    	  	"targets": colIndex++,
+	    	  	"data": "contactName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  result = result + '<td data-title="Id"><div class="tbldata-dotdot"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "email",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</div></td>';
+	              return result;
+              		
+              }
+          },{
+	    	  "targets": colIndex++,
+              "data": "phone",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  var phone = "";
+            	  if(opt.phone != null && opt.phone != '' && opt.phone != 'undefined'){
+            		  phone = opt.phone;
+            	  }else{
+            		  phone = '------';
+            	  }
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-50" title="'+phone+'">'+phone+'</div></td>';
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "source",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#example").wrap("<div class='project_tabs_inn_table vendor_wrap_inn_table' style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#contactsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   contactsDataTableList();
+    	   }
+    	});
+}
+
+</script>
+
+
+<!-- <script>
 function refercontactList(){
 	$.ajax({
 	   	type: "POST",
@@ -137,7 +251,6 @@ function refercontactList(){
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
 			   	 result = result +'          <th>Source</th>';
-			   	/*  result = result +'          <th>Action</th>';  */
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
 			   	 result = result +'      <tbody>';
@@ -159,7 +272,6 @@ function refercontactList(){
 				   	 result = result +'<td><div class="text-left"><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'<td><div  class="tbldata-dotdot"><span>'+contactUserPhone+'</span></div></td>';
 				   	 result = result +'<td><div class="tbldata-dotdot-100"><span>'+report.contactSource+'</span></div></td>';
-				   	/*  result = result +'<td><div class="tbldata-dotdot-100"><span class="bg-blue status_contact paddingRight">Accepted</span><b title="Chat" class="text-success fa fa-comments"></b></div></td>'; */ 
 				   	 result = result +'</tr>';
 			   }
 			   	 result = result +'      </tbody>';
@@ -173,7 +285,7 @@ function refercontactList(){
 	
 }
 
-</script>
+</script> -->
 
 <script>
 	function predefineProfileImage(imageId){
@@ -237,33 +349,28 @@ function validateContactEmail(){
 
 
 <script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   };  
          $('body').on('submit', '#addcontact_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
 	          		
-        		    var frm = $('#addcontact_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
-	          		
-	          		 $("#add_contact").attr("disabled", "disabled");
+	          		$("#add_contact").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
-	          	     $.ajax({
-	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/addCrowdSourcingUserContact?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-	     		        success: function(data) {
-	     		        	location.replace(sourceleadUrl+ "/referRequirementList");
-	     		        },
-	     		    }); 
+	        	     var formData = getFormData1("addcontact_form");
+	        		$.ajax({
+	        					type : "POST",
+	        					 data: formData,
+	        	  		         processData: false,
+	        	  		         contentType:false, 
+	        					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+	        					success : function(result) {
+	        						location.replace(sourceleadUrl+ "/referRequirementList");
+	        					},
+	        				});
                 
             	    return true;
             }

@@ -25,7 +25,7 @@ width: 75px; padding: 0 !important;
         </div>
         
       <!-- show Calendar -->
-            <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+            <div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
             	<div id ="interviewDiv"></div>
            	 	<div id ="taskDiv"></div>
 	     </div>
@@ -72,7 +72,9 @@ window.onload = function() {
 	        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
  		       			clientName = report.clientName;
  		       		}
-			         result = result + '   <div class="eventList clearfix">  ';
+	        		 
+	        		 result = result + '   <div class="eventCalendr_content clearfix">  ';
+	        		 result = result + '   <div class="eventList clearfix">  ';
 					 result = result + '      <div class="media">              ';
 					 result = result + '          <div class="media-left">     ';
 					 result = result + '              <div>'+report.startTimeStr+'</div>       ';
@@ -91,7 +93,7 @@ window.onload = function() {
 					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
 					 result = result + ' 									</div>                                                                         ';
 					 result = result + ' 								</div>                                                                         ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+					 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
 					
@@ -186,7 +188,8 @@ window.onload = function() {
 			        	result = result + '<div class="row">                                            ';
 						result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
 						result = result + '	</div>                                                      ';
-						result = result + ' </div>                                                      ';
+						result = result + ' </div>                                                    ';
+						result = result + ' </div>                                                    ';
 	        	 }
 	        	 result = result + '<div class="mask_inner"></div>';
 	        	 $("#interviewDiv").empty();
@@ -576,7 +579,7 @@ function getRequirements(){
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
             	  var result = "";
-            	  result = result + '<option value="">--- Select Requirement ---</option>';
+            	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
                  	var jobId = "";

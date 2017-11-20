@@ -324,15 +324,16 @@ function createAlert(){
 function saveAlert(){
 	var jobAlertUUID = $("#jobAlertUUID").val();
 	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var frm = $('#create_alert_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-		//It will escape all the special characters
-	    var jsonData = encodeURIComponent(con);
+
+		var sourceleadUrl = '${sourceleadUrl}';
+	    var formData = getFormData1("create_alert_form");
 
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
 							$("#jobAlert2").removeAttr("style");

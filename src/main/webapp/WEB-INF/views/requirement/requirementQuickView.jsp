@@ -3,6 +3,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
@@ -30,7 +32,7 @@
 									<li><i class="fa fa-black-tie" title="Experience"></i><span>${!empty requirement.minExp  ? requirement.minExp :' '}${!empty requirement.minExp && !empty requirement.maxExp ? '-':' '}${!empty requirement.maxExp  ? requirement.maxExp :''}${empty requirement.minExp && empty requirement.maxExp ? ' --- ':' years '}</span></li>
 									<li>
 									  <i class="fa ${!empty requirement.currencyCode && requirement.currencyCode == 'INR'  ? 'fa-rupee' :!empty requirement.currencyCode && requirement.currencyCode == ('USD' || 'AUD' || 'SGD' ) ? 'fa-dollar': !empty requirement.currencyCode && requirement.currencyCode == 'EUR' ? 'fa-eur' : !empty requirement.currencyCode && requirement.currencyCode == 'GBP' ? 'fa-gbp' : 'fa-rupee' } " title="Job Rate"></i>
-								      <span>${!empty requirement.rate ? requirement.rate : '---'}${!empty requirement.maxRate ? ' - ':''}${!empty requirement.maxRate ? requirement.maxRate : ''}${!empty requirement.rateType ? ' / ':''}${!empty requirement.rateType ? requirement.rateType : ''} </span>
+								      <span>${!empty requirement.rate ? requirement.rate : '---'}${!empty requirement.maxRate ? ' - ':''}${!empty requirement.maxRate ? requirement.maxRate : ''}  ${!empty requirement.currencyCode ? requirement.currencyCode : ''}${!empty requirement.rateType ? ' / ':''}${!empty requirement.rateType ? requirement.rateType : ''} </span>
 									</li>
 									<li><i class="fa fa-map-marker" title="Location"></i><span title="${!empty requirement.city ? requirement.city : ''} ${!empty requirement.city ? ',' : ''} ${!empty requirement.state ? requirement.state : ''} ${!empty requirement.state ? ',' : ''}${!empty requirement.country ? requirement.country : ''}">${!empty requirement.city ? requirement.city : ''} ${!empty requirement.city ? ',' : ''} ${!empty requirement.state ? requirement.state : ''} ${!empty requirement.state ? ',' : ''}${!empty requirement.country ? requirement.country : ''}</span></li>
 									<li><i class="fa fa-cab" title="Travel allowance"></i><span title="${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}">${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}</span></li>
@@ -67,19 +69,18 @@
 <div class="project_side_wrap_inn_tabs">
 
 	 <%-- var type = '${type}'; --%>
-	 
 	<!--  isDetailsTabActive
 	 isApplicantsTabActive -->
 	<ul class="project-tabs-menu">
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
 		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
 			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a  href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a href="#tab-3" onclick="requirementRecommendations('${requirement.id}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
-			<li><a href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
@@ -88,38 +89,43 @@
         <div id="details-div" class="require_wrap_details">
             	<c:if test="${requirement.requirementSubmissionStatus == 'REJECTED' }">
             	    <div class="anchor-inline">
+            	     <h5>Rejected Reason:</h5> 
 	            	    <div class="rejected_Reason"> 
-		            	    <h5>Rejected Reason:</h5>  
 		            	    <div class="mb">${!empty requirement.rejectReasonForRequirement ? requirement.rejectReasonForRequirement : ' No DATA '}</div>
 	            	    </div> 
             	    </div> 
           	   </c:if>
 			   <div id="rejectRequirementAlert" ></div>   
 		       <div class="clearfix"> 
-		           <div class="pull-left"> 
-		              <h2>Assigned Members</h2>  
-		           </div> 
-		           <div class="pull-right"> 
+		           <div class="pull-right mt10"> 
+
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
-			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (  !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN') }">
+			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (isManager != 'true' && !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN')}">
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
-					</div> 
-			     </div> 
+					</div></div>
+					<div class="collpasePannel clearfix mt10"> 
+		              <a href="javascript:void(0)" id="assignedGrid"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           </div> 
+			      
 			            
                  <div class="clearfix"> 
                  	<div class="clearfix row"> 
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
           				<div id="assignedMemberList"></div> 
+          				
+          				
 				        <h1>Description:</h1> 
 				        <div class="RDdetails">${!empty requirement.description ? requirement.description : ' No DATA '}</div>
+			            <div class="clearfix"></div>
 			            <h1>Skills:</h1>
 			            <div class="RDdetails">${!empty requirement.skills ? requirement.skills : ' No DATA '}</div>
+			            <div class="clearfix"></div>
 			            <h2 class="RPadT"> Job Details:</h2> 
 			            <div class="require_one">
 				            <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>${!empty requirement.positions ? requirement.positions : ' -- '}</span>
@@ -131,7 +137,7 @@
 					        
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
-					            	<a class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
+					            	<a download class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
 					            </c:if>
 					            <div class="clearfix"></div> 
 				            </div> 
@@ -260,11 +266,7 @@
 			         	 </c:if>
 					     <div class="clearfix"></div> 
 					           
-			         	 <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
-			         	 <div class="clearfix"></div>			           	            
-			            
 			            <c:if test="${!empty requirement.approvalMechanismType}">
-			           
 			           	<c:choose>
 						   <c:when test="${requirement.approvalMechanismType == 'PARALLEL'}">
 						   	 <div class="require_wrap_details_cta"> <b>Approvers:</b> <span> 
@@ -282,7 +284,10 @@
 						</c:choose>
 			            </c:if>  
 			            
-                    <div class="clearfix"></div> 				            
+                    <div class="clearfix"></div>
+                    
+                    <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
+			        <div class="clearfix"></div>			            
                 </div> 							            
            
                    <div class="clearfix"></div> 
@@ -291,7 +296,7 @@
            
                  </div> 	
                </div> 
-           
+           </div>
                </div> 
              </div> 
       </div>
@@ -354,7 +359,7 @@
 		</div>
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
-		<ul class="m-t">
+		<ul class="alignUlList mt10">
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>
@@ -395,4 +400,13 @@ function hideButtonOnClick(){
 		$('#approverbut').hide();
 		$('#rejectedbut').hide();
 }
+</script>
+<script>
+$(function(){
+	$("#assignedMemberList").hide();
+	$("#assignedGrid").click(function(){
+		$("#assignedMemberList").slideToggle();
+		assignedMemberList(${requirement.id});
+	});
+});
 </script>

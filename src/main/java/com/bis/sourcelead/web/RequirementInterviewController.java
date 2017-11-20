@@ -99,6 +99,8 @@ public class RequirementInterviewController {
 		    	 
 		    	 Date convertedDateStart = null;
 		    	 Date convertedDateEnd = null;
+		    	 Date dateDateFormatEnd = null;
+		    	 Date dateDateFormatTimeEnd = null;
 		    	 Timezone timezone = timeZoneService.getTimezone(requirementInterview.getSubmissionId().getOrgLocations().getTimezone().getId());
 					if(requirementInterview.getStartTime() != null){
 				    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
@@ -132,14 +134,17 @@ public class RequirementInterviewController {
 				String stringDateFormatTimeStart =  DATE_TIME.format(convertedDateStartSqlFormatTime);
 				Date dateDateFormatTimeStart =  DATE_TIME.parse(stringDateFormatTimeStart);
 				
+				
+				if(convertedDateEnd != null) {
 				java.sql.Date convertedDateEndSQlFormat = new java.sql.Date(convertedDateEnd.getTime());
 				String stringDateFormatEnd =  Constants.DMY.format(convertedDateEndSQlFormat);
-				Date dateDateFormatEnd =  Constants.DMY.parse(stringDateFormatEnd);
+				dateDateFormatEnd =  Constants.DMY.parse(stringDateFormatEnd);
 				
 				
 				java.sql.Timestamp convertedDateEndSqlFormatTime = new java.sql.Timestamp(convertedDateEnd.getTime());
 				String stringDateFormatTimeEnd =  DATE_TIME.format(convertedDateEndSqlFormatTime);
-				Date dateDateFormatTimeEnd =  DATE_TIME.parse(stringDateFormatTimeEnd);
+				dateDateFormatTimeEnd =  DATE_TIME.parse(stringDateFormatTimeEnd);
+				}
 				
 			     if(dateDateFormat != null){
 			    	 if((dateDateFormatCurrentDate.equals(dateDateFormat) && dateDateFormatTimeStart.after(dateDateFormatCurTime))|| dateDateFormatTimeStart.after(dateDateFormatCurTime)){
@@ -157,11 +162,11 @@ public class RequirementInterviewController {
 			     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
 			     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 				 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
-				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
 					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
-				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
 					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }

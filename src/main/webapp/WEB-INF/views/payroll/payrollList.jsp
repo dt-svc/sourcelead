@@ -25,9 +25,9 @@
 		</div>
 		<div class="pull-left ml generateButtons">
 			<a href="<c:url value='/uploadDocuments'/>" class="ml10 mt5"
-				id="uloadDocs" title="upload documents">Upload Files</a> <a
-				href="<c:url value='/payrollReport'/>" class="ml10 mt5"
-				id=generateReportId title="Generate Report">Generate Report</a>
+				id="uloadDocs" title="upload documents">Upload Files</a> 
+				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
+				id=generateReportId title="Generate Report">Generate Report</a> --%>
 		</div>
 	</section>
 	<%-- <a href="<c:url value='/addChecks'/>" class="ml10 mt5"
@@ -36,22 +36,14 @@
 		method="post">
 		<section class="contrHead">
 			<ul id="parentUl">
-				<li title="Employer Payroll Cost"><a class="wVer"
-					id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer
-						Payroll</a></li>
-				<li title="Employee list"><a id="empList"
-					onclick="getEmployeeList();">Master Data</a></li>
-				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi"
-					onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-				<li title="Account Deductions"><a id="accountDedLi"
-					onclick="accountDeductionsList();">Account Deductions</a></li>
-				<li title="HR Deductions"><a id="HrdedLi"
-					onclick="hrDeductionsList();">HR Deductions</a></li>
+				<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
+				<!-- <li title="Employee list"><a id="empList" onclick="getEmployeeList();">Master Data</a></li> -->
+				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
+				<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
+				<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
 				<li title="Checks"><a id="BisChecks" onclick="bisChecksList();">Payments</a></li>
-				<li title="InvoiceDetails"><a id="invoiceData"
-					onclick="getInvoiceDetails();">Invoice Details</a></li>
-				<li title="Paylist"><a id="paylistLi"
-					onclick="showPayrollDiv();">Run Payroll</a></li>
+				<li title="InvoiceDetails"><a id="invoiceData" onclick="getInvoiceDetails();">Invoice Details</a></li>
+				<li title="Paylist"><a id="paylistLi" onclick="showPayrollDiv();">Generate Payroll</a></li>
 				<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 			</ul>
 			<div class="clearfix"></div>
@@ -315,6 +307,7 @@
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
 			$("#invoiceData").removeClass('wVer');
+			
 			loadEmployeePayrollCost();
 		} else if (payrollType == "WAGE_TAX") {
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -478,7 +471,8 @@
 		$("#hrDeductionsListDiv").empty();
 		$("#checksListDiv").empty();
 		$("#employeeListDiv").empty();
-		runPayrollCycles();
+		$("#invoiceDataDiv").empty();
+		//runPayrollCycles();
 
 	}
 </script>
@@ -511,6 +505,8 @@
 
 		$("#employerCostDiv").removeAttr("style");
 		$("#employerCostDiv").empty();
+		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
 		result = result +" <div class='modal-header'>";
 		result = result + " <div class='remove_search'>";

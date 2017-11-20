@@ -53,15 +53,6 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception {
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<EmployerPayrollCost> empCostList = null;
-		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.orgLocationId.id =:orgLocationId";
-	    empCostList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(empCostList != null && empCostList.size() >0)
-		{
-			return empCostList;
-		}
-		return empCostList;*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> employerPayrollCostList = null;

@@ -3,22 +3,29 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<title>Welcome to Source Lead :: The Recruitment Application</title>
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+
+
 
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <style type="text/css">
@@ -28,7 +35,9 @@
     </style>
 </head>
 
-
+<script>
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
 <div class="wraper"> 
 
   
@@ -89,7 +98,7 @@
 			  <div class="clearfix"></div>
 		  </div>
 	
-	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form" enctype='multipart/form-data' >	  
+	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form">	  
 		<div id="loading"></div>
 		<div class="welCo1">
         <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
@@ -98,7 +107,12 @@
 				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-text"></a></span>
+				<c:if test="${!empty contractDocs.uploadFileURL && !empty contractDocs.fileURL}">
+				<span><a href="${contractDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
+				<c:if test="${!empty contractDocs.fileURL && empty contractDocs.uploadFileURL}">
+				<span><a href="${contractDocs.fileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
 					<strong>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
@@ -110,7 +124,7 @@
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
-						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc"  onChange="uploadContract(${contractDocs.id});"   data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
@@ -136,7 +150,12 @@
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<c:if test="${!empty formsDocs.uploadFileURL && !empty formsDocs.fileURL}">
+						<span><a href="${formsDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
+					<c:if test="${!empty formsDocs.fileURL && empty formsDocs.uploadFileURL}">
+						<span><a href="${formsDocs.fileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
 					<strong>
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
 						   <p>${formsDocs.fileName}</p>
@@ -148,7 +167,7 @@
 						
 						
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
-						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" onChange="uploadForms(${formsDocs.id})" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">
@@ -177,7 +196,7 @@
 				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<span><a href="${policiesDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${policiesDocs.fileName}</p>
 				
@@ -213,14 +232,14 @@
   
   </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery.dataTables.min.js"></script> 
-  <script src="resources/js/moment.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/bootstrap-select.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   
   <script type="text/javascript">
 			var config = {
@@ -283,26 +302,14 @@ function saveOnboardingCandidateDocs(saveType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
-		  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#onboardCandidateDocs_form')[0];
-		   var formData = new FormData(form); 
-		
+		 var formData = getFormData1("onboardCandidateDocs_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
 	          processData: false,
 	          contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
 	      }
@@ -351,8 +358,16 @@ function saveOnboardingCandidateDocs(saveType){
 
 
 <script>
+
+
+function uploadContract(id){ 
+	fileUpload("uploadContractsFile"+id+"", "Welcome-Onboarding-Contract-Documents", "onboardCandidateDocs_form","uploadContractsFile");
+}
+function uploadForms(id){
+	fileUpload("uploadFormsFile"+id+"", "Welcome-Onboarding-Forms-Documents", "onboardCandidateDocs_form","uploadFormsFile");
+}
+ 
 function uploadFormFile(id){
-	 
 	 $("#uploadFormsFile"+id+"").val($("#uploadFormsBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
 }
 
@@ -367,7 +382,7 @@ function uploadPoliciesFile(id){
 }
 	 
 </script>
-
+<script src="resources/js/slead-common.js"></script>
 <script>
   function navtoggle(elementRef){
 	  
@@ -412,4 +427,4 @@ function uploadPoliciesFile(id){
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>

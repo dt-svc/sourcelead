@@ -172,15 +172,7 @@ function addResume(candidateId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	}
 </script>	 
   
@@ -275,16 +267,16 @@ function addResume(candidateId) {
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(data) {
-				var json = JSON.parse(data);
-				if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-        		 else if (data.indexOf('exception') >= 0) {
-        			 location.replace(sourceleadUrl+"/errorPage");
-        		 }
-        		 else{
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
+			success : function(json) {
+// // 				var json = JSON.parse(data);
+// 				if( json.indexOf('Sign In') >= 0){
+// 		    		location.replace(sourceleadUrl);
+// 		    	 }
+//         		 else if (json.indexOf('exception') >= 0) {
+//         			 location.replace(sourceleadUrl+"/errorPage");
+//         		 }
+//         		 else{
+					if(json.data.length<=0 || (json == null && json == 'undefined' && json == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
 						 	result = result+"		<div class='content-area clearfix'>"; 
@@ -308,9 +300,9 @@ function addResume(candidateId) {
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
+				             for (var i = 0; i < json.data.length; i++) {
+				            	 	resumesCount = json.data.length;
+					            	var opt = json.data[i];
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
@@ -341,7 +333,7 @@ function addResume(candidateId) {
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'	            <td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
+					           		result = result+'	            <td><div class="tblicons"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\" title="Download"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -361,7 +353,7 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
-        		}
+//         		}
 				},
 		});
   }

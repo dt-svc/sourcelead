@@ -233,13 +233,13 @@
 									<select class="form-control selectpicker" id="experienceYears"
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
-										<c:forEach begin="0" end="25" varStatus="loop">
+										<c:forEach begin="0" end="50" varStatus="loop">
 											<option>${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
 								<div class="col-xs-6 col-md-6">
-									<select class="form-control selectpicker" id="experienceMonths"
+									<select class="form-control selectpicker experienceMonths" id="experienceMonths"
 										name="experienceMonths">
 										<option value="">Months</option>
 										<c:forEach begin="0" end="11" varStatus="loop">
@@ -515,9 +515,8 @@
 						</div>
 					</div>
 
-
-
-
+					<!-- this "candidateCreationType" field is used for candidate creation type -->
+         			<input type="hidden" id="candidateCreationType" name="candidateCreationType" value="manual">
 
 					<div class="clearfix"></div>
 
@@ -797,13 +796,6 @@ function validate_fileupload(fileName)
 		    }); 
 		    //Adding Customized Educations to the list
 	       
-	       
-	      /*  $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       }); */
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -854,20 +846,21 @@ function validate_fileupload(fileName)
 
 <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
 <script type="text/javascript">
- function disableMonths() {
-     $("#experienceYears").change(function() {
-         if ($("#experienceYears").val() == '25'){
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $('#experienceMonths').attr("disabled", false);
-             $('#experienceMonths').val("disabled", false);
-         }else{
-        	 $("#experienceMonths").val('');  
-        	 $('#experienceMonths').selectpicker('refresh');
-        	 $("#experienceMonths").attr("disabled", false); 
-         }
-     });
- }
+function disableMonths() {
+	
+    $("#experienceYears").change(function() {
+        if ($('#experienceYears').val()=='50'){
+       	 $("#experienceMonths").val('');
+       	 $('#experienceMonths').selectpicker('refresh');
+       	 $('#experienceMonths').attr("disabled", "disabled");
+       	
+        }else{
+       	 $('#experienceMonths').val("");  
+       	 $('#experienceMonths').selectpicker('refresh');
+       	 $("#experienceMonths").attr("disabled", false); 
+        }
+    });
+}
  
  var selectedFile = document.getElementById("uploadBtn");
 	      selectedFile.addEventListener("change", function() {
@@ -1043,12 +1036,12 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");

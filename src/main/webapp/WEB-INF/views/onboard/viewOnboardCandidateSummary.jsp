@@ -102,9 +102,8 @@ padding-left: 25px;
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	 var json = JSON.parse(data);
 	        	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
 	        		zipCode = json.zipCode;
 	        	}else{
@@ -404,7 +403,7 @@ function getTemplateContractsDocumentsDetails(){
 			        	for (var i = 0; i < json.length; i++) { 
 	               		 var report = json[i]; 
 							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+							result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							
 							if(report.documentStatus != 'ACCEPTED'){
 								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
@@ -459,7 +458,7 @@ function getTemplateFormsDocumentsDetails(){
 			        	for (var i = 0; i < json.length; i++) { 
 	               		 var report = json[i]; 
 							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+							result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							
 							
 							if(report.documentStatus != 'ACCEPTED'){
@@ -514,7 +513,7 @@ function getTemplatePolicyDocumentsDetails(){
 		               		 
 		               		
 								result = result +'    <div class="col-md-2 text-center mb10">                                ';
-								result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+								result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 								result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 								if(report.documentStatus == 'NEW'){
 									result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
@@ -563,7 +562,7 @@ function getTemplateSupportingDocumentsDetails(){
 	               		 
 	               		
 							result = result +'    <div class="col-md-2 text-center mb10">                                ';
-							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+							result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 							result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
 							result = result +'    </div>                                                                 ';

@@ -2,8 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
+import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
@@ -14,11 +14,11 @@ public interface ReferContactsService {
 	
 	ReferContacts getReferContactsByUUID(String contactUUID) throws Exception;
 	
-	List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId,Long orgLocationId) throws Exception;
+	ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO, Long userId,Long orgLocationId) throws Exception;
 
 	ReferContacts getReferContactsByEmails(Long userId,String toEmail) throws Exception;
 
-	public void saveuserContacts(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
+	public void saveuserContacts(User user, OrgLocations orgLocations,ReferContactsDTO referContactsDTO) throws Exception;
 	
 	 void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception;
 	

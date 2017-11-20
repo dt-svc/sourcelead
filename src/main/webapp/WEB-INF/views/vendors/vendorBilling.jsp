@@ -144,7 +144,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                    	                                                                                                                                                                                           ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');" >                                                                                        ';
  result = result + '			                              <label for="onboard1">Draft</label>                                                                                                                                                  ';
@@ -175,7 +175,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');">                                                                                          ';
  result = result + '			                              <label for="onboard3">Paid</label>                                                                                                                                                   ';
@@ -303,7 +303,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="vendorInvoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
-			result = result +'         <th>Bill ID</th>                    ';
+			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Vendor Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
@@ -635,10 +635,14 @@ function vendorInvoicePagination(){
             }
         ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

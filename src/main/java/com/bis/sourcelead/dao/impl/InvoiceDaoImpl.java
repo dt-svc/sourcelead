@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -127,7 +128,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='payables' and invoice.status = '1'";
 		}
 		
-		if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
+		StringBuilder query1 = new StringBuilder("");
+		if(StringUtils.isNotBlank(invoiceDTO.getSearchValue())){
+			if(invoiceDTO.getSearchValue().contains("/") || invoiceDTO.getSearchValue().contains("-")){
 			String convertedDate=invoiceDTO.getSearchValue();
 			if(invoiceDTO.getSearchValue().contains("/")){
 				convertedDate = invoiceDTO.getSearchValue().replaceAll("/", "-");
@@ -141,10 +144,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
             String queryDate = "from Invoice invoice where invoice.orgLocation.id =:orgLocationId and ( invoice.invoiceDate =:sqlDate or invoice.dueDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
             response.setData(queryObjDate.list());
-
-		}else{
-		StringBuilder query1 = new StringBuilder("");
-			if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
+			}else{
+				if(invoiceDTO.getSearchValue() !=null && !"".equalsIgnoreCase(invoiceDTO.getSearchValue())) {
 				query1.append(" and (invoice.invoiceId like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.responderLocationId.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
 				.append("OR invoice.orgLocation.orgLocationName like '%" + invoiceDTO.getSearchValue() + "%' ")
@@ -159,6 +160,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				.append("OR invoice.paymentStatus like '%" + invoiceDTO.getSearchValue() + "%' )");
 						
 			}
+			}
+		}
 		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
@@ -179,12 +182,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
 			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
+		} 
 			response.setData(invoiceList);
-		}
 			return response;
 		
 		
@@ -407,12 +406,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery3 = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		String subQuery4 = "";
+		if("".equalsIgnoreCase(invoiceStatus) || invoiceStatus == null || invoiceStatus.equalsIgnoreCase("undefined")){
+			subQuery4 = " and invoice.invoiceStatus <> 'Linked' ";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query =null;
 		if(invoiceType.equalsIgnoreCase("payables")){
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}else{
-		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" "+subQuery4+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
 		List<Invoice> invoiceList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;
@@ -434,7 +438,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			params.put("endDateUTC", endDateUTC);
 			subQuery = "and invoice.invoiceDate >= :startDateUTC and invoice.invoiceDate <= :endDateUTC";
 		}
-		String query = "from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
+		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
 		
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
@@ -449,7 +453,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.setCacheable(false).list();
 	}
 
 
@@ -468,7 +472,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId = :invoiceId";
+		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId.id = :invoiceId";
 		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
 		return invoicePaymentList;
 		

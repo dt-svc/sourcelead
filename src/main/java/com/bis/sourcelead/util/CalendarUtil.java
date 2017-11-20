@@ -18,14 +18,20 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.rest.OrgSettingsRestController;
-import com.bis.sourcelead.web.LoginSessionController;
 
 public  class CalendarUtil {
 
+	public static void main(String[] args){
+	 //System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
+		System.out.println(Months.monthsBetween(new LocalDate(), new LocalDate()));
+		
+	 /*Months.monthsBetween(new LocalDate(), new LocalDate());*/
+	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -397,7 +403,7 @@ public  class CalendarUtil {
 	}
 
 
-	public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
+	public static Calendar getPreviousWeekDayByCalendar(Calendar calendar,String day_Of_Week,String dateFormart) {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
 		try {
@@ -641,10 +647,18 @@ public  class CalendarUtil {
 			Date currentDate = null;
 			try {
 				currentDate = format.parse(format.format(new Date()));
-				startDate = format.parse(weekStartDate.replaceAll("-", "/"));
-				endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate);
+					endDate = format.parse(weekEndDate);
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
 				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
+			
 		}
 		return flag;
 	}

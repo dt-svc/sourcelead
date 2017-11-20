@@ -12,11 +12,21 @@ public interface ProjectApproverHierarchyDao {
 	
 	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
+	public ProjectApproverHierarchy getProjectApproverByProjectIdAndLevel(Long projectId,Integer level) throws Exception;
+	
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
+	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId) throws Exception;
+	
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
 
+	public List<ProjectApproverHierarchy> getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
+	
 	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
+	
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectClientId(Long projectClientsId) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long Id,long userId) throws Exception;
 	

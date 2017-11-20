@@ -386,7 +386,11 @@ public class RequirementController {
 				}else{
 				  model.addObject("industryList", industryList);
 				} 
+			}else
+			{
+				  model.addObject("industryList", industryList);
 			}
+				
 			}else{
 	         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 	          List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
@@ -462,7 +466,7 @@ public class RequirementController {
 
 	}
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
@@ -485,6 +489,46 @@ public class RequirementController {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
+		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
+		for (RequirementAssignTo assing : requirementAssignToList) {
+			RequirementAssignTo ra = new RequirementAssignTo();
+			StringBuilder assignUserSB = new StringBuilder();
+			if (assing.getAssignUserId().getLastName() != null) {
+				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
+			}
+			else {
+				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+			}
+			requirementAssignToList.add(ra);
+		}*/
+		if(requirement.getCreatedDate()!=null){
+			requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+		}
+		if (null != requirement.getClosedDate()) {
+			requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
+		}
+		if (requirement.getSpocId() != null) {
+			if (requirement.getClientId() != null) {
+				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+				}
+				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirement.getSpocId().getClientUser().getFirstName() != null
+					&& requirement.getSpocId().getClientUser().getFirstName() != ""
+					&& requirement.getSpocId().getClientUser().getLastName() != null
+					&& requirement.getSpocId().getClientUser().getLastName() != "") {
+				StringBuilder spocSB = new StringBuilder();
+				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+			}
+			else {
+				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+			}
+			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
+			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+		}
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
 			if(null != maxLevel && maxLevel >1){
@@ -509,11 +553,17 @@ public class RequirementController {
 					}
 				}
 			}
-			
+		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 		Boolean isLoginUserAsApprover = false;
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
+		if(isAdmin || isManager){
+			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
+		}else{
+			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+		}
 		if (requirementApproverHierarchy != null) {
 			isLoginUserAsApprover = true;
+			requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
 		}
 		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 		
@@ -522,6 +572,9 @@ public class RequirementController {
 		}else {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
+		
+		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 		
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
@@ -536,7 +589,6 @@ public class RequirementController {
 			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isTeamMember",isTeamMember);
 			
-			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
 			model.addObject("isManager",isManager);
 			
 			model.addObject("isAdmin",isAdmin);
@@ -610,7 +662,7 @@ public class RequirementController {
 	
 	
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummaryView")
 	public ModelAndView requirementSummaryView(HttpServletRequest request, @RequestParam(value="requirementUUID", required=false)String requirementUUID, @RequestParam(value="interviewId", required=false)Long interviewId) throws Exception {
 
@@ -900,12 +952,13 @@ public class RequirementController {
 				      
 				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 					      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
-					      		
-//					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
 					      		ContractsDTO contractsDTO = populateContractsDTO(requirementOffers,null,requirementOffers.getSubmissionId().getOrgLocations());
 					      		contractsTemplateService.saveNewContract(contractsDTO, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW");
 						      }
+				      
+				      requirementOffersService.sendApplicantOfferAcceptMail(requirementOffers);
 			    }
+			    
 		    }
 		}
 		return model;

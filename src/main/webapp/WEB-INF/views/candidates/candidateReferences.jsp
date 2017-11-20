@@ -127,8 +127,8 @@
 						result = result + "</thead>";
 						result = result + "<tbody>";
 
-						for (var i = 0; i < json.length; i++) {
-							var opt = json[i];
+						for (var i = 0; i < json.data.length; i++) {
+							var opt = json.data[i];
 							result = result + ' <tr>';
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
@@ -277,12 +277,7 @@
 		});
 	});
 
-	/* $(function() {
-	 $('#relation').change(function(){
-	 alert("X");
-	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
-	 });
-	 }); */
+	
 </script>
 <%-- 
      @author : prasad K.
@@ -432,15 +427,15 @@
 		        	closePopup();
 		        	 $("#popUpDiv").removeClass("edit-details-active");
 					$("#selector10").removeAttr("style");
-					$("#selector10").css({
-						display : "block"
-					});
-					$("#refMsgDiv").html(
-							"Success!! New Candidate References added");
+					$("#selector10").css({display : "block"	});
+					$("#refMsgDiv").html("Success!! New References added");
 		        	candReferencesList(candidateId);
 					refMsgFadein(); 
+					setTimeout(function(){
+			 			candidateList();					 			
+			 	     },100);
 		        });
-			
+		        
 			return true;
 		} else {
 			return false;
@@ -532,6 +527,9 @@
 									.fadeOut();
 							candReferencesList(candidateId);
 							refMsgFadein();
+							setTimeout(function(){
+					 			candidateList();					 			
+					 	 },100);
 						}
 					},
 				});
@@ -561,9 +559,7 @@
 	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
 	        	
 	        	$("#selector10").removeAttr("style");
-				$("#selector10").css({
-					display : "block"
-				});
+				$("#selector10").css({display : "block"});
 				$("#refMsgDiv").html("Reference details updated");
 				closePopup();
 				candReferencesList(candidateId);
@@ -739,13 +735,6 @@
 												.click(function(e) {
 													e.stopPropagation();
 												});
-
-										/* if(json.relation == "Family Related"){
-										    $("#dvDesignationEdit").remove();
-											$("#dvDesignationEdit").css("display", "none");
-											$("#designationValEdit").removeAttr("data-validation");
-											$("#designationValEdit").attr("data-validation-optional", "true");
-										} */
 
 									}
 

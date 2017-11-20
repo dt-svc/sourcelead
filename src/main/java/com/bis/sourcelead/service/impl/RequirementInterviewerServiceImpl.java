@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
+import com.bis.sourcelead.dto.RequirementInterviewerDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -171,6 +172,11 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	{
 		return requirementInterviewerDao.isInterviwerForByRequirementIdInterviewIdAndUserId(reqUUID, requirementInterviewerId, userId);
 		
+	}
+
+	@Override
+	public List<RequirementInterviewerDTO> getInterviwersListByInterviewIdFromDTO(Long interviewId) {
+		return requirementInterviewerDao.getInterviwersListByInterviewIdFromDTO(interviewId);
 	}
 
 }

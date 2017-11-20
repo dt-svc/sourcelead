@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -133,7 +134,7 @@ public class TimeSheetPdfUtil {
 		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+		sb.append(projectMember.getProjectMemberCandidteId().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		file = File.createTempFile(sb.toString(),".pdf");
 		file.setReadable(true);
 		
@@ -167,7 +168,7 @@ public class TimeSheetPdfUtil {
 				 int column = 0;
 				 String weekMondayDate = null;
 				 
-				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
+				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(weekStartDate, weekEndDate, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 				 if(null != ts){
 					 if(null != ts.getBillableHours()){
 						 Float weekBillable = Float.parseFloat(ts.getBillableHours());
@@ -304,7 +305,7 @@ public class TimeSheetPdfUtil {
 					String billable = getTotalHours((long) (Math.round(billableHours)));
 					String nonBillable = getTotalHours((long) (Math.round(nonBillableHours)));
 					String grandtotal = getTotalHours(grandTotalHours);
-					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
+					document =  prepareHeadres(projectMember.getProjectMemberCandidteId(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};
 					String[] headers2 = Constants.TIMESHEET_EXCEL_HEADERS2;
 					int [] width3 = new int[]{1};
@@ -407,7 +408,14 @@ public class TimeSheetPdfUtil {
 					 table1.addCell("");
 					 table1.addCell(table4);
 					 table1.addCell(getTotalHours(totalHours));
-			        document.addTitle("Pdf table created for TimeSheet Entries..!!");
+					 if(projectMember.getProjectMemberCandidteId()!= null) {
+						 if(projectMember.getProjectMemberCandidteId().getLastName()!= null) {
+							 StringBuilder fullname = new StringBuilder();
+							 document.addTitle(fullname.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
+						 }else {
+							 document.addTitle(projectMember.getProjectMemberCandidteId().getFirstName());
+						 }
+					 }
 			        table1.setSpacingBefore(15f);
 			        document.add(table1);
 			        logger.info("Pdf table created !!");
@@ -458,7 +466,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
+	private Document prepareHeadres(Candidate candidate, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -472,7 +480,7 @@ public class TimeSheetPdfUtil {
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
 		        sbPipeHearder.append(orgLocations.getOrgLocationName()).append(" ").append("TimeSheet");
-	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet.").toString(),boldFont);
+	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            para.add("\n\n");
 	            document.add(para);
@@ -483,16 +491,18 @@ public class TimeSheetPdfUtil {
 	            table.setHorizontalAlignment(Element.ALIGN_LEFT);
 	            table.setWidths(new int[]{10,10});
 	            table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-	            if(user.getFirstName()!=null && user.getLastName()!=null){
-	            	nameSb.append(user.getFirstName()).append(" ").append(user.getLastName());
+	            if(candidate.getFirstName()!=null && candidate.getLastName()!=null){
+	            	nameSb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 	            }else{
-	            	nameSb.append(user.getFirstName());
+	            	nameSb.append(candidate.getFirstName());
 	            }
 	            table.addCell("Name : "+nameSb.toString());
 	            table.addCell("Status : "+submissionStatusStr);
-	            table.addCell("Email Id : "+user.getEmail());
+	            table.addCell("Email Id : "+candidate.getEmail());
 	            table.addCell("Billabe Hours : "+billableHours);
-	            table.addCell("Phone Number : "+user.getMobilePhone());
+	            if(candidate.getMobilePhone() != null) {
+	              table.addCell("Phone Number : "+candidate.getMobilePhone());
+	            }
 	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
 	            table.addCell("Project : "+projectName);
 	            table.addCell("Total Hours : "+totalHours);

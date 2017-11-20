@@ -190,10 +190,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
-			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState,OrgLocations orgLocations)
 			throws Exception {
 		Row writeRow = null;
-        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,activeList,inactiveList,notLoggedInList,userState,userRolesList);
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,activeList,inactiveList,notLoggedInList,userState,userRolesList,orgLocations);
         
         int column=0;
         for(UserRole userRoles : userRolesList){
@@ -204,7 +204,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return createExcelsheet;
 	}
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
-			List<UserRole> activeList, List<UserRole> inactiveList, List<UserRole> notLoggedInList, String userState, ArrayList<UserRole> userRolesList) {
+			List<UserRole> activeList, List<UserRole> inactiveList, List<UserRole> notLoggedInList, String userState, ArrayList<UserRole> userRolesList,OrgLocations orgLocations) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -213,9 +213,29 @@ public class UserRoleServiceImpl implements UserRoleService{
         font.setColor(IndexedColors.BLACK.getIndex());
          style.setFont(font);
 		 
+		 writeRow = createExcelsheet.createRow(0);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell0 = writeRow.createCell(0);
+		 cell0.setCellValue("Orgnization :");
+		 cell0.setCellStyle(style);
+		 
+		 Cell cell01 = writeRow.createCell(1);
+		 if(orgLocations.getOrgLocationName()!=null)
+		 {
+			 cell01.setCellValue(orgLocations.getOrgLocationName()); 
+		 }
+		 else
+		 {
+			 cell01.setCellValue("--");
+		 }
+		cell01.setCellStyle(style);
+		 
 		 writeRow = createExcelsheet.createRow(1);
 		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
+		 
 		 
 		 Cell cell1 = writeRow.createCell(0);
 		 cell1.setCellValue("Active :");
@@ -316,9 +336,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
 		   }
 		   
-		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 			   writeRow.createCell(10).setCellValue("Invite");
-	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
 	   			writeRow.createCell(10).setCellValue("Resend");
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 	   			writeRow.createCell(10).setCellValue("Active");
@@ -350,8 +370,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	@Override
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency, Long approverUserId) throws Exception {
-		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(invoiceFrequency,approverUserId);
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency, Long approverUserId,Long locationId) throws Exception {
+		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(invoiceFrequency,approverUserId,locationId);
 	}
 
 	@Override

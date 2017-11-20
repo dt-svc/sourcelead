@@ -334,11 +334,9 @@ public  class TimesheetFrequencyGeneratorUtil {
 		return timesheetFrequencyList;
 	}
 	
-	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(ProjectMembers projectMember,String frequencyFor) throws Exception{
+	public Map<String,String> getTimesheetFrequencyListFromProjectInvoiceFrequency(ProjectMembers projectMember,OrgLocations orgLocations,String frequencyFor) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(projectMember != null && projectMember.getProjects() != null){
-			Projects projects = projectsService.getProjectById(projectMember.getProjects().getId());
-			OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 			String timesheetFrequency = projectMember.getProjects().getInvoiceFrequency();
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
 				HashMap<String,Date> dateList = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMember.getId());

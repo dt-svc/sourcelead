@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.entity.CandidateReferences;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -80,8 +82,8 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 	public List<CandidateReferences> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.orgLocationId.id =:orgLocationId and cr.status ='1' ORDER BY cr.createdDate DESC";
-		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.status ='1' ORDER BY cr.createdDate DESC";
+		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		return candidateReferencesList;
 	}
 
@@ -130,6 +132,34 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		}
 		return candidateReferences;
 	}
-   
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 Collection<CandidateReferences> candidateReferencesList = null;
+		 if(referenceEmail != null && candidateId != null){
+			 if(candidateReferenceId != null) {
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.id =:candidateReferenceId";
+					candidateReferencesList = session.createQuery(query.toString()).setLong("candidateReferenceId", candidateReferenceId).setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+					if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+						flag = false;
+					}else {
+						flag = true;
+					}
+			 }else {
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId ";
+				 candidateReferencesList = session.createQuery(query.toString()) .setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
+				 if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
+						flag = true;
+					}
+			 }
+
+				
+		 }
+		return flag;
+	}
 	
 }

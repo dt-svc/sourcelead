@@ -5,7 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
-
+<script>
+$(document).ready(function(){
+	$("#tempEye").hide();
+});
+</script>
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -17,9 +21,32 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 var type = '${contract.contractType}';
+	 if(type == "Client MSA" || type == "Vendor MSA"){
+	 	 $("#billingDiv").hide();
+	 	 $('#billingRateType').removeAttr('data-validation');
+	 		$('#billingRateType').attr('data-validation-optional',"true");
+	 		
+	 		$('#flatReward').removeAttr('data-validation');
+	 		$('#flatReward').attr('data-validation-optional',"true");
+	 		
+	 		$('#billingRatePer').removeAttr('data-validation');
+	 		$('#billingRatePer').attr('data-validation-optional',"true");
+	 		
+	 		$('#invoiceFrequency').removeAttr('data-validation');
+	 		$('#invoiceFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#paymentFrequency').removeAttr('data-validation');
+	 		$('#paymentFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#candiFlatReward').removeAttr('data-validation');
+	 		$('#candiFlatReward').attr('data-validation-optional',"true");
 
-
-
+	 }
+};
+</script>
 
 <!-- Content Area -->
  <section class="content-wraper">
@@ -62,8 +89,8 @@
             </div>	
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
+              <div class="col-md-8 clearfix">
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -71,6 +98,7 @@
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" value="${contract.fileName}" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
+              			<span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
               </div>			
 			</div>
           	
@@ -292,7 +320,7 @@
            <div class="form-group" id="descriptionDiv"  style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
+					<textarea class="form-control" rows="3" id="mainDescription" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
@@ -534,8 +562,8 @@
 </div>
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
-			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="document[REPLACEROWID].description"
-			 name="REPLACEROWIDdescription"></textarea>
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			 name="document[REPLACEROWID].description"></textarea>
 	</div>
 </div>
 
@@ -706,7 +734,7 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 </script> -->
 
 <script>
-function getVendorContacts(){
+function getVendorContacts(spocUserCode){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
 	if("" != orgRelationId){
@@ -717,13 +745,20 @@ function getVendorContacts(){
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
-	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	if(spocUserCode == null && spocUserCode != ''){
+	       		output = output + "<option value=''>Select Vendor Contact</option>";
+	       	}
 	       	for (var i=0; i<json.length; i++)
 				{
 		        var opt = json[i];
 		            // need to use in edit
 	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			if(spocUserCode != null && opt.spocUserCode == spocUserCode){
+	       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}else{
+	       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}
+	       			
 				}
 	       	    $("#vendorContact").empty();
 		        $("#vendorContact").append(output);
@@ -866,6 +901,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="none";
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="none";
@@ -878,6 +914,8 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
+		
  	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="none";
@@ -890,6 +928,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -902,6 +941,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -914,6 +954,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -926,6 +967,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -938,6 +980,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1034,6 +1077,28 @@ function contractTypeLabels(){
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -1090,6 +1155,22 @@ function contractTypeLabels(){
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1126,6 +1207,30 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1165,6 +1270,30 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");   
+		
+		$("#vendorContact").val('');
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val('');
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1244,6 +1373,29 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		$("#invoiceFrequency").val('');
+		$('#invoiceFrequency').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 	}
 	
 	if(contractType == "Full time offer"){
@@ -1319,6 +1471,27 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation-optional');
 		$('#candiRatePer').attr('data-validation',"required");
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val('');
+		$("#startDate").val('');
+		$("#endDate").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		getRequirements("Vendor SOW");
 	}
@@ -1547,6 +1720,39 @@ function hideCommonSOWFields(){
 	    });
 
 	}
+	
+	function getVendor(){
+		var reqSubId = $("#submissionOffersList").val();
+		var sowType = $("#contractType").val();
+		if(sowType == "Vendor SOW"){
+			$.ajax({
+		        type : "GET",
+		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+		         success :function(json) {
+	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
+// 	            	 var json = JSON.parse(data);
+		             <c:forEach var="vendor" items="${orgRelationsList}">
+		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
+		    	        		  $("#orgRelationId").val('${vendor.id}'); 
+		    	        		  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+		    				  if(json.vendorLocationCode == '${vendor.locationId.locationCode}'){
+		    					  $("#orgRelationId").val('${vendor.id}');
+		    					  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }
+		              </c:forEach>
+// 		              setTimeout(function () {
+		            	  getVendorContacts(json.createdBy);
+//                        }, 100);
+		              
+	              }
+		       },
+		    });
+		}
+	} 
 </script>
 
 
@@ -1661,7 +1867,7 @@ function flush(){
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
@@ -1716,8 +1922,19 @@ function validateContractTitle(){
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "ContractDocs", "newcontract_form");
+		$("#tempEye").show();
 	});
  });
+</script>
+
+<script>
+function previewTemplatePDF(){
+	var res = $('input[name="fileInfo[0].fileURL"]').val();
+	var fileurl = res.replace("ContractDocs", "temp");
+	var filename = $('input[name="fileInfo[0].fileName"]').val();
+	var contentType = $('input[name="fileInfo[0].contentType"]').val();
+	viewFile(fileurl, filename, contentType);
+}
 </script>
 
 <script>

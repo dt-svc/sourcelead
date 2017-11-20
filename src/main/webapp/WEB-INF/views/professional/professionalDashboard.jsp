@@ -3,10 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+<%-- <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 <script src="resources/js/serial.js?staticTime=${staticTime}"></script>
 <script src="resources/js/light.js?staticTime=${staticTime}"></script>
-<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script> --%>
 
 <style>
 dataTables_empty {

@@ -18,4 +18,6 @@ public interface CandidateOffBoardingDao {
 	
 	CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser,Long orgLocationId) throws Exception;
 
+	List<CandidateOffBoarding> candidateOffboringDelayMail();
+
 }

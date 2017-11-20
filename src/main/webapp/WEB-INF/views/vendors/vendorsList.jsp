@@ -43,9 +43,16 @@ border:none; background-color: none !important; padding:0 5px !important;
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </div>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+          
+          <h5 class="headerAdsrch">Advanced Search
+          <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </h5>
+          
+          
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
-           
+          <div class="addInner"> 
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -82,8 +89,8 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Vendor Name</label>
                   <div class="clearfix">
                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="orgNameAdvanced" name="orgNameAdvanced">
-                        <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                        <c:forEach var="vendorList" items="${vendor_list}">
+                                <option value="${vendorList.vendorNameForList}">${vendorList.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -204,7 +211,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                                <option value="${vendor.vendorNameForList}">${vendor.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -244,18 +251,18 @@ border:none; background-color: none !important; padding:0 5px !important;
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
             </div>
+            </div>
+            </div>
             </form:form>
           </div>
-        </div>
-        </div>
 <!-- Advanced Search Ends -->
 
 
@@ -371,7 +378,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 <div class="side_mask"><div class="proj_close"></div></div>
 
 <!-- Client Side Nav Div -->
-<div class="clients_side_wrap">
+<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="vendorNameDiv"></h1>
 				<div class="proj_close">
@@ -1410,7 +1417,7 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
+			        url: sourceleadUrl+"/resendVendorSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	 $("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
@@ -1464,6 +1471,8 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	 var reason1 = document.getElementById("reasonForSpoc").value;
 	 var userId = '${SourceLeadWeb_user.id}';
@@ -1472,7 +1481,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
+		 	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
@@ -1742,7 +1751,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		
-		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Bills</a></li>';
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
@@ -1752,7 +1761,10 @@ function getVendorDashboardName(vendorDashboardName){
 		 // vendors notes list
 		
 		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes</a></li>';
+		 
+		 result = result + '<li><a href="#tab-9" onClick="vendorOnboardDocumentsList('+orgRelationId+');">Onboard Documents</a></li>';
 		
+		 result = result + '<li><a href="#tab-10" onClick="vendorOnboardTasksList('+orgRelationId+');">Onboard Tasks</a></li>';
 
 
 		result = result + '<div class="clearfix"></div>'
@@ -1791,6 +1803,21 @@ function getVendorDashboardName(vendorDashboardName){
 		//for vendor notes list tab
 		result = result + '<div id="tab-8" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		
+		//for vendor onboard Documents list tab
+		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="vendorDocuments">';
+		  result = result + '<div class="col-md-12 clearfix mt">';
+		  result = result + '<div class="form-group">';
+		  result = result + '<div id="tab-9" class="project_tabs_inn">';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  
+		  result = result + '<div class="tab-panes" id="tasks"> ';
+		  result = result + '<div id="tab-10" class="project_tabs_inn">';
+          result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -1823,9 +1850,8 @@ function getVendorOrgname(vendorOrgname){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-					success : function(data) {
+					success : function(json) {
 						
-						var json = JSON.parse(data);
 						getVendorOrgname(json.orgName);
 						var result = "";
 						var city = "";
@@ -1902,8 +1928,8 @@ function getVendorOrgname(vendorOrgname){
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Vendor Zip Code:</strong>';
-							if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-								result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
+							if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+								result = result + '<span>'+json.zipcode+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
@@ -1965,7 +1991,157 @@ function getVendorOrgname(vendorOrgname){
 							}
 							result = result + '</div>';
 							
+							
+							
+							if(json.isVendorOnboardSubmitted == 'Y'){
+							result = result + '<div class="clearfix mt10"></div>';
+							result = result +'<h4 class="pull-left">Onboard Details</h4>';
 							result = result + '<div class="clearfix"></div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Nature Of Business :</strong>';
+							if(json.industryName != null && json.industryName !='' && json.industryName !='undefined'){
+								result = result + '<span title="'+json.industryName+'">'+json.industryName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Currency :</strong>';
+							if(json.currency != null && json.currency !='' && json.currency !='undefined'){
+								result = result + '<span title="'+json.currency+'">'+json.currency+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SIC Code :</strong>';
+							if(json.sicCode != null && json.sicCode !='' && json.sicCode !='undefined'){
+								result = result + '<span title="'+json.sicCode+'">'+json.sicCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>NAICS Code :</strong>';
+							if(json.naicsCode != null && json.naicsCode !='' && json.naicsCode !='undefined'){
+								result = result + '<span title="'+json.naicsCode+'">'+json.naicsCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>EIN Code :</strong>';
+							if(json.einCode != null && json.einCode !='' && json.einCode !='undefined'){
+								result = result + '<span title="'+json.einCode+'">'+json.einCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Tax Reg Number :</strong>';
+							if(json.taxRegistrationNumber != null && json.taxRegistrationNumber !='' && json.taxRegistrationNumber !='undefined'){
+								result = result + '<span title="'+json.taxRegistrationNumber+'">'+json.taxRegistrationNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>DUNS Number :</strong>';
+							if(json.dunsNumber != null && json.dunsNumber !='' && json.dunsNumber !='undefined'){
+								result = result + '<span title="'+json.dunsNumber+'">'+json.dunsNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Name :</strong>';
+							if(json.accountName != null && json.accountName !='' && json.accountName !='undefined'){
+								result = result + '<span title="'+json.accountName+'">'+json.accountName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Number :</strong>';
+							if(json.accountNumber != null && json.accountNumber !='' && json.accountNumber !='undefined'){
+								result = result + '<span title="'+json.accountNumber+'">'+json.accountNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Bank Name :</strong>';
+							if(json.bankName != null && json.bankName !='' && json.bankName !='undefined'){
+								result = result + '<span title="'+json.bankName+'">'+json.bankName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Branch Number :</strong>';
+							if(json.branchNumber != null && json.branchNumber !='' && json.branchNumber !='undefined'){
+								result = result + '<span title="'+json.branchNumber+'">'+json.branchNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SWIFT Bank Identifier Code (BIC) :</strong>';
+							if(json.bankIdentifierCode != null && json.bankIdentifierCode !='' && json.bankIdentifierCode !='undefined'){
+								result = result + '<span title="'+json.bankIdentifierCode+'">'+json.bankIdentifierCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For PO :</strong>';
+							if(json.poEmail != null && json.poEmail !='' && json.poEmail !='undefined'){
+								result = result + '<span title="'+json.poEmail+'">'+json.poEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For Payment Remittance :</strong>';
+							if(json.paymentRemittanceEmail != null && json.paymentRemittanceEmail !='' && json.paymentRemittanceEmail !='undefined'){
+								result = result + '<span title="'+json.paymentRemittanceEmail+'">'+json.paymentRemittanceEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Building No/Name & Street  :</strong>';
+							if(json.bankAddress != null && json.bankAddress !='' && json.bankAddress !='undefined'){
+								result = result + '<span title="'+json.bankAddress+'">'+json.bankAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							}
+							
+							
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
 							result = result + '</div>';
 						result = result + '</div>';
@@ -2205,6 +2381,9 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorNotesList.jsp" />
 <jsp:include page="vendorListDatatable.jsp" />
 <jsp:include page="vendorContactsDataTable.jsp" />
+<jsp:include page="vendorOnboardSubmittedDocuments.jsp" />
+<jsp:include page="vendorOnboardSubmittedTasks.jsp" />
+
 
 <!-- Scripts for invitations  -->
 <script>
@@ -2448,14 +2627,22 @@ function cancelTermination(){
 	}
 </script> 
 
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+
 <script>
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
+    $(".advancedsearch-mask").fadeOut();
     };
     function openPop(){
     $("div.cand-advsrch-popup").toggle();
+    $(".advancedsearch-mask").fadeIn();
     };
+	function closeAdsrch(){
+		$("div.cand-advsrch-popup").fadeOut();
+		$(".advancedsearch-mask").fadeOut();
+	};
 </script> 
 
 <script>
@@ -2565,6 +2752,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#country').val('${loginCountryName}'); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
+	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");

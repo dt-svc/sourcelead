@@ -43,13 +43,15 @@
         </c:if>
         
         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-        <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalDashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
+
+        <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
         </c:if> 
         
         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-        <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
-        </c:if> 
+        <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
+ 		</c:if>
         
+             
          <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
@@ -111,8 +113,8 @@
 							        <%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
 							  	     
-							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li>
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">TimeSheets</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">Approval</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
@@ -120,8 +122,8 @@
 							  <ul class="collapses" style="display: none">
 							 		<%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/newTimesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
-							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">TimeSheet Approval</a></li> 
+							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">TimeSheets</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="TimeSheet Approval">Approval</a></li> 
 							  </ul>
 							  </c:if>
 						  </li>
@@ -216,23 +218,23 @@
 	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
 	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
 														  
-							  <a href="#" class="billingLi" title="Billing">
+							  <a href="#" class="billingLi" title="Finance">
 								<span><i class="fa fa-money"></i></span>
-							  <i class="subMenu">Billing</i> <i class="fa fa-fw fa-caret-down"></i>
+							  <i class="subMenu">Finance</i> <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
 						   
 						   <c:if test="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivables">Receivables</a></li>
-                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
+                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Invoices">Invoices</a></li>
+                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Bills">Bills</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'Receivable' || sessionData.nav != 'Payables'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivables">Receivables</a></li>
-                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
+                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Invoices">Invoices</a></li>
+                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Bills">Bills</a></li>
                            </ul>
                            </c:if>
                               
@@ -241,11 +243,11 @@
 	                 
 	                 
 	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Receivable'}">
-	                   <li class="${sessionData.nav == 'Receivable' ? 'side-nav-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivables"><span><i class="fa fa-money"></i></span><i class="subMenu">Receivables</i></a></li>
+	                   <li class="${sessionData.nav == 'Receivable' ? 'side-nav-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Invoices"><span><i class="fa fa-money"></i></span><i class="subMenu">Invoices</i></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Payables'}">
-	                 <li class="${sessionData.nav == 'Payables' ? 'side-nav-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables"><span><i class="fa fa-money"></i></span><i class="subMenu">Payables</i></a></li>
+	                 <li class="${sessionData.nav == 'Payables' ? 'side-nav-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Bills"><span><i class="fa fa-money"></i></span><i class="subMenu">Bills</i></a></li>
 	                 </c:if>
 	                 
 	                 
@@ -293,6 +295,10 @@
           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_USER'}">
           <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
           	</c:if>	
+          	
+          	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+               <li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li>
+          	</sec:authorize>	
           	
         </ul>
       </div>

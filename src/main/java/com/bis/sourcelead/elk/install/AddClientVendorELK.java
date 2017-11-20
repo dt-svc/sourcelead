@@ -86,6 +86,15 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
+			    	clientVendorIndex.setOrgRelationUUID(rs.getString("UUID"));
+			    	
+			    	if(null != rs.getString("VENDOR_ONBOARD_TEMPLATE_ID")){
+			    		clientVendorIndex.setVendorOnboardTemplateId(rs.getString("VENDOR_ONBOARD_TEMPLATE_ID"));
+			    	}
+			    	if(null != rs.getString("VENDOR_RELATION_STATUS")){
+			    		clientVendorIndex.setVendorRelationStatus(rs.getString("VENDOR_RELATION_STATUS"));
+			    	}
+			    	
 			    	clientVendorIndex.setNoContacts(getNumberOfContactsPerClient(rs.getLong("ID"), conn));
 			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));

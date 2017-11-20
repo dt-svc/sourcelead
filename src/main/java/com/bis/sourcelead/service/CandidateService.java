@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -16,6 +18,10 @@ import com.bis.sourcelead.entity.User;
  *
 */
 public interface CandidateService {
+	
+	public void storeCandidateImportLog(CandidateImportLog candidateImportLog);
+	
+	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
 	
 	/**
 	 * @param jsonObj
@@ -113,6 +119,8 @@ public interface CandidateService {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
+	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
+	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
 	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO,OrgLocations orgLocations,User user,Long candidateId) throws Exception;
@@ -164,14 +172,16 @@ public interface CandidateService {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 	
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception;
 	
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
+	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
 	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
 
 	String getCandidateId(OrgLocations orgLocations);
+	
+	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 
 }

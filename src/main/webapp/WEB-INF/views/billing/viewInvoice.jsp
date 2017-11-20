@@ -181,10 +181,10 @@ function getViewInvoice(){
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
 					result = result +'<div class="col-md-6"> ';
-					if(report.invoiceType == "Receivable"){
+					if(invoiceType == "Receivable"){
 						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
-					if(report.invoiceType == "Payables"){
+					if(invoiceType == "Payables"){
 						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
 					result = result +'<div class="col-md-8">                                               ';
@@ -441,10 +441,9 @@ function getViewInvoice(){
 					for (var j=0; j<report.invoiceDocumentsList.length; j++)
 		    		{
 						var doc = report.invoiceDocumentsList[j]; 
-						
 						result = result +'	                  <div class="clearfix attachfile_invoice">                                               ';
 						result = result +'	                      <p class="pull-left" title="'+doc.fileName+'">'+doc.fileName+'</p>                                         ';
-						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+doc.id+"\"></a><a class='fa fa-eye ml10' onclick='viewInvoiceDocView("+doc.id+",\""+doc.fileName+"\");'></a></i>";
+						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+doc.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+doc.fileUrl+"\",\""+doc.fileName+"\",\""+doc.fileContentType+"\");'title='preview'></a></i>";
 						result = result +'	                  </div>                                                                                  ';
 		    		}
 				}
@@ -651,7 +650,11 @@ function invoiceNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -12,7 +13,7 @@ public interface CandidateOnBoardingService {
 
 	CandidateOnBoarding saveCandidateOnBoarding(CandidateOnBoarding candidateOnBoarding) throws Exception;
 	
-	CandidateOnBoarding saveOnBoardingCandidatesDetails(JSONObject jsonObj,OrgLocations orgLocations,User user) throws Exception;
+	CandidateOnBoarding saveOnBoardingCandidatesDetails(CandidateOnBoardingDTO candidateOnBoardingDTO,OrgLocations orgLocations,User user) throws Exception;
 	
 	List<CandidateOnBoarding> getCandidateOnBoardingListByOrgLocationId(Long orgLocationId) throws Exception;
 	

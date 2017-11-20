@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Candidate Offboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -114,10 +114,8 @@ padding-left: 25px;
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID+"&locationCode="+locationCode,
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        	  var json = JSON.parse(data);
-	        	 
 	        	 var result = "";
 				 result = result +'	 <div class="col-md-12 onboardLabel"> ';                                                                                         
 				 result = result +'   <div class="form-horizontal">';

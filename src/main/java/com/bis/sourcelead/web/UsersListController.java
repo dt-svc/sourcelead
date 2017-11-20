@@ -67,6 +67,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 * @return
 	 */
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_USER','ROLE_VIEW_EDIT_USER','ROLE_EDIT_USER','ROLE_DELETE_USER','ROLE_USER_BULK_IMPORTS')")
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(@RequestParam(value="searchResult",required = false) String searchResult,@RequestParam(value="searchValue",required = false) String searchValue,HttpServletRequest request) {
 		
@@ -186,7 +187,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		}
  		File file = null;
  		if(!"pdf".equalsIgnoreCase(exportType)){
- 			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
+ 			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState,orgLocations);
  	 		 /* file = new File("users_"+dateFormat.format(new Date())+".xls");*/
  			  StringBuilder templateSB = new StringBuilder();
  	 		  file = File.createTempFile(templateSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");

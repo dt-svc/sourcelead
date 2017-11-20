@@ -61,5 +61,15 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public List<String> getAllVisaByCategory() throws Exception {
 		return lookUpDataDao.getAllVisaByCategory();
 	}
+
+	@Override
+	public LookUpData getTasksById(Long id) throws Exception {
+		return lookUpDataDao.getTasksById(id);
+	}
+
+	@Override
+	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
+		return lookUpDataDao.getTasksTypeByUniqueKey(uniqueKey);
+	}
 	
 }

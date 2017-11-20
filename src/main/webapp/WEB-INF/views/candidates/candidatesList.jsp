@@ -91,12 +91,13 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
+	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $.ajax({
-          type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {  
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
+		  type: "GET",
+		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
+           success :function(json) {  
+                if(json != null && json != 'undefined' && json != ""){  
+                	// var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skills = [];
@@ -584,7 +585,7 @@ function deleteImage(candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");this.disabled=true'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
 	result = result +"	</div>";
@@ -610,7 +611,8 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        
      }); 
@@ -627,9 +629,9 @@ function refreshImageBlock(candidateId){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
+           success :function(json) {   
+                if(data){  
+//                 	 var json = JSON.parse(data);
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
 			             result = result+'<div class="well well-sm text-center clearfix">';
@@ -683,12 +685,26 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(result) {
+				var td = cacheLastJson.data;
+				for(var e in td) {
+					if(td[e].candidateId === candidateId) {
+						td[e]
+						if(isAssociate == "N"){
+							td[e].isFavourite = checked ? 1 : 0;
+		            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
+		            		td[e].isFavouriteAssociate = checked ? 1 : 0;
+		            	}
+						break;
+					}
+				}
+				cacheLastJson.data = td;
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
+					 //document.getElementById("favourite"+candidateId).removeAttribute("class");
+					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
+					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
 				}
 				
 			},
@@ -828,9 +844,13 @@ function cancel(candidateId){
 			  <i class="fa fa-search"></i>
 			  </a> 
 			  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <div class="cand-advsrch-popup cand-advsrchPopup">
+				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
+				  <div class="cand-advsrch-popup advancedsearch-popup">
+					  <h5 class="headerAdsrch">Advanced Search
 					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
-					  <div class="candAdvsrchPop">
+					  </h5>
+					  <div class="addInner">
+					  <!-- <div class="candAdvsrchPop"> -->
 					  <div class="row">
 						  <div class="col-md-4">
 							  <label>Any of Keyword</label>
@@ -856,10 +876,6 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 					  <div class="row">
-					  <div class="col-md-12">
-						  <h4>Details:</h4>
-					  </div>
-					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Immigration Status</label>
@@ -873,7 +889,7 @@ function cancel(candidateId){
 						</div>
 					  
 					  <div class="clearfix">
-						<div class="col-md-8">
+						<div class="col-md-8 mt5">
 						<label>Skills</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
@@ -1093,8 +1109,8 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 					  </div>
-					  <div class="form-footer">
-						  <div class="pull-right mr">
+					  <div class="clearfix">
+						  <div class="pull-right">
 							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
@@ -1136,7 +1152,7 @@ function cancel(candidateId){
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
 						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
 						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">1 Month ago</label></li>
 	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months ago</label></li>
                     </ul>
@@ -1588,10 +1604,16 @@ function savedCommentAndCount(candidateId){
 			 $("div.cand-advsrch-popup").hide();
 			 clearCandidateSearchKeys();
 			 $('#expId').find('p.jquery_form_error_message').remove();
+			 $(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		}
+		  $(".advancedsearch-mask").fadeIn();
+		};
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 	</script>
 <script>
 function getStates(){
@@ -2011,9 +2033,9 @@ function getCities(){
 <!-- Add candidate Popup -->
       <div class="addcandidate-popup">
 				  <div class="row">
-                      <div class="col-md-offset-2 col-md-8">
+                      <div class="col-md-offset-1 col-md-10">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
+                          <div class="col-md-4 mt">
                         <div class="small-widget bg-purple">
                             <a href="<c:url value='/candidate'/>"  title="Import Candidate">
                                 <div class="clearfix mb10">
@@ -2024,7 +2046,7 @@ function getCities(){
                                 </a>
                         </div>
 					  </div>
-					  <div class="col-md-6 mt">
+					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
                               <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
                                   <div class="clearfix mb10">
@@ -2036,6 +2058,20 @@ function getCities(){
                                 
                           </div>
 					  </div>
+					  
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bgGreen">
+                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Bulk Imports">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-upload fa-4x"></i>
+                                      <span class="fa fa-plus"></span>
+                                  </div>
+                                  <strong class="clearfix">Bulk Imports</strong>
+                                </a>
+                                
+                          </div>
+					  </div>					  
+					  
                       </div>
                           <div class="col-md-4 hidden">
                           <div class="small-widget bg-green">
@@ -2052,7 +2088,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    
+    <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
     
     <script>
     //addcandidate-popup script

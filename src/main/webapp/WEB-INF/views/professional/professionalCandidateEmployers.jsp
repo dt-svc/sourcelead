@@ -194,10 +194,6 @@ function closeCertificatePopup(){
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
 
-		
-		
-		
-
 		$( "#startYear, #endYear" ).datepicker({ 
 		            changeMonth: true,
 		           changeYear: true,
@@ -237,10 +233,6 @@ function closeCertificatePopup(){
 				.click(function(e) {
 					e.stopPropagation();
 				});
-		/* $('html').click(function() {
-			$(".edit-details").removeClass("edit-details-active");
-		}); */
-
 	}
 </script>
 
@@ -376,10 +368,6 @@ function closeCertificatePopup(){
 							.click(function(e) {
 								e.stopPropagation();
 							});
-								/* $('html').click(function() {
-											$(".edit-details").removeClass(
-													"edit-details-active");
-										}); */
 								
 							}
 						}
@@ -441,8 +429,8 @@ function closeCertificatePopup(){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
 							+ candidateId,
-					success : function(data) {
-								var json = JSON.parse(data);
+					success : function(json) {
+// 								var json = JSON.parse(data);
 		             			 
 								$("#candidateEmployersList").empty();
 								var result = "";
@@ -458,8 +446,8 @@ function closeCertificatePopup(){
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
@@ -520,6 +508,10 @@ function employeePagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 5
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -539,33 +531,27 @@ function employeePagination(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 
-<script>
-function removeEmployer(candidateemployerId, candidateId){
-	
-	alertMessageforEmp(candidateemployerId, candidateId);
-}
-</script>
 
 <script type="text/javascript">
 function cancelEmployeers(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
 <div id="deleteEmp1PopUp"></div> 
 
 <script type="text/javascript">
-function alertMessageforEmp(candidateemployerId, candidateId){
+function removeEmployer(candidateemployerId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_emp_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Employer</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmp("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEmployeers();'></b>";
 	result = result +"	</div>";
 	$("#deleteEmp1PopUp").empty();
 	$("#deleteEmp1PopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_emp_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -605,7 +591,7 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");
 								 $("#popUpDivEmp").removeClass("edit-details-active");
-								 $("#remove_user_pop, .project_inn_mask").fadeOut();
+								 $("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
 							}
@@ -654,38 +640,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 				empMsgFadein();
 				qvemployeeSubmission(candidateId);
 	        });
-			
-
-			/* var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-			//It will escape all the special characters
-			var sourceleadUrl = '${sourceleadUrl}';
-
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateExperianceId"+ candidateExperianceId,
-						success : function(result) {
-							
-							$(".edit-details").toggleClass("edit-details-active");
-							$(".close-div")	.click(function() {
-												$(this).parent("div.edit-details")
-														.removeClass("edit-details-active");
-											});
-							$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-									.click(function(e) {
-										e.stopPropagation();
-									});
-							$("#selector3").removeAttr("style");
-	            			$("#selector3").css({ display: "block" });
-	            			$("#empMsgDiv").html("Employer details updated");
-							candidateEmployersList(candidateId);
-							empMsgFadein();
-						},
-					}); */
 			return true;
 		} else {
 			return false;
@@ -753,9 +707,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 				 $("#endYearEdit" ).val( '' );
 			 }
 			 
-			/* if(exisitngEndYear == null || exisitngEndYear == '' || exisitngEndYear =='undefined'){
-				$("#endYearEdit" ).val( '' );
-			} */
 		}
 
 	}

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -26,6 +29,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -38,6 +42,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceImpl.class);
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateDao candidateDao;
+	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
 	@Autowired
@@ -79,22 +87,22 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	{
 		CandidateResumes candidateResume = null;
 		StringBuffer activitySummary = new StringBuffer();
-		if (!resumeId.equalsIgnoreCase("null")) {
+		if (resumeId != null && !resumeId.equalsIgnoreCase("null")) {
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
-			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
 				if (candidateResume.getTitle() != null) {
 					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidateResume.setTitle(candidateResumeDTO.getTitle());
-			}
-			if (StringUtils.isNotBlank(candidateResumeDTO.getDescription())) {
+				
+				if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+					candidateResume.setTitle(candidateResumeDTO.getTitle());
+				}else {
+					candidateResume.setTitle(candidateResume.getFileName());
+				}
+				
 				if (candidateResume.getDescription() != null) {
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidateResume.setDescription(candidateResumeDTO.getDescription());
-			}else{
-				candidateResume.setDescription("");
-			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
 			if (candidateResumeDTO.getFileInfo() != null) {
@@ -140,6 +148,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				// candidateResume.setDocFile(multiFile.getBytes());
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
+				
+				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
+					candidateResume.setTitle(fileInfo.getFileName());
+				}
 				candidateResume.setFileContentType(fileInfo.getContentType());
 					candidate.setFileName(fileInfo.getFileName());
 					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
@@ -151,9 +163,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		/*
 		 * updating Candidate Resume DB data in existing candidateindex
 		 */
+
+//    	candidate.setUpdatedDate(new Date());
+    	
 		saveOrUpdateCandidateElkDocumentWithResumeDetails(candidate);
 		return candidateResume;
 	}
+	
 	
 	/**
 	 * @author prasad.k
@@ -268,13 +284,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes updateCandidateResume(CandidateResumes candidateResumes) throws Exception
 	{
-		logger.debug("In CandidateResumeServiceImpl class updateCandidateResume method...");
 		candidateResumes.setUpdatedDate(commonUtil.currentDate());
 		candidateResumes = candidateResumesDao.updateCandidateResume(candidateResumes);
-		/*
-		 * updating Candidate Resume DB data in existing candidateindex
-		 */
-		// saveOrUpdateCandidateElkDocumentWithResumeDetails(candidateResumes.getCandidateId());
 		return candidateResumes;
 	}
 	
@@ -320,6 +331,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setResumeContent("");
+				candidateIndex.setFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
+				candidateIndex.setResumeName(candidateResumes.getFileName());
+				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 			}
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
 		}

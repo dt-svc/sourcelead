@@ -106,7 +106,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
-          success :function(data) {
+          success :function(json) {
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -124,7 +124,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -175,7 +174,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }
 	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
-	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    	 result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>'; 
 	                    	  
@@ -196,7 +195,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     vendorNewPagination(); 
                /* }else{
 	    	         var result ="";
 		    	     result = result+"   <div class='row'>"; 
@@ -225,13 +224,17 @@ function viewVendorDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function vendorNewPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -378,15 +381,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -480,18 +475,19 @@ function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
-        	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	output = output + "<option value=''>Vendor Contact</option>"; 
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+	        		var opt = json.data[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
@@ -505,8 +501,8 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
+		    	//var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -525,9 +521,10 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     				 $('#contractType').trigger("chosen:updated");
     			 }
     			 
+    			     			 
     			 if(json.orgSpocsList != null && json.orgSpocsList != "" && json.orgSpocsList != "undefined" && json.orgSpocsList.length > 0){
     				 $('#spoc').empty();
-    		         $('#spoc').append('<option value="">Client Contact</option>');
+    		         $('#spoc').append('<option value="">Vendor Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
@@ -636,6 +633,7 @@ function removeResumeNameDiv(){
 <script>
 function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
+	result = result  +'          <form role="form"  id="docu_form" name="docu_form" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -643,6 +641,7 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
+	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -659,7 +658,7 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#docu_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",

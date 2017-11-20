@@ -6,10 +6,22 @@
 
 <script type="text/javascript">
 function myExpensesListByStage(expenseStatus){
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
+	
 	$.ajax({
 	    type : "GET",
 	    url: sourceleadUrl+"/myExpensesListByStage?expenseStatus="+expenseStatus,      
-	    success :function(data) {
+	    success :function(json) {
 	    	 var result = "";
 				result = result +" <table id='expensesPagination'>";
 				result = result +"<thead>";
@@ -18,8 +30,8 @@ function myExpensesListByStage(expenseStatus){
 				result = result +"<th>Purpose</th>";
 				result = result +"<th>Project</th>";
 				result = result +"<th>Client</th>";
-				result = result +"<th>Start Date</th>";
-				result = result +"<th>End Date</th>";
+				result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+				result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 				result = result +"<th>No of Items</th>";
 				result = result +"<th>Amount</th>";
 				result = result +"<th>Status</th>";
@@ -27,8 +39,8 @@ function myExpensesListByStage(expenseStatus){
 				result = result +"</thead>";
 				result = result +"<tbody>";
 				result = result+' <input type="text" hidden value="'+expenseStatus+'" id="countType" readonly="readonly">';
-				 if(data !=''){
-					 var json = JSON.parse(data);
+				 if(json !=''){
+					/*  var json = JSON.parse(data); */
 		        	  for (var i = 0; i < json.length; i++) { 
 		        		  var report = json[i]; 
 		        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
@@ -41,10 +53,10 @@ function myExpensesListByStage(expenseStatus){
 		        		  }else{
 		        			  purpose = "--";
 		        		  }
-		        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-		        			  projectMemberId = report.projectMemberId;
+		        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+		        			  projectName = report.projectName;
 		        		  }else{
-		        			  projectMemberId = "--";
+		        			  projectName = "--";
 		        		  }
 		        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 		        			  clientName = report.clientName;
@@ -73,13 +85,13 @@ function myExpensesListByStage(expenseStatus){
 		        		  }
 							 result = result +"<tr>";
 							 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-							 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+							 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&expenseLocationCode="+report.expenseLocationCode+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 							 '</sec:authorize>';
 							 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 							 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 							 '</sec:authorize>';
 							 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-							 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
+							 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
 							 result = result +"<td><div>"+clientName+"</div></td>";
 							 result = result +"<td><div>"+startDateStr+"</div></td>";
 							 result = result +"<td><div>"+endDateStr+"</div></td>";
@@ -101,11 +113,22 @@ function myExpensesListByStage(expenseStatus){
 }
 
 function employeeExpensesListByStage(expenseStatus){
-	
+	var userSession = '${SourceLeadWeb_user.id}';
+	var orgLocationSession = '${SourceLeadWeb_orgLocationId}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
 	$.ajax({
 	    type : "GET",
-	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus,
-	    success :function(data) {
+	    url: sourceleadUrl+"/employeeExpensesListByStage?expenseStatus="+expenseStatus+"&user="+userSession+"&orgLocation="+orgLocationSession,
+	    success :function(json) {
 	    	 var result = "";
 	    		result = result+' <table id="example">';
 	    		result = result+' <thead>';
@@ -113,8 +136,8 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' <th>Employee</th>';
 	    		result = result+' <th>EmploymentType</th>';
 	    		result = result+' <th>Project</th>';
-	    		result = result+' <th>Start Date</th>';
-	    		result = result+' <th>End Date</th>';
+	    		result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+				result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 	    		result = result+' <th>No of Items</th>';
 	    		result = result+' <th>Amount</th>';
 	    		result = result+' <th>Status</th>';
@@ -123,16 +146,14 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' </thead>';
 	    		result = result+' <tbody>';
 	    		result = result+' <input type="text" hidden value="'+expenseStatus+'" id="countType" readonly="readonly">';
-	    		if(data !=''){
-	    		var json = JSON.parse(data);
-	    		 for (var i = 0; i < json.length; i++) { 
+	    		if(json !=''){
+	    		for (var i = 0; i < json.length; i++) { 
 	    		 var data = json[i];
 	    		result = result+' <tr id = "row'+data.expenseId.id+'">';
-	    		result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
+	    		result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+data.userFileUrl+'" alt="Profile Image" class="img-circle img-responsive">';
 	    		result = result+' <span>';
 	    		result = result+' <b title='+data.expenseEmpUserFirstNameLastName+'>'+data.expenseEmpUserFirstNameLastName+'</b>';
 	    		result = result+' <b title='+data.expenseEmpUserEmail+'>'+data.expenseEmpUserEmail+'</b>';
-	    		result = result+' <b title='+data.expensesEmployeeUserId+'>'+data.expensesEmployeeUserId+'</b>';
 	    		result = result+' </span></div>';
 	    		result = result+' </td>';
 	    		if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
@@ -156,7 +177,7 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' <td><div class="sm" title='+data.expenseId.noOfExpenses+'>'+data.expenseId.noOfExpenses+'</div></td>';
 	    		result = result+' <td><div class="sm">';
 	    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	    		result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount" title='+data.expenseId.totalAmount+'>';
+	    		result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseLocationCode+'&type=view" class="ExpAmount" title='+data.expenseId.totalAmount+'>';
 	    		'</sec:authorize>';
 	    		
 	    		result = result+ data.expenseId.totalAmount;

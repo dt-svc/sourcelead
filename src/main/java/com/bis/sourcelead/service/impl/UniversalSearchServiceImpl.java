@@ -217,21 +217,6 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		{
 			String responderType = null;
 			
-			 
-		/*	 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
-			 
-			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
-			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
-			 
-			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
-			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocation.getId()));
-			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
-			 
-			 combinedQueryBuilder.should(initiatorQueryBuilder);
-			 combinedQueryBuilder.should(responderQueryBuilder);
-			 boolQueryBuilder.must(combinedQueryBuilder);*/
-			
 			BoolQueryBuilder boolQueryBuilderClientVendor = new BoolQueryBuilder();
 			 
 			if(Constants.VENDOR.equalsIgnoreCase(searchType)){
@@ -255,6 +240,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 
 			 boolQueryBuilderClientVendor.must(combinedQueryBuilder);
 			 
+			 
+			 
 			 Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilderClientVendor).getTotalHits();
 //			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
 				//Any Keywords
@@ -271,12 +258,12 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
+					 boolQueryBuilderClientVendor.must(anyBoolQueryBuilder);
 				}
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilderClientVendor).getHits();
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
@@ -327,7 +314,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		if(searchType !=null && !"".equalsIgnoreCase(searchType) && Constants.PROJECT.equalsIgnoreCase(searchType))
 		{
                 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			    Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+//                boolQueryBuilder.must(QueryBuilders.matchQuery("userId", user.getId()));
+			    Integer maxResults = projectsService.getProjectCountByOrgLocationIdAndUserCode(orgLocation.getId(),user.getUserCode());
 				//Any Keywords
 			    ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
@@ -344,9 +332,12 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 //						for(String keywd : invoiceFrequencyArray){
 						if(keywd.equalsIgnoreCase("Weekly")){
 							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
-							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
 						}else if(keywd.equalsIgnoreCase("Monthly")){
 							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}else if(keywd.equalsIgnoreCase("Bi-Weekly")) {
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Semi-Monthly")) {
 							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
 						}
 //						else{

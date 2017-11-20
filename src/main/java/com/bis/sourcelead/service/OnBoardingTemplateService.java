@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -22,5 +23,5 @@ public interface OnBoardingTemplateService {
 	
 	List<OnBoardingTemplate> getOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception;
 	
-	OnBoardingTemplate getOnBoardTemplateDetails(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception;
+	OnBoardingTemplate getOnBoardTemplateDetails(OnBoardingTemplateDTO onBoardingTemplateDTO,User user,OrgLocations orgLocations) throws Exception;
 }

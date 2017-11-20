@@ -22,26 +22,34 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -50,8 +58,11 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -60,6 +71,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -73,6 +85,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.util.Calendar;
 
 /**
  * 
@@ -148,6 +161,9 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -162,6 +178,18 @@ public class ClientServiceImpl implements ClientService {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	LookUpDataDao lookUpDataDao;
 
 	/**
 	 * @author VenkatKesav
@@ -179,7 +207,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -189,6 +217,18 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+
+		String newlyRegistred = "N";
+		
+		
+		if (StringUtils.isBlank(clientDTO.getOrgLocationId())) {
+			OrgLocations invitedOrgLocation = orgLocationService.getOrgLocationsByOrgLocationName(clientDTO.getOrgName());
+			if(invitedOrgLocation != null) {
+				clientDTO.setOrgLocationId(invitedOrgLocation.getId().toString());
+			}
+		}
+		
+	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
 			if (StringUtils.isNotBlank(clientDTO.getOrgCountry())) {
@@ -275,8 +315,23 @@ public class ClientServiceImpl implements ClientService {
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
+			
+			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    for(LookUpData lookUpData:lookUpExpCatList){
+			    ExpensesCategory expensesCategory = new ExpensesCategory();
+			    expensesCategory.setExpensesName(lookUpData.getName());
+			    expensesCategory.setAmountType("Flat");
+			    expensesCategory.setOrgLocationId(clientOrgLocations);
+			    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+				expensesCategory.setCreatedBy(user.getUserCode());
+				expensesCategory.setCreatedDate(commonUtil.currentDate());
+				expensesCategory.setUpdatedBy(user.getUserCode());
+				expensesCategory.setUpdatedDate(commonUtil.currentDate());
+				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
+			newlyRegistred = "Y";
 		} else {
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
@@ -299,8 +354,8 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				org.setClientBillingAddress("--");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
 				org.setPaymentTerm("--");
 			}
@@ -313,7 +368,7 @@ public class ClientServiceImpl implements ClientService {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
-
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
@@ -359,7 +414,7 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (("Client".equals(responderType) || "Vendor".equals(responderType))	&& (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
+				if (("Client".equals(responderType)) && (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
@@ -453,14 +508,102 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client MSA Template",Constants.CLIENT_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor MSA Template",Constants.VENDOR_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
+		}
+		
+		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
+		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
-
+			clientOrgLocations.setVendorOrgRelationId(orgRelation.getId());
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		clientOrgLocations.setVendorSpocId(spocUser.getId());
+		
+		return clientOrgLocations;
 	}
+	
+	
+	
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+		 	
+	    	Projects projects = new Projects();
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsDefaultProject(Constants.YES);
+	    	projects.setIsPrimary(1);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			projects.setProjectShortCode("DFP");
+			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countires != null) {
+				projects.setCurrency(countires.getCurrency());
+			}
+			
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
+			return updatedProjects;
+	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setLevel(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 
 
 	/**
@@ -476,15 +619,6 @@ public class ClientServiceImpl implements ClientService {
 
 		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 			org.setOrgName(clientDTO.getOrgName());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-			org.setClientAddress(clientDTO.getAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-			org.setClientBillingAddress(clientDTO.getBillingAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
 		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
@@ -704,6 +838,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -723,9 +861,7 @@ public class ClientServiceImpl implements ClientService {
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -733,7 +869,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setCity("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+			if (clientDTO.getWebSite()!=null) {
 				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getState())) {
@@ -761,6 +897,13 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 
 				orgLocations.setZipCode("");
+			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			}
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				orgLocations.setBillingAddress(clientDTO.getBillingAddress());
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
 		} else {
@@ -819,6 +962,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -842,9 +989,7 @@ public class ClientServiceImpl implements ClientService {
 				}else{
 					org.setClientBillingAddress(null);
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
@@ -882,6 +1027,15 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setZipCode("");
 			}
+			
+			 if(StringUtils.isNotBlank(clientDTO.getAddress())){
+				 orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			 }
+			 
+			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
+				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }
+			
 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
@@ -927,8 +1081,21 @@ public class ClientServiceImpl implements ClientService {
 			User editUser = null;
 			if (StringUtils.isNotBlank(clientDTO.getExistingSpocUserId())) {
 				User existingUser = userService.getUserById(Long.parseLong(clientDTO.getExistingSpocUserId()));
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(),
-						orgLocation.getId());
+				UserRole userRole = null;
+				Candidate candidate = null;
+				Employees employee = null;
+				
+				if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getClientLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+				}else {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getVendorLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+				}
 
 				if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
 					existingUser.setFirstName(clientDTO.getFirstName());
@@ -940,20 +1107,44 @@ public class ClientServiceImpl implements ClientService {
 				} else {
 					existingUser.setLastName("");
 				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getPhoneNumber())) {
 					existingUser.setMobilePhone(clientDTO.getPhoneNumber());
 				} else {
 					existingUser.setMobilePhone("");
 				}
+				
+				if(StringUtils.isNotBlank(clientDTO.getExtensionNumber())){
+					existingUser.setExtensionNumber(clientDTO.getExtensionNumber());
+				}else{
+					existingUser.setExtensionNumber("");
+				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 					existingUser.setEmail(clientDTO.getEmail());
 				} else {
 					existingUser.setEmail("");
 				}
 				editUser = userService.addUser(existingUser);
-
-				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(),
-						orgLocation.getId());
+				
+				
+				if(candidate != null) {
+					if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
+						candidate.setFirstName(clientDTO.getFirstName());
+					} else {
+						candidate.setFirstName("");
+					}
+					if (StringUtils.isNotBlank(clientDTO.getLastName())){
+						candidate.setLastName(clientDTO.getLastName());
+					} else {
+						candidate.setLastName("");
+					}
+					
+					Candidate savedCandidate = candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+				}
+				
+				
 				// Update the user details for Elk search
 				commonUtil.commonUserUpdate(editUser);
 				userService.saveOrUpdateUserElkDocument(userRole, employee, editUser.getUserCode());
@@ -1333,20 +1524,38 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder emailMsgBuilder = new StringBuilder();
-		emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
-				.append(loginUser.getLastName()).toString());
+		/*emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
+				.append(loginUser.getLastName()).toString());*/
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		StringBuilder orgSpocUser = new StringBuilder();
+		
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
 			globalVarsMap.put("firstName", emailMessage.getFirstName());
 			globalVarsMap.put("lastName", emailMessage.getLastName());
 			globalVarsMap.put("vendorFirstName", orgSpoc.getClientUser().getFirstName());
 			globalVarsMap.put("vendorLastName", orgSpoc.getClientUser().getLastName());
 			globalVarsMap.put("vendorOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 			globalVarsMap.put("signature", "Sourcelead Team");
-		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
+		}
+		
+		else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
 			globalVarsMap.put("firstName", emailMessage.getFirstName());
 			globalVarsMap.put("lastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());

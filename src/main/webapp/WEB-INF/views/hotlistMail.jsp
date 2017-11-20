@@ -41,7 +41,7 @@ display: none;
       <div class="pull-left">
         <h2>Hotlist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/campaigns/hotcampaigns'/>"> Mailbox</a>
 			&raquo; Hotlist Campaign</div>
     </section>
     
@@ -52,7 +52,7 @@ display: none;
     <div id ="popUp"></div>
     <div id ="textBoxPopUp"></div>
       <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
-       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  enctype='multipart/form-data' >
+       <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
@@ -66,7 +66,7 @@ display: none;
             <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="validate_email" data-validation-optional="true" name="Toemails">
 
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="selectRadio();listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -74,20 +74,22 @@ display: none;
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h4 class="modal-title">Select Mailer</h4>
+                    <label class="paddingLeft paddingRight">
+               	    <input  type="radio" id="clientsCheck" name="users" checked onclick="listChange()"><strong class="paddingLeft">Clients</strong></label>
+               	    <label class="paddingLeft">
+               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="form-horizontal custom-form">
-                      <div class="row">
-                        <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
                           <select class="form-control" id="clientListType" onchange="listChange();">
                            <option value="listbyContact" selected>List by contact</option>
                             <option value="listbyClient">List by client</option>
                           </select>
-                        </div>
-                      </div>
                     </div>
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
+                    <div class="clearfix"></div>
+                    <!-- modal-body-custom mailerpopup filter-position --> 
+                    <div class="clearfix">
                      <div id="clientsList" class="datatable_filter"></div>
                     </div>
                   </div> 
@@ -126,7 +128,7 @@ display: none;
                     <h4 class="modal-title">Select Candidates / Associates</h4>
                   </div>
                   
-                  <div class="modal-body clearfix hotmailSelOut">
+                  <div class="modal-body clearfix">
 <!--                     <div class="form-horizontal custom-form">
                       <div class="row">
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
@@ -140,13 +142,13 @@ display: none;
                       </div>
                     </div> -->
                     
-                    <div class="modal-body-custom clearfix poMail">
-                        <div class="hotmailSel">
+                    <div class="clearfix">
+                        <div class="col-xs-12 col-sm-4 paddingLeft dropdown-select mb10">
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
                             <option value="consultants" selected>Associates</option>
                             <option value="candidates">Candidates</option>
                              <option value="openHotlist">Open Hotlist</option>
-                            <option value="hotlistConsultants">Hostlist Associates</option>
+                            <option value="hotlistConsultants">Hotlist Associates</option>
                           </select>
                         </div>                    
                      <div id="candidatesList" class="mailFil datatable_filter"></div>
@@ -202,7 +204,7 @@ display: none;
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+                <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
@@ -215,7 +217,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendHotListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
@@ -235,6 +237,14 @@ display: none;
   
   
   <script src="resources/js/nicEdit.js"></script> 
+  
+  
+  <script>
+  function selectRadio(){
+	  document.getElementById("clientsCheck").checked = true;
+	  document.getElementById("contactsCheck").checked = false;
+  }
+  </script>
    
 
 <script type="text/javascript">
@@ -255,6 +265,13 @@ $(function(){
 				$this.next().css({'width': '100%'});
 		  })
 });
+
+$(function() {
+	$("#attachfileBtn").change(function() {
+		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "hotlistCampaign_form");
+	});
+ });
+ 
 </script>
 
   
@@ -262,45 +279,40 @@ $(function(){
   <script type="text/javascript">
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
 		nicEditors.findEditor('bodytext').saveContent();
-		var frm = $('#hotlistCampaign_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-	    var jsonData = encodeURIComponent(con);
-	    var form = $('#hotlistCampaign_form')[0];
-  		var formData = new FormData(form)
   		
-  		var toEmails =  $('#emailsList_chosen span').size();
+		 var form = $('#hotlistCampaign_form')[0];
+  		 var formData = new FormData(form)
+	  		
+		
+  		/* var toEmails =  $('#emailsList_chosen span').size();
   		var otherEmails =  $('#otherEmails_chosen span').size();
   		
-  		var selectedEmails = toEmails + otherEmails;
+  		var selectedEmails = toEmails + otherEmails; */
   		
-  	    if(selectedEmails < 1){
+  		 var toEmails =  $('#emailsList').val();
+  		 var otherEmails =  $('#otherEmails').val();
+  		 
+  		
+  	    if(toEmails == null && otherEmails == null){
   	    	
   	    	alertMailerMsg();
   	    }
   	    else{
-	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
-	  			if(bodytext.length < 60000){
 	  	    	
 	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
-	  	    	    contentType : 'application/json; charset=utf-8',
 	  	    	    enctype: 'multipart/form-data',
 	  		        processData: false,
 	  		        contentType:false, 
-	  	    	    dataType : 'json',
-	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}",
 	  				success : function(result) {
-	  						location.replace(sourceleadUrl+"/mailBox");
+	  						location.replace(sourceleadUrl+"/campaigns/hotcampaigns");
 	  				},
 	  			}); 
-	  	    }else{
-	  	    	alertTextboxMsg("Message body is too large. If you have more data, Plz go with attachment");
-	  	    }
+	  	    
   	    }
 		 return true
 		 
@@ -411,6 +423,9 @@ function textBoxCancel(){
 		  $("#clientsList").empty(); 
 		  getClientList();
 	  }
+	  
+	  
+	  document.getElementById("clientsListDiv").style.display="";
 	 
   }
   </script>
@@ -420,7 +435,7 @@ function textBoxCancel(){
   
 <script>
 function getClientContacts(){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getClientContacts?${_csrf.parameterName}=${_csrf.token}",    
@@ -430,7 +445,7 @@ function getClientContacts(){
                		
 	                	   
                			    var result = '';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter hdrAlign">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -473,11 +488,12 @@ function getClientContacts(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
-	                 	 $("#clientsList").empty(); 
+	                 	result = result +'   </div>';
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
                  }else{
@@ -500,7 +516,6 @@ function getClientContacts(){
 	        		result = result +'           </table>';
 	        		result = result +'     </div>';
 	        		result = result +'     </div>';
-					$("#clientsList").empty();
 				    $("#clientsList").append(result); 
 				    pagination();  
                 }
@@ -509,13 +524,11 @@ function getClientContacts(){
        }); 
   } 
 </script>
-  
-  
-  
-  
+
+
   <script>
 function getClientList(){ 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	 $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getClientsListForHotlist?${_csrf.parameterName}=${_csrf.token}",    
@@ -531,9 +544,9 @@ function getClientList(){
                		 else{
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
+	                	    result = result +'<div class="clearfix">';
 	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	                		result = result +'     <div class="clearfix">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -582,11 +595,12 @@ function getClientList(){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	result = result +'   <div class="clearfix">';
+	                 	result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getContactEmails();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
-	                 	 $("#clientsList").empty(); 
+	                 	result = result +'   </div>';
 	                     $("#clientsList").append(result); 
 	                     pagination(); 
 			    	} 
@@ -610,7 +624,6 @@ function getClientList(){
  	        		result = result +'           </table>';
  	        		result = result +'     </div>';
  	        		result = result +'     </div>';
- 					$("#clientsList").empty();
  				    $("#clientsList").append(result); 
  				    pagination();  
                  }
@@ -619,12 +632,153 @@ function getClientList(){
        }); 
   } 
 </script>
-  
+
+
+<script>
+function getContactsList(){
+	
+	document.getElementById("clientsListDiv").style.display="none";
+	$("#clientsList").empty();
+	
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+	 	
+  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +' <th><input type="checkbox" id="checkAllContacts" onclick="toggleClientContacts(this);"></th>';
+		result = result +'<th>Contact Name</th>';
+		result = result +'<th>Email</th>';
+		result = result +'<th>Source</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	
+    	result = result +'<div class="clearfix pull-right mr mb">';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getAllEmailContacts();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +' </div>'; 
+	    
+     	$("#clientsList").append(result);
+     	contactUsers = [];
+	    contactsDataTableList();
+}
+</script>
+
+<script>
+function contactsDataTableList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#contactsDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 contactsPagination(url);
+}
+</script>
+
+
+
+<script>
+function contactsPagination(url,sourceleadUrl){
+	var colIndex = 0;
+    $('#example').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 2
+        }),
+        "columns": [
+        	{ "data": "ischeck" },
+            { "data": "contactName" },
+            { "data": "email"},
+            { "data": "source"}
+           
+        ],
+        "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "ischeck",
+    	  	"render": function(data, type, opt, meta) {
+    	  		var result = "";
+    	  		var flag = false;
+   	  		 
+	   	  		  for(var e in contactUsers) {
+	   	  			 if(opt.email+"" === contactUsers[e]) {
+	   	  				 flag = true;
+	   	  				 break;
+	   	  			 }
+	   	  		 }
+   	  		 
+   	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.id+'" value="'+opt.email+'" onchange="checkContactUsers(this)"  type="checkbox" name="emails[]"  class="myCheckbox" ></td>';
+	              return result;
+    	  	}
+         },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "contactName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.fullName+'">'+opt.fullName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "email",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+opt.email+'">'+opt.email+'</div></td>';
+	              return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "source",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            		return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
+    $("input[type=search]").hide();
+    $("#contactsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   contactsDataTableList();
+    	   }
+    	});
+}
+
+</script>
+
 <script>
 function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
@@ -638,7 +792,7 @@ function pagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $("#example").wrap("<div class='overflow_inherint'></div>");
+    $("#example").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 
@@ -737,9 +891,11 @@ function getCandidates(candidatesListType){
 	                 	
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
-	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'   <div class="clearfix">';
+	                 	 result = result +'   <div class="pull-right mr">';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
 	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 $("#candidatesList").empty(); 
 	                     $("#candidatesList").append(result); 
@@ -797,7 +953,8 @@ function candidatePagenation(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#candidates").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
 </script>
 
@@ -808,6 +965,7 @@ function toggleClientContacts(source) {
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i] != source)
             checkboxes[i].checked = source.checked;
+            checkContactUsers(checkboxes[i])
         
     }
 $('input:checkbox:not(#checkAllContacts)').click(function() {
@@ -815,6 +973,15 @@ $('input:checkbox:not(#checkAllContacts)').click(function() {
         $('#checkAllContacts').removeAttr('checked');
     }
 });
+}
+</script>
+
+<script>
+var contactUsers = [];
+function checkContactUsers(ele) {
+	if($(ele).is(":checked")) {
+		contactUsers[contactUsers.length] = $(ele).val();
+	}
 }
 </script>
 
@@ -870,6 +1037,27 @@ function getEmails(){
 		
 		$("input[name='emails[]']:checked").removeAttr('checked');
 		$('#checkAllContacts').removeAttr('checked');
+		
+}
+</script>
+
+
+<script>
+function getAllEmailContacts(){
+	var internalOutput = "";
+	
+	for(var e in contactUsers) {
+		if(contactUsers[e] == 'Email' || contactUsers[e] == 'Notification' || contactUsers[e] == 'on')
+			continue;
+		internalOutput = internalOutput+"<option value='" +contactUsers[e]+ "' selected>"+contactUsers[e]+"</option>";
+	}
+	
+	    $("#emailsList").append(internalOutput);
+		$("#emailsList").trigger("chosen:updated");
+		
+		$("input[name='emails[]']:checked").removeAttr('checked');
+		$('#checkAllUsers').removeAttr('checked');
+		
 		
 }
 </script>
@@ -988,10 +1176,17 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
+		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
+		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
+		    		this.placeholder = this.value;
+		    		this.value = "";
+		    	} else {
+		    		this.placeholder = "";
+		    	}
+		    	
 		    	 var otherEmailArray = this.value.split(/[ ,]+/);
 		    	 if(otherEmailArray.length > 1){
 		    		 for (var i=0; i < otherEmailArray.length; i++) {
@@ -1021,11 +1216,18 @@ function getCheckedCandidates(){
 
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
+		    selectone.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var toEmailArray = this.value.split(/[ ,]+/);
+		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
+		    		this.placeholder = this.value;
+		    		this.value = "";
+		    	} else {
+		    		this.placeholder = "";
+		    	}
+		    		
+		    	var toEmailArray = this.value.split(/[ ,]+/);
 		    	 if(toEmailArray.length > 1){
 		    		 for (var i=0; i < toEmailArray.length; i++) {
 	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));

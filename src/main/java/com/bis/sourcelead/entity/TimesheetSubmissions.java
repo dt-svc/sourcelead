@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,6 +49,19 @@ public class TimesheetSubmissions implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	private Projects projects;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    private MasterCandidate masterCandidateId;
+	
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -436,6 +450,22 @@ public class TimesheetSubmissions implements Serializable{
 
 	public void setApproverHierarchyList(Set<SubmissionApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 	
 	

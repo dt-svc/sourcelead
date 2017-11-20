@@ -12,11 +12,9 @@
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
-		 
 });	
 </script>
 <script>
@@ -196,7 +194,7 @@ function backoutCount(requirementId){
     
     
 <div class="side_mask">
-  <div class="proj_close" onClick="activeTab();"></div>
+  <div class="proj_close" onClick="activeTabs();"></div>
 </div>
    
 </section>
@@ -509,7 +507,8 @@ function sideBar(requirementId,type){
 </script>
 
 <script type="text/javascript">
-function activeTab(){
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
 	$("#quickviewTabsdetails").removeClass("active");
 	$("#quickviewTabsqv").addClass("active");
 	$("#quickresume_view").addClass("active in");
@@ -599,6 +598,8 @@ function cancelAlert12(){
 	$("#rejectRequirementAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".remove_user_pop").hide();
+	$('#approverbut').show();
+	$('#rejectedbut').show();
 	
 }
 </script>
@@ -611,11 +612,11 @@ function cancelAlert12(){
 <script type="text/javascript">
 function rejectRequirementAlertMessage(status){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+/* 	result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -837,8 +838,9 @@ function viewOfferDocument(offerID,title){
 </script>
 
 
-<div class='project_inn_mask projectMask-zindex'></div>
+<!-- <div class='project_inn_mask projectMask-zindex'></div> -->
 <div id="popUp"></div>
+<div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
@@ -1034,13 +1036,11 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
+         success :function(json) {  
+        	 if(json != null && json != 'undefined' && json != ""){
 							var result = '';
 							result = result +'     <div class="clearfix mt5 mb">'; 
 						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
@@ -1297,7 +1297,7 @@ function reqNotes(requirementId){
 	});
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	
@@ -1431,7 +1431,7 @@ function requirementRecommendations(requirementId){
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 			 var file =  report.currentResumeName;
 			  var fileName = file.substr(0,5);
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
+		  	   result = result +'<td class="text-center"><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
 			  }else{
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
@@ -1591,8 +1591,8 @@ function checkMaxCount(id){
 	    }
 	})
 }
-</script>
-<script>
+</script> -->
+<!-- <script>
 function viewAssociateCandidateResumeDocView(candidateId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(candidateId != null && candidateId != ""){
@@ -1630,7 +1630,7 @@ function recommendationpagination(){
     });
     	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
-</script>
+</script> -->
 
 <script>
 function getActions(){
@@ -1652,16 +1652,16 @@ function clientSideBar(candidateId,recScore){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) { 
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
+           success :function(json) { 
+                if(json != null){  
+                	// var json = JSON.parse(data);
+              		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
+			    	 } */
+              		/*  else if (data.indexOf('exception') >= 0) {
               			 location.replace(sourceleadUrl+"/errorPage");
               		 }
-              		 else{
+              		 else{ */
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 			             
@@ -1823,15 +1823,18 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
-			            	 result = result+'<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
-			            	 }
-			             if(json.linkedUrl != null && json.linkedUrl != '' && json.linkedUrl != 'undefined'){
-			            	 result = result+'<li class="bg-linked"><a href="'+json.linkedUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
-			            	 }
-			             if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
-			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
-			            	 }
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
 			             
 			             result = result+'   </ul>';
 			             result = result+'                 </div>';
@@ -1906,7 +1909,7 @@ function clientSideBar(candidateId,recScore){
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId);
 						 hilightTab();
-			    	} 
+			    	/* }  */
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -2195,7 +2198,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     if(report.submissionStatus != "REJECTED"){
 	                    	 /* if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){ */
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
-		                     result = result + '<div class="clearfix row">';
+		                     result = result + '<div class="clearfix row formgroup-minheight">';
 		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
 		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
@@ -2220,7 +2223,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
 		                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
-		                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
+		                     result = result + '      <button type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">Cancel</button>';
 		                     result = result + '    </div>';
 		                     result = result + '  </div>';
 		                     result = result + '</form>';
@@ -2378,7 +2381,6 @@ function exportPipelineToExcel(requirementId,submissionType){
           window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2404,7 +2406,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
+			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3218,7 +3220,7 @@ function loadFile(event,candidateId){
 <script type="text/javascript">
 function recommendationAlertMessage(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3292,9 +3294,9 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
+	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
@@ -3326,7 +3328,7 @@ function deleteProfileImage(candidateId){
 <script type="text/javascript">
 function saveOrCancel(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";

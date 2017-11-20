@@ -83,9 +83,9 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
+//               	 var json = JSON.parse(data);
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
@@ -157,9 +157,14 @@ function editCandidate(candidateId){
             			 	}
             			 	
             			 	var zipCode = '';
-            			 	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
-            			 		zipCode = json.zipCode;            			 		
+            			 	if(json.zipcode != null && json.zipcode != '' && json.zipcode != 'undefined'){
+            			 		zipCode = json.zipcode;            			 		
             			 	}
+            			 	var country = '';
+            			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
+            			 		state = json.country;            			 		
+            			 	}
+            			 	
             			 	
             			 	var state = '';
             			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
@@ -195,7 +200,6 @@ function editCandidate(candidateId){
 							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
 							}
 							// If Candidate Type equals Consultant email field should be Disable mode
-							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
@@ -203,7 +207,6 @@ function editCandidate(candidateId){
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 							}
-							 
 							if(json.candidateType == "Consultant"){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
@@ -243,7 +246,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'"  placeholder="Enter your Country" type="text" readonly></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
@@ -365,21 +368,21 @@ function editCandidate(candidateId){
 							result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
 							result = result + '<option value="">Select Year</option>';
 							
-							<c:forEach var="i" begin="0" end="24" >
+							<c:forEach var="i" begin="0" end="49" >
 								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
 							</c:forEach>
 							
-							if(json.experienceYears == "25"){
-								result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
+							if(json.experienceYears == "50"){
+								result = result  +'<option value="50" '+ (json.experienceYears == "50" ? "selected" : '') +'>50</option>';
 							}else{
-								result = result  +'<option>25</option>';
+								result = result  +'<option>50</option>';
 							}
 							
 							result = result + '</select>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							if(json.experienceYears == "25"){
+							if(json.experienceYears == "50"){
 							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" >';
 							result = result + '<option  value="">Select Months</option>';
 							
@@ -550,12 +553,7 @@ function deleteCandidate(candidateId,candidateType){
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, "") 
-	 /*  if(reason == null || reason == '' || reason == 'undefined'){
-		  alert("test111");
-		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-    	  $(".rejectErrorMsgs").empty().append("<p class='jquery_form_error_message'>Must not Start With Space</p>");
-    	  
-  } */
+	 
 	  if(reason.length == 0){
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
     	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
@@ -677,9 +675,9 @@ function candidateProfile(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(json) {  
+              if(json != null){  
+//               	var json = JSON.parse(data);
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
@@ -862,10 +860,6 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-5").empty();  
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
-							    
-							employeeSubmissionProfile(candidateId);
-							educationSubmissionProfile(candidateId);
-							certificationSubmissionProfile(candidateId); 
 							
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
@@ -1023,58 +1017,55 @@ function candidateProfile(candidateId,candidateType){
 	        select = $("#skillName");
 	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    { 
-		    	 
-		    	 var enterSkillsArray = this.value.split(",");
-		    	 if(enterSkillsArray.length > 1){
-	        		 for (var i=0; i < enterSkillsArray.length; i++) {
-	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
-	        			 select.append(option);
-	        			 select.find(option).prop('selected', true);
-	 	        		 $("#skillName").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newSkill = this.value.replace(","," ");
-			    	 
-			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				        {
-			    		 
-			    		//below code manually enter skills are not taken
-		    				/*  preventTabkey(e);
-							var isNewSkill = true;
-		                     $("#skillName option:selected").each(function(){
-								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-										isNewSkill = false;
-										return false;
-								 }
-		                   });
-						   if(isNewSkill){
-								select.append(option);
-						   }
-		                   $("#skillName").trigger("chosen:updated"); */
-		                   
-	                  
-	                   // below code manually enter skills are taken
-	    				  
-	                   var isNewSkill = true;
-						 $("#skillName option:selected").each(function(){
-							 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-								 //alert(newSkill);
-								 isNewSkill = false;
-								 return false;
-							 }
-	                    
-	                   });
-						if(isNewSkill){
-	    				 var option = $("<option>").val(newSkill).text(newSkill);
-						 select.append(option);
-	                     select.find(option).prop('selected', true);
-						}
-		               $("#skillName").trigger("chosen:updated"); 
-		                }
-		    	 }
-		    });
+		    chosen.search_field.on('keydown keyup', function(e)
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#skillName").trigger("chosen:updated");
+				                 }
+					    	 }else{
+					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+				    			var newSkill = this.value.replace(","," ");
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                 {
+				    				 preventTabkey(e);
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#skillName option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 isNewSkill = false;
+											 return false;
+										 }
+				                    
+				                   });
+									
+										if(focussedSkills.length > 0){
+											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+											select.append(skillOption);
+											select.find(skillOption).prop('selected',true);
+											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+											$("#skillName").trigger("chosen:updated");
+									   }
+									   else{
+										   if(isNewSkill){
+											var option = $("<option>").val(newSkill).text(newSkill);
+											select.append(option);
+											select.find(option).prop('selected', true);
+										   }
+									   }
+									
+					               $("#skillName").trigger("chosen:updated"); 
+				                   
+				                }
+						       
+			    	         }
+		    	});
 		    
 		  
 	    
@@ -1173,7 +1164,6 @@ function candidateProfile(candidateId,candidateType){
 		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
 		        	//location.replace(sourceleadUrl+"/candidatesList"); 
 
-		        	candidateSideBar(candidateId);
 		        	 $("#selector1").removeAttr("style");
          			 $("#selector1").css({ display: "block" });
 		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
@@ -1467,8 +1457,8 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -1477,9 +1467,9 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -1536,7 +1526,7 @@ $('.selectpicker').selectpicker('refresh');
 <script>
  function disableMonths() {
 	
-         if ($("#experienceYears").val() == "25"){
+         if ($("#experienceYears").val() == "50"){
         	 $("#experienceMonths").val('');  
         	 $('#experienceMonths').attr("disabled", false);
          }else{
@@ -1778,12 +1768,12 @@ function  removeValiationVendorContact() {
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-			        success: function(data) {
-			        	var json = JSON.parse(data);
+			        success: function(json) {
+			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
 			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
-			             for(var i=0;i<json.length;i++){
-			            	 var opt = json[i];
+			             for(var i=0;i<json.data.length;i++){
+			            	 var opt = json.data[i];
 			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
 				            	}else{
@@ -1804,22 +1794,21 @@ function  removeValiationVendorContact() {
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
 		$("#editVisaBtn").remove();
 		$("#editVisaBtnSpan").hide();
-		window.visaCountBefore = $("#visaName :selected").length;
+// 		window.visaCountBefore = $("#visaName :selected").length;
 		var result = '';
 		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+');">Save Visa</button>';
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 	    
-	    //Adding Customized Skills to the list
 	}
 
 	function saveVisa(candidateId){
 		$("#visaName").prop('disabled', true).trigger("chosen:updated");
-		window.visaCountAfter = $("#visaName :selected").length;
-		if(visaCountBefore != visaCountAfter){
-			saveVisas(candidateId);
-		}
+// 		window.visaCountAfter = $("#visaName :selected").length;
+// 		if(visaCountBefore != visaCountAfter){
+		saveVisas(candidateId);
+// 		}
 		$("#saveVisaBtn").remove();
 		$("#saveVisaBtnSpan").hide();
 		var result = '';
@@ -1851,7 +1840,7 @@ function  removeValiationVendorContact() {
          success :function(data) {
             	  var candidateType = "Candidates";
            	  	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
+            	  //candidateQuickViewProfile(candidateId);
             	  $("#loading").removeAttr('style');
        },
          

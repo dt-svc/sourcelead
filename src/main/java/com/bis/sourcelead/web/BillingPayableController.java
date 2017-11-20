@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -62,6 +64,9 @@ public class BillingPayableController {
     
     @Autowired
     private InvoiceService invoiceService;
+    
+    @Autowired
+    InvoiceDocumentsService invoiceDocumentsService;
 	
 	
 	
@@ -143,6 +148,10 @@ public class BillingPayableController {
 		}
 		
 		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getParentInvoiceId() != null) {
+			List<InvoiceDocument> docs = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getParentInvoiceId().getId());
+			model.addObject("documents" , docs);
+		}
 		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
 			model.setViewName("billing/createExpensesPayableBill");
 		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
@@ -158,6 +167,7 @@ public class BillingPayableController {
 			model.setViewName("billing/createPayables");			
 		}*/
 		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
+		model.addObject("isDraft",invoice.getId());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);

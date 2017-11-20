@@ -28,7 +28,7 @@
 	       		}
 	       		$("#temp").val("temp");
 			}else{
-				getExpensesList();
+				getExpensesList('${sourceleadUrl}');
 			}
 		 };
 </script>
@@ -58,17 +58,17 @@
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
 					</div>
 					
 					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
-								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
-								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList('${sourceleadUrl}');"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList('${sourceleadUrl}');"><label >Approved</label></li>
+								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Submitted</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList('${sourceleadUrl}');"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Rejected</label></li>
 	                        </ul>
 	                    </div>                	
 	                </li>
@@ -90,6 +90,10 @@
             <div class="clearfix"></div>
             
         </div>
+        
+        <div class='remove_search'>
+		       <input type='text' placeholder='search' value="" id='dataTableSearchExpensesEmp'/>
+	   </div>
         
     <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
@@ -113,7 +117,9 @@
 		
       </section>
       <!-- Content Area Ends--> 
-<script>
+      
+      
+<!-- <script>
 
 function getExpensesList(){
 	var startDate = $("#filterStartDate").val();
@@ -176,13 +182,13 @@ function getExpensesList(){
 					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
-			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
-			        			  expenseId = report.expenseId;
+			        		  if(report.expenseAutoId != null && report.expenseAutoId != '' && report.expenseAutoId != 'undefined'){
+			        			  expenseId = report.expenseAutoId;
 			        		  }else{
 			        			  expenseId = "--";
 			        		  }
-			        		  if(report.purpose != null && report.purpose != '' && report.purpose != 'undefined'){
-			        			  purpose = report.purpose;
+			        		  if(report.expensePurpose != null && report.expensePurpose != '' && report.expensePurpose != 'undefined'){
+			        			  purpose = report.expensePurpose;
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
@@ -196,13 +202,13 @@ function getExpensesList(){
 			        		  }else{
 			        			  clientName = "--";
 			        		  }
-			        		  if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
-			        			  startDateStr = report.startDateStr;
+			        		  if(report.startDate != null && report.startDate != '' && report.startDate != 'undefined'){
+			        			  startDateStr = report.startDate;
 			        		  }else{
 			        			  startDateStr = "--";
 			        		  }
-			        		  if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-			        			  endDateStr = report.endDateStr;
+			        		  if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
+			        			  endDateStr = report.endDate;
 			        		  }else{
 			        			  endDateStr = "--";
 			        		  }
@@ -219,7 +225,7 @@ function getExpensesList(){
 			        		  }
 								 result = result +"<tr>";
 								 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&expenseLocationCode="+report.expenseLocationCode+" &type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 								 '</sec:authorize>';
 								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
@@ -252,7 +258,7 @@ function getExpensesList(){
 	
 	}
 
-</script>      
+</script> -->      
 
 <script>
 function expensesPagination(){ 
@@ -571,3 +577,4 @@ function expensesCancel(){
 	       e.stopPropagation();
 	   });        
 </script> 
+<jsp:include page="expensesEmployeeTable.jsp" />

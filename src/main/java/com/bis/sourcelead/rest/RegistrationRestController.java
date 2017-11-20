@@ -29,6 +29,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -109,12 +110,12 @@ public class RegistrationRestController {
 			for(Org regOrg : orgsList){
 				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 					regOrg.setEmail(regOrg.getUser().getEmail());
-					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
+					regOrg.setIsMailSent(userRole.getIsMailSent());
 					regOrg.setUserState(regOrg.getUser().getUserState());
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
 					regOrg.setRegisteredUserId(regOrg.getUser().getId());
-					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 					if(null != userRole){
 						regOrg.setUserState(userRole.getUserState());
 					}
@@ -144,9 +145,13 @@ public class RegistrationRestController {
 		try {
 
 				String json1 = "{"+json+"}";
+				
 				JSONObject jsonObj = new JSONObject(json1);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
+				
+				
+				
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    String[] registredModules =  modulesList.split(",");
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -259,35 +264,23 @@ public class RegistrationRestController {
 	
 	
 	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
-	 public  String registerAsProfessional(@RequestParam(value="json", required=false) String json,
+	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
-		 	
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 	
-		 String result = registrationService.saveProfessional(jsonObj,contactUUID);
-		 
+		
+		 String result = registrationService.saveProfessional(csuRegistrationDTOO,contactUUID);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
-	 	
 	 	
 		 return result;
 	   }
 	 
 	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
-	 public  String registerAsIndividualRecruiter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
-		 	
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 	
-		 String result = registrationService.saveIndividualRecruiter(jsonObj);
-		 
+	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
+		
+		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
-	 	
 	 	
 		 return result;
 	   }
@@ -694,6 +687,42 @@ public class RegistrationRestController {
 		   }
 		   
 	       return status;
+	   }
+	   
+	   
+	   
+	   @RequestMapping(value = "/validateRegiseredCompanyName", method = RequestMethod.GET)
+	   public @ResponseBody String validateRegiseredCompanyName(
+	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
+			String status = null;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			if(!loginOrgLocation.getOrgLocationName().equalsIgnoreCase(companyName)) {
+				boolean flag = false;
+				try {
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+					if(null != orgLocationsList){
+						for(OrgLocations orgLocations : orgLocationsList){
+							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+								flag = true;
+							}
+						}
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		   
+		   if(flag == true){
+			   status = "Company Duplicated";
+		   }else{
+			   status = "success";
+		   }
+		}else {
+			 status = "success";
+		}
+		   
+       return status;
 	   }
 	   
 	   

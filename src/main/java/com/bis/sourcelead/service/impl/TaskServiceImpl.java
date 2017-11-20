@@ -368,12 +368,12 @@ public class TaskServiceImpl implements TaskService{
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
-			 if(task.getAlertType().equalsIgnoreCase("Notification") && null !=task.getAlertType()){
+			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
 				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
 			 }
 			 //calling the Email  and notification 
-			 if(task.getAlertType().equalsIgnoreCase("Email,Notification") && null !=task.getAlertType()){
+			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Email,Notification")){
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
 				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
@@ -423,6 +423,13 @@ public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception 
 public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
 	return taskDao.getTaskListByRepeatStatus(taskRepeatStatus);
 }
+
+@Override
+public List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId, Long userId,
+		Long vendorOnboardingId) throws Exception {
+	return taskDao.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocationId, userId, vendorOnboardingId);
+}
+
 }
 	
 
