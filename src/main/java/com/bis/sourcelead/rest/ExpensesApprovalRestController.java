@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ExpensesSearchDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -38,7 +42,6 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
@@ -88,20 +91,35 @@ public class ExpensesApprovalRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@RequestMapping(value = "/getExpensesApprovalList")
+	/*@RequestMapping(value = "/getExpensesApprovalList")
 	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
 			return expApperoverHierarchy;
+   }*/
+	
+	
+	@RequestMapping(value = "/getExpensesApprovalList")
+	public ResponseList<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, ExpensesSearchDTO expSearchDTO) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expSearchDTO.getExpenseStatus(), expSearchDTO.getStartDate(), expSearchDTO.getEndDate(),expSearchDTO.getSearchValue(),expSearchDTO.getStart(),expSearchDTO.getLength());
+		 //SearchResponse searchResponseForCount = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
+		 //resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+		
+			return expApperoverHierarchy;
    }
+	
+	
 	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
 	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="type", required=false) String type,@RequestParam(value="expenseStatus", required=false) String expenseStatus,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		File file=null;
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
+		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate,null,0,0);
+		List<ExpensesApproverHierarchy> expApperoverHierarchy = expApperoverHierarchyList.getData();
 		if(type.equalsIgnoreCase("pdf"))
 			file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
 		else

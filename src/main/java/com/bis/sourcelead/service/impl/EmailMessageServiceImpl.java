@@ -167,7 +167,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
 		props.put("mail.smtp.host", "secure.emailsrvr.com");
-		props.put("mail.smtp.localhost", "localhost");
+		/*props.put("mail.smtp.localhost", "localhost");*/
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");

@@ -28,7 +28,7 @@
 	       		}
 	       		$("#temp").val("temp");
 			}else{
-				getExpensesList();
+				getExpensesList('${sourceleadUrl}');
 			}
 		 };
 </script>
@@ -58,17 +58,17 @@
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
 					</div>
 					
 					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
-								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
-								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList('${sourceleadUrl}');"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList('${sourceleadUrl}');"><label >Approved</label></li>
+								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Submitted</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList('${sourceleadUrl}');"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Rejected</label></li>
 	                        </ul>
 	                    </div>                	
 	                </li>
@@ -90,6 +90,10 @@
             <div class="clearfix"></div>
             
         </div>
+        
+        <div class='remove_search'>
+		       <input type='text' placeholder='search' value="" id='dataTableSearchExpensesEmp'/>
+	   </div>
         
     <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
@@ -113,7 +117,9 @@
 		
       </section>
       <!-- Content Area Ends--> 
-<script>
+      
+      
+<!-- <script>
 
 function getExpensesList(){
 	var startDate = $("#filterStartDate").val();
@@ -252,7 +258,7 @@ function getExpensesList(){
 	
 	}
 
-</script>      
+</script> -->      
 
 <script>
 function expensesPagination(){ 
@@ -571,3 +577,4 @@ function expensesCancel(){
 	       e.stopPropagation();
 	   });        
 </script> 
+<jsp:include page="expensesEmployeeTable.jsp" />
