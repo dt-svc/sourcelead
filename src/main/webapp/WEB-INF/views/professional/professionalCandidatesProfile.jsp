@@ -147,8 +147,8 @@ function editCandidate(candidateId){
             			 	}
             			 	
             				var zipCode = '';
-            			 	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
-            			 		zipCode = json.zipCode;            			 		
+            			 	if(json.zipcode != null && json.zipcode != '' && json.zipcode != 'undefined'){
+            			 		zipCode = json.zipcode;            			 		
             			 	}
             			 	
             			 	var state = '';

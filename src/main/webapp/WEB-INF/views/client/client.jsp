@@ -22,7 +22,9 @@ window.onload = function () {
 .ui-front {
     z-index: 9999999;
 }
-
+.margintop {
+margin-top: -50px;
+}
 </style>
 
 
@@ -80,6 +82,57 @@ window.onload = function () {
 	          </div>
 	        </div>
 		
+		  <div class="form-group ">
+				<label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				<input type="text" id="addressId" name="address"   field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></input>
+				</div>
+			</div>
+			
+			<div class="form-group" id="cityDiv" style="display: block;">
+	          <label class="col-md-3">City</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
+	          </div>
+	        </div>
+	        
+	        
+		  <div class="form-group" id="orgCityDiv" style="display: none;">
+				<label class="col-md-3">City</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
+				</div>
+		   </div>
+		   
+		   <div class="form-group" id="stateDiv" style="display: block;">
+	          <label class="col-md-3">State</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
+	          </div>
+	        </div>
+	        
+	        	 
+			 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+				</div>
+		 	</div>
+		 	
+		 	 <div class="form-group" id="zipCodeDiv" style="display: block;">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group" id="orgZipCodeDiv" style="display: none;">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+	          </div>
+	  		  </div>	
+	  		  
 			<div class="form-group" id="countryDiv" style="display: block;">
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
@@ -102,51 +155,6 @@ window.onload = function () {
 				</div>
 			</div>
 	        
-	        
-	        <div class="form-group" id="stateDiv" style="display: block;">
-	          <label class="col-md-3">State</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
-	          </div>
-	        </div>
-	        
-	        	 
-			 <div class="form-group" id="orgStateDiv" style="display: none;">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-				</div>
-		 	</div>
-		
-		
-	        <div class="form-group" id="cityDiv" style="display: block;">
-	          <label class="col-md-3">City</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
-	          </div>
-	        </div>
-	        
-	        
-		  <div class="form-group" id="orgCityDiv" style="display: none;">
-				<label class="col-md-3">City</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
-				</div>
-		   </div>
-		 
-	        <div class="form-group" id="zipCodeDiv" style="display: block;">
-	          <label class="col-md-3">ZipCode</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group" id="orgZipCodeDiv" style="display: none;">
-	          <label class="col-md-3">ZipCode</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
-	          </div>
-	  		  </div>	
 			
 			<div class="form-group hidden">
 	          <label class="col-md-3">Lat</label>
@@ -163,6 +171,8 @@ window.onload = function () {
 	        </div> 
          
             <div class="form-group">
+            
+            <div class="clearfix mb">
               <label class="col-md-3">Tier</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
@@ -173,25 +183,9 @@ window.onload = function () {
                     <option selected="selected" value="Tier-5">Tier-5</option>
                   </select>
               </div>
-            </div>
-            
-            
-            <div class="form-group ">
-				<label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-			<div class="form-group ">
-				<label class="col-md-3">Billing Address</label>
-				<div class="col-md-9">
-				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-            <div class="clearfix mb"></div>
-             <div class="form-group">
+              </div>
+              
+              <div class="clearfix width100Percnt">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
@@ -205,6 +199,23 @@ window.onload = function () {
                   </select>
               </div>
             </div>
+              
+              
+              
+            </div>
+            
+            
+            
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             
             
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">

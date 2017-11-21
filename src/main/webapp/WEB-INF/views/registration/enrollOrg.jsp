@@ -10,7 +10,12 @@
 		getTimezonesList();
 	});
 </script>
+<script>
+function changeCountry(){
+	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
+}
 
+</script>
   <!-- Content Area -->
   <section class="content-wraper">
   <section class="content-header clearfix">
@@ -117,34 +122,24 @@
 		          </div>
 			 </div>
 			 
-	        
 	        <div class="form-group">
-	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	          <div class="col-md-9">
-<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
-	         
-	             <select class="form-control chosen-select" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="removeValidationRecPop();">
-		                    <option value="Australia">Australia</option>
-			                <option value="France">France</option>
-			                <option value="India">India</option>
-			                <option value="Singapore">Singapore</option>
-			                <option value="United Kingdom">United Kingdom</option>
-			                <option value="United States">United States</option>
-		       </select>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group">
-	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group">
+			  <label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
+				</div>
+			 </div>
+			 
+			  <div class="form-group">
 	          <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
 	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" ></input>
+	          </div>
+	        </div>
+	        
+	         <div class="form-group">
+	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>
 	          </div>
 	        </div>
 	        
@@ -154,13 +149,26 @@
 	          <input class="form-control" id="orgZipCode" name="zipCode" placeholder="Enter your Zip code" type="text"></input>
 	          </div>
 	        </div>
+	        
+	        <div class="form-group" id="errCountryMsg">
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
+	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry();" >
+		                    <option value="">Select Country</option>
+		                    <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+		          </select>
+	          </div>
+	        </div>
+	        
+	     
 			
-			<div class="form-group">
-			  <label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
-				</div>
-			 </div>
+			
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -593,8 +601,7 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	       $("#address").chosen();
-           $("#address").trigger("chosen:updated");
+	    
            
 	       $('.chosen-select').each(function() {
 				var $this = $(this);

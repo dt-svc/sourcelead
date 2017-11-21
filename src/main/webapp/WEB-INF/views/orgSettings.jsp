@@ -1557,56 +1557,54 @@ function createOrg(){
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
 				result = result +' 		 </div>';
-				result = result +'       <div class="form-group">';
-				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				
+			    result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Address</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+		            
+	        	result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-			 	/* result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
-    			result = result + '       <option value="">Select Country</option>';
-				result = result + '       <option >Australia</option>';
-				result = result + '       <option >France</option>';
-				result = result + '       <option >India</option>';
-				result = result + '       <option >Singapore</option>';
-				result = result + '       <option >United Kingdom</option>';
-				result = result + '       <option >United States</option>';  */
-				
-				/* result = result + '<option  '+ ('${loginCountryName}' == "Australia" ? "selected" : '') +'>Australia</option>';
-				result = result + '<option  '+ ('${loginCountryName}' == "France" ? "selected" : '') +'>France</option>';
-				result = result + '<option  '+ ('${loginCountryName}' == "India" ? "selected" : '') +'>India</option>';
-				result = result + '<option  '+ ('${loginCountryName}' == "Singapore" ? "selected" : '') +'>Singapore</option>';
-				result = result + '<option  '+ ('${loginCountryName}' == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
-				result = result + '<option  '+ ('${loginCountryName}' == "United States" ? "selected" : '') +'>United States</option>'; */
-				
-//                 result = result + ' </select>';
-                 
-				result = result +'         <input class="form-control" id="orgSetCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>';
-
+				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  ></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
+				
 				result = result +'       <div class="form-group">';
 				result = result +'         <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
 				result = result +'         <input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
-				result = result +'       <div class="form-group">';
-				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-				result = result +'         <div class="col-md-9">';
-				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  ></input>';
-				result = result +'         </div>';
-				result = result +'       </div>';
+				
+			
+				
 				result = result +'       <div class="form-group">';
 				result = result +'         <label class="col-md-3">ZipCode</label>';
 				result = result +'         <div class="col-md-9">';
 				result = result +'         <input class="form-control" id="orgSetZipCode" name="zipCode" placeholder="Zip code" field-name="Zip code" type="text"></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
+				
+				result = result +'       <div class="form-group" id="errCoutryMsg">';
+				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '       <option value="">Select Country</option>';
+				result = result + '       <option >Australia</option>';
+				result = result + '       <option >France</option>';
+				result = result + '       <option >India</option>';
+				result = result + '       <option >Singapore</option>';
+				result = result + '       <option >United Kingdom</option>';
+				result = result + '       <option >United States</option>'; 
+                result = result + '    </select>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				
 						        
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Address</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="addressId" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
-	            result = result +'</div>';
-	            result = result +'</div>';
+	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -1667,6 +1665,9 @@ function createOrg(){
 			  })
 	      	       
 	
+}
+function changeCountry(){
+	 $("#errCoutryMsg").find("p.jquery_form_error_message").remove();
 }
 </script>
 

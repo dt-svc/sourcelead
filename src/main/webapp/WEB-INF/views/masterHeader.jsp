@@ -1759,19 +1759,13 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     }
   }
  
-  if(locationId == 'clientLocation' || locationId == 'vendorLocation' || locationId == 'orgSetLocation' || locationId == 'orgLocation' ){
- 
-	  $("#"+countryId).val(address.country).change();
-	  $("#"+countryId).trigger("chosen:updated");
-  }else{
-	  $("#"+countryId).val(address.country).change();
-  }
- 
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();
   $("#"+zipCodeId).val(address.zipcode).change();
   $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
-  
+  $("#"+countryId).val(address.country).change();
+  $("#"+countryId).trigger("chosen:updated");
+
   if(type == "invite"){
 	  getTimezonesList();
   }
@@ -1794,18 +1788,13 @@ function geolocate(latitudeId,longtitudeId) {
 </script>
 <script>
 function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
-	if(locationId == 'clientLocation' || locationId == 'vendorLocation' || locationId == 'orgSetLocation' || locationId == 'orgLocation'){
-		$("#"+countryId).val('');
-		$("#"+countryId).trigger("chosen:updated");
-	}else{
-		$("#"+countryId).val('');
-
-	}
 	$("#"+locationId).val('');
 	$("#"+stateId).val('');
 	$("#"+cityId).val('');
 	$("#"+zipCodeId).val('');
 	$("#"+addressId).val('');
+	$("#"+countryId).val('');
+	$("#"+countryId).trigger("chosen:updated");
 }
 </script>
 <script>
