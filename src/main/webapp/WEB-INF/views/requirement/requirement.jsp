@@ -344,6 +344,19 @@ $(document).ready(function () {
               </div>
             </div>
             
+        <div class="form-group" >
+            <label class="col-md-3">Experience Level</label>
+            <div class="col-md-9 dropdown-select">
+            <select name="experienceLevel">
+            	<option>--Select Level--</option>
+            	<option>Entry Level</option>
+            	<option>Mid Level</option>
+            	<option>Senior Level</option>
+            </select>
+            
+            </div>
+          </div>
+        
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
@@ -455,24 +468,7 @@ $(document).ready(function () {
             </div>
           </div>
           
-		<div class="form-group">
-				<label class="col-md-3">Travel Allowance</label>
-				<div class="col-md-9">
-				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
-	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
-	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
-	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
-	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
-	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
-	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
-	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
-	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
-	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
-	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
-                 </select>
-                 
-				</div>
-		 </div>
+		
 		 
 		 <div class="form-group">
                       <label class="col-md-3">Closed Date</label>
@@ -584,7 +580,70 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
-            
+            <div class="form-group">
+				<label class="col-md-3">Travel Allowance</label>
+				<div class="col-md-9">
+				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
+	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
+	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
+	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
+	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
+	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
+	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
+	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
+	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
+	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
+	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
+                 </select>
+                 
+				</div>
+		 </div>
+		 
+		 <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Medical  Clearance</label>
+				<div class="col-md-9">
+				<span class="paddingRight"><input type="radio" name="medicalClearence"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" name="medicalClearence"><span class="mr5"></span>No</span>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Security Clearance</label>
+				<div class="col-md-9">
+				<span class="paddingRight"><input type="radio" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" name="securityClearance"><span class="mr5"></span>No</span>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Overtime</label>
+				<div class="col-md-9">
+				<span class="paddingRight"><input type="radio" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" name="overTime"><span class="mr5"></span>No</span>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Background Check</label>
+				<div class="col-md-9">
+				<span class="paddingRight"><input type="radio" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</div>
+		 </div> 
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Gender</label>
+				<div class="col-md-9">
+				<span class="paddingRight"><input type="radio" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" name="gender"><span class="mr5"></span>All</span>
+				</div>
+		 </div> 
+		 
+		 
+		 <!--  Radio Buttons -->
           <div class="form-group pras">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>

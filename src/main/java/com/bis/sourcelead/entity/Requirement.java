@@ -290,6 +290,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
 	private String releaseJobToAllUsers;
 	
+	@Column(name = "MEDICAL_CLEARENCE")
+	private String medicalClearence;
+	
+	@Column(name = "SECURITY_CLEARANCE")
+	private String securityClearance;
+	
+
+	@Column(name = "OVER_TIME")
+	private String overTime;
+	
+	@Column(name = "BACKGROUNG_CHECK")
+	private String backgroundCheck;
+	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "EXPERIENCE_LEVEL")
+	private String experienceLevel;
+	
 	@Transient
 	private String closedDateStringFormat;
 	
