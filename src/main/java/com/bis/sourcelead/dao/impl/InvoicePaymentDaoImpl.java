@@ -73,7 +73,7 @@ public class InvoicePaymentDaoImpl implements InvoicePaymentDao {
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 		
-		String query = "from InvoicePayment invoicePayment  left join fetch invoicePayment.invoiceId invoice  where invoice.orgLocation.id  = :orgLocationId and invoicePayment.paymentDate >= :startDate and invoicePayment.paymentDate <= :endDate ";
+		String query = "from InvoicePayment invoicePayment  left join fetch invoicePayment.invoiceId invoice  where (invoice.orgLocation.id  = :orgLocationId or invoice.responderLocationId.id  = :orgLocationId) and invoicePayment.paymentDate >= :startDate and invoicePayment.paymentDate <= :endDate ";
 		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
 		return invoicePaymentList;
 		

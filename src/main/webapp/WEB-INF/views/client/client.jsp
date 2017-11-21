@@ -335,36 +335,6 @@ window.onload = function () {
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	
-	/* $( "#orgName" ).val( '' ); */
-	$( "#orgLocationId" ).val( '' );
-	
-	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val('');
-	
-	$("#orgCountry").val('');
-	$("#orgState").val('');
-	$("#orgCity").val('');
-	$("#orgLocation").val('');
-	$("#orgZipCode").val('');
-	
-	document.getElementById("countryDiv").style.display="";
-	document.getElementById("orgCountryDiv").style.display="none";
-	
-	document.getElementById("stateDiv").style.display="";
-	document.getElementById("orgStateDiv").style.display="none";
-	
-	document.getElementById("cityDiv").style.display="";
-	document.getElementById("orgCityDiv").style.display="none";
-	
-	document.getElementById("locationDiv").style.display="";
-	document.getElementById("orgLocationDiv").style.display="none";
-	
-	document.getElementById("zipCodeDiv").style.display="";
-	document.getElementById("orgZipCodeDiv").style.display="none";
-	
-	
-	document.getElementById("userRoleDiv").style.display="none"; 
-	
 	$.ajax({                           
     	type: "POST",
     	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
@@ -404,6 +374,37 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	
+$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
+	$("#orgLocation").val('');
+	$("#orgZipCode").val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	document.getElementById("locationDiv").style.display="";
+	document.getElementById("orgLocationDiv").style.display="none";
+	
+	document.getElementById("zipCodeDiv").style.display="";
+	document.getElementById("orgZipCodeDiv").style.display="none";
+	
+	
+	document.getElementById("userRoleDiv").style.display="none"; 
+	
+	
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
  	var orgLocationId = document.getElementById("orgLocationId").value; 

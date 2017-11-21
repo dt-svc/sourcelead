@@ -418,10 +418,8 @@ public class CandidateListRestController {
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
-			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
+	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
 		}
 		
 		// Rate Type
@@ -590,6 +588,7 @@ public class CandidateListRestController {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));

@@ -59,6 +59,9 @@ public class HolidayAndRestrictday implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "STATUS")
+	private String status;
+	
 	public String getId()
 	{
 		return id;
@@ -148,4 +151,16 @@ public class HolidayAndRestrictday implements Serializable {
 	{
 		this.orgLocations = orgLocations;
 	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	
+	
 }

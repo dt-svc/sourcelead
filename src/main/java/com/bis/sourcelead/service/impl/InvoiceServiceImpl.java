@@ -111,6 +111,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 
@@ -2049,7 +2050,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 	@Override
 	public BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate,
-			String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId) throws Exception {
+			String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId,String loginOrgCurrencyCode) throws Exception {
 		DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 
@@ -2139,7 +2140,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		BillingReportDTO billingReportDTO = new BillingReportDTO();
 		boolean isReceivableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(), 21L);
 		boolean isPayableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(), 22L);
-
+		
 		for (InvoicePayment invoicePayment : paymentList) {
 			if ((Constants.RECEIVABLE.equalsIgnoreCase(invoicePayment.getInvoiceId().getInvoiceType())
 					&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())
@@ -2147,8 +2148,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					&& isReceivableAccessYes) {
 
 				try {
+					if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
+						double recievableAmount = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));
+						receivedAmt = receivedAmt + recievableAmount;
+					}else {
 						double recievableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
 						receivedAmt = receivedAmt + recievableAmount;
+					}
 
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -2156,8 +2162,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 			} else if (isPayableAccessYes) {
 				try {
+					if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
+						double payableAmount = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));		
+						payableAmt = payableAmt + payableAmount;
+					}else{
 						double payableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
 						payableAmt = payableAmt + payableAmount;
+					}
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
@@ -2179,11 +2190,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
 						if ((invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate))
 								|| (invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate))) {
-								double income = Double.parseDouble(invoicePayment.getPaymentAmount());
-								incomeAmount = incomeAmount + income;
+							
+						if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
+							double income = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));
+							incomeAmount = incomeAmount + income;
+						}else {
+							double income = Double.parseDouble(invoicePayment.getPaymentAmount());
+							incomeAmount = incomeAmount + income;
 						}
-
-					} catch (Exception e) {
+					   } 
+					}catch (Exception e) {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 				} else if (isPayableAccessYes) {
@@ -2191,8 +2207,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
 						if (invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate)
 								|| invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate)) {
+							
+							if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
+								double expenses = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));		
+								expensesAmount = expensesAmount + expenses;
+							}else{
 								double expenses = Double.parseDouble(invoicePayment.getPaymentAmount());
 								expensesAmount = expensesAmount + expenses;
+							}
 						}
 					} catch (Exception e) {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
