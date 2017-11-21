@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
  };
 </script>
  <script>
@@ -66,7 +66,7 @@ window.onload = function () {
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
 	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
 	        </div>
@@ -81,9 +81,17 @@ window.onload = function () {
 	        </div>
 		
 			<div class="form-group" id="countryDiv" style="display: block;">
-	          <label class="col-md-3">Country</label>
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
+	          <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" data-validation="required" >
+	                   <option  ${loginCountryName  == 'Australia' ? 'selected' : ''}>Australia</option>
+	                   <option  ${loginCountryName  == 'France' ? 'selected' : ''}>France</option>
+	                   <option  ${loginCountryName  == 'India' ? 'selected' : ''}>India</option>
+	                   <option  ${loginCountryName  == 'Singapore' ? 'selected' : ''}>Singapore</option>
+	                   <option  ${loginCountryName  == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>
+	                   <option  ${loginCountryName  == 'United States' ? 'selected' : ''}>United States</option>
+                 </select>
+                  
 	          </div>
 	        </div>
 	        
@@ -98,7 +106,7 @@ window.onload = function () {
 	        <div class="form-group" id="stateDiv" style="display: block;">
 	          <label class="col-md-3">State</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text" readonly></input>
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -114,7 +122,7 @@ window.onload = function () {
 	        <div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -129,7 +137,7 @@ window.onload = function () {
 	        <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        
