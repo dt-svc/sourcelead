@@ -118,8 +118,8 @@
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
 							result = result + '</div>';
 							
@@ -162,8 +162,8 @@
 							
 							
 							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Address" placeholde="Enter a Address" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
 							result = result + '</div>';
 							
@@ -211,7 +211,7 @@
 						result = result + ' </div>';	
 						
 						 result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Address</label>';
+						result = result + '<label>Street Address</label>';
 						if(json.address != null && json.address !='' && json.address != 'undefined'){
 						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
 						}else{

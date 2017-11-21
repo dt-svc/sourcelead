@@ -64,7 +64,7 @@ margin-top: -50px;
 						
 			
 			<div class="form-group" id="locationDiv" style="display: block;">
-	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
 	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
@@ -74,18 +74,18 @@ margin-top: -50px;
 	        </div>
 		
 		   <div class="form-group" id="orgLocationDiv" style="display: none;">
-	          <label class="col-md-3">Location</label>
+	          <label class="col-md-3">Address</label>
 	          <div class="col-md-9">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Location" readonly></input>
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Address" readonly></input>
 	          </div>
 	          </div>
 	        </div>
 		
 		  <div class="form-group ">
-				<label class="col-md-3">Address</label>
+				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" id="addressId" name="address"   field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></input>
+				<input type="text" id="addressId" name="address"   field-name="Strret Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
 			
