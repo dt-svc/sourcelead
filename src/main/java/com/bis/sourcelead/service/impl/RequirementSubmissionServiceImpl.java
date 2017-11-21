@@ -263,6 +263,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
+		 Date date = new Date();
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
@@ -408,8 +409,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					candidate.setCreatedBy(user.getUserCode());
-					candidate.setCreatedDate(new Date());
-					candidate.setUpdatedDate(new Date());
+					candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+					candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 						candidate.setRecruiterUserId(user);
@@ -576,8 +577,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
-		 requirementSubmission.setCreatedDate(new Date());
-		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+		 requirementSubmission.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+		 requirementSubmission.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
 		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
@@ -707,8 +708,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 templateFields.setStatus(Constants.CANDIDATE_ACTIVE);
 		 templateFields.setCreatedBy(user.getUserCode());
-		 templateFields.setCreatedDate(new Date());
-		 templateFields.setUpdatedDate(commonUtil.currentDate());
+		 templateFields.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+		 templateFields.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		 
 		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
