@@ -2,12 +2,15 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
-
+import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 
 public interface RequirementAssignToDao {
 
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId)throws Exception;
+	
+	public ResponseList<RequirementAssignTo> loadRequirementAssignToListByRequirementId(RequirementAssignToDTO requirementAssignToDTO)throws Exception;
 	
 	public RequirementAssignTo getRequirementAssignToByRequirementIdandAssignToId(Long requirementId,Long teamId)  throws Exception;
 	

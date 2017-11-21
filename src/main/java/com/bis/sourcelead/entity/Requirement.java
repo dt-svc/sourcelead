@@ -451,6 +451,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String[] requirementAssignedToUsersId;
 	
 	@Transient
+	@JsonProperty
 	private String isRequirementReleasedByuser;
 	
 	@Transient
