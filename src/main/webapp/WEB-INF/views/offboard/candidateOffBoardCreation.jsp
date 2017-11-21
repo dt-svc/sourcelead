@@ -203,7 +203,7 @@
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOffBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -250,7 +250,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
