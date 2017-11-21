@@ -1529,23 +1529,14 @@ public class CandidateListRestController {
 							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								//DateFormat TZ_DF_CED = new SimpleDateFormat (orgLocation.getDateFormat()+" "+"23:59:59");
-								
-								//String av1 = TZ_DF_CED.format(customEndDate);
-								 // Date av = TZ_DF_CED.parse(customEndDate);
-								 
-								 SimpleDateFormat orgDate = new SimpleDateFormat(orgLocation.getDateFormat()); 
-								
-								// increment one date with customEndDate
-								   Calendar c = Calendar.getInstance();
-								    c.add(Calendar.DATE, 1); 
-								    customEndDate = (String)(orgDate.format(c.getTime()));
-								
-								  Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
-									Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
-									startDateUTC = startTime;
-									endDateUTC = endTime;
+								 	DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+									DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+									Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+									Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+									String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+									String customEndTimeStr = TZ_DF_CED.format(endTime);  
+									startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+									endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 							
 							 }
 							
