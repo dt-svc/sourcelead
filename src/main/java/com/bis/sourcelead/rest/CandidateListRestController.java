@@ -1530,26 +1530,23 @@ public class CandidateListRestController {
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								//DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+								//DateFormat TZ_DF_CED = new SimpleDateFormat (orgLocation.getDateFormat()+" "+"23:59:59");
 								
+								//String av1 = TZ_DF_CED.format(customEndDate);
+								 // Date av = TZ_DF_CED.parse(customEndDate);
+								 
+								 SimpleDateFormat orgDate = new SimpleDateFormat(orgLocation.getDateFormat()); 
 								
+								// increment one date with customEndDate
+								   Calendar c = Calendar.getInstance();
+								    c.add(Calendar.DATE, 1); 
+								    customEndDate = (String)(orgDate.format(c.getTime()));
 								
-								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
-								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
-								startDateUTC = startTime;
-								endDateUTC = endTime;
-							/*	String customStartTimeStr = null;
-								String customEndTimeStr = null;
-							if(null !=startTime){
-							 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-							}
-								
-							if(null != endTime){
-							 customEndTimeStr = TZ_DF_CED.format(endTime);  
-							}
-								String startDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), startTime);
-								String endDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), endTime);
-								*/
+								  Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
+									Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
+									startDateUTC = startTime;
+									endDateUTC = endTime;
+							
 							 }
 							
 						}

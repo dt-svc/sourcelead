@@ -510,34 +510,40 @@ $(document).ready(function () {
 				</div>
 		</div>
 		
-		<div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country" readonly>
-				</div>
+		 <div class="form-group">
+			<label class="col-md-3">City</label>
+			<div class="col-md-9">
+			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
+			</div>
 		</div>
 		
 		 <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
-				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State" readonly>
+				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
 		 </div>
-		
-		 <div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City"  readonly>
-			</div>
-		</div>
-		
-		
-		 <div class="form-group">
+		 
+		  <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
 		</div>
+		
+		<div class="form-group">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
+				</div>
+		</div>
+		
+		
+		
+		
+		
+		
+		
 		
 	 
          <div class="form-group">

@@ -99,16 +99,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String approverHierarchy;
 	
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")
