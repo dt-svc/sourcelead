@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -51,6 +53,9 @@ public class OrgSettingsController {
 	@Autowired
 	ModulesService modulesService;
 	
+	@Autowired
+	CountriesService countriesService;
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
 	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
@@ -69,6 +74,10 @@ public class OrgSettingsController {
 			model.addObject("requirementSubModulesList", requirementSubModulesList);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
 		}
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
