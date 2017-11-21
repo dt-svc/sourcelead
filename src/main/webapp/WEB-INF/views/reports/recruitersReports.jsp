@@ -157,6 +157,7 @@ function getCustomReports(){
 		document.getElementById("reportsEndDate").style.display="block";
 		$("#reportsEndDate").empty().append("End Date is Required") ; 
 	}else{
+		$("#usersList").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
@@ -264,8 +265,8 @@ function getCustomReports(){
                      result = result +" </tbody>";
                      result = result +"</table>"; 
                      $("#noRecruiters").val('');
-                     alert(result);
                      $("#usersList").append(result); 
+                     $("#usersList").removeAttr('style'); 
                     
                      reportpagination();
              	}
