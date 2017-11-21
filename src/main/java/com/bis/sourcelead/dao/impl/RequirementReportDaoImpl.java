@@ -104,6 +104,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				query.setInteger(str, 2);
 			} else if (str.equalsIgnoreCase("loginUserCode")) {
 				query.setString(str, user.getUserCode());
+			}else if (str.equalsIgnoreCase("startDateUTC")) {
+				query.setDate(str,startDateUTC);
+			}else if (str.equalsIgnoreCase("endDateUTC")) {
+				query.setDate(str, endDateUTC);
 			}
 
 		}
