@@ -5,7 +5,7 @@
 
 <script>
 	$(document).ready(function() {
-		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite');
+		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite','address');
 		document.getElementById("createOrg_form").reset();
 		getTimezonesList();
 	});
@@ -112,7 +112,7 @@
 				 <div class="col-md-9" id="locationField">
 			          <div class="positionRelative">
 				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');resetdate();"></i>
+				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode','address');resetdate();"></i>
 				        </div>
 		          </div>
 			 </div>
@@ -121,21 +121,30 @@
 	        <div class="form-group">
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>
+<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
+	         
+	             <select class="form-control chosen-select" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="removeValidationRecPop();">
+		                    <option value="Australia">Australia</option>
+			                <option value="France">France</option>
+			                <option value="India">India</option>
+			                <option value="Singapore">Singapore</option>
+			                <option value="United Kingdom">United Kingdom</option>
+			                <option value="United States">United States</option>
+		       </select>
 	          </div>
 	        </div>
 	        
 	        <div class="form-group">
 	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>
+	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>
 	          </div>
 	        </div>
 	        
 	        <div class="form-group">
 	          <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" readonly></input>
+	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" ></input>
 	          </div>
 	        </div>
 	        
@@ -584,7 +593,9 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	      
+	       $("#address").chosen();
+           $("#address").trigger("chosen:updated");
+           
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});

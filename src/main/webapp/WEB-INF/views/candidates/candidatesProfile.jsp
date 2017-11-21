@@ -233,12 +233,12 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="address" id="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6" id="locationField">';
 							result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Location" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\');"></i>';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\',\'address\');"></i>';
 							result = result + '</div>'; 
 							
 							result = result + '</div>';
@@ -246,18 +246,18 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'" data-validation="required" field-name="Country"  placeholder="Enter your Country" type="text"></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" ></input>';
 							result = result + '</div>';
 							
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" ></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
@@ -483,7 +483,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
+							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
 							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							

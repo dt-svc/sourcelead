@@ -213,29 +213,29 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6" id="locationField">';
 							result = result + '<input type="text" class="form-control input-sm" name="location"  id="pfLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'pfLocation\',\'pfCountry\',\'pfState\',\'pfCity\',\'pfZipCode\');"></i>';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'pfLocation\',\'pfCountry\',\'pfState\',\'pfCity\',\'pfZipCode\',\'pfAddress\');"></i>';
 							result = result + '</div>'; 
 							
 							result = result + '<div class="col-md-6 custom-fields mb10">';
-							result = result + '<input class="form-control input-sm" id="pfCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+							result = result + '<input class="form-control input-sm" id="pfCountry" name="country" value="'+json.country+'" field-name="Country" data-validation="required"  placeholder="Enter your Country" type="text"  ></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<input class="form-control input-sm" id="pfState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
+							result = result + '<input class="form-control input-sm" id="pfState" name="state" value="'+state+'" placeholder="Enter your State" type="text"  ></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control input-sm" id="pfCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
+							result = result + '<input class="form-control input-sm" id="pfCity" name="city" value="'+city+'" placeholder="Enter your City" type="text"  ></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields mt10">';
-							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true" readonly></input>';
+							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"></input>';
 							result = result + '</div>';
 							
 
 							result = result + '<div class="col-md-6 custom-fields mt10"">';
-							result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address">';
+							result = result + '<input type="text" class="form-control input-sm" name="address" id="pfAddress" value="'+address+'" placeholder="Address">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -421,7 +421,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							initLocationAuto('pfLocation','pfCountry','pfState','pfCity','pfZipCode','pfLatitude','pfLongitude');
+							initLocationAuto('pfLocation','pfCountry','pfState','pfCity','pfZipCode','pfLatitude','pfLongitude','','pfAddress');
 							
 							updateDesignationType();
 							$(".edit-details").toggleClass("edit-details-active");
