@@ -113,19 +113,19 @@ function changeCountry(){
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             
             <div class="form-group">
-				<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 				 <div class="col-md-9" id="locationField">
 			          <div class="positionRelative">
-				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
+				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
 				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode','address');resetdate();"></i>
 				        </div>
 		          </div>
 			 </div>
 			 
 	        <div class="form-group">
-			  <label class="col-md-3">Address</label>
+			  <label class="col-md-3">Street Address</label>
 				<div class="col-md-9">
-				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
+				 <input type="text" name="address" id="address" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>
 				</div>
 			 </div>
 			 
