@@ -101,19 +101,19 @@
         
         
          <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
+          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Address" data-validation="required"></input>
           <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode','address');"></i>
           </div>
           </div>
         </div>
 		
 		<div class="form-group">
-          <label class="col-md-3">Address</label>
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         

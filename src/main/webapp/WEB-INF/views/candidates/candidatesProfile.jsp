@@ -162,9 +162,8 @@ function editCandidate(candidateId){
             			 	}
             			 	var country = '';
             			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
-            			 		state = json.country;            			 		
+            			 		country = json.country;            			 		
             			 	}
-            			 	
             			 	
             			 	var state = '';
             			 	if(json.state != null && json.state != '' && json.state != 'undefined'){

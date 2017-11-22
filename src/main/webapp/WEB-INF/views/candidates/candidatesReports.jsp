@@ -43,16 +43,7 @@ window.onload = function() {
 	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	    	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	   	  if(locationList.match("yyyy-MM-dd")){
-	   		  reqListDate = 'YYYY-MM-DD';
-	   	  }if(locationList.match("dd-MM-yyyy")){
-	   		  reqListDate = 'DD-MM-YYYY'; 
-	   	  }if(locationList.match("MM-dd-yyyy")){
-	   		  reqListDate = 'MM-DD-YYYY'; 
-	   	  }if(locationList.match("yyyy-dd-MM")){
-	   		  reqListDate = 'YYYY-DD-MM'; 
-	   	  }  
-	   	
+	    	 var reqListDate= getOrgDateFormat(locationList);
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	          result = result +"<thead>"; 
@@ -136,6 +127,8 @@ window.onload = function() {
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
+	          $("#candidateLoderDiv").empty();
+	          $("#candidateLoderDiv").removeAttr('style');
 	          cpagination(SourceLeadWeb_loginOrg);  
 	 
   }
@@ -163,7 +156,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -180,16 +173,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 	$(function() {
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatreports = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatreports = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatreports = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatreports = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatreports = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatreports = getJSDateFormat(locationDate);
 		
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
@@ -315,6 +299,7 @@ function toDate(selector) {
 	</div>
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
+   <div id="candidateLoderDiv"></div>
                  <div id="candidateList" class="repoPositiAs"></div>
                 </div>      
                 
@@ -408,7 +393,8 @@ function getDayWiseReports(){
 	var endDate = $("#ExportEndDate").val();
 	
 	if(reportType != "custom"){
-	$.ajax({
+		$("#candidateLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
          success :function(data) {
@@ -452,6 +438,7 @@ function getCustomReports(){
 		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}else{
+		$("#candidateLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     

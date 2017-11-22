@@ -294,12 +294,12 @@ function getVendorDetails(){
 						</div>
 
 						<div class="form-group" id="locationDiv" style="display: block;">
-							<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="locationField">
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
 										id="vendorLocation" name="location"
-										placeholder="Enter your Location" type="text"
+										placeholder="Enter your Address" type="text"
 										field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
@@ -308,16 +308,69 @@ function getVendorDetails(){
 							</div>
 						</div>
 						<div class="form-group" id="orgLocationDiv" style="display: none;">
-							<label class="col-md-3">Location</label>
+							<label class="col-md-3">Address</label>
 							<div class="col-md-9">
 								<div class="positionRelative">
 									<input class="form-control positionRelative" id="orgLocation"
-										name="orgLocation" placeholder="Enter your Location"
-										type="text" field-name="Location" readonly></input>
+										name="orgLocation" placeholder="Enter your Address"
+										type="text" field-name="Address" readonly></input>
 								</div>
 							</div>
 						</div>
 
+                        <div class="form-group ">
+							<label class="col-md-3">Street Address</label>
+							<div class="col-md-9">
+								<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Addres" data-validation="validate_length length2-250" data-validation-optional="true"/>
+							</div>
+						</div>
+						
+						<div class="form-group" id="cityDiv" style="display: block;">
+							<label class="col-md-3">City</label>
+							<div class="col-md-9">
+								<input class="form-control" id="vendorCity" name="city" placeholder="Enter your City" type="text"  ></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgCityDiv" style="display: none;">
+							<label class="col-md-3">City</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
+							</div>
+						</div>
+						
+						<div class="form-group" id="stateDiv" style="display: block;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input class="form-control" id="vendorState" name="state" placeholder="Enter your State" type="text" ></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgStateDiv" style="display: none;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+							</div>
+						</div>
+
+						
+
+						<div class="form-group" id="zipCodeDiv" style="display: block;">
+							<label class="col-md-3">ZipCode</label>
+							<div class="col-md-9">
+								<input class="form-control" id="vendorZipCode" name="zipcode"
+									placeholder="Enter your Zip code" type="text"   onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
+							<label class="col-md-3">ZipCode</label>
+							<div class="col-md-9">
+								<input class="form-control" id="orgZipCode" name="orgZipcode"
+									placeholder="Enter your Zip code" type="text" readonly ></input>
+							</div>
+						</div>
+						
 						<div class="form-group" id="countryDiv" style="display: block;">
 							<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
@@ -339,50 +392,6 @@ function getVendorDetails(){
 							</div>
 						</div>
 
-						<div class="form-group" id="stateDiv" style="display: block;">
-							<label class="col-md-3">State</label>
-							<div class="col-md-9">
-								<input class="form-control" id="vendorState" name="state" placeholder="Enter your State" type="text" ></input>
-							</div>
-						</div>
-
-						<div class="form-group" id="orgStateDiv" style="display: none;">
-							<label class="col-md-3">State</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-							</div>
-						</div>
-
-						<div class="form-group" id="cityDiv" style="display: block;">
-							<label class="col-md-3">City</label>
-							<div class="col-md-9">
-								<input class="form-control" id="vendorCity" name="city" placeholder="Enter your City" type="text"  ></input>
-							</div>
-						</div>
-
-						<div class="form-group" id="orgCityDiv" style="display: none;">
-							<label class="col-md-3">City</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
-							</div>
-						</div>
-
-						<div class="form-group" id="zipCodeDiv" style="display: block;">
-							<label class="col-md-3">ZipCode</label>
-							<div class="col-md-9">
-								<input class="form-control" id="vendorZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text"   onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
-							</div>
-						</div>
-
-						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-							<label class="col-md-3">ZipCode</label>
-							<div class="col-md-9">
-								<input class="form-control" id="orgZipCode" name="orgZipcode"
-									placeholder="Enter your Zip code" type="text" readonly ></input>
-							</div>
-						</div>
-
 						<div class="form-group hidden">
 							<label class="col-md-3">Lat</label>
 							<div class="col-md-9">
@@ -399,12 +408,10 @@ function getVendorDetails(){
 							</div>
 						</div>
 
-
-
-
 						<div class="form-group">
+						<div class="clearfix mb">
 							<label class="col-md-3">Tier</label>
-							<div class="col-md-9">
+							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="level" name="level">
 									<option value="Tier-1">Tier-1</option>
 									<option value="Tier-2">Tier-2</option>
@@ -413,30 +420,11 @@ function getVendorDetails(){
 									<option selected="selected" value="Tier-5">Tier-5</option>
 								</select>
 							</div>
-						</div>
-
-						<div class="form-group ">
-							<label class="col-md-3">Address</label>
-							<div class="col-md-9">
-								<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250"
-									data-validation-optional="true"></textarea>
 							</div>
-						</div>
-
-						<div class="form-group ">
-							<label class="col-md-3">Billing Address</label>
-							<div class="col-md-9">
-								<textarea id="billingAddressId" rows="4" name="billingAddress"
-									field-name="Billing Address" class="form-control"
-									data-validation="validate_length length2-250"
-									data-validation-optional="true"></textarea>
-							</div>
-						</div>
-
-						<div class="clearfix mb"></div>
-						<div class="form-group">
+							
+							<div class="clearfix width100Pecnt">
 							<label class="col-md-3">Payment Term</label>
-							<div class="col-md-9">
+							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="PaymentTermId"
 									name="paymentTerms">
 									<option selected="selected" disabled value="">Select Payment Term</option>
@@ -449,6 +437,21 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						</div>
+
+
+						<div class="form-group ">
+							<label class="col-md-3">Billing Address</label>
+							<div class="col-md-9">
+								<textarea id="billingAddressId" rows="4" name="billingAddress"
+									field-name="Billing Address" class="form-control"
+									data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+							</div>
+						</div>
+
+						<div class="clearfix mb"></div>
+						
 						
 						<div class="form-group">
 							<label class="col-md-3">Onboard Templates</label>

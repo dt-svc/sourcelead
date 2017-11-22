@@ -147,8 +147,8 @@ function editCandidate(candidateId){
             			 	}
             			 	
             				var zipCode = '';
-            			 	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
-            			 		zipCode = json.zipCode;            			 		
+            			 	if(json.zipcode != null && json.zipcode != '' && json.zipcode != 'undefined'){
+            			 		zipCode = json.zipcode;            			 		
             			 	}
             			 	
             			 	var state = '';
@@ -212,7 +212,7 @@ function editCandidate(candidateId){
 							 
 							
 							result = result + '<div class="col-md-6" id="locationField">';
-							result = result + '<input type="text" class="form-control input-sm" name="location"  id="pfLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
+							result = result + '<input type="text" class="form-control input-sm" name="location"  id="pfLocation"  value="'+location+'" placeholder="Enter your Address" field-name="Address" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'pfLocation\',\'pfCountry\',\'pfState\',\'pfCity\',\'pfZipCode\',\'pfAddress\');"></i>';
 							result = result + '</div>'; 
 							
@@ -235,7 +235,7 @@ function editCandidate(candidateId){
 							
 
 							result = result + '<div class="col-md-6 custom-fields mt10"">';
-							result = result + '<input type="text" class="form-control input-sm" name="address" id="pfAddress" value="'+address+'" placeholder="Address">';
+							result = result + '<input type="text" class="form-control input-sm" name="address" id="pfAddress" value="'+address+'" placeholder="Enter your Street Addres">';
 							result = result + '</div>';
 							
 							result = result + '</div>';

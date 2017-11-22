@@ -40,16 +40,7 @@ function prepareReportDataDiv(data){
 	
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  prepareReportDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  prepareReportDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  prepareReportDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  prepareReportDate = 'YYYY-DD-MM'; 
-	  }  
-	
+	  var prepareReportDate = getOrgDateFormat(locationList);
 	
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
@@ -129,7 +120,7 @@ function prepareReportDataDiv(data){
         
         result = result + '<td>';
         if(report.totalApplicants != null && report.totalApplicants != '' && report.totalApplicants !='undefined'&& report.totalApplicants != null && report.totalApplicants != ''){
-        		result = result + "<div><span>"+report.totalApplicants+"</span></div> ";
+        		result = result + "<div class='tblminwidth-50'>"+report.totalApplicants+"</div> ";
         }
         else{
 		    	result = result + "<div><span>0</span></div>";
@@ -138,10 +129,10 @@ function prepareReportDataDiv(data){
         
         result = result + '<td>';
         if(report.postedDateStr != null && report.postedDateStr != '' && report.postedDateStr !='undefined'&& report.postedDateStr != null && report.postedDateStr != ''){
-       		 result = result + "<div><span>"+report.postedDateStr+"</span></div>";
+       		 result = result + "<div class='tblminwidth-90'>"+report.postedDateStr+"</div>";
         }
         else{
-		    	result = result + "<div><span>---</span></div>";
+		    	result = result + "<div class='tblminwidth-90'>---</div>";
 		    }
         result = result + '</td>';
         result = result + '</tr>';
@@ -149,8 +140,9 @@ function prepareReportDataDiv(data){
 	result = result + '	</tbody>';
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
-    $("#requirementReportsDiv12").append(result);
-	$("#requirementReportsDiv12").removeAttr('style');
+      $("#requirementReportsDiv12").append(result);
+      $("#loderDiv").empty();
+	  $("#loderDiv").removeAttr('style');
 
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
@@ -172,14 +164,15 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$('#requirementReportPagination').wrap("<div class='width100percnt overflow_Auto'></div>");
 	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
 	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
@@ -189,16 +182,8 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$(function() {
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatEduUpdate = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatEduUpdate = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+		  
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
@@ -255,7 +240,7 @@ function toDate(selector) {
   <div class="timesheet_out">
     <div class="vendor_wrap">
      
-      <div class="timesheet_head">
+      <div class="timesheet_head" style="min-height: 40px;">
 
 <div class="pull-left reportBtns reportcutom_Btns">
 	  <div class="reportBtn dropdown-select">
@@ -331,7 +316,8 @@ function toDate(selector) {
 		</ul>
 	</div> -->
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+  <div class="project_tabs_inn_table vendor_wrap_inn_table positionRelative minHeight_225">
+  <div id="loderDiv"></div>
                  <div id="requirementReportsDiv12" class="repoPositiNoCount"></div>
                 </div>      
 </div>
@@ -565,7 +551,8 @@ function getDayWiseReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(reportType!="custom"){
-		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+// 		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
@@ -605,6 +592,7 @@ function getCustomReports(){
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#loderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
