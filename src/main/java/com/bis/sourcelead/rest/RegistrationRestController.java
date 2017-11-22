@@ -97,6 +97,7 @@ public class RegistrationRestController {
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
+				@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "userState", required = false) String userState) {
 
 		String resultJson;
@@ -106,7 +107,7 @@ public class RegistrationRestController {
 		ArrayList<Org> regOrgsList = new ArrayList<Org>();
 
 		try {
-			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName,offset);
 			for(Org regOrg : orgsList){
 				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
