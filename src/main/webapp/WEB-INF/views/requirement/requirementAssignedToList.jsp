@@ -19,7 +19,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 10
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -100,7 +100,7 @@
 							"aaSorting" : [ [ 3, 'desc' ] ],
 							"bLengthChange" : true,
 							"bDestroy" : true,
-							"ordering" : true,
+							"ordering" : false,
 							"initComplete": function( settings, json ) {
 					    		 $('#assignedToDataTableSearch').removeAttr('disabled');
 					    	  },
