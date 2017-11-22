@@ -314,6 +314,20 @@ function getJSDateFormat(locationDate){
 	  }
 	  return jsDateFormat;
 }
+
+function getOrgDateFormat(locationList){
+var reqListDate = '';
+	if(locationList.match("yyyy-MM-dd")){
+		  reqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqListDate = 'YYYY-DD-MM'; 
+	  } 
+	  return reqListDate;
+}
 function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	if($(ele).is(":visible")) {
 		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));

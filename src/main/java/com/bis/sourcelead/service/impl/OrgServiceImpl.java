@@ -90,8 +90,8 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
-		return orgDao.getEnrolledOrgs(orgId, userState, searchByName);
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offSet) throws Exception {
+		return orgDao.getEnrolledOrgs(orgId, userState, searchByName,offSet);
 	}
 
 	@Override
