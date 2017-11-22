@@ -31,11 +31,12 @@ window.onload = function () {
       </div>
       
     <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Orgs List </div>
+    <input id="searchOrgElement" type="hidden"></input>
     </section>
-     <input type="hidden" id="noUsers" name="noUsers"/>
+     <input type="hidden" id="noOrgsList" name="noOrgsList"/>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
-         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+         <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
         
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getOrgsList('manual');">
@@ -78,14 +79,14 @@ window.onload = function () {
 	    
 	    var scrollAmount = $(window).scrollTop();
 	    var documentHeight = $(document).height();
-	    offset = $("#usersOffset").val();
+	    offset = $("#orgOffset").val();
 	    var UsersCount = $("#totalUsersCount").val(); 
 	    // calculate the percentage the user has scrolled down the page
 	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
-	    	var avilableCount = $("#usersOffset").val();
+	    	var avilableCount = $("#orgOffset").val();
 	    	
 	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
-	    	$("#usersOffset").val(avilableCount);
+	    	$("#orgOffset").val(avilableCount);
 	    	//searchUser("scroll");
 	    	 getOrgsList("scroll");
 	    }
@@ -101,16 +102,16 @@ window.onload = function () {
 		var userState = document.getElementById("userState").value;
 		
 		if(type == "scroll"){
-			offset = $("#usersOffset").val();
-			var searchByName =  document.getElementById("searchByName").innerHTML
+			offset = $("#orgOffset").val();
+			var searchByName =  document.getElementById("searchOrgElement").innerHTML
     	}
 		if(type == "manual"){
 			$('#orgListEmptyBody').empty();
 			$('#orgListBody').empty();
-    		$("#usersOffset").val(0);
-    		$("#searchByName").val("");
+    		$("#orgOffset").val(0);
+    		$("#searchOrgElement").val("");
     		var searchByName = document.getElementById("searchByName").value;
-   		     $('#searchByName').append(searchByName);
+   		     $('#searchOrgElement').append(searchByName);
     		 offset = 0;
     	}
 		
@@ -191,17 +192,17 @@ window.onload = function () {
             	}
 	   		    }
 	 			result = result + '<div class="clear"></div>';
-	 			$("#noUsers").val("")
+	 			$("#noOrgsList").val("")
 	   		}else if(type == "scroll"){
-            	$("#noUsers").val("nousers")
+            	$("#noOrgsList").val("noOrgsList")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
             	var result ="";
 	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-	         	$("#noUsers").val("")
+	         	$("#noOrgsList").val("")
             }else{
-            	$("#noUsers").val("nousers")
+            	$("#noOrgsList").val("noOrgsList")
             	$('#loadMoreDiv').empty(); 
             	$("#loading").removeAttr("style");
             	var result ="";
