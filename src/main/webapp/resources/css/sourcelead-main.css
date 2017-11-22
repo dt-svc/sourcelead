@@ -7105,7 +7105,11 @@ z-index: 9999; display:none;
 .mxrateerror p.jquery_form_error_message {
  position: relative; bottom: -15px; text-align: left; min-height: 30px;
 }
-
+.assignedMemberList {
+	background-color: #f5f5f5; -webkit-box-shadow: 0 3px 5px -3px #808080;
+-moz-box-shadow: 0 3px 5px -3px #808080;
+box-shadow: 0 3px 5px -3px #808080;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
