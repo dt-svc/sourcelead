@@ -1036,7 +1036,6 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	
 	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 	
 		var result = '';

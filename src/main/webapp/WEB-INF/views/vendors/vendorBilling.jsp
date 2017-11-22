@@ -743,7 +743,6 @@ function vendorInvoicePagination(){
 		    	   if(type == 'project'){
 		    			window.location.href = sourceleadUrl + "/createInvoiceProjectPayableBased?&orgRelationId="+orgRelationId;
 		    	   }else if(type == 'other'){
-		    		   alert("Other");
 		    			window.location.href = sourceleadUrl + "/createExpensesPayableBill?&orgRelationId="+orgRelationId;
 		    	   }else{
 		    		   window.location.href = sourceleadUrl + "/createPayables?&orgRelationId="+orgRelationId;

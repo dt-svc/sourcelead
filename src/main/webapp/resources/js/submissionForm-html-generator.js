@@ -336,6 +336,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
             		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
             		 var zipCodeUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var addreessUniqueID = Math.floor(Math.random()*999999)+1;
             	 }
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
@@ -488,17 +489,17 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                     		 
                     		 '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control"  readonly '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" readonly />'+
+                             '<input  type="text" class="form-control"   '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" readonly />'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City" readonly/>'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City"/>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
