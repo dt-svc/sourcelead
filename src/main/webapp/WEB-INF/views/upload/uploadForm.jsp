@@ -32,9 +32,9 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb">
-			 <a href="<c:url value='/downloadCreateUserTemplate'/>"> <button class="btn btn-info btn-block" type="button">
+			 <a href="<c:url value='/downloadCreateUserTemplate'/>" class="btn btn-info btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Template
-			</button></a>
+			</a>
 			</div>
 			<!-- Attach File button -->
 			
