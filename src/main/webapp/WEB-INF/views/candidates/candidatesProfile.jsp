@@ -491,7 +491,7 @@ function editCandidate(candidateId){
 						      }
 							employementType();
 							getVendorsByOrgLocation();
-							$(".edit-details").toggleClass("edit-details-active");
+							$(".edit-details").addClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
 							
@@ -960,11 +960,11 @@ function candidateProfile(candidateId,candidateType){
 								//end visa type
 								
 								 $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
+									 $(".edit-details").addClass("edit-details-active");
 									 $(".collapse-div").removeClass("edit-details-active");
 								 });
 								 $(".close-div").click(function(){
-									 $(this).parent().toggleClass("edit-details-active");
+									 $(this).parent().addClass("edit-details-active");
 									 });
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
