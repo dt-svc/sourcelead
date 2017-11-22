@@ -26,8 +26,23 @@ width: 75px; padding: 0 !important;
         
       <!-- show Calendar -->
             <div class="col-xs-12 col-md-7 mb alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+                  
+                  <div class="eventHeader">                                               
+				        <div class="media">                                               
+				          <div class="media-left bg-success paddingRight">                
+				              <i class="fa fa-calendar fa-3x"></i>                        
+				          </div>                                                          
+				          <div class="media-body paddingLeft">                            
+				            <h4 class="media-heading" id="dayOfweek"></h4>             
+				            <p class="small" id="selectedDate"></p>                    
+				          </div>                                                          
+				        </div>                                                            
+  			  </div>			                                                      
+
+            <div class="eventCalendr_content">
             	<div id ="interviewDiv"></div>
            	 	<div id ="taskDiv"></div>
+           	 	</div>
 	     </div>
       </div>
 		<div class="add_inter_wrap">
@@ -52,18 +67,9 @@ window.onload = function() {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 var opt = "";
-	        	 
-				     result = result + '    <div class="eventHeader">                                                      ';
-				     result = result + '          <div class="media">                                                      ';
-				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
-				     result = result + '                <i class="fa fa-calendar fa-3x"></i>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '            <div class="media-body paddingLeft">                                   ';
-				     result = result + '              <h4 class="media-heading">'+json.dayOfweek+'</h4>                               ';
-				     result = result + '              <p class="small">'+json.selectedDate+'</p>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '          </div>                                                                   ';
-				     result = result + '    </div>																		   ';
+	        	 $("#dayOfweek").text(json.dayOfweek);
+	        	 $("#selectedDate").text(json.selectedDate);
+ 
 	        	 for(var i=0; i<json.interviewerList.length; i++)
 					{
 	        		 
@@ -73,7 +79,7 @@ window.onload = function() {
  		       			clientName = report.clientName;
  		       		}
 	        		 
-	        		 result = result + '   <div class="eventCalendr_content clearfix">  ';
+	        		 result = result + '   <div class="clearfix">  ';
 	        		 result = result + '   <div class="eventList clearfix">  ';
 					 result = result + '      <div class="media">              ';
 					 result = result + '          <div class="media-left">     ';
@@ -98,22 +104,7 @@ window.onload = function() {
 					 result = result + '                          <div class="feedBack"> ';
 					
 					 
-					 /*  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN"){
-						
-						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
-						      result = result+'	 <a title="Feedback Given" href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
-						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
-						  }else{
-							  result = result+'<i class="fa fa-handshake-o"></i>';
-						  }
-						  result = result+'</a>';
-						  }else{
-							  alert("hello1111");
-							  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-							  
-						  }
-                      }else */ if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
                     	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
 						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
                         	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
@@ -123,11 +114,7 @@ window.onload = function() {
 						  result = result+'</a>';
                       }   
 					  
-// 					  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-					  
-					  
-					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
-					 result = result + '                          </div>                                                                               ';
+ 				 result = result + '                          </div>                                                                               ';
 					 result = result + '                      </div>                                                                                   ';
 					 result = result + '              </div>                                                                                           ';
 					 result = result + '      </div>   ';
@@ -200,6 +187,7 @@ window.onload = function() {
 		});
 		
 	}
+	
 </script>
 
 
