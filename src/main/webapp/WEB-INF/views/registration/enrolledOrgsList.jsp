@@ -7,7 +7,23 @@ window.onload = function () {
 	getOrgsList('manual');
  };
 </script>
+<style type="text/css">
+#loadMoreDiv{
+text-align: center;
+font-size: 18px;
+font-weight: bold;
+vertical-align: middle;
+padding: 20px 15px;
+clear: both;
+display: inline-block;
+margin: auto;
+width: 100%;
 
+}
+#loadMoreDiv .fa-spinner{
+margin-right: 15px;
+}
+</style>
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','resources/images/office-image.jpg');
@@ -85,7 +101,7 @@ window.onload = function () {
 	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
 	    	var avilableCount = $("#orgOffset").val();
 	    	
-	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+	    	avilableCount = parseInt(avilableCount) + parseInt(20); 
 	    	$("#orgOffset").val(avilableCount);
 	    	//searchUser("scroll");
 	    	 getOrgsList("scroll");
