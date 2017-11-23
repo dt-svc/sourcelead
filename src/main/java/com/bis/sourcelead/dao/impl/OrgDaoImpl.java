@@ -281,8 +281,8 @@ public class OrgDaoImpl implements OrgDao {
 		}
 		
 		if(orgsList.size() >= offset){
-			if(orgsList.size() > offset + 10){
-				return   orgsList.subList(offset, (offset+10));
+			if(orgsList.size() > offset + 20){
+				return   orgsList.subList(offset, (offset+20));
 			}else{
 				return   orgsList.subList(offset, (  offset + (orgsList.size() - offset)));
 			}

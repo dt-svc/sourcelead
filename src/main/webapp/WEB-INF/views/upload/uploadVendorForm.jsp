@@ -47,16 +47,14 @@ margin:10px 220px 0;
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
 			<div class="col-xs-3 col-md-3">
-			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
+			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>"  class="btn btn-success btn-block" >
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
-			</button>
 			</a>
 			</div>
 			
 				<div class="col-md-6 candAdvsrch">
 					<select data-placeholder="Select Onboard Templates" multiple
-						class="chosen-select form-control" name="templateId" id="templateId"
+						class="form-control" name="templateId" id="templateId"
 						field-name="Template" data-validation-optional="true">
 						<c:forEach var="template" items="${templatesList}">
 							<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
