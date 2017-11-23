@@ -122,12 +122,10 @@ public class UploadController {
 /**
  * Handles Temaplate download
  * @param response
- * @throws IOException 
- * @throws URISyntaxException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
