@@ -110,14 +110,18 @@
 			            </c:if>
 					</div></div>
 					<div class="collpasePannel clearfix mt10"> 
-		              <a href="javascript:void(0)" id="assignedGrid"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
 		           </div> 
-			      
+		          
 			            
                  <div class="clearfix"> 
-                 	<div class="clearfix row"> 
+                 	<div class="clearfix row">
+                 	<div class="col-md-12">
+                 	<div id="assignedMemberList" class="assignedMemberList"></div>
+                 	</div>
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
-          				<div id="assignedMemberList"></div> 
+          				
           				
           				
 				        <h1>Description:</h1> 
@@ -403,10 +407,17 @@ function hideButtonOnClick(){
 </script>
 <script>
 $(function(){
-	$("#assignedMemberList").hide();
-	$("#assignedGrid").click(function(){
-		$("#assignedMemberList").slideToggle();
-		assignedMemberList(${requirement.id});
+	$('.assignedGrid2').hide();
+	$('.assignedGrid1').click(function(){
+		$("#assignedMemberList").slideDown();
+		$(".assignedGrid1").hide();
+		$(".assignedGrid2").show(); 
+		 assignedMemberList(${requirement.id});
+	});
+	$('.assignedGrid2').click(function(){
+		$("#assignedMemberList").slideUp();
+		$(".assignedGrid2").hide();
+		 $(".assignedGrid1").show();
 	});
 });
 </script>

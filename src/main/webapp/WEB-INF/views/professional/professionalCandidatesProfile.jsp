@@ -510,7 +510,7 @@ function professionalProfile(candidateId){
 						    result = result + '</div>';
 						    
 						    
-						    result = result + '<a href="#" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';  
+						    result = result + '<a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" onChange="updateDesignationType(this);" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';  
 						    result = result + '</div>';
 						    result = result + '</div>';
 
