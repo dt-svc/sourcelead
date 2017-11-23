@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	private String currentTimeFrequency;
 	
 	private Map<String,String> timeSubFrequencies;
+	
+	private LinkedList<String> filledTimeSubFrequencies;
 	
 	private String currentTimeSubFrequency;
 	
@@ -121,6 +124,14 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	public void setTimesheetFrequencyMap(Map<String, String> timesheetFrequencyMap) {
 		this.timesheetFrequencyMap = timesheetFrequencyMap;
 	}
+
+	public LinkedList<String> getFilledTimeSubFrequencies() {
+		return filledTimeSubFrequencies;
+	}
+
+	public void setFilledTimeSubFrequencies(LinkedList<String> filledTimeSubFrequencies) {
+		this.filledTimeSubFrequencies = filledTimeSubFrequencies;
+	}
 	
-    
+     
 }
