@@ -1025,7 +1025,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN+dateFormate);
 		excelHeader.createCell(9).setCellValue(Constants.ROLE);
 		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
-		excelHeader.createCell(11).setCellValue(Constants.MANAGER);
+		excelHeader.createCell(11).setCellValue(Constants.MANAGER+"(Email)");
 		return sheet;
 	}
 	

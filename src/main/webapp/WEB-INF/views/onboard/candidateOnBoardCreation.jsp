@@ -2170,7 +2170,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Location <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Locatin" data-validation="required" >';
+	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Location" data-validation="required" >';
 	 result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'offBoardLocation\',\'country\',\'state\',\'city\',\'zipCode\');"></i>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2264,9 +2264,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<label class="col-md-3 control-label">Manager<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
