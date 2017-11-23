@@ -14,7 +14,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 
 @Repository
 public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
@@ -47,6 +51,43 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 				      .list();
 		
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })	
+	@Override
+	public ResponseList<RequirementAssignTo> loadRequirementAssignToListByRequirementId(RequirementAssignToDTO requirementAssignToDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementAssignTo> assignedToList = null;
+		ResponseList<RequirementAssignTo> response = new ResponseList<>();
+		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId";
+		Query queryObj = session.createQuery(query);
+		if (requirementAssignToDTO != null && requirementAssignToDTO.getLength() > 0) {
+			queryObj.setFirstResult(requirementAssignToDTO.getStart());
+			queryObj.setMaxResults(requirementAssignToDTO.getLength());
+			queryObj.setLong("requirementId", requirementAssignToDTO.getRequirementId()).setCacheable(true).list();
+		}
+		assignedToList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		@SuppressWarnings("unchecked")
+		List<Long> countlist = session.createQuery("select count(*) "
+				+ query).setLong("requirementId", requirementAssignToDTO.getRequirementId()).setCacheable(true).list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (requirementAssignToDTO != null) {
+			@SuppressWarnings("unchecked")
+			List<Long> filteredCountlist = session.createQuery("select count(*) "
+					+ query).setLong("requirementId", requirementAssignToDTO.getRequirementId()).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(assignedToList);
+		return response;
 	}
 
 

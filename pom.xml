@@ -446,10 +446,10 @@
 		</dependency>
 
 		<!-- below dependencies are belongs to quickbooks OAuth authentication -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.3.1</version>
+			<dependency>
+	  		  <groupId>org.apache.httpcomponents</groupId>
+	   		  <artifactId>httpcore</artifactId>
+	  		  <version>4.4.8</version>
 		</dependency>
 		<dependency>
 			<groupId>oauth.signpost</groupId>
@@ -552,8 +552,24 @@
 			<artifactId>bootstrap-connector</artifactId>
 			<version>0.1.1</version>
 		</dependency>
-
-
+       <!-- sendgrid maven dependency -->
+  		<dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>java-http-client</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+       <dependency>
+           <groupId>com.sendgrid</groupId>
+    		<artifactId>sendgrid-java</artifactId>
+  			  <version>4.1.2</version>
+		</dependency>
+        
+		<dependency>
+   			 <groupId>org.apache.httpcomponents</groupId>
+   			 <artifactId>httpclient</artifactId>
+    		<version>4.5.1</version>
+		</dependency>
+		<!-- sendgrid maven dependency end-->
 	</dependencies>
 
 	<build>

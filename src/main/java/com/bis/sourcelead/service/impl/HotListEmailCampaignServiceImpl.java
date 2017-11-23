@@ -83,7 +83,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	@Override
 	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation,MultipartFile multiFile) throws Exception {
 		
-		
+		// Email Start
 	 EmailMessage emailMessage = new EmailMessage(); 
 	 String fullName = null;
 	 String[] hotlistedCandidates = null;
@@ -229,6 +229,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
+		 
+		 //Email End
 		 
 		 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
 		 userMailBox.setCandidateId(candidates);
