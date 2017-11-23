@@ -49,10 +49,8 @@ margin:10px 220px 0;
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
 			<div class="col-xs-8 col-md-8">
-			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
+			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
 			</a>
 			</div>
 			<div class="col-xs-4 col-md-4">
