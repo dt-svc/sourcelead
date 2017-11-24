@@ -194,12 +194,15 @@
                 
                  <div class="form-group">
                        <label class="col-md-3 control-label">Offboard Template</label>
-                  <div class="col-md-6">
+                  <div class="col-md-6 chooRadius">
+                  <div class="input-group col-md-10 pull-left">
                       <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
                        </select>
+                        <span class="input-group-addon cursorPointer bg-blue" onclick=" "><i class="fa fa-refresh "></i></span>
                   </div>
+                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                 </div>
-                
+                </div>
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
@@ -207,6 +210,8 @@
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
+                </div>
+                
                 </div>
                  </form:form>
               </div>

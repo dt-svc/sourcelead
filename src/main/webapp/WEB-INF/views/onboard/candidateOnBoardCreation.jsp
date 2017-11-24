@@ -2272,9 +2272,14 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Team</label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" "><i class="fa fa-refresh "></i></span>';
+	 result = result +'</div>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
    
@@ -2341,10 +2346,13 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" "><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 
 	 

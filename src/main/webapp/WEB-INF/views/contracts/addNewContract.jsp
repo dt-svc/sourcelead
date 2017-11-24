@@ -120,9 +120,8 @@
                        
               <div class="form-group">
               <label class="col-md-4">Template<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <div class="form-icon">
-                <span class="icon-inside">
+              <div class="col-md-8 chooRadius">
+                <div class="input-group col-md-8 pull-left">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
 					        <option value=''>Select Template</option>
 						    <c:forEach var="element" items="${contractsTemplateList}" >
@@ -133,18 +132,19 @@
 							         <option value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							</c:forEach>
-						</select>                
-                  </span>
+						</select>   
+					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
+					 </div>
+					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
-				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default pull-right minHeBtn formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:when>
 				    <c:otherwise>
-				        <span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				        <span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default pull-right minHeBtn formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:otherwise>
 				 </c:choose>
-                  
-                  </div>              
+                              
 <%--               	<c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
