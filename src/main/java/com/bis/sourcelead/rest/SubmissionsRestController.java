@@ -1,12 +1,9 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +26,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
@@ -70,7 +68,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -652,10 +649,9 @@ public class SubmissionsRestController {
 	 */
 
 	@RequestMapping(value = "/rejectApplicant")
-	public @ResponseBody String rejectApplicant(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
+	public String rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 	{
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
@@ -665,14 +661,14 @@ public class SubmissionsRestController {
 		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
 		// to update Submission status
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		if (jsonObj.has("reasonForReject")) {
-			requirementSubmission.setRejectedReason(jsonObj.getString("reasonForReject"));
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForReject())) {
+			requirementSubmission.setRejectedReason(applicantRejectBackOutDTO.getReasonForReject());
 		}
-		if (jsonObj.has("rejectedCategory")) {
-			requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategory())) {
+			requirementSubmission.setRejectedCategoryType(applicantRejectBackOutDTO.getRejectedCategory());
 		}
-		if (jsonObj.has("rejectedCategoryOther")) {
-			requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
+			requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
 		}
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
@@ -680,9 +676,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		 requirementSubmissionService.sendRejectionMailToVendorContact(user,
-		 requirementSubmission.getRejectedReason(), submissionId,
-		 orgLocations);
+		 requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}
@@ -1009,15 +1003,11 @@ public class SubmissionsRestController {
 	 */
 
 	@RequestMapping(value = "/backoutApplicant")
-	public @ResponseBody String backoutApplicant(
-			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
-			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+	public @ResponseBody String backoutApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		RequirementSubmission requirementSubmission = requirementSubmissionService
-				.getRequirementSubmissionById(submissionId);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 
 		// to update submission history
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
@@ -1026,14 +1016,24 @@ public class SubmissionsRestController {
 
 		// to update Submission status
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getReasonForbackOut())) {
+			requirementSubmission.setBackOutReason(applicantRejectBackOutDTO.getReasonForbackOut());
+		}
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getBackOutCategory())) {
+			requirementSubmission.setBackOutCategoryType(applicantRejectBackOutDTO.getBackOutCategory());
+		}
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getBackOutCategoryOther())) {
+			requirementSubmission.setBackOutCategoryOther(applicantRejectBackOutDTO.getBackOutCategoryOther());
+		}
+		
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		StringBuilder sb = new StringBuilder();
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
 
 		return "success";
 	}
