@@ -37,9 +37,9 @@ public class BoUploadedFiles implements Serializable{
 	@Column(name = "TO_DATE")
 	private Date toDate;
 	
-//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -180,4 +180,15 @@ public class BoUploadedFiles implements Serializable{
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
 	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+	
 }
