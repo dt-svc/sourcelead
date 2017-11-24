@@ -169,7 +169,7 @@ function cancelOrgImg(){
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
 			<div class="clearfix">
-			  <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
+			  <form:form class="login-form clearfix mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 			  
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
@@ -339,9 +339,9 @@ function cancelOrgImg(){
 	                                    <h4 id="locationOrgsName"></h4>
 	                                </div>
                                <div class="pull-right">
-                                <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
+                                <button class="btn btn-default btm-sm pull-right" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-map-marker"></i>
 	                                         &nbsp;&nbsp;Locations List</button>
-                                &nbsp;&nbsp;<button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-building"></i>
+                                &nbsp;&nbsp;<button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-map-marker"></i>
                                     &nbsp;&nbsp;Add Location</button>
                                </div>
 	                            </div>
@@ -564,125 +564,6 @@ var validationSettings = {
    };
 })(jQuery);
 </script>
-
-<script type="text/javascript">
-function getAllCountries(){
-		var countryName = $("#existingCountry").val();
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select country---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == countryName){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{ 
-	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            	
-	            }
-	            $('#country').attr("disabled", true); 
-	            $('#country').trigger("chosen:updated");
-	            getStates();
-	        },
-	        error: function(e){
-	        }
-	    });
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("existingState").value;
-	}
-	//end state Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("existingCity").value;
-	}
-	//end city Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
 <script>
 function configCoolingOff(){
 	$("#coolingOffPeriodDiv").empty(); 
@@ -1581,7 +1462,7 @@ function createOrg(){
 	var result = '';
 	
 	result = result +'<div class="row">';
-	result = result +'<div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">';
+	result = result +'<div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6 mt10">';
            
 	result = result +'<div class="form-group" id="companyNameDiv">';
 	result = result +'<label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>';
@@ -1668,45 +1549,62 @@ function createOrg(){
 	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
           
 				result = result +'           <div class="form-group">';
-				result = result +' 			<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>';
+				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
 				result = result +' 		 </div>';
-				result = result +'       <div class="form-group">';
-				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				
+			    result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Street Address</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+		            
+	        	result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-				result = result +'         <input class="form-control" id="orgSetCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>';
+				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  ></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
+				
 				result = result +'       <div class="form-group">';
 				result = result +'         <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-				result = result +'         <input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>';
+				result = result +'         <input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" ></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
-				result = result +'       <div class="form-group">';
-				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-				result = result +'         <div class="col-md-9">';
-				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  readonly></input>';
-				result = result +'         </div>';
-				result = result +'       </div>';
+				
+			
+				
 				result = result +'       <div class="form-group">';
 				result = result +'         <label class="col-md-3">ZipCode</label>';
 				result = result +'         <div class="col-md-9">';
 				result = result +'         <input class="form-control" id="orgSetZipCode" name="zipCode" placeholder="Zip code" field-name="Zip code" type="text"></input>';
 				result = result +'         </div>';
 				result = result +'       </div>';
+				
+				result = result +'       <div class="form-group" id="errCoutryMsg">';
+				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '       <option value="">Select Country</option>';
+				result = result + '       <option >Australia</option>';
+				result = result + '       <option >France</option>';
+				result = result + '       <option >India</option>';
+				result = result + '       <option >Singapore</option>';
+				result = result + '       <option >United Kingdom</option>';
+				result = result + '       <option >United States</option>'; 
+                result = result + '    </select>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				
 						        
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Address</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
-	            result = result +'</div>';
-	            result = result +'</div>';
+	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -1755,18 +1653,11 @@ function createOrg(){
 	      			  '.chosen-select-width'     : {width:"95%"}
 	      			}
 	           
-	           $("#locationCountry").chosen();
-	 	       $("#locationState").chosen();
-	 	       $("#locationCity").chosen();
+// 	            $("#orgSetCountry").chosen();
+// 	            $("#orgSetCountry").trigger("chosen:updated");
+	            
 	 	       $("#locationTimeZone").chosen();
-	 	       
-	 	       $("#locationCountry").on('change', function (e) {
-		    	   getLocationStates();
 		    	   getTimezonesList();
-		       });
-		       $("#locationState").on('change', function (e) {
-		    	   getLocationCities();
-		       });
 		      
 		       $('.chosen-select').each(function() {
 					var $this = $(this);
@@ -1774,6 +1665,9 @@ function createOrg(){
 			  })
 	      	       
 	
+}
+function changeCountry(){
+	 $("#errCoutryMsg").find("p.jquery_form_error_message").remove();
 }
 </script>
 

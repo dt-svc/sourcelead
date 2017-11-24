@@ -256,7 +256,7 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offset) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Org> orgsList = null;
@@ -280,8 +280,15 @@ public class OrgDaoImpl implements OrgDao {
 		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
 		}
 		
-	    
-        return orgsList;
+		if(orgsList.size() >= offset){
+			if(orgsList.size() > offset + 10){
+				return   orgsList.subList(offset, (offset+10));
+			}else{
+				return   orgsList.subList(offset, (  offset + (orgsList.size() - offset)));
+			}
+		}else{
+			return  null;
+		}
 	}
 
 	@Override

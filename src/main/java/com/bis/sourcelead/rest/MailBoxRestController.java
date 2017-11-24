@@ -33,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
@@ -40,6 +43,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -51,6 +55,7 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -123,6 +128,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	EmailAccountSettingsService emailAccountSettingsService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -809,4 +817,24 @@ public class MailBoxRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
+	 @RequestMapping(value = "/addEmailAccount" , method = RequestMethod.POST)
+		public String addEmailAccount(EmailAccountSettingsDTO emailAccountSettingsDTO, HttpServletRequest request)
+				throws Exception {
+		 
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  emailAccountSettingsService.StoreEmailAccountSettings(emailAccountSettingsDTO,user,orgLocations);
+		  return "success";
+			
+		}
+	 @RequestMapping(value = "/emailAccountRead" , method = RequestMethod.POST)
+		public boolean emailAccountRead(Long id, HttpServletRequest request)
+				throws Exception {
+		 
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Long userId=user.getId();
+		 boolean successval= emailAccountSettingsService.emailAccountRead(id,userId);
+		  return successval;
+			
+		}
 }

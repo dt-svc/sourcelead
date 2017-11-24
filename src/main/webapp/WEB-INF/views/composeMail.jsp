@@ -285,7 +285,7 @@ $(function(){
 			  		        contentType:false, 
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox");
+			  						location.replace(sourceleadUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		

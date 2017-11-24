@@ -75,6 +75,7 @@ function getDayWiseReports(){
      </div> 
       <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative">
       <div class="clearfix mb10"></div>
+      <div id="usersListLoader"></div>
         <div id="usersList" class="datatable_filter"></div>
       </div> 
  </div>
@@ -98,16 +99,8 @@ function getDayWiseReports(){
 <script>
 	$(function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatRepo = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatRepo = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatRepo = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatRepo = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatRepo = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatRepo = getJSDateFormat(locationDate);
+		  
 		$('#ReportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
@@ -157,6 +150,7 @@ function getCustomReports(){
 		document.getElementById("reportsEndDate").style.display="block";
 		$("#reportsEndDate").empty().append("End Date is Required") ; 
 	}else{
+		$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100; background-color:rgba(255,255,255,0.8); background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
@@ -264,9 +258,11 @@ function getCustomReports(){
                      result = result +" </tbody>";
                      result = result +"</table>"; 
                      $("#noRecruiters").val('');
-                     alert(result);
                      $("#usersList").append(result); 
-                    
+//                      $("#usersList").removeAttr('style'); 
+ 					$("#usersListLoader").empty();
+                     $("#usersListLoader").removeAttr('style');
+                     
                      reportpagination();
              	}
 	        },
@@ -302,7 +298,7 @@ function usersList(){
 	$("#reportsEndDate").empty();
 	document.getElementById("reportsStartDate").style.display="none";
 	document.getElementById("reportsEndDate").style.display="none";
-	$("#usersList").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod,    
@@ -421,7 +417,10 @@ function usersList(){
 	                     result = result +"</table>"; 
 	                     $("#noRecruiters").val('');
 	                     $("#usersList").append(result); 
-	                     $("#usersList").removeAttr('style'); 
+	                     $("#usersList").removeAttr('style');
+	                     $("#usersListLoader").empty();
+	                     $("#usersListLoader").removeAttr('style');
+	                     
 	                     reportpagination();
 			 			 
 	                	
