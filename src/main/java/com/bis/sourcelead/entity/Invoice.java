@@ -175,7 +175,7 @@ public class Invoice {
 	@Column(name = "PREVIOUS_INVOICE_STATUS")
 	private String previousInvoiceStatus;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	
 	@Lob private byte[] docFile;
 	@Column(name = "DOC_FILENAME") private String fileName; 
