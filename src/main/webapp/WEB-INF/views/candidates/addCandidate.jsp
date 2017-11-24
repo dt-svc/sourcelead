@@ -9,7 +9,7 @@
 <script type="text/javascript">
 		window.onload = function () {
 			/* getAllCountries(); */
-			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','');
+			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','','address');
 			disableMonths();
 		 };
 	</script>
@@ -119,51 +119,57 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id="locationField">
 							<div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="candidateLocation" name="location"
 									placeholder="Enter your address" type="text"
-									field-name="Locatin" data-validation="required"></input> <i
+									field-name="Address" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
-									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
+									onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','address');"></i>
 							</div>
 						</div>
 					</div>
 
-
 					<div class="form-group">
-						<label class="col-md-3">Country</label>
+						<label class="col-md-3">Street Address</label>
 						<div class="col-md-9">
-							<input class="form-control" id="candidateCountry" name="country"
-								placeholder="Country" value="${loginCountryName}" type="text"
-								readonly></input>
+							<input type="text" class="form-control" id="address"
+								name="address" value="${address}" field-name="Street Address" placeholder="Enter your Street Addres"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true">
 						</div>
 					</div>
-
-					<div class="form-group">
-						<label class="col-md-3">State</label>
-						<div class="col-md-9">
-							<input class="form-control" id="candidateState" name="state"
-								placeholder="State" type="text" readonly></input>
-						</div>
-					</div>
-
+					
 					<div class="form-group">
 						<label class="col-md-3">City</label>
 						<div class="col-md-9">
-							<input class="form-control" id="candidateCity" name="city"
-								placeholder="City" type="text" readonly></input>
+							<input class="form-control" id="candidateCity" name="city" placeholder="City" type="text"></input>
 						</div>
 					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">State</label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateState" name="state" placeholder="State" type="text" ></input>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9">
+							<input class="form-control" id="candidateCountry" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
+						</div>
+					</div>
+					
 
 					<div class="form-group">
 						<label class="col-md-3">ZipCode</label>
 						<div class="col-md-9">
 							<input class="form-control" id="candidateZipCode" name="zipcode"
-								placeholder="Zip code" type="text" readonly></input>
+								placeholder="Zip code" type="text" ></input>
 						</div>
 					</div>
 
@@ -185,15 +191,7 @@
 					</div>
 
 
-					<div class="form-group">
-						<label class="col-md-3">Address</label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="address"
-								name="address" value="${address}" field-name="Address"
-								data-validation="validate_Space validate_length length2-250"
-								data-validation-optional="true">
-						</div>
-					</div>
+					
 
 					<div class="form-group">
 						<label class="col-md-3">Designation</label>

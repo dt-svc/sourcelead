@@ -584,7 +584,7 @@ function getAssociatesFilter(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
-  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+  		result = result +'<div class="clearfix popupFilter">'; 
 	 	
   		result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
     	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';

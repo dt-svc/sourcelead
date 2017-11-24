@@ -12,7 +12,6 @@
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
@@ -1037,60 +1036,27 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
-							var result = '';
-							result = result +'     <div class="clearfix mt5 mb">'; 
-						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-						    result = result +'         <thead>';
-						    result = result +'         <tr>';
-						    result = result +'         <th>Name</th>';
-						    result = result +'         <th>Role</th>';
-						    result = result +'         <th>Team</th>';
-						    result = result +'         <th>No. of Applicants</th>';
-						    result = result +'         </tr>';
-						    result = result +'         </thead>';
-						    result = result +'         <tbody>';
-						    for (var i=0; i<json.length; i++)
-			   				{
-						    var report = json[i];
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>';
-						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
-						    	result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserRole+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						     
-						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
-						    	 result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.teamName+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.applicantCount+'</div></td>';
-						    result = result +'         </tr>';
-			   				}
-						     result = result +' </div> '; 
-						    
-						    $("#assignedMemberList").empty();
-						    $("#assignedMemberList").append(result);
-                 }else{
-						$("#assignedMemberList").removeAttr("style");
-       	    	          var result ="";
-      					 result = result+"   <div class='dataTables_empty'>"; 
-      					$("#assignedMemberList").empty();
-      				    $("#assignedMemberList").append(result); 
-                      }
-				/* enable tabs access after complete loading of deatils page to avoid switching issues */
-        	 $('.disabledLink').removeClass('disabledLink');
-               },
-                 
-            }); 
+	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	
+		var result = '';
+		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		  /* result = result + " <div class='remove_search searchCustom'>";
+			result = result
+					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
+			result = result + "</div>"; */
+	    result = result +'         <table id="requirementAssignedToPagination" class="clearfix mb">';
+	    result = result +'         <thead>';
+	    result = result +'         <tr>';
+	    result = result +'         <th>Name</th>';
+	    result = result +'         <th>Role</th>';
+	    result = result +'         <th>Team</th>';
+	    result = result +'         <th>No. of Applicants</th>';
+	    result = result +'         </tr>';
+	    result = result +'         </thead>';
+	    result = result +'         <tbody>';
+	    $("#assignedMemberList").empty();
+		$("#assignedMemberList").append(result);
+		requirementAssignedMembersList(url, requirementId);
 }
 </script>
 
@@ -3301,7 +3267,7 @@ function deleteImage(candidateId){
 	var result = "";
 	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
@@ -3458,7 +3424,5 @@ return result;
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
-
-
-
+<jsp:include page="requirementAssignedToList.jsp"></jsp:include>
 

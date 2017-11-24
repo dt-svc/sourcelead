@@ -15,27 +15,29 @@
 
 <script type="text/javascript">
 window.onload = function() { 
-	getApplicantReceivedReports();
+	getDayWiseReports();
 	}
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getApplicantReceivedReports(){
 	getDayWiseReports();
 }
 
 
 </script>
-
+ -->
 <script>
 function prepareReportDataDiv(data){
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	var appListDate = getOrgDateFormat(locationList);
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Source</th>';
-	result = result + '    <th>Received on</th>';
+	result = result + '    <th>Received on <br>(<small class="custom-small">'+appListDate+'</small>)</th>';
 	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Stage</th>';
 	result = result + '   </tr>';
@@ -110,7 +112,7 @@ function requirementReportPagination(){
 		
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -125,14 +127,15 @@ function requirementReportPagination(){
 </script>
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatAppreports,
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
-				dt.setDate(dt.getDate() + 1); 
+				 var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
@@ -142,14 +145,10 @@ function requirementReportPagination(){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
-			beforeShow: function(){
-		           this.value='';
-		     },
+			dateFormat : finalDateFormatAppreports,
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
-				dt.setDate(dt.getDate() - 1);
+				 var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
 			}
@@ -196,11 +195,11 @@ function toDate(selector) {
 	<div class="col-md-7">
 		 <span class="dashboard-datepkr cusShow">
 		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportStartDate" class="ReError"></p>
+		 <p id="reportStartDate" class="ReError" style="display: none"></p>
 		 </span>
 		<span class="dashboard-datepkr cusShow">
 		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportEndDate" class="ReError"></p>
+		<p id="reportEndDate" class="ReError" style="display: none"></p>
 		</span>
 		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 		</div>
@@ -261,6 +260,7 @@ function toDate(selector) {
  </div>
 </div>
 <div class="repTab2">
+ <div id="applicantsLoderDiv"></div>
   	<div class="chatNew" id="container"></div>	 
   </div>                 
       
@@ -511,11 +511,14 @@ function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(reportType!="custom"){
-	$.ajax({
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
@@ -578,12 +581,15 @@ function getCustomReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
@@ -819,6 +825,8 @@ function getDayWiseAppRecReports(){
 					result = result + ' </div>                                                      ';
 				  $("#container").empty();
 				    $("#container").append(result);
+				    $("#applicantsLoderDiv").empty();
+				    $("#applicantsLoderDiv").removeAttr('style');
         	 }
         	// getAllCounts(json.length,reportType,startDate,endDate);
          },

@@ -6,12 +6,14 @@ import java.text.ParseException;
 import java.util.Date;
 
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -52,5 +54,11 @@ public interface LeaveDao {
 	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String toDate, OrgLocations orgLocations);
 
 	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
+
+	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type);
+
+	List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId);
+
+	void deleteAllHolidayOrRestrictDayById(String id, String type);
 
 }

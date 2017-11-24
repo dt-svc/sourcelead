@@ -418,10 +418,8 @@ public class CandidateListRestController {
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
-			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
+	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
 		}
 		
 		// Rate Type
@@ -590,6 +588,7 @@ public class CandidateListRestController {
 		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
@@ -741,7 +740,7 @@ public class CandidateListRestController {
 		}
 
 		if (null != can.getOrgRelationId()) {
-			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
@@ -752,7 +751,7 @@ public class CandidateListRestController {
 		}
 		if (null != can.getSpocId()) {
 			StringBuilder contactName = new StringBuilder();
-			can.setVendorSpocId(can.getSpocId().getId().toString());
+			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
 				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
@@ -788,6 +787,7 @@ public class CandidateListRestController {
 		candidateDTO.setZipcode(can.getZipCode());
 		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
 		return candidateDTO;
 	}
 	 
@@ -1487,8 +1487,8 @@ public class CandidateListRestController {
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 Date endDateUTC =null ;
 				 String filterDate = null;
@@ -1496,65 +1496,48 @@ public class CandidateListRestController {
 				 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endDateUTC = TZ_DF_TS.parse(endDateString);
+					 Date endDateString = TZ_DF_TS.parse(endDate);
+					 endDateUTC = endDateString;
 				 }
 					
 					if(null != reportType && !"".equals(reportType)){
 						if("today".equals(reportType)){
 							String startDate = outputFormatter.print(zoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-							filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							filterDate = startDate;
+							startDateUTC = TZ_DF_TS.parse(startDate);
 						}else if("yesterday".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(1);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							//String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 							
 						}else if("week".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(7);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("twoweeks".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(14);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("month".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(30);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("twomonths".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(60);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								//DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								
-								
-								
-								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
-								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
-								startDateUTC = startTime;
-								endDateUTC = endTime;
-							/*	String customStartTimeStr = null;
-								String customEndTimeStr = null;
-							if(null !=startTime){
-							 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-							}
-								
-							if(null != endTime){
-							 customEndTimeStr = TZ_DF_CED.format(endTime);  
-							}
-								String startDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), startTime);
-								String endDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), endTime);
-								*/
+								 	DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+									DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+									Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+									Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+									String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+									String customEndTimeStr = TZ_DF_CED.format(endTime);  
+									startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+									endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+							
 							 }
 							
 						}
@@ -1604,15 +1587,15 @@ public class CandidateListRestController {
 				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endDateUTC = TZ_DF_TS.parse(endDateString);
+					 //String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+					 endDateUTC = TZ_DF_TS.parse(endDate);
 				 }
 					
 				List<Candidate> freshList = new ArrayList<Candidate>();

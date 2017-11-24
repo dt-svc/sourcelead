@@ -475,18 +475,19 @@ function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
-        	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	output = output + "<option value=''>Vendor Contact</option>"; 
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+	        		var opt = json.data[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
@@ -500,8 +501,8 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
+		    	//var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -520,9 +521,10 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     				 $('#contractType').trigger("chosen:updated");
     			 }
     			 
+    			     			 
     			 if(json.orgSpocsList != null && json.orgSpocsList != "" && json.orgSpocsList != "undefined" && json.orgSpocsList.length > 0){
     				 $('#spoc').empty();
-    		         $('#spoc').append('<option value="">Client Contact</option>');
+    		         $('#spoc').append('<option value="">Vendor Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
@@ -631,6 +633,7 @@ function removeResumeNameDiv(){
 <script>
 function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
+	result = result  +'          <form role="form"  id="docu_form" name="docu_form" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -638,6 +641,7 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
+	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -654,7 +658,7 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#docu_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",

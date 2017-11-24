@@ -698,6 +698,11 @@ function preventTabkey(e){
             	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
             	<div class="setting-area">
             	<ul class="list-unstyled">
+            	
+            	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
+            	<li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+            	</c:if> 
+            	
             	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
             	
             	<li><a href="<c:url value="/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
@@ -1709,15 +1714,15 @@ function geolocate() {
 </script> -->
 
 <script>
-function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type) {
-    initialize(locationId,countryId,stateId,cityId,zipCodeId,type);
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId);
     geolocate(latitudeId,longtitudeId);
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
     if(type == "invite"){
     	 var input = (document.getElementById(locationId));
     	    var options = {
-    	    		types: ['(cities)'],
+    	    		types: ['geocode'],
     	        componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
     	        }
@@ -1725,7 +1730,7 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
     	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
-    		types: ['(cities)'],
+    		types: ['geocode'],
       
         });
     }
@@ -1736,6 +1741,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
   for (var i = 0; i < place.address_components.length; i++) {
     var addressType = place.address_components[i].types[0];
     switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
       case "locality":
         address.city = place.address_components[i].long_name;
         break;
@@ -1750,15 +1758,18 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
         
     }
   }
-  $("#"+countryId).val(address.country).change();
+ 
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();
   $("#"+zipCodeId).val(address.zipcode).change();
-  $("#"+zipCodeId).attr("readonly", false);
+  $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
+  $("#"+countryId).val(address.country).change();
+  $("#"+countryId).trigger("chosen:updated");
+
   if(type == "invite"){
 	  getTimezonesList();
   }
-  zipcodeMask(address.country,zipCodeId);
+  zipcodeMask(address.country,zipCodeId);	
   
 });
 }
@@ -1776,13 +1787,14 @@ function geolocate(latitudeId,longtitudeId) {
 }
 </script>
 <script>
-function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId){
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
 	$("#"+locationId).val('');
-	$("#"+countryId).val('');
 	$("#"+stateId).val('');
 	$("#"+cityId).val('');
 	$("#"+zipCodeId).val('');
-	 $("#"+zipCodeId).attr("readonly", true);
+	$("#"+addressId).val('');
+	$("#"+countryId).val('');
+	$("#"+countryId).trigger("chosen:updated");
 }
 </script>
 <script>

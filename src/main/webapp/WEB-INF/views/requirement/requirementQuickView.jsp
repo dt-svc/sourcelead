@@ -4,13 +4,6 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-a.disabledLink {
-   pointer-events: none;
-   cursor: default;
-}
-</style>
- 
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
@@ -82,12 +75,12 @@ a.disabledLink {
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
 		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
 			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a class="disabledLink" href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a  href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a class="disabledLink" href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
-			<li><a class="disabledLink" href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
@@ -104,10 +97,8 @@ a.disabledLink {
           	   </c:if>
 			   <div id="rejectRequirementAlert" ></div>   
 		       <div class="clearfix"> 
-		           <div class="pull-left"> 
-		              <h2>Assigned Members</h2>  
-		           </div> 
 		           <div class="pull-right mt10"> 
+
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
@@ -117,34 +108,19 @@ a.disabledLink {
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
-					</div> 
-			     </div> 
+					</div></div>
+					<div class="collpasePannel clearfix mt10"> 
+		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
+		           </div> 
+		          
 			            
                  <div class="clearfix"> 
-                 	<div class="clearfix row"> 
+                 	<div class="clearfix row">
+                 	<div class="col-md-12">
+                 	<div id="assignedMemberList" class="assignedMemberList"></div>
+                 	</div>
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
-          				<div id="assignedMemberList"></div> 
-          				
-          				<%-- <div class="clearfix mt5 mb">
-						    <table class="table table-responsive table-hover clearfix mb">
-							    <thead>
-								    <tr>
-									    <th>Name</th>
-									    <th>Role</th>
-									    <th>Team</th>
-								    </tr>
-							    </thead>
-							    <tbody>
-							    	<tr>
-								    	<c:forEach var ="assignTo" items="${requirement.requirementAssignTo}" varStatus="reqStatus">
-									        <td><div class="tbldata-dotdot">${assignTo.assignedUserName}</div></td>
-									    </c:forEach>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    		</tr>
-							    <tbody>
-							</table>
-          				 </div> --%>
           				
           				
           				
@@ -324,7 +300,7 @@ a.disabledLink {
            
                  </div> 	
                </div> 
-           
+           </div>
                </div> 
              </div> 
       </div>
@@ -428,4 +404,20 @@ function hideButtonOnClick(){
 		$('#approverbut').hide();
 		$('#rejectedbut').hide();
 }
+</script>
+<script>
+$(function(){
+	$('.assignedGrid2').hide();
+	$('.assignedGrid1').click(function(){
+		$("#assignedMemberList").slideDown();
+		$(".assignedGrid1").hide();
+		$(".assignedGrid2").show(); 
+		 assignedMemberList(${requirement.id});
+	});
+	$('.assignedGrid2').click(function(){
+		$("#assignedMemberList").slideUp();
+		$(".assignedGrid2").hide();
+		 $(".assignedGrid1").show();
+	});
+});
 </script>

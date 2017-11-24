@@ -60,7 +60,7 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bill List</a> &raquo; Project Based Bill</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -292,8 +292,8 @@ function getProjectsList(projectName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
 	for (var i=0; i<json.length; i++)
@@ -611,7 +611,7 @@ function calculateDisCount(){
         $("#conversionFrom").val(total);
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);

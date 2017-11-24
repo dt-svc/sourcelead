@@ -77,7 +77,7 @@ $(document).ready(function() {
 					
 				}
 			
-			getAllCountries();
+			
 			removeEditButton();
 			disableMonths();
 			
@@ -291,68 +291,28 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group" id="projectDurationYearsDiv" style="display:none">
-            <label class="col-md-3">Project Duration</label>
+            <label class="col-md-3">Project Duration </label>
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6 dropdown-select">
 						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
 							<option value="">--Select Years--</option>
-	                 <option  ${requirement.projectDurationYears  == '0' ? 'selected' : ''}>0</option>
-	                 <option  ${requirement.projectDurationYears  == '1' ? 'selected' : ''}>1</option>
-	                 <option  ${requirement.projectDurationYears  == '2' ? 'selected' : ''}>2</option>
-	                 <option  ${requirement.projectDurationYears  == '3' ? 'selected' : ''}>3</option>
-	                 <option  ${requirement.projectDurationYears  == '4' ? 'selected' : ''}>4</option>
-	                 <option  ${requirement.projectDurationYears  == '5' ? 'selected' : ''}>5</option>
-	                 <option  ${requirement.projectDurationYears  == '6' ? 'selected' : ''}>6</option>
-	                 <option  ${requirement.projectDurationYears  == '7' ? 'selected' : ''}>7</option>
-	                 <option  ${requirement.projectDurationYears  == '8' ? 'selected' : ''}>8</option>
-	                 <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
-	                 <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
-	                 <option  ${requirement.projectDurationYears  == '11' ? 'selected' : ''}>11</option>
-	                 <option  ${requirement.projectDurationYears  == '12' ? 'selected' : ''}>12</option>
-	                 <option  ${requirement.projectDurationYears  == '13' ? 'selected' : ''}>13</option>
-	                 <option  ${requirement.projectDurationYears  == '14' ? 'selected' : ''}>14</option>
-	                 <option  ${requirement.projectDurationYears  == '15' ? 'selected' : ''}>15</option>
-	                 <option  ${requirement.projectDurationYears  == '16' ? 'selected' : ''}>16</option>
-	                 <option  ${requirement.projectDurationYears  == '17' ? 'selected' : ''}>17</option>
-	                 <option  ${requirement.projectDurationYears  == '18' ? 'selected' : ''}>18</option>
-	                 <option  ${requirement.projectDurationYears  == '19' ? 'selected' : ''}>19</option>
-	                 <option  ${requirement.projectDurationYears  == '20' ? 'selected' : ''}>20</option>
-	                 <option  ${requirement.projectDurationYears  == '21' ? 'selected' : ''}>21</option>
-	                 <option  ${requirement.projectDurationYears  == '22' ? 'selected' : ''}>22</option>
-	                 <option  ${requirement.projectDurationYears  == '23' ? 'selected' : ''}>23</option>
-	                 <option  ${requirement.projectDurationYears  == '24' ? 'selected' : ''}>24</option>
-	                 <option  ${requirement.projectDurationYears  == '25' ? 'selected' : ''}>25</option>
-	                 <option  ${requirement.projectDurationYears  == '26' ? 'selected' : ''}>26</option>
-	                 <option  ${requirement.projectDurationYears  == '27' ? 'selected' : ''}>27</option>
-	                 <option  ${requirement.projectDurationYears  == '28' ? 'selected' : ''}>28</option>
-	                 <option  ${requirement.projectDurationYears  == '29' ? 'selected' : ''}>29</option>
-	                 <option  ${requirement.projectDurationYears  == '30' ? 'selected' : ''}>30</option>
+							<c:forEach var="durationYears" begin="0" end="30" >
+							    <option  ${requirement.projectDurationYears  == durationYears ? 'selected' : ''}>${durationYears}</option>
+							</c:forEach>
 	                   
 						</select>	                 
 	                </div>
 	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
 	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
 							<option value="">--Select Months--</option>
-							 <option  ${requirement.projectDurationMonths  == '0' ? 'selected' : ''}>0</option>
-							 <option  ${requirement.projectDurationMonths  == '1' ? 'selected' : ''}>1</option>
-							 <option  ${requirement.projectDurationMonths  == '2' ? 'selected' : ''}>2</option>
-							 <option  ${requirement.projectDurationMonths  == '3' ? 'selected' : ''}>3</option>
-							 <option  ${requirement.projectDurationMonths  == '4' ? 'selected' : ''}>4</option>
-							 <option  ${requirement.projectDurationMonths  == '5' ? 'selected' : ''}>5</option>
-							 <option  ${requirement.projectDurationMonths  == '6' ? 'selected' : ''}>6</option>
-							 <option  ${requirement.projectDurationMonths  == '7' ? 'selected' : ''}>7</option>
-							 <option  ${requirement.projectDurationMonths  == '8' ? 'selected' : ''}>8</option>
-							 <option  ${requirement.projectDurationMonths  == '9' ? 'selected' : ''}>9</option>
-							 <option  ${requirement.projectDurationMonths  == '10' ? 'selected' : ''}>10</option>
-							 <option  ${requirement.projectDurationMonths  == '11' ? 'selected' : ''}>11</option>
+							<c:forEach var="durationMonths" begin="0" end="11" >
+							    <option  ${requirement.projectDurationMonths  == durationMonths ? 'selected' : ''}>${durationMonths}</option>
+							</c:forEach>
 							 
 						</select>
 	                </div>
               </div>
-              <!-- <div class="row" id="projectduration">
-                  <input type="hidden" name="expValidation" id="projectDuration">
-              </div>  -->
             </div>
           </div>
             
@@ -384,15 +344,15 @@ $(document).ready(function () {
               </div>
             </div>
             
-         <div class="form-group pras req-title" >
+         <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_float validate_length length1-3" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_float validate_length length1-3" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
@@ -461,9 +421,7 @@ $(document).ready(function () {
                 <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Min Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 <input type="text" class="form-control input-sm" id="maxRate" name="maxRate" field-name="Max Rate" placeholder="Max Rate" value="${requirement.maxRate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
-                 <div class="row" id="rateValidateId">
-                  <input type="hidden" name="rateValidation" id="rateValidation">
-              </div> 
+                
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
@@ -477,7 +435,7 @@ $(document).ready(function () {
 	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                     </c:if>
                   
-                  <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                  <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
                         <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
@@ -487,52 +445,12 @@ $(document).ready(function () {
 	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                     </c:if>
-                    
-                  <c:if test="${SourceLeadWeb_currencyCode == 'AUD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'GBP'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'SGD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	                        <c:if test="${SourceLeadWeb_currencyCode == 'EUR'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
+                   
                   </select>
                 </div>
+              </div>
+              <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
             </div>
           </div>
@@ -596,34 +514,40 @@ $(document).ready(function () {
 				</div>
 		</div>
 		
-		<div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country" readonly>
-				</div>
+		 <div class="form-group">
+			<label class="col-md-3">City</label>
+			<div class="col-md-9">
+			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
+			</div>
 		</div>
 		
 		 <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
-				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State" readonly>
+				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
 		 </div>
-		
-		 <div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City"  readonly>
-			</div>
-		</div>
-		
-		
-		 <div class="form-group">
+		 
+		  <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
 		</div>
+		
+		<div class="form-group">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
+				</div>
+		</div>
+		
+		
+		
+		
+		
+		
+		
 		
 	 
          <div class="form-group">
@@ -839,39 +763,6 @@ $(document).ready(function () {
                     	  </select>
 						  </c:otherwise>
 				</c:choose>
-                
-                  </div>
-                  <div role="dialog" id="addLevel" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Level</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Level Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Description </label>
-                                <div class="col-lg-9">
-                                  <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button" >Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -1302,20 +1193,19 @@ $(document).ready(function () {
 </section>
 
 <script>
-  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatJobSave = '';
+	  var jsDateFormat= '';
 	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatJobSave = 'yy-mm-dd';
+		  jsDateFormat = 'yy-mm-dd';
 	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatJobSave = 'dd-mm-yy'; 
+		  jsDateFormat = 'dd-mm-yy'; 
 	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatJobSave = 'mm-dd-yy'; 
+		  jsDateFormat = 'mm-dd-yy'; 
 	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatJobSave = 'yy-dd-mm'; 
+		  jsDateFormat = 'yy-dd-mm'; 
 	  }
 	  $('#closedDate').datepicker({
-	      dateFormat: finalDateFormatJobSave,
+	      dateFormat: jsDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
 	  	  minDate: 1,
@@ -1323,8 +1213,6 @@ $(document).ready(function () {
 	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
 	  	}
 	  });
-	  
- 
 </script>
 
 <script>
@@ -1375,24 +1263,15 @@ function validate_fileupload(fileName)
 
 
 <script type="text/javascript">
-
  function receivingApplicants(){
-	
 	if (document.getElementById('receivingApplicantsId').checked){
 		 $("#receivingApplicantsId").val('Y');
 	}
-	
 	else{
-		
 		 $("#receivingApplicantsId").val('N');
-		
 		}
-	
-} 
-	  
+ } 
 </script>
-
-
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
@@ -1711,7 +1590,6 @@ function getRequirementAndLookUpSkills(requirementid){
 </script>
 <script>
 function setTemplateValues(){
-	
 	var requirementId = document.getElementById('template').value;
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1719,14 +1597,9 @@ function setTemplateValues(){
 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
-	   	
 	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
-		    success: function(data) {
-		    	
-		    	if(data != null && data != 'undefined' && data !='' ){ 
-		    		
-		    		var json = JSON.parse(data);
-		    		
+		    success: function(json) {
+		    	if(json != null && json != 'undefined' && json !='' ){ 
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 		    			$("#templateId").val(json.id);
 		    		}
@@ -1783,7 +1656,7 @@ function setTemplateValues(){
 							$("#existingCity").val('');
 						}
 						
-					getAllCountries(); 		
+					 		
 					
 					$('#description').val('');
 					$('#rate').val('');
@@ -1866,7 +1739,6 @@ function setTemplateValues(){
 		 $("#existingCountry").val('');
 		 $("#existingState").val('');
 		 $("#existingCity").val('');
-		 getAllCountries(); 		
 		 $("#rate").val('');
 		
 		 
@@ -1922,33 +1794,6 @@ $(document).ready(function() {
 // Show hide Approver script
 $("#apprverReq").removeAttr("checked");
 $("#sequential input").removeAttr("checked");
-/* 
-function selApprover(){
-	
-  if ($("#apprverReq").prop('checked') ) {
-			$(".parallel, #parallel, .apprverReq").show();
-			$(".sequential").hide();
-			$("#parallel i").addClass("apprverReq-active");
-			$("#sequential i").removeClass("apprverReq-active");
-
-} 
-else {
-	$(".parallel, #parallel, .apprverReq, .sequential").hide();
-}
-};
-
-$("#sequential").click(function(){
-	$(".parallel").hide();
-	$(".sequential").show();
-	$("#parallel i").removeClass("apprverReq-active");
-	$("#sequential i").addClass("apprverReq-active");
-});
-$("#parallel").click(function(){
-	$(".parallel").show();
-	$(".sequential").hide();
-	$("#parallel i").addClass("apprverReq-active");
-	$("#sequential i").removeClass("apprverReq-active");
-}); */
 function addLvl(){
 	$(".lvlTow").toggle();
 }
@@ -2038,7 +1883,6 @@ function approvalType(type){
 				
 				$('#parallelApprover').val('').trigger('chosen:updated');
 		  }
-		  
 		}
 		else{
 			$("#save").removeAttr("style");
@@ -2053,8 +1897,6 @@ function approvalType(type){
 			$('#sequentialApprover1').attr("data-validation-optional","true"); 
 			$('#sequentialApprover2').attr("data-validation-optional","true"); 
 			$('#parallelApprover').attr("data-validation-optional","true"); 
-			
-			
 		}
 	  
 }
@@ -2113,8 +1955,6 @@ function popupWindow(reqId){
 
 <script>
 function getUserList(teamType){  
-	   
-	  
 	   var selectedUsersForAssign = [];
 	   $('input[name^="assignUserId"]').each(function() {
 	 		selectedUsersForAssign.push($(this).val());
@@ -2807,17 +2647,6 @@ function checkTemplateforDouplicate(){
 
 }
 </script>
-
-<!-- <script type="text/javascript">
-function removeEditButton() {
-	var reqId = document.getElementById("requirementId").value;
-	if(reqId != null && reqId != 0){
-		 var draftId = document.getElementById("draft");
-		 draftId.parentNode.removeChild(draftId);
-		    return false;
-	}
-}
-</script> -->
 
 <script>
 function getJobType(jobType){

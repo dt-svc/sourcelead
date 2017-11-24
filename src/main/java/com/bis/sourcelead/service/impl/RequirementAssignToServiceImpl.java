@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -48,6 +52,12 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 		
 		return requirementAssignToDao.getRequirementAssignToListByRequirementId(requirementId);
 		
+	}
+	
+	@Override
+	public ResponseList<RequirementAssignTo> loadRequirementAssignToListByRequirementId(RequirementAssignToDTO requirementAssignToDTO) throws Exception
+	{
+		return requirementAssignToDao.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
 	}
 
 	@Override
@@ -166,5 +176,10 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 	return currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(dateFormat,converteDate);
 	
 }
+
+	@Override
+	public Integer getRequirementAssignToListCountByRequirementId(Long requirementId) throws Exception {
+		return requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirementId);
+	}
 	
 }
