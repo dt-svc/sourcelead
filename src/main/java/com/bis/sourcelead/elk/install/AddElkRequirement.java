@@ -88,7 +88,9 @@ public class AddElkRequirement {
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
-				
+				if(null != rs.getString("PROJECT_ClientID") && !"".equalsIgnoreCase(rs.getString("PROJECT_ClientID"))){
+				requirementIndex.setProjectClientID(rs.getString("PROJECT_ClientID"));
+				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
 					requirementIndex.setDescription(rs.getString("DESCRIPTION"));
 				}
@@ -123,6 +125,26 @@ public class AddElkRequirement {
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
 				requirementIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
+				if(null != rs.getString("MEDICAL_CLEARENCE") && !"".equalsIgnoreCase(rs.getString("MEDICAL_CLEARENCE"))){
+				requirementIndex.setMedicalClearence(rs.getString("MEDICAL_CLEARENCE"));
+				}
+				if(null != rs.getString("SECURITY_CLEARANCE") && !"".equalsIgnoreCase(rs.getString("SECURITY_CLEARANCE"))){
+					requirementIndex.setSecurityClearance(rs.getString("SECURITY_CLEARANCE"));
+					}
+				if(null != rs.getString("OVER_TIME") && !"".equalsIgnoreCase(rs.getString("OVER_TIME"))){
+					requirementIndex.setOverTime(rs.getString("OVER_TIME"));
+					}
+				if(null != rs.getString("BACKGROUNG_CHECK") && !"".equalsIgnoreCase(rs.getString("BACKGROUNG_CHECK"))){
+					requirementIndex.setBackgroundCheck(rs.getString("BACKGROUNG_CHECK"));
+					}
+				if(null != rs.getString("GENDER") && !"".equalsIgnoreCase(rs.getString("GENDER"))){
+					requirementIndex.setGender(rs.getString("GENDER"));
+					}
+				
+				if(null != rs.getString("EXPERIENCE_LEVEL") && !"".equalsIgnoreCase(rs.getString("EXPERIENCE_LEVEL"))){
+					requirementIndex.setExperienceLevel(rs.getString("EXPERIENCE_LEVEL"));
+					}
+					
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				List<String> lavel1User = new ArrayList<String>();
 				List<String> lave21User = new ArrayList<String>();

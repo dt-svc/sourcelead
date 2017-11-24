@@ -35,6 +35,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -166,6 +167,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "CLIENT_RATE")
 	private String clientRate;
+	
+	@Column(name = "CLIENT_MAX_RATE")
+	private String clientMaxRate;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
@@ -309,6 +313,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "EXPERIENCE_LEVEL")
 	private String experienceLevel;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="PROJECT_ClientID", nullable=true) 
+	private ProjectClients projectClientID;
+	
+	 
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -323,6 +333,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String isJobApplied;
+	
+	@Transient
+	private String projectName;
 	
 	@Transient
 	private String msg;
@@ -1749,6 +1762,98 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	
+
+	public ProjectClients getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(ProjectClients projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName()
+	{
+		return projectName;
+	}
+
+	public void setProjectName(String projectName)
+	{
+		this.projectName = projectName;
 	}
 
 	

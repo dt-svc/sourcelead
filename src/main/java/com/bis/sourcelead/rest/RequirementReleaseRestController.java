@@ -493,6 +493,24 @@ public class RequirementReleaseRestController {
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
+		if(parentRequirement.getMedicalClearence() != null){
+		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
+		}
+		if(parentRequirement.getSecurityClearance() != null){
+		requirement.setSecurityClearance(parentRequirement.getSecurityClearance());
+		}
+		if(parentRequirement.getOverTime() !=null){
+		requirement.setOverTime(parentRequirement.getOverTime());
+		}
+		if(parentRequirement.getBackgroundCheck() != null){
+		requirement.setBackgroundCheck(parentRequirement.getBackgroundCheck());
+		}
+		if(parentRequirement.getGender() != null){
+		requirement.setGender(parentRequirement.getGender());
+		}
+		if(parentRequirement.getExperienceLevel() != null){
+		requirement.setExperienceLevel(parentRequirement.getExperienceLevel());
+		}
 		requirement.setFileName(parentRequirement.getFileName());
 		requirement.setFileURL(parentRequirement.getFileURL());
 		if(parentRequirement.getVisaType() != null){

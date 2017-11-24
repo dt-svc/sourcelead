@@ -76,6 +76,19 @@ public class RequirementDTO extends CommonDTO {
 
 	private String skills;
 
+	private String medicalClearence;
+	
+	private String securityClearance;
+	
+	private String overTime;
+	
+	private String backgroundCheck;
+	
+	private String gender;
+	
+	private String experienceLevel;
+	
+	
 	private List<String> visa;
 
 	private String description;
@@ -93,6 +106,8 @@ public class RequirementDTO extends CommonDTO {
 	private String clientCurrencyCode;
 
 	private String clientRate;
+	
+	private String clientMaxRate;
 
 	private String clientRateType;
 
@@ -126,8 +141,11 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfOfferedApplicants;
 	
+	private String projectClientID;
 	
-
+	private String projectName;
+	
+	
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1030,5 +1048,99 @@ public class RequirementDTO extends CommonDTO {
 	public void setCurrentRateCurrency(String currentRateCurrency) {
 		this.currentRateCurrency = currentRateCurrency;
 	}
+
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName()
+	{
+		return projectName;
+	}
+
+	public void setProjectName(String projectName)
+	{
+		this.projectName = projectName;
+	}
+
+	
 
 }

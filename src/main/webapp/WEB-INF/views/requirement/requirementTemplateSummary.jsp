@@ -47,7 +47,45 @@
 			    var remove = "remove";
 			    var reActive = "reActive";
 			    
-			    
+			    if(json.backgroundCheck != null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+					 if(json.backgroundCheck == "Y"){
+						 backgroundCheck = "Yes" 
+					 }else{
+						 backgroundCheck = "No" 
+					 }
+				 }else{
+					 backgroundCheck = "--";
+				 }
+				 
+				 if(json.overTime != null && json.overTime != '' && json.overTime != 'undefined') {
+					 if(json.overTime == "Y"){
+						 overTime = "Yes";
+					 }else{
+						 overTime = "No"
+					 }
+				}else{
+					overTime = "--";
+				}
+				 
+				 if(json.medicalClearence != null && json.medicalClearence != '' && json.medicalClearence != 'undefined') {
+					 if(json.medicalClearence == "Y"){
+						 medicalClearence = "Yes";
+					 }else{
+						 medicalClearence = "No";
+					 }
+				 }else{
+					 medicalClearence = "--";
+				 }
+				 
+				 if(json.securityClearance != null && json.securityClearance != '' && json.securityClearance != 'undefined') {
+					 if(json.securityClearance == "Y"){
+						 securityClearance = "Yes";
+					 }else{
+						 securityClearance = "No";
+					 }
+				}else{
+						securityClearance = "--";
+				}
 			    var jobType = '';
       			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
       				jobType = '-'+json.jobType;
@@ -139,9 +177,52 @@
 						result = result + '<span class="fix" title="'+json.education+'">'+json.education+'</span>';
 						}
 						result = result + '</div>';
+				 		result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '<strong>Medical Clearence:</strong>';
+						result = result + '<span class="fix" title="'+medicalClearence+'">'+medicalClearence+'</span>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '<strong>Security Clearance:</strong>';
+						result = result + '<span class="fix" title="'+securityClearance+'">'+securityClearance+'</span>';
+						result = result + '</div>';
+						
+						
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '<strong>Over Time:</strong>';
+						result = result + '<span class="fix" title="'+overTime+'">'+overTime+'</span>';
+						result = result + '</div>';
 					 
-				 
-				 
+					 
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '<strong>Background Check:</strong>';
+						result = result + '<span class="fix" title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
+						result = result + '</div>';
+						
+						if(json.gender != null && json.gender != "" && json.gender != 'undefined'){
+						result = result + '<div class="project_details_cta project_details_view clearfix">';
+						result = result + '<strong>Gender :</strong>';
+						result = result + '<span class="fix" title="'+json.gender+'">'+json.gender+'</span>';
+						}
+					 
+						 else{
+								result = result + '<div class="project_details_cta project_details_view clearfix">';
+								result = result + '<strong>Gender :</strong>';
+								result = result + '<span class="fix" title="">--</span>';
+						 }
+						
+						if(json.experienceLevel != null && json.experienceLevel != "" && json.experienceLevel != 'undefined'){
+							result = result + '<div class="project_details_cta project_details_view clearfix">';
+							result = result + '<strong>Experience Level :</strong>';
+							result = result + '<span class="fix" title="'+json.experienceLevel+'">'+json.experienceLevel+'</span>';
+							}
+						 
+							 else{
+									result = result + '<div class="project_details_cta project_details_view clearfix">';
+									result = result + '<strong>Experience Level :</strong>';
+									result = result + '<span class="fix" title="">--</span>';
+							 }
+						
 						result = result + '<div class="project_details_cta clearfix">';
 				 
 						/* result = result + '<div class="project_details_cta project_details_view clearfix">';

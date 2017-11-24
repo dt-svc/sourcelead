@@ -31,6 +31,7 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -132,6 +134,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
+	
+	 @Autowired
+	 private ProjectsService projectsService;
 	 
 	/**
 	 * @author prasad k
@@ -917,4 +922,17 @@ public class RequirementRestController {
 	    	}
 			return commonUtil.toJSON(requirement);
 		} 
+	    
+	    
+		/*@RequestMapping(value = "/getAllProjectsByOrgRelationIdAndInProgress", method = RequestMethod.GET)
+	 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	//String resultJson;
+	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+	 	   // resultJson = commonUtil.toJSON(projectList);
+	 	    return projectList;
+	 	}*/
+	    
+	    
 }

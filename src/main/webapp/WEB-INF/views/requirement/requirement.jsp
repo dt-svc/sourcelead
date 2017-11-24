@@ -15,10 +15,10 @@
 	
 	<script>
 		$(document).ready(function() {
+			//getProjectsList();
 			$("#txtEditor").Editor();
 		});
     </script> 
-
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
@@ -323,6 +323,27 @@ $(document).ready(function () {
             </div>
           </div>
           
+                 <div class="form-group">
+              <label class="col-md-3">Project</label>
+              <div class="col-md-9 select-field">
+                <select class="chosen-select form-control" id="projectId" name="projectClientID" field-name="Project Name">
+                <option value="">--Select Project--</option>
+                
+                <c:forEach var="project" items="${projectList}">
+								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+								<c:if test="${! empty project.clientName}">
+		                           <option value="${project.id}" ${project.id  == requirement.projectID.id  ? 'selected' : ''} >${project.projectId.projectName} (${project.clientName})</option>
+								 </c:if>
+								 <c:if test="${empty project.clientName}">
+								 <option value="${project.id}" ${project.id  == requirement.projectID.id  ? 'selected' : ''} >${project.projectId.projectName}</option>
+								 </c:if>
+				                    	
+				                 <%--    </c:if>   --%>
+							</c:forEach>
+                
+              </select>
+              </div>
+            </div>
             
               <div class="form-group">
               <label class="col-md-3">Education</label>
@@ -346,12 +367,13 @@ $(document).ready(function () {
             
         <div class="form-group" >
             <label class="col-md-3">Experience Level</label>
-            <div class="col-md-9 dropdown-select">
-            <select name="experienceLevel">
-            	<option>--Select Level--</option>
-            	<option>Entry Level</option>
-            	<option>Mid Level</option>
-            	<option>Senior Level</option>
+            <div class="col-md-9 dropdown-select"> 
+            <select name="experienceLevel" id="experienceLevel">
+            	<option value="">--Select Level--</option>
+            	<option ${requirement.experienceLevel  == 'Level-1' ? 'selected' : ''}>Level-1</option>
+            	<option ${requirement.experienceLevel  == 'Level-2' ? 'selected' : ''}>Level-2</option>
+            	<option ${requirement.experienceLevel  == 'Level-3' ? 'selected' : ''}>Level-3</option>
+            	<option ${requirement.experienceLevel  == 'Level-4' ? 'selected' : ''}>Level-4</option>
             </select>
             
             </div>
@@ -605,48 +627,127 @@ $(document).ready(function () {
 				</div>
 		 </div>
 		 
-		 <!--  Verificaiton Radio Buttons -->
 		 
-		 <div class="form-group">
-				<label class="col-md-3">Medical  Clearance</label>
+	 <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group" id="addmedical" style="display:block">
+				<label class="col-md-3">Medical  Clearance </label>
 				<div class="col-md-9">
-				<span class="paddingRight"><input type="radio" name="medicalClearence"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio" name="medicalClearence"><span class="mr5"></span>No</span>
+				<c:if test="${requirement.medicalClearence == 'Y'}">
+				<span class="paddingRight"><input type="radio"  checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.medicalClearence == 'N'}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" checked  value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.medicalClearence}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
 				</div>
 		 </div>
+		 <div class="form-group" id="medicalTemplate" style="display:none">
+		 <div id="medicalClearenceDivId"></div>
+		 </div>
 		 
-		 <div class="form-group">
+		 
+		 <div class="form-group" id="addSecurityClearence" style="display:block">
 				<label class="col-md-3">Security Clearance</label>
 				<div class="col-md-9">
-				<span class="paddingRight"><input type="radio" name="securityClearance"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio" name="securityClearance"><span class="mr5"></span>No</span>
+				<c:if test="${requirement.securityClearance == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.securityClearance == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				<c:if test="${empty requirement.securityClearance}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
 				</div>
 		 </div>
+		 <div class="form-group" id="securityClearenceTemplate" style="display:none">
+		 <div id="securityClearenceDivId"></div>
+		 </div>
 		 
-		 <div class="form-group">
+		 <div class="form-group" id="addOverTime" style="display:block">
 				<label class="col-md-3">Overtime</label>
 				<div class="col-md-9">
-				<span class="paddingRight"><input type="radio" name="overTime"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio" name="overTime"><span class="mr5"></span>No</span>
+				<c:if test="${requirement.overTime == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.overTime == 'N'}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.overTime}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				
 				</div>
 		 </div>
+		  <div class="form-group" id="overTimeTemplate" style="display:none">
+		 <div id="overTimeDivId"></div>
+		 </div>
 		 
-		 <div class="form-group">
+		 <div class="form-group" id="addBackgroundCheck" style="display:block">
 				<label class="col-md-3">Background Check</label>
 				<div class="col-md-9">
-				<span class="paddingRight"><input type="radio" name="backgroundCheck"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio" name="backgroundCheck"><span class="mr5"></span>No</span>
+				<c:if test="${requirement.backgroundCheck == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.backgroundCheck == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.backgroundCheck}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
 				</div>
 		 </div> 
+		  <div class="form-group" id="backgroundCheckTemplate" style="display:none">
+		 <div id="backgroundCheckDivId"></div>
+		 </div>
 		 
-		 <div class="form-group">
+		 <div class="form-group" id="addGender" style="display:block">
 				<label class="col-md-3">Gender</label>
 				<div class="col-md-9">
-				<span class="paddingRight"><input type="radio" name="gender"><span class="mr5"></span>Male</span>
-				<span class="paddingLeft paddingRight"><input type="radio" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" name="gender"><span class="mr5"></span>All</span>
+				<c:if test="${requirement.gender == 'male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'all'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				
 				</div>
 		 </div> 
+		 <div class="form-group" id="genderTemplate" style="display:none">
+		 <div id="genderDivId"></div>
+		 </div>
+		 
+		 
 		 
 		 
 		 <!--  Radio Buttons -->
@@ -877,7 +978,10 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                <div class="pull-left input_minmax">
+	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="clientMinMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate"onblur="clientMinMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 			                <option value="">Rate Per</option>
@@ -916,7 +1020,10 @@ $(document).ready(function () {
                 </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                    <div class="pull-left input_minmax">
+	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="clientMinMaxRate();">
+	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="clientMinMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
@@ -934,6 +1041,9 @@ $(document).ready(function () {
 				</c:choose>
 	                
               </div>
+              </div>
+                 <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
               <div class="clearfix"></div>
               <div class="clearfix"></div>
@@ -1664,11 +1774,15 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$("#experienceLevel").val(json.experienceLevel);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
+			    	
+			    	$("#projectId").val(json.projectId);
+			    	$("#projectId").trigger("chosen:updated");
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1677,7 +1791,112 @@ function setTemplateValues(){
 			    	$("#travelAllowance").val(json.travelAllowance);
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
+			    	if(json.medicalClearence !=  null && json.medicalClearence != '' && json.medicalClearence != 'undefined'){
+			    		 $("#medicalTemplate").css("display","block"); 
+			    		 $("#addmedical").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Medical  Clearance </label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.medicalClearence == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#medicalClearenceDivId").empty();
+			    		$("#medicalClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addmedical").css("display","block"); 
+			    		 $("#medicalTemplate").css("display","none"); 
+			    	}
 			    	
+			    	if(json.securityClearance !=  null && json.securityClearance != '' && json.securityClearance != 'undefined'){
+			    		 $("#securityClearenceTemplate").css("display","block"); 
+			    		 $("#addSecurityClearence").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Security Clearance</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.securityClearance == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#securityClearenceDivId").empty();
+			    		$("#securityClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addSecurityClearence").css("display","block"); 
+			    		 $("#securityClearenceTemplate").css("display","none"); 
+			    	}
+			    	
+			    	if(json.overTime !=  null && json.overTime != '' && json.overTime != 'undefined'){
+			    		 $("#overTimeTemplate").css("display","block"); 
+			    		 $("#addOverTime").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Overtime</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.overTime == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#overTimeDivId").empty();
+			    		$("#overTimeDivId").append(result);
+			    	}else{
+			    		 $("#addOverTime").css("display","block"); 
+			    		 $("#overTimeTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.backgroundCheck !=  null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+			    		 $("#backgroundCheckTemplate").css("display","block"); 
+			    		 $("#addBackgroundCheck").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Background Check</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.backgroundCheck == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#backgroundCheckDivId").empty();
+			    		$("#backgroundCheckDivId").append(result);
+			    	}else{
+			    		 $("#addBackgroundCheck").css("display","block"); 
+			    		 $("#backgroundCheckTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
+			    		 $("#genderTemplate").css("display","block"); 
+			    		 $("#addGender").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Gender</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.gender == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#genderDivId").empty();
+			    		$("#genderDivId").append(result);
+			    	}else{
+			    		 $("#addGender").css("display","block"); 
+			    		 $("#genderTemplate").css("display","none"); 
+			    	}
 			    	if(null != json.jobType && json.jobType != "" && json.jobType != "undefined" && json.jobType == 'Other'){
 						  $( ".jobTypeDiv" ).show();
 						  $("#jobOtherType").attr("data-validation-optional", "true");
@@ -1764,6 +1983,8 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#industryName").val('');
 			    	$("#industryName").trigger("chosen:updated");
+			    	$("#projectId").val('');
+			    	$("#projectId").trigger("chosen:updated");
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
 					$("#countryReq").val('');
@@ -2670,7 +2891,27 @@ function minMaxRate(){
 }
 
 </script>
+<script>
+//Function to validate if maximum rate value is more the minimum rate value
+function clientMinMaxRate(){
+   alert("clientMinMaxRate();");
+	var maxRate = ($('#clientMaxRate').val());
+    var minRate = ($('#clientRate').val());
+    
+    if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+		$('input#rateValidation').attr('class','error signin_fild');
+		$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#rateValidation').attr('record-exist','yes');
+		$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+    }  else{
+    	$('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateValidateId').find('p.jquery_form_error_message').remove();
+    }
+}
 
+</script>
 <script type="text/javascript">
 function checkTemplateforDouplicate(){
 	if(document.getElementById('isTemplate').checked) {
@@ -2795,6 +3036,34 @@ function getEditRequirementDetails(requirementId){
 	 } 
  }
  </script> 
+
+
+<script>
+function getProjectsList(projectName){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getAllProjectsByOrgRelationIdAndInProgress?"+tokenParamName+"="+tokenValue+"",
+	success :function(json) {
+	var output = "";
+	output = output + "<option value=''>--Select Project--</option>";
+	for (var i=0; i<json.length; i++){
+	var opt = json[i];
+	var selected = "";
+	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
+		selected = 'selected';
+	}
+	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.projectName+"</option>";
+	}
+	$("#projectId").empty();
+	$("#projectId").append(output);
+	$('#projectId').trigger("chosen:updated");
+	},
+	});
+
+}
+</script>
+
 
 <script type="text/javascript">
 $(document).ready(function(){

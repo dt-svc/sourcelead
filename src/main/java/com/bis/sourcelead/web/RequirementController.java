@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.core.internal.resources.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +30,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -58,6 +56,8 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -150,6 +150,12 @@ public class RequirementController {
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
 	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+private ProjectClientService projectClientService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -239,8 +245,17 @@ public class RequirementController {
 			   }
 				model.addObject("clientContactList", clientContactList);
 			}
-		    
-		    
+	     	
+			List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+			for(ProjectClients projectClients : projectList){
+				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+				}
+			}
+			
+			model.addObject("projectList", projectList);
 		    //for requirement approvaers
 			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			String approverMode = "noApprovers";
@@ -326,7 +341,18 @@ public class RequirementController {
 			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
-		
+		List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+		for(ProjectClients projectClients : projectList){
+			if(projectClients.getOrgRelationId() != null){
+				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+				}
+			}
+		}
+
+		model.addObject("projectList", projectList);
 		
 		if(requirement != null && requirement.getId() != null){
 
@@ -489,6 +515,10 @@ public class RequirementController {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
+		//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
+		if(requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
+		requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
+		}
 		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
 		for (RequirementAssignTo assing : requirementAssignToList) {
 			RequirementAssignTo ra = new RequirementAssignTo();

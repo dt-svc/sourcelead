@@ -55,6 +55,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
@@ -78,6 +79,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -152,6 +154,9 @@ public class RequirementServiceImpl implements RequirementService {
 	private CandidateDao candidateDao;
 	@Autowired
 	private ProjectsDao projectsDao;
+	
+	@Autowired
+	private ProjectClientService projectClientService;
 	
 	@Override
 	 public String getRequirementId(OrgLocations orgLocations) {
@@ -310,6 +315,10 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getIndustryName())) {
 			requirement.setIndustryName(requirementDTO.getIndustryName());
 		}
+		if(StringUtils.isNotBlank(requirementDTO.getProjectClientID())){
+			ProjectClients projects = projectClientService.getProjectClientsByProjectID(Long.parseLong(requirementDTO.getProjectClientID()));
+			requirement.setProjectClientID(projects);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			requirement.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
 		}
@@ -429,6 +438,9 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getClientRate())) {
 			requirement.setClientRate(requirementDTO.getClientRate());
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getClientMaxRate())) {
+			requirement.setClientMaxRate(requirementDTO.getClientMaxRate());
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getClientRateType())) {
 			requirement.setClientRateType(requirementDTO.getClientRateType());
 		}
@@ -457,6 +469,24 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getReleaseToAllUsers())
 				&& "Y".equalsIgnoreCase(requirementDTO.getReleaseToAllUsers())) {
 			requirement.setReleaseJobToAllUsers(requirementDTO.getReleaseToAllUsers());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getMedicalClearence())) {
+			requirement.setMedicalClearence(requirementDTO.getMedicalClearence());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getSecurityClearance())) {
+			requirement.setSecurityClearance(requirementDTO.getSecurityClearance());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getOverTime())) {
+			requirement.setOverTime(requirementDTO.getOverTime());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getBackgroundCheck())) {
+			requirement.setBackgroundCheck(requirementDTO.getBackgroundCheck());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getGender())) {
+			requirement.setGender(requirementDTO.getGender());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
+			requirement.setExperienceLevel(requirementDTO.getExperienceLevel());
 		}
 		requirement.setStatus(Constants.TEAM_ACTIVE);
 		// requirement status
@@ -2916,6 +2946,24 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			reqTemplate.setEducation(null);
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getMedicalClearence())) {
+			reqTemplate.setMedicalClearence(requirementDTO.getMedicalClearence());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getSecurityClearance())) {
+			reqTemplate.setSecurityClearance(requirementDTO.getSecurityClearance());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getOverTime())) {
+			reqTemplate.setOverTime(requirementDTO.getOverTime());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getBackgroundCheck())) {
+			reqTemplate.setBackgroundCheck(requirementDTO.getBackgroundCheck());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getGender())) {
+			reqTemplate.setGender(requirementDTO.getGender());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
+			reqTemplate.setExperienceLevel(requirementDTO.getExperienceLevel());
 		}
 		reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 		reqTemplate.setCreatedDate(commonUtil.currentDate());

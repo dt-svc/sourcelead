@@ -66,6 +66,12 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
+			requirementIndex.setSecurityClearance(requirement.getSecurityClearance());
+			requirementIndex.setOverTime(requirement.getOverTime());
+			requirementIndex.setBackgroundCheck(requirement.getBackgroundCheck());
+			requirementIndex.setGender(requirement.getGender());
+			requirementIndex.setExperienceLevel(requirementIndex.getExperienceLevel());
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}
