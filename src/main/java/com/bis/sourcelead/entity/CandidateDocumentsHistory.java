@@ -53,9 +53,9 @@ public class CandidateDocumentsHistory implements Serializable {
 	@Column(name = "DESCRIPTION ")
 	@Type(type = "text")
 	private String description;
-	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
-	@Lob
-	private byte[] docFile;
+//	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
+//	@Lob
+//	private byte[] docFile;
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
@@ -105,15 +105,15 @@ public class CandidateDocumentsHistory implements Serializable {
 		this.description = description;
 	}
 	
-	public byte[] getDocFile()
-	{
-		return docFile;
-	}
-	
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
-	}
+//	public byte[] getDocFile()
+//	{
+//		return docFile;
+//	}
+//	
+//	public void setDocFile(byte[] docFile)
+//	{
+//		this.docFile = docFile;
+//	}
 	
 	public String getFileContentType()
 	{
