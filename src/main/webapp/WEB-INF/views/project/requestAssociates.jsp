@@ -1075,8 +1075,9 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var result = "";
 	            	    var candidateResume = "";
 	            	    
-	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+	            	    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+	            	    	candidateResume = '<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
