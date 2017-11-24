@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -256,4 +258,20 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(email != null && loginUserId != null) {
+			 String query = "from ReferContacts referContacts where referContacts.referFromUser.id = :loginUserId and referContacts.contactUserEmail = :email ";
+				Collection<ReferContacts> referContactsList = session.createQuery(query.toString()).setLong("loginUserId", loginUserId).setString("email", email).setCacheable(true).list();
+				if (referContactsList != null && referContactsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		 return flag;
+	}
+	
 }
