@@ -13,3 +13,24 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 											('JobListCampaign','Email', 'JobListCampaign', 'used for Joblist campaign', 'Job Campaign.','org', '{{JobListCampaign.signature}}', '{{JobListCampaign.salutation}},\n{{JobListCampaign.body}}\nNo.of Jobs : {{JobListCampaign.noOfJobs}}\n\n {{JobListCampaign.joblistTable}}','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 
 											
+DROP TABLE IF EXISTS `sourcelead`.`CONTACTS_GROUP`;
+CREATE TABLE `sourcelead`.`CONTACTS_GROUP` (
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  GROUP_NAME TEXT DEFAULT NULL,
+  CREATED_USER BIGINT,
+  STATUS INT,
+  CREATED_DATE DATE,
+  UPDATED_DATE DATE,
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY(CREATED_USER) REFERENCES `sourcelead`.`USER`(ID)
+) ;
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REFER_CONTACTS','GROUP_ID','TEXT NULL  AFTER `CONTACT_USER_UUID`');
+
+DROP TABLE IF EXISTS `sourcelead`.`REFER_CONTACTS_GROUP`;
+CREATE TABLE `sourcelead`.`REFER_CONTACTS_GROUP` (
+  CONTACT_ID BIGINT,
+  CONTACT_GROUP_ID BIGINT,
+  FOREIGN KEY(CONTACT_ID) REFERENCES `sourcelead`.`REFER_CONTACTS`(ID),
+  FOREIGN KEY(CONTACT_GROUP_ID) REFERENCES `sourcelead`.`CONTACTS_GROUP`(ID)
+) ;
