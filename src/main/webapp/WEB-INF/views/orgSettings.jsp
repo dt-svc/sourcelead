@@ -372,7 +372,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="SignatureHeading">Create Default Signature</h4>
+                                    <h4 id="SignatureHeading">Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i></h4>
                                     <div id="signLoading"></div>
                                     <div id="restorePopUp"></div>
                                 </div>
@@ -638,7 +638,7 @@ function configCoolingOff(){
 function loadSignature(){
 	
 	$("#campaignSignatrue").empty(); 
-	$("#SignatureHeading").html("Create Default Signature");
+	$("#SignatureHeading").html("Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i>");
 	document.getElementById("reset").style.display="";
 	document.getElementById("settings").style.display="none";
 
