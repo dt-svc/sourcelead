@@ -89,7 +89,7 @@ public interface UserRoleService {
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
 
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
-			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState) throws Exception;
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState,OrgLocations orgLocations) throws Exception;
 
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,

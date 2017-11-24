@@ -51,6 +51,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -61,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -309,36 +312,33 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementAssignedListByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody List<RequirementAssignTo> getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<RequirementAssignTo> getRequirementAssignedListByRequirementId(RequirementAssignToDTO requirementAssignToDTO, HttpServletRequest request) throws Exception
 	{
-		List<RequirementAssignTo> requirementAssignToList = new ArrayList<RequirementAssignTo>();
-		if (requirementId != null && !requirementId.isEmpty()) {
-			List<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
-			if (requirementAssignToListdb != null && !requirementAssignToListdb.isEmpty()) {
-				for (RequirementAssignTo assing : requirementAssignToListdb) {
-					RequirementAssignTo ra = new RequirementAssignTo();
-					StringBuilder assignUserSB = new StringBuilder();
-					if (assing.getAssignUserId().getLastName() != null) {
-						ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-					}
-					else {
-						ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+		ResponseList<RequirementAssignTo> requirementAssignToDtoResponse = new ResponseList<>();
+		ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
+		List<RequirementAssignTo> requirementAssignToList = list.getData();
+			if (list != null && list.getRecordsTotal() > 0) {
+				for (RequirementAssignTo assing : requirementAssignToList) {
+					if (assing.getAssignUserId() != null) {
+						assing.setAssignedUserName(assing.getAssignUserId().getFullName());
 					}
 					if (assing.getRoleId() != null) {
-						ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
+						assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					}
 					if (assing.getTeamId() != null) {
-						ra.setTeamName(assing.getTeamId().getName());
+						assing.setTeamName(assing.getTeamId().getName());
 					}
 					if (assing.getAssignUserId() != null) {
-						Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
-						ra.setApplicantCount(applicantCount.toString());
+						Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
+						assing.setApplicantCount(applicantCount.toString());
 					}
-					requirementAssignToList.add(ra);
 				}
 			}
-		}
-		return requirementAssignToList;
+		requirementAssignToDtoResponse.setData(requirementAssignToList);
+		requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
+		requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+		requirementAssignToDtoResponse.setError(list.getError());
+		return requirementAssignToDtoResponse;
 	}
 	
 	/**
@@ -1132,7 +1132,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1152,7 +1152,7 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}
+	}*/
 	
 	/**
 	 * @author Sammeta David Raju
@@ -1319,7 +1319,7 @@ public class RequirementListRestController {
 	 * @throws Exception
 	 * @returns void
 	 */
-	@RequestMapping(value = "/downloadOfferAttachment")
+	/*@RequestMapping(value = "/downloadOfferAttachment")
 	public void downloadOfferAttachment(@RequestParam(value = "offerId", required = false) Long offerId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
@@ -1339,7 +1339,7 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}
+	}*/
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId", method = RequestMethod.POST)

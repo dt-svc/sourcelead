@@ -229,9 +229,12 @@ function closeCertificatePopup(){
 		result = result	+ '	                   <input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true"  >';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
+		
 		result = result + '	                 <div id="endDateDiv">';
+		
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
+		
 		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
 		result = result	+ '	                    <select class="newSelect" class="required" field-name="End Month" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
@@ -249,11 +252,14 @@ function closeCertificatePopup(){
 		result = result	+ '	                       <option value="12&December">December</option>';
 		result = result + '	                   </select>';
 		result = result + '	                   </div>';
+		
 		result = result + '	                   <div class="col-md-6 padding_left" >';
 		result = result	+ '	                   <input type="text" max class="form-control input-sm" id="endYear" name="endYear" field-name="End Year"  placeholder="Enter Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 		result = result + '	                <div><p id="endYearValidation" class="text-danger small" style="display: none"></p>';
+		
 		result = result + '	                 </div>';
 		
+		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
 		result = result + '	                 </div> ';
 		
@@ -277,9 +283,9 @@ function closeCertificatePopup(){
 				.click(function(e) {
 					e.stopPropagation();
 				});
-		$('html').click(function() {
+		/* $('html').click(function() {
 			$(".edit-details").removeClass("edit-details-active");
-		});
+		}); */
 
 	}
 </script>

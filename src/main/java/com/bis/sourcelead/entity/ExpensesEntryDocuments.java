@@ -46,9 +46,9 @@ private Long id;
 @JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
 private ExpensesEntries expensesEntriesId;
 
-@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-@Lob
-private  byte[] docFile;
+//@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+//@Lob
+//private  byte[] docFile;
 	
 @Column(name = "FILE_CONTENT_TYPE")
 private String fileContentType;
@@ -90,13 +90,13 @@ public void setExpensesEntriesId(ExpensesEntries expensesEntriesId) {
 	this.expensesEntriesId = expensesEntriesId;
 }
 
-public byte[] getDocFile() {
-	return docFile;
-}
-
-public void setDocFile(byte[] docFile) {
-	this.docFile = docFile;
-}
+//public byte[] getDocFile() {
+//	return docFile;
+//}
+//
+//public void setDocFile(byte[] docFile) {
+//	this.docFile = docFile;
+//}
 
 public String getFileContentType() {
 	return fileContentType;

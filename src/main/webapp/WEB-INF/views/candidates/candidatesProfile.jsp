@@ -79,7 +79,7 @@ function editCandidate(candidateId){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-      if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+       
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
@@ -162,9 +162,8 @@ function editCandidate(candidateId){
             			 	}
             			 	var country = '';
             			 	if(json.country != null && json.country != '' && json.country != 'undefined'){
-            			 		state = json.country;            			 		
+            			 		country = json.country;            			 		
             			 	}
-            			 	
             			 	
             			 	var state = '';
             			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
@@ -181,7 +180,7 @@ function editCandidate(candidateId){
 							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
 						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
 						    result  = result + '</div>';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright" > <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result = result + '		    <div class="candidate-editdetails col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
@@ -233,12 +232,12 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
+							result = result + '<input type="text" class="form-control input-sm" name="address" id="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6" id="locationField">';
 							result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Location" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\');"></i>';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\',\'address\');"></i>';
 							result = result + '</div>'; 
 							
 							result = result + '</div>';
@@ -246,18 +245,18 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCountry" name="country" value="'+country+'" data-validation="required" field-name="Country"  placeholder="Enter your Country" type="text"></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" ></input>';
 							result = result + '</div>';
 							
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
+							result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" ></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
@@ -483,7 +482,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
+							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
 							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
@@ -492,9 +491,8 @@ function editCandidate(candidateId){
 						      }
 							employementType();
 							getVendorsByOrgLocation();
-							$(".edit-details").toggleClass("edit-details-active");
-							$(".collapse-div").removeClass("edit-details-active");
-							
+							$(".candidate-editdetails").addClass("candidate-editdetails-active");
+// 							$(".collapse-div").removeClass("edit-details-active");
 							
 							$(function(){
 							    var config = {
@@ -534,7 +532,7 @@ function editCandidate(candidateId){
                  },
                    
               }); 
-		 }
+		 
 }
 </script>
 
@@ -960,14 +958,14 @@ function candidateProfile(candidateId,candidateType){
 								
 								//end visa type
 								
-								 $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-									 $(".collapse-div").removeClass("edit-details-active");
-								 });
+// 								 $(".addUser-org").click(function(){
+// 									 $(".edit-details").toggleClass("edit-details-active");
+// 									 $(".collapse-div").removeClass("edit-details-active");
+// 								 });
 								 $(".close-div").click(function(){
 									 $(this).parent().toggleClass("edit-details-active");
 									 });
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .edit-details-active").click(function(e){
 									 e.stopPropagation();
 								 });
 								/*  $('html').click(function(){

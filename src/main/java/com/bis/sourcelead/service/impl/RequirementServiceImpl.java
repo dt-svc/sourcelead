@@ -214,20 +214,21 @@ public class RequirementServiceImpl implements RequirementService {
 		Requirement requirement = null;
 		String client = "";
 		String requirementClient = "";
+		Date date = new Date();
 		StringBuilder location = new StringBuilder();
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 			requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
 			requirement.setId(requirement.getId());
 			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		}
 		else {
 			requirement = new Requirement();
-			requirement.setCreatedDate(commonUtil.currentDate());
+			requirement.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setTotalApplicants(0);
 			requirement.setCreatedBy(user);
 			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		}
 		if (orgLocations != null) {
@@ -388,7 +389,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
 				String templateId = requirementDTO.getTemplateId();
 				Requirement templateRequirement = getRequirementByRequirementId(Long.parseLong(templateId));
-				requirement.setDocFile(templateRequirement.getDocFile());
+				requirement.setFileURL(templateRequirement.getFileURL());
 				requirement.setFileName(templateRequirement.getFileName());
 				requirement.setFileContentType(templateRequirement.getFileContentType());
 				requirement.setIsClientJob("N");
