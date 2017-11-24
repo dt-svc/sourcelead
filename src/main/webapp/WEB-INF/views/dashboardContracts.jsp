@@ -89,7 +89,13 @@ function contractList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-			                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>";
+			                     
+			                     if(opt.contractUUID != null && opt.contractUUID != '' && opt.contractUUID != 'undefined'){
+			                    	 result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>"; 
+			                     }else{
+			                    	 result = result +"<td><div><a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>";
+			                     }
+			                    
 			                     if(opt.vendorMsaCreated != true){
 			                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Msa' title='Create Msa'> / MSA</a>";
 			                     }
