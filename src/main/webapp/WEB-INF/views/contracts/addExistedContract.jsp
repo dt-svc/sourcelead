@@ -146,7 +146,7 @@ $(document).ready(function(){
           
          <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorVendor">
+              <div class="col-md-6" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
@@ -154,11 +154,15 @@ $(document).ready(function(){
                   </c:forEach>
                   </select>
               </div>
+            <div class="col-md-2 noPad refreshBtnStyle">
+		       <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender"> </i></a>
+			 	<i class="fa fa-refresh btn btn-default formic1" onclick=" refreshVendorList();" title="Refresh"></i>
+		 </div>	
           </div>                      
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorvendorContact">
+              <div class="col-md-6" id="errorvendorContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};" field-name="Vendor Contact">
@@ -179,12 +183,16 @@ $(document).ready(function(){
 					    </c:otherwise>
 					 </c:choose>
               </div>
+              <div class="col-md-2 noPad refreshBtnStyle">
+				   <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
+				    <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContacts();" title="Refresh"></i>
+			  </div>	
             </div>
             
             
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorClient">
+              <div class="col-md-6" id="errorClient">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
@@ -192,11 +200,15 @@ $(document).ready(function(){
                   </c:forEach>
                   </select>
               </div>
+                <div class="col-md-2 noPad refreshBtnStyle">
+		       <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender"> </i></a>
+			 	<i class="fa fa-refresh btn btn-default formic1" onclick="refreshClientList();" title="Refresh"></i>
+		 </div>	
           </div>                      
                       
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorClientContact">
+              <div class="col-md-6" id="errorClientContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};" field-name="Client Contact">
@@ -216,6 +228,10 @@ $(document).ready(function(){
 					    </c:otherwise>
 					 </c:choose>
               </div>
+                 <div class="col-md-2 noPad refreshBtnStyle">
+				   <a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client Contact"> </i></a>
+				    <i class="fa fa-refresh btn btn-default formic1" onclick="getClientContacts();" title="Refresh"></i>
+			  </div>
             </div>
         
             <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
@@ -513,6 +529,40 @@ function fileStore(id){
 	});
 }
 </script>
+
+<script>
+function refreshClientList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#clientOrgRelationId").empty();
+		        $("#clientOrgRelationId").append(output);
+		        $('#clientOrgRelationId').trigger("chosen:updated");
+	        }
+		 });
+		 
+	
+	
+}
+
+		 
+
+</script>
+
 <script>
 	function addDoc(){  
 				var checkMaxTsRowNum = $("#maxTaxRowNum").val();
@@ -1601,18 +1651,25 @@ function previewTemplatePDF(){
 	}
 	
 	function getVendor(){
+		alert("inside vendor");
+	
 		var sourceleadUrl ='${sourceleadUrl}';
+		alert("1");
 		var relationList = '${orgRelationsList}';
+		alert("2");
 		var associateId = $("#submissionOffersList").val();
+		alert("3"+associateId);
 		var map = new Object(); // or var map = {};
+		alert("4");
 		<c:forEach var="vendor" items="${orgRelationsList}">
 		        map['${vendor.id}'] = '${vendor.orgName}';
 		</c:forEach>
-		
+		alert("5");
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
+	        	 alert("su");
 	        	 var json = JSON.parse(data);
 	           	 var result = "";
 	           	 result = result + '<option value="">Select Vendor</option>';
@@ -1805,6 +1862,37 @@ function validateContractTitle(){
 	 }
 	
 }
+
+</script>
+
+<script>
+function refreshVendorList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/refreshVendorList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Vendor</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#orgRelationId").empty();
+		        $("#orgRelationId").append(output);
+		        $('#orgRelationId').trigger("chosen:updated");
+	        }
+		 });
+		 
+	
+	
+} 
 
 </script>
 

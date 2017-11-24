@@ -80,7 +80,7 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
+            <div class="col-md-7">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
@@ -95,6 +95,9 @@
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
+            <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="getRolesList()" title="Refresh"></i>
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">

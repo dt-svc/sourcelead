@@ -165,7 +165,7 @@ function getOrgDetails()
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
+            <div class="col-md-7">
               <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
                   <option value="">Select Client</option>
@@ -178,9 +178,15 @@ function getOrgDetails()
                    </c:if>  
                  </c:forEach> 
                 </select>
+	
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> </div>
             </div>
+                <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="refreshClientList();" title="Refresh"></i>
+			</div>            
+            
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -298,6 +304,14 @@ function getOrgDetails()
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+<script>
+function refreshClientList(){
+	window.location.reload(true);
+}
+</script>
+
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},

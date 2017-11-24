@@ -46,7 +46,7 @@
 			  <div class="form-group mb10">
 					<label class="col-md-3 mt10" for="Project Manager">Select Client<span
 						class="text-danger">*&nbsp;</span></label>
-					<div class="col-md-9">
+					<div class="col-md-7">
 						<div class="form-icon-min" id="clientsDiv">
 							<select class="form-control chosen-select"
 								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
@@ -64,6 +64,10 @@
 						</div>
 						<span class="hidden">Select Client</span>
 					</div>
+					  <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="validateEmail();getSpocUserDetails();getRolesList();" title="Refresh"></i>
+			</div>  
 				</div>
 			</div>
 			

@@ -810,7 +810,7 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
+                <div class="col-md-7">
                   <div>
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
@@ -837,6 +837,7 @@ $(document).ready(function () {
 			                    </c:if>
 							</c:forEach>
                     	  </select>
+                    	  
 						  </c:otherwise>
 				</c:choose>
                 
@@ -874,10 +875,14 @@ $(document).ready(function () {
                     </div>
                   </div>
                 </div>
+                <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick=" " title="Refresh"></i>
+			</div>	
               </div>
               <div class="form-group">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
+                <div class="col-md-7">
                   <div>
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
@@ -908,6 +913,10 @@ $(document).ready(function () {
                  </div>
                   
                 </div>
+                <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
+			</div>	
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>

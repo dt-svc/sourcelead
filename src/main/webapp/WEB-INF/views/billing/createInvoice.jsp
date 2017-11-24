@@ -73,20 +73,28 @@ function errRemoveClientContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-				              <div class="col-md-9 select-field" id="errClient">
+				              <div class="col-md-7 select-field" id="errClient">
 
 				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
+				               <div class="col-md-2 noPad refreshBtnStyle">
+				                  <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				                  <i class="fa fa-refresh btn btn-default formic1" onclick="" title="Refresh"></i>
+		                   	</div>  
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
 				                <input type="hidden" name="clientCurrency" id="clientCurrency">
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9" id="errClientContact">
+				              <div class="col-md-7" id="errClientContact">
 				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
 				              </div>
+				              <div class="col-md-2 noPad refreshBtnStyle">
+				                  <a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client Contact"> </i></a>
+				                  <i class="fa fa-refresh btn btn-default formic1" onclick="getClientContacts();" title="Refresh"></i>
+			                 </div>	
 				            </div>
 						<div class="form-group">
 							<label class="col-md-3">Invoice Id<span

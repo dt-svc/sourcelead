@@ -191,25 +191,33 @@
        <span id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9" id="errorvendor">
+			<div class="col-md-7" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
 			</div>
+			<div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorsByOrgLocationId();" title="Refresh"></i>
+			</div>		
 		</div>
 		
 		 <div class="form-group">
 			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9" id="errorvendorContact">
+			<div class="col-md-7" id="errorvendorContact">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
 			</div>
+			<div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
+			</div>	
 		</div>
 		</span>
                
               <div class="form-group">
                   <label class="col-md-3">Manager</label>
                   <div class="col-md-9">
-                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
 								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
@@ -310,7 +318,8 @@ if(type == 'C2C' || type == 'C2C-1099'){
 
 <script>
  function getVendorsByOrgLocationId(){
-		 $.ajax({
+	 
+	 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(data) {

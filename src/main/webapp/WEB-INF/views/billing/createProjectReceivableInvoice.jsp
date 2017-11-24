@@ -34,20 +34,28 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-7 select-field">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                </select>
               </div>
+              <div class="col-md-2 noPad refreshBtnStyle">
+				    <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				    <i class="fa fa-refresh btn btn-default formic1" onclick="validateEmail();getSpocUserDetails();getRolesList();" title="Refresh"></i>
+		      	</div>  
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="clientCurrency" id="clientCurrency">
             </div>
               
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 select-field">					   
+              <div class="col-md-7 select-field">					   
                 <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
               </div>
+               <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client Contact"> </i></a>
+			    <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
+			  </div>	
             </div>
               
             <div class="form-group">

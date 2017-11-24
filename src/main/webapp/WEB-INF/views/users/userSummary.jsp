@@ -1398,7 +1398,7 @@ $("#editRoleDetailsList").empty();
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
-						result = result + '  <select id="reportingManager" name="reportingManager" >'+
+						result = result + '  <select id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">'+
 			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
