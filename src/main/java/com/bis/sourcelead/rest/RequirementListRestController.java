@@ -1132,7 +1132,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1152,7 +1152,7 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}
+	}*/
 	
 	/**
 	 * @author Sammeta David Raju
@@ -1319,7 +1319,7 @@ public class RequirementListRestController {
 	 * @throws Exception
 	 * @returns void
 	 */
-	@RequestMapping(value = "/downloadOfferAttachment")
+	/*@RequestMapping(value = "/downloadOfferAttachment")
 	public void downloadOfferAttachment(@RequestParam(value = "offerId", required = false) Long offerId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
@@ -1339,7 +1339,7 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}
+	}*/
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId", method = RequestMethod.POST)

@@ -70,9 +70,9 @@ public class Asset implements Serializable{
 	private String monitor;
 	
 
-//	@Column(name = "ATTACHMENT",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
+	@Column(name = "ATTACHMENT",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -85,9 +85,9 @@ public class Asset implements Serializable{
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
 	private Employees shiftAEmployee;
 	
-//	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] shiftADocFile;
+	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] shiftADocFile;
 		
 	@Column(name = "SHIFT_A_FILE_CONTENT_TYPE")
 	private String shiftAFileContentType;
@@ -100,9 +100,9 @@ public class Asset implements Serializable{
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
 	private Employees shiftBEmployee;
 	
-//	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] shiftBDocFile;
+	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] shiftBDocFile;
 		
 	@Column(name = "SHIFT_B_FILE_CONTENT_TYPE")
 	private String shiftBFileContentType;
@@ -373,13 +373,6 @@ public class Asset implements Serializable{
 		this.shiftBEmpName = shiftBEmpName;
 	}
 
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
 
 	public String getFileContentType() {
 		return fileContentType;
@@ -412,4 +405,35 @@ public class Asset implements Serializable{
 	public void setEmployeesList(List<Employees> employeesList) {
 		this.employeesList = employeesList;
 	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public byte[] getShiftADocFile()
+	{
+		return shiftADocFile;
+	}
+
+	public void setShiftADocFile(byte[] shiftADocFile)
+	{
+		this.shiftADocFile = shiftADocFile;
+	}
+
+	public byte[] getShiftBDocFile()
+	{
+		return shiftBDocFile;
+	}
+
+	public void setShiftBDocFile(byte[] shiftBDocFile)
+	{
+		this.shiftBDocFile = shiftBDocFile;
+	}
+	
 }

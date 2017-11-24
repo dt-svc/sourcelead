@@ -2307,15 +2307,21 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 for(InvoiceDocument doc:documenetSet){
 			 EmailAttachment docAttachment = new EmailAttachment();
 			 String fileUrl = doc.getFileUrl();
-			 docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
-			 docAttachment.setName(doc.getFileName());
-			 documentList.add(docAttachment);
+			 if(StringUtils.isNotBlank(fileUrl)){
+				 docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+				 docAttachment.setName(doc.getFileName());
+				 documentList.add(docAttachment);
+			 }
+			
 		 }
 		 
 		 }
-		 emailAttachment.setDocFile(invoice.getDocFile());
-		 emailAttachment.setName(invoice.getFileName());
-		 attachmentList.add(emailAttachment);
+		 String invoiceFileUrl = invoice.getFileUrl();
+		 if(StringUtils.isNotBlank(invoiceFileUrl)){
+			 emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+			 emailAttachment.setName(invoice.getFileName());
+			 attachmentList.add(emailAttachment);
+		 }
 
 		 if(attachmentZip !=null){
 			 attachmentList.add(attachmentZip);
@@ -2555,8 +2561,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
 				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
 		invoice.setFileName(file.getName());
-		byte[] bytesArray = getByteArray(file);
-		invoice.setDocFile(bytesArray);
+		if (file.exists() && !file.isDirectory()) {
+			invoice.setFileName(file.getName());
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+		}
+		if (null != file) {
+			file.delete();
+		}
+		
+//		byte[] bytesArray = getByteArray(file);
+//		invoice.setDocFile(bytesArray);
 		// invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();

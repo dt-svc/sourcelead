@@ -75,6 +75,10 @@ public class CandidateDocumentsHistory implements Serializable {
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
 	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+	
+	
 	public Long getId()
 	{
 		return id;
@@ -254,4 +258,16 @@ public class CandidateDocumentsHistory implements Serializable {
 	{
 		this.createdUser = createdUser;
 	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+	
+	
 }
