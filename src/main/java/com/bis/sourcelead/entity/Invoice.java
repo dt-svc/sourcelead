@@ -175,10 +175,12 @@ public class Invoice {
 	@Column(name = "PREVIOUS_INVOICE_STATUS")
 	private String previousInvoiceStatus;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	
-	@Lob private byte[] docFile;
-	@Column(name = "DOC_FILENAME") private String fileName; 
+//	@Lob private byte[] docFile;
+	
+	@Column(name = "DOC_FILENAME")
+	private String fileName; 
 	
 	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
 	private String submissionApproverHierarchyId;
@@ -824,16 +826,6 @@ public class Invoice {
 	public void setProjectName(String projectName)
 	{
 		this.projectName = projectName;
-	}
-
-	public byte[] getDocFile()
-	{
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
 	}
 
 	public String getFileName()

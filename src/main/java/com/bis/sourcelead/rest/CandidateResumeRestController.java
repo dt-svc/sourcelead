@@ -302,7 +302,7 @@ public class CandidateResumeRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/offerDownloadDocument", method = RequestMethod.GET)
 	public void candidateAndOfferDownloadDocument(@RequestParam(value = "resumeId", required = false) Long resumeId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(resumeId);
@@ -322,5 +322,5 @@ public class CandidateResumeRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}
+	}*/
 }
