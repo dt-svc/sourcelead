@@ -73,21 +73,29 @@ function checkBox(){
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-7 select-field">
 								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
 									data-validation="required" field-name="Vendor">
 								</select>
-							</div>
+			</div>
+			 <div class="col-md-2 noPad refreshBtnStyle">
+				   <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor"> </i></a>
+				  <i class="fa fa-refresh btn btn-default formic1" onclick="getVendors();" title="Refresh"></i>
+		  	</div> 
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
             </div>
               
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-7 select-field">
                 <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
               </div>
+               <div class="col-md-2 noPad refreshBtnStyle">
+				   <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor Contact"> </i></a>
+				   <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContacts();" title="Refresh"></i>
+		       </div> 
             </div>
               
             <div class="form-group">

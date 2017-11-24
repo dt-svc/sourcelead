@@ -40,7 +40,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
               <div class="col-md-2 noPad refreshBtnStyle">
 				    <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				    <i class="fa fa-refresh btn btn-default formic1" onclick="validateEmail();getSpocUserDetails();getRolesList();" title="Refresh"></i>
+				    <i class="fa fa-refresh btn btn-default formic1" onclick="getClients(); " title="Refresh"></i>
 		      	</div>  
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="clientCurrency" id="clientCurrency">
@@ -54,7 +54,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
                <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client Contact"> </i></a>
-			    <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
+			    <i class="fa fa-refresh btn btn-default formic1" onclick="getClientContacts();" title="Refresh"></i>
 			  </div>	
             </div>
               

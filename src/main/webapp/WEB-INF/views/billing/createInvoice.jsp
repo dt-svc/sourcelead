@@ -80,7 +80,7 @@ function errRemoveClientContact(){
 				              </div>
 				               <div class="col-md-2 noPad refreshBtnStyle">
 				                  <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				                  <i class="fa fa-refresh btn btn-default formic1" onclick="" title="Refresh"></i>
+				                  <i class="fa fa-refresh btn btn-default formic1" onclick="getClients();" title="Refresh"></i>
 		                   	</div>  
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
 				                <input type="hidden" name="clientCurrency" id="clientCurrency">
