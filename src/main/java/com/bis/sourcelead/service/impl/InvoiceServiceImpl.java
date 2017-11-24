@@ -2306,7 +2306,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
 		 for(InvoiceDocument doc:documenetSet){
 			 EmailAttachment docAttachment = new EmailAttachment();
-			 docAttachment.setDocFile(doc.getDocFile());
+			 String fileUrl = doc.getFileUrl();
+			 docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
 			 docAttachment.setName(doc.getFileName());
 			 documentList.add(docAttachment);
 		 }
