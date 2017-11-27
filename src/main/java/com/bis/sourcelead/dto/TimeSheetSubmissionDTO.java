@@ -35,11 +35,9 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private String timesheetStatus;
 	
-	private boolean isModifyButtonVisible;
+	private int maxRowCount;
 	
-	private boolean isReopenButtonVisible;
-	
-	private boolean isReopenAcceptRejectButtonVisible;
+	private boolean reopenAcceptRejectButtonVisible;
 	
 	private String rejectedReason;
 	
@@ -47,19 +45,22 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private String reopenRejectedReason;
 	
-	private boolean isReopenRequestSent;
+	//Button Visibility
+	private boolean modifyButtonVisible;
 	
-	private boolean isTimesheetDocRequired;
+	private boolean reopenButtonVisible;
 	
-	private boolean isSubmitButtonVisible;
+	private boolean reopenRequestSent;
 	
-	private boolean isSaveButtonVisible;
+	private boolean submitButtonVisible;
 	
-	private boolean isCancelButtonVisible;
+	private boolean saveButtonVisible;
 	
-	private boolean isWeekCommentRequired;
+	private boolean cancelButtonVisible;
 	
-	private boolean isAttachmentRequired;
+	private boolean weekCommentRequired;
+	
+	private boolean attachmentRequired;
 	
 	private String responseStatus;
 
@@ -127,36 +128,36 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
-	public boolean isModifyButtonVisible() {
-		return isModifyButtonVisible;
-	}
-
-	public void setModifyButtonVisible(boolean isModifyButtonVisible) {
-		this.isModifyButtonVisible = isModifyButtonVisible;
-	}
-
-	public boolean isReopenButtonVisible() {
-		return isReopenButtonVisible;
-	}
-
-	public void setReopenButtonVisible(boolean isReopenButtonVisible) {
-		this.isReopenButtonVisible = isReopenButtonVisible;
-	}
-
-	public boolean isReopenAcceptRejectButtonVisible() {
-		return isReopenAcceptRejectButtonVisible;
-	}
-
-	public void setReopenAcceptRejectButtonVisible(boolean isReopenAcceptRejectButtonVisible) {
-		this.isReopenAcceptRejectButtonVisible = isReopenAcceptRejectButtonVisible;
-	}
-
 	public String getRejectedReason() {
 		return rejectedReason;
 	}
 
 	public void setRejectedReason(String rejectedReason) {
 		this.rejectedReason = rejectedReason;
+	}
+
+	public boolean isModifyButtonVisible() {
+		return modifyButtonVisible;
+	}
+
+	public void setModifyButtonVisible(boolean modifyButtonVisible) {
+		this.modifyButtonVisible = modifyButtonVisible;
+	}
+
+	public boolean isReopenButtonVisible() {
+		return reopenButtonVisible;
+	}
+
+	public void setReopenButtonVisible(boolean reopenButtonVisible) {
+		this.reopenButtonVisible = reopenButtonVisible;
+	}
+
+	public boolean isReopenAcceptRejectButtonVisible() {
+		return reopenAcceptRejectButtonVisible;
+	}
+
+	public void setReopenAcceptRejectButtonVisible(boolean reopenAcceptRejectButtonVisible) {
+		this.reopenAcceptRejectButtonVisible = reopenAcceptRejectButtonVisible;
 	}
 
 	public String getReopenReason() {
@@ -175,28 +176,12 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.reopenRejectedReason = reopenRejectedReason;
 	}
 
-	public boolean isReopenRequestSent() {
-		return isReopenRequestSent;
-	}
-
-	public void setReopenRequestSent(boolean isReopenRequestSent) {
-		this.isReopenRequestSent = isReopenRequestSent;
-	}
-
 	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
 
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
-	}
-
-	public boolean isTimesheetDocRequired() {
-		return isTimesheetDocRequired;
-	}
-
-	public void setTimesheetDocRequired(boolean isTimesheetDocRequired) {
-		this.isTimesheetDocRequired = isTimesheetDocRequired;
 	}
 
 	public List<TimesheetTaskDTO> getTimesheetTaskList() {
@@ -212,46 +197,6 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setWeekDays(List<WeekDaysDTO> weekDays) {
 		this.weekDays = weekDays;
-	}
-
-	public boolean isSubmitButtonVisible() {
-		return isSubmitButtonVisible;
-	}
-
-	public void setSubmitButtonVisible(boolean isSubmitButtonVisible) {
-		this.isSubmitButtonVisible = isSubmitButtonVisible;
-	}
-
-	public boolean isSaveButtonVisible() {
-		return isSaveButtonVisible;
-	}
-
-	public void setSaveButtonVisible(boolean isSaveButtonVisible) {
-		this.isSaveButtonVisible = isSaveButtonVisible;
-	}
-
-	public boolean isCancelButtonVisible() {
-		return isCancelButtonVisible;
-	}
-
-	public void setCancelButtonVisible(boolean isCancelButtonVisible) {
-		this.isCancelButtonVisible = isCancelButtonVisible;
-	}
-
-	public boolean isWeekCommentRequired() {
-		return isWeekCommentRequired;
-	}
-
-	public void setWeekCommentRequired(boolean isWeekCommentRequired) {
-		this.isWeekCommentRequired = isWeekCommentRequired;
-	}
-
-	public boolean isAttachmentRequired() {
-		return isAttachmentRequired;
-	}
-
-	public void setAttachmentRequired(boolean isAttachmentRequired) {
-		this.isAttachmentRequired = isAttachmentRequired;
 	}
 
 	public String getResponseStatus() {
@@ -270,8 +215,61 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.removedDocumentIds = removedDocumentIds;
 	}
 
-	
-	
+	public boolean isReopenRequestSent() {
+		return reopenRequestSent;
+	}
+
+	public void setReopenRequestSent(boolean reopenRequestSent) {
+		this.reopenRequestSent = reopenRequestSent;
+	}
+
+	public boolean isSubmitButtonVisible() {
+		return submitButtonVisible;
+	}
+
+	public void setSubmitButtonVisible(boolean submitButtonVisible) {
+		this.submitButtonVisible = submitButtonVisible;
+	}
+
+	public boolean isSaveButtonVisible() {
+		return saveButtonVisible;
+	}
+
+	public void setSaveButtonVisible(boolean saveButtonVisible) {
+		this.saveButtonVisible = saveButtonVisible;
+	}
+
+	public boolean isCancelButtonVisible() {
+		return cancelButtonVisible;
+	}
+
+	public void setCancelButtonVisible(boolean cancelButtonVisible) {
+		this.cancelButtonVisible = cancelButtonVisible;
+	}
+
+	public boolean isWeekCommentRequired() {
+		return weekCommentRequired;
+	}
+
+	public void setWeekCommentRequired(boolean weekCommentRequired) {
+		this.weekCommentRequired = weekCommentRequired;
+	}
+
+	public boolean isAttachmentRequired() {
+		return attachmentRequired;
+	}
+
+	public void setAttachmentRequired(boolean attachmentRequired) {
+		this.attachmentRequired = attachmentRequired;
+	}
+
+	public int getMaxRowCount() {
+		return maxRowCount;
+	}
+
+	public void setMaxRowCount(int maxRowCount) {
+		this.maxRowCount = maxRowCount;
+	}
 
 	
 }
