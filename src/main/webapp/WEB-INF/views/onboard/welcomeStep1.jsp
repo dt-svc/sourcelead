@@ -173,7 +173,7 @@ $(function(){
 			 <c:if test="${SourceLeadWeb_OnboardingManagerUserId != null}">
 					<h4>Manager</h4>
 			        <div class="welMana">
-						<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_OnboardingManagerUserId}'/>"></img>
+						<img onerror="predefineProfileImage(this);" class='m-t-xs' src="${SourceLeadWeb_OnboardingManagerUserId.fileUrl}"></img>
 						<span>
 							<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
 						</span>
@@ -185,7 +185,7 @@ $(function(){
 	<c:if test="${SourceLeadWeb_OnboardingTeamOwnerUserId != null}">
 		<h4>Team Owner</h4>
         <div class="welMana">
-			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWebSourceLeadWeb_OnboardingTeamOwnerUserId}'/>"></img>
+			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="${SourceLeadWebSourceLeadWeb_OnboardingTeamOwnerUserId.fileUrl}"></img>
 			<span>
 				<b><u>Name</u>: ${SourceLeadWeb_teamOwnerName}</b>
 				<b><u>Role</u>: ${SourceLeadWeb_teamOwnerRole}</b>
