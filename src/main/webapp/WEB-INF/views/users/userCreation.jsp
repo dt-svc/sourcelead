@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
@@ -191,26 +192,39 @@
        <span id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-7" id="errorvendor">
+			<div class="col-md-8 chooRadius" id="errorvendor">
+			 <div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();"><i class="fa fa-refresh "></i></span>
 			</div>
-			<div class="col-md-2 noPad refreshBtnStyle">
+			
+			<span class="col-md-2 noPad clearfix">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
+			</span>
+			
+			<%-- <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender"> </i></a>
 				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorsByOrgLocationId();" title="Refresh"></i>
-			</div>		
+			</div> --%>		
 		</div>
-		
+		</div>
 		 <div class="form-group">
 			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-7" id="errorvendorContact">
+			<div class="col-md-8 chooRadius" id="errorvendorContact">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();"><i class="fa fa-refresh "></i></span>
 			</div>
-			<div class="col-md-2 noPad refreshBtnStyle">
+			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+			<%-- <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
 				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
-			</div>	
+			</div>	 --%>
+		</div>
 		</div>
 		</span>
                
@@ -225,7 +239,7 @@
                       </select>
                   </div>
             </div>
-            
+            		
             
                 
                  <div class="form-group">

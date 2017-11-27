@@ -810,8 +810,8 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-7">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-10 pull-left">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -841,7 +841,9 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                 
-                  </div>
+                   <span class="input-group-addon cursorPointer bg-blue wid40" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
+              </div>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -875,15 +877,15 @@ $(document).ready(function () {
                     </div>
                   </div>
                 </div>
-                <div class="col-md-2 noPad refreshBtnStyle">
+<%--                 <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick=" " title="Refresh"></i>
-			</div>	
+				<i class="fa fa-refresh btn btn-default formic1" onclick="refreshRequirementClientList() ;" title="Refresh"></i>
+			</div> --%>	
               </div>
               <div class="form-group">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-7">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-10 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -910,13 +912,15 @@ $(document).ready(function () {
 				    </c:otherwise>
 				</c:choose>
                     
-                 </div>
+                   <span class="input-group-addon cursorPointer bg-blue wid40" id="contactRefreshId" value="" onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
+              </div>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                   
                 </div>
-                <div class="col-md-2 noPad refreshBtnStyle">
+<%--                 <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
 				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
-			</div>	
+			</div>	 --%>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
@@ -999,8 +1003,8 @@ $(document).ready(function () {
               </div>
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-7">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-10 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
@@ -1020,12 +1024,17 @@ $(document).ready(function () {
 							</select>
 					</c:otherwise>
 				</c:choose>
-                  </div>
+
+                   <span class="input-group-addon cursorPointer bg-blue wid40" onclick="getClientSubmissionTemplates(local);"><i class="fa fa-refresh "></i></span>
+              </div>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>                  
+                  
+                  
                 </div>
-                 <div class="col-md-2 noPad refreshBtnStyle">
+<%--                  <div class="col-md-2 noPad refreshBtnStyle">
 				                  <a href="<c:url value=" " />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor Contact"> </i></a>
 				                  <i class="fa fa-refresh btn btn-default formic1" onclick=" " title="Refresh"></i>
-		                   	</div> 
+		                   	</div>  --%>
               </div>
             </div>
           </div>
@@ -2937,5 +2946,45 @@ $(function() {
 	});
  }); 
 </script>
+<script>
+function refreshRequirementClientList(){
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#addClientId").empty();
+	        	 $("#selectContact").empty();
+	        	 $("#selectContact").trigger("chosen:updated");
+		        $("#addClientId").append(output);
+		        $('#addClientId').trigger("chosen:updated");
+		        
+	        }
+		 });
+	
+}
+</script>
+<script>
+function refreshRequirementClientContactList(){
+var a = document.getElementById('contactRefreshId');
+var valueArray = a.getAttribute('value').split(",");
+	if(valueArray[0] != ""){
+		clientContactList(valueArray[0],valueArray[1]);
+	}
+}
+</script>
+
  
 <jsp:include page="../masterFooter.jsp" />
