@@ -9,8 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -26,7 +26,6 @@ import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * Custom AuthenticationSuccessHandler
@@ -84,7 +83,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		    	userLoginSession.setIpaddress(ipAddress);
 			    userLoginSession.setUserId(loginUser);
 			    userLoginSession.setLoginTime(new Date());
-			    userLoginSession.setActionUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
 		    }

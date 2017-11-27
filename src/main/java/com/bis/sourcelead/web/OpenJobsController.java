@@ -55,7 +55,7 @@ public class OpenJobsController {
 	}
 	
 	
-	@RequestMapping(value = "/openRequirementsRedirect")///{title}  @PathVariable("title") String title,
+	@RequestMapping(value = "/openRequirementsRedirect")
 	 public ModelAndView openRequirementsRedirect(@RequestParam(value = "openJobsTitle", required = false) String openJobsTitle,
 			 @RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
 			 @RequestParam(value = "openJobsExperience", required = false) String openJobsExperience) throws Exception{
