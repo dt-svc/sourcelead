@@ -125,27 +125,6 @@ public class TimeApprovalRedefinedRestController {
 			
 		}
 		
-	/*	
-		@RequestMapping(value = "/timesheetfrequencyMonth", method = RequestMethod.POST ) 
-		public ModelAndView timesheetApprovalFrequencyMonth(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
-			ModelAndView model = new ModelAndView();		
-			timesheetApprovalDTO = timesheetApprovalDetails(timesheetApprovalDTO,request);
-			model.addObject("timesheetApproval", timesheetApprovalDTO);
-			model.setViewName("timesheet/timesheetApprovalSubmission");
-			return model;
-			
-		}
-		
-		
-		@RequestMapping(value = "/calculateWeekFrequency", method = RequestMethod.POST ) 
-		public ModelAndView calculateWeekFrequency(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
-			ModelAndView model = new ModelAndView();		
-			timesheetApprovalDTO = timesheetApprovalDetails(timesheetApprovalDTO,request);
-			model.addObject("timesheetApproval", timesheetApprovalDTO);
-			model.setViewName("timesheet/timesheetWeekFrequency");
-			return model;
-			
-		}*/
 		
 		
 		private TimesheetApprovalDTO timesheetApprovalDetails(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
@@ -367,6 +346,8 @@ public class TimeApprovalRedefinedRestController {
 			timesheetApprovalDTO.setStagesList(timesheetStageList);
 			if(StringUtils.isEmpty(timesheetApprovalDTO.getStage())){
 				timesheetApprovalDTO.setStage("All");
+			 }else {
+				 timesheetApprovalDTO.setStage(timesheetApprovalDTO.getStage()); 
 			 }
 			return timesheetApprovalDTO;
 			

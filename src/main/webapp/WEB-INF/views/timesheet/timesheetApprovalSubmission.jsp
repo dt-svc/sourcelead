@@ -34,9 +34,10 @@ $(document).ready(function() {
     </tr> 
     </thead>
     <tbody>
+    	 <jsp:include page="timesheetApprovalTableData.jsp"></jsp:include>
    </tbody>
   </table>
-   <jsp:include page="timesheetApprovalTableData.jsp"></jsp:include>
+  
 
 <script>
 $(document).on("mouseover", ".glyphicon-comment", function() { 
@@ -156,11 +157,43 @@ function cancelRejectSubmission(projectMemberId){
 	}
 </script>
 
+<script>
+function exportTimeSheetToPdfOrExcel(exportType){
+	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		var frequencyMonth = $("#frequencyMonth").val();
+		var timesheetFrequency = $('#timesheetFrequency').val();
+		var stage = $('#stage').val();
+		var client = $('#client').val();
+		var weekFrequency = $('#weekFrequency').val();
+		if(weekFrequency != null && weekFrequency !='undefined'){
+		var date = weekFrequency.split("To");
+		var startDate = date[0];
+		var endDate = date[1];
+		}
+		window.location.href = sourceleadUrl
+				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
+				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ "&stage=" + stage + "&timesheetFrequency="
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+	}
+</script>
+
+<script>
+ function dropDown(){
+	$("#exporrt").slideToggle(200);
+} 
+ $("html").click(function() {
+     $("#exporrt").slideUp(100);
+ });
+ $("#exporrt, .dropexport").click(function(e) {
+     e.stopPropagation();
+ });
+</script>  
+
 
 <script>
 function pagination(){ 
     $('#example').DataTable( {
-    	//"scrollX": true,    	
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,

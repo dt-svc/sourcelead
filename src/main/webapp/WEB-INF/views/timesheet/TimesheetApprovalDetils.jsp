@@ -34,14 +34,14 @@
 	<select id="client"	onchange="timesheetApprovalDetils('client');" class="form-control chosen-select" style="display: block;">
 		<option data-icon="fa fa-calendar" value="">Select Client</option>
 		<c:forEach var="clientList" items="${timesheetApprovalDTO.clientList}">
-			<option data-icon="fa fa-calendar" value="${clientList.key}">${clientList.value}</option>
+			<option data-icon="fa fa-calendar" ${clientList.key == timesheetApprovalDTO.client ? 'selected' : ''} value="${clientList.key}">${clientList.value}</option>
 		</c:forEach>
 	</select>
 </div>
 <div class="timeNewSe timeNewSe_client">
 	<select id="stage"	onchange="timesheetApprovalDetils('stage');" class="form-control chosen-select" style="display: block;">
 		<c:forEach var="stages" items="${timesheetApprovalDTO.stagesList}">
-			<option data-icon="fa fa-calendar" value="${stages}">${stages}</option>
+			<option data-icon="fa fa-calendar" ${stages == timesheetApprovalDTO.stage ? 'selected' : ''} value="${stages}">${stages}</option>
 		</c:forEach>
 	</select>
 </div>
@@ -61,51 +61,9 @@
 <div class="clearfix"></div>
 </div>
 <div class="timesheet_appr_table datatable_filter overflow_inherint">
-	<div id="approverDataTimesheetDiv">
+	 <div id="approverDataTimesheetDiv"> 
 		<jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
-	</div>
+	</div> 
 </div>
 
-<!-- -----------------------------------------------------script----------------------------------------------------- -->
-
-<!-- @Author : NareshBolisetty,Shivayogi -->
-<!-- when month is changed related weekFrequency will get appended -->
-<!-- <script>
-function calculateWeekFrequency(){
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-    var locationCode ='${SourceLeadWeb_locationCode}';
-    var userId = '${SourceLeadWeb_user.id}';
-    var frequencyMonth = $("#frequencyMonth").val();
-    if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
- 	   frequencyMonth = '';
-    
-      var timesheetFrequency = $('#timesheetFrequency').val();
-      if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')
-   	 timesheetFrequency = '';
-      
-      var weekFrequency = $('#weekFrequency').val();
-    if((weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined'))
- 	   weekFrequency = '';
-    
-    var stage = $('#stage').val();
-    if(stage == null || stage == '' || stage == 'undefined')
- 	   stage = '';
-    
-    var client = $('#client').val();
-    if(client == null || client == '' || client == 'undefined')
- 	   client = '';
-    $("#weekFreTotalDiv").empty();
-    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	   $.ajax({
-	          type : "POST",
-	      	  url: sourceleadUrl+"/calculateWeekFrequency?&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId,		
-		      success :function(data) {
-		    	  $("#weekFreTotalDiv").empty();
-		    	  $("#weekFreTotalDiv").append(data);
-		    	  $("#loadTime").removeAttr('style');
-		    	  prepareChosenScripts();  
-		      }
-	    }); 
-}
-</script> -->
 
