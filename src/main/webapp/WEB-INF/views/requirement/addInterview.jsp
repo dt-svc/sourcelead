@@ -51,7 +51,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row<i class="fa fa-info-circle" title="Can Schedule multiple Interviews for multiple applicants at different slots"></i></a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -124,9 +124,9 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others<i class="fa fa-info-circle" title="Notify to others than interviewers through their email id"></i></b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
 
-	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time <i class="fa fa-info-circle" title="Applicants can propose their availability slots"></i></b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	
 	result = result + '</div>';
 	
@@ -148,7 +148,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before<i class="fa fa-info-circle" title="Set reminder notification about interview to the interviewers and applicants"></i></strong>';
+	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
 	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
@@ -325,7 +325,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;" class="positionRelative">
-<small class='requiresymbol text-danger'>*</small><i class='fa fa-info-circle' title='Can schedule interviews for multiple applicants at a single slot'></i>
+<small class='requiresymbol text-danger'>*</small>
        <select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
@@ -362,7 +362,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd8" style="display: none; float: left;" >
-		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o" ></i></button>
+		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
 
 	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
 	 <a href="#" title="Remove" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>

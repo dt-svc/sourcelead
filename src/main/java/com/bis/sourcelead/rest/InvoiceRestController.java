@@ -223,15 +223,32 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	/**
-	 * save invoice
-	 * @param invoiceDTO
-	 * @param saveType
-	 * @param invoiceType
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
+	@RequestMapping(value = "/downloadInvoiceAttachment")
+    public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
+		
+		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		    response.setContentType("application/octet-stream");
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
+			InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+ }
+	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
@@ -694,7 +711,7 @@ public class InvoiceRestController {
 	     	
 	 	}
     
-	/*  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
 	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
 		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
 			    response.setContentType("application/octet-stream");
@@ -718,7 +735,7 @@ public class InvoiceRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		} */ 
+		}  
 
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)

@@ -55,7 +55,7 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3 paddingRight">Applicable For All <i class='fa fa-info-circle' title='Restrict Day will be apllicable for all users then Yes.If No select the roles to whom the restrict day will be applicable'></i></label>
+       <label class="col-md-3 paddingRight">Applicable For All</label>
        <div class="col-md-9">
  			<div class="clearfix mb"> 
  			<c:if test="${empty restrictDay.applicableToAll}">

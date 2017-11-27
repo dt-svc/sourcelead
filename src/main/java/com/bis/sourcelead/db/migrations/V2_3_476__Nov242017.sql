@@ -1,3 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REFER_CONTACTS','FILE_URL','TEXT NULL AFTER `JSON_OUTPUT`');
-
-ALTER TABLE `sourcelead`.`REFER_CONTACTS` DROP COLUMN `DOC_FILE`;

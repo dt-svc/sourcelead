@@ -101,9 +101,6 @@ public class RequirementListController {
 		
 	    model.addObject("loginOrgLocId", orgLocations.getId());
 	    
-	    List<String> visaList = lookUpDataService.getAllVisaByCategory();
-	    model.addObject("visaList", visaList);
-	    
 	    List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
