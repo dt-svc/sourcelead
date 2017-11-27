@@ -776,7 +776,7 @@ public class MailBoxRestController {
       		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
       		
-      		String[] tableColumns = {"ischeck","contactName", "email", "source"};
+      		String[] tableColumns = {"ischeck","contactName", "email","groups","source"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "desc"; //by default referContactsDTO order
 			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {

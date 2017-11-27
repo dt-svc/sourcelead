@@ -1,22 +1,10 @@
 package com.bis.sourcelead.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.james.mime4j.dom.address.Mailbox;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,17 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ClientVendorDTO;
-import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
@@ -48,7 +34,6 @@ import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class CampaignController {
@@ -84,6 +69,10 @@ public class CampaignController {
 	
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	ContactsGroupService contactsGroupService;
+	
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -123,10 +112,13 @@ public class CampaignController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/joblistMail")
- 	public ModelAndView joblistMail(HttpServletRequest request) {
+ 	public ModelAndView joblistMail(HttpServletRequest request) throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("joblistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
  	}
 	

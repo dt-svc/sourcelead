@@ -90,22 +90,6 @@ $(document).ready(function() {
        			
 			  </div>
       		<a href="javascript:void(0)" class="pull-right closemld" title="Close Div">&times;</a>
-       		<ul class="list-unstyled mt10">
-       			<li>
-       			<div class="pull-left tbldata-dotdot">Folder1</div>
-					<span class="pull-right text-muted folder-ed">
-       				<i class="fa fa-pencil cursorPointer paddingRight" title="Edit"></i>
-       				<i class="fa fa-trash-o cursorPointer paddingLeft" title="Edit"></i>
-       			</span>
-       			</li>
-       			<li>
-       				<div class="pull-left tbldata-dotdot">Folder2</div>
-					<span class="pull-right text-muted folder-ed">
-       				<i class="fa fa-pencil cursorPointer paddingRight" title="Edit"></i>
-       				<i class="fa fa-trash-o cursorPointer paddingLeft" title="Edit"></i>
-       			</span>
-       			</li>
-       		</ul>
        </div>
        <!-- ManageLabels div -->
 			  	</div>

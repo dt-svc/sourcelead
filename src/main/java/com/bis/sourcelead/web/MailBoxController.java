@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -91,6 +93,9 @@ public class MailBoxController {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	ContactsGroupService contactsGroupService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -135,10 +140,16 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/composeMail")
- 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
+ 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
+		    
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("composeMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+ 			 model.addObject("contactsGroupList", contactsGroupList);
+ 			 
  			if(!isNullOrEmpty(UUID)){
  				model.addObject("UUID", UUID);
  				UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
@@ -186,10 +197,15 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
- 	public ModelAndView hotlistMail(HttpServletRequest request) {
+ 	public ModelAndView hotlistMail(HttpServletRequest request) throws Exception {
+		
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
  	}
 	
