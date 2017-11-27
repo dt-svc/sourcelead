@@ -79,7 +79,7 @@ margin-top: 52px; padding:10px; border: 1px solid #ddd;
 <script> 
  window.onload = function() {
 	 var actionUUID = '${actionUUID}';
-actionHistoryList(actionUUID);
+	 actionHistoryList(actionUUID);
  };
 </script>
 
@@ -88,7 +88,7 @@ function actionHistoryList(actionUUID){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestLocationActionHistoryList?actionUUID="+actionUUID,    
+           url: sourceleadUrl+"/ws/getRestLocationActionHistoryList?actionUUID="+actionUUID,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -107,11 +107,11 @@ function actionHistoryList(actionUUID){
 	                    		 activeClass = "class='active Activation'";
 	                    		 orgLocation = opt.orgLocations.id;
 	                    	 }
-	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation('+userSessionId+','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
+	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation('+actionUUID+','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
             	    	 }
-            	    	 
             	    	outPut = outPut + '		</div>';
 	                    $("#actionHistoryOrgList").append(outPut);
+	                   
 	                    actionHistoryListByOrgLocation(actionUUID, orgLocation);
             	     }
           		},
@@ -127,7 +127,7 @@ function actionHistoryListByOrgLocation(actionUUID, orgLocation){
 	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestActionHistoryList?actionUUID="+actionUUID+"&orgLocation="+orgLocation,    
+           url: sourceleadUrl+"/ws/getRestActionHistoryList?actionUUID="+actionUUID+"&orgLocation="+orgLocation,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);

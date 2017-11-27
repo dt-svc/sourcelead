@@ -4,7 +4,7 @@
 	<h3>About SourceLead</h3>
     <p>Great Work starts with Great Talent Maximized by Exceptional Technology<br>
 SourceLead provides decades of experience in building and delivering workforce solutions. Our Mantra is “Right Talent, Right Place, Right Time”. In our pursuit of excellence, every team member strives to provide a positive customer experience by staying current with industry standards. </p>
-  <img src="resources/css/static-web/images/wel-ban.png" alt=""/>
+  <img src="/resources/css/static-web/images/wel-ban.png" alt=""/>
   <p>Feedback in the market is suggesting that more companies & staffing firms are looking for better ways to button up the talent acquisition process. A process that is missing certain capabilities such as collaboration, faster selection processes without compromising quality, Adherence to Compliancy and ways to improve accountability. Well, SourceLead is here!</p>
   <div class="clear"></div>
   </section>
