@@ -329,13 +329,13 @@ $(document).ready(function () {
                 <select class="chosen-select form-control" id="projectId" name="projectClientID" field-name="Project Name">
                 <option value="">--Select Project--</option>
                 
-                <c:forEach var="project" items="${projectList}">
+                <c:forEach var="projectClient" items="${projectList}">
 								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
-								<c:if test="${! empty project.clientName}">
-		                           <option value="${project.id}" ${project.id  == requirement.projectID.id  ? 'selected' : ''} >${project.projectId.projectName} (${project.clientName})</option>
+								<c:if test="${! empty projectClient.clientName}">
+		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
 								 </c:if>
-								 <c:if test="${empty project.clientName}">
-								 <option value="${project.id}" ${project.id  == requirement.projectID.id  ? 'selected' : ''} >${project.projectId.projectName}</option>
+								 <c:if test="${empty projectClient.clientName}">
+								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
 								 </c:if>
 				                    	
 				                 <%--    </c:if>   --%>
@@ -2894,7 +2894,6 @@ function minMaxRate(){
 <script>
 //Function to validate if maximum rate value is more the minimum rate value
 function clientMinMaxRate(){
-   alert("clientMinMaxRate();");
 	var maxRate = ($('#clientMaxRate').val());
     var minRate = ($('#clientRate').val());
     

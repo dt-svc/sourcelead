@@ -71,7 +71,10 @@ public class RequirementHelper {
 			requirementIndex.setOverTime(requirement.getOverTime());
 			requirementIndex.setBackgroundCheck(requirement.getBackgroundCheck());
 			requirementIndex.setGender(requirement.getGender());
-			requirementIndex.setExperienceLevel(requirementIndex.getExperienceLevel());
+			requirementIndex.setExperienceLevel(requirement.getExperienceLevel());
+			if(requirement.getProjectClientID() != null){
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().toString());
+				}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}

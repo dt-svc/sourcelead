@@ -525,6 +525,7 @@ public class RequirementReleaseRestController {
 		//requirement.setClientRateType(parentRequirement.getClientRateType());
 		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
 		requirement.setClientRate(parentRequirement.getRate());
+		requirement.setClientMaxRate(parentRequirement.getClientMaxRate());
 		requirement.setClientRateType(parentRequirement.getRateType());
 		requirement.setTotalApplicants(0);
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());

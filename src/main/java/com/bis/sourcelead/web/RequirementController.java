@@ -248,13 +248,14 @@ private ProjectClientService projectClientService;
 	     	
 			List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
 			for(ProjectClients projectClients : projectList){
+				if(projectClients.getOrgRelationId() != null){
 				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
 			}
-			
+			}
 			model.addObject("projectList", projectList);
 		    //for requirement approvaers
 			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
@@ -516,7 +517,7 @@ private ProjectClientService projectClientService;
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
 		//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
-		if(requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
+		if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
 		requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
 		}
 		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();

@@ -236,7 +236,7 @@
 			            	<div class="clearfix"></div> 
 		                </div>
 		                
-		                <div class="require_wrap_details_cta"> <b>Client Name: ${requirement.clientRate}  ${requirement.clientRateType}</b><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span>
+		                <div class="require_wrap_details_cta"> <b>Client Name:</b><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span>
 			            	<div class="clearfix"></div> 
 			            </div>  
 			            
@@ -244,32 +244,32 @@
 						    <c:when test="${!empty requirement.parentRequirement}">
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}   ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
@@ -283,22 +283,22 @@
 						    <c:otherwise>
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>

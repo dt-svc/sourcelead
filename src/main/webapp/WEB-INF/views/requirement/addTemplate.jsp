@@ -60,8 +60,73 @@ width: 100% !important;
 					<div class="clearfix"></div>
 					<div class="mt pras">
 					
-					<div class="col-md-6">
+					<div class="col-md-12 myForm">
 					
+	                       <div class="form-group">
+							<label class="col-md-3">Education</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
+									<c:forEach var="edu" items="${educationsList}">
+										<c:if
+											test="${fn:contains(requirement.reqEducationListString, edu)}">
+											<option selected value="${edu}">${edu}</option>
+										</c:if>
+										<c:if
+											test="${!fn:contains(requirement.reqEducationListString, edu)}">
+											<option value="${edu}">${edu}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+                     <%-- <div class="form-group">
+							<label class="col-md-3">Skills</label>
+							<div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+									name="skills" id="skills" data-validation-optional="true">
+									<c:forEach var="skill" items="${skillsList}">
+										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option selected value="${skill.name}">${skill.name}</option>
+										</c:if>
+										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
+											<option value="${skill.name}">${skill.name}</option>
+										</c:if>
+									</c:forEach>
+								</select>
+							</div>
+						</div>  --%>
+						
+						 <div class="form-group mt25">
+			              <label class="col-md-3">Skills</label>
+			              <div class="col-md-9">
+			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
+			               <c:forEach var="skill" items="${skillsList}">
+			               		<c:set var = "NUM" value = "${0}"/>
+			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
+								    <c:if test="${existedSkill eq skill}">
+								    	<c:set var = "NUM" value = "${1}"/>
+								    	<option selected value="${skill}">${skill}</option>
+								    </c:if>
+								</c:forEach>
+								<c:if test="${NUM == 0}">
+									<option  value="${skill}">${skill}</option>
+								</c:if>
+			                </c:forEach>
+			                </select>
+			              </div>
+			            </div> 
+					<%-- 	<div class="form-group">
+							<label class="col-md-3">Description</label>
+							<div class="col-md-9">
+								<textarea rows="2" class="form-control" id="description"
+									name="description" value="${requirement.description}"
+									field-name="Description"
+									data-validation="validate_length length2-5000"
+									data-validation-optional="true">${requirement.description}</textarea>
+							</div>
+						</div> --%>
+
 					<div class="form-group" id="jobTitleDiv">
 							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
 							<div class="col-md-9">
@@ -245,73 +310,7 @@ width: 100% !important;
 					
 					</div>
 	
-	                  <div class="col-md-6">     
-	                       <div class="form-group">
-							<label class="col-md-3">Education</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
-									<c:forEach var="edu" items="${educationsList}">
-										<c:if
-											test="${fn:contains(requirement.reqEducationListString, edu)}">
-											<option selected value="${edu}">${edu}</option>
-										</c:if>
-										<c:if
-											test="${!fn:contains(requirement.reqEducationListString, edu)}">
-											<option value="${edu}">${edu}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
-
-                     <%-- <div class="form-group">
-							<label class="col-md-3">Skills</label>
-							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="skills" id="skills" data-validation-optional="true">
-									<c:forEach var="skill" items="${skillsList}">
-										<c:if test="${fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option selected value="${skill.name}">${skill.name}</option>
-										</c:if>
-										<c:if test="${!fn:contains(requirement.reqSkillsListString, skill.name)}">
-											<option value="${skill.name}">${skill.name}</option>
-										</c:if>
-									</c:forEach>
-								</select>
-							</div>
-						</div>  --%>
-						
-						 <div class="form-group mt25">
-			              <label class="col-md-3">Skills</label>
-			              <div class="col-md-9">
-			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
-			               <c:forEach var="skill" items="${skillsList}">
-			               		<c:set var = "NUM" value = "${0}"/>
-			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
-								    <c:if test="${existedSkill eq skill}">
-								    	<c:set var = "NUM" value = "${1}"/>
-								    	<option selected value="${skill}">${skill}</option>
-								    </c:if>
-								</c:forEach>
-								<c:if test="${NUM == 0}">
-									<option  value="${skill}">${skill}</option>
-								</c:if>
-			                </c:forEach>
-			                </select>
-			              </div>
-			            </div> 
-					<%-- 	<div class="form-group">
-							<label class="col-md-3">Description</label>
-							<div class="col-md-9">
-								<textarea rows="2" class="form-control" id="description"
-									name="description" value="${requirement.description}"
-									field-name="Description"
-									data-validation="validate_length length2-5000"
-									data-validation-optional="true">${requirement.description}</textarea>
-							</div>
-						</div> --%>
-						
-						</div>
+	                  
 						
 						<div class="clearfix"></div>
 						<div class="clearfix mb">
