@@ -1094,7 +1094,6 @@ $('body').on('blur', '#rejected_form', function() {
 <script>
 function backOutApplicantSave(submissionId,requirementId,submissionType){
 	if ($('#backOut_form').validate(false, validationSettings)) {
-		alert("fff")
 		var formData =  getFormData('backOut_form'); 
 		$.ajax({
 			type : "POST",

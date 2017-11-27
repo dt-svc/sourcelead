@@ -422,7 +422,35 @@
 													+ '<td><div class="tblwidth-150"><span>'
 													+ opt.submissionStatus
 													+ '</span>';
-											result = result + '</div></td>';
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType != 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType == 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Other: "
+														+ opt.backOutCategoryOther
+														+ '<br>'
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
 											return result;
 										}
 									} ],
