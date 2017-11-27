@@ -86,8 +86,6 @@ $(document).ready(function() {
        			</button>
        			
        			<div id="groupList"></div>
-       			<div id="deleteGroupPopUp"></div>
-       			
 			  </div>
       		<a href="javascript:void(0)" class="pull-right closemld" title="Close Div">&times;</a>
        </div>
@@ -160,6 +158,8 @@ $(document).ready(function() {
 	</div>
   
 </section>
+
+<div id="deleteGroupPopUp"></div>
 
 <!-- Create Label div html -->
   	<div class="comMask" onClick="maskFade();"></div>
