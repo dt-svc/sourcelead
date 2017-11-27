@@ -58,7 +58,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private boolean cancelButtonVisible;
 	
-	private boolean weekCommentRequired;
+	private boolean weekCommentVisible;
 	
 	private boolean attachmentRequired;
 	
@@ -215,7 +215,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.removedDocumentIds = removedDocumentIds;
 	}
 
-	public boolean isReopenRequestSent() {
+	public boolean getReopenRequestSent() {
 		return reopenRequestSent;
 	}
 
@@ -223,7 +223,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.reopenRequestSent = reopenRequestSent;
 	}
 
-	public boolean isSubmitButtonVisible() {
+	public boolean getSubmitButtonVisible() {
 		return submitButtonVisible;
 	}
 
@@ -231,7 +231,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.submitButtonVisible = submitButtonVisible;
 	}
 
-	public boolean isSaveButtonVisible() {
+	public boolean getSaveButtonVisible() {
 		return saveButtonVisible;
 	}
 
@@ -239,7 +239,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.saveButtonVisible = saveButtonVisible;
 	}
 
-	public boolean isCancelButtonVisible() {
+	public boolean getCancelButtonVisible() {
 		return cancelButtonVisible;
 	}
 
@@ -247,15 +247,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.cancelButtonVisible = cancelButtonVisible;
 	}
 
-	public boolean isWeekCommentRequired() {
-		return weekCommentRequired;
-	}
-
-	public void setWeekCommentRequired(boolean weekCommentRequired) {
-		this.weekCommentRequired = weekCommentRequired;
-	}
-
-	public boolean isAttachmentRequired() {
+	public boolean getAttachmentRequired() {
 		return attachmentRequired;
 	}
 
@@ -269,6 +261,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setMaxRowCount(int maxRowCount) {
 		this.maxRowCount = maxRowCount;
+	}
+
+	public boolean isWeekCommentVisible() {
+		return weekCommentVisible;
+	}
+
+	public void setWeekCommentVisible(boolean weekCommentVisible) {
+		this.weekCommentVisible = weekCommentVisible;
 	}
 
 	

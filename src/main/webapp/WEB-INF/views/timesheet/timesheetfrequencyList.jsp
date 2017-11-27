@@ -4,7 +4,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  <div class='timeNewSe timeNewSe_a addicon'>
-	<select id='timesheetFrequency' name='timesheetFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >
+   <!--  <input type="hidden" name="timeFrequencies" value="timesheetEntryDetailsDTO.timeFrequencies"/> -->
+	<select id='timesheetFrequency' name='currentTimeFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >
 		<c:forEach var="tf" items="${timesheetEntryDetailsDTO.timeFrequencies}">
 		    <option data-icon='fa fa-calendar' ${tf.key == timesheetEntryDetailsDTO.currentTimeFrequency ? "selected='selected'":"" } value="${tf.key}">${tf.value}</option>
 		</c:forEach>
@@ -29,6 +30,10 @@
 	        		      success :function(data) {
 	        		    	  $("#timesheetDivByFrequency").empty();
 	        		    	  $("#timesheetDivByFrequency").append(data);
+	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+	        		    	  }
 	        		    	  $("#loadTime").removeAttr('style');
 	        		      }
 	        	    }); 
