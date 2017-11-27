@@ -817,7 +817,6 @@ public class CandidateListRestController {
 		StringBuffer activitySummary = new StringBuffer();
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
-		candidate.setDocFile(null);
 		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
@@ -1023,7 +1022,7 @@ public class CandidateListRestController {
 	 * 
 	 * @throws NullPointerException
 	 */
-	@RequestMapping(value = "/displayCandidateImage/{candidateId}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/displayCandidateImage/{candidateId}", method = RequestMethod.GET)
 	public void displayUserImage(@PathVariable Long candidateId, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) {
 
@@ -1048,7 +1047,7 @@ public class CandidateListRestController {
 					e1.printStackTrace();
 				}
 		
-     }
+     }*/
 			 
 	
 	  /**
