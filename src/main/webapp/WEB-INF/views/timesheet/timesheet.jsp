@@ -1128,12 +1128,6 @@ function newSaveTimesheet(status,savingType){
 </script>
 
 
-
-
-
-
-
-
 <script>
  function timesheetDbSave(status,savingType){
 	     $("#choicepopUp").empty(); 
