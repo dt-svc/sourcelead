@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
  * Custom AuthenticationSuccessHandler
@@ -83,6 +84,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		    	userLoginSession.setIpaddress(ipAddress);
 			    userLoginSession.setUserId(loginUser);
 			    userLoginSession.setLoginTime(new Date());
+			    userLoginSession.setActionUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
 		    }
@@ -91,16 +93,16 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		} 
 	    finally{
 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
+	    		response.sendRedirect("/slead/dashboard?invitation=true");
 	    	}else{
 	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID);
+	    			response.sendRedirect("/slead/dashboard?requirementUUID="+requirementUUID);
 	    		}
 	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
+	    			response.sendRedirect("/slead/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
 	    		}
 	    		else{
-	    			response.sendRedirect("/sourcelead/dashboard");
+	    			response.sendRedirect("/slead/dashboard");
 	    		}
 	    		
 	    	}
