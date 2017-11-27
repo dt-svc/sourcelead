@@ -50,9 +50,9 @@ private static final long serialVersionUID = 1L;
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
-    @Column(name = "DOC_FILE",columnDefinition="mediumblob")
+  /*  @Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
-	private  byte[] docFile;
+	private  byte[] docFile;*/
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -61,10 +61,7 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String fileName;
 	
-    @Column(name = "UPLOADED_DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] uploadedDocFile;
-		
+
 	@Column(name = "UPLOADED_DOC_FILE_CONTENT_TYPE")
 	private String uploadedFileContentType;
 	
@@ -127,14 +124,6 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {
@@ -223,16 +212,6 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentStatus(OnboardStatus documentStatus) {
 		this.documentStatus = documentStatus;
-	}
-
-	public byte[] getUploadedDocFile()
-	{
-		return uploadedDocFile;
-	}
-
-	public void setUploadedDocFile(byte[] uploadedDocFile)
-	{
-		this.uploadedDocFile = uploadedDocFile;
 	}
 
 	public String getUploadedFileContentType()

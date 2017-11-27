@@ -5564,6 +5564,19 @@ bottom:-30px !important; padding: 0px 6px 0px 6px !important;
 left: 25% !important;
 }
 
+.timBtnWidth {
+width: 240px;
+}
+.timBtnWidth b {
+width: 47%; margin: 0px 3% 0px 0px; float: left;
+}
+.timBtnWidth .glyphicon-comment {
+float: left; top: 5px
+}
+
+
+
+
 /*    Responsive CSS    */
 
 
@@ -5775,7 +5788,8 @@ left: 25% !important;
 }
 
 }
-       
+
+
 @media screen and (max-width: 500px){
  .mobileShow {
 	display: block;
@@ -5801,3 +5815,150 @@ left: 25% !important;
 .timBtnWidth .glyphicon-comment {
 	float: left; top: 5px
 }
+/*    Email Notification    */
+
+.clear {
+	clear: both;
+}
+.emailOut {
+	width: 100%; margin: 0px 0px; padding: 0px 0px; position: absolute; top: 0px; left: 0px; display: block; z-index: 100;
+	box-sizing: border-box; background-color: #fff; box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+}
+.emailHead {
+	width: 1150px; margin: 0px auto; position: relative; padding: 5px 0px 2px;
+}
+.elogo{
+	width: 280px; float: left; padding: 0px 0px 0px 0px;
+}
+.elogo img {
+	width: 100%;
+}
+.emailHead ul {
+	float: right; padding: 0px 0px; margin: 0px 0px;
+}
+.emailHead ul li {
+	list-style-type: none; float: left; padding: 14px 0px 1px 30px;
+}
+.emailHead ul li a{
+	font-size: 16px; font-weight: 400; color: #454545; padding: 3px; display: block; text-decoration: none;
+}
+.emailHead ul li a i {
+	display: inline-block; padding: 0px 10px 0px 0px;
+}
+.emailBg {
+	position: fixed; width: 100%; height: 100%; background-color: #ebebeb; text-align: center;
+	background-image: url(../images/email_bg.png); background-position: left bottom; background-repeat: repeat-x;
+	background-size:auto;
+}
+.emailVeri {
+	width: 600px; margin: 90px auto 0px; background-color: #fff; box-sizing: border-box; padding: 45px; min-height: 300px;
+	border-radius: 6px; box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+}
+.emailVeri img {
+	width: 140px;
+}
+.emailVeri h2 {
+	padding: 18px 0px 0px; margin: 0px 0px; font-size: 22px; font-weight: 500; color: #29a032;
+}
+.emailVeri p {
+	padding: 12px 0px 0px; margin: 0px 0px; font-size: 15px; font-weight: 400; color: #454545; line-height: 22px;
+}
+.emailVeri a {
+	text-decoration: underline; color: #a21e23; font-weight: 500;
+}
+.emailVeri a:hover {
+	color: #0e172d;
+}
+
+@media screen and (max-width: 760px){
+	.emailVeri {
+		margin: 15px; width: auto; padding: 25px;
+	}
+	
+}
+
+.iConSize {
+    position: relative; top: 5px; font-size: 30px !important;
+}
+.success_pop strong {
+    display: inline-block; padding: 10px 0px; font-weight: 500;
+}
+
+/*    Email Notification    */
+
+
+
+
+.newMailSet {
+	position: relative;
+}
+.newMailSet span {
+	position: absolute; width: 10px; height: 10px; background-color: green; right: 10px; top: 12px;
+	border-radius: 50%; display: none;
+}
+.newMailSet i {
+	display: inline-block; width: 20px;
+}
+.newMailSet ul li a {
+	padding: 8px 25px 8px 15px !important; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.newMailSet ul li a.Active {
+	background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
+}
+.newMailSet ul li a.Active span {
+	display: block;
+}
+.newMailSet .cGmail {
+	color: #cd2900;
+}
+.newMailSet .cYahoo {
+	color: #5300b0;
+}
+.newMailSet .cOut {
+	color: #006bbb;
+}
+.newMailCon {
+	padding: 15px;
+}
+.newMailCon h4 {
+	padding: 0px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #323232;
+}
+.newMailCon p {
+	padding: 10px 0px 20px 0px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #666;
+}
+.newMailCon ul {
+	padding: 0px 0px; margin: 0px 0px;
+}
+.newMailCon ul li {
+	list-style-type: none; float: left; width: 23%; margin: 0px 2% 0px 0px;
+}
+.newMailCon ul li a {
+	display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 20px 0px 15px; color: #454545;
+	text-align: center;
+}
+.newMailCon ul li a img {
+	display: block; width: 70px; margin: 0px auto 20px;
+}
+.newMailCon ul li a:hover {
+	box-shadow: 0px 0px 4px rgba(0,0,0,0.15); color: #375d81;
+}
+
+.newmailShow {
+	display: none;
+}
+.addMailContent {
+	
+}
+.addMailContent h3 {
+	padding: 0px 0px 15px 0px; margin: 0px 0px; color: #333;
+}
+.addMailContent h4 {
+	padding: 5px 0px 12px 0px; margin: 0px 0px; color: #333; font-size: 16px; font-weight: 500;
+}
+.addMailContent p {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; color: #333; font-size: 14px;
+}
+.addMailContent b {
+	display: block; font-weight: 400; font-size: 12px; color: #454545; padding:2px 0px 0px 0px;
+}
+

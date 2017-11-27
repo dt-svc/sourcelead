@@ -79,7 +79,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Select the vendor with whom already relationship build,So added contacts will be added to that vendor'></i></label>
             <div class="col-md-9">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();">
                   <option value="">Select Vendor</option>

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -2051,6 +2052,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	@Override
 	public BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate,
 			String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId,String loginOrgCurrencyCode) throws Exception {
+
 		DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 
@@ -2128,10 +2130,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 		// End Time conversion
 
-		double receivedAmt = 0;
-		double payableAmt = 0;
-		double netAmount = 0;
-		
+		BigDecimal receivedAmt = BigDecimal.ZERO;
+		BigDecimal netAmount = BigDecimal.ZERO;
+		BigDecimal payableAmt = BigDecimal.ZERO;
 		Date sDate = date1.toDate();
 		Date eDate = date2.toDate();
 		
@@ -2146,14 +2147,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())
 							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoicePayment.getInvoiceId().getPaymentStatus())))
 					&& isReceivableAccessYes) {
-
 				try {
 					if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
 						double recievableAmount = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));
-						receivedAmt = receivedAmt + recievableAmount;
+						BigDecimal value = new BigDecimal(recievableAmount);
+						receivedAmt = receivedAmt.add(value);
 					}else {
-						double recievableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
-						receivedAmt = receivedAmt + recievableAmount;
+						BigDecimal recievableAmount = new BigDecimal(invoicePayment.getPaymentAmount());
+						 receivedAmt = receivedAmt.add(recievableAmount);
 					}
 
 				} catch (Exception e) {
@@ -2164,10 +2165,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				try {
 					if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
 						double payableAmount = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));		
-						payableAmt = payableAmt + payableAmount;
+						BigDecimal value = new BigDecimal(payableAmount);
+						payableAmt = payableAmt.add(value);
 					}else{
-						double payableAmount = Double.parseDouble(invoicePayment.getPaymentAmount());
-						payableAmt = payableAmt + payableAmount;
+						BigDecimal payableAmount = new BigDecimal(invoicePayment.getPaymentAmount());
+						payableAmt = payableAmt.add(payableAmount);
 					}
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -2178,8 +2180,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		for (LocalDate localStartDate : dates) {
 			BillingGraphBean billingGraphBean = new BillingGraphBean();
 			billingGraphBean.setDate(localStartDate.toString("MMM-yyyy"));
-			double incomeAmount = 0;
-			double expensesAmount = 0;
+			BigDecimal expensesAmount = BigDecimal.ZERO;
+			BigDecimal incomeAmount = BigDecimal.ZERO;
 			for (InvoicePayment invoicePayment : paymentList) {
 				LocalDate invoiceDate = new LocalDate(invoicePayment.getPaymentDate());
 				if ((Constants.RECEIVABLE.equalsIgnoreCase(invoicePayment.getInvoiceId().getInvoiceType())
@@ -2193,10 +2195,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 							
 						if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
 							double income = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));
-							incomeAmount = incomeAmount + income;
+							BigDecimal value = new BigDecimal(income);
+							payableAmt = incomeAmount.add(value);
+							
 						}else {
-							double income = Double.parseDouble(invoicePayment.getPaymentAmount());
-							incomeAmount = incomeAmount + income;
+							BigDecimal income = new BigDecimal(invoicePayment.getPaymentAmount());
+							incomeAmount = incomeAmount.add(income);
 						}
 					   } 
 					}catch (Exception e) {
@@ -2210,10 +2214,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 							
 							if(!loginOrgCurrencyCode.equalsIgnoreCase(invoicePayment.getCurrencyCode())) {
 								double expenses = conversionUtil.convert(invoicePayment.getCurrencyCode(),loginOrgCurrencyCode, Float.parseFloat(invoicePayment.getPaymentAmount()));		
-								expensesAmount = expensesAmount + expenses;
+								BigDecimal value = new BigDecimal(expenses);
+								expensesAmount = expensesAmount.add(value);
 							}else{
-								double expenses = Double.parseDouble(invoicePayment.getPaymentAmount());
-								expensesAmount = expensesAmount + expenses;
+								BigDecimal expenses = new BigDecimal(invoicePayment.getPaymentAmount());
+								expensesAmount = expensesAmount.add(expenses);
 							}
 						}
 					} catch (Exception e) {
@@ -2221,15 +2226,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				}
 			}
-			billingGraphBean.setIncome(Math.round(incomeAmount * 100.0) / 100.0);
-			billingGraphBean.setExpenses(Math.round(expensesAmount * 100.0) / 100.0);
+			billingGraphBean.setIncome(incomeAmount);
+			billingGraphBean.setExpenses(expensesAmount);
 			incomeExpenseList.add(billingGraphBean);
 		}
 
-		netAmount = receivedAmt - payableAmt;
-		billingReportDTO.setNetAmount(String.valueOf(Math.round(netAmount * 100.0) / 100.0));
-		billingReportDTO.setReceivedAmount(String.valueOf(Math.round(receivedAmt * 100.0) / 100.0));
-		billingReportDTO.setPayableAmount(String.valueOf(Math.round(payableAmt * 100.0) / 100.0));
+		netAmount = receivedAmt.subtract(payableAmt);
+		billingReportDTO.setNetAmount(String.valueOf(netAmount));
+		billingReportDTO.setReceivedAmount(String.valueOf(receivedAmt));
+		billingReportDTO.setPayableAmount(String.valueOf(payableAmt));
 		billingReportDTO.setBillingGraphBean(incomeExpenseList);
 		return billingReportDTO;
 	}
@@ -2301,15 +2306,22 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
 		 for(InvoiceDocument doc:documenetSet){
 			 EmailAttachment docAttachment = new EmailAttachment();
-			 docAttachment.setDocFile(doc.getDocFile());
-			 docAttachment.setName(doc.getFileName());
-			 documentList.add(docAttachment);
+			 String fileUrl = doc.getFileUrl();
+			 if(StringUtils.isNotBlank(fileUrl)){
+				 docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+				 docAttachment.setName(doc.getFileName());
+				 documentList.add(docAttachment);
+			 }
+			
 		 }
 		 
 		 }
-		 emailAttachment.setDocFile(invoice.getDocFile());
-		 emailAttachment.setName(invoice.getFileName());
-		 attachmentList.add(emailAttachment);
+		 String invoiceFileUrl = invoice.getFileUrl();
+		 if(StringUtils.isNotBlank(invoiceFileUrl)){
+			 emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+			 emailAttachment.setName(invoice.getFileName());
+			 attachmentList.add(emailAttachment);
+		 }
 
 		 if(attachmentZip !=null){
 			 attachmentList.add(attachmentZip);
@@ -2549,8 +2561,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
 				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
 		invoice.setFileName(file.getName());
-		byte[] bytesArray = getByteArray(file);
-		invoice.setDocFile(bytesArray);
+		if (file.exists() && !file.isDirectory()) {
+			invoice.setFileName(file.getName());
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+		}
+		if (null != file) {
+			file.delete();
+		}
+		
+//		byte[] bytesArray = getByteArray(file);
+//		invoice.setDocFile(bytesArray);
 		// invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();
