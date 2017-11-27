@@ -16,16 +16,16 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>::Welcome to Source Lead:Action History ::</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
-<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -35,9 +35,9 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
- <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <body>
 <style type="text/css">
 
@@ -51,7 +51,7 @@ margin-top: 52px; padding:10px; border: 1px solid #ddd;
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="<c:url value='/login'/>" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="<c:url value='/login'/>" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -78,17 +78,17 @@ margin-top: 52px; padding:10px; border: 1px solid #ddd;
 
 <script> 
  window.onload = function() {
-	 var userSessionId = '${userSessionId}';
-actionHistoryList(userSessionId);
+	 var actionUUID = '${actionUUID}';
+actionHistoryList(actionUUID);
  };
 </script>
 
 <script>
-function actionHistoryList(userSessionId){  
+function actionHistoryList(actionUUID){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestLocationActionHistoryList?userSessionId="+userSessionId,    
+           url: sourceleadUrl+"/getRestLocationActionHistoryList?actionUUID="+actionUUID,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -112,7 +112,7 @@ function actionHistoryList(userSessionId){
             	    	 
             	    	outPut = outPut + '		</div>';
 	                    $("#actionHistoryOrgList").append(outPut);
-	                    actionHistoryListByOrgLocation(userSessionId, orgLocation);
+	                    actionHistoryListByOrgLocation(actionUUID, orgLocation);
             	     }
           		},
             
@@ -122,12 +122,12 @@ function actionHistoryList(userSessionId){
 </script>
 
 <script>
-function actionHistoryListByOrgLocation(userSessionId, orgLocation){  
+function actionHistoryListByOrgLocation(actionUUID, orgLocation){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId+"&orgLocation="+orgLocation,    
+           url: sourceleadUrl+"/getRestActionHistoryList?actionUUID="+actionUUID+"&orgLocation="+orgLocation,    
             success :function(json) {
             	     if(json.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);

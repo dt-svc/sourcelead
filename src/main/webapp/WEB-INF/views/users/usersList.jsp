@@ -248,7 +248,7 @@ function getUsersSearchResult(searchValue){
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
+	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 

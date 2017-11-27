@@ -10,6 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
+ <c:set var='appPath' value="/slead" scope="application"></c:set>
 
  <script type="text/javascript">
     var staticTime='${staticTime}'
@@ -21,23 +22,23 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<!-- <link href="resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
-<link href="resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link href="resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
+<link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="/resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -50,106 +51,106 @@
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="resources/reports/highcharts.js"></script>
-	<script src="resources/reports/exporting.js"></script> 
+	<script src="/resources/reports/highcharts.js"></script>
+	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementStageReports"}'>
-	<script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
 <c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" }'>
-	<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <%-- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
-	<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
-	<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
  </c:if> --%>
  
 <!--  Amcharts -->
-<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script src="resources/js/moment.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
 
 <!--  Data tables script files -->
-<!-- <script src="resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 
-<script src="resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!--  chosen jquery -->
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <!--  chosen jquery -->
-<script src="resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<%-- <script src="resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
-<%-- <script src="resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
+<script src="/resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<%-- <script src="/resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
+<%-- <script src="/resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
 <!--  Data tables script files ends -->
 
 
 
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 
@@ -345,13 +346,13 @@ function preventTabkey(e){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -724,7 +725,7 @@ function preventTabkey(e){
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+          <li class="flag-image"><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
@@ -931,7 +932,7 @@ function notificationStatusAsRead(){
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -1816,5 +1817,5 @@ function zipcodeMask(country,zipCodeId){
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
-<script src="resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
