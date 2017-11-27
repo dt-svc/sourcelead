@@ -80,12 +80,44 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.timeSubFrequency = timeSubFrequency;
 	}
 
+	public List<TimesheetTaskDTO> getTimesheetTaskList() {
+		return timesheetTaskList;
+	}
+
+	public void setTimesheetTaskList(List<TimesheetTaskDTO> timesheetTaskList) {
+		this.timesheetTaskList = timesheetTaskList;
+	}
+
+	public List<WeekDaysDTO> getWeekDays() {
+		return weekDays;
+	}
+
+	public void setWeekDays(List<WeekDaysDTO> weekDays) {
+		this.weekDays = weekDays;
+	}
+
 	public List<TimesheetEntriesDTO> getTimesheetEntries() {
 		return timesheetEntries;
 	}
 
 	public void setTimesheetEntries(List<TimesheetEntriesDTO> timesheetEntries) {
 		this.timesheetEntries = timesheetEntries;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 
 	public String getBillableHours() {
@@ -128,28 +160,12 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
-	public String getRejectedReason() {
-		return rejectedReason;
+	public int getMaxRowCount() {
+		return maxRowCount;
 	}
 
-	public void setRejectedReason(String rejectedReason) {
-		this.rejectedReason = rejectedReason;
-	}
-
-	public boolean isModifyButtonVisible() {
-		return modifyButtonVisible;
-	}
-
-	public void setModifyButtonVisible(boolean modifyButtonVisible) {
-		this.modifyButtonVisible = modifyButtonVisible;
-	}
-
-	public boolean isReopenButtonVisible() {
-		return reopenButtonVisible;
-	}
-
-	public void setReopenButtonVisible(boolean reopenButtonVisible) {
-		this.reopenButtonVisible = reopenButtonVisible;
+	public void setMaxRowCount(int maxRowCount) {
+		this.maxRowCount = maxRowCount;
 	}
 
 	public boolean isReopenAcceptRejectButtonVisible() {
@@ -158,6 +174,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setReopenAcceptRejectButtonVisible(boolean reopenAcceptRejectButtonVisible) {
 		this.reopenAcceptRejectButtonVisible = reopenAcceptRejectButtonVisible;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
 	}
 
 	public String getReopenReason() {
@@ -176,27 +200,68 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.reopenRejectedReason = reopenRejectedReason;
 	}
 
-	public List<FileInfo> getFileInfo() {
-		return fileInfo;
+	public boolean isModifyButtonVisible() {
+		return modifyButtonVisible;
 	}
 
-	public void setFileInfo(List<FileInfo> fileInfo) {
-		this.fileInfo = fileInfo;
+	public void setModifyButtonVisible(boolean modifyButtonVisible) {
+		this.modifyButtonVisible = modifyButtonVisible;
 	}
 
-	public List<TimesheetTaskDTO> getTimesheetTaskList() {
-		return timesheetTaskList;
+	public boolean isReopenButtonVisible() {
+		return reopenButtonVisible;
 	}
 
-	public void setTimesheetTaskList(List<TimesheetTaskDTO> timesheetTaskList) {
-		this.timesheetTaskList = timesheetTaskList;
-	}
-	public List<WeekDaysDTO> getWeekDays() {
-		return weekDays;
+	public void setReopenButtonVisible(boolean reopenButtonVisible) {
+		this.reopenButtonVisible = reopenButtonVisible;
 	}
 
-	public void setWeekDays(List<WeekDaysDTO> weekDays) {
-		this.weekDays = weekDays;
+	public boolean isReopenRequestSent() {
+		return reopenRequestSent;
+	}
+
+	public void setReopenRequestSent(boolean reopenRequestSent) {
+		this.reopenRequestSent = reopenRequestSent;
+	}
+
+	public boolean isSubmitButtonVisible() {
+		return submitButtonVisible;
+	}
+
+	public void setSubmitButtonVisible(boolean submitButtonVisible) {
+		this.submitButtonVisible = submitButtonVisible;
+	}
+
+	public boolean isSaveButtonVisible() {
+		return saveButtonVisible;
+	}
+
+	public void setSaveButtonVisible(boolean saveButtonVisible) {
+		this.saveButtonVisible = saveButtonVisible;
+	}
+
+	public boolean isCancelButtonVisible() {
+		return cancelButtonVisible;
+	}
+
+	public void setCancelButtonVisible(boolean cancelButtonVisible) {
+		this.cancelButtonVisible = cancelButtonVisible;
+	}
+
+	public boolean isWeekCommentVisible() {
+		return weekCommentVisible;
+	}
+
+	public void setWeekCommentVisible(boolean weekCommentVisible) {
+		this.weekCommentVisible = weekCommentVisible;
+	}
+
+	public boolean isAttachmentRequired() {
+		return attachmentRequired;
+	}
+
+	public void setAttachmentRequired(boolean attachmentRequired) {
+		this.attachmentRequired = attachmentRequired;
 	}
 
 	public String getResponseStatus() {
@@ -207,69 +272,7 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.responseStatus = responseStatus;
 	}
 
-	public List<Long> getRemovedDocumentIds() {
-		return removedDocumentIds;
-	}
 
-	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
-		this.removedDocumentIds = removedDocumentIds;
-	}
-
-	public boolean getReopenRequestSent() {
-		return reopenRequestSent;
-	}
-
-	public void setReopenRequestSent(boolean reopenRequestSent) {
-		this.reopenRequestSent = reopenRequestSent;
-	}
-
-	public boolean getSubmitButtonVisible() {
-		return submitButtonVisible;
-	}
-
-	public void setSubmitButtonVisible(boolean submitButtonVisible) {
-		this.submitButtonVisible = submitButtonVisible;
-	}
-
-	public boolean getSaveButtonVisible() {
-		return saveButtonVisible;
-	}
-
-	public void setSaveButtonVisible(boolean saveButtonVisible) {
-		this.saveButtonVisible = saveButtonVisible;
-	}
-
-	public boolean getCancelButtonVisible() {
-		return cancelButtonVisible;
-	}
-
-	public void setCancelButtonVisible(boolean cancelButtonVisible) {
-		this.cancelButtonVisible = cancelButtonVisible;
-	}
-
-	public boolean getAttachmentRequired() {
-		return attachmentRequired;
-	}
-
-	public void setAttachmentRequired(boolean attachmentRequired) {
-		this.attachmentRequired = attachmentRequired;
-	}
-
-	public int getMaxRowCount() {
-		return maxRowCount;
-	}
-
-	public void setMaxRowCount(int maxRowCount) {
-		this.maxRowCount = maxRowCount;
-	}
-
-	public boolean isWeekCommentVisible() {
-		return weekCommentVisible;
-	}
-
-	public void setWeekCommentVisible(boolean weekCommentVisible) {
-		this.weekCommentVisible = weekCommentVisible;
-	}
 
 	
 }

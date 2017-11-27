@@ -32,17 +32,18 @@
 <div class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
 	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
+	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
+		<input type="hidden" id="timeSubFrequency" name="timesheetSubmission.timeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
 		<ul class="project-tabs-menu">
 		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
+		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
 			   <li class="${tsf.key ==  timesheetSubmissionDTO.timeSubFrequency ? 'current' : ''} ${fn:contains(timesheetEntryDetailsDTO.filledTimeSubFrequencies, tsf.key) ? 'subColor' : ''}">
-					<input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${tsf.key}"/>
-					<input type="hidden" id="timeSubFrequency" name="timesheetSubmission.timeSubFrequency" value="${tsf.key}"/>
 					<a href="javascript:timesheetDivByFrequency('${tsf.key}');" >${tsf.value}</a>
 				</li>
 		   </c:forEach>
 			<div class="export dropdown">
 				<p class="dropdown-toggle" data-toggle="dropdown">
-					<i class="glyphicon glyphicon-export"></i>Export<i
+					<i class="glyphicon glyphicon-export"></i>Export <i
 						class="fa fa-caret-down"></i>
 				</p>
 				<ul id="exporrtEntries" class="dropdown-menu dropdown-menu-right">
@@ -1315,7 +1316,7 @@ function newSaveTimesheet(status,savingType){
 	 var unfilledDates = [];
 	 $('ul.project-tabs-menu li').each(function() {
 		 var attr = $(this).attr('class');
-		 if (attr!= null && attr != "" && attr !='undefined' && attr != 'hidden') {}
+		 if (attr!= null && attr != "" && attr != " " && attr !='undefined' && attr != 'hidden') {}
 		 else{
 			 var currentInputValue = $(this).prev("input").val();
 			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
@@ -1373,6 +1374,8 @@ function newSaveTimesheet(status,savingType){
 		    	  $("#timesheetDivByFrequency").empty();
 		    	  $("#timesheetDivByFrequency").append(data);
 		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+		    		  $("#currentTimeSubFrequency").val('');
+		    		  $("#timeSubFrequency").val('');
 		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
 	            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
 		    	  }
