@@ -12,9 +12,13 @@ public interface ActionHistoryDao {
 	
 	public List<ActionHistory> getAllActionHistoryList(Long userSessionId, Long orgLocation);
 	
+	public List<ActionHistory> getAllActionHistoryListByActionUUID(String actionUUID, Long orgLocation);
+	
 	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception;
 
 	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId);
+	
+	public List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID);
 	
 	List<ActionNames> getActionNameUsingMethodName(String methodName) throws Exception;
 
