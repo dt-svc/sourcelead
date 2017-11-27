@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.UserService;
  */
 
 @RestController
+@RequestMapping("/slead")
 public class DisplayImageRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DisplayImageRestController.class);

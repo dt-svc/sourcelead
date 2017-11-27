@@ -65,6 +65,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/slead")
 public class OrgSettingsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsRestController.class);
 	@Value("${sourceleadUrl}")

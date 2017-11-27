@@ -55,6 +55,7 @@ import com.bis.sourcelead.web.LoginSessionController;
  */
 
 @RestController
+@RequestMapping("/slead")
 public class RequirementInterviewRestController {
 
 	

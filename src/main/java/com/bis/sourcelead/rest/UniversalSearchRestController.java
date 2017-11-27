@@ -30,6 +30,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/slead")
 public class UniversalSearchRestController {
 	
 	 @Value("${sourceleadUrl}")

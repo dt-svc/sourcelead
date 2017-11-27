@@ -42,6 +42,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/slead")
 public class JobAlertRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);

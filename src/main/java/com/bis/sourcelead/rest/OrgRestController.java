@@ -29,7 +29,7 @@ import com.bis.sourcelead.web.HomeController;
  */
 
 @RestController
-@RequestMapping(value = "/org")
+@RequestMapping(value = "/slead/org")
 public class OrgRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);

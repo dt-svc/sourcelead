@@ -24,6 +24,7 @@ import com.bis.sourcelead.service.TimesheetReportService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController 
+@RequestMapping("/slead")
 public class TimesheetReportsRestController {
 
 	@Value("${sourceleadUrl}")

@@ -69,6 +69,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/slead")
 public class CandidateOffBoardRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);

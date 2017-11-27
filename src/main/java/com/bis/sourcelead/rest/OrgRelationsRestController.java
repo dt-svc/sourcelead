@@ -32,6 +32,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/slead")
 public class OrgRelationsRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsRestController.class);

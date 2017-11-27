@@ -93,6 +93,7 @@ import com.google.gson.GsonBuilder;
  
 
 @RestController 
+@RequestMapping("/slead")
 public class TimesheetRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);

@@ -19,6 +19,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 
 @RestController
+@RequestMapping("/slead")
 public class InviteCompanyRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(InviteCompanyRestController.class);

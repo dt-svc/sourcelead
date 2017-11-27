@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/slead")
 public class AutoCompleteRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteRestController.class);

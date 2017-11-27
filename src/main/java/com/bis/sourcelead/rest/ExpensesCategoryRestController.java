@@ -37,6 +37,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
+@RequestMapping("/slead")
 public class ExpensesCategoryRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);

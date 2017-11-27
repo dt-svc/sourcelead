@@ -51,6 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/slead")
 public class SubmissionsRateRestController {
 	
 	@Autowired

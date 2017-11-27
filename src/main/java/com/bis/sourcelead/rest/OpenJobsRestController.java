@@ -45,6 +45,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+@RequestMapping("/slead")
 public class OpenJobsRestController {
 
 	@Value("${sourceleadUrl}")

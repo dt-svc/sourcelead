@@ -63,6 +63,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/slead")
 public class RequirementOfferRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementOfferRestController.class);
