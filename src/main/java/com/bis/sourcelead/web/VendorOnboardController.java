@@ -30,6 +30,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/slead")
 public class VendorOnboardController {
 	
 	@Autowired

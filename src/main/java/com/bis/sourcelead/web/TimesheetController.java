@@ -46,6 +46,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
+@RequestMapping("/slead")
 public class TimesheetController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);

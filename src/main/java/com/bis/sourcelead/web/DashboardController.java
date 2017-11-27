@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @Controller
+@RequestMapping("/slead")
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
@@ -74,7 +75,7 @@ public class DashboardController {
 		logger.debug("display the dash board page");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("/dashboard");
+		model.setViewName("dashboard");
 		return model;
 	}
 	

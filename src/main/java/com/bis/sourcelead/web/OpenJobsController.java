@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Controller
+@RequestMapping("/slead")
 public class OpenJobsController {
 
 	@Autowired
@@ -53,7 +55,7 @@ public class OpenJobsController {
 	}
 	
 	
-	@RequestMapping(value = "/openRequirementsRedirect")
+	@RequestMapping(value = "/openRequirementsRedirect")///{title}  @PathVariable("title") String title,
 	 public ModelAndView openRequirementsRedirect(@RequestParam(value = "openJobsTitle", required = false) String openJobsTitle,
 			 @RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
 			 @RequestParam(value = "openJobsExperience", required = false) String openJobsExperience) throws Exception{

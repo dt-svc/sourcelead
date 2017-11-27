@@ -61,6 +61,7 @@ import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @Controller
+@RequestMapping("/slead")
 public class ContractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractController.class);

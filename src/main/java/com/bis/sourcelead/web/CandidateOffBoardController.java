@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/slead")
 public class CandidateOffBoardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOffBoardController.class);

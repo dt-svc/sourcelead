@@ -13,6 +13,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
+@RequestMapping("/slead")
 public class CandidateEmployersController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersController.class);
 	@Value("${sourceleadUrl}")

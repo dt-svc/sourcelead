@@ -8,6 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  */
 @Controller
+@RequestMapping("/slead")
 public class CandidateCertificationsController {
 
 	/**
