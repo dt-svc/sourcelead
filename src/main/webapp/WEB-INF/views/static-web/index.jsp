@@ -25,7 +25,6 @@
 
 <script type="text/javascript">
 function redirectPageStatic(){
-	alert("pradeep")
 	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("dropDownCountId").value;

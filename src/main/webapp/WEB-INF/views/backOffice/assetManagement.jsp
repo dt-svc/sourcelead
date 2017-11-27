@@ -191,7 +191,7 @@ $(document).ready(function(){
           </div>
         </li>
         <li>
-        <a href="<c:url value='/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
+        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
         </li>
         <div class="clearfix"></div>
       </ul>
