@@ -710,7 +710,7 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -719,7 +719,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -801,7 +801,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Rate what client Proposed,this is only for internal reference. This rate will not visible publicly'></i></label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1042,9 +1042,10 @@ $(document).ready(function () {
             <div id="assignedToSavingDiv"></div>
             <div id="defaultAssignedToSavingDiv"></div>
 													
-            <label class="col-md-3">Assign To</label>
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            
             <div class="col-md-9">
-                <div class="form-icon">
+              <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
 				
                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
@@ -1103,7 +1104,8 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>&nbsp;<i class='fa fa-info-circle' title='Job will be visible to all users in the organization,Users can submit the applicants for the job'></i>
+					
 						&nbsp;&nbsp;
 					</label>
 				</div>

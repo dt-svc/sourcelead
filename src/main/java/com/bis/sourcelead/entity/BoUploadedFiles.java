@@ -85,13 +85,13 @@ public class BoUploadedFiles implements Serializable{
 		this.bankName = bankName;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
+//	public byte[] getDocFile() {
+//		return docFile;
+//	}
+//
+//	public void setDocFile(byte[] docFile) {
+//		this.docFile = docFile;
+//	}
 
 	public String getFileContentType() {
 		return fileContentType;
@@ -180,4 +180,15 @@ public class BoUploadedFiles implements Serializable{
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
 	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+	
 }

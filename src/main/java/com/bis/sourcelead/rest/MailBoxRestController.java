@@ -414,7 +414,7 @@ public class MailBoxRestController {
 		return resultJson;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	/*@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/downloadMailAttachment", method = RequestMethod.GET)
     public void downloadMailAttachment(@RequestParam(value="UUID", required=false) String UUID ,HttpServletResponse response) throws Exception {
 		
@@ -441,7 +441,7 @@ public class MailBoxRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
- }
+ }*/
 	
 	
 	
