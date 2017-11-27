@@ -389,7 +389,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
 				String templateId = requirementDTO.getTemplateId();
 				Requirement templateRequirement = getRequirementByRequirementId(Long.parseLong(templateId));
-				requirement.setFileURL(templateRequirement.getFileURL());
+				requirement.setDocFile(templateRequirement.getDocFile());
 				requirement.setFileName(templateRequirement.getFileName());
 				requirement.setFileContentType(templateRequirement.getFileContentType());
 				requirement.setIsClientJob("N");

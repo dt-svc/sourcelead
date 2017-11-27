@@ -300,7 +300,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	/*@RequestMapping(value = "/downloadOfferAttachment", method = RequestMethod.GET)
+	@RequestMapping(value = "/downloadOfferAttachment", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		
@@ -327,7 +327,7 @@ public class RequirementOfferRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
-		}*/
+		}
 	
 	@RequestMapping(value = "/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,

@@ -170,9 +170,9 @@ public class User implements Serializable{
 		this.candidateSet = candidateSet;
 	}
 
-/*	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
-	private  byte[] docFile;*/
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -373,6 +373,15 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
 	public String getFileContentType() {
 		return fileContentType;
 	}

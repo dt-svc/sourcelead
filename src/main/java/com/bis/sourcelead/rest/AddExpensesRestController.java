@@ -321,7 +321,7 @@ public class AddExpensesRestController {
 	}
 	 
 	 
-	/* @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
+	 @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
 	    public void downloadExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -348,7 +348,7 @@ public class AddExpensesRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}*/ 
+		} 
 	 
 	 
 	

@@ -47,9 +47,10 @@ public class ReferContacts implements Serializable{
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
 	
-	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
-	private String fileURL;
-	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 
@@ -225,12 +226,13 @@ public class ReferContacts implements Serializable{
 	public void setContactSource(Contact_Source contactSource) {
 		this.contactSource = contactSource;
 	}
-	public String getFileURL() {
-		return fileURL;
+	
+	public byte[] getDocFile() {
+		return docFile;
 	}
 
-	public void setFileURL(String fileURL) {
-		this.fileURL = fileURL;
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {

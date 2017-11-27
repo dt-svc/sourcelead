@@ -37,11 +37,11 @@ public class DisplayImageRestController {
 	@Autowired
 	public UserService userService;
 	
-/*	@RequestMapping(value = "/userImage", method = RequestMethod.GET)
+	@RequestMapping(value = "/userImage", method = RequestMethod.GET)
 	public @ResponseBody  void addTimesheetEntries(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
     	User user = userService.findByUserName("SourceLeadAdmin");
-		if(user.getFileUrl() !=null)
+		if(user.getDocFile() !=null)
 		{
 			response.setContentType("image/jpeg");
 			try {
@@ -56,7 +56,7 @@ public class DisplayImageRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-	}*/
+	}
    
     
 	

@@ -189,7 +189,7 @@ function validateShortCode(){
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
-								class="text-danger">* </span><i class='fa fa-info-circle' title='Select frequency of when timesheet by employees need to submit'></i></label>
+								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-frequency">
 								<select class="form-control chosen-select"
 									id="timeSheetFrequency" name="timeSheetFrequency"

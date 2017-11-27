@@ -49,7 +49,7 @@ public class OrgDocumentsController {
 		}
 	 
 	
-/*	 @RequestMapping(value = "/viewClientDocViewerDocument/{title}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewClientDocViewerDocument/{title}", method = RequestMethod.GET)
 	    public void viewClientDocViewerDocument(@RequestParam(value="docId", required=false) String docId,
 	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
@@ -73,6 +73,6 @@ public class OrgDocumentsController {
 		          sos.flush();
 		          sos.close();
 
-		} */
+		} 
 	 
 }

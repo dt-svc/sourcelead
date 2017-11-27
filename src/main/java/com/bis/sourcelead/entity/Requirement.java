@@ -123,9 +123,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
 	private String noticePeriod;
 	
-	/*@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
-	private  byte[] docFile;*/
+	private  byte[] docFile;
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -755,6 +755,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.description = description;
 	}
 
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
 
 	public String getFileContentType() {
 		return fileContentType;

@@ -190,7 +190,7 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Drop the vendor Details,from where the user received'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
@@ -207,8 +207,8 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager <i class='fa fa-info-circle' title='Manager will be a reporting manager for a user in organisation'></i></label>
-                      <div class="col-md-9">
+                  <label class="col-md-3">Manager</label>
+                  <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
