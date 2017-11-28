@@ -5,6 +5,22 @@
 
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
+
+
+
+
+<div class="pull-left timeAppUse">
+	<span><img id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofile-img.png"> </span>
+	<p>
+		<input class="timeUsName" type="text" readonly="readonly" value="ramya">
+		<input type="text" readonly="readonly" value="ramyavishnu15@gmail.com">
+	</p>
+	<div class="clearfix"></div>
+</div>
+
+
+
+
 <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
 					<b class="proj_closed">${timesheetSubmissionDTO.timesheetStatus}</b>
@@ -57,7 +73,6 @@
 			</div>
 			<div class="clearfix"></div>
 		</ul>
-		<div id="timesheetDivByTab">
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
@@ -428,12 +443,12 @@
 							   <div class="totalWrap pull-left">
 									<ul>
 										<li><span>Billable Hours</span><input
-											name="grandBillableTotal" id="grandBillableTotal"
+											id="grandBillableTotal"
 											value="${timesheetSubmissionDTO.billableHours}" placeholder="HH/HH" readonly="" type="text"></li>
 										<li><span>Non-Billable Hours</span><input
-											name="grandNonBillableTotal" id="grandNonBillableTotal"
+											id="grandNonBillableTotal"
 											value="${timesheetSubmissionDTO.nonBillableHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<li><span>Total Hours</span><input id="grandTotal" name="grandTotal"
+										<li><span>Total Hours</span><input id="grandTotal" 
 											value="${timesheetSubmissionDTO.totalHours}" placeholder="HH/HH" readonly="" type="text"></li>
 										<div class="clearfix"></div>
 									</ul>
@@ -453,9 +468,8 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
+		    </div>
+	    </div>
 	<input type="hidden" name="_ignore"
 		style="border-color: rgb(51, 51, 51);">
 </div>
@@ -927,11 +941,11 @@ function addTimeSheetRow(projectId) {
 	  			   var taskId = taskDetails[0];
 	        	   var taskType   = taskDetails[1];
 	          	   var taskName = taskDetails[2]; 
-	          	  for (i = 0; i < 7; i++) {
-	          		   entryIndex = parseInt(i);
-		          	   $("[name='timesheetSubmission.timesheetEntries["+entryIndex+"].timesheetTaskDTO.id']").val(taskId)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+entryIndex+"].timesheetTaskDTO.taskName']").val(taskName)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+entryIndex+"].timesheetTaskDTO.taskType']").val(taskType)
+	          	   var end = parseInt(entryIndex)+7;
+	          	  for (i = entryIndex; i < end; i++) {
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.id']").val(taskId)
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskName']").val(taskName)
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType)
 	              } 
         	 }
         }

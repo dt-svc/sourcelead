@@ -2,6 +2,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<script>
+window.onload = function () {
+	pagination();
+};
+</script>
+
 <c:forEach var="timesheetSubmission" items="${timesheetApprovalDTO.timesheetSubmission}" >
     	<tr id="row${timesheetSubmission.projectMemberId}" role="row" class="odd">
 			<td class="sorting_1">
@@ -32,7 +38,7 @@
 	<input type="hidden" name="totalHours" id="totalHours" value="${timesheetSubmission.totalHours}">
 	<td>
 		<div class="sm">
-			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId();">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
 		</div>
 	</td>
 	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>

@@ -58,12 +58,23 @@
 </div>
 
 <div class="clearfix"></div>
-<div class="clearfix"></div>
 </div>
+<div class="time_appr_side_wrap">
+	<div class="time_appr_side_wrap_inn">
+	 	<div id="timesheetPopUp">
+	 	  <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
+	 	</div>
+	</div>
+</div>	
+<div class="time_appr_rejct_pop">
+	<textarea placeholder="Enter comment here"></textarea>
+	<a href="javascript:void(0)">Submit</a><a class="close_color" href="javascript:void(0)">Cancel</a>
+</div>	
 <div class="timesheet_appr_table datatable_filter overflow_inherint">
 	 <div id="approverDataTimesheetDiv"> 
 		<jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
 	</div> 
 </div>
+
 
 

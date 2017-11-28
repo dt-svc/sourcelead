@@ -4,7 +4,6 @@
 
 <script>
 $(document).ready(function() {
-	pagination();
     $(".glyphicon-comment").mouseenter(function(){
 		$(".app_error_mes").addClass("app_error_mes_active");
 	});
@@ -17,8 +16,11 @@ $(document).ready(function() {
 
 
 <div id='rejectedPopup'></div>
+<div id='reOpenPopup'></div>
+<div id='reOpenRejectedPopup'></div>
+<div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
- <table id='example' class='display' cellspacing='0' width='100%' >
+ <table id='exampleApprover' class='display' cellspacing='0' width='100%' >
 	<thead> 
     <tr> 
     <th>Employee</th>
@@ -37,7 +39,6 @@ $(document).ready(function() {
     	 <jsp:include page="timesheetApprovalTableData.jsp"></jsp:include>
    </tbody>
   </table>
-  
 
 <script>
 $(document).on("mouseover", ".glyphicon-comment", function() { 
@@ -49,6 +50,80 @@ var localId = $(this).attr('id');
 $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
 </script> 
+<script>
+function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,from){
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+     //var subFrParam = '';
+    /*  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+  	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
+     } */
+    // $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+     $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+timesheetFrequency+"&timeSheetsFor="+from,		
+		      success :function(data) {
+		    	  $("#timesheetPopUp").empty();
+	 	    	     var closeElement = $('.proj_close');
+	 	    	     closeElement.removeAttr('onclick');
+	 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
+				     $("#timesheetPopUp").append(data);
+				     maskme();
+				     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+				     $(".side_mask").fadeIn(200); 
+				     $("body").css('overflow-y', 'hidden');
+				     
+				     
+				     $("html").trigger('click');
+		    	  	 $("#tab-1").show();
+			    	 $(".project-tabs-menu a").click(function(event) {
+			    	        event.preventDefault();
+			    	        $(this).parent().addClass("current");
+			    	        $(this).parent().siblings().removeClass("current");
+			    	        var tab = $(this).attr("href");
+			    	        $(".project_tabs_inn").not(tab).css("display", "none");
+			    	        $(tab).fadeIn();
+			    	  });
+		      }
+	    }); 
+} 
+</script>
+
+
+
+<script type="text/javascript">
+function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,from){ 
+		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	    	 $(".side_mask").fadeOut(200); 
+     		 $("body").css('overflow-y', 'scrool');
+	    	 /* var table = $('#exampleApprover').DataTable();
+			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false ); */
+		 }
+		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
+			 /* var sourceleadUrl ='${sourceleadUrl}';
+				$.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/timesheetApprovalTableRowByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency, 	   
+					    success: function(data) { */
+						    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+		     		    		 $(".side_mask").fadeOut(200); 
+		     	        		 $("body").css('overflow-y', 'scrool');
+		     	        		 $("#dynamic").removeAttr('style');
+		     	        		 
+		     	        		 /* if(from == 'approverClose' || from == 'approver' ){
+		     	        			 $("#row"+projectMemberId).empty();
+							         $("#row"+projectMemberId).html(data);
+		     	        		 } */
+					        
+					/*     }
+			    });  */
+		 }
+	 
+	         
+}
+</script>
+
+
 
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
@@ -82,7 +157,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
         	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-		    	 var table = $('#example').DataTable();
+		    	 var table = $('#exampleApprover').DataTable();
 		    	 table.row('#row'+projectMemberId+startDate+'To'+endDate+'').remove().draw( false );
         	 }
         	 else{
@@ -121,7 +196,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    	
 	   	   // approvalList();
 	       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-	    	   var table = $('#example').DataTable();
+	    	   var table = $('#exampleApprover').DataTable();
 		   		 table.row('#row'+projectMemberId+startDate+'To'+endDate+'').remove().draw( false );
 		   }
 	   	   else{
@@ -191,20 +266,5 @@ function exportTimeSheetToPdfOrExcel(exportType){
 </script>  
 
 
-<script>
-function pagination(){ 
-    $('#example').DataTable( {
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-    		"sSearch": "",
-    		"sZeroRecords": "", "sEmptyTable": ""
-    	}
-    });
-    $('#example').wrap("<div class='overflow_Auto width100percnt'></div>");
-}
-</script>
+
  
