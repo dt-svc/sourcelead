@@ -13,6 +13,7 @@ import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 @Repository
 public class CampaignDaoImpl implements CampaignDao {
 	@Autowired
@@ -86,6 +87,19 @@ public class CampaignDaoImpl implements CampaignDao {
 			exception.printStackTrace();
 		}
 		return campaignList;
+	}
+
+	@Override
+	public CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		CreateSender createSender = null;
+		List<CreateSender> senderList = new ArrayList<>();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.createdBy = :userId and cSender.orgLocationId = :orgLocationId").setLong("userId", user.getId()).setCacheable(true).list();
+		if (createSenderList != null && createSenderList.size() > 0) {
+			createSender = createSenderList.get(0);
+		}
+		return createSender;
 	}
 	
 	

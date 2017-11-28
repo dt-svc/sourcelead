@@ -20,4 +20,6 @@ public interface CampaignService {
 	CreateSender findSenderIdentityById(Long senderId) throws Exception;
 
 	boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO, User user) throws Exception;
+
+	CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
 }

@@ -53,6 +53,10 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "SENDER_ID")
 	private String senderId;
 	
+	@Column(name = "SELECTED_SENDER")
+	private String selectedSender;
+	
+	
 	@Column(name = "CITY")
 	private String city;
 	
@@ -85,6 +89,16 @@ private static final long serialVersionUID = 1L;
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	public String getSelectedSender()
+	{
+		return selectedSender;
+	}
+
+	public void setSelectedSender(String selectedSender)
+	{
+		this.selectedSender = selectedSender;
+	}
 
 	public Long getId()
 	{

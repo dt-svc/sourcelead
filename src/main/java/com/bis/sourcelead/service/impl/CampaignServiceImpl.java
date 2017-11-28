@@ -203,4 +203,10 @@ public class CampaignServiceImpl implements CampaignService{
 		}
 		return recipientSet;
 	}
+
+	@Override
+	public CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
+	{
+		return campaignDao.getSenderIdentityByUserChoice(user,orgLocations);
+	}
 }

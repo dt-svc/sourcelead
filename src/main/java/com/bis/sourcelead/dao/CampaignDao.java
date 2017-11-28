@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface CampaignDao {
 
@@ -17,5 +18,7 @@ public interface CampaignDao {
 	CreateSender findSenderIdentityById(Long senderId) throws Exception;
 
 	CampaignList saveRecipientList(CampaignList campaignList) throws Exception;
+
+	CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;;
 
 }
