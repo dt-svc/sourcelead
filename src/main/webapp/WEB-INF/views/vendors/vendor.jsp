@@ -539,7 +539,8 @@ function getVendorDetails(){
 
 						<div class="form-group">
 							<label class="col-md-3">Owner Name<span
-								class="text-danger">&nbsp;*</span></label>
+								class="text-danger">&nbsp;*</span>
+								<i class='fa fa-info-circle' title='Owner for the vendor contact.For single contact can have multiple owners'></i></label>
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
