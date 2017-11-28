@@ -879,12 +879,12 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         
         result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation='validate_Space validate_length length1-100' data-validation-optional='true' field-name='Other Type'>";
         result = result +" </div>";
         
         //result = result +"        <p>Applicant reject message here</p>";
         result = result +"    <div class='clearfix'>";
-        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
+        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length1-500' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="backOutForApplicantDiv"/>';
@@ -913,7 +913,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         
         result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation='validate_Space validate_length length1-100' data-validation-optional='true' field-name='Other Type'>";
         result = result +" </div>";
         
         //result = result +"        <p>Applicant reject message here</p>";
