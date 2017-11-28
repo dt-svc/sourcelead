@@ -585,7 +585,6 @@ function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var userId ='${SourceLeadWeb_userId}';
-	 
      if(requirementStatus == "DRAFT"){
         	 $.ajax({
              type : "POST",
@@ -734,10 +733,26 @@ function getActions(){
 		};
 	</script>
 
+<script>
+  $(function() { 
+	       //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		   //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+		   
+		 //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+		 
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
+  });
+  </script>
+  
 
 <script type="text/javascript">
-			//Adding Customized Any Of Keyword to the list 
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
@@ -837,7 +852,7 @@ function getActions(){
 				        		
 			        }
 		    	 }
-		    });
+		    }); */
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
@@ -845,13 +860,13 @@ function getActions(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script>
 
 <script>
