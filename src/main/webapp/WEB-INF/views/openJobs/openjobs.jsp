@@ -8,39 +8,39 @@
  </c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/reset.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
  var sourceleadUrl = '${sourceleadUrl}';
@@ -175,7 +175,7 @@ z-index: 1000000000 !important;
     <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-  <div class="logo"><a href="home.html"><img src="resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
@@ -705,10 +705,10 @@ z-index: 1000000000 !important;
 			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
           <h4>Go social</h4>
             <div class="socila">
-            	<a href="javascript:void(0)"><img src="resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/gp.png" alt=""/></a>
+            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
             </div>
         </div>                        
     <div class="clear"></div>
@@ -728,7 +728,7 @@ z-index: 1000000000 !important;
 
 <section class="pageLoad"></section> 
 <div class="backtotop">
-	<img src="resources/css/jobs/images/backtotop.png" alt="" />
+	<img src="/resources/css/jobs/images/backtotop.png" alt="" />
 </div>  
 
 <!-- Footer Area -->
@@ -819,7 +819,7 @@ function requirementsFilter(type){
 		postedOrgName = $("#postedOrg").val();
 	}
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
@@ -832,9 +832,9 @@ function requirementsFilter(type){
 	    		}
 	    		$("#noResultsDiv").css("display", "none");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -863,7 +863,7 @@ function getOpenJobsELKList(type){
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	}
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
@@ -874,9 +874,9 @@ function getOpenJobsELKList(type){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -1890,7 +1890,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<!-- <script src="resources/js/jobs/js/bootstrap-select.min.js"></script> -->
+<!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
 	 
@@ -2615,6 +2615,6 @@ function preventTabkey(e){
 }
 </script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

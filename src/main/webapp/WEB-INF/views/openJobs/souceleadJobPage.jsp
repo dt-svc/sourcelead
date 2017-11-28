@@ -9,39 +9,39 @@
  
 <link href="https://fonts.googleapis.com/css?family=Arima+Madurai:400,500,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/reset.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 
 <script type="text/javascript">
@@ -105,7 +105,7 @@ display: none;}
 </section>
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
@@ -156,8 +156,8 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/sourcelead/resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/sourcelead/resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg1.jpg);"></li>
+	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg3.jpg);"></li>
 	</ul> 
 <content>
 		<h1>
@@ -405,10 +405,10 @@ display: none;}
 			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
           <h4>Go social</h4>
             <div class="socila">
-            	<a href="javascript:void(0)"><img src="resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/gp.png" alt=""/></a>
+            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
             </div>
         </div>                        
     <div class="clear"></div>

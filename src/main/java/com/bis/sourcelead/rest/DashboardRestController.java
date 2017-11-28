@@ -280,7 +280,7 @@ public class DashboardRestController {
    		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/path/dashboard?orgLocationId=").append(orgLocationId).toString());
+		     response.sendRedirect(redirectUrl.append("/path/dashboard?userRoleId=").append(userRole.getId()).toString());
 			
 	}
 	
@@ -303,7 +303,7 @@ public class DashboardRestController {
   		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/path/dashboard?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/path/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 	}
 	
@@ -326,7 +326,7 @@ public class DashboardRestController {
  		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/path/dashboard?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/path/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 			
 	}
@@ -351,7 +351,7 @@ public class DashboardRestController {
   		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/path/dashboard?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/path/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 	}
 	

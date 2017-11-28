@@ -21,7 +21,7 @@
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
 		result = result + '   <p class="positionRelative move-btn btn-group mt">';
 		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
-		result = result + '   <a href="<c:url value='/${appPath}/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   <a href="<c:url value='${appPath}/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
 		result = result + '   </span></a>';
 		result = result + '   </p>';
 		result = result + ' </div>';
@@ -818,7 +818,7 @@ function cancel(candidateId){
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">

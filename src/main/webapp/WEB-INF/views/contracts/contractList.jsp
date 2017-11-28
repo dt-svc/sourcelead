@@ -25,7 +25,7 @@ padding: 2px 300px 2px 0px;
   <div class="pull-left">
     <h2>Contracts</h2>
   </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Contracts</div>
+   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Contracts</div>
 </section>
 
 <section class="contrHead"> 

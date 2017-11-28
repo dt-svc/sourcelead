@@ -28,7 +28,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>View Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
     </section>
     <div class="content-area content-new clearfix">
     

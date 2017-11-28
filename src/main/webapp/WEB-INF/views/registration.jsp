@@ -17,13 +17,13 @@
 
     
     <title>::. Registration .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-    <link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+    <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+     <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
     
 </head>
 <script>
@@ -287,7 +287,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><a href="<c:url value='${appPath}/ws/openRequirements'/>"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo pull-left mb10"><a href="<c:url value='${appPath}/ws/openRequirements'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
@@ -372,7 +372,7 @@ window.onload = function () {
             </div>
             </div>
                 <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
                 </div>
                 
             </div>
@@ -452,7 +452,7 @@ window.onload = function () {
             </div>
             </div>
                 <div class="col-md-12 text-center mt bg-info">
-                    <span class="text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
+                    <span class="text-muted">Already have an Account:</span><a href="/login" class="btn" title="Login">Login</a><br/>
                 </div>
                 
             </div>
@@ -525,10 +525,10 @@ window.onload = function () {
       </div>
   </div>
 </div>
-<script src="resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 </body>
 
 <script>
@@ -950,7 +950,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		$(".logPop").fadeOut(100);
-        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
         	    
             	var frm = $('#popprofessionalRegistration_form').serializeFormJSON();
 			    
@@ -1009,7 +1009,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		$(".logPop").fadeOut(100);
-        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
         	    
             	var frm = $('#poprecruiterRegistration_form').serializeFormJSON();
 			    

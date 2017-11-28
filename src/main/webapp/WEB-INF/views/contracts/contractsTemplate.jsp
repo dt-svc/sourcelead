@@ -37,7 +37,7 @@ margin: 0 !important;
 			</div>
 		</div>
     </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
 </section>
 	
 	

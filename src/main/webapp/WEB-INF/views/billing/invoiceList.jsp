@@ -46,7 +46,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">

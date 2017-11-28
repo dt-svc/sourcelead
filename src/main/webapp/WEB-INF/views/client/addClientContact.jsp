@@ -155,7 +155,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 

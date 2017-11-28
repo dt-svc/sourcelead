@@ -60,7 +60,7 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>

@@ -77,7 +77,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class LoginSessionController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LoginSessionController.class);
@@ -172,15 +172,34 @@ public class LoginSessionController {
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response) throws Exception {
+			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response,
+			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			   @RequestParam(value = "userRoleId", required = false) Long userRoleId,
+			   @RequestParam(value = "switchUserType", required = false) String switchUserType,
+			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		UserRole userRole = null;
+		
+		if(orgLocationId != null){
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
+		}else{
+			if(userRoleId != null){
+				userRole = userRoleService.getUserRoleById(userRoleId);
+			}else{
+				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			}
+		}
+		
+		
 		ModelAndView model = new ModelAndView();
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
 			OrgLocations orgLocations = userRole.getOrgLocations();
@@ -226,7 +245,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
@@ -235,10 +254,10 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
 			
 			
-			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId(),orgLocations.getId());
+			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
 			
-			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId(),org.getId());
+			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),org.getId());
 			if(isSuperAdmin == true){
 				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
 			}else{
@@ -275,7 +294,7 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
 				if(userSpocRolesList.size() > 1){
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
@@ -297,7 +316,7 @@ public class LoginSessionController {
 			String currentDate = sdf.format(new Date());
 			Date todayDate = sdf.parse(currentDate);
 			
-			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
 			if(null != candidateOffBoarding){
 				
 				String endDate = sdf.format(candidateOffBoarding.getEndDate());
@@ -314,7 +333,7 @@ public class LoginSessionController {
 				}
 			}else{
 				
-				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 					if(candidateOnBoarding.getManagerUserId()!=null){
@@ -337,10 +356,10 @@ public class LoginSessionController {
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
 			
-			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
+			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userRole.getUser().getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 			
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(userRole.getUser().getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 			SourceLeadSessionManager.setSessionAttribute(request,"isAdmin",isAdmin);
 			
@@ -401,14 +420,14 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/path/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}
 				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					response.sendRedirect(redirectUrl.append("/path/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
 				}
 				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
-						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
+						response.sendRedirect(redirectUrl.append("/path/professionalPraseCandidate").toString());
 					}else{
 						model.setViewName("professional/professionalDashboard");
 					}
@@ -425,7 +444,7 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/path/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
 				}

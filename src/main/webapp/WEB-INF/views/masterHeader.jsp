@@ -409,10 +409,10 @@ function preventTabkey(e){
   <i>
  	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
@@ -504,7 +504,7 @@ function preventTabkey(e){
               </div>
             </div>
             <ul class="list-unstyled">
-              <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
@@ -664,30 +664,30 @@ function preventTabkey(e){
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
+	                     <li><a href="<c:url value="/path/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     
-	                     <li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
-	                     <li><a href="<c:url value="/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
+	                     <li><a href="<c:url value="/path/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+	                     <li><a href="<c:url value="/path/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
+	                        <li><a href="<c:url value="/path/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		      <li><a href="<c:url value="/path/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li><a href="<c:url value="/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     <li><a href="<c:url value="/path/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 						 </sec:authorize>
 
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  	<li><a href="<c:url value="/path/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+						  <li><a href="<c:url value="/path/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
+						  	<li><a href="<c:url value="/path/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 	              </ul>
 	            </div>
@@ -701,12 +701,12 @@ function preventTabkey(e){
             	<ul class="list-unstyled">
             	
             	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-            	<li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+            	<li><a href="<c:url value="/path/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
             	</c:if> 
             	
-            	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	<li><a href="<c:url value="/path/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
             	
-            	<li><a href="<c:url value="/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
+            	<li><a href="<c:url value="/path/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
             	</ul>
             	</div>
             	</li>

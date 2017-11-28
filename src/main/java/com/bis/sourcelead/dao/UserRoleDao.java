@@ -39,6 +39,8 @@ public interface UserRoleDao {
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
+	public UserRole getUserRoleById(Long userRoleId) throws Exception;
+	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
