@@ -51,26 +51,31 @@ $(document).ready(function() {
             </li>
             
             <li>
+            	<span  id="moveFolder" class="moveFolder" onClick="movefolderPop();"><i class="fa fa-folder mr" title="Move"></i>|</span>
+            </li>
+            
+            <li class="hidden">
 				<div class="dropdown dropdown-label hidden " style="position: relative; top: -2px;">
 				<span class="dropdown-toggle cursorPointer paddingRight" type="button" id="menu1" data-toggle="dropdown">
 				<i class="fa fa-folder paddingRight"></i>Move
 				<span class="caret" style="position: relative; top: 0px;"></span></span> <span class="paddingLeft">|</span>
 				<ul class="dropdown-menu dropdown-menu-right checkBox paddingLeft paddingRight" role="menu" aria-labelledby="menu1">
-			<li>
-                    <input value="None" id="c1" type="checkbox">
-                    <!-- <div id="groupList"></div> -->
-             </li>
+					<li>
+		                    <input value="None" id="c1" type="checkbox">
+		                    <!-- <div id="groupList"></div> -->
+		             </li>
 				
 				</ul>
 				</div>
-				<div id="groupDiv" class="pull-left dropdown-select">
+				
+				<%-- <div id="groupDiv" class="pull-left dropdown-select hidden">
 					<select class="form-control chosen-select" id="consGroup" onchange="refercontactListToGroup();">
 						<option value="">&nbsp;--Select Group--</option>
 						<c:forEach var="conGroup" items="${contactsGroupList}">
 			                 <option value="${conGroup.id}">${conGroup.groupName}</option>
 		                </c:forEach>
 					</select>
-				</div>
+				</div> --%>
 				
 			</li>
           
@@ -86,6 +91,7 @@ $(document).ready(function() {
        			</button>
        			
        			<div id="groupList"></div>
+       			
 			  </div>
       		<a href="javascript:void(0)" class="pull-right closemld" title="Close Div">&times;</a>
        </div>
@@ -160,7 +166,22 @@ $(document).ready(function() {
 </section>
 
 <div id="deleteGroupPopUp"></div>
-
+<div id="contactsPopUp"></div>
+<div class="sideMask"></div>
+<div class="movefolder-popdiv">
+<form id="addcontacttogroup_form"  name="addcontacttogroup_form">
+	<a class="close">&times;</a>
+	<ul class="list-unstyled">
+	<c:forEach var="conGroup" items="${contactsGroupList}">
+		<li><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
+   </c:forEach>
+   </ul>
+   <div class="clearfix mt5">
+   <button class="btn btn-primary pull-right"  type="button" data-dismiss="modal" id="addContactsToGroup" onclick="refercontactListToGroup();">Add to Group</button>
+   <button type="button" class="btn mr btn-default btn-sm pull-right" onClick="removeGroupsPopUp();">Cancel</button>
+   </div>
+   </form>
+</div>
 <!-- Create Label div html -->
   	<div class="comMask" onClick="maskFade();"></div>
   	<div class="createLabel-popdiv">
@@ -182,8 +203,8 @@ function addContactsGroup(){
 	result = result +'<div class="clearfix"></div >';
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
-	 result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="submit" value="OK" id="add_contactgroup" class="btn btn-sm btn-primary">OK</button>';
+     result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
+	 result = result + '	<button type="submit" value="Save" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
 	 result = result + '</div >';
 	 result = result + '</div >';
 	 result = result + '</form>';
@@ -256,7 +277,6 @@ function checkContactList(ele){
 	if($(ele).is(":checked")) {
 		contactsList[$(ele).data("id")] = $(ele).val();
 	}
-	
 }
 </script>
 
@@ -278,7 +298,6 @@ function toggleContactsGroup(source){
 			  contactsList[$(this).data("id")] = "";
 		  }
 	});
-	
 }
 </script> 
 <script>
@@ -687,7 +706,7 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="OK" id="edit_contactgroup" class="btn btn-sm btn-primary">OK</button>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
@@ -780,20 +799,21 @@ function maskFade(){
 
  <script>
 function refercontactListToGroup(){
-	var groupId = document.getElementById("consGroup").value;
+	var groupId = $("input:radio[name=groupName]:checked").val()
 	var contactsIdsList = new Array();
 	 for(var e in contactsList) {
 		 if(!e || !contactsList[e] || contactsList[e] === "")
 			   continue;
 		 contactsIdsList.push(contactsList[e]);
 	 }
-	 
-	 
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(groupId && contactsIdsList.length > 0){
-		
+		 var formData = getFormData1("addcontacttogroup_form");
 		 	 $.ajax({
-				type : "POST",
+				 type : "POST",
+				 data: formData,
+				 processData: false,
+  		         contentType:false, 
 				url : sourceleadUrl+"/refercontactListToGroup?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&contactsList="+contactsIdsList,
 				success : function(result) {
 					if(result == "success"){
@@ -801,13 +821,40 @@ function refercontactListToGroup(){
 						location.replace(sourceleadUrl+"/referRequirementList");
 					} 
 				},
-			}); 
+			});  
 		
 	}else{
+		if(contactsIdsList.length == 0){
+			groupAndContacsAlertMsg('Select atleast one contact');
+		}else{
+			groupAndContacsAlertMsg('Please select group');
+		}
 		
 	} 
 }
-</script>  
+</script>
+
+
+<script>
+function groupAndContacsAlertMsg(message){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>"+message+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelpopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelpopUp();'></b>";
+	result = result +"	</div>";
+	$("#contactsPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+
+function cancelpopUp(){
+	$("#contactsPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
 function selectedContactList(){
@@ -879,4 +926,26 @@ function selectedContactList(){
 		    });
 	 }
  }
+ </script>
+ 
+ 
+ 
+ <script>
+ function removeGroupsPopUp(){
+	 $(".movefolder-popdiv").fadeOut();
+	 $(".sideMask").fadeOut();
+ }
+ 
+ function movefolderPop() {
+	 $(".movefolder-popdiv").fadeIn();
+	 $(".sideMask").fadeIn();
+ }
+ $(".close").click(function(){
+	 $(".movefolder-popdiv").fadeOut();
+	 $(".sideMask").fadeOut();
+ });
+ $(".sideMask").click(function(){
+	 $(".movefolder-popdiv").fadeOut();
+	 $(".sideMask").fadeOut();
+ });
  </script>
