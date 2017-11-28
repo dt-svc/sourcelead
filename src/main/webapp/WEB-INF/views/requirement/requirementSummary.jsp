@@ -879,7 +879,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         
         result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation='validate_Space validate_length length1-100' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
         result = result +" </div>";
         
         //result = result +"        <p>Applicant reject message here</p>";
@@ -913,7 +913,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         
         result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation='validate_Space validate_length length1-100' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
         result = result +" </div>";
         
         //result = result +"        <p>Applicant reject message here</p>";
