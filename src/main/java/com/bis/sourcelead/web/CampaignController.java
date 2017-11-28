@@ -1,26 +1,14 @@
 package com.bis.sourcelead.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimeZone;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.james.mime4j.dom.address.Mailbox;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,16 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ClientVendorDTO;
-import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -48,7 +34,6 @@ import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class CampaignController {
@@ -84,6 +69,9 @@ public class CampaignController {
 	
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	CampaignService campaignService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -182,6 +170,69 @@ public class CampaignController {
 		
 	}
 	
+	/**
+	 * Resturns campaignSender jsp popup
+	 * @return jsp
+	 * @throws Exception 
+	 * @throws NumberFormatException 
+	 */
+	@RequestMapping(value = "/campaignSender",method=RequestMethod.POST)
+	public String campaignSenderJsp(@RequestParam(value="senderId", required=false) String senderId,HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
+		if(StringUtils.isNotBlank(senderId)) {
+			CreateSender senderIdentity = campaignService.findSenderIdentityById(Long.parseLong(senderId));
+			model.addAttribute("sender", senderIdentity);
+		}
+		return "campaign/campaignSender";
+//		return model;
+	}
+	
+	/**
+	 * Returns campaignSendersList jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return jsp
+	 */
+	@RequestMapping(value = "/campaignSendersList")
+	public ModelAndView campaignSendersListJsp(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("campaign/campaignSenderList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * Returns recipientsList jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return jsp
+	 */
+	@RequestMapping(value = "/recipientsList")
+	public ModelAndView recipientsListJsp(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("campaign/campaignRecipientList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 	
 	
+	/**
+	 * Resturns campaignSender jsp popup
+	 * @return jsp
+	 * @throws Exception 
+	 * @throws NumberFormatException 
+	 */
+	@RequestMapping(value = "/campaignAddRecipient",method=RequestMethod.POST)
+	public String campaignAddRecipientJsp(HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
+//		if(StringUtils.isNotBlank(senderId)) {
+//			CreateSender senderIdentity = campaignService.findSenderIdentityById(Long.parseLong(senderId));
+//			model.addAttribute("sender", senderIdentity);
+		model.addAttribute("sourceleadUrl", sourceleadUrl);
+//		}
+		return "campaign/campaignRecipient";
+//		return model;
+	}
 }

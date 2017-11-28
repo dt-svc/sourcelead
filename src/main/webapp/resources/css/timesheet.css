@@ -5573,7 +5573,9 @@ width: 47%; margin: 0px 3% 0px 0px; float: left;
 .timBtnWidth .glyphicon-comment {
 float: left; top: 5px
 }
-
+.refreshBtnStyle i {
+    display: inline-table; height: 34px; line-height: 22px; margin: 0px 1px; width: 37%; padding: 6px 0px;
+}
 
 
 
@@ -5950,4 +5952,49 @@ float: left; top: 5px
 .addMailContent b {
 	display: block; font-weight: 400; font-size: 12px; color: #454545; padding:2px 0px 0px 0px;
 }
+.campaignWrap {}
+.campaignWrap .glyphicon-ok {
+	color: green !important;
+}
+.campaignWrap .text-danger {
+	color: #fe4556 !important;
+}
 
+/*   Pop Up Css  */
+.popMask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:9999; display:none;
+}
+.popUpOut {
+	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+.popUpReci {
+	position: absolute; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+.popupHead {
+	border-bottom: 1px solid #ededed; position: relative;
+}
+.popupHead h2 {
+	padding: 0px 0px 10px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #454545;
+}
+.popupHead a {
+	position: absolute; right: 0px; top: 0px; color: #999;
+}
+.popupHead a:hover {
+	color: #DB5151;
+}
+.popupMid {
+	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed;
+}
+.popupMidPad {
+	padding: 5px 0px 0px 0px;
+}
+.popupFoot {
+	padding: 15px 0px 0px 0px; text-align: right;
+}
+.popUpReci .chosen-choices {
+	padding: 2px 5px !important;
+
+}
+}

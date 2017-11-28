@@ -1,0 +1,206 @@
+package com.bis.sourcelead.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.dao.CampaignDao;
+import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CreateSenderDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CreateSender;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CampaignService;
+import com.bis.sourcelead.util.CampaignUtil;
+import com.bis.sourcelead.util.CommonUtil;
+
+@Service
+public class CampaignServiceImpl implements CampaignService{
+
+	@Autowired
+	CampaignUtil campaignUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	CampaignDao campaignDao;
+	
+	@Override
+	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
+	{
+		boolean isSenderCreated = false;
+		String senderCreated = null;
+		CreateSender createSender = null;
+		if(StringUtils.isNotBlank(createSenderDTO.getSenderId())) {
+			 createSender  = campaignDao.findSenderIdentityById(Long.parseLong(createSenderDTO.getSenderId()));
+			 senderCreated = campaignUtil.updateSender(createSender, orgLocation);
+		}else {
+			 senderCreated = campaignUtil.createSender(createSenderDTO, orgLocation);
+			 createSender = new CreateSender();
+		}
+		
+		if (senderCreated != null) {
+			
+			createSender.setFromName(createSenderDTO.getCpnSenderName().trim());
+			createSender.setFromMail(createSenderDTO.getCpnSenderFromMail().trim());
+			createSender.setReplyTo(createSenderDTO.getCpnReplyMail().trim());
+			createSender.setNickName(createSenderDTO.getCpnNickName().trim());
+			createSender.setOrgLocations(orgLocation);
+			createSender.setStatus(1);
+			createSender.setCreatedBy(user);
+			Date date = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			createSender.setCreatedDate(date);
+			createSender.setUpdatedBy(user.getUserCode());
+			createSender.setUpdatedDate(date);
+			if (StringUtils.isNotBlank(orgLocation.getCity())) {
+				String city = orgLocation.getCity();
+				createSender.setCity(city);
+			}
+			if (StringUtils.isNotBlank(orgLocation.getCountry())) {
+				String country = orgLocation.getCountry();
+				createSender.setCountry(country);
+			}
+			if (StringUtils.isNotBlank(orgLocation.getZipCode())) {
+				String zipcode = orgLocation.getZipCode();
+				createSender.setZip(zipcode);
+			}
+			if (StringUtils.isNotBlank(orgLocation.getState())) {
+				String state = orgLocation.getState();
+				createSender.setState(state);
+			}
+			JSONObject jObject  = new JSONObject(senderCreated); // json
+			String senderId = jObject.getString("id");
+			JSONObject data = jObject.getJSONObject("verified"); // get data object
+			String isVerified = data.getString("status"); // g
+			createSender.setIsSenderEmaiklVerified(isVerified);
+			createSender.setSenderId(senderId);
+			CreateSender sender = campaignDao.createSender(createSender);
+			if(sender !=null) {
+				isSenderCreated = true;
+			}
+		}
+		return isSenderCreated;
+	}
+
+	@Override
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
+	{
+		return campaignDao.validateNickName(nickName, orgLocation,senderId);
+	}
+
+	@Override
+	public ResponseList<CreateSenderDTO> getSendersListByOrgLocationId(OrgLocations orgLocation) throws Exception
+	{
+		ResponseList<CreateSenderDTO> responseList = new ResponseList<>();
+		List<CreateSender> senderList = campaignDao.getSendersListByOrgLocationId(orgLocation);
+		List<CreateSenderDTO> createSenderDTOList = new ArrayList<>();
+		if (senderList != null && senderList.size() > 0) {
+			for (CreateSender sender : senderList) {
+				CreateSenderDTO senderDTO = new CreateSenderDTO();
+				senderDTO.setCpnNickName(sender.getNickName());
+				senderDTO.setCpnSenderName(sender.getFromName());
+				senderDTO.setCpnReplyMail(sender.getReplyTo());
+				senderDTO.setIsSenderEmailVerified(sender.getIsSenderEmaiklVerified());
+				senderDTO.setCpnSenderFromMail(sender.getFromMail());
+				senderDTO.setId(sender.getId());
+				createSenderDTOList.add(senderDTO);
+			}
+			if (createSenderDTOList != null && createSenderDTOList.size() > 0) {
+				responseList.setData(createSenderDTOList);
+				responseList.setStatusCode("200");
+			}
+		}
+		return responseList;
+	}
+	
+	@Override
+	public boolean deleteSenderIdentity(OrgLocations orgLocation, Long senderId) throws Exception
+	{
+		boolean isDeleted = false;
+		CreateSender createSender = campaignDao.findSenderIdentityById(senderId);
+		if (createSender != null) {
+			createSender.setStatus(0);
+			CreateSender updatedSender = campaignDao.createSender(createSender);
+			if (updatedSender != null) {
+				isDeleted = true;
+			}
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public CreateSender findSenderIdentityById(Long senderId) throws Exception
+	{
+		return campaignDao.findSenderIdentityById(senderId);
+	}
+
+	@Override
+	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
+	{
+		String listResponse = campaignUtil.createList(campaignListDTO);
+		if(StringUtils.isNotBlank(listResponse)) {
+			JSONObject jObject  = new JSONObject(listResponse); 
+			String listId = jObject.getString("id");
+			CampaignList  campaignList = new CampaignList();
+			campaignList.setListName(campaignListDTO.getCpnListName());
+			campaignList.setListId(listId);
+			campaignList.setStatus(1);
+			campaignList.setCampaignType(1);
+			campaignList.setCreatedBy(user);
+			campaignList.setUpdatedBy(user.getUserCode());
+			Date date = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			campaignList.setCreatedDate(date);
+			campaignList.setUpdatedDate(date);
+			List<String> recipientList = campaignListDTO.getRecipientEmail();
+			Set<CampaignRecipient>  recipientSet = getRecipientSet(recipientList,campaignList,date,user);
+			campaignList.setCampaignRecipient(recipientSet);
+			CampaignList list =campaignDao.saveRecipientList(campaignList);
+		}
+		return true;
+	}
+
+	/**
+	 * Reading Recipients set
+	 * @param recipientList
+	 * @param campaignList
+	 * @param date
+	 * @param user
+	 * @return Set<CampaignRecipient>
+	 * @throws Exception
+	 */
+	private Set<CampaignRecipient> getRecipientSet(List<String> recipientList, CampaignList campaignList, Date date, User user) throws Exception
+	{
+		Set<String> setReci = new HashSet<String>(recipientList);
+		Set<CampaignRecipient> recipientSet = new HashSet<CampaignRecipient>();
+		for (String recipientMail : setReci) {
+			CampaignRecipient campaignRecipient = new CampaignRecipient();
+			String res = campaignUtil.createRecipientsl(recipientMail);
+			JSONObject reciJObject = new JSONObject(res);
+			JSONArray recipientsIds = reciJObject.getJSONArray("persisted_recipients");
+			String recipientId = (String) recipientsIds.get(0);
+			campaignRecipient.setCampaignListId(campaignList);
+			campaignRecipient.setCreatedBy(user);
+			campaignRecipient.setCreatedDate(date);
+			campaignRecipient.setUpdatedBy(user.getUserCode());
+			campaignRecipient.setStatus(1);
+			campaignRecipient.setUpdatedDate(date);
+			campaignRecipient.setEmail(recipientMail);
+			campaignRecipient.setRecipientId(recipientId);
+			recipientSet.add(campaignRecipient);
+		}
+		return recipientSet;
+	}
+}

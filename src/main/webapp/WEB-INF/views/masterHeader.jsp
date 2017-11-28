@@ -688,6 +688,7 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
+						  <!-- <li ><i class="fa fa-key" onclick="campaignSender(this);"  aria-hidden="true"></i>Sender</li> -->
 	              </ul>
 	            </div>
 	          </li>
@@ -1586,6 +1587,9 @@ $("#searchType").selectpicker('refresh');
       
     </div>
   </div>
+  
+  <div class="popMask"></div>
+  
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
@@ -1813,6 +1817,15 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
+ 
+ <%-- <c:if test='${viewPage == "campaignSender"}'>  --%>
+ <script src="resources/js/campaignSender.js"></script>
+	<div id='campaignSender' class='popUpOut'></div> 
+	
+	<script src="resources/js/campaignRecipient.js"></script>
+	<div id='campaignRecipient' class='popUpReci'></div> 
+<%--  </c:if> --%>
+ 
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>

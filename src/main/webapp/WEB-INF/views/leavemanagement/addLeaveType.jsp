@@ -57,8 +57,7 @@
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
-		<form:form id="addLeaveType_form" name="addLeaveType_form"
-			method="post">
+		<form:form id="addLeaveType_form" name="addLeaveType_form" method="post">
 			<div id="loading"></div>
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">

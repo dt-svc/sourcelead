@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.rest.MailBoxRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
@@ -43,6 +46,8 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(MailBoxRestController.class);
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -458,6 +463,159 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 				 }
 				 
 				 String[] recipantsEmails = otherEmails.split(",");
+		    	 for(int i=0; i < recipantsEmails.length; i++){
+		    		 if(validateEmail(recipantsEmails[i])){
+		    			 otherRecipantsEmailsList = otherRecipantsEmailsList.append(recipantsEmails[i]);
+		    			 otherRecipantsEmailsList.append(",");
+		    		 }
+		    	 }
+		    	 
+		    	 otherEmails = otherRecipantsEmailsList.toString();
+		    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
+			}
+			
+			StringBuilder tomaillBuilder = new StringBuilder();
+			
+			if(null != emails && null != otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+			}else if(null == emails && null != otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(otherEmails).toString());
+			}else if(null != emails && null == otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
+			}
+			
+			 emailMessage.setCreatedBy(user.getUserCode());
+			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setFromName(fullName);
+			
+			 if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getCampaignjobs())){
+				    
+					 String jsonArray = jobListEmailCampaignDTO.getCampaignjobs();
+					 jobs = jsonArray.toString();
+					 if(null != jobs){
+						 jobs = jobs.replaceAll("\\[", "").replaceAll("\\]","");
+						 jobs = jobs.replaceAll("\"", "");
+						 campaignJobs = jobs.split(",");
+					 }
+			 }
+			 
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 String table =  getJobListCampaignsTable(campaignJobs,UUID); 
+			 
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("salutation", jobListEmailCampaignDTO.getSaluation());
+			 globalVarsMap.put("body", jobListEmailCampaignDTO.getBodytext());
+			 globalVarsMap.put("noOfJobs", String.valueOf(campaignJobs.length));
+			 
+			 globalVarsMap.put("joblistTable", table);
+			 
+			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.JOB_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(jobListEmailCampaignDTO.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocation.getId());
+			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
+			 
+			 ArrayList<EmailAttachment> attachmentList = null;
+			 EmailAttachment emailAttachment = new EmailAttachment();
+			 FileInfo fileInfo = null;
+			 if(jobListEmailCampaignDTO.getFileInfo() != null) {
+				   fileInfo = jobListEmailCampaignDTO.getFileInfo().get(0);
+				 if(fileInfo != null){
+					 attachmentList =  new ArrayList<EmailAttachment>();
+					 emailAttachment.setName(fileInfo.getFileName());
+					 emailAttachment.setFileUrl(fileInfo.getFileURL());
+					 emailAttachment.setType(fileInfo.getContentType());
+					 attachmentList.add(emailAttachment);
+				     FileUploadUtil.moveFile(jobListEmailCampaignDTO.getStaticPath(), fileInfo, "Joblist Campaign Documents");
+				    }
+			 }
+			 
+			 ArrayList<EmailAttachment> fileAttachmentList = null;
+			 EmailAttachment attachment = new EmailAttachment();
+			 
+			 if(multiFile.getSize() > 0){
+				 fileAttachmentList =  new ArrayList<EmailAttachment>();
+				 attachment.setName(multiFile.getOriginalFilename());
+				 attachment.setDocFile(multiFile.getBytes());
+				 attachment.setType(multiFile.getContentType());
+				 fileAttachmentList.add(attachment);
+			 }
+			 
+			//calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
+			 
+			 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,jobListEmailCampaignDTO.getBodytext(),signature,fileInfo);
+			 userMailBox.setRequirementId(jobs);
+			 userMailBoxService.saveUserMailBox(userMailBox);
+			 userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+			 
+			 
+	}
+	
+	
+	@Override
+	public void sendJobCampaignThroughSendgrid(JobListEmailCampaignDTO jobListEmailCampaignDTO, User user, OrgLocations orgLocation, MultipartFile multiFile) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage(); 
+		 String fullName = null;
+		 String[] campaignJobs = null;
+		 String signature = "";
+		 String jobs = null;
+		 String emails = null;
+		 StringBuilder toRecipantsEmailsList = new StringBuilder();
+		 StringBuilder otherRecipantsEmailsList = new StringBuilder();
+		 String otherEmails = "";
+		 InternetAddress[] iAdressArray = null;
+		   	 if(!isNullOrEmpty(user.getLastName())){
+		   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   		logger.info("full name : "+fullName);
+		   	 }else{
+		   		 fullName = user.getFirstName();
+		   		logger.info("full name : "+fullName);
+		   	 }
+				
+			if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getToemails())){
+				
+		    	  String jsonArray = jobListEmailCampaignDTO.getToemails();
+		    	  logger.info("To Emails (Recipients): "+jsonArray);
+				   emails = jsonArray.toString();
+		    	  if(null != emails){
+		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+		    		  emails = emails.replaceAll("\"", "");
+		    	  }
+		    	 
+		    	  String[] recipantsEmails = emails.split(",");
+			    	 for(int i=0; i < recipantsEmails.length; i++){
+			    		 if(validateEmail(recipantsEmails[i])){
+			    			 toRecipantsEmailsList = toRecipantsEmailsList.append(recipantsEmails[i]);
+			    			 toRecipantsEmailsList.append(",");
+			    		 }
+			    	 }
+			    	 
+			    	 emails = toRecipantsEmailsList.toString();
+			    	 emails = emails.substring(0,emails.length()-1);
+			}
+			
+			
+			if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getOtherEmails())){
+				 String jsonArray = jobListEmailCampaignDTO.getOtherEmails();
+				   otherEmails = jsonArray.toString();
+				   logger.info("OtherEmails (Other Recipients): "+jsonArray);
+				 if(null != otherEmails){
+					 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
+					 otherEmails = otherEmails.replaceAll("\"", "");
+				 }
+				 
+				 String[] recipantsEmails = otherEmails.split(",");
+				 logger.info("OtherEmails (Other Recipients) Atring Array: "+recipantsEmails);
 		    	 for(int i=0; i < recipantsEmails.length; i++){
 		    		 if(validateEmail(recipantsEmails[i])){
 		    			 otherRecipantsEmailsList = otherRecipantsEmailsList.append(recipantsEmails[i]);
