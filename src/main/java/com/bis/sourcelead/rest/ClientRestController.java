@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2091,5 +2092,24 @@ public class ClientRestController {
 			return matchQueryBuilderListForContacts; 
 	 }
 	 
+	 @RequestMapping(value = "/refreshAddProjectClientList", method = RequestMethod.POST)
+		public @ResponseBody Collection<OrgRelations> refreshAddProjectClientList(HttpServletRequest request) throws Exception {
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+	    	for (OrgRelations orgRelation : clientsList) {
+	    		if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getResponderLocationId() != null){
+						orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					}
+				}
+				if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelation.getLocationId() != null){
+						orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					}
+				}
+		   
+	    	}
+			return clientsList;
+	 }
 
 }

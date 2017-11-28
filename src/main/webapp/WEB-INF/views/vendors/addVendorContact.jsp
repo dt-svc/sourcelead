@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Save client Model popup  Start-->
          <div role="dialog" id="selectVendor" class="modal fade">
          <form:form id="vendor_form" name="vendor_form" method="post">
@@ -80,7 +81,8 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-7">
+            <div class="col-md-8 chooRadius">
+            <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
@@ -92,14 +94,16 @@
                    </c:if>  
                  </c:forEach> 
                 </select>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="clientRefresh();"><i class="fa fa-refresh "></i>		</span>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
-            <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="getRolesList()" title="Refresh"></i>
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+		</sec:authorize>
           </div>
           </div>
+             </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           
             <div class="form-group" id="EmailIdDiv">
@@ -788,5 +792,12 @@ function getRolesList(){
 			return o;
 		};
 	})(jQuery);
+</script>
+<script>
+function clientRefresh(){
+	window.location.reload(true);
+}
+
+
 </script>
 

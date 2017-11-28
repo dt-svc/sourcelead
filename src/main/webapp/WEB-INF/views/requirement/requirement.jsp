@@ -843,7 +843,9 @@ $(document).ready(function () {
                 
                    <span class="input-group-addon cursorPointer bg-blue wid40" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
               </div>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                  </sec:authorize>
                   <div role="dialog" id="addLevel" class="modal fade">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -914,13 +916,10 @@ $(document).ready(function () {
                     
                    <span class="input-group-addon cursorPointer bg-blue wid40" id="contactRefreshId" value="" onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
               </div>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-                  
+               </sec:authorize>
                 </div>
-<%--                 <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
-			</div>	 --%>
               </div>
               <div class="form-group">
                 <label class="col-md-3">Bill Rate / Salary</label>
@@ -1025,16 +1024,12 @@ $(document).ready(function () {
 					</c:otherwise>
 				</c:choose>
 
-                   <span class="input-group-addon cursorPointer bg-blue wid40" onclick="getClientSubmissionTemplates(local);"><i class="fa fa-refresh "></i></span>
+                   <span class="input-group-addon cursorPointer bg-blue wid40" onclick="  "><i class="fa fa-refresh "></i></span>
               </div>
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>                  
-                  
-                  
+               <sec:authorize access="hasAnyRole('ROLE_CREATE_SUBMISSION_TEMPLATE')">
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="  " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>                  
+             </sec:authorize> 
                 </div>
-<%--                  <div class="col-md-2 noPad refreshBtnStyle">
-				                  <a href="<c:url value=" " />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor Contact"> </i></a>
-				                  <i class="fa fa-refresh btn btn-default formic1" onclick=" " title="Refresh"></i>
-		                   	</div>  --%>
               </div>
             </div>
           </div>

@@ -204,11 +204,6 @@
 			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
-			
-			<%-- <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorsByOrgLocationId();" title="Refresh"></i>
-			</div> --%>		
 		</div>
 		</div>
 		 <div class="form-group">
@@ -219,7 +214,11 @@
                  </select>
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();"><i class="fa fa-refresh "></i></span>
 			</div>
-			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+			<span class="col-md-2 noPad clearfix">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+		</sec:authorize>
+		 </span>
 			<%-- <div class="col-md-2 noPad refreshBtnStyle">
 				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
 				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>

@@ -34,31 +34,33 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-7 select-field">
+              <div class="col-md-9 chooRadius">
+               <div class="input-group col-md-10 pull-left">
 			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
 				data-validation="required" field-name="Vendor">
 			</select>
+			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();"><i class="fa fa-refresh "></i></span>
 			</div>
-			 <div class="col-md-2 noPad refreshBtnStyle">
-				  <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor"> </i></a>
-				  <i class="fa fa-refresh btn btn-default formic1" onclick="getVendors();" title="Refresh"></i>
-			</div>  
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			          <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
             </div>
-              
+              </div>
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-7 select-field">
+              <div class="col-md-9 chooRadius">
+                 <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
               </div>
-               <div class="col-md-2 noPad refreshBtnStyle">
-				       <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vendor Contact"> </i></a>
-				       <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContacts();" title="Refresh"></i>
-		     	</div> 
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
+			</sec:authorize>
             </div>
-              
+             </div>
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">

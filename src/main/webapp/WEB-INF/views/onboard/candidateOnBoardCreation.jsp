@@ -2278,7 +2278,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</select>';
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadTeams(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
 	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2352,7 +2354,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</select>';
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
 	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 
 	 

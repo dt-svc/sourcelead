@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
 $(document).ready(function(){
@@ -206,7 +206,9 @@ $(document).ready(function(){
                   </select>
                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();"><i class="fa fa-refresh "></i></span>
               </div>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+           </sec:authorize>
           </div>                      
              </div>          
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
@@ -234,7 +236,9 @@ $(document).ready(function(){
 					 </c:choose>
 					  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
+               <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>			
+                </sec:authorize>
             </div>
             </div> 
             
@@ -251,7 +255,9 @@ $(document).ready(function(){
                   </select>
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i></span>
               </div>
+                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               </sec:authorize>
           </div> 
           </div>                      
                       
@@ -277,7 +283,9 @@ $(document).ready(function(){
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
+					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
+                      </sec:authorize>
               </div>
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>		
             </div>

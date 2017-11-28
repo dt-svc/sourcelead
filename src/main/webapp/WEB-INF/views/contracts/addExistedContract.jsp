@@ -156,13 +156,16 @@ $(document).ready(function(){
                   </select>
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i></span>
               </div>
+               <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+          </sec:authorize>
           </div>     
            </div>                   
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-6" id="errorvendorContact">
+              <div class="col-md-8 chooRadius" id="errorvendorContact">
+                <div class="input-group col-md-10 pull-left">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};" field-name="Vendor Contact">
@@ -182,13 +185,13 @@ $(document).ready(function(){
 					        <option value=''>Select Vendor Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
+					  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
-              <div class="col-md-2 noPad refreshBtnStyle">
-				   <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
-				    <i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContacts();" title="Refresh"></i>
-			  </div>	
+                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                 </sec:authorize>
             </div>
-            
+             </div>
             
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>

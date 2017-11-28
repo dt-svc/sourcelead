@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
@@ -240,21 +240,31 @@
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9">
+			<div class="col-md-9 chooRadius">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+		           <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+              </sec:authorize>
 		</div>
-		
+		</div>
 		 <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9">
+			<div class="col-md-9 chooRadius">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact">
                  </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
 		</div>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+		           <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+              </sec:authorize>
 		</div>
-       
+       </div>
         <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Type</label>
             <div class="col-md-9">

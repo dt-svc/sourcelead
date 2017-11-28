@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
 function getOrgName(){
@@ -179,16 +180,16 @@ function getOrgDetails()
                    </c:if>  
                  </c:forEach> 
                 </select>
-	            <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i></span>
+	            <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i> 
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> </div>
             </div>
-            
-                <%-- <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="refreshClientList();" title="Refresh"></i> --%>
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
+			</span>
 			</div>            
-            
+            	</div>  
           </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
