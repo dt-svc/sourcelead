@@ -888,7 +888,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="backOutForApplicantDiv"/>';
-        result = result +"        <input id='saveBackOut' type='button' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
+        result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
@@ -922,7 +922,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
-        result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
@@ -1070,6 +1070,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
 		
 		var formData =  getFormData('rejected_form'); 
+		$('#save_Reason').attr("disabled","disabled");
 		$.ajax({
 			type : "POST",
     	    data: formData,
@@ -1095,6 +1096,7 @@ $('body').on('blur', '#rejected_form', function() {
 function backOutApplicantSave(submissionId,requirementId,submissionType){
 	if ($('#backOut_form').validate(false, validationSettings)) {
 		var formData =  getFormData('backOut_form'); 
+		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
 			type : "POST",
     	    data: formData,
