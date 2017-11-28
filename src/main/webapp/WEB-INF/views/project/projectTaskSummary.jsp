@@ -29,7 +29,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 			<h2 class="pull-left paddingRight">${projectName} - Task</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
+			  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
 		</div>
 		
 	</section>

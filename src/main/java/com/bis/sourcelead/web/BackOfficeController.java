@@ -56,7 +56,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class BackOfficeController {
 	
 private static final Logger logger = LoggerFactory.getLogger(BackOfficeController.class);

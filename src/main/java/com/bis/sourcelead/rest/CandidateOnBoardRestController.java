@@ -82,7 +82,7 @@ import com.drew.lang.StringUtil;
 import cucumber.deps.difflib.StringUtills;
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class CandidateOnBoardRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);

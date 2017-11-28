@@ -28,7 +28,7 @@ function redirectPageStatic(){
 	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("dropDownCountId").value;
-	window.location.href = sourceleadUrl+"/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
+	window.location.href = sourceleadUrl+"/ws/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
 }
 </script>
 <script>
@@ -66,7 +66,7 @@ function getOpenJobsELKList(){
 	var offset = 0;
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	     $("#openJobsRequirementsList").empty();
 	     var json = JSON.parse(data);
@@ -108,7 +108,7 @@ function getOpenJobsELKList(){
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
-					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
@@ -126,7 +126,7 @@ function getOpenJobsELKList(){
 					}
 					result = result +'	</div>';	
 					
-					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
 					result = result +'	<span>';

@@ -54,7 +54,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")
@@ -257,7 +257,7 @@ public class CandidateDocumentsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		

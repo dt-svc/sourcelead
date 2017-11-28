@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 */
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class ExpensesEntryDocmentsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesEntryDocmentsController.class);

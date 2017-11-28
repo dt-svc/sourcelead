@@ -22,7 +22,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class OpenJobsController {
 
 	@Autowired
@@ -42,7 +42,7 @@ public class OpenJobsController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/openRequirements")
+	@RequestMapping(value = "/ws/openRequirements")
 		 public ModelAndView openJobs() throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 List<Countries> countriesList = countriesService.getAllCountries();
@@ -55,7 +55,7 @@ public class OpenJobsController {
 	}
 	
 	
-	@RequestMapping(value = "/openRequirementsRedirect")
+	@RequestMapping(value = "/ws/openRequirementsRedirect")
 	 public ModelAndView openRequirementsRedirect(@RequestParam(value = "openJobsTitle", required = false) String openJobsTitle,
 			 @RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
 			 @RequestParam(value = "openJobsExperience", required = false) String openJobsExperience) throws Exception{
@@ -77,7 +77,7 @@ public class OpenJobsController {
 	
 	
 	
-	@RequestMapping(value = "/openJobsPublicPage")
+	@RequestMapping(value = "/ws/openJobsPublicPage")
 		public ModelAndView openJobsforApplicants(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

@@ -16,7 +16,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Leave Type</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -29,7 +29,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addLeaveType'/>" title="Add Leave Type">
+              <a href="<c:url value='${appPath}/addLeaveType'/>" title="Add Leave Type">
                 <i class="fa fa-plus paddingRight"></i>Add Leave Type
               </a>
           </li>

@@ -232,7 +232,7 @@ $(function(){
   </div>		  
 		  
 <div class="welBtns">
-<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='/onboardingCandidateSetp2'/>'"  class="Brig">
+<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${appPath}/onboardingCandidateSetp2'/>'"  class="Brig">
 <div class="clearfix"></div>
 </div>
 		  

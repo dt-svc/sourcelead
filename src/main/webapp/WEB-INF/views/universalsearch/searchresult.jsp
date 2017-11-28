@@ -33,7 +33,7 @@ $(document).ready(function(){
 		<div class="pull-left">
 			<h2>Universal Search Results</h2>
 		</div>
-		<div class="pull-right brud-crum hide"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum hide"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="clearfix">
 <div id="loading"></div>	
@@ -79,9 +79,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="/path/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="/path/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		result = result+'          <p><label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
@@ -466,9 +466,9 @@ function getSearchResultsForAll(searchType,searchValue){
 						            	 
 									    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 									    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+									    		result = result+'<p><label><strong><a href="/path/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 									    	}else{
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
+									    		result = result+'<p><label><strong><a href="/path/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
 									    	}
 									    	
 									    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -502,7 +502,7 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	
 									    	if(opt.length>5 && j==4){
 								                result = result+'  <div class="clearfix">';
-										    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										    	result = result+'      <a href="/path/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 										    	result = result+'  </div>';
 								             }
 									    	

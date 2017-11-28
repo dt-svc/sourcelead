@@ -20,11 +20,11 @@
 		</div>
 
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Payroll
 		</div>
 		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='/uploadDocuments'/>" class="ml10 mt5"
+			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
 				id="uloadDocs" title="upload documents">Upload Files</a> 
 				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
 				id=generateReportId title="Generate Report">Generate Report</a> --%>
@@ -59,7 +59,7 @@
 
 					<div class="pull-left mr">
 
-						<a href="<c:url value='/userMapping'/>"
+						<a href="<c:url value='${appPath}/userMapping'/>"
 							class="btn btn-primary btn-sm ml10 mt5 hidden"
 							title="User Mapping" onClick="userMaping();">User Mapping </a>
 

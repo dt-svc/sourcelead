@@ -39,7 +39,7 @@ import com.bis.sourcelead.util.CommonUtil;
  *
  */
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class CandidateReferencesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateReferencesRestController.class);
 	@Value("${sourceleadUrl}")

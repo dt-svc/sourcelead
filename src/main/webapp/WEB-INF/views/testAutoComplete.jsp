@@ -152,7 +152,7 @@ function getAllCountries(sourceleadUrl){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: sourceleadUrl+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: sourceleadUrl+"ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').tagit({

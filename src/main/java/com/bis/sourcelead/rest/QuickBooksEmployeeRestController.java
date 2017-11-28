@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class QuickBooksEmployeeRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(QuickBooksEmployeeRestController.class);

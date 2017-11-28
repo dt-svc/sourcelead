@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 @PropertySource("${propertyLocation:app.properties}")
 public class InterviewReminderController {
 

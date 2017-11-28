@@ -39,7 +39,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class RequirementListController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementListController.class);
@@ -200,7 +200,7 @@ public class RequirementListController {
 				description = description.append("Posted Date : ").append(requirement.getCreatedDate()).append("; ").append("");
 				
 				model.addObject("socialpost_title", "");
-				model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/openJobsPublicPage?requirementUUID=").append(requirementUUID));
+				model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/ws/openJobsPublicPage?requirementUUID=").append(requirementUUID));
 				model.addObject("socialpost_description", description);
 				model.addObject("socialpost_picture", "");
 				model.addObject("socialpost_comment", "");

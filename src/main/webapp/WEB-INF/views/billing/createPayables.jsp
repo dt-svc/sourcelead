@@ -54,7 +54,7 @@ function errRemoveVendorContact(){
 		<div class="pull-left">
 			<h2>Vendor Bill</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bill List</a> &raquo; Custom Based Bill</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bill List</a> &raquo; Custom Based Bill</div>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -160,7 +160,7 @@ function errRemoveVendorContact(){
 						<button type="button" class="btn btn-sm btn-success ml pull-left" id="sendInvoiceId" style="display:block;"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml pull-left"
-							onClick="javascript:window.location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>

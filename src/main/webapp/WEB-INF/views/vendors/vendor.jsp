@@ -240,8 +240,8 @@ function getVendorDetails(){
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Create
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a> &raquo; Create
 			Vendor
 		</div>
 	</section>
@@ -589,7 +589,7 @@ function getVendorDetails(){
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
 						
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -1170,7 +1170,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1215,7 +1215,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

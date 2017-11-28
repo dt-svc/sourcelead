@@ -98,7 +98,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class ClientRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientRestController.class);

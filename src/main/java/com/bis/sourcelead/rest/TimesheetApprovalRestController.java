@@ -58,7 +58,7 @@ import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
  
 
 @RestController 
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class TimesheetApprovalRestController {
 	
 	@Value("${sourceleadUrl}")

@@ -24,7 +24,7 @@ import com.bis.sourcelead.util.PdfConversionUtil;
  */
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class OrgDocumentsController {
 	
 	@Autowired

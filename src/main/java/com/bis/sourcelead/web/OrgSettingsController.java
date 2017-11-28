@@ -36,7 +36,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class OrgSettingsController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);
 	@Value("${sourceleadUrl}")

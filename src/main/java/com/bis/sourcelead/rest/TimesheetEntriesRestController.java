@@ -46,7 +46,7 @@ import com.bis.sourcelead.util.TimeSheetPdfUtil;
  
 
 @RestController 
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class TimesheetEntriesRestController {
 	
 	@Value("${sourceleadUrl}")

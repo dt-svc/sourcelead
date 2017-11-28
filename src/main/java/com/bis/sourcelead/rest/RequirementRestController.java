@@ -72,7 +72,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class RequirementRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementRestController.class);

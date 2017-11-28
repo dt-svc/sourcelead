@@ -72,20 +72,20 @@
 	            <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
 	            <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
-	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
+	            <div class="for-pas-text"><a href="<c:url value='${appPath}/forgotPassword'/>">Forgot Password</a></div>
 	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class= "clearfix"></div>
 	            
 	            <c:if test="${!empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
 	            <c:if test="${!empty requirementUUID && !empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
 	            <c:if test="${empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
             </form>          

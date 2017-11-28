@@ -39,7 +39,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
       <div class="pull-left">
         <h2>Release Job</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Job</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Job</div>
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
@@ -233,7 +233,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
           <div class="pull-right">
             <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='requirementList'/>'">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'">
           </div>
         </div>
       </div>
@@ -249,7 +249,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='requirementList'/>'">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'">
           </div>
         </div>
       </div>
@@ -298,7 +298,7 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
-	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
+	var referLink = "${sourceleadUrl}/ws/openJobsPublicPage?requirementUUID=${requirementUUID}"
 	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){

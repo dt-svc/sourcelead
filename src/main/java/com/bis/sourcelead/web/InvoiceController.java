@@ -39,7 +39,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.log.SysoCounter;
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class InvoiceController {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
 	@Value("${sourceleadUrl}")

@@ -12,8 +12,8 @@
 			<h2>Create Client Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Client Project
 	</section>
 	
@@ -91,7 +91,7 @@
 					<div class="col-lg-12">
 					<i class='fa fa-info-circle' title='Save & Continue will be disabled until you select the end client'></i>
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" disabled="disabled" id="save_project" onclick="saveClientProject()" class="btn btn-primary">
 						</div>
 					</div>

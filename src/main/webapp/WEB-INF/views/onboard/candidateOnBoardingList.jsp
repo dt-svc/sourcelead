@@ -46,7 +46,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
  
  <div class="content-area content-new clearfix">
@@ -55,13 +55,13 @@
           <div class="onboardcreateButtons"> 
 	          
 	           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-		          <a href="<c:url value='/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
+		          <a href="<c:url value='${appPath}/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
 		          	<i class="fa fa-plus paddingRight"></i>Create onboard
 		          </a> 
 	          </sec:authorize>
 	          
 	          <sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-		          <a href="<c:url value='/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
+		          <a href="<c:url value='${appPath}/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
 		          	<i class="fa fa-plus paddingRight"></i>Create offboard
 		          </a>
 	          </sec:authorize>

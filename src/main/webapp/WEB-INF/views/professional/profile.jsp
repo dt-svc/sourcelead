@@ -30,7 +30,7 @@ $(document).ready(function(){
       </div>
        
        <!-- Redirect to main dashboard -->
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Update Profile</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Update Profile</div>
    
     </section>
     

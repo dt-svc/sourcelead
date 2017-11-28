@@ -45,7 +45,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class OpenJobsRestController {
 
 	@Value("${sourceleadUrl}")
@@ -69,7 +69,7 @@ public class OpenJobsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/getOpenJobsELK")
+	@RequestMapping(value = "/ws/getOpenJobsELK")
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
@@ -279,7 +279,7 @@ public class OpenJobsRestController {
 	 }
 	
 	
-	 @RequestMapping(value = "/openJobsRequiremetsAdvancedSearch",method = RequestMethod.GET)
+	 @RequestMapping(value = "/ws/openJobsRequiremetsAdvancedSearch",method = RequestMethod.GET)
 		public @ResponseBody  String openJobsRequiremetsAdvancedSearch(@RequestParam(value = "json", required = false) String json,
 				@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		String resultJson = "";
@@ -585,7 +585,7 @@ public class OpenJobsRestController {
 		}
 	 }
 	 
-	 @RequestMapping(value = "/openRequirementsSummary")
+	 @RequestMapping(value = "/ws/openRequirementsSummary")
 	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
@@ -595,7 +595,7 @@ public class OpenJobsRestController {
 		 
 	 }
 	 
-	@RequestMapping(value = "/getOrgsListforOpenJobs")
+	@RequestMapping(value = "/ws/getOrgsListforOpenJobs")
 	 public @ResponseBody  String getOrgsListforOpenJobs(@RequestParam(value = "alphabet", required = false) String alphabet,@RequestParam(value = "country", required = false) String country) throws Exception{
 		 List<OrgLocations> locationsList = null;
 		 String json;

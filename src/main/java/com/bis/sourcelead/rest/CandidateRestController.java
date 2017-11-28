@@ -90,7 +90,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")

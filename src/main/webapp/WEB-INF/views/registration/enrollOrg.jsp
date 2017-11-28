@@ -22,7 +22,7 @@ function changeCountry(){
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="path/dashboard">Home</a> &raquo; <a href="path/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
@@ -197,7 +197,7 @@ function changeCountry(){
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>

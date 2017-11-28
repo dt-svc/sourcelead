@@ -46,7 +46,7 @@ import com.bis.sourcelead.util.SourceleadResumeParser;
 
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class FileController {
 
 	@Value("${static.path}")
@@ -275,7 +275,7 @@ public class FileController {
 		return "resume-upload";
 	}
 	
-	@RequestMapping("/check-session")
+	@RequestMapping("/ws/check-session")
 	@ResponseBody
 	public String checkSession(HttpServletRequest request) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

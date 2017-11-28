@@ -35,7 +35,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @Controller
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);

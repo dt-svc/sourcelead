@@ -65,7 +65,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class AssociatesRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AssociatesRestController.class);

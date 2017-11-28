@@ -39,7 +39,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
-@RequestMapping(value = "/slead/timesheetPdf")
+@RequestMapping(value = "/path/timesheetPdf")
 public class TimesheetPdfRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetPdfRestController.class);
 	@Autowired

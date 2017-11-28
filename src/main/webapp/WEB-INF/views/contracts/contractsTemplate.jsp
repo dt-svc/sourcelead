@@ -37,7 +37,7 @@ margin: 0 !important;
 			</div>
 		</div>
     </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
 </section>
 	
 	
@@ -71,7 +71,7 @@ $(document).ready(function(){
 			</li>
 			
         		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
+				<li><a href="<c:url value="/path/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
 				</sec:authorize>
                 <div class="clearfix"></div>
             </ul>

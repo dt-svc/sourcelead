@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class UserProfileController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);

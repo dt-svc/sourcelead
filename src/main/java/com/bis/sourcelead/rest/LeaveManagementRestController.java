@@ -82,7 +82,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
-@RequestMapping("/slead")
+@RequestMapping("/path")
 public class LeaveManagementRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);

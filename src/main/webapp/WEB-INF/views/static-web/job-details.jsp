@@ -49,8 +49,8 @@
 		</div>			
 		<div class="jobDetailsLogo">
 			<span><img src="resources/css/static-web/images/compLogo.jpg" alt=""/></span>
-			<a href="http://localhost:8080/sourcelead/">Apply</a>
-			<a href="http://localhost:8080/sourcelead/" class="btn2">Refer</a>
+			<a href="http://localhost:8080/path/">Apply</a>
+			<a href="http://localhost:8080/path/" class="btn2">Refer</a>
 			<div class="clear"></div>
 
 			<div class="share">
@@ -86,8 +86,8 @@
 		<b><i class="fa fa-caret-right"></i>Posted : 6th Feb 2017</b>
 		
 		<div class="jobBtns">
-			<a href="http://localhost:8080/sourcelead/">Apply</a>
-			<a href="http://localhost:8080/sourcelead/" class="btn2">Refer</a>
+			<a href="http://localhost:8080/path/">Apply</a>
+			<a href="http://localhost:8080/path/" class="btn2">Refer</a>
 		</div>
 
 		</div>		

@@ -56,7 +56,7 @@ public class SourceleadLogoutSuccessHandler implements LogoutSuccessHandler{
 				}  catch (Exception e) {}
 			}
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.sendRedirect(request.getContextPath()+"/slead/ws/getActionHistoryList/"+actionUUID);
+			response.sendRedirect(request.getContextPath()+"/path/ws/getActionHistoryList/"+actionUUID);
 		}
 		else{
 			response.setStatus(HttpServletResponse.SC_OK);

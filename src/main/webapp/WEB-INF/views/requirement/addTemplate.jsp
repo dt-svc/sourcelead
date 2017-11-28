@@ -47,7 +47,7 @@ width: 100% !important;
 		<div class="pull-left">
 			<h2>Job Template</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/template'/>">Job Template List </a> &raquo; Add Job Template
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/template'/>">Job Template List </a> &raquo; Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -218,7 +218,7 @@ width: 100% !important;
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/template'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>

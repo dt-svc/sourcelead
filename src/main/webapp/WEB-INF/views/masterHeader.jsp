@@ -10,7 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
- <c:set var='appPath' value="/slead" scope="application"></c:set>
+ <c:set var='appPath' value="/path" scope="application"></c:set>
 
  <script type="text/javascript">
     var staticTime='${staticTime}'
@@ -256,7 +256,7 @@ function getNotificationsByuserId(){
 			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
 		}
           result = result + '</ul>';
-         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/notificationsList"/>">View All</a> </div>';
+         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/path/notificationsList"/>">View All</a> </div>';
           result = result + ' </div>';
 		
 		$("#ndiv").empty();

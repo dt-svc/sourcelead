@@ -150,7 +150,7 @@ $(document).ready(function(){
 		   	     	    
 		   	     	    
 			   	     	result = result+'<tr>';
-			   	        result = result +'<td><a href="<c:url value="/financialInstituteSummary?financialInstitute='+report.identity+'"/>" class="tbldata-dotdot-big">';
+			   	        result = result +'<td><a href="<c:url value="/path/financialInstituteSummary?financialInstitute='+report.identity+'"/>" class="tbldata-dotdot-big">';
 					   	result = result +'<div class="proj_show"> <span class="tbldata-dotdot-me">'+report.financialInstituteName+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result +'</a></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.debitAmount+'</div></td>';
