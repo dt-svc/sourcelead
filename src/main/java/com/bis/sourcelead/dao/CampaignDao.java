@@ -19,6 +19,8 @@ public interface CampaignDao {
 
 	CampaignList saveRecipientList(CampaignList campaignList) throws Exception;
 
-	CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;;
+	List<CreateSender> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
+
+	List<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception;
 
 }

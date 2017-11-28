@@ -90,16 +90,21 @@ public class CampaignDaoImpl implements CampaignDao {
 	}
 
 	@Override
-	public CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CreateSender> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		CreateSender createSender = null;
-		List<CreateSender> senderList = new ArrayList<>();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.createdBy = :userId and cSender.orgLocationId = :orgLocationId").setLong("userId", user.getId()).setCacheable(true).list();
-		if (createSenderList != null && createSenderList.size() > 0) {
-			createSender = createSenderList.get(0);
-		}
-		return createSender;
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.createdBy.id = :userId and cSender.orgLocations.id = :orgLocationId and cSender.status = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		return createSenderList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		return cpnList;
 	}
 	
 	

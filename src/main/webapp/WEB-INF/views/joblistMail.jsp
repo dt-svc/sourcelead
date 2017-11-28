@@ -33,6 +33,7 @@ display: none;
 			 loadHotMailBoxDetails(UUID);
 		 }
 	 }
+	 getSenders(); 
 });
 </script> 
 
@@ -53,9 +54,22 @@ display: none;
        <form:form id="joblistCampaign_form" name="joblistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-          <div class="col-md-10">
-            <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly>
-          </div>
+           <div class="col-md-10">
+            <%-- <input type="text" value="${createSender.fromMail}" class="form-control input-sm" readonly> --%>
+            
+                        <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+				                </select>            
+            
+          </div> 
+         <!--   <div class="form-group">
+				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+				              <div class="col-md-9 select-field" id="errClient">
+				                <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender Name">             
+				                </select>
+				              </div>
+				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+				                <input type="hidden" name="clientCurrency" id="clientCurrency">
+		 </div> -->
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
@@ -64,7 +78,7 @@ display: none;
             <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="validate_email" data-validation-optional="true" name="Toemails">
 
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="selectRadio();vendorListChange()" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -72,10 +86,10 @@ display: none;
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h4 class="modal-title">Select Vendors</h4>
-                    <label class="paddingLeft paddingRight">
+                    <!-- <label class="paddingLeft paddingRight">
                	    <input  type="radio" id="vendorCheck" name="users" checked onclick="vendorListChange()"><strong class="paddingLeft">Vendors</strong></label>
                	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label>
+               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label> -->
                   </div>
                   
                    <div class="modal-body clearfix">
@@ -1301,6 +1315,54 @@ function getContactEmails(){
           
      }); 
 	 
+}
+</script>
+
+<script>
+function getSenders(){
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Sender</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.senderId+ "'>"+opt.cpnSenderFromMail+"("+opt.cpnSenderName+")</option>";
+		
+		}
+		
+		$("#senderIdentity").empty();
+		$("#senderIdentity").append(output);
+		$('#senderIdentity').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
+<script>
+function getRecipientContactsList(){
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue,
+		success :function(json) {
+			alert(json);
+		/* var output = "";
+		output = output + "<option value=''>Select Sender</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		alert(opt.cpnSenderFromMail);
+		output = output + "<option value='" +opt.senderId+ "'>"+opt.cpnSenderFromMail+"("+opt.cpnSenderName+")</option>";
+		
+		}
+		
+		$("#senderIdentity").empty();
+		$("#senderIdentity").append(output);
+		$('#senderIdentity').trigger("chosen:updated"); */
+		},
+		});
 }
 </script>
 <jsp:include page="masterFooter.jsp" />

@@ -150,6 +150,7 @@ public class CampaignServiceImpl implements CampaignService{
 	@Override
 	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
 	{
+		boolean isListInserted = false;
 		String listResponse = campaignUtil.createList(campaignListDTO);
 		if(StringUtils.isNotBlank(listResponse)) {
 			JSONObject jObject  = new JSONObject(listResponse); 
@@ -161,6 +162,7 @@ public class CampaignServiceImpl implements CampaignService{
 			campaignList.setCampaignType(1);
 			campaignList.setCreatedBy(user);
 			campaignList.setUpdatedBy(user.getUserCode());
+			campaignList.setOrgLocation(orgLocation);
 			Date date = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
 			campaignList.setCreatedDate(date);
 			campaignList.setUpdatedDate(date);
@@ -168,8 +170,11 @@ public class CampaignServiceImpl implements CampaignService{
 			Set<CampaignRecipient>  recipientSet = getRecipientSet(recipientList,campaignList,date,user);
 			campaignList.setCampaignRecipient(recipientSet);
 			CampaignList list =campaignDao.saveRecipientList(campaignList);
+			if(list !=null) {
+				isListInserted = true;
+			}
 		}
-		return true;
+		return isListInserted;
 	}
 
 	/**
@@ -205,8 +210,34 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
+	public List<CreateSenderDTO> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
 	{
-		return campaignDao.getSenderIdentityByUserChoice(user,orgLocations);
+		List<CreateSender> senderList = campaignDao.getSenderIdentityByUserChoice(user, orgLocations);
+		List<CreateSenderDTO> list = new ArrayList<>();
+		for (CreateSender sender : senderList) {
+			CreateSenderDTO createSenderDTO = new CreateSenderDTO();
+			createSenderDTO.setId(sender.getId());
+			createSenderDTO.setCpnNickName(sender.getNickName());
+			createSenderDTO.setCpnSenderName(sender.getFromName());
+			createSenderDTO.setCpnSenderFromMail(sender.getFromMail());
+			createSenderDTO.setSenderId(sender.getSenderId());
+			list.add(createSenderDTO);
+		}
+		return list;
+	}
+
+	@Override
+	public List<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception
+	{
+		List<CampaignList> cpnList = campaignDao.getRecipientListByUserId(user,orgLocation);
+		List<CampaignListDTO>  campaignListDtoList = new ArrayList<>();
+		for(CampaignList  campaignList : cpnList) {
+			CampaignListDTO campaignListDTO = new CampaignListDTO();
+			campaignListDTO.setId(campaignList.getId());
+			campaignListDTO.setListId(campaignList.getListId());
+			campaignListDTO.setListName(campaignList.getListName());
+			campaignListDtoList.add(campaignListDTO);
+		}
+		return campaignListDtoList;
 	}
 }

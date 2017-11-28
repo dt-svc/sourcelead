@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -106,6 +108,43 @@ public class CampaignRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean  isSenderDeleted = campaignService.saveRecipientList(orgLocation,campaignListDTO,user);
-		return true;
+		return isSenderDeleted;
 	}
+	
+	/**
+	 * Get Senders List
+	 * @param campaignListDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getSenders",method = RequestMethod.GET)
+	public List<CreateSenderDTO> getSenders(CampaignListDTO campaignListDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CreateSenderDTO> createSenderDtoList = campaignService.getSenderIdentityByUserChoice(user,orgLocation);
+		return createSenderDtoList;
+	}
+	
+	
+	/**
+	 * Get Senders List
+	 * @param campaignListDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getRecipientList",method = RequestMethod.GET)
+	public List<CampaignListDTO> getRecipientList(CampaignListDTO campaignListDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user,orgLocation);
+		System.out.println(cpnDtoList.size());
+		return cpnDtoList;
+	}
+	
 }

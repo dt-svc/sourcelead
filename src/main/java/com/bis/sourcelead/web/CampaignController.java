@@ -112,10 +112,7 @@ public class CampaignController {
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/joblistMail")
  	public ModelAndView joblistMail(HttpServletRequest request) throws Exception {
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    ModelAndView model = new ModelAndView();
- 			CreateSender createSender = campaignService.getSenderIdentityByUserChoice(user,orgLocations);
 		    model.setViewName("joblistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;

@@ -2,6 +2,9 @@ package com.bis.sourcelead.service;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CreateSender;
+
+import java.util.List;
+
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -21,5 +24,7 @@ public interface CampaignService {
 
 	boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO, User user) throws Exception;
 
-	CreateSender getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
+	List<CreateSenderDTO> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
+
+	List<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception;
 }
