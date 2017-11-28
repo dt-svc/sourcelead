@@ -75,19 +75,19 @@ public class OrgLocations implements Serializable{
 	@Column(name = "AVERAGE_WORKING_HOURS")
 	private Integer averageWorkingHours;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
 	@Column(name = "ZIP_CODE")
 	private String zipCode;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "LATITUDE")

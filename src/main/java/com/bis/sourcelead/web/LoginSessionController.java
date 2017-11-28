@@ -99,6 +99,9 @@ public class LoginSessionController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
 	
@@ -205,6 +208,8 @@ public class LoginSessionController {
 			}
 
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+			SourceLeadSessionManager.setSessionAttribute(request, "staticPath", staticPath);
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 			
 			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
@@ -317,7 +322,7 @@ public class LoginSessionController {
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 					if(candidateOnBoarding.getManagerUserId()!=null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId());
 					}
 					if(candidateOnBoarding.getOnBoardTeamId()!=null){
 						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
@@ -645,7 +650,7 @@ public class LoginSessionController {
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 					if(candidateOnBoarding.getManagerUserId() != null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId());
 					}
 					if(candidateOnBoarding.getOnBoardTeamId() != null){
 						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
