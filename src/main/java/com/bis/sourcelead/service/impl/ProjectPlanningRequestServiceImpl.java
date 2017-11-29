@@ -96,6 +96,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(projectUUID)){
 			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
 			projectPlanningRequest.setProjectId(projects);
+			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		
 		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
@@ -139,7 +140,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 }
 		}
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -491,7 +492,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 return tempHTML;
 }
 
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations,String saveType) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedResourceRequests = new ArrayList<Long>();
@@ -592,6 +593,13 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 }else{
 					 resourceRequest.setEstimatedBudget(null);
 				 }
+				 
+				 
+			    if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+				}else{
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+				}
 				 
 				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
