@@ -876,8 +876,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				CandidateResumes  candidateResumes =candidateResumesDao.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
 				if(null != candidateResumes){
 					candidateIndex.setCurrentResumeId(candidateResumes.getId());
-					candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 					candidateIndex.setResumeContent("");
+					candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+					candidateIndex.setFileUrl(candidateResumes.getFileURL());
+					candidateIndex.setFileContentType(candidateResumes.getFileContentType());
+					candidateIndex.setResumeName(candidateResumes.getFileName());
+					
 				}
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 			}
