@@ -192,11 +192,11 @@
        <span id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-8 chooRadius" id="errorvendor">
+			<div class="col-md-9 chooRadius" id="errorvendor">
 			 <div class="input-group col-md-10 pull-left">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();vendorContactEmpty();removeValiationVendor();">
                  </select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();"><i class="fa fa-refresh "></i></span>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();vendorContactEmpty();"><i class="fa fa-refresh "></i></span>
 			</div>
 			
 			<span class="col-md-2 noPad clearfix">
@@ -208,21 +208,17 @@
 		</div>
 		 <div class="form-group">
 			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-8 chooRadius" id="errorvendorContact">
+			<div class="col-md-9 chooRadius" id="errorvendorContact">
 			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();"><i class="fa fa-refresh "></i></span>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 		</sec:authorize>
 		 </span>
-			<%-- <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Vender Contact"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="getVendorContactList();" title="Refresh"></i>
-			</div>	 --%>
 		</div>
 		</div>
 		</span>
@@ -344,8 +340,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            
-		            
 		        }
 		 });
  }
@@ -353,6 +347,8 @@ if(type == 'C2C' || type == 'C2C-1099'){
  <script>
  function getVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
+	 
+	 if(orgRelationID != null && orgRelationID !='' && orgRelationID !='undefined'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -366,7 +362,13 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
-		 }); 
+		 });
+	 }else{
+		 $('#vendorcontact').empty();
+		 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		 $('#vendorcontact').trigger("chosen:updated");
+	 }
+		  
  }
  </script>
 
@@ -1024,3 +1026,12 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+	 <script>
+	 function vendorContactEmpty(){
+		 $('#vendorcontact').empty();
+		 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		 $('#vendorcontact').trigger("chosen:updated");
+	 }
+	 </script>
+	 
+	

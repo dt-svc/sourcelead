@@ -154,10 +154,10 @@ $(document).ready(function(){
                          <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
-                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i></span>
+                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();getVendorContacts();addExistedEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
           </sec:authorize>
           </div>     
            </div>                   
@@ -203,7 +203,7 @@ $(document).ready(function(){
 	                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
 	                  </c:forEach>
 	                  </select>
-	                        <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i></span>
+	                        <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addExistedEmptyClientContact();"><i class="fa fa-refresh "></i></span>
                   </div>
                       <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
               </div>
@@ -227,7 +227,7 @@ $(document).ready(function(){
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="removeValidationClientContact();">
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
@@ -558,9 +558,6 @@ function refreshClientList(){
 		        $('#clientOrgRelationId').trigger("chosen:updated");
 	        }
 		 });
-		 
-	
-	
 }
 
 		 
@@ -1894,9 +1891,27 @@ function refreshVendorList(){
 	        }
 		 });
 		 
-	
+		
 	
 } 
+
+</script>
+<script>
+function addExistedEmptyVendorContact(){
+	$("#vendorContact").empty();
+	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+    $('#vendorContact').trigger("chosen:updated");
+}
+
+</script>
+ 
+<script>
+function addExistedEmptyClientContact(){
+// 	alert("dkgdsjfcg");
+	 $("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+     $('#clientContact').trigger("chosen:updated");
+}
 
 </script>
 

@@ -78,7 +78,7 @@ function errRemoveClientContact(){
 
 				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
-				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
+				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();"><i class="fa fa-refresh "></i></span>
 				                </div>
 				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
