@@ -25,6 +25,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author bis113
@@ -119,15 +120,6 @@ public class UserRole implements Serializable {
     @Column(name = "EXTENSION_NUMBER")
 	private String extensionNumber;
     
-    @Column(name = "VERIFICATION_UUID")
-	private String verificationUUID;
-    
-    @Column(name = "IS_VERIFIED")
-	private String isVerified;
-    
-    @Column(name = "URL_SENTTIME")
-	private Date urlSentTime;
-    
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
 
@@ -216,9 +208,11 @@ public class UserRole implements Serializable {
 	List<User> projectApproversList;
 
 	@Transient
+	@JsonProperty
 	private String userEmail;
 
 	@Transient
+	@JsonProperty
 	private String mobilePhone;
 	
 	@Transient
@@ -261,6 +255,7 @@ public class UserRole implements Serializable {
 
 
 	@Transient
+	@JsonProperty
 	private Long userId;
 
 	@Transient
@@ -860,26 +855,6 @@ public class UserRole implements Serializable {
 		this.extensionNumber = extensionNumber;
 	}
 
-	public String getVerificationUUID()
-	{
-		return verificationUUID;
-	}
-
-	public void setVerificationUUID(String verificationUUID)
-	{
-		this.verificationUUID = verificationUUID;
-	}
-
-	public String getIsVerified()
-	{
-		return isVerified;
-	}
-
-	public void setIsVerified(String isVerified)
-	{
-		this.isVerified = isVerified;
-	}
-
 	public String getLoginSecurity()
 	{
 		return loginSecurity;
@@ -890,13 +865,4 @@ public class UserRole implements Serializable {
 		this.loginSecurity = loginSecurity;
 	}
 
-	public Date getUrlSentTime()
-	{
-		return urlSentTime;
-	}
-
-	public void setUrlSentTime(Date urlSentTime)
-	{
-		this.urlSentTime = urlSentTime;
-	}
 }

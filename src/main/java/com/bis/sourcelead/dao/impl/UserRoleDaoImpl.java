@@ -565,6 +565,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	}
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserRoleById(Long id) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserByUserId By UserId start");
+		userRole = session
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles where userRole.id = :id  ")
+				.setLong("id", id).setCacheable(true).list();
+		logger.debug("getUserByUserId By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();

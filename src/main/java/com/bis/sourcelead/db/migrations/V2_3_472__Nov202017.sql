@@ -17,3 +17,24 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('ActivateUserEmail', 'Email', 'ActivateUserEmail','Used to activate the Account.', 'Sourcelead – Account Activation','sourcelead','Best Regards,\nSourcelead Team.','Dear {{ActivateUserEmail.registerName}},\n\nThank you for registering with us. To verify your Sourcelead account, kindly click on the verify registration link below.\n\n {{ActivateUserEmail.verifyLink}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
+
+
+ALTER TABLE `sourcelead`.`org_locations` 
+ADD COLUMN `LOGIN_SECURITY` VARCHAR(10) NULL DEFAULT 'N' AFTER `ORG_LOCATION_BILLING_ADDRESS`;
+
+
+#Login OTP EMail
+#entity_type
+INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('LoginOTPEmail', 'Email');
+
+#CLASS_FIELD
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'userName', '{{LoginOTPEmail.userName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'token', '{{LoginOTPEmail.token}}');
+
+#email_scenario
+INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('LoginOTPEmail', 'Email', 'LoginOTPEmail','Used to send OTP to User.', 'Sourcelead – Login Alert','sourcelead','Best Regards,\nSourcelead Team.','Dear {{LoginOTPEmail.userName}},\n\nHere is your One Time Password to login into the system {{LoginOTPEmail.token}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
+
+
+ALTER TABLE `sourcelead`.`user_login_logout_session` 
+ADD COLUMN `IS_AUTHENTICATED` VARCHAR(10) NULL DEFAULT 'N' AFTER `LOGOUTIME`;
+

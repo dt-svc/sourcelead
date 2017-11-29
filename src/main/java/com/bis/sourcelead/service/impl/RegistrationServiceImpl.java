@@ -1968,4 +1968,53 @@ public class RegistrationServiceImpl implements RegistrationService{
 		return masterCandidate;
 	}
 
+	@Override
+	public String sendOtpToUser(User user, String type) throws Exception
+	{
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String userName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 userName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 String token = RandomStringUtils.randomAlphanumeric(6);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("userName", userName);
+		 globalVarsMap.put("token", token);
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LOGIN_OTP_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+		 return token;
+				
+	}
+
 }

@@ -43,6 +43,9 @@ public class UserLoginLogoutSession  implements Serializable{
 	
 	@Column(name = "LOGOUTIME")
 	private Date logoutTime;
+	
+	@Column(name = "IS_AUTHENTICATED")
+	private String authenticated;
 
 	public Long getId() {
 		return id;
@@ -82,6 +85,16 @@ public class UserLoginLogoutSession  implements Serializable{
 
 	public void setLogoutTime(Date logoutTime) {
 		this.logoutTime = logoutTime;
+	}
+
+	public String getAuthenticated()
+	{
+		return authenticated;
+	}
+
+	public void setAuthenticated(String authenticated)
+	{
+		this.authenticated = authenticated;
 	}
 
 }

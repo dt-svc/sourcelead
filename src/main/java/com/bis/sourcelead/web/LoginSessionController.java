@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -74,6 +76,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UserLoginHelper;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -95,6 +98,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	TabsService  tabsService;
+	
+	@Autowired
+	UserLoginHelper userLoginHelper;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -171,10 +177,15 @@ public class LoginSessionController {
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response) throws Exception {
+			   @RequestParam(value = "referUUID", required = false) String referUUID,
+			   @RequestParam(value = "userRoleId", required = false) Long userRoleId,HttpServletResponse response) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		UserRole userRole = null;
+		if(userRoleId != null)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else
+			userRole = userRoleService.getUserByUserId(user.getId());
 		ModelAndView model = new ModelAndView();
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
@@ -204,6 +215,13 @@ public class LoginSessionController {
 				
 			}
 
+			String isAuthenticated = "";
+			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+			if(userLoginSession != null){
+				isAuthenticated = userLoginSession.getAuthenticated();
+				SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated", isAuthenticated);
+			}
+				
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 			
@@ -1068,5 +1086,24 @@ public class LoginSessionController {
     	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
     	return Result;
     }
+  
+  
+  @RequestMapping(value = "/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
+	  ModelAndView model = new ModelAndView();
+	  User user = userService.findByUserName(userName);
+		List<UserRole> userSpocRolesList = null;
+		if(user != null)
+			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+	  model.addObject("username", userName);
+	  model.addObject("password", password);
+	  model.addObject("sourceleadUrl", sourceleadUrl);
+	  model.addObject("roleList", userSpocRolesList);
+	  model.setViewName("userEnrolledLocations");
+	  return model;
+  }
+  
+  
+  
 	
 }

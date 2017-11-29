@@ -212,9 +212,8 @@ public class HomeController {
 	  			if(!isNullOrEmpty(referUUID)){
 	  				 model.addObject("referUUID", referUUID);
 	  			}
-  			
-			 model.setViewName("login");
-		    	 
+	  			model.addObject("sourceleadUrl", sourceleadUrl);
+	  			model.setViewName("login");
 		 }
 		return model;
 	}
