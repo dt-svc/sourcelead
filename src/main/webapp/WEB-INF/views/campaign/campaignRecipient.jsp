@@ -46,6 +46,7 @@ z-index: 1040 !important;
               <div class="col-md-8">
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                 </select>
+                
               </div>
               	<div class="col-md-1 noPad">
 					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();vendorListChange()" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
@@ -80,11 +81,11 @@ z-index: 1040 !important;
             </div>
 				</div>              
 			</div>	
-			
 		
 		</div>
 		
 		<div class="popupFoot">
+		<p id="errorMessage" class=""></p>
             <input value="Save" class="btn btn-primary" type="button" id="addList">
             <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
           </div>		

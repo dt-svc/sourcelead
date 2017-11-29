@@ -218,8 +218,8 @@ public class MailBoxRestController {
 		jobListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation,multiFile);
-//		hotListEmailCampaignService.sendJobCampaignThroughSendgrid(jobListEmailCampaignDTO, user, orgLocation,multiFile);
+//		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation,multiFile);
+		hotListEmailCampaignService.sendJobCampaignThroughSendgrid(jobListEmailCampaignDTO, user, orgLocation,multiFile);
 		return "success";
 	}
 	

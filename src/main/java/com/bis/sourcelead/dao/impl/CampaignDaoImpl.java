@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CampaignDao;
+import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 @Repository
 public class CampaignDaoImpl implements CampaignDao {
 	@Autowired
@@ -100,11 +104,45 @@ public class CampaignDaoImpl implements CampaignDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception
+	public ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation,CampaignListDTO campaignListDTO) throws Exception
 	{
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		return cpnList;
+		List<CampaignList> cpnList = null;
+		ResponseList<CampaignList> response = new ResponseList<>();
+		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1";
+		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.status = 1 and cpnList.campaignType = 1";
+		Query queryObj = session.createQuery(query);
+		if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
+			queryObj.setFirstResult(campaignListDTO.getStart());
+			queryObj.setMaxResults(campaignListDTO.getLength());
+			queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		}
+		cpnList = queryObj.list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (campaignListDTO != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} else {
+			response.setRecordsFiltered(filteredCount);
+		}
+
+		response.setData(cpnList);
+		return response;
+//		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+//		return cpnList;
+		
+		
+		
 	}
 	
 	

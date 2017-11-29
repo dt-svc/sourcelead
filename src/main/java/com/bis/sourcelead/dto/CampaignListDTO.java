@@ -1,9 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class CampaignListDTO {
+public class CampaignListDTO extends SearchDTO implements Serializable{
 	
 	private long id;
 	
@@ -12,6 +13,8 @@ public class CampaignListDTO {
 	private String listId;
 	
 	private String listName;
+	
+	private int listCount;
 	
 	private int status;
 	
@@ -135,6 +138,16 @@ public class CampaignListDTO {
 	public void setRecipientEmail(List<String>  recipientEmail)
 	{
 		this.recipientEmail = recipientEmail;
+	}
+
+	public int getListCount()
+	{
+		return listCount;
+	}
+
+	public void setListCount(int listCount)
+	{
+		this.listCount = listCount;
 	}
 	
 //	private Set<CampaignRecipient> campaignRecipient;

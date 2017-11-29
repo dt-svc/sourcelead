@@ -14,6 +14,10 @@ function campaignRecipient(ele,senderId) {
 						$.post(sourceleadUrl+"/saveRecipientList?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								recipientClose();
+							}else{
+								alert("Hai");
+								$("#loading").removeAttr("style");
+								$("#errorMessage").text("List not created please try again");
 							}
 						});
 						return true;

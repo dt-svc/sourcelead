@@ -170,7 +170,9 @@ public class CampaignServiceImpl implements CampaignService{
 			Set<CampaignRecipient>  recipientSet = getRecipientSet(recipientList,campaignList,date,user);
 			campaignList.setCampaignRecipient(recipientSet);
 			CampaignList list =campaignDao.saveRecipientList(campaignList);
-			if(list !=null) {
+			
+			String res =  campaignUtil.addRecipientsToList(list);
+			if(res !=null) {
 				isListInserted = true;
 			}
 		}
@@ -227,17 +229,35 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public List<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception
+	public ResponseList<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation,CampaignListDTO campaignListDTO) throws Exception
 	{
-		List<CampaignList> cpnList = campaignDao.getRecipientListByUserId(user,orgLocation);
+		ResponseList<CampaignListDTO> res = new ResponseList<>();
+		ResponseList<CampaignList> response = campaignDao.getRecipientListByUserId(user,orgLocation,campaignListDTO);
+		List<CampaignList> cpnList = response.getData(); 
 		List<CampaignListDTO>  campaignListDtoList = new ArrayList<>();
 		for(CampaignList  campaignList : cpnList) {
-			CampaignListDTO campaignListDTO = new CampaignListDTO();
-			campaignListDTO.setId(campaignList.getId());
-			campaignListDTO.setListId(campaignList.getListId());
-			campaignListDTO.setListName(campaignList.getListName());
-			campaignListDtoList.add(campaignListDTO);
+			CampaignListDTO campaignListdto = new CampaignListDTO();
+			campaignListdto.setId(campaignList.getId());
+			campaignListdto.setListId(campaignList.getListId());
+			campaignListdto.setListName(campaignList.getListName());
+			if(campaignList.getCampaignRecipient() !=null) {
+				campaignListdto.setListCount(campaignList.getCampaignRecipient().size());
+				
+				List<String> emailList = new ArrayList<>();
+				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0){
+				Set<CampaignRecipient> recipientList = campaignList.getCampaignRecipient();
+				for(CampaignRecipient campaignRecipient : recipientList){
+				emailList.add(campaignRecipient.getEmail());
+				} 
+				}
+				campaignListdto.setRecipientEmail(emailList);
+			}
+			campaignListDtoList.add(campaignListdto);
 		}
-		return campaignListDtoList;
+		res.setData(campaignListDtoList);
+		res.setRecordsFiltered(response.getRecordsFiltered());
+		res.setRecordsTotal(response.getRecordsTotal());
+		res.setStatusCode("200");
+		return res;
 	}
 }

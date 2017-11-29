@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -21,6 +23,6 @@ public interface CampaignDao {
 
 	List<CreateSender> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
 
-	List<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception;
+	ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 
 }

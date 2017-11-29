@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+ $( document ).ready(function() {
+	 getCampaignRecipientList();
+	});
+ </script>
+
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -12,78 +18,90 @@
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
-        <div class="timesheet_head candidateHead pull-right">
-          <ul class="pull-right">
-            <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-              <div class="export_pop">
-                <ul>
-                  <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                  <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                  <li>Word<i class="fa fa-file-word-o"></i></li>
-                </ul>
-              </div>
-            </li>
-            <li><a href="javascript:void(0)" title="" id="addRep" onclick="campaignRecipient(this);"><i class="fa fa-plus"></i>Add Recipients</a></li>
-            <div class="clearfix"></div>
-          </ul>
+        <div class="timesheet_head minHeight">
+        <ul>
+        <li><a href="javascript:void(0)" title="" id="addRep" onclick="campaignRecipient(this);"><i class="fa fa-plus"></i>Add Recipients</a></li>
+        </ul>
+        </div>
+        <div class= "project_tabs_inn_table vendor_wrap_inn_table datatable_filter">
+        <div id= "recipientListDev"></div> 
           <div class="clearfix"></div>
-          <div class="remove_search">
-            <input type="text" placeholder="search"/>
-          </div>
         </div>
         
 <div class="project_wrap_table">
-    	<table>
-			<thead>
-            	<tr>
-                	<th>Recipients name</th>
-                    <th>No of Recipients</th>
-                    <th>Action</th>
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>Name one</div></td>
-                    <td><div>20</div></td>
-                    <td><div><i class="glyphicon glyphicon-pencil"></i><i class="glyphicon glyphicon-trash ml10"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Name one</div></td>
-                    <td><div>20</div></td>
-                    <td><div><i class="glyphicon glyphicon-pencil"></i><i class="glyphicon glyphicon-trash ml10"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Name one</div></td>
-                    <td><div>20</div></td>
-                    <td><div><i class="glyphicon glyphicon-pencil"></i><i class="glyphicon glyphicon-trash ml10"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Name one</div></td>
-                    <td><div>20</div></td>
-                    <td><div><i class="glyphicon glyphicon-pencil"></i><i class="glyphicon glyphicon-trash ml10"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div>Name one</div></td>
-                    <td><div>20</div></td>
-                    <td><div><i class="glyphicon glyphicon-pencil"></i><i class="glyphicon glyphicon-trash ml10"></i></div></td>
-                </tr>                              			
-            </tbody>
-        </table>
+
+<script>
+function getCampaignRecipientList(){
+       var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+       var userId = '${SourceLeadWeb_user.id}';
+       $.ajax({
+       type : "GET",
+        url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,       
+        success :function(json) {
+                populategRecipientList(json);
+       },
+        
+   }); 
+}
+function populategRecipientList(json){
+       var result = '';
+       result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0" id="recipientTableId">';
+       result = result +' <thead>';
+       result = result +' <tr>';
+       result = result +' <th>List Name</th>';
+       result = result +' <th>No of Recipients</th>';
+       result = result +' <th>Action</th>';
+       result = result +' </tr>';
+       result = result +' </thead>';
+       result = result +' <tbody>';
+       
+   for (var i=0; i<json.length; i++){
+           var report = json[i];
+           result = result +'  <tr>';                                                                                                                  
+           result = result +'  <td>';                                                                                                                  
+           result = result +'    <div class="tbldata-dotdot-150">';   
+           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.listName+'">'+report.listName+'</div>';
+           result = result +'    </div>';                                                                                                              
+           result = result +'  </td>';  
+           result = result +'  <td>';   
+           result = result +'    <div class="tbldata-dotdot-150">';   
+           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.recipientEmail+'">'+report.listCount+'</div>';
+           result = result +'    </div>';                                                                                                              
+           result = result +'  </td>';
+           result = result +'  <td>';                                                                                                                  
+           result = result +'    <div class="tbldata-dotdot-150">';   
+           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.listName+'">'+report.listName+'</div>';
+           result = result +'    </div>';                                                                                                              
+           result = result +'  </td>';
+           result = result +'</tr>';                                                                                                                                                                                                                                        
+           
+   } 
+   result = result +' </tbody>';
+   result = result +' </table>';
+   $("#recipientListDev").empty();
+   $("#recipientListDev").append(result);
+   recipientListPagination();
+}
+</script>
+
+<script>
+function recipientListPagination(){
+        $('#recipientTableId').DataTable( { 
+                   "scrollCollapse": false,
+                   "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+                   "bLengthChange": true,
+                   "bDestroy": true,
+                   "ordering": true,
+                   "oLanguage": {
+                   "sSearch": "",
+                   "sZeroRecords": "", "sEmptyTable": ""
+              }
+           });
+           $("#recipientTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script>
 	</div>        
         
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
-          
       </div>
       
       <!-- Project --> 
@@ -97,20 +115,6 @@
 <!-- Footer Area -->
 
 
-
-<!--    <script>
-// Error pop addSen
-$(document).ready(function() {
-    $("#addRep").click(function(){
-		$(".popMask").fadeIn(200);
-		$(".popUpReci").fadeIn(100);
-	});
-	$(".popCan").click(function(){
-		$(".popMask").fadeOut(200);
-		$(".popUpReci").fadeOut(100);
-	});
-});	
-	   </script> -->
 
  
 

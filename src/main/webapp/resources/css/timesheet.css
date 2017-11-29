@@ -5997,4 +5997,6 @@ float: left; top: 5px
 	padding: 2px 5px !important;
 
 }
+.popupFoot p {
+	display: block; width: 100%; text-align: center; color: red; font-size: 12px;
 }

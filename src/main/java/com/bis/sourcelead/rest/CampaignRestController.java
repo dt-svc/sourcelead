@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -138,13 +139,27 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getRecipientList",method = RequestMethod.GET)
-	public List<CampaignListDTO> getRecipientList(CampaignListDTO campaignListDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<CampaignListDTO> getRecipientList(CampaignListDTO campaignListDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		ResponseList<CampaignListDTO> res = new ResponseList<CampaignListDTO>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user,orgLocation);
-		System.out.println(cpnDtoList.size());
+		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user,orgLocation,campaignListDTO);
 		return cpnDtoList;
 	}
+	
+	@RequestMapping(value = "/getCampaignRecipientList")
+	public @ResponseBody List<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
+	{
+		List<CampaignListDTO> campaignList = null;
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user, orgLocation, campaignListDTO);
+		if (cpnDtoList.getData() != null) {
+			campaignList = cpnDtoList.getData();
+		}
+		return campaignList;
+	}
+
 	
 }

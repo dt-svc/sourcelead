@@ -1,13 +1,21 @@
 package com.bis.sourcelead.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
+import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.google.gson.JsonObject;
 import com.sendgrid.Method;
@@ -177,5 +185,78 @@ public class CampaignUtil {
 		    }
 		return str;
 	}
+
+	public String createCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, String htmlContent) throws IOException
+	{
+		 String isCampaignCreated = null;
+		 String senderId = jobListEmailCampaignDTO.getSenderIdentity();
+		 List<String> recipientList = new ArrayList<String>(Arrays.asList(jobListEmailCampaignDTO.getToemails().split(",")));
+		 String subject = jobListEmailCampaignDTO.getSubject();
+		    try {
+//		    	String p = "Currently, there is no limit to the number of categories you can track. However, we recommend no more than ~100 total unique categories as this will increase your ease of use in the Statistics area. Additionally, a high rate of unique categories on your account can negatively impact the rate at which we process the messages you send.";
+		        SendGrid sg = new SendGrid("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");
+		        Request request = new Request();
+		        request.setMethod(Method.POST);
+		        request.setEndpoint("campaigns");
+		        request.setBody("{\"custom_unsubscribe_url\":\"www.sourcelead.com\",\"html_content\":\""+htmlContent+"\",\"list_ids\":"+recipientList+",\"sender_id\":"+senderId+",\"subject\":\""+subject+"\",\"plain_content\":\"Check out our sourcelead To unsubscribe, visit [unsubscribe].!\",\"title\":\""+subject+"\",\"categories\":[\""+subject+"\"]}");
+		        Response response = sg.api(request);
+		        isCampaignCreated = response.getBody();
+//		        System.out.println(response.getStatusCode());
+//		        System.out.println(response.getBody());
+//		        System.out.println(response.getHeaders());
+		      } catch (IOException ex) {
+		        throw ex;
+		      }
+		return isCampaignCreated;
+	}
+
+	public void sendCampaign(String campaignId) throws IOException
+	{
+		
+		try {
+		      SendGrid sg = new SendGrid("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");
+		      Request request = new Request();
+		      request.setMethod(Method.POST);
+		      request.setEndpoint("campaigns/"+campaignId+"/schedules/now");
+		      Response response = sg.api(request);
+		      System.out.println(response.getStatusCode());
+		      System.out.println(response.getBody());
+		      System.out.println(response.getHeaders());
+		    } catch (IOException ex) {
+		      throw ex;
+		    }
+		
+	}
+
+	public String addRecipientsToList(CampaignList list) throws IOException
+	{
+		String isRecipientAddedToList = null;
+		Set<CampaignRecipient>  recipientSet = list.getCampaignRecipient();
+		List<String> listIds = new ArrayList<>();
+		StringBuilder sb = new StringBuilder();
+		for(CampaignRecipient campaignRecipient : recipientSet) {
+			listIds.add(campaignRecipient.getRecipientId());
+			String email = campaignRecipient.getRecipientId();
+			sb.append("\"").append(email).append("\"").append(",");
+		}
+		String recipientsIds = sb.toString();
+		recipientsIds = recipientsIds.substring(0, recipientsIds.length() - 1);
+		 try {
+		      SendGrid sg = new SendGrid("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");
+		      Request request = new Request();
+		      request.setMethod(Method.POST);
+		      request.setEndpoint("contactdb/lists/"+list.getListId()+"/recipients");
+		      request.setBody("["+recipientsIds+"]");
+		      Response response = sg.api(request);
+		      if(response.getStatusCode() ==200 || response.getStatusCode() == 201) {
+		    	  isRecipientAddedToList = response.getBody();
+		      }
+		    } catch (IOException ex) {
+		      throw ex;
+		    }
+		return isRecipientAddedToList;
+	}
+
+	
 	
 }

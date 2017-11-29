@@ -26,5 +26,5 @@ public interface CampaignService {
 
 	List<CreateSenderDTO> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
 
-	List<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation) throws Exception;
+	ResponseList<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 }
