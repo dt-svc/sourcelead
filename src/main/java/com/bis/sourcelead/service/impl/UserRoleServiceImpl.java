@@ -182,12 +182,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	@Override
-	public UserRole getUserRoleById(Long id) throws Exception {
-		return userRoleDao.getUserRoleById(id);
-	}
-	
-	
-	@Override
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
 		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
 	}

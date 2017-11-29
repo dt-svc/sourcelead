@@ -847,7 +847,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -893,7 +893,7 @@ public class RegistrationRestController {
 	}
 	
 	
-	@RequestMapping(value = "/resendVerificationEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/resendVerificationEmail", method = RequestMethod.GET)
 	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = null;

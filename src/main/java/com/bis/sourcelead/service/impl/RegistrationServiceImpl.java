@@ -1256,7 +1256,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/").append("activateEmail?&token=").append(user.getVerificationUUID()).append("'>Click here..</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>Click here..</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

@@ -102,7 +102,7 @@ function resendVerf(){
 		
 	 $.ajax({
        type : "GET",
-        url: sourceleadUrl+"/resendVerificationEmail?userId="+userId,        
+        url: sourceleadUrl+"/ws/resendVerificationEmail?userId="+userId,        
         success :function(data) {
         	if(data == "success"){
         		$("#selector1").removeAttr("style");
