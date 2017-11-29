@@ -69,17 +69,6 @@
  
  <script>
 function resourceRequestList(requestType){
-	
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  resListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  resListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  resListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  resListDate = 'YYYY-DD-MM'; 
-	  }  
 	  
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
