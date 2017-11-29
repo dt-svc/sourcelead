@@ -238,7 +238,6 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
 			if ($('#addAsset_form').validate(false, validationSettings)){
-        		    alert("hiii")
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		

@@ -216,59 +216,6 @@ public class AssetServiceImpl implements AssetService{
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo2, "assetDocuments");
 			 }
 		    		 
-		   /*MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-	       final Map files = multiRequest.getFileMap();
-	       MultipartFile multiFile = (MultipartFile)files.get("attachment");
-	        if(null != multiFile && null != multiFile.getContentType() && !isNullOrEmpty(multiFile.getOriginalFilename())){
-		     	  try {
-		     		 asset.setFileContentType(multiFile.getContentType());
-		     		 asset.setDocFile(multiFile.getBytes());
-		     		 asset.setFileName(multiFile.getOriginalFilename());
-		     	   
-		 	       }catch (Exception e) {
-		     	      	 e.printStackTrace();
-		 			    }
-	         }else if(jsonObj.has("generalExisitingFile") && jsonObj.getString("generalExisitingFile").equalsIgnoreCase("")){
-	        	 asset.setFileContentType(null);
-	     		 asset.setDocFile(null);
-	     		 asset.setFileName(null);
-	         }
-	       
-	       
-	        MultipartFile multiFile1 = (MultipartFile)files.get("uploadBtn-dskA");
-	       if(null != multiFile1 && null != multiFile1.getContentType() && !isNullOrEmpty(multiFile1.getOriginalFilename())){
-		     	  try {
-		     		 asset.setShiftAFileContentType(multiFile1.getContentType());
-		     		 asset.setShiftADocFile(multiFile1.getBytes());
-		     		 asset.setShiftAFileName(multiFile1.getOriginalFilename());
-		     	   
-		 	       }catch (Exception e) {
-		     	      	 e.printStackTrace();
-		 			    }
-		     }else if(jsonObj.has("shiftAExisitngFile") && jsonObj.getString("shiftAExisitngFile").equalsIgnoreCase("")){
-	        	 asset.setShiftAFileContentType(null);
-	     		 asset.setShiftADocFile(null);
-	     		 asset.setShiftAFileName(null);
-	         }
-	       
-	        
-	        MultipartFile multiFile2 = (MultipartFile)files.get("uploadBtn-dskB");
-		       if(null != multiFile2 && null != multiFile2.getContentType() && !isNullOrEmpty(multiFile2.getOriginalFilename())){
-			     	  try {
-			     		 asset.setShiftBFileContentType(multiFile2.getContentType());
-			     		 asset.setShiftBDocFile(multiFile2.getBytes());
-			     		 asset.setShiftBFileName(multiFile2.getOriginalFilename());
-			     	   
-			 	       }catch (Exception e) {
-			     	      	 e.printStackTrace();
-			 			    }
-			    }else if(jsonObj.has("shiftBExisitngFile") && jsonObj.getString("shiftBExisitngFile").equalsIgnoreCase("")){
-		        	 asset.setShiftBFileContentType(null);
-		     		 asset.setShiftBDocFile(null);
-		     		 asset.setShiftBFileName(null);
-		         }*/
-	       
-		 
 		 asset.setOrgLocations(orgLocations);
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
