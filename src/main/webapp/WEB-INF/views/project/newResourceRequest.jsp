@@ -187,7 +187,7 @@
 					           </div>            
 					     </div>
 			            <div class="form-group">
-			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='Approver who need to approve the list of request resources'></i></label>
 			            <div class="col-md-9" id="errApprover">
 			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver" onchange="removeValidation();">
 		                <option selected value=''>--Select Approver--</option>

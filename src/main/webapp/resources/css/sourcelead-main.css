@@ -7161,6 +7161,12 @@ text-align: left; padding:6px 0; color:#333; font-weight:normal;
 .mgList tr td div{
 margin: 0;
 }
+.timesheet_head.timesheetHead_filters ul li span {
+	padding: 0px 25px 0px 0px;
+}
+.timesheet_head.timesheetHead_filters .glyphicon-play {
+	right: 10px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

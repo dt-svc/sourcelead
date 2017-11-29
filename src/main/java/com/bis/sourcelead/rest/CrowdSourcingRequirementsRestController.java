@@ -2349,7 +2349,7 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 
 		 
-		 @RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
+		 /*@RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
 			public void displayContactUserImage(@PathVariable Long contactUserId, HttpServletRequest request, HttpServletResponse response,
 					HttpSession session) {
 
@@ -2373,7 +2373,7 @@ public class CrowdSourcingRequirementsRestController {
 					e1.printStackTrace();
 				}
 
-			}
+			}*/
 		 
 		 
 		 
