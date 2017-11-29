@@ -61,7 +61,7 @@ $(document).ready(function(){
           <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
-          <form:form id="addAsset_form"  name="addAsset_form" enctype='multipart/form-data'> 
+          <form:form id="addAsset_form"  name="addAsset_form"> 
            <i class="fa fa-close close-div" onclick="flushAsset();"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
@@ -118,10 +118,10 @@ $(document).ready(function(){
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="attachmentDiv">
                     <div class="input-group attachfile-error" >
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" name="attachment" id="attachment"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                        <input type="file" id="attachment"   style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="attachment" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="abc" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
@@ -144,8 +144,8 @@ $(document).ready(function(){
                   </div>
                   <div class="col-md-6" id="uploadFile-dskBDiv">
                     <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                        <input type="file" name="uploadBtn-dskA" id="uploadBtn-dskA"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                        <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
                         </b> </label>
                       <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
@@ -170,8 +170,8 @@ $(document).ready(function(){
                   </div>
                   <div class="col-md-6">
                     <div class="input-group attachfile-error">
-                      <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                         <input type="file" name="uploadBtn-dskB" id="uploadBtn-dskB"  class="hidden upload">
+                      <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                         <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
                         </b> </label>
                       <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
@@ -182,7 +182,7 @@ $(document).ready(function(){
                 <!-- Shift A Fields -->
                 <div class="clearfix mr">
                   <div class="pull-right">
-                   <button type="submit" id="add_asset" onclick="checkAttachment();checkShiftAAttachment();checkShiftBAttachment();" class="btn btn-sm btn-primary">Add</button>
+                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-sm btn-primary">
                   </div>
                 </div>
               </div>
@@ -230,22 +230,15 @@ $(document).ready(function(){
   
   
   <script type="text/javascript">
+  function storeAsset() {
 var validationSettings = {
         errorMessagePosition : 'element',
        borderColorOnError : '',
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
-         $('body').on('submit', '#addAsset_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
-	          		
-        		    var frm = $('#addAsset_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
+			if ($('#addAsset_form').validate(false, validationSettings)){
+        		    alert("hiii")
         	        var form = $('#addAsset_form')[0];
 	           		var formData = new FormData(form);
 	           		
@@ -255,12 +248,10 @@ var validationSettings = {
 	          	      $.ajax({
 	     		    	type: "POST",
 	     		    	data: formData,
-              	        contentType : 'application/json; charset=utf-8',
-              	        enctype: 'multipart/form-data',
-          	            processData: false,
-          	            contentType:false,
-              	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData, 
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     	   	        	    location.replace(sourceleadUrl+ "/assetManagement");
@@ -274,11 +265,12 @@ var validationSettings = {
             else{
             	return false;	
                }
-            });
-         $('#addAsset_form').showHelpOnFocus();
-         $('#addAsset_form').validateOnBlur(false, validationSettings); 
-            
-     
+         }
+         
+         $('body').on('blur', '#addAsset_form', function() {
+     		$("#addAsset_form").showHelpOnFocus();
+     		$("#addAsset_form").validateOnBlur(false, validationSettings);
+     	});
 </script> 
 
 
@@ -933,6 +925,7 @@ $(".addcon-pop").click(function(){
 
 
 <script type="text/javascript">
+        
         var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -940,7 +933,22 @@ $(".addcon-pop").click(function(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+<script>
+function uploadFile(){
+	fileUpload("attachment", "assetDocuments", "addAsset_form","attachmentUpload");
+}
+</script>
 
+<script>
+function uploadFileShiftA(){
+	fileUpload("uploadBtn-dskA", "assetDocuments", "addAsset_form","uploadBtndskAUpload");
+}
+</script>
 
+<script>
+function uploadFileShiftB(){
+	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
+}
+</script>
 <jsp:include page="assetManagementDetails.jsp" />
 <jsp:include page="../masterFooter.jsp" />
