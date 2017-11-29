@@ -245,7 +245,8 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>  
               
             </div>
-            <div class="row form-footer custom_formfooter">
+            </div>
+            <div class="advancedsearch-footer clearfix">
               <div class="pull-right mr"> 
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
@@ -258,7 +259,6 @@ border:none; background-color: none !important; padding:0 5px !important;
               	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
-            </div>
             </div>
             </div>
             </form:form>

@@ -257,7 +257,8 @@ z-index: 1;
             </div>  
               
             </div>
-            <div class="row clearfix">
+          </div>
+          <div class="clearfix advancedsearch-footer">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
@@ -268,7 +269,6 @@ z-index: 1;
               	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
-          </div>
           </div>
           </div>
           </form:form>
