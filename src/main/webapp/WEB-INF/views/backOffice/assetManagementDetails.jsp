@@ -97,7 +97,7 @@ function assetDetails(assetId) {
 					result = result + ' </div>'; 
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=file&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
@@ -138,8 +138,8 @@ function assetDetails(assetId) {
 						result = result + '  <div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						if (json.shiftAFileName != null && json.shiftAFileName != '' && json.shiftAFileName != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftAfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						if (json.shiftAFileUrl != null && json.shiftAFileUrl != '' && json.shiftAFileUrl != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -148,8 +148,8 @@ function assetDetails(assetId) {
 						result = result + '   <div class="clearfix"></div>';
 						result = result + '  </div>';
 						
-						if (json.shiftBFileName != null && json.shiftBFileName != '' && json.shiftBFileName != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftBfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						if (json.shiftBFileUrl != null && json.shiftBFileUrl != '' && json.shiftBFileUrl != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -391,7 +391,7 @@ function editAssetManagement(assetId){
 			result = result + ' <div class="col-md-6" id="fileAttachmentDiv">';
 			result = result + '<div class="input-group attachfile-error" >';
 			result = result + '<label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + ' <input type="file" name="attachment" id="fileAttachment"  class="upload">';
+			result = result + ' <input type="file" name="attachment" id="fileAttachment" style="display: none;" class="upload">';
 			result = result + '</b> </label>';
 			result = result + '<input type="text" class="form-control" name="attachment" readonly id="uploadFile1Attachment" placeholder="Files are not selected...">';
 			result = result + ' </div>';
@@ -527,7 +527,7 @@ function removeShiftBFileNameDiv(){
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkGeneralAttachment() {
     
     var uploadedFile = document.getElementById('fileAttachment').value;
@@ -551,10 +551,10 @@ function removeShiftBFileNameDiv(){
     
    
   };
-</script>
+</script> -->
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkShiftAFileAttachment() {
     
     var uploadedFile = document.getElementById('uploadBtnShiftA').value;
@@ -578,9 +578,9 @@ function removeShiftBFileNameDiv(){
    
   };
 </script>
+ -->
 
-
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkShiftBFileAttachment() {
     
     var uploadedFile = document.getElementById('uploadBtnShiftB').value;
@@ -603,7 +603,7 @@ function removeShiftBFileNameDiv(){
     }
    
   };
-</script>
+</script> -->
 
 <script type="text/javascript">
 function updateAsset() {
