@@ -34,8 +34,8 @@ padding-right: 254px; padding-top: 10px;
 			<div class="project_tabs_inn_head">
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 			  	 <div class="role_header">
-			  	 <a href="<c:url value='/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
-			     <a href="<c:url value='/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
+			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
+			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
                  </div>
               </sec:authorize>
@@ -262,7 +262,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="<c:url value="/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="<c:url value="/path/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';

@@ -214,20 +214,21 @@ public class RequirementServiceImpl implements RequirementService {
 		Requirement requirement = null;
 		String client = "";
 		String requirementClient = "";
+		Date date = new Date();
 		StringBuilder location = new StringBuilder();
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 			requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
 			requirement.setId(requirement.getId());
 			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		}
 		else {
 			requirement = new Requirement();
-			requirement.setCreatedDate(commonUtil.currentDate());
+			requirement.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setTotalApplicants(0);
 			requirement.setCreatedBy(user);
 			requirement.setUpdatedBy(user.getUserCode());
-			requirement.setUpdatedDate(commonUtil.currentDate());
+			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		}
 		if (orgLocations != null) {
@@ -1388,11 +1389,11 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (requirement.getFileName() != null && !requirement.getFileName().isEmpty()) {
 			StringBuilder attachmentBuild = new StringBuilder();
-			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
 		}
 		else {
 			StringBuilder attachmentBuild = new StringBuilder();
-			globalVarsMap.put(" ", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+			globalVarsMap.put(" ", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
 		}
 		// setting the Recipient information
 		/*

@@ -21,6 +21,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
+@RequestMapping("/path")
 public class TimesheetApprovalController {
 
 

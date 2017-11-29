@@ -16,7 +16,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Restrict Day</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Restrict Day</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Restrict Day</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -27,7 +27,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addRestrictDay'/>" title="Add Restrict Day">
+              <a href="<c:url value='${appPath}/addRestrictDay'/>" title="Add Restrict Day">
                 <i class="fa fa-plus paddingRight"></i>Add Restrict Day
               </a>
           </li>
@@ -110,7 +110,7 @@ function populateRestrictDayList(json){
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'     <div class="tblminwidth-50">                                                                                            ';
-    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="/addRestrictDay?restrictDayID='+report.restrictDayId+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="/path/addRestrictDay?restrictDayID='+report.restrictDayId+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
     	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteRestrictDay(\''+report.restrictDayId+'\');"></i></span>              ';
     	result = result +'      </div>                                                                                                                 ';
     	result = result +'  </td>                                                                                                                      ';

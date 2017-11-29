@@ -596,6 +596,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllActiveUsersListByOrgLocationId(orgLocationId);
 	}
+	
+	@Override
+	public UserRole getUserRoleById(Long userRoleId) throws Exception {
+		return userRoleDao.getUserRoleById(userRoleId);
+	}
 
 	@Override
 	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId) {

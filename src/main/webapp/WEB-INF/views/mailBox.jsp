@@ -21,7 +21,7 @@
       <div class="pull-left">
         <h2>Mailbox</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">

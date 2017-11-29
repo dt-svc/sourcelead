@@ -26,7 +26,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Role Actions</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Role Actions </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo; Role Actions </div>
     </section>
     
    <!-- Role Persmission -->
@@ -46,7 +46,7 @@ window.onload = function () {
             <div class="col-lg-12">
                 <div class="pull-right">
                  <input type="button" value="Save" id="save_client" onclick="saveActions();" class="btn btn-primary"> 
-			     <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/orgRolesList'/>'" class="btn btn-default ml">
+			     <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/orgRolesList'/>'" class="btn btn-default ml">
                 </div>
             </div>
         </div>

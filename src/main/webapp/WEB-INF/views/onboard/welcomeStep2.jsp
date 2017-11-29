@@ -348,7 +348,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -398,7 +398,7 @@ function getOnBoardCandidateCountry(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
           success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -433,7 +433,7 @@ function getOnBoardCandidateStates(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -473,7 +473,7 @@ function getOnBoardCandidateCities(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

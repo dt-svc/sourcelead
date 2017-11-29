@@ -95,19 +95,19 @@ public class Candidate implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY",columnDefinition = "TEXT default NULL" )
 	private String city;
 	
-	@Column(name = "ADDRESS")
+	@Column(name = "ADDRESS", columnDefinition = "TEXT default NULL")
 	private String address;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")

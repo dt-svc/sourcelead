@@ -19,7 +19,7 @@ window.onload = function() {
       <div class="pull-left">
         <h2>Apply Leave</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div> 
@@ -38,7 +38,7 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf');">
+                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
                    <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -508,23 +508,32 @@ $(".comMask").click(function()
 
 <script>
 function getApproversList(){
-	var userId = '${SourceLeadWeb_userId}';
 	var behalf = $("#checkbox-1");
-	var result = "";
+	var userId = "";
 	if(behalf.is(':checked')){
-		<c:forEach var="user" items="${approverList}">
-			result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
-		</c:forEach>
+		userId = $("#user").val();
 	}else{
-		<c:forEach var="user" items="${approverList}">
-			if(userId != '${user.id}'){
-				result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
-			}
-		</c:forEach>
-	} 
-	$("#approverUser").empty();
-	$("#approverUser").append(result);
-	$('#approverUser').trigger("chosen:updated");
+		userId = '${SourceLeadWeb_userId}';
+	}
+
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
+		if(data !=null){
+		var result = "";
+		for(var i=0;i<data.length;i++){
+		var opt = data[i];
+		if(behalf.is(':checked')){
+		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+		}else{
+		if(userId != opt.id){
+		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+		}
+		}
+		}
+		$("#approverUser").empty();
+		$("#approverUser").append(result);
+		$('#approverUser').trigger("chosen:updated");
+		}
+		});
 }
 </script>
 

@@ -65,6 +65,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class OrgSettingsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsRestController.class);
 	@Value("${sourceleadUrl}")
@@ -163,7 +164,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -271,7 +272,7 @@ public class OrgSettingsRestController {
 	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/sourcelead/enrollRoleActions?roleId=").append(roleId).toString());
+		response.sendRedirect(redirectUrl.append("/path/enrollRoleActions?roleId=").append(roleId).toString());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")

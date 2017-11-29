@@ -48,6 +48,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/path")
 public class ProjectPlanningRestController {
 
 	@Autowired

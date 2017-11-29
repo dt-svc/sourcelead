@@ -33,7 +33,7 @@
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
     <div class="timesheet_out">
       <div class="clients_side_wrap_inn no_pad">
@@ -41,7 +41,7 @@
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
-                 <a href="<c:url value='/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
              </div>
          </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">

@@ -31,7 +31,7 @@ z-index: 9999999999 !important;
       <div class="pull-left">
         <h2>${orgloc.org.orgName}</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/enrolledOrgsList'/>">Orgs List</a> &raquo; Org Summary</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/enrolledOrgsList'/>">Orgs List</a> &raquo; Org Summary</div>
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -198,7 +198,7 @@ z-index: 9999999999 !important;
 					<div class="clearfix">
 					<div class="pull-right">
 					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/enrolledOrgsList'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/path/enrolledOrgsList'">
 					</div>
 					</div>
 					</div>

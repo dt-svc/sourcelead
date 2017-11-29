@@ -83,20 +83,20 @@
         <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
-		<div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
+		<div class="for-pas-text"><a href="<c:url value='/ws/forgotPassword'/>"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
 <!-- 		<input type="button" value="Login" class="sign_btn" id="OrgVi" /> -->
 		<input type="submit" value="Submit" class="sign_btn" />
 		
 		<c:if test="${!empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${!empty requirementUUID && !empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register'/>">Sign up</a></h5></div>
         </c:if>
 		
 		</form>

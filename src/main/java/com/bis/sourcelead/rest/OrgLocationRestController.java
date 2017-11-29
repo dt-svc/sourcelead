@@ -14,7 +14,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.OrgLocationService;
 
 @RestController
-@RequestMapping(value = "/orgLocation")
+@RequestMapping(value = "/path/orgLocation")
 public class OrgLocationRestController {
 	
 	@Autowired

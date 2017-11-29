@@ -97,6 +97,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/path")
 public class CrowdSourcingRequirementsRestController {
 	
 	@Value("${sourceleadUrl}")

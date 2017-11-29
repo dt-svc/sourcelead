@@ -167,7 +167,7 @@ function backoutCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
   <div class="timesheet_out">
     
@@ -532,7 +532,7 @@ function activeTabs(){
 function viewJobSummaryDocument(jobId,title){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open(sourceleadUrl+'/ws/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 
@@ -1036,56 +1036,27 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(json) {  
-        	 if(json != null && json != 'undefined' && json != ""){
-							var result = '';
-							result = result +'     <div class="clearfix mt5 mb">'; 
-						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-						    result = result +'         <thead>';
-						    result = result +'         <tr>';
-						    result = result +'         <th>Name</th>';
-						    result = result +'         <th>Role</th>';
-						    result = result +'         <th>Team</th>';
-						    result = result +'         <th>No. of Applicants</th>';
-						    result = result +'         </tr>';
-						    result = result +'         </thead>';
-						    result = result +'         <tbody>';
-						    for (var i=0; i<json.length; i++)
-			   				{
-						    var report = json[i];
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>';
-						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
-						    	result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserRole+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						     
-						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
-						    	 result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.teamName+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.applicantCount+'</div></td>';
-						    result = result +'         </tr>';
-			   				}
-						     result = result +' </div> '; 
-						    
-						    $("#assignedMemberList").empty();
-						    $("#assignedMemberList").append(result);
-                 }else{
-						$("#assignedMemberList").removeAttr("style");
-       	    	          var result ="";
-      					 result = result+"   <div class='dataTables_empty'>"; 
-      					$("#assignedMemberList").empty();
-      				    $("#assignedMemberList").append(result); 
-                      }
-               },
-                 
-            }); 
+	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	
+		var result = '';
+		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		  /* result = result + " <div class='remove_search searchCustom'>";
+			result = result
+					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
+			result = result + "</div>"; */
+	    result = result +'         <table id="requirementAssignedToPagination" class="clearfix mb">';
+	    result = result +'         <thead>';
+	    result = result +'         <tr>';
+	    result = result +'         <th>Name</th>';
+	    result = result +'         <th>Role</th>';
+	    result = result +'         <th>Team</th>';
+	    result = result +'         <th>No. of Applicants</th>';
+	    result = result +'         </tr>';
+	    result = result +'         </thead>';
+	    result = result +'         <tbody>';
+	    $("#assignedMemberList").empty();
+		$("#assignedMemberList").append(result);
+		requirementAssignedMembersList(url, requirementId);
 }
 </script>
 
@@ -2066,7 +2037,7 @@ function getRateListDiv(submissionId, candidateId){
 	  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
+         url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);
@@ -3038,7 +3009,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -3085,7 +3056,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -3453,7 +3424,5 @@ return result;
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
-
-
-
+<jsp:include page="requirementAssignedToList.jsp"></jsp:include>
 

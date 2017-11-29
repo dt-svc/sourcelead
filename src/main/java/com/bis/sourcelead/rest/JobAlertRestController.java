@@ -42,6 +42,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/path")
 public class JobAlertRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -78,7 +79,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = "/storeJobAlert", method = RequestMethod.POST)
+    @RequestMapping(value = "/ws/storeJobAlert", method = RequestMethod.POST)
    	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
        	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
@@ -112,7 +113,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = "/ws/getJobDetailsForJobAlert", method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -123,7 +124,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
+	 @RequestMapping(value = "/ws/validateAlertUserEmail", method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
@@ -135,7 +136,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		
 	 
-	 @RequestMapping(value = "/getAllJobsAlertList")
+	 @RequestMapping(value = "/ws/getAllJobsAlertList")
 	 	public String getAllJobsAlertList(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			    String jobAlertsTable = null;
@@ -310,7 +311,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 							 tempHTML = tempHTML+"<tr>";
 							 tempHTML = tempHTML+"<td style='width:100%;padding:0px 0px 10px 0px;text-align:left;border-bottom:1px solid #ddd; line-height: 18px;'>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:14px;Margin-bottom:2px;color:#1976d2;padding:0;text-decoration:none;''>";
-							 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
+							 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"ws/jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
 							 tempHTML = tempHTML+"</p>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;padding:0;'>"+requirementIndex.getPostedOrg()+" </p>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;color:#757575;padding:0;'> "+location.toString()+" </p>";

@@ -7,7 +7,7 @@
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude');
+			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude','','address');
 			disableMonths();
 			getUsersByRole();
 			var type = '${type}';
@@ -35,7 +35,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -125,41 +125,49 @@
         </div>
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode');"></i>
+          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Address" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode','address');"></i>
           </div>
           </div>
         </div>
-		
 		
 		<div class="form-group">
-          <label class="col-md-3">Country</label>
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}"  type="text" readonly></input>
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  placeholder="Enter your Street Addres" field-name="Street Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
+		 <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" ></input>
           </div>
         </div>
         
+         <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" ></input>
+          </div>
+        </div>
+        
+		<div class="form-group">
+          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" field-name="Country" data-validation="required" value ="${loginCountryName}"  type="text" ></input>
+          </div>
+        </div>
+        
+       
+       
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" ></input>
           </div>
         </div>
         
@@ -178,12 +186,7 @@
           </div>
         </div> 
         
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
+        
         
          <div class="form-group">
          <label class="col-md-3">Designation</label>

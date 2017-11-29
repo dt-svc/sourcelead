@@ -19,6 +19,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/path")
 public class InterViewFeedBackController {
 	
 	
@@ -62,7 +63,7 @@ public class InterViewFeedBackController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/publicInterviewFeedBackTemplate")
+	@RequestMapping(value = "/ws/publicInterviewFeedBackTemplate")
 	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,@RequestParam(value = "interviewerUserId", required = false) Long interviewerUserId,
 			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewerId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();

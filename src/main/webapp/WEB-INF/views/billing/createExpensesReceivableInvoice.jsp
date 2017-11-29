@@ -57,7 +57,7 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Invoice List</a> &raquo; Project Based Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Invoice List</a> &raquo; Project Based Invoice</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -259,7 +259,7 @@ function checkBox(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -1285,7 +1285,7 @@ function toDate(selector) {
 		        	$("#discountValue").val(json['discountAmount']);
 		        	$("#discountTotal").val(json['discountValue']);
 		        	$("#comment").val(json['invoiceComment']);
-		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/sourcelead/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
+		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/path/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
 		        	editTax(json['invoiceTaxList'])
 		        	
 		        	getSavedAttachments(json['invoiceDocumentsList']);

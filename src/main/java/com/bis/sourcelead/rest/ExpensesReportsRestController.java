@@ -40,6 +40,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.ListItem;
 
 @RestController
+@RequestMapping("/path")
 public class ExpensesReportsRestController {
 
 	@Value("${sourceleadUrl}")

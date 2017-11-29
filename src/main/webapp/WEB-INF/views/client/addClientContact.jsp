@@ -155,7 +155,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
@@ -285,7 +285,7 @@ function getOrgDetails()
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>

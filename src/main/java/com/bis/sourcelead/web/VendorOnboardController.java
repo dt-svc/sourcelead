@@ -30,6 +30,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/path")
 public class VendorOnboardController {
 	
 	@Autowired
@@ -107,7 +108,7 @@ public class VendorOnboardController {
 		OrgLocations vendorOrgLocations = vendorOnboard.getVendorLocationId();
 		vendorOnboardService.finishVendorOnboardProcess(vendorOnboard.getId(), notificationUUID, user,Constants.MAIL_REJECTED);
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/sourcelead/dashboard/").append(vendorOrgLocations.getId()).toString());
+		response.sendRedirect(redirectUrl.append("/path/dashboard/").append(vendorOrgLocations.getId()).toString());
 		
  	}
 	

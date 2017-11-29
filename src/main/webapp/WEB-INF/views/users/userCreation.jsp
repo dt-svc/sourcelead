@@ -40,7 +40,7 @@
           <div class="pull-left">
             <h2>Add User</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; Add User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Users List</a> &raquo; Add User </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
@@ -277,7 +277,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -471,7 +471,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("createUser_form");
-			$("#createUser_form").attr("disabled", "disabled");
+			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {

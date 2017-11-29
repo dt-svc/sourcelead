@@ -81,7 +81,7 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
@@ -118,7 +118,7 @@ margin-top: 3px;
 	                </li>
                 </sec:authorize>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
+		   			<li><a href="<c:url value='${appPath}/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
 					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>

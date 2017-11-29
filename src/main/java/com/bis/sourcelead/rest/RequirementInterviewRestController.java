@@ -55,6 +55,7 @@ import com.bis.sourcelead.web.LoginSessionController;
  */
 
 @RestController
+@RequestMapping("/path")
 public class RequirementInterviewRestController {
 
 	
@@ -282,7 +283,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/saveProposeTime" , method = RequestMethod.POST)
 	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

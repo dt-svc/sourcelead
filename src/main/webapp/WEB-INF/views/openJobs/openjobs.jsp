@@ -8,39 +8,39 @@
  </c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/reset.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
  var sourceleadUrl = '${sourceleadUrl}';
@@ -175,11 +175,11 @@ z-index: 1000000000 !important;
     <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-  <div class="logo"><a href="home.html"><img src="resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="${sourceleadUrl}/openRequirements" class="rcolor">Jobs</a></li>
+		<li><a href="${sourceleadUrl}/ws/openRequirements" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
 				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
@@ -705,10 +705,10 @@ z-index: 1000000000 !important;
 			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
           <h4>Go social</h4>
             <div class="socila">
-            	<a href="javascript:void(0)"><img src="resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/gp.png" alt=""/></a>
+            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
             </div>
         </div>                        
     <div class="clear"></div>
@@ -728,7 +728,7 @@ z-index: 1000000000 !important;
 
 <section class="pageLoad"></section> 
 <div class="backtotop">
-	<img src="resources/css/jobs/images/backtotop.png" alt="" />
+	<img src="/resources/css/jobs/images/backtotop.png" alt="" />
 </div>  
 
 <!-- Footer Area -->
@@ -819,11 +819,11 @@ function requirementsFilter(type){
 		postedOrgName = $("#postedOrg").val();
 	}
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
+	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -832,9 +832,9 @@ function requirementsFilter(type){
 	    		}
 	    		$("#noResultsDiv").css("display", "none");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -863,10 +863,10 @@ function getOpenJobsELKList(type){
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	}
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -874,9 +874,9 @@ function getOpenJobsELKList(type){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -950,7 +950,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
-				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+				link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1076,7 +1076,7 @@ function getOrgsList(alphabet,type){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl+"/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1141,7 +1141,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		   	url: sourceleadUrl+"/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
@@ -1202,7 +1202,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</div>';					
 				result = result +'	<span>';
 				
-				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+json.requirementUUID;
+				link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+json.requirementUUID;
 				description =  description+'Job Title:'+json.jobTitle+";";
 				
 				if(json.jobType != null && json.jobType != '' && json.jobType !='undefined'){
@@ -1282,7 +1282,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/ws/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -1329,7 +1329,7 @@ function backtoList(){
 function viewJobSummaryDocument(jobId,title){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open(sourceleadUrl+'/ws/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 
@@ -1356,7 +1356,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1407,7 +1407,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/path/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -1421,7 +1421,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 
-										link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+										link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 										description =  description+'Job Title:'+requirements.jobTitle+";";
 										
 										result = result +'	<div class="jobShare">';
@@ -1485,7 +1485,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1523,7 +1523,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1890,7 +1890,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<!-- <script src="resources/js/jobs/js/bootstrap-select.min.js"></script> -->
+<!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
 	 
@@ -1899,7 +1899,7 @@ function createAlert(requirementUUID){
 	
 	 $.ajax({
         type : "GET",
-        url: sourceleadUrl+"/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+        url: sourceleadUrl+"/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
          success :function(data) {
         	 
         	 var json = JSON.parse(data);
@@ -1909,6 +1909,7 @@ function createAlert(requirementUUID){
         	  var country = '';
         	  var city = '';
         	  var zipCode ='';
+        	  var rate = '';
         	  if(json['location'] != null && json['location'] != '' && json['location'] != 'undefined'){
         		  location = json['location'];
         	  }
@@ -1923,6 +1924,9 @@ function createAlert(requirementUUID){
         	  }
         	  if(json['zipCode'] != null && json['zipCode'] != '' && json['zipCode'] != 'undefined'){
         		  zipCode = json['zipCode'];
+        	  }
+        	  if(json['maxRate'] != null && json['maxRate'] != '' && json['maxRate'] != 'undefined'){
+        		  rate = json['maxRate']
         	  }
         	 result = "";
         	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
@@ -2050,7 +2054,7 @@ function createAlert(requirementUUID){
         	 result = result +'               </select>';
         	 result = result +'               </div>';
         	 
-        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['maxRate']+'" class="form-control" placeholder="Rate">';
+        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
         	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
         	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type" data-validation-optional="true">';
         	 result = result +'                   <option value="">Rate Per</option>';
@@ -2265,9 +2269,9 @@ var validationSettings = {
 							data: formData,
 			  		        processData: false,
 			  		        contentType:false, 
-        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : sourceleadUrl+"/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace(sourceleadUrl+"/openRequirementsRedirect");
+        							location.replace(sourceleadUrl+"/ws/openRequirementsRedirect");
         					},
         				});
                 
@@ -2339,7 +2343,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2382,7 +2386,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2439,7 +2443,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();
@@ -2489,7 +2493,7 @@ function validateAlertUserEmail(){
 		$("#alert_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       url: sourceleadUrl+"/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -2611,6 +2615,6 @@ function preventTabkey(e){
 }
 </script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

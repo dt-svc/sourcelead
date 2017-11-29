@@ -112,11 +112,11 @@ function statusvalidating(id){
 		<div class="pull-left">
 			<h2 class="pull-left paddingRight">Jobs List</h2>
 			<span class="paddingLeft pull-left">|<a class="paddingLeft"
-				href="<c:url value='/professionalRequirements'/>">Crowdsourcing
+				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
 					Jobs</a></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Job List
 		</div>
 	</section>
@@ -397,11 +397,11 @@ function statusvalidating(id){
 					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='/requirement'/>"><i
+						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-						<li><a href="<c:url value='/team'/>"><i
+						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
 
@@ -728,7 +728,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -763,7 +763,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

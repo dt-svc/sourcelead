@@ -38,6 +38,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/path")
 public class NotificationRestController {
 
 	@Value("${sourceleadUrl}")

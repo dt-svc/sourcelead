@@ -29,11 +29,11 @@ $(document).ready(function() {
       <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -60,7 +60,7 @@ function requirementProfile(requirementUUID){
     
     $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
+	    url: sourceleadUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -289,7 +289,7 @@ function requirementProfile(requirementUUID){
 function requirementDetails(requirementUUID){
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: sourceleadUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	
 		    	var json = JSON.parse(data);
@@ -356,7 +356,7 @@ function requirementDetails(requirementUUID){
 <script>
 function viewProfessionalRequirementProfile(jobId,title){
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open(sourceleadUrl+'/ws/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 </script>
@@ -508,7 +508,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	   	url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);
@@ -728,7 +728,7 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
+			url: sourceleadUrl+"/ws/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},

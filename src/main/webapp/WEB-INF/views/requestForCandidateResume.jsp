@@ -197,7 +197,7 @@ function cancel(){
 			    	    data: formData,
 				        processData: false,
 				        contentType:false, 
-						url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&candidatesIds="+candidatesIds+"&UUID="+UUID,
+						url : sourceleadUrl+"/ws/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&candidatesIds="+candidatesIds+"&UUID="+UUID,
 							success : function(result) {
 								
 								if(result == 'success'){
@@ -238,7 +238,7 @@ if(email){
 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
+		url : sourceleadUrl+"/ws/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
 		success : function(data) {
 			
 			if (data == 'Invalid') {
@@ -274,7 +274,7 @@ $.ajax({
 			
 			 $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRequestedCandidates?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,
+						url : sourceleadUrl+"/ws/getRequestedCandidates?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,
 						success : function(data) {
 							
 								var json = JSON.parse(data);

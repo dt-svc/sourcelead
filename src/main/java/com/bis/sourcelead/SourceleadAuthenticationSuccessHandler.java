@@ -9,8 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -83,6 +83,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		    	userLoginSession.setIpaddress(ipAddress);
 			    userLoginSession.setUserId(loginUser);
 			    userLoginSession.setLoginTime(new Date());
+			    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
 		    }
@@ -91,16 +92,16 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		} 
 	    finally{
 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
+	    		response.sendRedirect("/path/dashboard?invitation=true");
 	    	}else{
 	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID);
+	    			response.sendRedirect("/path/dashboard?requirementUUID="+requirementUUID);
 	    		}
 	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
+	    			response.sendRedirect("/path/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
 	    		}
 	    		else{
-	    			response.sendRedirect("/sourcelead/dashboard");
+	    			response.sendRedirect("/path/dashboard");
 	    		}
 	    		
 	    	}

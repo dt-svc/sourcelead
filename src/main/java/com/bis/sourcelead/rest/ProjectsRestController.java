@@ -62,6 +62,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class ProjectsRestController {
 	
 	@Value("${static.path}")

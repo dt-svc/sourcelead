@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/path")
 public class OrgDocumentsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrgDocumentsRestController.class);

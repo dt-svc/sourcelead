@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +12,9 @@ import java.util.Set;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -78,6 +74,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
 
 @Controller
+@RequestMapping("/path")
 public class RequirementController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
@@ -467,11 +464,12 @@ public class RequirementController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
-	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+	@RequestMapping(value = "/jobSummary/{jobTitle}/{jobUUID}")
+	public ModelAndView requirementSummary(@PathVariable String jobTitle,@PathVariable String jobUUID,HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 
+		requirementUUID = jobUUID;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -891,7 +889,7 @@ public class RequirementController {
 
 	}
 	
-	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirementOffer")
 	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
@@ -1068,7 +1066,7 @@ public class RequirementController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		
@@ -1098,7 +1096,7 @@ public class RequirementController {
 		}
 
 
-@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
+@RequestMapping(value = "/ws/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
 	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
 			@PathVariable("title") String title, HttpServletResponse response)
 			throws Exception {

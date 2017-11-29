@@ -109,6 +109,7 @@ import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
+@RequestMapping("/path")
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
@@ -223,7 +224,7 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	@RequestMapping(value = "/downloadInvoiceAttachment")
+	@RequestMapping(value = "/ws/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
 		
 		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);

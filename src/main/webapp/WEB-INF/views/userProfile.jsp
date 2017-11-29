@@ -75,15 +75,15 @@ function resetProfile(){
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
     
     </section>
@@ -220,7 +220,7 @@ function resetProfile(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -267,7 +267,7 @@ function resetProfile(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'">
 					</div>
 				  </div>
 				  </form:form>

@@ -20,6 +20,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @RestController
+@RequestMapping("/path")
 public class ActionHistoryRestController {
 	
 	@Autowired
@@ -37,10 +38,11 @@ public class ActionHistoryRestController {
 	@Autowired
 	private UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
-	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
-		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
-		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId(), orgLocation);
+	
+	@RequestMapping(value = "/ws/getRestActionHistoryList", method = RequestMethod.GET)
+	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "actionUUID", required = true) String actionUUID,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
+		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionByActionUUID(actionUUID);
+		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUserActionUUID(userLoginLogoutSession.getActionUUID(), orgLocation);
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
 				actionHistory.setActionTimeStr(conversionUtil.getActionDateddMMMYYYYHHMMSS(actionHistory.getActionTime()));
@@ -49,11 +51,12 @@ public class ActionHistoryRestController {
 		return actionHistoryList;
 	}
 	
-	@RequestMapping(value = "/getRestLocationActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
-		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
+	
+	@RequestMapping(value = "/ws/getRestLocationActionHistoryList", method = RequestMethod.GET)
+	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "actionUUID", required = true) String actionUUID,HttpServletRequest request) throws Exception {
+		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionByActionUUID(actionUUID);
 		
-		List<ActionHistory> actionHistoryListOrgLocations = actionHistoryService.getAllOrglocationsActionHistoryList(userLoginLogoutSession.getId());
+		List<ActionHistory> actionHistoryListOrgLocations = actionHistoryService.getAllOrglocationsActionHistoryListActionUUID(userLoginLogoutSession.getActionUUID());
 		return actionHistoryListOrgLocations;
 	}
 	

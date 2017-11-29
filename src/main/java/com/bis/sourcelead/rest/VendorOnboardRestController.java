@@ -43,6 +43,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class VendorOnboardRestController {
 	
 	protected static boolean isNullOrEmpty(String str) {

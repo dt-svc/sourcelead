@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -129,7 +127,7 @@ public class HomeController {
 	}
 	
 	
-   @RequestMapping(value = "/forgotPassword")
+   @RequestMapping(value = "/ws/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("forgotPassword");
@@ -138,7 +136,7 @@ public class HomeController {
  	}
    
    
-   @RequestMapping(value = "/resetPassword")
+   @RequestMapping(value = "/ws/resetPassword")
   	public ModelAndView resetPassword(HttpServletRequest request) {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
@@ -176,13 +174,12 @@ public class HomeController {
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
-
 			if(isNullOrEmpty(requirementUUID)){
 				return new ModelAndView("redirect:/dashboard");
 			}else{
 				StringBuilder redirectUrl = new StringBuilder();
 				try {
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/path/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				} catch (IOException e) {
 					
 				}

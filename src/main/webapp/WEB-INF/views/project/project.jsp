@@ -115,8 +115,8 @@ function validateShortCode(){
 			<h2>Create Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
@@ -486,7 +486,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>

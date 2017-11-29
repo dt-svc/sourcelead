@@ -211,7 +211,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -514,34 +514,40 @@ $(document).ready(function () {
 				</div>
 		</div>
 		
-		<div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country" readonly>
-				</div>
+		 <div class="form-group">
+			<label class="col-md-3">City</label>
+			<div class="col-md-9">
+			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
+			</div>
 		</div>
 		
 		 <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
-				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State" readonly>
+				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
 		 </div>
-		
-		 <div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City"  readonly>
-			</div>
-		</div>
-		
-		
-		 <div class="form-group">
+		 
+		  <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
 		</div>
+		
+		<div class="form-group">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
+				</div>
+		</div>
+		
+		
+		
+		
+		
+		
+		
 		
 	 
          <div class="form-group">
@@ -1126,7 +1132,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>

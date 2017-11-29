@@ -45,6 +45,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class InterviewFeedbackRestController {
 	
 	@Autowired
@@ -84,7 +85,7 @@ public class InterviewFeedbackRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
 	   public String getPublicInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewid) throws Exception {
 		    String resultJson = null;
@@ -104,7 +105,7 @@ public class InterviewFeedbackRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/savePublicInterviewFeddbackTemlateReason" , method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/savePublicInterviewFeddbackTemlateReason" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlateReason(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,
@@ -202,7 +203,7 @@ public class InterviewFeedbackRestController {
      */
 	
     
-       @RequestMapping(value = "/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
+       @RequestMapping(value = "/ws/savePublicInterviewFeddbackTemlate" , method = RequestMethod.GET)
 	   public String savePublicInterviewFeddbackTemlate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewerId,

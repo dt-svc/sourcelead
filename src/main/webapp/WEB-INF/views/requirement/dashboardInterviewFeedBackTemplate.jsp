@@ -177,7 +177,7 @@ function saveFeedbackNo(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+			url : sourceleadUrl + "/ws/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 			success : function(data) {
 				$("#cancelFeedbackDiv").hide();
 				viewTemplateNo();
@@ -206,7 +206,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 		        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -377,7 +377,7 @@ function saveInterviewTemplate(){
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+	 	    	url : sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -440,7 +440,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
   
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url: sourceleadUrl+"/ws/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -601,7 +601,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	 var submissionDetails = "";
@@ -631,7 +631,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/path/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 
@@ -654,7 +654,7 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
     $("#interviewsjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
+        url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 

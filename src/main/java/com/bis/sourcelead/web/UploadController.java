@@ -36,6 +36,7 @@ import com.bis.sourcelead.validation.FileValidator;
  * Handles uploads
  */
 @Controller
+@RequestMapping("/path")
 public class UploadController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);

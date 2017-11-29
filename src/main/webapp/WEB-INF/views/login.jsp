@@ -10,6 +10,7 @@
     <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+
  
  <div id="slideit" class="bgImg" style="background-image: url(resources/images/1.jpg)"></div>
  

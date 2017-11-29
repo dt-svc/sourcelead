@@ -82,6 +82,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
+@RequestMapping("/path")
 public class LeaveManagementRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
@@ -265,6 +266,13 @@ public class LeaveManagementRestController {
 								break;
 							}
 						}
+						StringBuilder sb = new StringBuilder();
+						if(StringUtils.isNotBlank(user.getLastName())){
+							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+						}else{
+							sb.append(user.getFirstName());
+						}
+						user.setFullName(user.getFullName().toString());
 						user.setUserType(userRole.getUserType());
 						if(flag)
 							appUser.add(user);
@@ -1695,6 +1703,49 @@ public class LeaveManagementRestController {
 		boolean flag = false;
 		flag = restrictDayService.checkDuplicateRestrictDay(restrictDayDTO);
 		return flag;
+	}
+	
+	@RequestMapping(value = { "/getApproversForLeave" }, method = RequestMethod.GET)
+	public @ResponseBody List<User> getApproversForLeave(@RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		// User loginUser = (User)
+		// SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (userId != null) {
+			List<User> appUser = new ArrayList<>();
+			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId, roleId, orgLocations.getId());
+			if (approversList != null) {
+				for (User user : approversList) {
+					boolean flag = false;
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if (userRole != null) {
+						String roles = userRole.getRoles().getActionId();
+						String[] sa = roles.split(",");
+						for (String s : sa) {
+							if ("238".equalsIgnoreCase(s)) {
+								flag = true;
+								break;
+							}
+						}
+						StringBuilder sb = new StringBuilder();
+						if(StringUtils.isNotBlank(user.getLastName())){
+							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+						}else{
+							sb.append(user.getFirstName());
+						}
+						user.setFullName(user.getFullName().toString());
+						user.setUserType(userRole.getUserType());
+						if (flag)
+							appUser.add(user);
+					}
+				}
+			}
+			return appUser;
+		}
+		else
+			return null;
 	}
 	
 }

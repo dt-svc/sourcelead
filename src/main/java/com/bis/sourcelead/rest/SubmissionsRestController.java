@@ -78,6 +78,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class SubmissionsRestController {
 	@Autowired
 	private CommonUtil commonUtil;
@@ -270,7 +271,7 @@ public class SubmissionsRestController {
 
 	}
 
-	@RequestMapping(value = "/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
 	public String getInterviewFeedbackTemplate(@RequestParam(value = "templateId", required = false) Long templateId)
 			throws Exception {
 		SubmissionTemplate st = submissionTemplateService.getSubmissionTemplateById(templateId);

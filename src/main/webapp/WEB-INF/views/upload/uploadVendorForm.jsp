@@ -25,7 +25,7 @@ margin:10px 220px 0;
       <div class="remove_pop" id="selector"  style="display: none;">
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
     </section>
      <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -47,16 +47,14 @@ margin:10px 220px 0;
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
 			<div class="col-xs-3 col-md-3">
-			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
+			 <a href="<c:url value='${appPath}/downloadVendorTemplate?name=Contact'/>"  class="btn btn-success btn-block" >
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
-			</button>
 			</a>
 			</div>
 			
 				<div class="col-md-6 candAdvsrch">
 					<select data-placeholder="Select Onboard Templates" multiple
-						class="chosen-select form-control" name="templateId" id="templateId"
+						class="form-control" name="templateId" id="templateId"
 						field-name="Template" data-validation-optional="true">
 						<c:forEach var="template" items="${templatesList}">
 							<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
@@ -70,7 +68,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'">
 				</div>
 			  </div>
 			</div>

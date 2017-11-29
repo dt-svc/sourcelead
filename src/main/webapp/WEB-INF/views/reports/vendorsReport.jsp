@@ -33,7 +33,7 @@ window.onload = function() {
 			<div class="pull-left">
 				<h2>Vendors Report </h2>
 			</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
 </section>
 
 
@@ -73,6 +73,7 @@ window.onload = function() {
  
 <section class="candidate_wrap_table recruiterReports_table minHeight">
 <div class="clearfix mt10"></div>
+<div id ="vendorLoderDiv"></div>
 <div id="vendorReportsDiv" class="datatable_filter"></div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 </section>    
@@ -93,6 +94,8 @@ function getVendorsReportList(){
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
+	if(reportType != "custom"){
+	$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
          type : "POST",
           url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
@@ -101,6 +104,7 @@ function getVendorsReportList(){
          },
           
      }); 
+	}
 }
 </script>
 <script>
@@ -189,6 +193,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	$("#vendorReportsDiv").empty();
     $("#vendorReportsDiv").append(result);
+    $("#vendorLoderDiv").empty();
+    $("#vendorLoderDiv").removeAttr('style');
     vendorReportPagination();
 }
 
@@ -687,6 +693,7 @@ function getVendorCustomReports(){
 		$("#vendorreportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    

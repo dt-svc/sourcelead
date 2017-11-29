@@ -29,7 +29,8 @@ window.onload = function() {
 function getRequirementList(){
 	    var status = "";
 	    var clients = "";
-		$.ajax({
+		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
 	          success :function(data) {
@@ -114,6 +115,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+    $("#reqStagesLoderDiv").empty();
+    $("#reqStagesLoderDiv").removeAttr('style');
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
@@ -285,7 +288,7 @@ function getRequirementStageList(){
       <h2 class="pull-left">Job Stages Reports</h2>
 		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -384,7 +387,8 @@ function getRequirementStageList(){
 		</ul>
 	</div>
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+  <div class="project_tabs_inn_table vendor_wrap_inn_table"> 
+  <div id="reqStagesLoderDiv"></div>
                  <div id="requirementReportsDiv12" class="repoPositi"></div>
                 </div>      
 </div>

@@ -66,6 +66,7 @@ import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/path")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
 	 
@@ -114,6 +115,7 @@ public class RegistrationRestController {
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
+				@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "userState", required = false) String userState) {
 
 		String resultJson;
@@ -123,7 +125,7 @@ public class RegistrationRestController {
 		ArrayList<Org> regOrgsList = new ArrayList<Org>();
 
 		try {
-			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName,offset);
 			for(Org regOrg : orgsList){
 				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
@@ -280,7 +282,7 @@ public class RegistrationRestController {
 	   }
 	
 	
-	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsProfessional" , method = RequestMethod.POST)
 	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
@@ -299,7 +301,7 @@ public class RegistrationRestController {
 		 return result;
 	   }
 	 
-	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsIndividualRecruiter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
@@ -319,7 +321,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
 			 HttpServletRequest request) throws Exception {
 		 
@@ -332,7 +334,7 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
-	 @RequestMapping(value = "/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 
 		 json = "{"+json+"}";
@@ -345,7 +347,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/resetCredentials" , method = RequestMethod.POST)
 	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
@@ -377,7 +379,7 @@ public class RegistrationRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/getOptionalValueList" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/getOptionalValueList" , method = RequestMethod.POST)
 	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
 	 			String registerTypeTwo = "Would like to";
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
@@ -588,7 +590,7 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
 	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -629,7 +631,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -786,7 +788,7 @@ public class RegistrationRestController {
 	   @RequestMapping(value = "/orgSummary/{orgId}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/sourcelead/enrolledOrgSummary?orgId=").append(orgId).toString());
+				response.sendRedirect(redirectUrl.append("/path/enrolledOrgSummary?orgId=").append(orgId).toString());
 				
 		   }
 	   

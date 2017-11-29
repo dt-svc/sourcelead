@@ -39,7 +39,7 @@
       <div class="pull-left">
         <h2>Requested Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Associates</div>
 </section>
 
  <div class="content-area content-new clearfix">
@@ -49,7 +49,7 @@
    <div class="vendor_wrap_mask"></div>
    <div id="rejectedReasonDiv"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
    </div>
 					
  </div>

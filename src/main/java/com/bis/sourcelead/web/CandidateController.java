@@ -50,6 +50,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/path")
 public class CandidateController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 	@Value("${sourceleadUrl}")

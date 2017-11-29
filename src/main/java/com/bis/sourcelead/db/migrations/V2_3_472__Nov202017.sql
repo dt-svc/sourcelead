@@ -1,40 +1,15 @@
-ALTER TABLE `sourcelead`.`USER_ROLE` 
-ADD COLUMN `LOGIN_SECURITY` VARCHAR(10) NULL DEFAULT NULL AFTER `URL_SENTTIME`;
 
-ALTER TABLE `sourcelead`.`USER` 
-ADD COLUMN `VERIFICATION_UUID` VARCHAR(45) NULL DEFAULT NULL AFTER `FILE_URL`,
-ADD COLUMN `IS_VERIFIED` VARCHAR(10) NULL DEFAULT NULL AFTER `VERIFICATION_UUID`,
-ADD COLUMN `URL_SENTTIME` DATETIME NULL DEFAULT NULL AFTER `IS_VERIFIED`;
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'jobType', '{{notifyApplicantMailAboutRequirement.jobType}}');
 
 
-#Activate User EMail
-#entity_type
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('ActivateUserEmail', 'Email');
-
-#CLASS_FIELD
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'registerName', '{{ActivateUserEmail.registerName}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'verifyLink', '{{ActivateUserEmail.verifyLink}}');
-
-#email_scenario
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('ActivateUserEmail', 'Email', 'ActivateUserEmail','Used to activate the Account.', 'Sourcelead – Account Activation','sourcelead','Best Regards,\nSourcelead Team.','Dear {{ActivateUserEmail.registerName}},\n\nThank you for registering with us. To verify your Sourcelead account, kindly click on the verify registration link below.\n\n {{ActivateUserEmail.verifyLink}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'industryName', '{{notifyApplicantMailAboutRequirement.industryName}}');
 
 
-ALTER TABLE `sourcelead`.`org_locations` 
-ADD COLUMN `LOGIN_SECURITY` VARCHAR(10) NULL DEFAULT 'N' AFTER `ORG_LOCATION_BILLING_ADDRESS`;
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'clientName', '{{notifyApplicantMailAboutRequirement.clientName}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'visaType', '{{notifyApplicantMailAboutRequirement.visaType}}');
 
 
-#Login OTP EMail
-#entity_type
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('LoginOTPEmail', 'Email');
-
-#CLASS_FIELD
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'userName', '{{LoginOTPEmail.userName}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'token', '{{LoginOTPEmail.token}}');
-
-#email_scenario
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('LoginOTPEmail', 'Email', 'LoginOTPEmail','Used to send OTP to User.', 'Sourcelead – Login Alert','sourcelead','Best Regards,\nSourcelead Team.','Dear {{LoginOTPEmail.userName}},\n\nHere is your One Time Password to login into the system {{LoginOTPEmail.token}}', 'N', 'SLADMIN', 'sourceLead.com','in.sourceLead.com');
-
-
-ALTER TABLE `sourcelead`.`user_login_logout_session` 
-ADD COLUMN `IS_AUTHENTICATED` VARCHAR(10) NULL DEFAULT 'N' AFTER `LOGOUTIME`;
-
+set SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{notifyApplicantMailAboutRequirement.applicantName}},\n\nI came across a position I thought would interest you. Please take a moment to review this opportunity and let me know if you would like to learn more about this Position.\n\nPlease send your resume and a good time to talk if interested in learning more.\n\nTitle: {{notifyApplicantMailAboutRequirement.requirementName}}\nPrimary Skill(s): {{notifyApplicantMailAboutRequirement.skills}}\nLocation: {{notifyApplicantMailAboutRequirement.location}}\nExeperience: {{notifyApplicantMailAboutRequirement.experience}}\nClient Name: {{notifyApplicantMailAboutRequirement.clientName}}\nLength: {{notifyApplicantMailAboutRequirement.jobType}}\nRate: {{notifyApplicantMailAboutRequirement.requirementRate}}\nIndustry: {{notifyApplicantMailAboutRequirement.industryName}}\nWork Authorization: {{notifyApplicantMailAboutRequirement.visaType}}\n\nJob Description : {{notifyApplicantMailAboutRequirement.jobDescription}}.\n\nThank you in advance.\n ' WHERE `UNIQUE_SCENARIO_NAME`='notifyApplicantMailAboutRequirement' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
