@@ -62,7 +62,7 @@ $(document).ready(function(){
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
-           <i class="fa fa-close close-div" onclick="flushAsset();"></i>
+           <i class="fa fa-close close-div"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
@@ -92,26 +92,23 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4" id="modelDiv">
+                <div class="clearfix">
+                  <div class="col-md-4 mb10" id="modelDiv">
                     <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
                   </div>
-                  <div class="col-md-4" id="nameDiv">
+                  <div class="col-md-4 mb10" id="nameDiv" style="display:none;">
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="memoryDiv">
+                  <div class="col-md-4 mb10" id="memoryDiv">
                     <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
                   </div>
-                  
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4" id="cpuDiv">
+                  <div class="col-md-4 mb10" id="cpuDiv">
                     <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="harddiskDiv">
+                  <div class="col-md-4 mb10" id="harddiskDiv">
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="monitorDiv">
+                  <div class="col-md-4 mb10" id="monitorDiv">
                     <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
@@ -296,38 +293,16 @@ var validationSettings = {
   
   <script>
   function flushAsset(){
-	  
-	    $('#snoDiv').find('p.jquery_form_error_message').remove();
-		$('#modelDiv').find('p.jquery_form_error_message').remove();
-		$("#monitorDiv").find('p.jquery_form_error_message').remove();
-	    $("#nameDiv").find('p.jquery_form_error_message').remove();
-	    $("#makeDiv").find('p.jquery_form_error_message').remove();
-	    $("#memoryDiv").find('p.jquery_form_error_message').remove();
-	    $("#descriptionDiv").find('p.jquery_form_error_message').remove();
-	    $("#cpuDiv").find('p.jquery_form_error_message').remove();
-	    $("#harddiskDiv").find('p.jquery_form_error_message').remove();
-	    $('#categoryDiv').find('p.jquery_form_error_message').remove();
-		$('#workingStatusDiv').find('p.jquery_form_error_message').remove();
-		$("#attachmentDiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskADiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskDiv").find('p.jquery_form_error_message').remove();
-	    
-	  $("#sno").val('');
-	  $("#model").val('');
-	  $("#monitor").val('');
-	  $("#name").val('');
-	  $("#make").val('');
-	  $("#memory").val('');
-	  $("#description").val('');
-	  $("#cpu").val('');
-	  $("#harddisk").val('');
-	  $("#uploadFile-dskA").val('');
-	  $("#uploadFile-dskB").val('');
-	  $("#uploadFileAttachment").val('');
-	  $("#shiftAAttachment").val('');
-	  $("#shiftBAttachment").val('');
-        
-	  
+	  $('#addAsset_form')[0].reset();
+	  $("#addAsset_form").find("#category").val("");
+	  $("#addAsset_form").find("#category").trigger("chosen:updated");
+	  $("#addAsset_form").find("#workingStatus").val("");
+	  $("#addAsset_form").find("#workingStatus").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftAEmp").val("");
+	  $("#addAsset_form").find("#shiftAEmp").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftBEmp").val("");
+	  $("#addAsset_form").find("#shiftBEmp").trigger("chosen:updated");
+	  $("addAsset_form").validate().resetForm();
   }
   
   </script>
@@ -552,15 +527,14 @@ function removeAssetManagement(assetId){
 			  document.getElementById("memory").style.display="none";
 			  document.getElementById("cpu").style.display="none";
 			  document.getElementById("harddisk").style.display="none";
-			  document.getElementById("shiftADetails").style.display="none";
-			  document.getElementById("shiftBDetails").style.display="none";
+			  document.getElementById("shiftADetails").style.display="";
+			  document.getElementById("shiftBDetails").style.display="";
 			  $("#monitor").val('');
 			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
-			  $("#uploadFile-dskA").val('');
-			  $("#uploadFile-dskB").val('');
+			 
 		  } 
 	  }
   }
@@ -656,6 +630,8 @@ function removeAssetManagement(assetId){
 // Approved Popup
     $("#category").click(function(){
     	$(this).next(".approved_pop").toggle();
+    	$("#workingStatus").next(".approved_pop").slideUp();
+    	
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -666,6 +642,7 @@ function removeAssetManagement(assetId){
     
     $("#workingStatus").click(function(){
 		$(this).next(".approved_pop").toggle();
+		$("#category").next(".approved_pop").slideUp();
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -811,6 +788,7 @@ $(document).ready(function(){
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");
 	 $(".collapse-div").removeClass("show-div");
+	 flushAsset();
  });
  $(".close-div").click(function(){
 	 $(this).parent().removeClass("show-div");
