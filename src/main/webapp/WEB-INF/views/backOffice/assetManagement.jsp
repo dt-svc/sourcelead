@@ -62,7 +62,7 @@ $(document).ready(function(){
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
-           <i class="fa fa-close close-div" onclick="flushAsset();"></i>
+           <i class="fa fa-close close-div"></i>
 			  <div class="clearfix">
             <div class="clearfix assetaddpop-ul col-md-6" id="categoryDiv">
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
@@ -294,6 +294,15 @@ var validationSettings = {
   <script>
   function flushAsset(){
 	  $('#addAsset_form')[0].reset();
+	  $("#addAsset_form").find("#category").val("");
+	  $("#addAsset_form").find("#category").trigger("chosen:updated");
+	  $("#addAsset_form").find("#workingStatus").val("");
+	  $("#addAsset_form").find("#workingStatus").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftAEmp").val("");
+	  $("#addAsset_form").find("#shiftAEmp").trigger("chosen:updated");
+	  $("#addAsset_form").find("#shiftBEmp").val("");
+	  $("#addAsset_form").find("#shiftBEmp").trigger("chosen:updated");
+	  $("addAsset_form").validate().resetForm();
   }
   
   </script>
@@ -780,6 +789,7 @@ $(document).ready(function(){
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");
 	 $(".collapse-div").removeClass("show-div");
+	 flushAsset();
  });
  $(".close-div").click(function(){
 	 $(this).parent().removeClass("show-div");
