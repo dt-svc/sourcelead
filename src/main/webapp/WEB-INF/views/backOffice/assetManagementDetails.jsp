@@ -106,7 +106,7 @@ function assetDetails(assetId) {
 						result = result + '</div>';
 					}
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span>'+description+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span class="wordWrap-breakword">'+description+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					

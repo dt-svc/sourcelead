@@ -92,26 +92,23 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4" id="modelDiv">
+                <div class="clearfix">
+                  <div class="col-md-4 mb10" id="modelDiv">
                     <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
                   </div>
-                  <div class="col-md-4" id="nameDiv">
+                  <div class="col-md-4 mb10" id="nameDiv" style="display:none;">
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="memoryDiv">
+                  <div class="col-md-4 mb10" id="memoryDiv">
                     <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
                   </div>
-                  
-                </div>
-                <div class="clearfix mb10">
-                  <div class="col-md-4" id="cpuDiv">
+                  <div class="col-md-4 mb10" id="cpuDiv">
                     <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="harddiskDiv">
+                  <div class="col-md-4 mb10" id="harddiskDiv">
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4" id="monitorDiv">
+                  <div class="col-md-4 mb10" id="monitorDiv">
                     <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
@@ -296,38 +293,7 @@ var validationSettings = {
   
   <script>
   function flushAsset(){
-	  
-	    $('#snoDiv').find('p.jquery_form_error_message').remove();
-		$('#modelDiv').find('p.jquery_form_error_message').remove();
-		$("#monitorDiv").find('p.jquery_form_error_message').remove();
-	    $("#nameDiv").find('p.jquery_form_error_message').remove();
-	    $("#makeDiv").find('p.jquery_form_error_message').remove();
-	    $("#memoryDiv").find('p.jquery_form_error_message').remove();
-	    $("#descriptionDiv").find('p.jquery_form_error_message').remove();
-	    $("#cpuDiv").find('p.jquery_form_error_message').remove();
-	    $("#harddiskDiv").find('p.jquery_form_error_message').remove();
-	    $('#categoryDiv').find('p.jquery_form_error_message').remove();
-		$('#workingStatusDiv').find('p.jquery_form_error_message').remove();
-		$("#attachmentDiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskADiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskDiv").find('p.jquery_form_error_message').remove();
-	    
-	  $("#sno").val('');
-	  $("#model").val('');
-	  $("#monitor").val('');
-	  $("#name").val('');
-	  $("#make").val('');
-	  $("#memory").val('');
-	  $("#description").val('');
-	  $("#cpu").val('');
-	  $("#harddisk").val('');
-	  $("#uploadFile-dskA").val('');
-	  $("#uploadFile-dskB").val('');
-	  $("#uploadFileAttachment").val('');
-	  $("#shiftAAttachment").val('');
-	  $("#shiftBAttachment").val('');
-        
-	  
+	  $('#addAsset_form')[0].reset();
   }
   
   </script>
@@ -656,6 +622,8 @@ function removeAssetManagement(assetId){
 // Approved Popup
     $("#category").click(function(){
     	$(this).next(".approved_pop").toggle();
+    	$("#workingStatus").next(".approved_pop").slideUp();
+    	
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -666,6 +634,7 @@ function removeAssetManagement(assetId){
     
     $("#workingStatus").click(function(){
 		$(this).next(".approved_pop").toggle();
+		$("#category").next(".approved_pop").slideUp();
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
