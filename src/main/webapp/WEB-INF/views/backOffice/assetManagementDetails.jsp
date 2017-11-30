@@ -77,8 +77,12 @@ function assetDetails(assetId) {
 					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>Asset Management details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i></a></h1>';
+					result = result + '<h1>'+json.assetCategory.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
+					
+					result = result + '<div class="require_wrap_details_cta"> <b>Category Name:</b> <span>'+json.assetCategory.categoryName+'</span>';
+					result = result + '<div class="clearfix"></div>';
+					result = result + ' </div>';
 					
 					result = result + '<div class="require_wrap_details_cta"> <b>S. No.:</b> <span>'+json.slno+'</span>';
 					result = result + '<div class="clearfix"></div>';
@@ -91,10 +95,6 @@ function assetDetails(assetId) {
 					result = result + ' <div class="require_wrap_details_cta"> <b>Model:</b> <span>'+model+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
-					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Name:</b> <span>'+name+'</span>';
-					result = result + '  <div class="clearfix"></div>';
-					result = result + ' </div>'; 
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
 						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
@@ -115,7 +115,7 @@ function assetDetails(assetId) {
 					result = result + ' </div>';
 					
 					//this block not visible to others category assets
-					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id != 3) {
+					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && (json.assetCategory.id == 1 || json.assetCategory.id ==2)) {
 						result = result + '<div class="require_wrap_details_cta"> <b>Memory:</b> <span>'+memory+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
@@ -134,7 +134,10 @@ function assetDetails(assetId) {
 							result = result + ' </div>';
 						}
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
+					}
+					//this block not visible to others category assets
+					
+					result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
 						result = result + '  <div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -153,8 +156,6 @@ function assetDetails(assetId) {
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
-					}
-					//this block not visible to others category assets
 					
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '<div class="user_summary_edit client_summary_edit" id="editUserDiv" ></div>';
@@ -291,13 +292,8 @@ function editAssetManagement(assetId){
 			result = result + '  <input type="text" class="form-control input-sm" name="model" value="'+model+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Model">';
 			result = result + ' </div>';
 			
-			result = result + ' <div class="col-md-6">';
-			result = result + '  <input type="text" class="form-control input-sm" name="name" value="'+name+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Name">';
-			result = result + ' </div>';
-			
-			
 			//this block not visible to others category assets
-			if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id != 3) {
+			if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && (json.assetCategory.id == 1 || json.assetCategory.id ==2)) {
 			
 				result = result + ' <div class="col-md-6">';
 				result = result + '  <input type="text" class="form-control input-sm" name="memory" value="'+memory+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-50" placeholder="Memory">';
@@ -317,7 +313,10 @@ function editAssetManagement(assetId){
 					result = result + '</div>';
 				}
 				
-				result = result + '<div class="clearfix">';
+			}
+			//this block not visible to others category assets
+			
+			result = result + '<div class="clearfix">';
 				result = result + '<h4 class="col-md-12">Shift A</h4>';
 				result = result + '</div>';
 				result = result + '<div class="col-md-6">';
@@ -382,8 +381,6 @@ function editAssetManagement(assetId){
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
-			}
-			//this block not visible to others category assets
 			result = result + ' <div class="col-md-6">';
 			result = result + '  <textarea class="form-control" rows="2" name="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space">'+description+'</textarea>';
 			result = result + ' </div>';

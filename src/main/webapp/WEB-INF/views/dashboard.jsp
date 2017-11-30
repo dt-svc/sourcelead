@@ -227,7 +227,9 @@ overflow-x: auto;
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-					   <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
+					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">

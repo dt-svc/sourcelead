@@ -204,7 +204,7 @@ function resourceRequestsTab(){
 	    		result = result + '	             <th>Estimated Budget<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. On</th>';
 	    		result = result + '	             <th>Req. By</th>';
-	    		result = result + '	             <th>Action</th>';
+	    		/* result = result + '	             <th>Action</th>'; */
 	    		result = result + '	         </tr>';
 	    		result = result + '	    </thead>';
 	    		result = result + '	 	<tbody>';
@@ -245,11 +245,12 @@ function resourceRequestsTab(){
 		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
-		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div>';
+		    	
+		    		/* result = result + '	             <td><div><b>'+report.requestStatus+'</b></div>';
 		    		if(report.requestStatus == 'Rejected' && report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 		    			 result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+report.rejectedReason+"</p></div></i>";
 		    		}
-		    		result = result + '</td>';
+		    		result = result + '</td>'; */
 		    		result = result + '	         </tr>';
 	    		}
 	    		
