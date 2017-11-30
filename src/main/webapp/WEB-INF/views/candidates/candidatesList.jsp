@@ -63,6 +63,9 @@
 	'</sec:authorize>';
 	 window.onload = function() {
 		 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+		 if('${candidateUUID}' != null && '${candidateUUID}' != '' && '${candidateUUID}' != 'undefined'){
+				candidateQuickViewProfile('${candidateId}');
+			}
 	};
 	</script>
 
