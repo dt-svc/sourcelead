@@ -175,7 +175,9 @@ function jpagination(url,sourceleadUrl){
            { "data": "requirementSubmissionStatus" }
           
        ],
-	       "columnDefs": [ {
+	       "columnDefs": [ 
+	    	   
+	    	   {
 		         "targets": colIndex++,
 		         "sortable": false,
 		         "data": "requirementUUID",
@@ -515,6 +517,9 @@ function jpagination(url,sourceleadUrl){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"createdRow": function ( row, data, index ) {
+	    		row.setAttribute('id',"job_"+data.id);
+    	    },
 	    	"initComplete": function( settings, json ) {
 	    		 $('#dataTableSearch').removeAttr('disabled');
 	    	  },
