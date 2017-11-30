@@ -195,7 +195,7 @@ $(document).ready(function(){
       <div class="clearfix"></div>
       
     <!-- list Table -->
-    <div class="require_wrap_table table-wrap">
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
       
     </div>
@@ -395,7 +395,7 @@ var validationSettings = {
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
 	   	    	    $("#assetManagementList").append(result)
-	   	    	    pagination1();
+	   	    	    assetPagination();
 	   	    	     
 	   	    	    
 	   		    	
@@ -406,12 +406,11 @@ var validationSettings = {
 
 
 <script>
-function pagination1(){ 
+function assetPagination(){ 
     $('#assetManagementList').DataTable( { 
     	"scrollCollapse": false,
-    	"chosen-select": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
@@ -420,6 +419,7 @@ function pagination1(){
      	}
     })
 }
+
 </script>
 
 <script>
