@@ -17,6 +17,7 @@ import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CreateSender;
@@ -271,5 +272,16 @@ public class CampaignServiceImpl implements CampaignService{
 	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
 	{
 		return campaignDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
+	}
+	public CampaignList getRecipientListByListId(String listId) throws Exception
+	{
+		return campaignDao.getRecipientListByListId(listId);
+	}
+
+	@Override
+	public Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception
+	{
+		return campaignDao.saveCampaignScheduledHistroy(campaign);
+
 	}
 }

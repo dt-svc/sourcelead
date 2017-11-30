@@ -202,7 +202,7 @@ public class CampaignUtil {
 		        Response response = sg.api(request);
 		        isCampaignCreated = response.getBody();
 //		        System.out.println(response.getStatusCode());
-//		        System.out.println(response.getBody());
+		        System.out.println("create campaign response ==: "+response.getBody());
 //		        System.out.println(response.getHeaders());
 		      } catch (IOException ex) {
 		        throw ex;
@@ -210,21 +210,23 @@ public class CampaignUtil {
 		return isCampaignCreated;
 	}
 
-	public void sendCampaign(String campaignId) throws IOException
+	public String sendCampaign(String campaignId) throws IOException
 	{
-		
+		  String isScheduledCpn = null;
 		try {
 		      SendGrid sg = new SendGrid("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");
 		      Request request = new Request();
 		      request.setMethod(Method.POST);
 		      request.setEndpoint("campaigns/"+campaignId+"/schedules/now");
 		      Response response = sg.api(request);
-		      System.out.println(response.getStatusCode());
-		      System.out.println(response.getBody());
-		      System.out.println(response.getHeaders());
+		      if(response.getStatusCode() == 200 || response.getStatusCode() == 201) {
+		    	  isScheduledCpn = response.getBody();
+		    	  System.out.println("schedule campaign response ==: "+response.getBody());
+		      }
 		    } catch (IOException ex) {
 		      throw ex;
 		    }
+		return isScheduledCpn;
 		
 	}
 
