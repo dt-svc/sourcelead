@@ -527,15 +527,14 @@ function removeAssetManagement(assetId){
 			  document.getElementById("memory").style.display="none";
 			  document.getElementById("cpu").style.display="none";
 			  document.getElementById("harddisk").style.display="none";
-			  document.getElementById("shiftADetails").style.display="none";
-			  document.getElementById("shiftBDetails").style.display="none";
+			  document.getElementById("shiftADetails").style.display="";
+			  document.getElementById("shiftBDetails").style.display="";
 			  $("#monitor").val('');
 			  $("#name").val('');
 			  $("#memory").val('');
 			  $("#cpu").val('');
 			  $("#harddisk").val('');
-			  $("#uploadFile-dskA").val('');
-			  $("#uploadFile-dskB").val('');
+			 
 		  } 
 	  }
   }
