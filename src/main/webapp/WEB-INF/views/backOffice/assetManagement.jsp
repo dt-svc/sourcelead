@@ -296,38 +296,7 @@ var validationSettings = {
   
   <script>
   function flushAsset(){
-	  
-	    $('#snoDiv').find('p.jquery_form_error_message').remove();
-		$('#modelDiv').find('p.jquery_form_error_message').remove();
-		$("#monitorDiv").find('p.jquery_form_error_message').remove();
-	    $("#nameDiv").find('p.jquery_form_error_message').remove();
-	    $("#makeDiv").find('p.jquery_form_error_message').remove();
-	    $("#memoryDiv").find('p.jquery_form_error_message').remove();
-	    $("#descriptionDiv").find('p.jquery_form_error_message').remove();
-	    $("#cpuDiv").find('p.jquery_form_error_message').remove();
-	    $("#harddiskDiv").find('p.jquery_form_error_message').remove();
-	    $('#categoryDiv').find('p.jquery_form_error_message').remove();
-		$('#workingStatusDiv').find('p.jquery_form_error_message').remove();
-		$("#attachmentDiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskADiv").find('p.jquery_form_error_message').remove();
-	    $("#uploadFile-dskDiv").find('p.jquery_form_error_message').remove();
-	    
-	  $("#sno").val('');
-	  $("#model").val('');
-	  $("#monitor").val('');
-	  $("#name").val('');
-	  $("#make").val('');
-	  $("#memory").val('');
-	  $("#description").val('');
-	  $("#cpu").val('');
-	  $("#harddisk").val('');
-	  $("#uploadFile-dskA").val('');
-	  $("#uploadFile-dskB").val('');
-	  $("#uploadFileAttachment").val('');
-	  $("#shiftAAttachment").val('');
-	  $("#shiftBAttachment").val('');
-        
-	  
+	  $('#addAsset_form')[0].reset();
   }
   
   </script>
