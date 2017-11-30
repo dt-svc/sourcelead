@@ -118,7 +118,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file" id="attachment"   style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text" class="form-control" name="abc" data-validation-optional="true" data-validation="validatedoc" readonly id="uploadFileAttachment" placeholder="Files are not selected...">
+                      <input type="text" class="form-control" name="abc" data-validation-optional="true"  readonly id="uploadFileAttachment" placeholder="Files are not selected...">
                     </div>
                   </div>
                   <div class="col-md-6" id="descriptionDiv">
@@ -144,7 +144,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftA();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                         <input type="file"id="uploadBtn-dskA"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftAAttachment" readonly id="uploadFileShiftA" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ $(document).ready(function(){
                       <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftB();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                          <input type="file" id="uploadBtn-dskB"  style="display: none;" class="upload">
                         </b> </label>
-                      <input type="text"  class="form-control" data-validation-optional="true" data-validation="validatedoc" name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
+                      <input type="text"  class="form-control" data-validation-optional="true"  name="shiftBAttachment" readonly id="uploadFileShiftB" placeholder="Files are not selected...">
                     </div>
                   </div>
                 </div>
