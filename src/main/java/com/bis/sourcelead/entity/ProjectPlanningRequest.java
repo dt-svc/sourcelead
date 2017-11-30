@@ -27,6 +27,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,6 +55,11 @@ public class ProjectPlanningRequest implements Serializable{
     @JsonBackReference
    	@JoinColumn(name = "PROJECT_ID")
   	private Projects projectId;
+    
+    
+    @Column(name = "PROJECT_NAME")
+	@Type(type="text")
+	private String projectName;
     
     @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -148,9 +154,9 @@ public class ProjectPlanningRequest implements Serializable{
 	@JsonProperty
 	List<ProjectPlanningNewResourceRequest> newResourceRequestList;
 	
-	@Transient
+	/*@Transient
 	@JsonProperty
-    private String projectName;
+    private String projectName;*/
 	
 	@Transient
 	@JsonProperty
@@ -386,7 +392,7 @@ public class ProjectPlanningRequest implements Serializable{
 	}
 
 
-	public String getProjectName() {
+	/*public String getProjectName() {
 		if(projectId != null && projectId.getId() != null){
 			projectName = projectId.getProjectName();
 		}
@@ -395,7 +401,7 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
+	}*/
 
 	public String getRejectedReason() {
         if(rejectedReason == null || rejectedReason.isEmpty()){
@@ -464,6 +470,16 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
 		this.resourceRequestList = resourceRequestList;
 	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	
 	
 	
 }

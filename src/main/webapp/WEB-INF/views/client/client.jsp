@@ -67,7 +67,7 @@ margin-top: -50px;
 	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
@@ -85,7 +85,7 @@ margin-top: -50px;
 		  <div class="form-group ">
 				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" id="addressId" name="address"   field-name="Strret Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></input>
+				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
 			
@@ -835,22 +835,3 @@ function validateOrgName(){
             };
 </script> 
 
- 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'    : {width:"95%"}
-			}
-	        
-	       $("#owner").chosen();
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>

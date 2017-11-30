@@ -238,7 +238,13 @@ display: none;
   
   <script src="resources/js/nicEdit.js"></script> 
   
-  
+  <script>
+  $(function() { 
+		tagIt("otherEmails", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+		tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+		
+	});
+  </script>
   <script>
   function selectRadio(){
 	  document.getElementById("clientsCheck").checked = true;
@@ -1162,106 +1168,6 @@ function getCheckedCandidates(){
 		});
 	});
 </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-			
-			  //Adding Customized Emails to the list
-	        var select, chosen;
-		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    	
-		    	 var otherEmailArray = this.value.split(/[ ,]+/);
-		    	 if(otherEmailArray.length > 1){
-		    		 for (var i=0; i < otherEmailArray.length; i++) {
-	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#otherEmails").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    		 var newEmail = this.value.replace(","," ");
-		    		   if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    			         preventTabkey(e); 
-			        		     var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 select.append(option);
-					             select.find(option).prop('selected', true);
-				        		 $("#otherEmails").trigger("chosen:updated");
-				        
-				           
-			        		
-				        } 
-		    	 }
-		    	
-		    });
-		    
-
-		    var selectone, chosenone;
-		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    		
-		    	var toEmailArray = this.value.split(/[ ,]+/);
-		    	 if(toEmailArray.length > 1){
-		    		 for (var i=0; i < toEmailArray.length; i++) {
-	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));
-	        			 selectone.append(option);
-	        			 selectone.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    			var newEmail = this.value.replace(","," ");
-		    			if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    				preventTabkey(e); 
-				        	var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 selectone.append(option);
-				        		 selectone.find(option).prop('selected', true);
-					        		$("#emailsList").trigger("chosen:updated");
-				        }
-		    	 }
-		    
-		    });
-		    
-		    
-
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script> 
-
-
 
 <script>
 function candidateListChange(){

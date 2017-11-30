@@ -96,6 +96,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(projectUUID)){
 			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
 			projectPlanningRequest.setProjectId(projects);
+			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		
 		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
@@ -139,7 +140,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 }
 		}
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -284,6 +285,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(projectUUID)){
 			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
 			projectPlanningRequest.setProjectId(projects);
+			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 			projectPlanningRequest.setDescription(jsonObj.getString("description"));
@@ -325,7 +327,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 resourceRequestIds = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 		}
 		
-		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
 		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
 //		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -491,7 +493,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 return tempHTML;
 }
 
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations,String saveType) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedResourceRequests = new ArrayList<Long>();
@@ -593,6 +595,13 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 					 resourceRequest.setEstimatedBudget(null);
 				 }
 				 
+				 
+			    if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+				}else{
+					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+				}
+				 
 				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
@@ -614,7 +623,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	
-	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations) throws Exception {
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations,String saveType) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
 	     //SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
@@ -700,6 +709,13 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
 					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
 				 }
+				 
+
+				if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+				}else{
+					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+				}
 				 
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
