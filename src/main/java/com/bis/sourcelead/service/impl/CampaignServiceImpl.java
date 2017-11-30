@@ -260,4 +260,16 @@ public class CampaignServiceImpl implements CampaignService{
 		res.setStatusCode("200");
 		return res;
 	}
+
+	@Override
+	public CampaignList getCampaignById(long id)
+	{
+		return campaignDao.getCampaignById(id);
+	}
+
+	@Override
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	{
+		return campaignDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
+	}
 }

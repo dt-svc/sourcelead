@@ -59,18 +59,15 @@ function populategRecipientList(json){
            var report = json[i];
            result = result +'  <tr>';                                                                                                                  
            result = result +'  <td>';                                                                                                                  
-           result = result +'    <div class="tbldata-dotdot-150">';   
-           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.listName+'">'+report.listName+'</div>';
-           result = result +'    </div>';                                                                                                              
+           result = result +    '<div class="tbldata-dotdot-verybig" title="'+report.listName+'">'+report.listName+'</div>';
            result = result +'  </td>';  
            result = result +'  <td>';   
-           result = result +'    <div class="tbldata-dotdot-150">';   
-           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.recipientEmail+'">'+report.listCount+'</div>';
-           result = result +'    </div>';                                                                                                              
+           result = result +    '<div class="tbldata-dotdot-big" title="'+report.recipientEmail+'">'+report.listCount+'</div>';
            result = result +'  </td>';
            result = result +'  <td>';                                                                                                                  
-           result = result +'    <div class="tbldata-dotdot-150">';   
-           result = result +    '<div class="pull-left tbldata-dotdot" title="'+report.listName+'">'+report.listName+'</div>';
+           result = result +'    <div class="tblminwidth-50 text-center">';
+           result = result +'          <div title="Edit" class="paddingRight pull-left ml" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></div>';       
+           result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteCampaign(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
            result = result +'    </div>';                                                                                                              
            result = result +'  </td>';
            result = result +'</tr>';                                                                                                                                                                                                                                        
@@ -108,7 +105,20 @@ function recipientListPagination(){
     </div>
   </section>
   
-  
+  <script>
+function deleteCampaign(id){
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+      $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/deleteCampaign?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&id="+id,       
+       success :function(data) {
+    	   location.replace(sourceleadUrl+ "/recipientsList");
+      }
+       
+  }); 
+
+}
+</script>
   
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

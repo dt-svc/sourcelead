@@ -25,4 +25,10 @@ public interface CampaignDao {
 
 	ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 
+	CampaignList getCampaignById(long id);
+
+	CampaignList deleteCampaign(CampaignList campaignList);
+	
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
+
 }
