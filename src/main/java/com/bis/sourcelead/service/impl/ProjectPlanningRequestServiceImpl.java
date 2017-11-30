@@ -402,7 +402,7 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
 	}
