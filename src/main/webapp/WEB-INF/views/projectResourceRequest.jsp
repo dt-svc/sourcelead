@@ -184,7 +184,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -192,7 +192,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
               "data": "candidateName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+opt.candidateName+'">'+opt.candidateName+'</div></td>';
+            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/candidatesList?candidateUUID='+opt.candidateUUID+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
 	              return result;
               		
               }

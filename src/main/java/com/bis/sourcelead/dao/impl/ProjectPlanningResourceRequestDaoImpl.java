@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectClients;
-import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -49,6 +50,9 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 	@Autowired
 	ProjectClientDao projectClientDao;
 
+	@Autowired
+	CandidateDao candidateDao;
+	
 	@Override
 	@Transactional
 	public List<Long> getProjectPlanningResourceRequestIdsByRequestId(Long projectPlanningRequestId) throws Exception {
@@ -235,6 +239,12 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   					requestDTO.setProjectClientUUID(pc.getUuid());
   					requestDTO.setProjectUUID(resourceRequest.getProjectPlanningRequestId().getProjectId().getProjectUUID());
   				}
+  				
+  				Candidate candidate = candidateDao.getCandidateByCandidateId(resourceRequest.getCandidateId().getId());
+  				if(candidate != null) {
+  					requestDTO.setCandidateUUID(resourceRequest.getCandidateId().getCandidateUUID());
+  				}
+  				
   				requestDTOList.add(requestDTO);
   			}
   		}
