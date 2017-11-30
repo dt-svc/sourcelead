@@ -1,7 +1,9 @@
 package com.bis.sourcelead.service;
 
 import com.bis.sourcelead.dto.ResponseList;
+
 import com.bis.sourcelead.entity.Campaign;
+
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 
@@ -30,9 +32,14 @@ public interface CampaignService {
 
 	ResponseList<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 
+	CampaignList getCampaignById(long id);
+
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
+
 	CampaignList getRecipientListByListId(String listId) throws Exception;
 
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;;
+
 
 
 }

@@ -25,8 +25,8 @@ z-index: 1040 !important;
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="" data-validation="required validate_length length1-250" field-name="List Name">
+              	<div class="col-md-9 padding_right" id="cpnListNameDiv">
+                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value=""  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
 				</div>
 			</div>
 			<!-- <div class="col-sm-12 noPad mt clearfix">
@@ -817,5 +817,28 @@ var config = {
     $(".clientDetails").toggleClass('hidden', 500);
     });
 });
+</script>
+
+ <script>
+function validateCampaignListName(){
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#cpnListName").val();
+	if(name != null && name != '' && name != 'undefined'){
+		if(name.length < 100){
+			$.get(sourceleadUrl+"/validateCampaignListName?&orgLocationId="+locationId+"&from=CampaignList&name="+name, function(data) {
+	          	if(data == true){
+	          		$('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
+	          		$("#addList").removeAttr("disabled");
+			        $("#addList").attr("disabled", "disabled");
+					$("input#cpnListName").after( "<p class='jquery_form_error_message'>" + name + " is already existed</span>");
+	                 }else{
+	                	$("#addList").removeAttr("disabled");
+	                	$('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
+	                 }
+	            });
+		}
+		}
+		
+}
 </script>
 <!--   Popup Code  -->   

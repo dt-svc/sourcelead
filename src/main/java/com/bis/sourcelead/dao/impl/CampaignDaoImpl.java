@@ -147,6 +147,19 @@ public class CampaignDaoImpl implements CampaignDao {
 	}
 
 	@Override
+	@Transactional
+	public CampaignList getCampaignById(long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CampaignList campaignList where campaignList.id=:id";
+		List<CampaignList> campaignList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		if(campaignList != null && campaignList.size()>0){
+			return campaignList.get(0);
+		}else{
+			return null;
+		}
+	}	
+    @Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CampaignList getRecipientListByListId(String listId) throws Exception
 	{
@@ -173,7 +186,36 @@ public class CampaignDaoImpl implements CampaignDao {
 			exception.printStackTrace();
 		}
 		return campaign;
+
 	}
 	
+	@Override
+	@Transactional
+	public CampaignList deleteCampaign(CampaignList campaignList)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (campaignList != null) {
+				session.saveOrUpdate(campaignList);
+			}
+		} catch (Exception exception) {
+		}
+		return campaignList;
+	}
+
+	@Override
+	@Transactional
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+			
+		String query = "from "+fromTable+" frm where frm.orgLocation.id = :orgLocationId and frm.status = '1' and frm.listName = :name";
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		if(found.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 }

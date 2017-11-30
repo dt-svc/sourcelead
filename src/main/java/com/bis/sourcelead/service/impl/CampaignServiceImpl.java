@@ -265,6 +265,16 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
+	public CampaignList getCampaignById(long id)
+	{
+		return campaignDao.getCampaignById(id);
+	}
+
+	@Override
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
+	{
+		return campaignDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
+	}
 	public CampaignList getRecipientListByListId(String listId) throws Exception
 	{
 		return campaignDao.getRecipientListByListId(listId);
@@ -274,5 +284,6 @@ public class CampaignServiceImpl implements CampaignService{
 	public Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception
 	{
 		return campaignDao.saveCampaignScheduledHistroy(campaign);
+
 	}
 }
