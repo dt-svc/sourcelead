@@ -63,6 +63,10 @@ public class ProjectPlanningResourceRequestDTO implements Serializable{
 	 private String rejectedReason;
 	 
 	 private String projectPlanningRequestUUID;
+	 
+	 private String projectClientUUID;
+	 
+	 private String projectUUID;
 	
 
 	
@@ -273,5 +277,21 @@ public class ProjectPlanningResourceRequestDTO implements Serializable{
 
 	public void setProjectPlanningRequestUUID(String projectPlanningRequestUUID) {
 		this.projectPlanningRequestUUID = projectPlanningRequestUUID;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
 	}
 }

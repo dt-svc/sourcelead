@@ -177,14 +177,14 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
     	  		 var result = "";
     	  		 var flag = false;
     	  		 result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/requestedAssociatesList?requestUUID='+opt.projectPlanningRequestUUID+'">'+opt.projectPlanningRequestId+'</a></div></td>';
-	              return result;
+                 return result;
     	  	}
          },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.projectName+'">'+opt.projectName+'</div></td>';
+	    	  		result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
 		             return result;
 	    	  	}
 	      },{
