@@ -14,19 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.CampaignList;
-import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.CampaignUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -39,6 +37,9 @@ public class CampaignRestController {
 	
 	@Autowired
 	CampaignDao campaignDao;
+	
+	@Autowired
+	private CampaignUtil campaignUtil;
 	
 	/**
 	 * creating sender email identity
@@ -168,12 +169,13 @@ public class CampaignRestController {
 		return campaignList;
 	}
 	
-	@RequestMapping(value = "/deleteCampaign")
+	@RequestMapping(value = "/deleteCampaignContactList")
 	public boolean deleteCampaign(@RequestParam(value = "id", required = false) String id, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
 		boolean isDeleted = false;
 		CampaignList campaignList = campaignService.getCampaignById(Long.parseLong(id));
-		if (campaignList != null) {
+		int deleteStatusCode = campaignUtil.deleteCampaignConatactList(campaignList.getListId());
+		if (campaignList != null && deleteStatusCode == 204) {
 			campaignList.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			campaignDao.deleteCampaign(campaignList);
 			isDeleted = true;

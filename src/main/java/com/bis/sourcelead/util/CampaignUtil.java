@@ -202,7 +202,6 @@ public class CampaignUtil {
 		        Response response = sg.api(request);
 		        isCampaignCreated = response.getBody();
 //		        System.out.println(response.getStatusCode());
-		        System.out.println("create campaign response ==: "+response.getBody());
 //		        System.out.println(response.getHeaders());
 		      } catch (IOException ex) {
 		        throw ex;
@@ -221,7 +220,6 @@ public class CampaignUtil {
 		      Response response = sg.api(request);
 		      if(response.getStatusCode() == 200 || response.getStatusCode() == 201) {
 		    	  isScheduledCpn = response.getBody();
-		    	  System.out.println("schedule campaign response ==: "+response.getBody());
 		      }
 		    } catch (IOException ex) {
 		      throw ex;
@@ -279,6 +277,28 @@ public class CampaignUtil {
 		    }
 		return statusCode;
 		
+	}
+
+	public int deleteCampaignConatactList(String listId) throws IOException
+	{
+		 int deleteCampaignStatus = 0;
+		 List<String> listIds = new ArrayList<>();
+		 listIds.add(listId);
+	    try {
+	        SendGrid sg = new SendGrid("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");
+	        Request request = new Request();
+	        request.setMethod(Method.DELETE);
+	        request.setEndpoint("contactdb/lists");
+	        request.setBody(""+listIds+"");
+	        Response response = sg.api(request);
+	        System.out.println(response.getStatusCode());
+	        if(response.getStatusCode() == 204) {
+	        	deleteCampaignStatus = response.getStatusCode(); 
+	        }
+	      } catch (IOException ex) {
+	        throw ex;
+	      }
+		return deleteCampaignStatus;
 	}
 
 	

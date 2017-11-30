@@ -434,7 +434,6 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 	public void sendJobListEmailCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, User user, OrgLocations orgLocation, MultipartFile multiFile) throws Exception
 	{
 		 String[] campaignJobs = null;
-		 String signature = "";
 		 String jobs = null;
 		 String emails = null;
 		 StringBuilder toRecipantsEmailsList = new StringBuilder();
@@ -522,9 +521,9 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 						 campaignJobs = jobs.split(",");
 					 }
 			 }
-			 
+			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO); 
+			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
@@ -673,8 +672,8 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 				 campaignJobs = jobs.split(",");
 			 }
 	 }
-		
-		String table = getJobListCampaignsTable(campaignJobs, UUID,jobListEmailCampaignDTO);
+		 String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
+		String table = getJobListCampaignsTable(campaignJobs, UUID,jobListEmailCampaignDTO,signature);
 		String test = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
 		if (test != null) {
 			JSONObject jObject = new JSONObject(test);
@@ -684,7 +683,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		}
 	}
 
-	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO) throws Exception
+	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO, String signature) throws Exception
 	{
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		String tempHTML = "";
@@ -803,6 +802,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		 
 			 tempHTML = tempHTML+"<br><br>";
 			  // Table Design
+			 tempHTML = tempHTML + signature;
 		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
 		tempHTML = tempHTML +" <tr>";
 		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px;'>";

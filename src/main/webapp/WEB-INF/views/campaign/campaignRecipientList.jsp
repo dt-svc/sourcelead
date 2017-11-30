@@ -67,7 +67,7 @@ function populategRecipientList(json){
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tblminwidth-50 text-center">';
            result = result +'          <div title="Edit" class="paddingRight pull-left ml" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></div>';       
-           result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteCampaign(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
+           result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteCampaignContactList(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
            result = result +'    </div>';                                                                                                              
            result = result +'  </td>';
            result = result +'</tr>';                                                                                                                                                                                                                                        
@@ -106,11 +106,11 @@ function recipientListPagination(){
   </section>
   
   <script>
-function deleteCampaign(id){
+function deleteCampaignContactList(id){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/deleteCampaign?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&id="+id,       
+       url: sourceleadUrl+"/deleteCampaignContactList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&id="+id,       
        success :function(data) {
     	   location.replace(sourceleadUrl+ "/recipientsList");
       }
