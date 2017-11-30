@@ -922,7 +922,7 @@ function loadRequestDetails(){
 	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
-	        	  
+	        	  $("input[name = 'maxRowCount']").val(json.newResourceRequestList.length);
 	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
 	        	 
 	        	 
