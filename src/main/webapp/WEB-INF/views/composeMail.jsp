@@ -179,6 +179,12 @@ display: none;
   
   <script src="resources/js/nicEdit.js"></script> 
   
+<script type="text/javascript">
+$(function() { 
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+});
+</script> 
+  
   
   <script>
   function selectRadio(){
@@ -237,27 +243,6 @@ display: none;
 });
 </script>
 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       
-	       
-	    
-	       
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
-
-  
   
   <script type="text/javascript">
 	function sendEmails() {
@@ -839,66 +824,6 @@ function getContactEmails(){
 		});
 	});
 </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-			
-			  //Adding Customized Emails to the list
-	        var select, chosen;
-		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    { 
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    	
-		    	 var enterEmailArray = this.value.split(/[ ,]+/);
-		    	 if(enterEmailArray.length > 1){
-	        		 for (var i=0; i < enterEmailArray.length; i++) {
-	        			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newEmail = this.value.replace(","," ");
-			    	
-			    	 
-			        if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-			        		 select.append(option);
-					            select.find(option).prop('selected', true);
-				        		$("#emailsList").trigger("chosen:updated");
-				        		
-				        		
-			        }
-		    	 }
-		    });
-		    
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script> 
-
 <script>
 function validateEmail(email){
 	var re = /(\w+)\@(\w+)\.[a-zA-Z]/g;

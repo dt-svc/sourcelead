@@ -2843,97 +2843,17 @@ function customizeScore(requirementId){
 		 		    	   minMaxExperience();
 		 		       });
 		 		       
-		    			   //Adding Customized Skills to the list
-		    	        var select, chosen;
-		    		    select = $("#customizeSkills");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    		    chosen = select.data('chosen');
-		    		   
-		    		    chosen.search_field.on('keydown keyup', function(e)
-		    				    {
-		    				    	   var skillsArray = this.value.split(",");
-		    					    	 if(skillsArray.length > 1){
-		    				        		 for (var i=0; i < skillsArray.length; i++) {
-		    				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		    				        			 select.append(option);
-		    				 		             select.find(option).prop('selected', true);
-		    				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		    				 	        		 $("#customizeSkills").trigger("chosen:updated");
-		    				                 }
-		    					    	 }else{
-		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		    				                {
-		    				    				 preventTabkey(e);
-		    				    				 var isNewSkill = true;
-		    				                     $("#customizeSkills option:selected").each(function(){
-		    										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-		    												isNewSkill = false;
-		    												return false;
-		    										 }
-		    				                   });
-		    								   if(isNewSkill){
-		    										select.append(option);
-		    								   }
-		    				    				 
-		    				                   $("#customizeSkills").trigger("chosen:updated");
-		    				                }
-		    						       
-		    			    	         }
-		    		    	});
-		    		    
-		    		    //Adding Customized Skills to the list
-		    		    
-		    		    
+			          //Adding Customized Skills Keyword to the list 
+		 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
+			          
+		    		  //Adding Customized Educaton to the list 
+		 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
+
+		 		       
 		    		  //Adding Customized Any Of Keyword to the list 
-		    		     var selectone, chosenone;
-		    		     selectone = $("#anyKeyWord");
-		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keydown keyup', function(e5)
-		    		    {
-		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
-		    		        {
-		    		        	 preventTabkey(e5);
-		    		        	var par = this.parent;
-		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            selectone.append(option);
-		    		            selectone.find(option).prop('selected', true);
-		                        $("#anyKeyWord option").each(function(){
-		                              $(this).siblings("[value='"+ this.value+"']").remove();
-		                        });
-		    	        		$("#anyKeyWord").trigger("chosen:updated");
-		    	        		
-		    		        }
-		    		    }); 
-		    		    
-		    		    
-		    		    //Adding Customized Educations to the list 
-		    		    var selectTwo, chosenTwo;
-		    		    selectTwo = $("#education");
-		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    		    chosenTwo = selectTwo.data('chosen');
-		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
-		    		    {
-		    		    	var newEducation = this.value.replace("\'","");
-		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		    			        {
-		    		    		   preventTabkey(e1); 
-		    		    		   var par = this.parent;
-		    			            var option = $("<option>").val(newEducation).text(newEducation);
-		    			            selectTwo.append(option);
-		    			            selectTwo.find(option).prop('selected', true);
-		    			            
-		    			            $("#education option").each(function(){
-		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
-		    	                   });
-		    			            
-		    			            $("#education").trigger("chosen:updated");
-		    			           
-		    			        }
-		    		    
-		    		    });
+		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
+		    		     
+		    		   
 		    }
 	 });
 	
