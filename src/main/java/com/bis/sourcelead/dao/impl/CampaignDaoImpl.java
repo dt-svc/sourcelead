@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -143,6 +144,35 @@ public class CampaignDaoImpl implements CampaignDao {
 		
 		
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CampaignList getRecipientListByListId(String listId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		CampaignList campaignList = null;
+		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.listId= :listId and cpnList.status = 1 and cpnList.campaignType = 1").setString("listId", listId).setCacheable(true).list();
+		
+		if(cpnList !=null && cpnList.size() >0) {
+			campaignList = cpnList.get(0);
+		}
+		return campaignList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (campaign != null) {
+				session.saveOrUpdate(campaign);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return campaign;
 	}
 	
 	

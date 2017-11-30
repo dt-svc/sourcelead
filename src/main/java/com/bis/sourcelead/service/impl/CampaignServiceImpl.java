@@ -17,6 +17,7 @@ import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CreateSender;
@@ -259,5 +260,17 @@ public class CampaignServiceImpl implements CampaignService{
 		res.setRecordsTotal(response.getRecordsTotal());
 		res.setStatusCode("200");
 		return res;
+	}
+
+	@Override
+	public CampaignList getRecipientListByListId(String listId) throws Exception
+	{
+		return campaignDao.getRecipientListByListId(listId);
+	}
+
+	@Override
+	public Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception
+	{
+		return campaignDao.saveCampaignScheduledHistroy(campaign);
 	}
 }
