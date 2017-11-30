@@ -531,9 +531,6 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 					String campaignId = jObject.getString("id");
 					 String scheduleCampaignRes = campaignUtil.sendCampaign(campaignId);
 					if(scheduleCampaignRes !=null) {
-					JSONObject scheduleJsonObj  = new JSONObject(scheduleCampaignRes); // json
-					 String campaignScheduledId = scheduleJsonObj.getString("id");
-					
 					 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user);
 					 if(campaign !=null) {
 						 logger.info("Campaign saved into campaig his table");
@@ -689,6 +686,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 
 	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO) throws Exception
 	{
+		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		String tempHTML = "";
 		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
 		tempHTML = tempHTML + " <tr>";
@@ -696,7 +694,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 		tempHTML = tempHTML + "<tr>";
 		tempHTML = tempHTML + "<td><table width='600' align='center'>";
 		tempHTML = tempHTML +  "<tr>";
-		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='logo-sourceld.png' width='200' height='45'> </span></td>";
+		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='"+imageUrl+"' width='200' height='45'> </span></td>";
 		tempHTML = tempHTML +  "</tr>";
 		tempHTML = tempHTML +  "</table></td>";
 		tempHTML = tempHTML + "</tr>";
