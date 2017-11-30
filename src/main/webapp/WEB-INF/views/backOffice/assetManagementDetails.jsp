@@ -97,7 +97,7 @@ function assetDetails(assetId) {
 					result = result + ' </div>'; 
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=file&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
@@ -138,8 +138,8 @@ function assetDetails(assetId) {
 						result = result + '  <div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						if (json.shiftAFileName != null && json.shiftAFileName != '' && json.shiftAFileName != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftAfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						if (json.shiftAFileUrl != null && json.shiftAFileUrl != '' && json.shiftAFileUrl != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -148,8 +148,8 @@ function assetDetails(assetId) {
 						result = result + '   <div class="clearfix"></div>';
 						result = result + '  </div>';
 						
-						if (json.shiftBFileName != null && json.shiftBFileName != '' && json.shiftBFileName != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'<a href=\"'+sourceleadUrl+'/downloadAssetFile?fileType=shiftBfile&assetId='+json.id+'\"><i class="fa fa-download"></i></a></span>';
+						if (json.shiftBFileUrl != null && json.shiftBFileUrl != '' && json.shiftBFileUrl != 'undefined') {
+							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -337,7 +337,7 @@ function editAssetManagement(assetId){
 				
 				 result = result + '<div class="col-md-6" id="shiftAFileAttachmentDiv">';
 				 result = result + ' <div class="input-group attachfile-error">';
-				 result = result + '   <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+				 result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftAUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				 result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskA" id="uploadBtnShiftA" class="upload">';
 				 result = result + '          </b> </label>';
 				 result = result + '  <input type="text" class="form-control" readonly name="shiftAUploadFile" id="shiftAUploadFile" placeholder="Files are not selected...">';
@@ -370,8 +370,8 @@ function editAssetManagement(assetId){
 				
 				result = result + '<div class="col-md-6" id="shiftBFileAttachmentDiv">';
 				result = result + ' <div class="input-group attachfile-error">';
-				result = result + '   <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-				result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskB" id="uploadBtnShiftB" class="upload">';
+				result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftBUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+				result = result + '     <input type="file" style="display: none;" name="uploadBtn-dskB" id="uploadBtnShiftB" class="upload">';
 				result = result + '    </b> </label>';
 				result = result + '  <input type="text" class="form-control" readonly id="shiftBUploadFile" placeholder="Files are not selected...">';
 				result = result + '</div>';
@@ -390,8 +390,8 @@ function editAssetManagement(assetId){
 			
 			result = result + ' <div class="col-md-6" id="fileAttachmentDiv">';
 			result = result + '<div class="input-group attachfile-error" >';
-			result = result + '<label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + ' <input type="file" name="attachment" id="fileAttachment"  class="hidden upload">';
+			result = result + '<label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+			result = result + ' <input type="file" name="attachment" id="fileAttachment" style="display: none;" class="upload">';
 			result = result + '</b> </label>';
 			result = result + '<input type="text" class="form-control" name="attachment" readonly id="uploadFile1Attachment" placeholder="Files are not selected...">';
 			result = result + ' </div>';
@@ -406,7 +406,7 @@ function editAssetManagement(assetId){
 			
 			result = result + '<div class="clearfix mr col-md-12">';
 			result = result + '<div class="pull-right">';
-			result = result + ' <button type="submit" id="update_asset" onclick="checkGeneralAttachment();checkShiftAFileAttachment();checkShiftBFileAttachment();" class="btn btn-sm btn-primary">Add</button>';
+			result = result + ' <input type="button" value="Add" id="update_asset" onclick="updateAsset();" class="btn btn-sm btn-primary">';
 			result = result + ' <input class="btn btn-sm btn-default ml10" value="Cancel" onClick="editAssetManagement('+assetId+');" type="button">';
 			
 			result = result + '</div>';
@@ -527,7 +527,7 @@ function removeShiftBFileNameDiv(){
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkGeneralAttachment() {
     
     var uploadedFile = document.getElementById('fileAttachment').value;
@@ -551,10 +551,10 @@ function removeShiftBFileNameDiv(){
     
    
   };
-</script>
+</script> -->
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkShiftAFileAttachment() {
     
     var uploadedFile = document.getElementById('uploadBtnShiftA').value;
@@ -578,9 +578,9 @@ function removeShiftBFileNameDiv(){
    
   };
 </script>
+ -->
 
-
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function checkShiftBFileAttachment() {
     
     var uploadedFile = document.getElementById('uploadBtnShiftB').value;
@@ -603,42 +603,30 @@ function removeShiftBFileNameDiv(){
     }
    
   };
-</script>
+</script> -->
 
 <script type="text/javascript">
+function updateAsset() {
 var validationSettings = {
         errorMessagePosition : 'element',
        borderColorOnError : '',
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
-         $('body').on('submit', '#updateAsset_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
-	          		
-        		    var frm = $('#updateAsset_form').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        var assetId = $("#assetIdVal").val();
-        	        
-        	        //It will escape all the special characters
-        	        var jsonData = encodeURIComponent(con);
+        	 if ($('#updateAsset_form').validate(false, validationSettings)){
         	        var form = $('#updateAsset_form')[0];
 	           		var formData = new FormData(form);
-	          		
+	           		var assetId = $("#assetIdVal").val();
 	          		 $("#update_asset").attr("disabled", "disabled");
 	          		 $("#updateLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	          	      $.ajax({
 	     		    	type: "POST",
 	     		    	data: formData,
-              	        contentType : 'application/json; charset=utf-8',
-              	        enctype: 'multipart/form-data',
           	            processData: false,
           	            contentType:false,
               	        dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&assetId="+assetId, 
+	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"&assetId="+assetId, 
 	     		        success: function(result) {
 	     		        	if(result == 'home'){
 	     		        		assetDetails(assetId);
@@ -653,13 +641,30 @@ var validationSettings = {
             else{
             	return false;	
                }
-            });
-         $('#updateAsset_form').showHelpOnFocus();
-         $('#updateAsset_form').validateOnBlur(false, validationSettings); 
-            
+         }
+        	 $('body').on('blur', '#addAsset_form', function() {
+          		$("#addAsset_form").showHelpOnFocus();
+          		$("#addAsset_form").validateOnBlur(false, validationSettings);
+          	});
      
 </script> 
+<script>
+function uploadFileUpdate(){
+	fileUpload("fileAttachment", "assetDocuments", "updateAsset_form","attachmentUpload");
+}
+</script>
 
+<script>
+function uploadFileShiftAUpdate(){
+	fileUpload("uploadBtnShiftA", "assetDocuments", "updateAsset_form","uploadBtndskAUpload");
+}
+</script>
+
+<script>
+function uploadFileShiftBUpdate(){
+	fileUpload("uploadBtnShiftB", "assetDocuments", "updateAsset_form","uploadBtndskBUpload");
+}
+</script>
 
 <script type="text/javascript">
 (function ($) {

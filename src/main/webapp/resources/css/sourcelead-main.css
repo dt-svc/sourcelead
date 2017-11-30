@@ -7096,7 +7096,10 @@ z-index: 9999; display:none;
     background-color: #ddd; margin:0; padding: 10px;
 }
 .advancedsearch-popup .addInner {
-    padding: 10px 15px 15px;
+    padding: 10px 15px 15px; min-height: 150px; max-height: 550px; overflow-y:auto; 
+}
+.advancedsearch-footer {
+	background-color: #ddd; padding:10px 0;
 }
 .advancedsearch-popup label {
     margin-bottom: 0; font-size: 12px;

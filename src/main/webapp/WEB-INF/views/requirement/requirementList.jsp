@@ -388,14 +388,14 @@ function statusvalidating(id){
 						</div>
 						
 					</div>
-					<div class="clearfix">
-						<div class="pull-right">
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Clear" id="clear_search"
 								onclick="clearSearch();" class="btn btn-sm btn-primary" />
 						</div>
-					</div>
 					</div>
 				</div>
 			</form:form>
