@@ -69,6 +69,7 @@ function getSendersList(){
 	    	 result += '<table id="sendersListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
 	         result += '  <tr>';
+	         result += '    <th>Default Mail <br> Sender</th>';
 	         result += '    <th>Name</th>';
 	         result += '    <th>Nikname</th>';
 	         result += '    <th>From mail</th>';
@@ -83,6 +84,7 @@ function getSendersList(){
 	        	 for(i=0;i < data.length;i++){
 		    		 var report = data[i];
 		    		 result += '<tr>';
+		    		 result += '    <td><div class="tblminwidth-30"><input type="radio" onchange="selectMailSender('+report.id+');" name="mails"></div></td>';
 			         result += '    <td>';
 			         if(report.cpnSenderName != null && report.cpnSenderName != '' && report.cpnSenderName != 'undefined'){
 			        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.cpnSenderName+'">'+report.cpnSenderName+'</div>';
@@ -194,4 +196,11 @@ function cancelDeleteIdentity(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 
+</script>
+
+<script>
+function selectMailSender(senderId){
+			$.get(sourceleadUrl+"/selectMailSender?&senderId="+senderId, function(data) {
+	            });
+}
 </script>
