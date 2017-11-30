@@ -130,7 +130,10 @@ function assetDetails(assetId) {
 							result = result + ' </div>';
 						}
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
+					}
+					//this block not visible to others category assets
+					
+					result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
 						result = result + '  <div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -149,8 +152,6 @@ function assetDetails(assetId) {
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
-					}
-					//this block not visible to others category assets
 					
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '<div class="user_summary_edit client_summary_edit" id="editUserDiv" ></div>';
@@ -308,7 +309,10 @@ function editAssetManagement(assetId){
 					result = result + '</div>';
 				}
 				
-				result = result + '<div class="clearfix">';
+			}
+			//this block not visible to others category assets
+			
+			result = result + '<div class="clearfix">';
 				result = result + '<h4 class="col-md-12">Shift A</h4>';
 				result = result + '</div>';
 				result = result + '<div class="col-md-6">';
@@ -373,8 +377,6 @@ function editAssetManagement(assetId){
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
-			}
-			//this block not visible to others category assets
 			result = result + ' <div class="col-md-6">';
 			result = result + '  <textarea class="form-control" rows="2" name="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space">'+description+'</textarea>';
 			result = result + ' </div>';
