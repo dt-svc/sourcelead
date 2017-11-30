@@ -2,7 +2,6 @@
 
 function campaignSender(ele,senderId) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
-	alert(senderId);
 		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$(".popUpOut").fadeIn(100);

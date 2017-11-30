@@ -88,6 +88,7 @@ public class CampaignServiceImpl implements CampaignService{
 			String isVerified = data.getString("status"); // g
 			createSender.setIsSenderEmaiklVerified(isVerified);
 			createSender.setSenderId(senderId);
+			createSender.setSelectedSender("false");
 			CreateSender sender = campaignDao.createSender(createSender);
 			if(sender !=null) {
 				isSenderCreated = true;
@@ -132,7 +133,8 @@ public class CampaignServiceImpl implements CampaignService{
 	{
 		boolean isDeleted = false;
 		CreateSender createSender = campaignDao.findSenderIdentityById(senderId);
-		if (createSender != null) {
+		int statusCode = campaignUtil.deleteSenderIdentity(createSender.getSenderId()); 
+		if (createSender != null && statusCode == 204) {
 			createSender.setStatus(0);
 			CreateSender updatedSender = campaignDao.createSender(createSender);
 			if (updatedSender != null) {

@@ -259,6 +259,28 @@ public class CampaignUtil {
 		return isRecipientAddedToList;
 	}
 
+	public int deleteSenderIdentity(String senderId) throws IOException
+	{
+		int statusCode = 0;
+		 try {
+		      SendGrid sg = new SendGrid("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");
+		      Request request = new Request();
+		      request.setMethod(Method.DELETE);
+		      request.setEndpoint("senders/"+senderId+"");
+		      Response response = sg.api(request);
+		     if(response.getStatusCode() == 204) {
+		    	 statusCode = response.getStatusCode();
+		     }
+		      System.out.println(response.getStatusCode());
+		      System.out.println(response.getBody());
+		      System.out.println(response.getHeaders());
+		    } catch (IOException ex) {
+		      throw ex;
+		    }
+		return statusCode;
+		
+	}
+
 	
 	
 }
