@@ -979,19 +979,31 @@ $(document).ready(function () {
 	                
 	                </div>
 	                <div class="pull-left input_minmax">
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="clientMinMaxRate();">
-	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate"onblur="clientMinMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
 	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
+			                <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
 			                <option value="">Rate Per</option>
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 			 </c:when>
@@ -1021,20 +1033,31 @@ $(document).ready(function () {
 	                
 	                </div>
 	                    <div class="pull-left input_minmax">
-	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="clientMinMaxRate();">
-	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="clientMinMaxRate();">
+	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
 	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
-	                    
-			                <option value="">Rate Per</option>
+	                      <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+			               <!--  <option value="">Rate Per</option> -->
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : 'selected'}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <!-- <option value="">Rate Per</option> -->
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 				</c:otherwise>
@@ -1450,7 +1473,6 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		 
 		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 		
 		checkTemplateforDouplicate();
@@ -1458,7 +1480,6 @@ function validate_fileupload(fileName)
 		$('#addClient').empty();
 		$('#addContact').empty();
 		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
-		
           if(saveType=='draft'){
 			
 			//For internal details in draft
@@ -1507,7 +1528,6 @@ function validate_fileupload(fileName)
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
- 		 
  		var maxRate = document.getElementById("maxRate").value; 
 		 if(maxRate != null && maxRate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
@@ -1517,14 +1537,17 @@ function validate_fileupload(fileName)
 			 $('#rateType').removeAttr('data-validation');
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
- 		 
+		 var existingValue = document.getElementById('isClientJob').value;
+		 if(existingValue == 'Y'){
  		 var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
  			 $('#clientRate').attr("data-validation","required"); 
+ 			 
  		 }else{
  			 $('#clientRate').removeAttr('data-validation');
- 			 $('#clientRate').attr("data-validation-optional","true"); 
+ 			 $('#clientRate').attr("data-validation-optional","true");
+ 			 
  		 }
  		 
  		 var clientRate = document.getElementById("clientRate").value; 
@@ -1535,11 +1558,8 @@ function validate_fileupload(fileName)
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
  		 }
-		
+		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
-			
-			
-      		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -2705,6 +2725,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
+		 $('#clientMaxRate').val('');
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
 		 $("#clientRateType").val("").trigger('change');
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();

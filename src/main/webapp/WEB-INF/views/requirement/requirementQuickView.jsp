@@ -134,9 +134,11 @@
 				            <div class="require_wrap_details_cta"> <b>Industry:</b><span>${!empty requirement.industryName ? requirement.industryName : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 					        </div> 
+					        <c:if test="${!empty requirement.projectName}">
 					         <div class="require_wrap_details_cta"> <b>Project Name:</b><span>${!empty requirement.projectName ? requirement.projectName : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 					        </div> 
+					        </c:if>
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
 					            	<a download class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
