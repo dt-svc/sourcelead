@@ -139,28 +139,56 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setMake(assetDTO.getMake());
 		 }
 		 
+		 else{
+			 
+			 asset.setMake(null);
+		 }
+		 
 		 if(StringUtils.isNotBlank(assetDTO.getModel())){
 			 asset.setModel(assetDTO.getModel());
+		 }
+		 else{
+			 asset.setModel(null);
+			 
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getName())){
 			 asset.setName(assetDTO.getName());
 		 }
 		 
+		 else{
+			 asset.setName(null);
+		 }
+		 
 		 if(StringUtils.isNotBlank(assetDTO.getMemory())){
 			 asset.setMemory(assetDTO.getMemory());
+		 }
+		 else{
+			 
+			 asset.setMemory(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCpu())){
 			 asset.setCpu(assetDTO.getCpu());
 		 }
-		 
+		 else{
+			 asset.setCpu(null);
+		 }
 		 if(StringUtils.isNotBlank(assetDTO.getHarddisk())){
 			 asset.setHardDisk(assetDTO.getHarddisk());
 		 }
 		 
+		 else{
+			 asset.setHardDisk(null);
+		 }
+		 
 		 if(StringUtils.isNotBlank(assetDTO.getMonitor())){
 			 asset.setMonitor(assetDTO.getMonitor());
+		 }
+		 
+		 else{
+			 
+			 asset.setMonitor(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
@@ -188,6 +216,11 @@ public class AssetServiceImpl implements AssetService{
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getDescription())){
 			 asset.setDescription(assetDTO.getDescription());
+		 }
+		 
+		 else{
+			 
+			 asset.setDescription(null);
 		 }
 		 
 		 if(assetDTO.getAttachmentUpload() != null){
