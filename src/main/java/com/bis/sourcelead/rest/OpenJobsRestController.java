@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,11 +70,9 @@ public class OpenJobsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/ws/getOpenJobsELK")
+	@RequestMapping(value = "/ws/getOpenJobsELK/{title}/{location}/{experience}", method = RequestMethod.GET)
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
-			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
-			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
-			@RequestParam(value = "openJobsExperience", required = false) String openJobsExperience,
+			@PathVariable("title") String openJobsRequirementTitle,@PathVariable("location") String openJobsLocation,@PathVariable("experience") String openJobsExperience,
 			@RequestParam(value = "reqType", required = false) String reqType,
 			@RequestParam(value = "orgLocationIds", required = false) String orgLocationIds,
 			@RequestParam(value = "dates", required = false) String dates,

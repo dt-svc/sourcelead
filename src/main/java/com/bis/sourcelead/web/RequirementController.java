@@ -464,12 +464,11 @@ public class RequirementController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
-	@RequestMapping(value = "/jobSummary/{jobTitle}/{jobUUID}")
-	public ModelAndView requirementSummary(@PathVariable String jobTitle,@PathVariable String jobUUID,HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+	@RequestMapping(value = "/requirementSummary")
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 
-		requirementUUID = jobUUID;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

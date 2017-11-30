@@ -1,6 +1,10 @@
 package com.bis.sourcelead.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,10 +59,8 @@ public class OpenJobsController {
 	}
 	
 	
-	@RequestMapping(value = "/ws/openRequirementsRedirect")
-	 public ModelAndView openRequirementsRedirect(@RequestParam(value = "openJobsTitle", required = false) String openJobsTitle,
-			 @RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
-			 @RequestParam(value = "openJobsExperience", required = false) String openJobsExperience) throws Exception{
+	@RequestMapping(value = "/ws/jobs/{title}/{location}/{experience}")
+	 public String openRequirementsRedirect(@PathVariable String title,@PathVariable String location,@PathVariable String experience,HttpServletRequest request) throws Exception{
 	 ModelAndView model = new ModelAndView();
 	 List<Countries> countriesList = countriesService.getAllCountries();
 	 model.addObject("countryList",countriesList);
@@ -69,10 +71,11 @@ public class OpenJobsController {
 	 model.addObject("industryList", industryListWithoutId);
 	 
 	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.addObject("openJobsTitle", openJobsTitle);
-	 model.addObject("openJobsLocation", openJobsLocation);
-	 model.setViewName("openJobs/openjobs");
-	 return model;
+	 model.addObject("openJobsTitle", title);
+	 model.addObject("openJobsLocation", location);
+	 model.addObject("experience", experience);
+//	 model.setViewName("openJobs/openjobs");
+	 return "openJobs/openjobs";
 }
 	
 	

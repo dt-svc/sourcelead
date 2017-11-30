@@ -121,6 +121,7 @@ public class SecurityConfig  {
 //    			.antMatchers("/path/storeCsv").permitAll() 
 //    			.antMatchers("/path/getRequirementProfessionalProfileDetails").permitAll() 
     			.antMatchers("/path/ws/**").permitAll() 
+    			.antMatchers("/path/ws/jobs/**/**/**").permitAll() 
 //    			.antMatchers("/path/verifyResetPassword").permitAll() 
 //    			.antMatchers("/path/acceptClientOrVendorInvitation").permitAll() 
 //    			.antMatchers("/path/acceptOrRejectInterview").permitAll() 

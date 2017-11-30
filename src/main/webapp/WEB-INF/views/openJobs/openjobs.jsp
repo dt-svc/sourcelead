@@ -9,7 +9,7 @@
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
 <link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
@@ -32,11 +32,11 @@
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
@@ -188,7 +188,7 @@ z-index: 1000000000 !important;
                 <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
             </ul>
         </li>
-        <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
+        <li><a href="javascript:void(0)" class="ma">/resources<i class="fa fa-caret-down"></i></a>
         	<ul>
             	<li><a href="../demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
@@ -855,16 +855,17 @@ function requirementsFilter(type){
 
 <script>
 function getOpenJobsELKList(type){
-	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = $("#openJobsExperienceId").val();
-	
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = $("#openJobsExperienceId").val();
+	alert("experience"+experience)
 	var offset = 0;
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	}
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({ 
+	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
+	/*  $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
@@ -884,7 +885,7 @@ function getOpenJobsELKList(type){
 				$("#noResultsDiv").css("display", "block");
 	        }
 	    }
-	 }); 
+	 });  */
  }
 </script>
 

@@ -21,6 +21,8 @@
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
+	alert(requirementId)
+	alert(reqCoolingOffPeriod)
 	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -34,6 +36,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
+	  alert("1")
 	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
@@ -41,7 +44,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="reqCoolingOffPeriod" name="reqCoolingOffPeriod" value=\''+reqCoolingOffPeriod+'\'>';
-	
+	alert("2")
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	result = result + '<div class="col-md-7 radioInline">';
@@ -62,7 +65,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '</div>';
 	result = result + '</div>';	
 	result = result + '</div>';
-	
+	alert("3")
 	result = result + '<div class="clearfix"></div>';
 	result = result + '<div class="col-md-6 mt10">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
@@ -82,7 +85,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '</div>';
 	
 	
-	
+	alert("4")
 	
 	result = result + '</div>';
 	

@@ -167,7 +167,7 @@ display: none;}
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
+			<span><i class="fa fa-briefcase"></i> <p id="dropDownCountId" value="${openJobsExperience}"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="redirectPage();"></span>
 			<!-- <h3><b id="ADS">Advanced Search</b></h3> -->
 			<div class="clear"></div>
@@ -1200,11 +1200,10 @@ function loadOpenJobsChosenRequirementScripts(){
 
 <script type="text/javascript">
 function redirectPage(){
-	
-	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = document.getElementById("dropDownCountId").value;
-	window.location.href = sourceleadUrl+"/ws/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = document.getElementById("openJobsExperienceId").value;
+	window.location.href = "path/ws/jobs/"+title+"/"+location+"/"+experience;
 }
 </script>
 

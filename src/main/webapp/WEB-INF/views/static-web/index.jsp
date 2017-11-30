@@ -62,10 +62,11 @@
 
 <script type="text/javascript">
 function redirectPageStatic(){
-	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = document.getElementById("dropDownCountId").value;
-	window.location.href = sourceleadUrl+"/ws/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	alert("title"+title)
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = document.getElementById("dropDownCountId").value;
+	window.location.href = sourceleadUrl+"path/ws/openRequirementsRedirect?&title="+title+"&location="+location+"&experience="+experience;
 }
 </script>
 <script>

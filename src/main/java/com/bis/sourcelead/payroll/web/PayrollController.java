@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @Controller
+@RequestMapping("/path")
 public class PayrollController {
 	
 	@Value("${sourceleadUrl}")

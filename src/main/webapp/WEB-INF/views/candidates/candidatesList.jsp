@@ -2048,7 +2048,7 @@ function getCities(){
 					  </div>
 					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
-                              <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
+                              <a href="<c:url value='${appPath}/addCandidate'/>" title="Add Candidate">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-user-circle fa-4x"></i>
                                       <span class="fa fa-plus"></span>
@@ -2061,7 +2061,7 @@ function getCities(){
 					  
 					  <div class="col-md-4 mt">
                           <div class="small-widget bgGreen">
-                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Bulk Imports">
+                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-upload fa-4x"></i>
                                       <span class="fa fa-plus"></span>

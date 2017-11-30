@@ -1,5 +1,10 @@
 package com.bis.sourcelead.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -108,8 +113,10 @@ public class StaticWebController {
 	}
 	
 	@RequestMapping("/index.html")
-	public String index() {
-		return "static-web/index";
+	public String index(HttpServletRequest request) {
+	    Map<String,String> map =new HashMap();
+	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
+		return "openJobs/souceleadJobPage";
 	}
 	
 	@RequestMapping("/job-details.html")
