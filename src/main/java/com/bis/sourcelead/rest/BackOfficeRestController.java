@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
@@ -59,6 +60,9 @@ public class BackOfficeRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -513,15 +517,15 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,@RequestParam(value="assetId", required=false) String assetId,MultipartHttpServletRequest request) throws Exception {
+	   public String addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
-		    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+		    assetDTO.setStaticPath(staticPath);
+		    /*String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);*/
 			
-			assetService.saveAssetDetails(jsonObj, assetId, user, orgLocations, request);
+			assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
 			
 		
 		   return "home";
