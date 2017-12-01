@@ -165,13 +165,12 @@
 			            </div> 
 
 			      <c:if test="${requirement.isClientJob == 'Y'}">
-		                <h2>Client Details:</h2> 
+		                <h2>Client Details   sss:${requirement.orgRelationUUID}</h2> 
 		                <div class="require_one"> 
 		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><span>${!empty requirement.spocName ? requirement.spocName : ' -- '}</span>
 			            	<div class="clearfix"></div> 
 		                </div>
-		                
-		                <div class="require_wrap_details_cta"> <b>Client Name:</b><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span>
+		                <div class="require_wrap_details_cta"> <b>Client Name:</b><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>"><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span></a>
 			            	<div class="clearfix"></div> 
 			            </div>  
 			            

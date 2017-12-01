@@ -486,6 +486,7 @@ public class RequirementController {
 		sessionData.setNav(Constants.Requirement);
 		
 		
+		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
@@ -511,6 +512,7 @@ public class RequirementController {
 			if (requirement.getClientId() != null) {
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
 					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
