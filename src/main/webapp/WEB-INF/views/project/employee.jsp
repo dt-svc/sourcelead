@@ -613,6 +613,10 @@ function cancel(){
 
 <script>
 function popupClose(){
+	
+	$("#membersChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	
 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
