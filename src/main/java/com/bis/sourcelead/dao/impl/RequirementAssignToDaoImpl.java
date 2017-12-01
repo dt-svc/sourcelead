@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementAssignToDao;
+
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Leave;
@@ -299,6 +300,22 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	}
 
 
+    
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from RequirementAssignTo rat left join fetch rat.requirementId requirement left join fetch rat.assignUserId "
+				      + "where rat.assignUserId =:userId and requirement.orgLocationId.id = :orgLocationId";
+		return session.createQuery(query)
+			      .setString("userId", userId)
+			      .setLong("orgLocationId", orgLocationId)
+			      .setCacheable(true)
+			      .list();
+
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -312,6 +329,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		}
 		return count;
 			 
+
 	}
 }
 

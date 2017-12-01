@@ -7047,7 +7047,8 @@ position: absolute; left: 100%; top: 5px;
 }
 .manageLables-div {
 	position: absolute; right: 0%; width: 250px; background-color: #F5F5F5; padding:10px  15px; z-index: 9999;
-	box-shadow: 1px 1px 5px #9E9E9E; min-height: 200px; max-height: 400px; overflow-y: auto; top: 30px; display: none;
+	box-shadow: 1px 1px 5px #9E9E9E; min-height: 100px; max-height: 250px; overflow-y: auto; top: 30px; display: none;
+
 }
 .manageLables-div .closemld {
 	position: absolute; right:10px; top: 0; font-size: 20px; color: #6E0002;
@@ -7130,6 +7131,13 @@ z-index: 9999; display:none;
 .dropdown-label label {
 	position: relative; top: 1px;
 }
+
+.mgList tr 	td {
+	text-align: left; padding:6px 0; color:#333; font-weight:normal;
+}
+.mgList tr 	td div{
+	margin: 0;
+}
 /* swaptables styles */
 .swaptables {
 	width: 46.2%; min-height: 200px; float: left;
@@ -7154,10 +7162,10 @@ z-index: 9999; display:none;
 background-color: #f5f5f5; -webkit-box-shadow: 0 3px 5px -3px #808080;
 -moz-box-shadow: 0 3px 5px -3px #808080; box-shadow: 0 3px 5px -3px #808080;
 }
-.manageLables-div {
+/* .manageLables-div {
 position: absolute; right: 0%; width: 250px; background-color: #F5F5F5; padding:10px 15px; z-index: 9999;
 box-shadow: 1px 1px 5px #9E9E9E; min-height: 200px; max-height: 300px; overflow-y: auto; top: 30px; display: none;
-}
+} */
 .mgList tr td {
 text-align: left; padding:6px 0; color:#333; font-weight:normal;
 }
