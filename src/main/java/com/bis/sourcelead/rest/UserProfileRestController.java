@@ -218,7 +218,6 @@ public class UserProfileRestController {
 	public String deleteProfileImage(HttpServletRequest request) throws Exception {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		user.setDocFile(null);
 		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
@@ -228,7 +227,7 @@ public class UserProfileRestController {
 
 	}
 
-	@RequestMapping(value = "/displayUserImage/{userId}", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/displayUserImage/{userId}", method = RequestMethod.GET)
 	public void displayUserImage(@PathVariable Long userId, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
 
@@ -261,10 +260,10 @@ public class UserProfileRestController {
 			e1.printStackTrace();
 		}
 
-	}
+	}*/
 	
 	
-	   @RequestMapping(value = "/displayOnboardingUserImage/{userId}" , method = RequestMethod.GET)
+	  /* @RequestMapping(value = "/displayOnboardingUserImage/{userId}" , method = RequestMethod.GET)
 	     public void displayOnboardingUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
 	    	 
 		   User user = null;
@@ -290,7 +289,7 @@ public class UserProfileRestController {
 				}
 				
 	  }
-
+*/
 
 	private static BufferedImage colorImage(BufferedImage image) {
 		int width = image.getWidth();

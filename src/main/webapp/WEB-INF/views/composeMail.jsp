@@ -179,6 +179,12 @@ display: none;
   
   <script src="resources/js/nicEdit.js"></script> 
   
+<script type="text/javascript">
+$(function() { 
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+});
+</script> 
+  
   
   <script>
   function selectRadio(){
@@ -237,27 +243,6 @@ display: none;
 });
 </script>
 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       
-	       
-	    
-	       
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
-
-  
   
   <script type="text/javascript">
 	function sendEmails() {
@@ -285,7 +270,7 @@ $(function(){
 			  		        contentType:false, 
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox");
+			  						location.replace(sourceleadUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
@@ -498,10 +483,20 @@ function getUserList(teamType){
 
 <script>
 function getContactsList(){
+	
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
+	 	
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+ 		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
+		<c:forEach var="conGroup" items="${contactsGroupList}">
+		result = result +' <option value="${conGroup.id}">${conGroup.groupName}</option>';
+        </c:forEach>
+ 		
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
@@ -512,6 +507,7 @@ function getContactsList(){
 		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAllContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
+		result = result +'<th>Group</th>';
 		result = result +'<th>Source</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -529,6 +525,8 @@ function getContactsList(){
 	    $("#userList").append(result);
 	    contactUsers = [];
 	    contactsDataTableList();
+	   
+	    $("#groupsFilter").selectpicker("refresh");
 }
 </script>
 
@@ -538,7 +536,13 @@ function contactsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 var contactsGroups = '';
+	 if($("#groupsFilter").val() != null){
+		 contactsGroups = $("#groupsFilter").val();
+	 }
+	
+	 
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -561,6 +565,7 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "ischeck" },
             { "data": "contactName" },
             { "data": "email"},
+            { "data": "groups" },
             { "data": "source"}
            
         ],
@@ -599,6 +604,20 @@ function contactsPagination(url,sourceleadUrl){
               		
               }
 	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "groups",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.groupsList != null){
+	            		  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.groupsList+'">'+opt.groupsList+'</div></td>';
+	            	  }else{
+	            		  result = result + '<td data-title="Id"><div>----</div></td>';
+	            	  }
+	            	  
+		              return result;
+	              		
+	              }
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "source",
@@ -806,66 +825,6 @@ function getContactEmails(){
 		});
 	});
 </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-			
-			  //Adding Customized Emails to the list
-	        var select, chosen;
-		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    { 
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    	
-		    	 var enterEmailArray = this.value.split(/[ ,]+/);
-		    	 if(enterEmailArray.length > 1){
-	        		 for (var i=0; i < enterEmailArray.length; i++) {
-	        			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newEmail = this.value.replace(","," ");
-			    	
-			    	 
-			        if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-			        		 select.append(option);
-					            select.find(option).prop('selected', true);
-				        		$("#emailsList").trigger("chosen:updated");
-				        		
-				        		
-			        }
-		    	 }
-		    });
-		    
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script> 
-
 <script>
 function validateEmail(email){
 	var re = /(\w+)\@(\w+)\.[a-zA-Z]/g;

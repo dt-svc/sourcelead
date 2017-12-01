@@ -1,6 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+
 <style>
 .modal-backdrop{
 z-index: 1040 !important;
@@ -24,40 +27,46 @@ z-index: 1040 !important;
 		<div class="popupMid popupMidPad clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-9 padding_right clearfix">
+              		<div class="col-md-5">
+              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              		</div>
+              		<div class="col-md-5">
+              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              		</div>              		
+				</div>
+			</div>
+			
+          <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right" id="cpnListNameDiv">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value=""  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
+                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
+				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
 				</div>
-			</div>
-			<!-- <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="recipientFirstName" name="recipientFirstName" value="">
-				</div>
-			</div>
-			<div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="recipientLastName" name="recipientLastName" value="">
-				</div>
-			</div> -->
+			</div>			
+			
           <div class="col-sm-12 noPad mt clearfix">
               <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
+               <c:if test="${not empty recipientList}"></c:if>
+               <c:forEach items="${recipientList}" var="recipient">
+   						<option value='${recipient.id }' selected>'${recipient.email}'</option>
+				</c:forEach>
                 </select>
                 
               </div>
               	<div class="col-md-1 noPad">
-					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();vendorListChange()" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
+					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
 					<div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
-                    <h4 class="modal-title">Select Vendors</h4>
+                    <h4 class="modal-title" id="receipantCategoryType"></h4>
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="vendorListChange()"><strong class="paddingLeft">Vendors</strong></label>
+               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="selectRadio()"><strong class="paddingLeft" id="categoryListType"></strong></label>
                	    <label class="paddingLeft">
                	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label>
                   </div>
@@ -72,6 +81,21 @@ z-index: 1040 !important;
                     <div class="clearfix"></div>
                     <div class="clearfix">
                      <div id="mailBoxVendorsList" class="datatable_filter"></div>
+                    </div>
+                    
+                  </div>
+                  
+                  
+                  <div class="modal-body clearfix">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
+                          <select class="form-control" id="clientListType" onchange="clientListChange();">
+                           <option value="listbyClient" selected>List By Client</option>
+                           <option value="listbyClientContact">List By Contact</option>
+                          </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="clearfix">
+                     <div id="mailBoxClientsList" class="datatable_filter"></div>
                     </div>
                     
                   </div> 
@@ -91,13 +115,35 @@ z-index: 1040 !important;
           </div>		
 		</form:form>
 		
+	
+	<script>
+	function clearRecipantsList(){
+		 $("#recipientEmail").empty();
+		  $("#recipientEmail").trigger("chosen:updated");
+	}
+	</script>	
 		
-		
-		<script>
+	<script>
   function selectRadio(){
-	  document.getElementById("vendorCheck").checked = true;
-	  document.getElementById("contactsCheck").checked = false;
-	 $("#vendorListType").val('listbyVendor');
+	  
+	  $("#mailBoxVendorsList").empty();
+	  $("#mailBoxClientsList").empty();
+	  
+	  var campaignType = $( 'input[name="campaignType"]:checked' ).val();
+	  if(campaignType == 'hotlistCampaign'){
+		 $("#receipantCategoryType").html("Select Client");
+		 $("#categoryListType").html("Client");
+		 clientListChange();
+	  }else{
+		  $("#receipantCategoryType").html("Select Vendors");
+		  $("#categoryListType").html("Vendor")
+		  document.getElementById("vendorCheck").checked = true;
+		  document.getElementById("contactsCheck").checked = false;
+		  $("#vendorListType").val('listbyVendor');
+		  vendorListChange();
+	  }
+	  
+	 
   }
   </script>
   
@@ -106,17 +152,189 @@ z-index: 1040 !important;
   <script>
 	  function vendorListChange(){
 		  document.getElementById("vendorsListDiv").style.display="";
+		  document.getElementById("clientsListDiv").style.display="none";
 		  var listType = document.getElementById("vendorListType").value;
 		  if(listType == 'listbyContact'){
-			  $("#mailBoxVendorsList").empty(); 
 			  vendorContactList();
 		  }else{
-			  $("#mailBoxVendorsList").empty(); 
 			  vendorsList();
 		  }
 		  
 	  }
   </script>
+  
+  
+  <script>
+	  function clientListChange(){
+		  document.getElementById("vendorsListDiv").style.display="none";
+		  document.getElementById("clientsListDiv").style.display="";
+		  var listType = document.getElementById("clientListType").value;
+		  if(listType == 'listbyClientContact'){
+			  clientContactList();
+		  }else{
+			  clientsList();
+		  }
+		  
+	  }
+  </script>
+  
+  
+  <script>
+function clientContactList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='clientContactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+	 	
+  		result = result +'<table id="clientconDataTable"   class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		 result = result +' <th><input type="checkbox" id="checkAllClientContacts" onclick="toggleClientContacts(this);"></th>'; 
+		result = result +'  <th>Client Name</th>';
+	   	result = result +'	<th>Contact Name</th>';
+	   	result = result +'  <th>Email</th>';
+	   	result = result +' <th>Status</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	result = result +'<div class="clearfix pull-right mr mb">';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="clientContactbtnId" onclick="getClientContactEmails();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +' </div>'; 
+	    $("#mailBoxClientsList").empty();
+	    $("#mailBoxClientsList").append(result);
+	    clientcontactsList = {}
+	    clientContactDataTableList();
+}
+</script>
+
+<script>
+function clientContactDataTableList(){
+	 var searchValue = $("#clientContactsDataTableSearch").val();
+	 var responderType ="ClientHotListCampaign";
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 clientContactpagination(url);
+}
+</script>
+
+
+<script>
+	function clientContactpagination(url){
+		var colIndex = 0;
+		 $('#clientconDataTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'GET',
+	            pages: 10
+	        }),
+	        "columns": [
+	        	{ "data": "" },
+	            { "data": "orgName" },
+	            { "data": "spocName"},
+	            { "data": "spocEmail" },
+	            { "data": "spocStatus" }
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "ischeck",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		 var result = "";
+		    	  		 var flag = false;
+		    	  		
+		    	  	   for(var e in clientcontactsList) {
+		    	  		   if(report.spocEmail+"" === clientcontactsList[e]) {
+		    	  				 flag = true;
+		    	  				 break;
+		    	  			 }
+		    	  		 }  
+		    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" data-id="'+report.id+'" value="'+report.spocEmail+'" onchange="checkClientsContacts(this);"  type="checkbox" name="contactEmails[]"  class="myClientContactsCheckbox" ></td>'; 
+		    	  		
+		    	  		  return result;
+		    	  	}
+		      },{
+	            "targets": colIndex++,
+	            "data": "orgName",
+	            "render": function ( data, type, report, meta ) {
+	            	     var result = "";
+		    	  		 result = result +'<input type="hidden" value="row'+report.id+'" id="row'+report.id+'">';
+		    	  		result = result +'<td><div class="tbldata-dotdot-100" title="'+report.orgName+'">'+report.orgName+'</div></td>';
+			             return  result;
+	            }
+	          },{
+		            "targets": colIndex++,
+		            "data": "spocName",
+		            "render": function ( data, type, report, meta ) {
+		            	     
+		            	    var spocName ="";
+		            	    if(report.spocName != null && report.spocName !='' && report.spocName !='undefined'){
+		            	    	spocName = report.spocName;
+		            	    }else{
+		            	    	spocName = "----";
+		            	    }
+		            	     var result = "";
+				   			 result = result +'<td><div class="proj_show" ><span title="'+spocName+'">'+spocName+'</span></div></td>';
+			                 return result; 
+		            }
+		          }, {
+	              "targets": colIndex++,
+	              "data": "spocEmail",
+	              "render": function ( data, type, report, meta ) {
+	            	    var spocEmail="";
+	            	     var result = "";
+	            	     if(report.spocEmail != null && report.spocEmail !='' && report.spocEmail !='undefined'){
+	            	    	 spocEmail=report.spocEmail;
+	            	     }else{
+	            	    	 spocEmail = "----";
+	            	     }
+	            	     result = result +'<td><div class="tbldata-dotdot-vsm" title='+spocEmail+'>'+spocEmail+'</div></td>'; 
+	  	                 return result; 
+	              }
+	            },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "spocStatus",
+		    	  	"sortable": false,
+		    	  	"render": function(data, type, report, meta) {
+		    	  		 var result = "";
+		    	  		result = result + ' <td><div class="tblminwidth-30 dropdown-select paddingNone">';
+		    	  		result = result + '<span title='+report.spocStatus+'>'+report.spocStatus+'</span>';
+	   	        		result = result + ' </div></td>'; 
+		    	  		 return result; 
+		    	  	}
+		    	  }],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[7, 15, 20], [7, 15, 20]],
+		    	"aaSorting": [[1,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": false,
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": ""
+		     		
+		     }
+	    } );
+		$("#clientconDataTable").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>");
+	    $("input[type=search]").hide();
+	    $("#clientContactsDataTableSearch").keyup(function(e) {
+	    	   if(e.which === 13) {
+	    		   clientContactDataTableList();
+	    	   }
+	    	});
+}
+</script>
+  
+  
   
   
   <script>
@@ -272,6 +490,207 @@ function vendorContactDataTableList(){
 	    		   vendorContactDataTableList();
 	    	   }
 	    	});
+}
+</script>
+
+
+
+<script>
+function clientsList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='clientDataTableSearch'/>";
+	 	result = result +"</div>";
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+  		result = result +'<table id="clientDataTable" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'             <th><input type="checkbox" id="checkAllClients" onclick="toggleClients(this);"></th>';
+ 		result = result +'             <th>Client Name</th>';
+ 		result = result +'             <th>Website</th>';
+ 		result = result +'             <th>Location</th>';
+ 		result = result +'             <th>Created By</th>';
+ 		result = result +'             <th>No.of Contacts</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	result = result +'<div class="clearfix pull-right mr mb">';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="clientbtnId" onclick="getClientEmails();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +' </div>'; 
+	    $("#mailBoxClientsList").empty();
+	    $("#mailBoxClientsList").append(result);
+	    clientList = {};
+	    clientsDataTableList();
+}
+</script>
+
+<script>
+function clientsDataTableList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#clientDataTableSearch").val();
+	 var responderType ="ClientHotListCampaign";
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 clientsPagination(url);
+	 
+}
+</script>
+
+
+<script>
+function clientsPagination(url){
+	var colIndex = 0;
+    $('#clientDataTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 2
+        }),
+        "columns": [
+        	{ "data": "ischeck" },
+            { "data": "responderOrgName" },
+            { "data": "website"},
+            { "data": "createdBy"},
+            { "data": "responderCity"},
+            { "data": "noContacts"}
+        ],
+         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "ischeck",
+    	  	"render": function(data, type, opt, meta) {
+    	  		 var result = "";
+    	  		   var flag = false;
+    	  		   
+	   	  		   for(var e in clientList) {
+	   	  			 if(opt.orgRelationId+"" === clientList[e]) {
+	   	  				 flag = true;
+	   	  				 break;
+	   	  			 }
+	   	  		 } 
+    	  		
+    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+opt.orgRelationId+'" data-id="'+opt.orgRelationId+'" value="'+opt.orgRelationId+'" onchange="checkClients(this)"   type="checkbox" name="orgRelationIds[]" class="myClientCheckbox" ></td>';
+    	  		  return result;
+    	  	}
+         },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "orgName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  var orgName = "";
+	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+opt.orgName+'">'+opt.orgName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "website",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  var website = "";
+	    	  		 if(opt.website != null && opt.website != 'undefined' && opt.website != ""){
+	    	  			website = opt.website ;
+		           	 }else{
+		           		website = "----";
+		           	 }
+	    	  		  result = result + '<td data-title="Id"><div class="tblminwidth-75"  title="'+website+'">'+website+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "responderCity",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  var responderCity="";
+            	  if(opt.responderCity != null && opt.responderCity != 'undefined' && opt.responderCity != ""){
+            		  responderCity = opt.responderCity ;
+		           	 }else{
+		           		responderCity = "----";
+		           	 }
+            	  result = result + '<td data-title="Id"><div class="tblminwidth-75" title="'+responderCity+'">'+responderCity+'</div></td>';
+	              return result;
+              		
+              }
+          },{
+		    	  "targets": colIndex++,
+	              "data": "createdBy",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    var createdBy = "";
+	            	    if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+	            	    	createdBy = opt.createdBy ;
+	   	           	     }else{
+	   	           	   createdBy = "----";
+	   	           	     }
+	            	    
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+createdBy+'">'+createdBy+'</span></div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "noContacts",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    var noContacts = "";
+	            		 if(opt.noContacts != null && opt.noContacts != 'undefined' && opt.noContacts != ""){
+	            			 noContacts = opt.noContacts ;
+	    	           	 }else{
+	    	           		noContacts = "&nbsp;&nbsp;----";
+	    	           	 }
+	            	    
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+noContacts+'">'+noContacts+'</span></div></td>';
+	            		return result;
+	              }
+		     }], 
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[7, 15, 20], [7, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     	"sSearch": "",
+	     	"sZeroRecords": "", "sEmptyTable": "", 
+	     	"sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#clientDataTable").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
+    $("input[type=search]").hide();
+    $("#clientDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   clientsDataTableList();
+    	   }
+    	});
+}
+
+</script>
+
+
+<script>
+var clientList = {};
+function checkClients(ele){
+	if($(ele).is(":checked")) {
+		clientList[$(ele).data("id")] = $(ele).val();
+	}
+}
+</script>
+
+
+
+<script>
+var clientcontactsList = {};
+function checkClientsContacts(ele){
+	if($(ele).is(":checked")) {
+		clientcontactsList[$(ele).data("id")] = $(ele).val();
+	}
 }
 </script>
 
@@ -452,7 +871,7 @@ function vendorsPagination(url){
 		     }], 
 		     
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"lengthMenu": [[7, 15, 20], [7, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
@@ -480,12 +899,25 @@ function vendorsPagination(url){
 function getContactsList(){
 	
 	document.getElementById("vendorsListDiv").style.display="none";
+	document.getElementById("clientsListDiv").style.display="none";
+	
 	$("#mailBoxVendorsList").empty();
+	$("#mailBoxClientsList").empty();
 	
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
+	 	
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+ 		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
+		
+ 		<c:forEach var="conGroup" items="${contactsGroupList}">
+		result = result +' <option value="${conGroup.id}">${conGroup.groupName}</option>';
+        </c:forEach>
+ 		
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
@@ -510,10 +942,11 @@ function getContactsList(){
      	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getAllEmailContacts();">Add</button>';
      	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
      	result = result +' </div>'; 
-	    
+     	
      	$("#mailBoxVendorsList").append(result);
      	contactUsers = [];
 	    contactsDataTableList();
+	    $("#groupsFilter").selectpicker("refresh");
 }
 </script>
 
@@ -521,8 +954,14 @@ function getContactsList(){
 function contactsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
+	 
+	 var contactsGroups = '';
+	 if($("#groupsFilter").val() != null){
+		 contactsGroups = $("#groupsFilter").val();
+	 }
+	 
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -592,7 +1031,7 @@ function contactsPagination(url){
 		     }],
 		     
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"lengthMenu": [[7, 15, 7], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
@@ -681,6 +1120,47 @@ $('input[class="myVendorContactsCheckbox"]').each(function(i) {
 </script>
 
 
+
+
+<script>
+function toggleClients(source) {
+var checkboxes = document.querySelectorAll('input[class="myClientCheckbox"]');
+if($(source).is(":checked"))
+	  $('input[class="myClientCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myClientCheckbox"]').removeProp('checked');
+
+$('input[class="myClientCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  clientList[$(this).data("id")] = $(this).val();
+	  } else {
+		  clientList[$(this).data("id")] = "";
+	  }
+});
+}
+</script>
+
+
+<script>
+function toggleClientContacts(source) {
+
+if($(source).is(":checked"))
+	  $('input[class="myClientContactsCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myClientContactsCheckbox"]').removeProp('checked');
+
+$('input[class="myClientContactsCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  clientcontactsList[$(this).data("id")] = $(this).val();
+	  } else {
+		  clientcontactsList[$(this).data("id")] = "";
+	  }
+});
+
+}
+</script>
+
+
 <script>
 function getContactEmails(){
 	var orgRelationIds = new Array();
@@ -708,7 +1188,7 @@ function getContactEmails(){
 				 $("#recipientEmail").trigger("chosen:updated");
 				 
 				 $("input[name='orgRelationIds[]']:checked").removeAttr('checked');
-				 $('#checkAllClients').removeAttr('checked');
+				 $('#checkAllVendors').removeAttr('checked');
 				
           },
           
@@ -716,6 +1196,30 @@ function getContactEmails(){
 	 
 }
 </script>
+
+
+<script>
+function getClientContactEmails(){
+	
+	var internalOutput = "";
+	
+	 for(var e in clientcontactsList) {
+		 if(clientcontactsList[e] == 'Email' || clientcontactsList[e] == 'Notification' || clientcontactsList[e] == 'on')
+				continue;
+		 internalOutput = internalOutput+"<option value='" +clientcontactsList[e]+ "' selected>"+clientcontactsList[e]+"</option>";
+	  }
+	
+	
+	    $("#recipientEmail").append(internalOutput);
+		$("#recipientEmail").trigger("chosen:updated");
+		
+		$("input[name='contactEmails[]']:checked").removeAttr('checked');
+		$('#checkAllClientContacts').removeAttr('checked');
+		
+}
+</script>
+
+
 
 
 
@@ -762,21 +1266,21 @@ function getAllEmailContacts(){
 </script>
 
 <script>
-function getContactEmails(){
+function getClientEmails(){
 	var orgRelationIds = new Array();
 	var internalOutput = "";
 	
-	 for(var e in vendorList) {
-		 if(vendorList[e] == 'Email' || vendorList[e] == 'Notification' || vendorList[e] == 'on')
+	 for(var e in clientList) {
+		 if(clientList[e] == 'Email' || clientList[e] == 'Notification' || clientList[e] == 'on')
 				continue;
-		 orgRelationIds.push(vendorList[e])
+		 orgRelationIds.push(clientList[e])
 	  }
 	 
 	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getVendorContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
+         url: sourceleadUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
           success :function(data) {
        	    var str_array = data.replace(/\"/g, "").split(',');
 				for(var i = 0; i < str_array.length; i++) {

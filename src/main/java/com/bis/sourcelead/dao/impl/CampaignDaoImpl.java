@@ -217,5 +217,11 @@ public class CampaignDaoImpl implements CampaignDao {
 			return false;
 		}
 	}
+
+	@Override
+	public CampaignList getCampaignListById(String contactListId) throws Exception
+	{
+		return null;
+	}
 	
 }

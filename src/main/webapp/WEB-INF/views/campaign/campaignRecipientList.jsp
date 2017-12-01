@@ -20,7 +20,7 @@
       <div class="vendor_wrap">
         <div class="timesheet_head minHeight">
         <ul>
-        <li><a href="javascript:void(0)" title="" id="addRep" onclick="campaignRecipient(this);"><i class="fa fa-plus"></i>Add Recipients</a></li>
+        <li><a href="javascript:void(0)" title="" id="addRep" onclick="campaignRecipient(this,'');"><i class="fa fa-plus"></i>Add Recipients</a></li>
         </ul>
         </div>
         <div class= "project_tabs_inn_table vendor_wrap_inn_table datatable_filter">
@@ -66,7 +66,7 @@ function populategRecipientList(json){
            result = result +'  </td>';
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tblminwidth-50 text-center">';
-           result = result +'          <div title="Edit" class="paddingRight pull-left ml" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></div>';       
+           result = result +'          <div title="Edit" class="paddingRight pull-left ml"><i class="fa fa-pencil text-primary cursorPointer" onclick="campaignRecipient(this,'+report.id+');"></i></div>';       
            result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteCampaignContactList(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
            result = result +'    </div>';                                                                                                              
            result = result +'  </td>';

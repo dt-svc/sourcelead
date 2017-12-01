@@ -63,6 +63,9 @@
 	'</sec:authorize>';
 	 window.onload = function() {
 		 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+		 if('${candidateUUID}' != null && '${candidateUUID}' != '' && '${candidateUUID}' != 'undefined'){
+				candidateQuickViewProfile('${candidateId}');
+			}
 	};
 	</script>
 
@@ -1109,14 +1112,14 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 					  </div>
-					  <div class="clearfix">
-						  <div class="pull-right">
+				  </div>
+				  <div class="clearfix advancedsearch-footer">
+						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
-				  </div>
 				  </div>
 			  </form:form>
       </div>
@@ -1730,9 +1733,54 @@ function getCities(){
 	    $("#excludeEmployers").empty();
 	}
 </script>
+
+
+
+<script>
+  $(function() { 
+	       //Adding Customized Any KeyWord Title list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		   //Adding Customized All KeyWord Title list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		   
+		   //Adding Customized Exclude KeyWord Title list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		   
+		   //Adding Customized Designation list this method is slead-common.js
+		   tagIt("designation", 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:', 'tagItBykeyForSkills','skills','Designation');
+		   
+		  //Adding Customized Certification list this method is slead-common.js
+		   tagIt("certification", 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:', 'tagItBykeyForSkills','skills','Certification');
+		  
+		   //Adding Customized Employers list this method is slead-common.js
+		   tagIt("employers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Employers');
+		   
+		   //Adding Customized ExcludeEmployers list this method is slead-common.js
+		   tagIt("excludeEmployers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Exclude Employers');
+		   
+		   //Adding Customized PrimarySkill list this method is slead-common.js
+		   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Peimary Skills:', 'tagItBykeyForSkills','skills','Primary Skill');
+		   
+		 //Adding Customized Skill list this method is slead-common.js
+		   tagIt("canSkills", 'Press Enter-Key Or Comma(,) Or Tab To Add Skills:', 'tagItBykeyForSkills','skills','Skills');
+		 
+		   //Adding Customized Visa list this method is slead-common.js
+		   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+		   
+		   //Adding Customized Visa list this method is slead-common.js
+		   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
+		   
+		   //Adding Customized Visa list this method is slead-common.js
+		   tagIt("excludeEducation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
+		 
+		   
+		   
+  });
+  </script>
 	
 <script type="text/javascript">
-    	   var config = {
+    	   /* var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -1998,7 +2046,7 @@ function getCities(){
 
 									}
 								}
-							});
+							}); */
 		    
 		    
 		      $("#country").on('change', function (e) {
@@ -2017,13 +2065,13 @@ function getCities(){
 		    	   minMaxExperience();
 		       });
 		       
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
     <!-- <script type="text/javascript">
 		window.onload = function () {

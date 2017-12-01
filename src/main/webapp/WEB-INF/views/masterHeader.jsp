@@ -12,7 +12,15 @@
  </c:if>
 
  <script type="text/javascript">
-    var staticTime='${staticTime}'
+    var staticTime='${staticTime}';
+    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
  </script>
  
 <meta charset="utf-8">
@@ -688,7 +696,6 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
-						  <!-- <li ><i class="fa fa-key" onclick="campaignSender(this);"  aria-hidden="true"></i>Sender</li> -->
 	              </ul>
 	            </div>
 	          </li>
@@ -1588,7 +1595,10 @@ $("#searchType").selectpicker('refresh');
     </div>
   </div>
   
+  
+  
   <div class="popMask"></div>
+  
   
   <script>
   function flushInviteCompany(){
@@ -1652,7 +1662,18 @@ $('body').on('blur', '#inviteCompany_form', function() {
 		$("#inviteCompanyId").fadeIn(200);
         $('#inviteCompanyId').fadeOut(3000);
 	}
-</script> 
+</script>
+
+<%-- <c:if test='${viewPage == "campaignSender"}'> --%>
+<script src="resources/js/campaignSender.js"></script>
+<div id='campaignSender' class='popUpOut'></div> 
+
+<script src="resources/js/campaignRecipient.js"></script>
+<div id='campaignRecipient' class='popUpReci'></div> 
+<%-- </c:if> --%>
+
+
+ 
 <!-- 
 <script>
 // This example displays an address form, using the autocomplete feature
@@ -1783,8 +1804,12 @@ function geolocate(latitudeId,longtitudeId) {
             var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+                document.getElementById("latitude").value = latitude;
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                document.getElementById("longitude").value = longitude;
+            }
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
     }
@@ -1817,17 +1842,7 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
- 
- <%-- <c:if test='${viewPage == "campaignSender"}'>  --%>
- <script src="resources/js/campaignSender.js"></script>
-	<div id='campaignSender' class='popUpOut'></div> 
-	
-	<script src="resources/js/campaignRecipient.js"></script>
-	<div id='campaignRecipient' class='popUpReci'></div> 
-<%--  </c:if> --%>
- 
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script src="resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
-

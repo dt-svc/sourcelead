@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,24 +10,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
+import org.springframework.ui.Model;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
@@ -71,7 +75,13 @@ public class CampaignController {
 	ClientService clientService;
 	
 	@Autowired
+	ContactsGroupService contactsGroupService;
+	
+	@Autowired
 	CampaignService campaignService;
+	
+	
+	
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -111,10 +121,13 @@ public class CampaignController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/joblistMail")
- 	public ModelAndView joblistMail(HttpServletRequest request) throws Exception {
+ 	public ModelAndView joblistMail(HttpServletRequest request) throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
-		    model.setViewName("joblistMail");
+ 			model.setViewName("joblistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
  	}
 	
@@ -170,6 +183,7 @@ public class CampaignController {
 		
 	}
 	
+	
 	/**
 	 * Resturns campaignSender jsp popup
 	 * @return jsp
@@ -208,13 +222,15 @@ public class CampaignController {
 	 * @param request
 	 * @param response
 	 * @return jsp
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/recipientsList")
-	public ModelAndView recipientsListJsp(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView recipientsListJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		model.setViewName("campaign/campaignRecipientList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("campaign/campaignRecipientList");
+		 
 		return model;
 	}
 	
@@ -226,13 +242,20 @@ public class CampaignController {
 	 * @throws NumberFormatException 
 	 */
 	@RequestMapping(value = "/campaignAddRecipient",method=RequestMethod.POST)
-	public String campaignAddRecipientJsp(HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
-//		if(StringUtils.isNotBlank(senderId)) {
-//			CreateSender senderIdentity = campaignService.findSenderIdentityById(Long.parseLong(senderId));
-//			model.addAttribute("sender", senderIdentity);
+	public String campaignAddRecipientJsp(@RequestParam(value="listId", required=false) String listId,HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(StringUtils.isNotBlank(listId)) {
+			CampaignList campaignList = campaignService.getCampaignById(Long.parseLong(listId));
+			model.addAttribute("campaignList", campaignList);
+			if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
+				model.addAttribute("recipientList", campaignList.getCampaignRecipient());
+			}
+		}
+		List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+		model.addAttribute("contactsGroupList", contactsGroupList);
 		model.addAttribute("sourceleadUrl", sourceleadUrl);
-//		}
 		return "campaign/campaignRecipient";
-//		return model;
 	}
+	
+	
 }

@@ -236,7 +236,7 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -263,7 +263,7 @@ public class BillingPayableRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}  
+		} */ 
 	 
 	 
 	 @RequestMapping(value = "/deleteInvoiceDocumentBydocumentId")
