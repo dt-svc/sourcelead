@@ -205,7 +205,9 @@ $(document).ready(function(){
 	                  </select>
 	                        <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addExistedEmptyClientContact();"><i class="fa fa-refresh "></i></span>
                   </div>
+                  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                       <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                 </sec:authorize>
               </div>
           </div>                      
                       
@@ -233,7 +235,9 @@ $(document).ready(function(){
 					 </c:choose>
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 					 </div>
+					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> s
                     <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>					 
+               </sec:authorize>
               </div>
 
             </div>

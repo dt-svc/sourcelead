@@ -381,39 +381,38 @@ public class ClientRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT')")
 	@RequestMapping(value = {"/getOrgSpocsList","/rest/getOrgSpocsList"}, method = RequestMethod.POST)
-	@ResponseBody ResponseList<OrgSpocDTO> getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+	@ResponseBody ResponseList<OrgSpocDTO> getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
 			                             @RequestParam(value = "type", required = false) String type) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 ResponseList<OrgSpocDTO> vendConList = new ResponseList<>();
-		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, loginUser.getId(),orgLocations.getId(),type);
-		List<OrgSpocDTO> vconList = new ArrayList<>();
-		for(OrgSpoc orgspoc:orgSpocsList){
-			OrgSpocDTO orgSpocDTO = new OrgSpocDTO();
-			StringBuilder sb = new StringBuilder();
-	        
-			if(orgspoc.getSpocLastName() != null){
-			orgSpocDTO.setSpocName(sb.append(orgspoc.getSpocFirstName()).append(" ").append(orgspoc.getSpocLastName()).toString());
-			}else{
-				orgSpocDTO.setSpocName(orgspoc.getSpocName());
-			}
-	        
-			orgSpocDTO.setSpocEmail(orgspoc.getSpocEmail());
-			orgSpocDTO.setSpocMobilePhone(orgspoc.getSpocMobilePhone());
-			orgSpocDTO.setOwnerName(orgspoc.getOwnerName());
-			orgSpocDTO.setStatus(orgspoc.getStatus());
-			orgSpocDTO.setSpocStatus(orgspoc.getSpocStatus());
-			orgSpocDTO.setInvitationStatus(orgspoc.getInvitationStatus());
-			orgSpocDTO.setId(orgspoc.getId());
-			orgSpocDTO.setSpocLocationId(orgspoc.getSpocLocationId());
-			orgSpocDTO.setVendorLocationId(orgspoc.getVendorLocationId().getId());
-			orgSpocDTO.setOrgRelationId(orgspoc.getOrgRelationId());
-			orgSpocDTO.setSpocUserId(orgspoc.getSpocUserId());
-			orgSpocDTO.setOwnerUserId(orgspoc.getOwnerUserId());
-			
-			vconList.add(orgSpocDTO);
-			
-		}
+		 List<OrgSpocDTO> vconList = new ArrayList<>();
+		 if(orgRelationId != "" && orgRelationId != null) {
+			 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.valueOf(orgRelationId), loginUser.getId(),orgLocations.getId(),type);
+				for(OrgSpoc orgspoc:orgSpocsList){
+					OrgSpocDTO orgSpocDTO = new OrgSpocDTO();
+					StringBuilder sb = new StringBuilder();
+			        
+					if(orgspoc.getSpocLastName() != null){
+					orgSpocDTO.setSpocName(sb.append(orgspoc.getSpocFirstName()).append(" ").append(orgspoc.getSpocLastName()).toString());
+					}else{
+						orgSpocDTO.setSpocName(orgspoc.getSpocName());
+					}
+					orgSpocDTO.setSpocEmail(orgspoc.getSpocEmail());
+					orgSpocDTO.setSpocMobilePhone(orgspoc.getSpocMobilePhone());
+					orgSpocDTO.setOwnerName(orgspoc.getOwnerName());
+					orgSpocDTO.setStatus(orgspoc.getStatus());
+					orgSpocDTO.setSpocStatus(orgspoc.getSpocStatus());
+					orgSpocDTO.setInvitationStatus(orgspoc.getInvitationStatus());
+					orgSpocDTO.setId(orgspoc.getId());
+					orgSpocDTO.setSpocLocationId(orgspoc.getSpocLocationId());
+					orgSpocDTO.setVendorLocationId(orgspoc.getVendorLocationId().getId());
+					orgSpocDTO.setOrgRelationId(orgspoc.getOrgRelationId());
+					orgSpocDTO.setSpocUserId(orgspoc.getSpocUserId());
+					orgSpocDTO.setOwnerUserId(orgspoc.getOwnerUserId());
+					vconList.add(orgSpocDTO);
+				}
+		 }
 		vendConList.setData(vconList);
 		return vendConList;
 		//return commonUtil.toJSON(orgSpocsList);

@@ -136,7 +136,9 @@
 						</select>   
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
 					 </div>
+					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
 					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+                   </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
 				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default pull-right minHeBtn formic1" onclick="previewTemplatePDF()"></i> </span>

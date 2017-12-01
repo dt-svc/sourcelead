@@ -283,11 +283,13 @@ $(document).ready(function(){
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
-					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+					
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
-                      </sec:authorize>
+                     
               </div>
+               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>		
+                </sec:authorize>
             </div>
             </div> 
         

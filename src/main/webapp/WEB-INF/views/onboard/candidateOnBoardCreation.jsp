@@ -1080,6 +1080,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
         	 $("#onboardingTemplate").empty();
            	 $("#onboardingTemplate").append(result); 
            	 $('#onboardingTemplate').trigger("chosen:updated");
+           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
 	    }
    });
 }
@@ -2349,13 +2350,15 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
 	 result = result +'<div class="col-md-6 chooRadius">';
-	 result = result +'<div class="input-group col-md-10 pull-left">';
-	 result = result +'<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
+	 result = result +'<div class="row">';
+	 result = result +'<div class="col-md-9 padding_right">';
+	 result = result +'<select class="chosen-select form-control" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
 	 result = result +'</select>';
-	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
+	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 

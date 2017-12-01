@@ -1003,7 +1003,6 @@ $(document).ready(function () {
               <div class="form-group">
                 <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9 chooRadius">
-                  <div class="input-group col-md-10 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
@@ -1023,13 +1022,7 @@ $(document).ready(function () {
 							</select>
 					</c:otherwise>
 				</c:choose>
-
-                   <span class="input-group-addon cursorPointer bg-blue wid40" onclick="  "><i class="fa fa-refresh "></i></span>
               </div>
-               <sec:authorize access="hasAnyRole('ROLE_CREATE_SUBMISSION_TEMPLATE')">
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="  " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>                  
-             </sec:authorize> 
-                </div>
               </div>
             </div>
           </div>
