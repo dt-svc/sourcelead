@@ -31,6 +31,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -40,6 +42,8 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContactsGroupService;
+import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TeamService;
@@ -78,6 +82,9 @@ public class MailBoxController {
 	UserRoleService userRoleService;
 	
 	@Autowired
+	EmailAccountSettingsService emailAccountSettingsService;
+	
+	@Autowired
 	UserMailBoxService userMailBoxService;
 	
 	@Autowired
@@ -85,6 +92,9 @@ public class MailBoxController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	ContactsGroupService contactsGroupService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -114,6 +124,10 @@ public class MailBoxController {
 			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
 			SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 			
+			List<EmailAccountSettings> emailAccountSettingsServiceList = emailAccountSettingsService.emailAccountSettingsList(user.getId());
+			if(emailAccountSettingsServiceList != null){
+				model.addObject("emailAccountSettingsServiceList", emailAccountSettingsServiceList);
+			}
  			model.setViewName("mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
@@ -126,10 +140,16 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/composeMail")
- 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
+ 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
+		    
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("composeMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+ 			 model.addObject("contactsGroupList", contactsGroupList);
+ 			 
  			if(!isNullOrEmpty(UUID)){
  				model.addObject("UUID", UUID);
  				UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
@@ -143,7 +163,13 @@ public class MailBoxController {
  			
  			return model;
  	}
-	
+	@RequestMapping(value = "/emailSettings")
+ 	public ModelAndView emailSettings(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("emailSettings");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
@@ -171,10 +197,15 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
- 	public ModelAndView hotlistMail(HttpServletRequest request) {
+ 	public ModelAndView hotlistMail(HttpServletRequest request) throws Exception {
+		
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
  	}
 	

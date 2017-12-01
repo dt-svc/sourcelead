@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -160,21 +163,36 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 	public ResponseList<ReferContactsDTO> getReferContactsListByUserIdAndOrglocationId(ReferContactsDTO contactsDTO,Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query queryObj = null;
+		String query = null;
 		Integer filterCount = 0;
 		StringBuilder query1 = new StringBuilder("");
 		ResponseList<ReferContactsDTO> response = new ResponseList<>();
 		List<ReferContactsDTO> contactsDTOList = new ArrayList<>();
+		List<Long> groupIdsList = new ArrayList<>();
+		List<Long> countlist = null;
 		
 		if(contactsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contactsDTO.getSearchValue())) {
-		 query1.append(" contacts.contactUserEmail like '%" + contactsDTO.getSearchValue() + "%' ")
-				.append("OR contacts.firstName like '%" + contactsDTO.getSearchValue() + "%' ")
-				.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
-				.append("OR contacts.contactUserPhone like '%" + contactsDTO.getSearchValue() + "%' ")
-				.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
-					
+			 query1.append(" contacts.contactUserEmail like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.firstName like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.contactUserPhone like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
+						
+			}
+		
+		if(contactsDTO.getGroupIdsList() != null && !contactsDTO.getGroupIdsList().isEmpty()){
+			String[] groupIds = contactsDTO.getGroupIdsList().split(",");
+			for(int i=0; i < groupIds.length; i++){
+				groupIdsList.add(Long.parseLong(groupIds[i]));
+			}
+			
+			query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId and "
+					+ "contacts.id IN (select cl.id from ContactsGroup cg join cg.contactsList cl where cg.id IN (:groupIdsList))";
+		}else{
+			query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId ";
 		}
 		
-		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId  ";
+		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
 		}else{
@@ -183,10 +201,16 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		
 		queryObj.setFirstResult(contactsDTO.getStart());
 		queryObj.setMaxResults(contactsDTO.getLength());
-		queryObj.setLong("userId", userId).setCacheable(true).list();
+		
+		if(groupIdsList != null && groupIdsList.size() > 0){
+			queryObj.setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).setCacheable(true).list();
+		}else{
+			queryObj.setLong("userId", userId).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setCacheable(true).list();
+		}
 		List<ReferContacts> referContactsList = queryObj.list();
 		
-		List<Long> countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setCacheable(true).list();
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			filterCount = referContactsList.size();
 		}
@@ -215,6 +239,15 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
   				referContactsDTO.setSource(contacts.getContactSource().toString());
   				referContactsDTO.setId(contacts.getId());
   				referContactsDTO.setPhone(contacts.getContactUserPhone());
+  				List<ContactsGroup> groupList = contacts.getGroupList();
+  				
+  				if(groupList != null && groupList.size() > 0 ){
+  					List<String> groupsList = new ArrayList<>();
+  					for(ContactsGroup contactsGroup : groupList){
+  	  					groupsList.add(contactsGroup.getGroupName());
+  					}
+  					referContactsDTO.setGroupsList(groupsList);
+  				}
   				contactsDTOList.add(referContactsDTO);
   			}
   		}
@@ -256,4 +289,20 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(email != null && loginUserId != null) {
+			 String query = "from ReferContacts referContacts where referContacts.referFromUser.id = :loginUserId and referContacts.contactUserEmail = :email ";
+				Collection<ReferContacts> referContactsList = session.createQuery(query.toString()).setLong("loginUserId", loginUserId).setString("email", email).setCacheable(true).list();
+				if (referContactsList != null && referContactsList.size() > 0) {
+					flag = true;
+				}
+		 }
+		 return flag;
+	}
+	
 }

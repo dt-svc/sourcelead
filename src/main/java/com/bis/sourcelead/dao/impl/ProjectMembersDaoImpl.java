@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
@@ -1018,15 +1020,18 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status,String roleIds)
 			throws Exception {
 
 		 Session session = this.sessionFactory.getCurrentSession();
-	        List<ProjectMembers> projectsMembersList = null;
+		 List<ProjectMembers> pmList = null;
+		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
+//	        List<ProjectMembers> projectsMembersList = null;
 	        String[] tokens = status.split(",");
-	        
+	        String [] roleId = roleIds.split(",");
 	        String subQuery2 = "";
 	     
 	        if (Arrays.asList(tokens).contains("Active")) {
@@ -1047,12 +1052,24 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
 	        
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
-				+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser "
-				+ "where pm.projectClientsId = :projectClientsId  "+ subQuery2 + "");
+	        if (roleId[0] != null && roleId[0].length() > 0) {
+	        	for (String roleid : roleId) {
+	        		String subquery3 = "and user.id IN( select ur.user.id from UserRole ur where ur.roles.id = "+roleid+" )";
+	        		 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+	        					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+	        					+ "where pm.projectClientsId = :projectClientsId  "+ subQuery2 + " "+subquery3+"");
+	        			pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        			projectsMembersList.addAll(pmList);
+	        	}
+	        }else {
+	        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+     					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+     					+ "where pm.projectClientsId = :projectClientsId  "+ subQuery2 + "");
 
-		projectsMembersList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
-		return projectsMembersList;
+	        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        	 projectsMembersList.addAll(pmList);
+	        }
+	        return projectsMembersList;
 	
 	}
 

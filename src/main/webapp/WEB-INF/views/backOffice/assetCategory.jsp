@@ -247,13 +247,13 @@ function editCategory(catLocationId,categoryId){
     			 $("#update_button").show(); 
     			 $("#save_button").hide();
     			 
-    			 
     			 if(json.categoryName != null && json.categoryName != "undefined" && json.categoryName != ""){
     				 document.getElementById("categoryName").value = json.categoryName;
     			 }  			 
     			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				  $("textarea[name=description]").val(json['description']);
+    				 
     			 }
     			 
     			 $("#update_button").attr("onclick", "addCategory("+catLocationId+","+categoryId+");");
