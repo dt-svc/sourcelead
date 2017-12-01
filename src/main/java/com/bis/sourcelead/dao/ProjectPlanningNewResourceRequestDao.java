@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 
 public interface ProjectPlanningNewResourceRequestDao {
@@ -15,4 +17,8 @@ public interface ProjectPlanningNewResourceRequestDao {
 	ProjectPlanningNewResourceRequest saveProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) throws Exception;
 	
 	public ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestByRequestUUID(String requestUUID) throws Exception;
+	
+	ResponseList<ProjectPlanningNewResourceRequestDTO> getNewResourceRequestListByApproverIdAndOrgLocationId(ProjectPlanningNewResourceRequestDTO resourceRequestDTO,Long approverUserId,Long orgLocationId,String userRole) throws Exception;
+	
+	List<ProjectPlanningNewResourceRequest> getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(Long approverUserId,Long orgLocationId,String userRole) throws Exception;
 }

@@ -26,25 +26,19 @@ z-index: 1040 !important;
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right" id="cpnListNameDiv">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value=""  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
+                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
+				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
 				</div>
 			</div>
-			<!-- <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="recipientFirstName" name="recipientFirstName" value="">
-				</div>
-			</div>
-			<div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-3 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="recipientLastName" name="recipientLastName" value="">
-				</div>
-			</div> -->
+			
           <div class="col-sm-12 noPad mt clearfix">
               <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
+               <c:if test="${not empty recipientList}"></c:if>
+               <c:forEach items="${recipientList}" var="recipient">
+   						<option value='${recipient.id }' selected>'${recipient.email}'</option>
+				</c:forEach>
                 </select>
                 
               </div>

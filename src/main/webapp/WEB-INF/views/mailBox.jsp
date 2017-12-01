@@ -16,6 +16,7 @@
 		});
 	</script>
 
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -70,6 +71,30 @@
 					</c:if>
 			  </div> 
 
+		<div class="mail-box">
+            <div class="box-body no-padding newMailSet">
+              <ul class="nav nav-pills nav-stacked">
+              <c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
+              <c:if test="${emailAccountList.emailType == 'gmail'}">
+                      <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-google cGmail"></i> ${emailAccountList.email} <span></span></a></li>
+              </c:if>
+              <c:if test="${emailAccountList.emailType == 'yahoo'}">
+                  <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-yahoo cYahoo"></i> ${emailAccountList.email} <span></span></a></li>
+              </c:if>
+             <c:if test="${emailAccountList.emailType == 'other'}">
+                            <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-envelope-o cOut"></i> ${emailAccountList.email} <span></span></a></li>
+             </c:if>
+             
+              </c:forEach>
+               <!--  <li class="aa"><a href="#" class="Active"><i class="fa fa-google cGmail"></i> vannam@gmail.com <span></span></a></li>
+                <li class="aa"><a href="#"><i class="fa fa-yahoo cYahoo"></i> mahesh@yahoo.com <span></span></a></li>
+                <li class="aa"><a href="#" class="Active"><i class="fa fa-envelope-o cOut"></i> snigi@outlook.com <span></span></a></li>
+                <li id="one"><a href="#"><i class="fa fa-cog"></i> Settings</a></li> -->
+              </ul>
+            </div>
+          </div>
+
+
           <div class="mail-box">
             <div class="mail-box-header">
               <h3>Folders</h3>
@@ -83,27 +108,17 @@
                 <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <c:if test="${requestedUnreadMailsCount > 0}"><span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></c:if></a></li> 
                 </c:if>
                 <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
+                <c:if test="${mailType == 'mails'}">
                 <li id="settingsActive" class=""><a href="#settings" onclick="getEmialSettings();"><i class="fa fa-cog"></i> Settings</a></li>
+                </c:if>
                 
               </ul>
             </div>
             <!-- /.box-body -->
           </div>
-          <!-- /. box -->
-         <!--  <div class="mail-box">
-            <div class="mail-box-header">
-              <h3>Labels</h3>
-            </div>
-            <div class="box-body no-padding">
-              <ul class="nav nav-pills nav-stacked">
-                <li><a href="#"><i class="fa fa-circle-o text-danger"></i> Important</a></li>
-                <li><a href="#"><i class="fa fa-circle-o text-warning"></i> Promotions</a></li>
-                <li><a href="#"><i class="fa fa-circle-o text-primary"></i> Social</a></li>
-              </ul>
-            </div>
-            /.box-body
-          </div> -->
-          <!-- /.box -->
+
+
+
         </div>
 			<!-- mail side-bar ends -->
 			<div class="col-md-9" id="inbox">
@@ -327,7 +342,9 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  document.getElementById("settingsActive").removeAttribute("class")
+		  if(mailType == 'mails'){
+		  	document.getElementById("settingsActive").removeAttribute("class")
+		   }
 		  document.getElementById('inboxActive').className = 'active'
 	}
 	
@@ -338,7 +355,10 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class") 
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  document.getElementById("settingsActive").removeAttribute("class")
+		  if(mailType == 'mails'){
+			  document.getElementById("settingsActive").removeAttribute("class")
+		  }
+		  
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
 	
@@ -349,7 +369,10 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")  
 		  }
 		  document.getElementById("trashActive").removeAttribute("class")
-		  document.getElementById("settingsActive").removeAttribute("class")
+		  if(mailType == 'mails'){
+			  document.getElementById("settingsActive").removeAttribute("class")
+		  }
+		  
 		  document.getElementById('inboxActive').removeAttribute("class")
 	}
 	
@@ -361,7 +384,10 @@ function setActiveTab(type){
 		  document.getElementById("starredActive").removeAttribute("class")
 		  document.getElementById("trashActive").removeAttribute("class")
 		  document.getElementById('inboxActive').removeAttribute("class")
-		   document.getElementById("settingsActive").removeAttribute("class")
+		  if(mailType == 'mails'){
+			  document.getElementById("settingsActive").removeAttribute("class")
+		  }
+		   
 	}
 	
 	else if(type == 'Trash'){
@@ -372,7 +398,10 @@ function setActiveTab(type){
 			  document.getElementById("requestedActive").removeAttribute("class")
 		  }
 		  document.getElementById('inboxActive').removeAttribute("class")
-		  document.getElementById("settingsActive").removeAttribute("class")
+		   if(mailType == 'mails'){
+			   document.getElementById("settingsActive").removeAttribute("class")
+		   }
+		  
 	}
 	else if(type == 'Settings'){
 		  document.getElementById("settingsActive").className = 'active'
@@ -613,6 +642,39 @@ function getEmailDetails(uuid,type){
 <script>
 function getEmialSettings(){
 	setActiveTab('Settings');
+	
+	 var result ="";
+	 
+	 result = result +'<div class="mail-box mail-content">';
+	 result = result +'<div class="mail-box-header"><h3 class="box-title">Mail accont setting</h3></div>';
+	 result = result +'<div class="newMailCon">';
+	 result = result +'<h4>Setup email account for sending</h4>';
+	 result = result +'<p>Please select your provider</p>';
+	 result = result +'<ul>';
+	 result = result +'  <li>';
+	 result = result +'<a href="<c:url value="/emailSettings"/>">';
+	 result = result +'  <img src="resources/images/gmail-logo.jpg" alt=""/>Gmail</a>';
+	 result = result +'  </li>';
+	 result = result +' <li>';
+	 result = result +'	  <a href="<c:url value="/emailSettings"/>">';
+	 result = result +' <img src="resources/images/yahoo-logo.jpg" alt=""/>Yahoo</a>';
+	 result = result +' </li>';
+	 result = result +' <li>';
+	 result = result +' <a href="<c:url value="/emailSettings"/>">';
+	 result = result +' <img src="resources/images/mail-icon.jpg" alt="" />Other</a>';
+	 result = result +'</li>	';				  					  
+	 result = result +' <div class="clear"></div>';
+	 result = result +'</ul>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
+	 
+	$("#mailboxLabel").html('Settings');
+	$("#mailBoxList").empty(); 
+	$("#mailDetails").empty(); 
+	$("#mailBoxList").append(result);
+	
+	
 }
 </script>
 
@@ -631,6 +693,39 @@ function deleteReadMail(uuid,nextMailUUID,type){
 	});   
 }
 </script>
+<script>
+function activeEmail(id){
+	$("#activeClass"+id).removeClass("Active");
+	$("#activeClass"+id).addClass("Active");
+	
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
+		success : function(data) {
+			if(data==true){
+			location.replace(sourceleadUrl+"/mailBox/mails");
+			}else{
+				location.replace(sourceleadUrl+"/mailBox/mails");
+				alert("Configured credentials were wrong,Please configure with right credentials")
+			}
+		},
+	}); 
+}
+</script>
+
+<script>
+$(document).ready(function(){
+    $("#one").click(function(){
+        $(".inboxShow").hide();
+        $(".newmailShow").show();
+    });
+    $(".aa").click(function(){
+        $(".inboxShow").show();
+        $(".newmailShow").hide();
+    });    
+});        
+    
+    </script>
 
 
 <script>

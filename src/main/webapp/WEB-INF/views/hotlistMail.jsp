@@ -238,7 +238,13 @@ display: none;
   
   <script src="resources/js/nicEdit.js"></script> 
   
-  
+  <script>
+  $(function() { 
+		tagIt("otherEmails", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+		tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+		
+	});
+  </script>
   <script>
   function selectRadio(){
 	  document.getElementById("clientsCheck").checked = true;
@@ -645,6 +651,15 @@ function getContactsList(){
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
+	 	
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+ 		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
+		<c:forEach var="conGroup" items="${contactsGroupList}">
+		result = result +' <option value="${conGroup.id}">${conGroup.groupName}</option>';
+        </c:forEach>
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
+	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
 	 	
@@ -654,6 +669,7 @@ function getContactsList(){
 		result = result +' <th><input type="checkbox" id="checkAllContacts" onclick="toggleClientContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
+		result = result +'<th>Group</th>';
 		result = result +'<th>Source</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -672,6 +688,7 @@ function getContactsList(){
      	$("#clientsList").append(result);
      	contactUsers = [];
 	    contactsDataTableList();
+	    $("#groupsFilter").selectpicker("refresh");
 }
 </script>
 
@@ -680,7 +697,13 @@ function contactsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 
+	 var contactsGroups = '';
+	 if($("#groupsFilter").val() != null){
+		 contactsGroups = $("#groupsFilter").val();
+	 }
+	 
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -703,6 +726,7 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "ischeck" },
             { "data": "contactName" },
             { "data": "email"},
+            { "data": "groups" },
             { "data": "source"}
            
         ],
@@ -741,6 +765,20 @@ function contactsPagination(url,sourceleadUrl){
               		
               }
 	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "groups",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.groupsList != null){
+	            		  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.groupsList+'">'+opt.groupsList+'</div></td>';
+	            	  }else{
+	            		  result = result + '<td data-title="Id"><div>----</div></td>';
+	            	  }
+	            	  
+		              return result;
+	              		
+	              }
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "source",
@@ -1162,106 +1200,6 @@ function getCheckedCandidates(){
 		});
 	});
 </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-			
-			  //Adding Customized Emails to the list
-	        var select, chosen;
-		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    	
-		    	 var otherEmailArray = this.value.split(/[ ,]+/);
-		    	 if(otherEmailArray.length > 1){
-		    		 for (var i=0; i < otherEmailArray.length; i++) {
-	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#otherEmails").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    		 var newEmail = this.value.replace(","," ");
-		    		   if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    			         preventTabkey(e); 
-			        		     var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 select.append(option);
-					             select.find(option).prop('selected', true);
-				        		 $("#otherEmails").trigger("chosen:updated");
-				        
-				           
-			        		
-				        } 
-		    	 }
-		    	
-		    });
-		    
-
-		    var selectone, chosenone;
-		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    		
-		    	var toEmailArray = this.value.split(/[ ,]+/);
-		    	 if(toEmailArray.length > 1){
-		    		 for (var i=0; i < toEmailArray.length; i++) {
-	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));
-	        			 selectone.append(option);
-	        			 selectone.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    			var newEmail = this.value.replace(","," ");
-		    			if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    				preventTabkey(e); 
-				        	var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 selectone.append(option);
-				        		 selectone.find(option).prop('selected', true);
-					        		$("#emailsList").trigger("chosen:updated");
-				        }
-		    	 }
-		    
-		    });
-		    
-		    
-
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script> 
-
-
 
 <script>
 function candidateListChange(){

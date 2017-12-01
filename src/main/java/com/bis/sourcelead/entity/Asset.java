@@ -80,6 +80,9 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
@@ -95,6 +98,9 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_A_FILE_NAME")
 	private String shiftAFileName;
 	
+	@Column(name = "SHIFT_A_FILE_URL")
+	private String shiftAFileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
@@ -109,6 +115,9 @@ public class Asset implements Serializable{
 	
 	@Column(name = "SHIFT_B_FILE_NAME")
 	private String shiftBFileName;
+	
+	@Column(name = "SHIFT_B_FILE_URL")
+	private String shiftBFileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -245,13 +254,13 @@ public class Asset implements Serializable{
 		this.shiftAEmployee = shiftAEmployee;
 	}
 
-	public byte[] getShiftADocFile() {
-		return shiftADocFile;
-	}
-
-	public void setShiftADocFile(byte[] shiftADocFile) {
-		this.shiftADocFile = shiftADocFile;
-	}
+//	public byte[] getShiftADocFile() {
+//		return shiftADocFile;
+//	}
+//
+//	public void setShiftADocFile(byte[] shiftADocFile) {
+//		this.shiftADocFile = shiftADocFile;
+//	}
 
 	public String getShiftAFileContentType() {
 		return shiftAFileContentType;
@@ -277,13 +286,13 @@ public class Asset implements Serializable{
 		this.shiftBEmployee = shiftBEmployee;
 	}
 
-	public byte[] getShiftBDocFile() {
-		return shiftBDocFile;
-	}
-
-	public void setShiftBDocFile(byte[] shiftBDocFile) {
-		this.shiftBDocFile = shiftBDocFile;
-	}
+//	public byte[] getShiftBDocFile() {
+//		return shiftBDocFile;
+//	}
+//
+//	public void setShiftBDocFile(byte[] shiftBDocFile) {
+//		this.shiftBDocFile = shiftBDocFile;
+//	}
 
 	public String getShiftBFileContentType() {
 		return shiftBFileContentType;
@@ -373,13 +382,6 @@ public class Asset implements Serializable{
 		this.shiftBEmpName = shiftBEmpName;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
 
 	public String getFileContentType() {
 		return fileContentType;
@@ -412,4 +414,61 @@ public class Asset implements Serializable{
 	public void setEmployeesList(List<Employees> employeesList) {
 		this.employeesList = employeesList;
 	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public byte[] getShiftADocFile()
+	{
+		return shiftADocFile;
+	}
+
+	public void setShiftADocFile(byte[] shiftADocFile)
+	{
+		this.shiftADocFile = shiftADocFile;
+	}
+
+	public byte[] getShiftBDocFile()
+	{
+		return shiftBDocFile;
+	}
+
+	public void setShiftBDocFile(byte[] shiftBDocFile)
+	{
+		this.shiftBDocFile = shiftBDocFile;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public String getShiftAFileUrl() {
+		return shiftAFileUrl;
+	}
+
+	public void setShiftAFileUrl(String shiftAFileUrl) {
+		this.shiftAFileUrl = shiftAFileUrl;
+	}
+
+	public String getShiftBFileUrl() {
+		return shiftBFileUrl;
+	}
+
+	public void setShiftBFileUrl(String shiftBFileUrl) {
+		this.shiftBFileUrl = shiftBFileUrl;
+	}
+	
+	
+	
 }

@@ -34,7 +34,7 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 			assetCategory.setCreatedBy(user.getUserCode());
 		}
 		assetCategory.setCategoryName(jsonObj.getString("categoryName"));
-		if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
+		if(jsonObj.has("description")){
 			assetCategory.setDescription(jsonObj.getString("description"));
 		}
 		assetCategory.setStatus(Constants.RECORD_ACTIVE);

@@ -29,6 +29,8 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 	private String cpnListName;
 	
 	private List<String> recipientEmail;
+	
+	private String contactListId;
 
 	public long getId()
 	{
@@ -149,6 +151,17 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 	{
 		this.listCount = listCount;
 	}
+
+	public String getContactListId()
+	{
+		return contactListId;
+	}
+
+	public void setContactListId(String contactListId)
+	{
+		this.contactListId = contactListId;
+	}
 	
-//	private Set<CampaignRecipient> campaignRecipient;
+	
+	
 }
