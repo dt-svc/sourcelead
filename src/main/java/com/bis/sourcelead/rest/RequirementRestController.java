@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
@@ -58,6 +59,9 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -916,5 +920,37 @@ public class RequirementRestController {
 	    	requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
 	    	}
 			return commonUtil.toJSON(requirement);
-		} 
+		}
+	    
+	@RequestMapping(value = "/saveOrUpdateAssignToTeam", method = RequestMethod.POST)
+	public @ResponseBody String saveOrUpdateAssignToTeam(@RequestParam(value = "assignedIdVal", required = false) String assignedIdVal, @RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		requirementAssignToService.updateRequirementAssignToListByRequirementId(assignedIdVal, requirementId, orgLocations, user);
+		return null;
+	}
+	
+	@RequestMapping(value = "/getAssignedMembersForEdit", method = RequestMethod.POST)
+	public @ResponseBody String getAssignedMembersForEdit(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception
+	{
+		List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+		String existedUser = "";
+		String comma = "";
+		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+			comma = (requirementAssignToList.indexOf(requirementAssignTo) > 0 )? "," : "";
+			
+			if (requirementAssignTo.getTeamId() != null) {
+				existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString() + ","
+						+ requirementAssignTo.getTeamId().getId().toString();
+			}
+			else {
+				existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString()
+						+ ",undefined";
+			}
+		}
+		
+		return commonUtil.toJSON(existedUser);
+	}
+	
 }

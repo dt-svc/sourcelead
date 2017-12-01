@@ -35,4 +35,6 @@ public interface RequirementAssignToDao {
 
 	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
 	
+	List<RequirementAssignTo> updateRequirementAssignToListByRequirementId(List<RequirementAssignTo> requirementAssignToList) throws Exception;
+	
 }

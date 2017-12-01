@@ -9,6 +9,10 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
+	<c:if test="${empty requirement.id}">
+	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+	</c:if>
+	
 	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
 	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
@@ -22,7 +26,7 @@
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
-	var requirementAssignedIds ='${requirementAssignedIds}';
+	/* var requirementAssignedIds ='${requirementAssignedIds}';
 	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
 	{
 		
@@ -42,7 +46,7 @@ $(document).ready(function() {
 			$("#defaultAssignedToSavingDiv").append(result); 
 			assignedToValidation();
 		}	
-	} 
+	}  */
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
@@ -1038,38 +1042,6 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group">
-             
-            <div id="assignedToSavingDiv"></div>
-            <div id="defaultAssignedToSavingDiv"></div>
-													
-            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
-            
-            <div class="col-md-9">
-              <div class="form-icon">
-                <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-				
-                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
-                  </span>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
-                  </div>
-                <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam"   class="modal fade">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button class="close" type="button" id="closebtnId" onclick="clearSelections();">×</button>
-                        <h4 class="modal-title">Assign To</h4>
-                      </div>
-                       <!-- <div id="userList"></div> -->
-                       <div id="popupWindow"></div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <!-- Assign To modal popup ends -->
-              </div>
-          </div>
-          <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
@@ -1091,6 +1063,44 @@ $(document).ready(function () {
                </select>					
           </div>
         </div>
+        
+        <div class="form-group">
+             
+            <!-- <div id="assignedToSavingDiv"></div>
+            <div id="defaultAssignedToSavingDiv"></div> -->
+													
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            
+            <div class="col-md-9">
+              <div class="form-icon">
+              <c:if test="${empty requirement.id}"> 
+              	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList();">Assigned Members</a> <span class="badge cursorPointer" id="showGrid">0</span>
+              </c:if>
+                <!-- <span class="icon-inside"> <i class="fa fa-search-plus"></i>
+                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal">
+                  </span> -->
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  </div>
+                <!-- Modal content Assign To -->
+                <!-- <div role="dialog" id="assignTeam"   class="modal fade">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button class="close" type="button" id="closebtnId" onclick="clearSelections();">×</button>
+                        <h4 class="modal-title">Assign To</h4>
+                      </div>
+                       <div id="userList"></div>
+                       <div id="popupWindow"></div>
+                      
+                    </div>
+                  </div>
+                </div>
+                Assign To modal popup ends -->
+              </div>
+              <input type="text" name="assignedTeamId" id="assignedTeamId" value=""/>
+          </div>
+          <div class="col-md-12 assigned-Table" id='assignedTeamsOrUsers' style="display: none">
+          </div>
         
         <div class="clearfix"></div>
          <div class="form-group">
@@ -1846,7 +1856,7 @@ function approvalType(type){
      AssignedTo model dialog box
 --%>
 
-<script>
+<!-- <script>
 function popupWindow(reqId){ 
 	  
 	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1875,7 +1885,7 @@ function popupWindow(reqId){
 	    getTeamsList(reqId);
 	    $("#rolesDiv").selectpicker("refresh");
 }
-</script>
+</script> -->
 
 <%-- 
      @author : venkat kesav
@@ -1888,7 +1898,7 @@ function popupWindow(reqId){
 
 
 
-<script>
+<!-- <script>
 function getUserList(teamType){  
 	   var selectedUsersForAssign = [];
 	   $('input[name^="assignUserId"]').each(function() {
@@ -2037,7 +2047,7 @@ function getUserList(teamType){
           		},
        		}); 
   	} 
-</script>
+</script> -->
 
 <%-- 
      @author : venkat kesav
@@ -2045,7 +2055,7 @@ function getUserList(teamType){
      1.usage     : onload.
      declared 'ids' as a global variable for keep all checked user ids
 --%>
-<script>
+<!-- <script>
 window.ids = new Array();
 function handleClick() {
 	ids = [];
@@ -2057,7 +2067,7 @@ function handleClick() {
 		$('span.jquery_form_error_message').show();
 	}
 }
-</script>
+</script> -->
 
 <%-- 
      @author : venkat kesav
@@ -2065,7 +2075,7 @@ function handleClick() {
      1.usage     : onload.
      declared 'teamRoleIds' as a global variable for keep all selected role and teams
 --%>
-<script>
+<!-- <script>
 window.teamRoleIds = new Array();
 function handleTeamRoleClick() {
 	teamRoleIds = [];
@@ -2073,7 +2083,7 @@ function handleTeamRoleClick() {
 		teamRoleIds.push($(this).val());
 	});
 }
-</script>
+</script> -->
 
 <%-- 
      @author : venkat kesav
@@ -2083,7 +2093,7 @@ function handleTeamRoleClick() {
      3.ajax url implementation in requirementListRestController.
      append Roles and Teams list to AssignedTo model dialog box
 --%>
-<script>
+<!-- <script>
 function getTeamsList(reqId){
 	if(reqId == '' || reqId == 'undefined' || reqId == null){
 		reqId = '';
@@ -2139,14 +2149,14 @@ function getTeamsList(reqId){
             
       }); 
  } 
-</script>
+</script> -->
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function filterTeamMembers(){
 		var teamType = $("#rolesDiv").val();
 		getUserList(teamType);
 	}
-</script>
+</script> -->
 
 <%-- 
      @author : venkat kesav
@@ -2171,7 +2181,7 @@ function getTeamsList(reqId){
      1.usage     : used in candidateList() function.
 --%>
 
-<script>
+<!-- <script>
 
 function paginations(){
     $("#assignToDataTableId").DataTable( { 
@@ -2192,7 +2202,7 @@ function paginations(){
     });
     $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 }
-</script>
+</script> -->
 
 
 
@@ -2486,7 +2496,7 @@ function getLevel2Approvers(currentApproverId){
  }
  </script>     
  
- <script>
+<!-- <script>
 function toggle(source) {
     var checkboxes = document.querySelectorAll('input[name="team"]');
     for (var i = 0; i < checkboxes.length; i++) {
@@ -2500,7 +2510,7 @@ $('input:checkbox:not(#checkAll)').click(function() {
     }
 });
 }
-</script>
+</script> -->
  
  <!-- Job Id validation script ends here -->
  
@@ -2687,6 +2697,13 @@ $(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
 	});
  }); 
+</script>
+<script>
+$("#showGrid").click(function(){
+	if($('#showGrid').text() > 0){
+		$("#assignedTeamsOrUsers").slideToggle();
+	}
+	});
 </script>
  
 <jsp:include page="../masterFooter.jsp" />
