@@ -154,7 +154,7 @@ $(document).ready(function(){
                          <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
-                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();getVendorContacts();addExistedEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addExistedEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
@@ -1907,7 +1907,6 @@ function addExistedEmptyVendorContact(){
  
 <script>
 function addExistedEmptyClientContact(){
-// 	alert("dkgdsjfcg");
 	 $("#clientContact").empty();
 	 $('#clientContact').append('<option value="">--select Client contact--</option>');
      $('#clientContact').trigger("chosen:updated");

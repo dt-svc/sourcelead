@@ -224,7 +224,7 @@
 			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
-                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();importAssociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 		               <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -923,3 +923,10 @@ function  removeValiationVendorContact() {
 	 
 });
  </script>
+ <script>
+function importAssociateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>

@@ -199,8 +199,9 @@ public class BillingPayableController {
 	
 	@RequestMapping(value = "/getPayableVendorContactsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody String getPayableVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		
-		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+		List<OrgSpoc> orgSpocList = null;
+		if(orgRelationId !="" && orgRelationId != null) {
+		 orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
 		
 		for(OrgSpoc orgSpoc : orgSpocList){
 			StringBuilder sb = new StringBuilder();
@@ -222,6 +223,7 @@ public class BillingPayableController {
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));
 			}
+		}
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	

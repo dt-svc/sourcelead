@@ -199,27 +199,30 @@ public class InvoiceRestController {
 	public @ResponseBody String getClientContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
-		
-		for(OrgSpoc orgSpoc : orgSpocList){
-			StringBuilder sb = new StringBuilder();
-			StringBuilder clientSb = new StringBuilder();
-			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
-			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
-			}
-			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
-			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
-			}
-			orgSpoc.setSpocName(sb.toString());
-			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
-			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
-			orgSpoc.setOwnerName(clientSb.toString());
-			orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
-			}
+		List<OrgSpoc> orgSpocList = null;
+		if(orgRelationId !="" && orgRelationId != null) {
+			orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+			
+			for(OrgSpoc orgSpoc : orgSpocList){
+				StringBuilder sb = new StringBuilder();
+				StringBuilder clientSb = new StringBuilder();
+				if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				}else{
+				sb.append(orgSpoc.getVendorUser().getFirstName());
+				}
+				if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				}else{
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
+				}
+				orgSpoc.setSpocName(sb.toString());
+				orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+				orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+				orgSpoc.setOwnerName(clientSb.toString());
+				orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
+				}
+		}
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	

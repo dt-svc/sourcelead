@@ -81,7 +81,7 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-8 chooRadius">
+            <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
@@ -94,7 +94,7 @@
                    </c:if>  
                  </c:forEach> 
                 </select>
-                <span class="input-group-addon cursorPointer bg-blue" onclick="clientRefresh();"><i class="fa fa-refresh "></i>		</span>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();"><i class="fa fa-refresh "></i>		</span>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
@@ -793,11 +793,25 @@ function getRolesList(){
 		};
 	})(jQuery);
 </script>
-<script>
-function clientRefresh(){
-	window.location.reload(true);
-}
-
-
-</script>
+ <script>
+ function getVendorsByOrgLocation(){
+	 alert("inside");
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--Select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		            
+		        }
+		 });
+ }
+ </script>
 

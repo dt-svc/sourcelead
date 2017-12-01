@@ -5,7 +5,6 @@
 <link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 .clsDatePicker {
@@ -45,11 +44,9 @@
 			<div class="col-md-12 clearfix mt5 mb5">
 			<div class="col-md-6 col-lg-6">
 			  <div class="form-group mb10">
-					<label class="col-md-3 mt10" for="Project Manager">Select Client<span
-						class="text-danger">*&nbsp;</span></label>
+					<label class="col-md-3 mt10" for="Project Manager">Select Client<span class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9 chooRadius">
-					<div class="input-group col-md-10 pull-left">
-						<div class="form-icon-min" id="clientsDiv">
+						<div class="input-group col-md-10 pull-left" id="clientsDiv">
 							<select class="form-control chosen-select"
 								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
 								data-validation="required" onchange="getEndClientProjects();">
@@ -63,17 +60,19 @@
 								 </c:if>
 								</c:forEach>
 							</select> 
-							<span class="input-group-addon cursorPointer bg-blue" onclick="refreshAddProjectClientList();"><i class="fa fa-refresh "></i></span>
-						</div>
-						<span class="hidden">Select Client</span>
+                <span class="input-group-addon cursorPointer bg-blue" onclick=" "><i class="fa fa-refresh "></i></span>
+                </div>	
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+               </sec:authorize>                						
 					</div>
-					<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-		                 <a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			          </sec:authorize>
+<%-- 					  <div class="col-md-2 noPad refreshBtnStyle">
+				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
+				<i class="fa fa-refresh btn btn-default formic1" onclick="validateEmail();getSpocUserDetails();getRolesList();" title="Refresh"></i>
+			</div>   --%>
 				</div>
 			</div>
-			</div>
-			</div>
+			
 			
 			<div class="col-md-6 col-lg-6">
 				<div class="form-group mb10">
@@ -344,29 +343,4 @@ function saveClientProject(){
 					});
  }
 </script>
-<script>
-function refreshAddProjectClientList(){
-	alert("inside");
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 var selectedOrgId = '${report.locationId.org.orgName}';
-		 $.ajax({
-	      type : "POST",
-	       url: sourceleadUrl+"/refreshAddProjectClientList",       
-	       success: function(json) {
-	    	   alert("inside sucesas");
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        			output = output + "<option value='"+opt.id+"' >"+opt.clientName+"</option>";
-				}
-	        	alert("output"+output);
-	        	$("#clientOrgLocId").empty();
-		        $("#clientOrgLocId").append(output);
-		        $('#clientOrgLocId').trigger("chosen:updated");
-	        }
-		 });
-	
-} 
-</script>
+

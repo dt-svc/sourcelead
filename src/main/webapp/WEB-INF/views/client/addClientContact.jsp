@@ -162,13 +162,11 @@ function getOrgDetails()
         <div id="loading"></div> 
         <form:form id="client_contact_form" name="client_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
-            <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-8 chooRadius">
+            <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
-              <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
@@ -180,17 +178,15 @@ function getOrgDetails()
                    </c:if>  
                  </c:forEach> 
                 </select>
-	            <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();"><i class="fa fa-refresh "></i> 
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList()"><i class="fa fa-refresh "></i></span>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> </div>
+                <!-- <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> -->
             </div>
             <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 			</sec:authorize>
-			</span>
 			</div>            
             	</div>  
-          </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           
@@ -289,7 +285,7 @@ function getOrgDetails()
                 
                 </div>
                 </div>
-                </div>
+
             <div class="form-footer clearfix">
               <div class="col-lg-12">
                 <div class="pull-right">
@@ -307,12 +303,6 @@ function getOrgDetails()
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-<script>
-function refreshClientList(){
-	window.location.reload(true);
-}
-</script>
 
 
 <script type="text/javascript">
@@ -758,3 +748,32 @@ function getRolesList(){
 				$this.next().css({'width': '100%'});
 				})
 </script> 
+<script>
+function refreshClientList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#vendorName").empty();
+		        $("#vendorName").append(output);
+		        $('#vendorName').trigger("chosen:updated");
+	        }
+		 });
+		 
+	
+	
+}
+</script>

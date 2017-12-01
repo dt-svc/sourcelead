@@ -268,7 +268,7 @@
 	                   	</c:if>
 	                   </c:forEach>
                   </select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();getVendorContacts();addNewContractEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
@@ -317,7 +317,7 @@
                          <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
-                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();getClientContacts();addNewContractClientContact()"><i class="fa fa-refresh "></i></span>
+                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
@@ -2180,19 +2180,18 @@ function refreshClientList(){
 
 </script>
 <script>
-function addNewContractEmptyVendorContact(){
+function addCustomEmptyVendorContact(){
 	$("#vendorContact").empty();
-    $("#vendorContact").append(output);
-    $('#vendorContact').trigger("chosen:updated");
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
 }
-
 </script>
 
 <script>
-function addNewContractClientContact(){
-	 $("#clientContact").empty();
-     $("#clientContact").append(output);
-     $('#clientContact').trigger("chosen:updated");
+function addCustomEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
 }
 
 </script>

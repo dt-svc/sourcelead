@@ -235,7 +235,7 @@
 										id="vendors" placeholder="Select Vendor" field-name="Vendor"
 										onchange="getVendorContactList();removeValiationVendor();">
 									</select>
-									<span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();"><i class="fa fa-refresh "></i></span>
+									<span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addassociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 								</div>
 								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 		                     	<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -951,7 +951,6 @@ function rateValidations(){
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            //getVendorContactList();
 		            
 		        }
 		 });
@@ -1061,3 +1060,10 @@ if(type == 'C2C' || type == 'C2C-1099'){
 		});
 	 });
  </script>
+ <script>
+function addassociateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>

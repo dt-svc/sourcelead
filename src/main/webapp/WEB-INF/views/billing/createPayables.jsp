@@ -73,7 +73,7 @@ function errRemoveVendorContact(){
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
 									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();" data-validation="required" field-name="Vendor">
 								</select>
-								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();"><i class="fa fa-refresh "></i></span>
+								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			                         <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -2178,6 +2178,13 @@ if(selectedTextInvoice =='percentage'){
 	  }		
 	  
  
+}
+</script>
+<script>
+function createpayablesEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
 }
 </script>
 

@@ -39,7 +39,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
 				data-validation="required" field-name="Vendor">
 			</select>
-			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();"><i class="fa fa-refresh "></i></span>
+			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatProPayInvoiceEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 			          <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -1632,6 +1632,13 @@ function maskme(){
 <script type="text/javascript">
 function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
+}
+</script>
+<script>
+function creatProPayInvoiceEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
 }
 </script>
  <jsp:include page="../masterFooter.jsp" />	

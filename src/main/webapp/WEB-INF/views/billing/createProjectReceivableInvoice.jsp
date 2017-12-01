@@ -34,11 +34,11 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8 chooRadius">
+              <div class="col-md-9 chooRadius">
                <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                </select>
-               <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();"><i class="fa fa-refresh "></i></span>
+               <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createProjectRecInviceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
               </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                       <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
@@ -49,7 +49,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 </div>
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-8 chooRadius">		
+              <div class="col-md-9 chooRadius">		
               <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
@@ -58,10 +58,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize>
-               <%-- <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client Contact"> </i></a>
-			    <i class="fa fa-refresh btn btn-default formic1" onclick="getClientContacts();" title="Refresh"></i>
-			  </div>	 --%>
             </div>
               </div>
             <div class="form-group">
@@ -1804,6 +1800,14 @@ function attachFile(id){
 	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload(sourceleadUrl, ""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
 }
+</script>
+<script>
+function createProjectRecInviceEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
+}
+
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	

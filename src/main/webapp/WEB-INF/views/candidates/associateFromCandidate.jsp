@@ -244,7 +244,7 @@
 			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
-                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();"><i class="fa fa-refresh "></i></span>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();associateFromCandEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
 		           <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -259,10 +259,10 @@
                  </select>
                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
-		</div>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-		           <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-              </sec:authorize>
+		      <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+         </sec:authorize>			
+		</div>
 		</div>
        </div>
         <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
@@ -1642,7 +1642,6 @@ function getCandidateDetails(){
 			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            //getVendorContactList();
 		            
 		        }
 		 });
@@ -1886,4 +1885,11 @@ if(type == 'C2C-1099'){
 		});
 	 });
  </script>
+ <script>
+function associateFromCandEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
  

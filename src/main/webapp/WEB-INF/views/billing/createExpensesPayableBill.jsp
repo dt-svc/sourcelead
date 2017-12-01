@@ -78,7 +78,7 @@ function checkBox(){
 			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
 		         	data-validation="required" field-name="Vendor">
 		      </select>
-		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();"><i class="fa fa-refresh "></i></span>
+		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			 <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
 			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
@@ -1820,6 +1820,12 @@ function attachFile(id){
 }
 </script>
 
-
+<script>
+function creatExpPayBilsEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
+}
+</script>
 
  <jsp:include page="../masterFooter.jsp" />	

@@ -240,15 +240,10 @@ function addAttachment(entityRowId,from){
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 minHeight chosen-custom chooRadius">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<div class="input-group col-md-10 pull-left">
 							<select id="categoryTypeREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].categoryType" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							</select>
-							<div class="input-group-addon cursorPointer bg-blue" onclick="   ();"><i class="fa fa-refresh ColWhite" style="color:#ffffff !important;"></i></div>
-						</div>
-						<sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')"> 
-						<div class="col-md-2 noPad clearfix"><a href="    " target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </div>
-							</sec:authorize>
+						
 						</div>
 						<div class="col-md-4 minHeight">
 							<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
