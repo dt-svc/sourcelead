@@ -60,8 +60,8 @@ CREATE TABLE `sourcelead`.`EMAIL_ACCOUNT_SETTINGS` (
 ) ;
 
 SET SQL_SAFE_UPDATES=0;
-UPDATE `sourcelead`.`tabs` SET `TAB_ID`='12' WHERE `ID`='13';
-UPDATE `sourcelead`.`tabs` SET `TAB_ID`='12' WHERE `ID`='14';
+UPDATE `sourcelead`.`TABS` SET `TAB_ID`='12' WHERE `ID`='13';
+UPDATE `sourcelead`.`TABS` SET `TAB_ID`='12' WHERE `ID`='14';
 SET SQL_SAFE_UPDATES=1;
 
 
