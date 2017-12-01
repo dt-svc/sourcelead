@@ -91,7 +91,7 @@ public interface ProjectMembersService {
     
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception;
 

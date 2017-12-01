@@ -695,13 +695,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds)
 			throws Exception {
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		List<ProjectMembers> projectMembersList = null;
 		if(projectClients != null){
-			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds);
 		}
 		return projectMembersList;
 	}
@@ -1242,7 +1242,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
 			throws Exception {
-		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status);
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"");
 	}
 
 	@Override
