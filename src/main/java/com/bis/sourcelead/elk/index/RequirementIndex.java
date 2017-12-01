@@ -51,6 +51,8 @@ public class RequirementIndex {
 	
 	private String client;
 	
+	private String orgRelationId;
+	
 	private String[] skills;
 	
 	private String[] noticePeriod;
@@ -848,6 +850,16 @@ public class RequirementIndex {
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
 	}
 
 	

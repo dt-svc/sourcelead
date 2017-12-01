@@ -107,6 +107,7 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue,
 				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
 				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
 		 
@@ -193,6 +194,20 @@ public class ClientController {
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientImport");
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientImport");
+			}
+			
+			if(orgRelationUUID != null){
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRelations.getLocationId().equals(orgLocations.getId())){
+					model.addObject("clientOrgLocationId", orgRelations.getResponderLocationId().getId());
+					model.addObject("clientName", orgRelations.getResponderLocationId().getOrgLocationName());
+				}else{
+					model.addObject("clientOrgLocationId", orgRelations.getLocationId().getId());
+					model.addObject("clientName", orgRelations.getLocationId().getOrgLocationName());
+				}
+				
+				model.addObject("orgRelationId", orgRelations.getId());
+				model.addObject("orgRelationUUID", orgRelationUUID);
 			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);

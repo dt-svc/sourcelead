@@ -385,6 +385,10 @@ z-index: 1;
 window.onload = function () {
 	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
 	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+			clientSideBar('${clientOrgLocationId}','${orgRelationId}','${clientName}');
+		}
  };
 </script>
 

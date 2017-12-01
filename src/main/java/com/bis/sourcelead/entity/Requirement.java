@@ -326,6 +326,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
@@ -368,6 +372,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String noOfApplicants;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
 	
 	@Transient
 	@JsonProperty
@@ -506,6 +514,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Transient
     @JsonProperty
     private String isRequirementRelesedToPublic;
+    
+    
 	 
     @Transient
 	@JsonProperty
@@ -1723,6 +1733,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
 	}
 
 	
