@@ -245,7 +245,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
 		 //DateFormat format = Constants.DF_DMY;
 		 //DateFormat format= LoginSessionController.DATEFORMAT;
-		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		  DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");

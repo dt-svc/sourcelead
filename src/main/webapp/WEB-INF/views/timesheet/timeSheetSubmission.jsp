@@ -9,14 +9,14 @@
 
 
 
-<div class="pull-left timeAppUse">
+<!-- <div class="pull-left timeAppUse">
 	<span><img id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofile-img.png"> </span>
 	<p>
 		<input class="timeUsName" type="text" readonly="readonly" value="ramya">
 		<input type="text" readonly="readonly" value="ramyavishnu15@gmail.com">
 	</p>
 	<div class="clearfix"></div>
-</div>
+</div> -->
 
 
 

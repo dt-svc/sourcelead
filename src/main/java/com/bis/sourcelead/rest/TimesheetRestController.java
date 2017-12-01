@@ -677,6 +677,7 @@ public class TimesheetRestController {
 		    tsDTO.setReopenButtonVisible(new Boolean(statusMap.get("IS_REOPEN_BUTTON_VISIBLE")));
 		    tsDTO.setReopenRequestSent(new Boolean(statusMap.get("REOPEN_REQUEST_SENT")));
 		    tsDTO.setReopenAcceptRejectButtonVisible(new Boolean("IS_REOPEN_ACCEPT_REJECT_BUTTON_VISIBLE"));
+		    tsDTO.setRejectedReason(statusMap.get("REJECTED_REASON"));
 		    
 		    String approvalStatus = tsDTO.getTimesheetStatus();
 		    

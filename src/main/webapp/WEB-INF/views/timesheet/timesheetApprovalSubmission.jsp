@@ -40,6 +40,26 @@ $(document).ready(function() {
    </tbody>
   </table>
 
+
+<script>
+function pagination(){
+    $('#exampleApprover').DataTable( {
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+    		"sSearch": "",
+    		"sZeroRecords": "", "sEmptyTable": ""
+    	}
+    });
+    $('#exampleApprover').wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+
+
 <script>
 $(document).on("mouseover", ".glyphicon-comment", function() { 
 var localId = $(this).attr('id');
