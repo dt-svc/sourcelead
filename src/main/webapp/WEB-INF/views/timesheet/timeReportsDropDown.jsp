@@ -44,6 +44,9 @@
 							</div>
 						</li>
 					</ul>
+				<div class="remove_search">
+		        		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
+		         </div>
 					<div class="clearfix"></div>
 				</div>
 				<jsp:include page="timeReportsTableAndData.jsp"></jsp:include>

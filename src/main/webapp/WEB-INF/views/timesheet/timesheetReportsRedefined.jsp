@@ -19,7 +19,10 @@ box-shadow: 0px 0px 3px #707070;
     -moz-transition: all ease-in-out 0.3s;
     -ms-transition: all ease-in-out 0.3s;
     -webkit-transition: all ease-in-out;
-    overflow-x: auto; border-radius: 3px;
+    /* overflow-x: auto; border-radius: 3px; */
+}
+.timesheet_container {
+overflow-x: inherit;
 }
 .timesheet_container .content-area {
 box-shadow:none;
