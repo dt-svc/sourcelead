@@ -227,6 +227,7 @@ public class MailBoxRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation,multiFile);
+//		hotListEmailCampaignService.sendJobCampaignThroughSendgrid(jobListEmailCampaignDTO, user, orgLocation,multiFile);
 		return "success";
 	}
 	

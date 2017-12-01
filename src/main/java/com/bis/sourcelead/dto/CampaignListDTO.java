@@ -31,6 +31,8 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 	private List<String> recipientEmail;
 	
 	private String contactListId;
+	
+	private String campaignType;
 
 	public long getId()
 	{

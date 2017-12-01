@@ -1594,6 +1594,12 @@ $("#searchType").selectpicker('refresh');
       
     </div>
   </div>
+  
+  
+  
+  <div class="popMask"></div>
+  
+  
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
@@ -1656,7 +1662,18 @@ $('body').on('blur', '#inviteCompany_form', function() {
 		$("#inviteCompanyId").fadeIn(200);
         $('#inviteCompanyId').fadeOut(3000);
 	}
-</script> 
+</script>
+
+<%-- <c:if test='${viewPage == "campaignSender"}'> --%>
+<script src="resources/js/campaignSender.js"></script>
+<div id='campaignSender' class='popUpOut'></div> 
+
+<script src="resources/js/campaignRecipient.js"></script>
+<div id='campaignRecipient' class='popUpReci'></div> 
+<%-- </c:if> --%>
+
+
+ 
 <!-- 
 <script>
 // This example displays an address form, using the autocomplete feature
