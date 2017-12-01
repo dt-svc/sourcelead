@@ -12,9 +12,6 @@ import java.util.regex.Pattern;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,18 +20,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
+import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -72,6 +70,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	
 	
@@ -229,11 +230,15 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
 		 
-		 saveUserMailBox(user,orgLocation,iAdressArray,candidates,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,hotListEmailCampaignDTO.getNamefield(),fileInfo);
+		 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
+		 userMailBox.setCandidateId(candidates);
+		 userMailBox.setNameFields(hotListEmailCampaignDTO.getNamefield());
+		 userMailBoxService.saveUserMailBox(userMailBox);
+		 userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 	}
 	
 	
-private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String candidates,String subject,String table,String UUID,String body,String signature,String nameFields,FileInfo fileInfo) throws Exception{
+private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[] iAdressArray,String subject,String table,String UUID,String body,String signature,FileInfo fileInfo) throws Exception{
 	
 	UserMailBox userMailBox = new UserMailBox();
 	
@@ -254,7 +259,6 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 	userMailBox.setOrgLocationId(orgLocation);
 	userMailBox.setFromMail(user.getEmail());
 	userMailBox.setMailStatus(Constants.MAIL_BOX_SENT);
-	userMailBox.setCandidateId(candidates);
 	userMailBox.setSubject(subject);
 	userMailBox.setCampaignTableData(table);
 	userMailBox.setBody(body);
@@ -263,7 +267,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 	userMailBox.setIsFavourite(0);
 	userMailBox.setUuid(UUID);
 	userMailBox.setStatus(1);
-	userMailBox.setNameFields(nameFields);
+	userMailBox.setMailType(2);
 	userMailBox.setCreatedBy(user.getUserCode());
 	userMailBox.setCreatedDate(new Date());
 	userMailBox.setUpdatedBy(user.getUserCode());
@@ -281,10 +285,7 @@ private void saveUserMailBox(User user,OrgLocations orgLocation,InternetAddress[
 			    }
        }
 	
-	
-	userMailBoxService.saveUserMailBox(userMailBox);
-	
-	userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+	return userMailBox;
 	
 }
 
@@ -403,5 +404,252 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			Matcher matcher = pattern.matcher(email);
 			return matcher.matches();
 		}
+
+	@Override
+	public void sendJobListEmailCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, User user, OrgLocations orgLocation, MultipartFile multiFile) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage(); 
+		 String fullName = null;
+		 String[] campaignJobs = null;
+		 String signature = "";
+		 String jobs = null;
+		 String emails = null;
+		 StringBuilder toRecipantsEmailsList = new StringBuilder();
+		 StringBuilder otherRecipantsEmailsList = new StringBuilder();
+		 
+		 String otherEmails = "";
+		 InternetAddress[] iAdressArray = null;
+		   	 if(!isNullOrEmpty(user.getLastName())){
+		   		 fullName = user.getFirstName()+" "+user.getLastName();
+		   	 }else{
+		   		 fullName = user.getFirstName();
+		   	 }
+				
+			if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getToemails())){
+				
+		    	  String jsonArray = jobListEmailCampaignDTO.getToemails();
+				   emails = jsonArray.toString();
+		    	  if(null != emails){
+		    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+		    		  emails = emails.replaceAll("\"", "");
+		    	  }
+		    	 
+		    	  String[] recipantsEmails = emails.split(",");
+			    	 for(int i=0; i < recipantsEmails.length; i++){
+			    		 if(validateEmail(recipantsEmails[i])){
+			    			 toRecipantsEmailsList = toRecipantsEmailsList.append(recipantsEmails[i]);
+			    			 toRecipantsEmailsList.append(",");
+			    		 }
+			    	 }
+			    	 
+			    	 emails = toRecipantsEmailsList.toString();
+			    	 emails = emails.substring(0,emails.length()-1);
+			}
+			
+			
+			if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getOtherEmails())){
+				 String jsonArray = jobListEmailCampaignDTO.getOtherEmails();
+				   otherEmails = jsonArray.toString();
+				 if(null != otherEmails){
+					 otherEmails = otherEmails.replaceAll("\\[", "").replaceAll("\\]","");
+					 otherEmails = otherEmails.replaceAll("\"", "");
+				 }
+				 
+				 String[] recipantsEmails = otherEmails.split(",");
+		    	 for(int i=0; i < recipantsEmails.length; i++){
+		    		 if(validateEmail(recipantsEmails[i])){
+		    			 otherRecipantsEmailsList = otherRecipantsEmailsList.append(recipantsEmails[i]);
+		    			 otherRecipantsEmailsList.append(",");
+		    		 }
+		    	 }
+		    	 
+		    	 otherEmails = otherRecipantsEmailsList.toString();
+		    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
+			}
+			
+			StringBuilder tomaillBuilder = new StringBuilder();
+			
+			if(null != emails && null != otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).append(",").append(otherEmails).toString());
+			}else if(null == emails && null != otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(otherEmails).toString());
+			}else if(null != emails && null == otherEmails){
+				iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
+			}
+			
+			 emailMessage.setCreatedBy(user.getUserCode());
+			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setFromName(fullName);
+			
+			 if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getCampaignjobs())){
+				    
+					 String jsonArray = jobListEmailCampaignDTO.getCampaignjobs();
+					 jobs = jsonArray.toString();
+					 if(null != jobs){
+						 jobs = jobs.replaceAll("\\[", "").replaceAll("\\]","");
+						 jobs = jobs.replaceAll("\"", "");
+						 campaignJobs = jobs.split(",");
+					 }
+			 }
+			 
+			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+			 String table =  getJobListCampaignsTable(campaignJobs,UUID); 
+			 
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("salutation", jobListEmailCampaignDTO.getSaluation());
+			 globalVarsMap.put("body", jobListEmailCampaignDTO.getBodytext());
+			 globalVarsMap.put("noOfJobs", String.valueOf(campaignJobs.length));
+			 
+			 globalVarsMap.put("joblistTable", table);
+			 
+			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.JOB_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(jobListEmailCampaignDTO.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 emailMessage.setOrgLocationId(orgLocation.getId());
+			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
+			 
+			 ArrayList<EmailAttachment> attachmentList = null;
+			 EmailAttachment emailAttachment = new EmailAttachment();
+			 FileInfo fileInfo = null;
+			 if(jobListEmailCampaignDTO.getFileInfo() != null) {
+				   fileInfo = jobListEmailCampaignDTO.getFileInfo().get(0);
+				 if(fileInfo != null){
+					 attachmentList =  new ArrayList<EmailAttachment>();
+					 emailAttachment.setName(fileInfo.getFileName());
+					 emailAttachment.setFileUrl(fileInfo.getFileURL());
+					 emailAttachment.setType(fileInfo.getContentType());
+					 attachmentList.add(emailAttachment);
+				     FileUploadUtil.moveFile(jobListEmailCampaignDTO.getStaticPath(), fileInfo, "Joblist Campaign Documents");
+				    }
+			 }
+			 
+			 ArrayList<EmailAttachment> fileAttachmentList = null;
+			 EmailAttachment attachment = new EmailAttachment();
+			 
+			 if(multiFile.getSize() > 0){
+				 fileAttachmentList =  new ArrayList<EmailAttachment>();
+				 attachment.setName(multiFile.getOriginalFilename());
+				 attachment.setDocFile(multiFile.getBytes());
+				 attachment.setType(multiFile.getContentType());
+				 fileAttachmentList.add(attachment);
+			 }
+			 
+			//calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
+			 
+			 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,jobListEmailCampaignDTO.getBodytext(),signature,fileInfo);
+			 userMailBox.setRequirementId(jobs);
+			 userMailBoxService.saveUserMailBox(userMailBox);
+			 userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+			 
+			 
+	}
+
+	private String getJobListCampaignsTable(String[] campaignJobs, String UUID) throws Exception
+	{
+		
+         String tempHTML = null;
+		 
+		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
+		 tempHTML = tempHTML+"<tr align='center'>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Job Title<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Location<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Employment Type<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Skills<span></th>";
+		 tempHTML = tempHTML+"</tr>";
+		 
+         Set<Long> jobsList = new HashSet<Long>();
+         
+         for(int i=0 ; i < campaignJobs.length; i++){
+        	 jobsList.add(Long.valueOf(campaignJobs[i]));
+		 }
+		 
+         int j=1;
+		 
+        for(Long jobId : jobsList){
+			 if(j<=10){
+				 
+				 Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+				 StringBuilder jobTitle = new StringBuilder();
+				 if(!isNullOrEmpty(requirement.getJobId())){
+					 jobTitle = jobTitle.append(requirement.getJobId()).append("-").append(requirement.getJobTitle());
+				 }else{
+					 jobTitle = jobTitle.append(requirement.getJobTitle());
+				 }
+				 
+				 
+				 StringBuilder location = new StringBuilder();
+				 if(!isNullOrEmpty(requirement.getCity())){
+					 location = location.append(requirement.getCity());
+				 }
+				 
+				 StringBuilder employmentType = new StringBuilder();
+				 if(!isNullOrEmpty(requirement.getJobType())){
+					 employmentType = employmentType.append(requirement.getJobType());
+				 }else{
+					 employmentType = employmentType.append("----");
+				 }
+				 
+				 
+				 StringBuilder jobSkills = new StringBuilder();
+				 String skills = null;
+				 if(null != requirement.getSkills()){
+					 String[] skillsList = requirement.getSkills().split(",");
+					 for(String skill : skillsList){
+						 jobSkills = jobSkills.append(skill).append(", ");
+					 }
+					 
+					 jobSkills.deleteCharAt(jobSkills.length()-2) ;
+					 skills = jobSkills.toString();
+				 }else{
+					 skills = "----";
+				 }
+				 
+				 tempHTML = tempHTML+"<tr align='center'>";
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'><a style='text-decoration:none;' target='_blank' href='"+sourceleadUrl+"/"+"jobCampaignSummary?requirementUUID="+requirement.getRequirementUUID()+"'> "+jobTitle.toString()+" </a></td>";
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+location+"</td>";
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+employmentType+"</td>";
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+skills+"</td>";
+				 
+				 tempHTML = tempHTML+"</tr>";
+				 
+			 }
+			 j++;
+			 }
+        
+	         tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+			 tempHTML = tempHTML+"</td>";
+			 tempHTML = tempHTML+"</tr>";;
+			 tempHTML = tempHTML+"<tr style='background-color:#ffffff;min-height:32px;'>";
+			 tempHTML = tempHTML+"<td style='padding-top:15px;padding-bottom:15px;padding-right:10px;padding-left:10px;'>";
+			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff;'>";
+			 tempHTML = tempHTML+"<tbody>";
+			 tempHTML = tempHTML+"<tr>";
+			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
+			 
+			 if(jobsList.size() > 10){
+				 tempHTML = tempHTML+"<br/><a href='"+sourceleadUrl+"/"+"viewAllJobCampaigns?jobCampaignUUID="+UUID+"'  target='_blank' style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all jobs</a> </td>";
+			 }
+			 
+			 tempHTML = tempHTML+"</tr>";
+			 tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+			 tempHTML = tempHTML+"</td>";
+			 tempHTML = tempHTML+"</tr>";
+			 tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+		 
+		 return tempHTML;
+		
+	}
 
 }
