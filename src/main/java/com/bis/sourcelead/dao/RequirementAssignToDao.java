@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -32,6 +31,11 @@ public interface RequirementAssignToDao {
 	public List<RequirementAssignTo> getAllAssignedRequirementByDateRange(Long orgLocationId, String userId,Date startDateUTC, Date endDateUTC);
 	
 	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,Long teamId);
+	
+	/*
+	 * this method for job campaigns
+	 */
+	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId,Long orgLocationId) throws Exception;
 
 	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
 	

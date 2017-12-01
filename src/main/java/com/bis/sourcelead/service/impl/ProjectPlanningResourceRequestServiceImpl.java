@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
+import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -269,6 +271,19 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
+	}
+
+	@Override
+	public ResponseList<ProjectPlanningResourceRequestDTO> getResourceRequestListByApproverIdAndOrgLocationId(
+			ProjectPlanningResourceRequestDTO resourceRequestDTO, Long approverUserId, Long orgLocationId,
+			String userRole) throws Exception {
+		return projectPlanningResourceRequestDao.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO, approverUserId, orgLocationId, userRole);
+	}
+
+	@Override
+	public List<ProjectPlanningResourceRequest> getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(
+			Long approverUserId, Long orgLocationId, String userRole) throws Exception {
+		return projectPlanningResourceRequestDao.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(approverUserId, orgLocationId, userRole);
 	}
 	
 }

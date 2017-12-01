@@ -123,13 +123,13 @@
                 <input type="text" class="form-control calendar" name='endDateREPLACEROWID' id='endDateREPLACEROWID' placeholder="End Date" readonly>
               </div>  
               <div class="col-md-3">
-               <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>
-                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">
+               <label>Estimated Hours</label>
+                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
               </div>  
               <div class="col-md-3 currencySymbol">
-                  <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>
+                  <label>Estimated Budget</label>
                   <div class="positionRelative">
-                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">
+                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">
                  <span class="currencyValue" value="${currencyCode}" id="budgetCurrencyREPLACEROWID" name="budgetCurrencyREPLACEROWID">${currencyCode}</span>
                       </div>
               </div>
@@ -509,7 +509,7 @@
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedHours =  $('#estimatedHours'+maxRowNum).val();
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
-				estimatedHours = "--";
+				estimatedHours = "0";
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -520,7 +520,7 @@
 			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedBudget =  $('#estimatedBudget'+maxRowNum).val();
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
-				estimatedBudget = "--";
+				estimatedBudget = "0";
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -637,13 +637,25 @@
 		
 		//Estimated Hours
 		var estimatedHours =  $('#estimatedHours'+rowId).val();
-		$('#estimatedHoursRow'+rowId).empty();
-		$('#estimatedHoursRow'+rowId).html(estimatedHours);
+		if(estimatedHours != ""){
+			$('#estimatedHoursRow'+rowId).empty();
+			$('#estimatedHoursRow'+rowId).html(estimatedHours);
+		}else{
+			$('#estimatedHoursRow'+rowId).empty();
+			$('#estimatedHoursRow'+rowId).html(0);
+		}
+		
 		
 		//Estimated Budget
 		var estimatedBudget =  $('#estimatedBudget'+rowId).val();
-		$('#estimatedBudgetRow'+rowId).empty();
-		$('#estimatedBudgetRow'+rowId).html(estimatedBudget);
+		if(estimatedBudget != ""){
+			$('#estimatedBudgetRow'+rowId).empty();
+			$('#estimatedBudgetRow'+rowId).html(estimatedBudget);
+		}else{
+			$('#estimatedBudgetRow'+rowId).empty();
+			$('#estimatedBudgetRow'+rowId).html(0);
+		}
+		
 		
 		totalResoursec(rowId);
 		totalEstimatedHours(rowId);
@@ -922,7 +934,7 @@ function loadRequestDetails(){
 	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
-	        	  
+	        	  $("input[name = 'maxRowCount']").val(json.newResourceRequestList.length);
 	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
 	        	 
 	        	 
@@ -1070,7 +1082,8 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedHours =  report.estimatedHours;
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
-				estimatedHours = "--";
+				estimatedHours = "0";
+				$("#estimatedHours"+maxRowNum).val("");
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -1081,7 +1094,8 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedBudget =  report.estimatedBudget;
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
-				estimatedBudget = "--";
+				estimatedBudget = "0";
+				$("#estimatedBudget"+maxRowNum).val("");
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -1282,14 +1296,14 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
-			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours</label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 currencySymbol">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget</label>';
 			divRowTd2_0Str = divRowTd2_0Str +'              <div class="positionRelative">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="validate_length length1-10 validate_int" data-validation-optional="true">';
 			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="budgetCurrency">${currencyCode}</span>';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';

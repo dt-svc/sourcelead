@@ -132,18 +132,25 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 
 	@Override
 	@Transactional
-	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type,String mailType) throws Exception {
 		
 		String selectedMode = "";
+		String subQuery = "";
+		
+		if(mailType.equalsIgnoreCase("mails")){
+			subQuery = " and mb.mailType = '1'";
+		}else{
+			subQuery = " and mb.mailType = '2'";
+		}
 		
 		if(!type.equalsIgnoreCase("Starred")){
 			selectedMode = "select max(mb.id) from UserMailBox mb where mb.id < :id "
 					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-					+ "mb.mailStatus = '"+type+"'";
+					+ "mb.mailStatus = '"+type+"'  "+subQuery+" ";
 		}else{
 			selectedMode = "select max(mb.id) from UserMailBox mb where mb.id < :id "
 					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-					+ "mb.isFavourite = '1' ";
+					+ "mb.isFavourite = '1'  "+subQuery+" ";
 		}
 		
 		
@@ -161,17 +168,25 @@ public class UserMailBoxDaoImpl implements UserMailBoxDao{
 	
 	@Override
 	@Transactional
-	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
+	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type,String mailType) throws Exception {
 		
 		String selectedMode = "";
+		String subQuery = "";
+		
+		if(mailType.equalsIgnoreCase("mails")){
+			subQuery = " and mb.mailType = '1'";
+		}else{
+			subQuery = " and mb.mailType = '2'";
+		}
+		
 		if(!type.equalsIgnoreCase("Starred")){
 		selectedMode = "select min(mb.id) from UserMailBox mb where mb.id > :id "
 				+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-				+ "mb.mailStatus = '"+type+"'";
+				+ "mb.mailStatus = '"+type+"' "+subQuery+" ";
 		}else{
 			selectedMode = "select min(mb.id) from UserMailBox mb where mb.id > :id "
 					+ "and mb.userId.id = :userId and mb.orgLocationId.id = :orgLocationId and "
-					+ "mb.isFavourite = '1'";
+					+ "mb.isFavourite = '1' "+subQuery+" ";
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();

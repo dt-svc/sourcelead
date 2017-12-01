@@ -36,6 +36,9 @@ public interface RequirementAssignToService {
 	
 	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationIdAndTeamId(Long orgLocationId,Long teamId);
 	
+	public List<RequirementAssignTo> getAllAssignRequirementByUserIdAndOrglocationId(String userId,Long orgLocationId) throws Exception;
+
 	Integer getRequirementAssignToListCountByRequirementId(Long requirementId)throws Exception; 
+
 
 }
