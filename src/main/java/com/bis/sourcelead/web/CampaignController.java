@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -226,13 +227,15 @@ public class CampaignController {
 	 * @throws NumberFormatException 
 	 */
 	@RequestMapping(value = "/campaignAddRecipient",method=RequestMethod.POST)
-	public String campaignAddRecipientJsp(HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
-//		if(StringUtils.isNotBlank(senderId)) {
-//			CreateSender senderIdentity = campaignService.findSenderIdentityById(Long.parseLong(senderId));
-//			model.addAttribute("sender", senderIdentity);
+	public String campaignAddRecipientJsp(@RequestParam(value="listId", required=false) String listId,HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
+		if(StringUtils.isNotBlank(listId)) {
+			CampaignList campaignList = campaignService.getCampaignById(Long.parseLong(listId));
+			model.addAttribute("campaignList", campaignList);
+			if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
+				model.addAttribute("recipientList", campaignList.getCampaignRecipient());
+			}
+		}
 		model.addAttribute("sourceleadUrl", sourceleadUrl);
-//		}
 		return "campaign/campaignRecipient";
-//		return model;
 	}
 }

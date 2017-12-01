@@ -1,8 +1,7 @@
 
 
-function campaignRecipient(ele,senderId) {
-	/*fromProfile = fromProfile ? fromProfile : false;*/
-		$.post(sourceleadUrl+"/campaignAddRecipient", {}, function(data) {
+function campaignRecipient(ele,listId) {
+		$.post(sourceleadUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$(".popUpReci").fadeIn(100);
 			$("#campaignRecipient").html(data);

@@ -37,4 +37,6 @@ public interface CampaignDao {
 
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;
 
+	CampaignList getCampaignListById(String contactListId) throws Exception;
+
 }

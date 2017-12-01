@@ -113,6 +113,7 @@ public class CampaignRestController {
 	@RequestMapping(value = "/saveRecipientList", method = RequestMethod.POST)
 	public boolean saveRecipientList(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isSenderDeleted = campaignService.saveRecipientList(orgLocation, campaignListDTO, user);

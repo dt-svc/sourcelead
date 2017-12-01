@@ -153,6 +153,11 @@ public class CampaignServiceImpl implements CampaignService{
 	@Override
 	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
 	{
+		
+		if(StringUtils.isNotBlank(campaignListDTO.getContactListId())){
+			CampaignList campaignList = campaignDao.getCampaignListById(campaignListDTO.getContactListId());
+			
+		}
 		boolean isListInserted = false;
 		String listResponse = campaignUtil.createList(campaignListDTO);
 		if(StringUtils.isNotBlank(listResponse)) {
