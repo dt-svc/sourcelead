@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Employees;
+
 public class AssetDTO extends CommonDTO {
 
 		private String sno;
@@ -38,6 +40,37 @@ public class AssetDTO extends CommonDTO {
 		
 		private List<FileInfo> uploadBtndskBUpload;
 		
+		private String fileName;
+		
+		private String fileUrl;
+		
+		private String fileContentType;
+		
+		private String shiftAFileContentType;
+		
+		private String shiftAFileUrl;
+		
+		private String shiftAFileName;
+		
+		private String shiftBFileContentType;
+		
+		private String shiftBFileUrl;
+		
+		private String shiftBFileName;
+		
+		private List<Employees> employeesList;
+		
+		private String shiftAEmpName;
+		
+		private String shiftBEmpName;
+		
+		private String categoryName;
+		
+		private String categoryId;
+		
+		private String shiftAEmployee;
+		
+		private String shiftBEmployee;
 
 		public String getSno() {
 			return sno;
@@ -173,6 +206,134 @@ public class AssetDTO extends CommonDTO {
 
 		public void setUploadBtndskBUpload(List<FileInfo> uploadBtndskBUpload) {
 			this.uploadBtndskBUpload = uploadBtndskBUpload;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
+
+		public String getFileUrl() {
+			return fileUrl;
+		}
+
+		public void setFileUrl(String fileUrl) {
+			this.fileUrl = fileUrl;
+		}
+
+		public String getFileContentType() {
+			return fileContentType;
+		}
+
+		public void setFileContentType(String fileContentType) {
+			this.fileContentType = fileContentType;
+		}
+
+		public String getShiftAFileContentType() {
+			return shiftAFileContentType;
+		}
+
+		public void setShiftAFileContentType(String shiftAFileContentType) {
+			this.shiftAFileContentType = shiftAFileContentType;
+		}
+
+		public String getShiftAFileUrl() {
+			return shiftAFileUrl;
+		}
+
+		public void setShiftAFileUrl(String shiftAFileUrl) {
+			this.shiftAFileUrl = shiftAFileUrl;
+		}
+
+		public String getShiftAFileName() {
+			return shiftAFileName;
+		}
+
+		public void setShiftAFileName(String shiftAFileName) {
+			this.shiftAFileName = shiftAFileName;
+		}
+
+		public String getShiftBFileContentType() {
+			return shiftBFileContentType;
+		}
+
+		public void setShiftBFileContentType(String shiftBFileContentType) {
+			this.shiftBFileContentType = shiftBFileContentType;
+		}
+
+		public String getShiftBFileUrl() {
+			return shiftBFileUrl;
+		}
+
+		public void setShiftBFileUrl(String shiftBFileUrl) {
+			this.shiftBFileUrl = shiftBFileUrl;
+		}
+
+		public String getShiftBFileName() {
+			return shiftBFileName;
+		}
+
+		public void setShiftBFileName(String shiftBFileName) {
+			this.shiftBFileName = shiftBFileName;
+		}
+
+		public List<Employees> getEmployeesList() {
+			return employeesList;
+		}
+
+		public void setEmployeesList(List<Employees> employeesList) {
+			this.employeesList = employeesList;
+		}
+
+		public String getShiftAEmpName() {
+			return shiftAEmpName;
+		}
+
+		public void setShiftAEmpName(String shiftAEmpName) {
+			this.shiftAEmpName = shiftAEmpName;
+		}
+
+		public String getShiftBEmpName() {
+			return shiftBEmpName;
+		}
+
+		public void setShiftBEmpName(String shiftBEmpName) {
+			this.shiftBEmpName = shiftBEmpName;
+		}
+
+		public String getCategoryName() {
+			return categoryName;
+		}
+
+		public void setCategoryName(String categoryName) {
+			this.categoryName = categoryName;
+		}
+
+		public String getCategoryId() {
+			return categoryId;
+		}
+
+		public void setCategoryId(String categoryId) {
+			this.categoryId = categoryId;
+		}
+
+		public String getShiftAEmployee() {
+			return shiftAEmployee;
+		}
+
+		public void setShiftAEmployee(String shiftAEmployee) {
+			this.shiftAEmployee = shiftAEmployee;
+		}
+
+		public String getShiftBEmployee() {
+			return shiftBEmployee;
+		}
+
+		public void setShiftBEmployee(String shiftBEmployee) {
+			this.shiftBEmployee = shiftBEmployee;
 		}
 
 		
