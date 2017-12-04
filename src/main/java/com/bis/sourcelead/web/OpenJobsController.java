@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,21 +61,26 @@ public class OpenJobsController {
 	
 	
 	@RequestMapping(value = "/ws/jobs/{title}/{location}/{experience}")
-	 public String openRequirementsRedirect(@PathVariable String title,@PathVariable String location,@PathVariable String experience,HttpServletRequest request) throws Exception{
-	 ModelAndView model = new ModelAndView();
+	 public String openRequirementsRedirect(ModelMap modelMap,@PathVariable String title,@PathVariable String location,@PathVariable String experience,
+			 @RequestParam(value = "postedOn",defaultValue ="", required = false) String postedOn,@RequestParam(value = "locationType",defaultValue ="", required = false) String locationType,
+			 @RequestParam(value = "employementType",defaultValue ="", required = false) String employementType,@RequestParam(value = "companies",defaultValue ="", required = false) String companies,
+			 HttpServletRequest request) throws Exception{
 	 List<Countries> countriesList = countriesService.getAllCountries();
-	 model.addObject("countryList",countriesList);
+	 modelMap.addAttribute("countryList",countriesList);
 	 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-	 model.addObject("skillsList",skillsList);
+	 modelMap.addAttribute("skillsList",skillsList);
 	 
 	 List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
-	 model.addObject("industryList", industryListWithoutId);
+	 modelMap.addAttribute("industryList", industryListWithoutId);
 	 
-	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.addObject("openJobsTitle", title);
-	 model.addObject("openJobsLocation", location);
-	 model.addObject("experience", experience);
-//	 model.setViewName("openJobs/openjobs");
+	 modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
+	 modelMap.addAttribute("openJobsTitle", title);
+	 modelMap.addAttribute("openJobsLocation", location);
+	 modelMap.addAttribute("openJobsExperience", experience);
+	 modelMap.addAttribute("postedOn", postedOn);
+	 modelMap.addAttribute("locationType", locationType);
+	 modelMap.addAttribute("employementType", employementType);
+	 modelMap.addAttribute("companies", companies);
 	 return "openJobs/openjobs";
 }
 	

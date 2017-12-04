@@ -1381,7 +1381,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
+						location.replace(sourceleadUrl+"/jobs");
 
 					},
 				});

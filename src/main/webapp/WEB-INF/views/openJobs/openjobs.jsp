@@ -63,8 +63,9 @@ window.onload = function () {
 		}
 		
 	}else{
-		getOpenJobsELKList();
 		getDropDownCount();
+		getOpenJobsELKList();
+		
 	}
  };
 </script>
@@ -225,8 +226,8 @@ z-index: 1000000000 !important;
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
-			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKList(); clearFilters();"></span>
+			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
+			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
 			<h3><b id="ADS">Advanced Search</b></h3>
 			<div class="clear"></div>
 		</section>
@@ -241,12 +242,12 @@ z-index: 1000000000 !important;
 				<ul id="show">
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Today
-						  <input type="radio" name="dateFilter" value="today" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="today" ${postedOn=="today"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 day ago
-						  <input type="radio" name="dateFilter" value="1 Day Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Day Ago" ${postedOn=="1 Day Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
@@ -766,14 +767,24 @@ function clearFilters(){
 
 <script>
 	function getDropDownCount() {
+		var selectedExperience = '${openJobsExperience}';
+		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
+			selectedExperience = 0;
+		}
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled>Experience(Years)</option>")';
+				+ '("<option></option>")';
 		for (var i = 1; i <= 25; i++) {
-			result = result + '("<option value='+i+'>' + i + '</option>")';
+			if(i == selectedExperience){
+				result = result + '("<option selected value='+i+'>' + i + '</option>")';
+			}
+			else{
+				result = result + '("<option value='+i+'>' + i + '</option>")';
+			}
+			
 		}
 		result = result + '</select>';
 		$('#dropDownCountId').empty();
@@ -783,16 +794,23 @@ function clearFilters(){
 
 <script>
 function requirementsFilter(type){
-	var reqType = [];
+	getDropDownCount();
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = document.getElementById("openJobsExperienceId").value;
+	var reqType = "";
 	$('input:checkbox[name=typeFilter]:checked').each(function() 
     {
-		reqType.push($(this).val());
+// 		reqType.push($(this).val());
+		reqType	+=	(reqType==""?"":"--") + $(this).val().toLowerCase().replace(/ /g ,"-");
     });
 	
-	var orgLocationIds = [];
+	var orgLocationIds = "";
 	$('input:checkbox[name=orgName]:checked').each(function() 
     {
-		orgLocationIds.push($(this).val());
+// 		orgLocationIds.push($(this).val());
+		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val().toLowerCase().replace(/ /g ,"-");
+		alert("hello orgLocationIds"+orgLocationIds)
     });
 	
 	var dates = "";
@@ -821,52 +839,40 @@ function requirementsFilter(type){
 	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
-	 $.ajax({ 
-	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
-	    success: function(data) {
-	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length > 10){
-	    			$("#loadMoreReq").css("display", "block");
-	    		}
-	    		$("#noResultsDiv").css("display", "none");
-	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	$("#openJobsRequirementTitleId").val('');
-				$("#openJobsLocationId").val('');
-				$("#openJobsExperienceId").val('');
-	        	$('#openJobsRequirementsList').empty();
-	        	$("#openJobsRequirementsList").show();
-	        	$("#openJobsRequirementsSummary").hide();
-	        	$("#loadMoreReq").css("display", "none");
-	        	$("#noResultsDiv").css("display", "block");
-	        	/* var result ="";
-	         	result = result + '<div>No Records Found...</div>';
-	         	$('#loadMoreReq').append(result); */
-	        }
-	    }
-	 }); 
+	var url = "?";
+	if(dates!=""){
+		url+="postedOn="+dates;
+	}
+	window.location.href = "?postedOn="+dates+"&locationType="+country+"&employementType="+reqType+"&companies="+orgLocationIds;
+	
 }
 </script>
 
 
 <script>
-function getOpenJobsELKList(type){
-	var title = document.getElementById("openJobsRequirementTitleId").value;
-	var location = document.getElementById("openJobsLocationId").value;
-	var experience = $("#openJobsExperienceId").val();
-	alert("experience"+experience)
+function getOpenJobsELKListJOBS(){
+	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
+	var openJobsLocation = document.getElementById("openJobsLocationId").value;
+	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
+	location.href = sourceleadUrl+"/ws/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
+	
+}
+</script>
+
+<script>
+function getOpenJobsELKList(){
+	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
+	var openJobsLocation = document.getElementById("openJobsLocationId").value;
+	var openJobsExperience = $("#openJobsExperienceId").val();
 	var offset = 0;
-	if(type == "more"){
+	var sourceleadUrl ='${sourceleadUrl}';
+	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
-	}
+	} */
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
-	/*  $.ajax({ 
-	   	type: "POST",
+// 	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
+	  $.ajax({ 
+	   	type: "GET",
 	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
@@ -885,7 +891,7 @@ function getOpenJobsELKList(type){
 				$("#noResultsDiv").css("display", "block");
 	        }
 	    }
-	 });  */
+	 });  
  }
 </script>
 
