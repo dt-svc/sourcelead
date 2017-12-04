@@ -286,7 +286,7 @@ function projectTaskPaginations(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -400,8 +400,8 @@ function editCancel(){
     <div id="addTaskPopupDivId"></div>
   </div>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 
  <script>
  function showtasktype(){

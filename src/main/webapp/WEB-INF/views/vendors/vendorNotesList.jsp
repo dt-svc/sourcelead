@@ -113,7 +113,7 @@ function vendorNotes(orgRelationId){
    	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
    	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';

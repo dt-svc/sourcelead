@@ -14,22 +14,22 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
 
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
- <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
- <script src="resources/js/slead-common.js"></script> 
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/slead-common.js"></script> 
 <script>
 		$(document).ready(function() { 
 			var UUID = '${UUID}';
@@ -70,7 +70,7 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a>
     </span>
@@ -191,7 +191,7 @@ function cancel(){
 				
 			 
 			if(candidatesIds.length > 0){
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				   $.ajax({
 					    type : "POST",
 			    	    data: formData,
@@ -235,7 +235,7 @@ var email = document.getElementById("email").value;
 var sourceleadUrl = '${sourceleadUrl}';
 
 if(email){
-$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/ws/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
@@ -385,4 +385,4 @@ document.getElementById("attachfileBtn").onchange = function () {
 		};
 	})(jQuery);
 </script>
-<script type="text/javascript" src='resources/js/slead-common.js'></script>
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>

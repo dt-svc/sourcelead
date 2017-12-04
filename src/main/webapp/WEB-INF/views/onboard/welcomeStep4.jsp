@@ -13,19 +13,19 @@
  </c:if>
  
 <title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
  var sourceleadUrl ='${sourceleadUrl}';
@@ -140,13 +140,13 @@
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/moment.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -180,7 +180,7 @@ $(".welPop input").click(function(){
 <script>
 function changeTaskStatus(taskId){
 	
-	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	 $.ajax({
 	    	type: "POST",
@@ -204,7 +204,7 @@ function changeTaskStatus(taskId){
 
 <script>
 function goToDashboard(){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({
 	    	type: "POST",
@@ -240,7 +240,7 @@ function goToDashboard(){
   
 <script>
 	function predefineOrgImage(imageId){
-	 $(imageId).attr('src','resources/images/office-image.jpg');
+	 $(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

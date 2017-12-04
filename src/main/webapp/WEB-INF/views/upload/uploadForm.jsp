@@ -24,7 +24,7 @@ margin:10px 220px 0;
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users List</a> &raquo; Import Users </div>
     </section>
-    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
+    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="${appPath}/fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
     <div id="loading"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">

@@ -15,14 +15,14 @@
 
 <title>Welcome to Source Lead :: Account List</title>
 	<!-- Bootstrap -->
-	<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 </head>
 
 <script>
@@ -62,7 +62,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -210,7 +210,7 @@ width: auto;
   </footer>
   <!-- Footer Area --> 
 </div>
-<script type="text/javascript" src='resources/js/slead-common.js'></script>
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
 </body>
 </html>
 
