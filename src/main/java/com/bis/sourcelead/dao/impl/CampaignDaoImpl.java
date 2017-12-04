@@ -15,6 +15,7 @@ import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -207,5 +208,20 @@ public class CampaignDaoImpl implements CampaignDao {
 			return false;
 		}
 	}
+
+	@Override
+	@Transactional
+	public List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+//		CampaignRecipient campaignRecipient = null;
+		List<CampaignRecipient> cpnList = session.createQuery("from CampaignRecipient cpnres where cpnres.campaignListId.id = :viewListId and cpnres.status = 1").setString("viewListId", viewListId).setCacheable(true).list();
+		
+//		if(cpnList !=null && cpnList.size() >0) {
+//			campaignRecipient = cpnList.get();
+//		}
+		return cpnList;
+	}
+
 
 }

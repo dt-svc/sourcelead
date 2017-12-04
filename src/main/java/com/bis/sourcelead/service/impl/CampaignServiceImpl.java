@@ -296,4 +296,11 @@ public class CampaignServiceImpl implements CampaignService{
 		return campaignDao.saveCampaignScheduledHistroy(campaign);
 
 	}
+
+	@Override
+	public List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long orgLocationId)
+	{
+		return campaignDao.getRecipientListByListIdAndOrgLocationId(viewListId, orgLocationId);
+	}
+
 }

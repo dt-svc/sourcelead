@@ -41,7 +41,6 @@ function getCampaignRecipientList(){
        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
        var userId = '${SourceLeadWeb_user.id}';
        var typeOfCampaign = $("#typeOfCampaign").val();
-       alert(typeOfCampaign);
        $.ajax({
        type : "GET",
         url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&typeOfCampaign="+typeOfCampaign,       
@@ -70,7 +69,7 @@ function populategRecipientList(json){
            result = result +    '<div class="tbldata-dotdot-verybig" title="'+report.listName+'">'+report.listName+'</div>';
            result = result +'  </td>';  
            result = result +'  <td>';   
-           result = result +    '<div class="tbldata-dotdot-big" title="'+report.recipientEmail+'">'+report.listCount+'</div>';
+           result = result +    '<div class="tbldata-dotdot-big" title="'+report.recipientEmail+'">'+report.listCount+' <a class="listView" onclick="listViewPop('+report.id+');">View list</a></div>';
            result = result +'  </td>';
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tblminwidth-50 text-center">';
@@ -88,6 +87,110 @@ function populategRecipientList(json){
    recipientListPagination();
 }
 </script>
+
+<div class="ReciViewPop">
+		<div class="popupHead">
+			<h2>View recipient list</h2><a onclick="viewListClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		<div id="loading"></div>
+		<div id= "viewListDev" class="datatable_filter"></div>
+		<div class="popupMid popupMidPad clearfix">
+		
+          <div class="clients_wrap_table">
+	
+			</div>	
+	
+		</div>
+		
+		<div class="popupFoot">
+            <input value="Close" class="btn btn-default ml popCan" onclick="viewListClose();" type="button">
+          </div>		
+		
+</div>	
+
+<script>
+function listViewPop(viewListId){
+	$(".popMask").show();
+	$(".ReciViewPop").show();	
+	
+	$.ajax({
+	       type : "GET",
+	        url: sourceleadUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
+	        success :function(json) {
+	        	populategViewList(json);
+	       },
+	        
+	   }); 
+
+
+function populategViewList(json){
+	alert(json)
+    var result = '';
+    result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0" id="viewListTableId">';
+    result = result +' <thead>';
+    result = result +' <tr>';
+    result = result +' <th>First Name</th>';
+    result = result +' <th>Last Name</th>';
+    result = result +' <th>Email</th>';
+    result = result +' </tr>';
+    result = result +' </thead>';
+    result = result +' <tbody>';
+    
+for (var i=0; i<json.length; i++){
+        var report = json[i];
+        result = result +'  <tr>';                                                                                                                  
+        result = result +'  <td>';         
+        if(report.firstName != null && report.firstName !='' && report.firstName !='undefined'){
+        	result = result +    '<div class="tbldata-dotdot-sm" title="'+report.firstName+'">'+report.firstName+'</div>';
+        }else{
+        	result = result +  '<div class="tbldata-dotdot-sm">--</div>';
+        }
+        
+        result = result +'  </td>';  
+        result = result +'  <td>'; 
+        if(report.lastName != null && report.lastName !='' && report.lastName !='undefined'){
+        	result = result +    '<div class="tbldata-dotdot-sm" title="'+report.lastName+'">'+report.lastName+'</div>';
+        }else{
+        	result = result +  '<div class="tbldata-dotdot-sm">--</div>';
+        }
+        result = result +'  </td>';
+        result = result +'  <td>';                                                                                                                  
+        result = result +    '<div class="tbldata-dotdot-sm" title="'+report.email+'">'+report.email+'</div>';                                                                                                            
+        result = result +'  </td>';
+        result = result +'</tr>';                                                                                                                                                                                                                                        
+        
+  } 
+	result = result +' </tbody>';
+	result = result +' </table>';
+	$("#viewListDev").empty();
+	$("#viewListDev").append(result);
+	listPagination();
+  }
+}
+
+function viewListClose(){
+	$(".popMask").hide();
+	$(".ReciViewPop").hide();	
+}
+</script>
+
+<script>
+function listPagination(){
+        $('#viewListTableId').DataTable( { 
+                   "scrollCollapse": false,
+                   "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+                   "bLengthChange": true,
+                   "bDestroy": true,
+                   "ordering": true,
+                   "oLanguage": {
+                   "sSearch": "",
+                   "sZeroRecords": "", "sEmptyTable": ""
+              }
+           });
+           $("#viewListTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script>
+
 
 <script>
 function recipientListPagination(){
@@ -129,7 +232,6 @@ function deleteCampaignContactList(id){
 </script>
 
 
-  
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
