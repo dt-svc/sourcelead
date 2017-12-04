@@ -19,6 +19,9 @@ z-index: 1040 !important;
 
 <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
+	<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
 	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
 		<div class="popupHead">
 			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
@@ -111,6 +114,7 @@ z-index: 1040 !important;
 		<div class="popupFoot">
 		<p id="errorMessage" class=""></p>
             <input value="Save" class="btn btn-primary" type="button" id="addList">
+             <input value="reset" class="btn btn-primary" type="button" id="resetForm">
             <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
           </div>		
 		</form:form>
@@ -118,8 +122,11 @@ z-index: 1040 !important;
 	
 	<script>
 	function clearRecipantsList(){
-		 $("#recipientEmail").empty();
+		  $("#recipientEmail").empty();
 		  $("#recipientEmail").trigger("chosen:updated");
+		  $("#cpnListName").val('');
+		  $("#contactListId").val('');
+		   
 	}
 	</script>	
 		
@@ -1342,6 +1349,13 @@ function validateCampaignListName(){
 		}
 		}
 		
+}
+</script>
+
+ <script>
+ function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
 }
 </script>
 <!--   Popup Code  -->   
