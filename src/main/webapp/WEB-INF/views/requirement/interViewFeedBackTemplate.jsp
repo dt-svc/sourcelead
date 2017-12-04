@@ -11,9 +11,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
 <script type="text/javascript">
 //On document ready
@@ -553,7 +553,7 @@ function scrollToBottom(){
 </body>
 
 
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 <%-- <jsp:include page="masterFooter.jsp" /> --%>
 

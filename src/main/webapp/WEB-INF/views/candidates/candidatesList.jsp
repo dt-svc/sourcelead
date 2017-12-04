@@ -15,7 +15,7 @@
 	    var result = "";
 		result = result + '	  <div class="blank-pages-tech">';
 		result = result + '   <p class="text-center text-danger permissondenied mb">';
-		result = result + '       <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '       <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
 		result = result + '   </p>';
 		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
@@ -74,7 +74,7 @@
     padding-right: 5px;
 }
 </style>
-<script type="text/javascript" src="resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
 
@@ -228,7 +228,7 @@ function candidateSideBar(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 }else{
-						result = result+'<img data-id="profileImage" id="userImage" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
 
 						 }
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -569,7 +569,7 @@ $(document).ready(function() {
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -611,7 +611,7 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
 	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        

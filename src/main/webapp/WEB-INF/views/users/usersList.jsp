@@ -57,7 +57,7 @@ function getUsersSearchResult(searchValue){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 <input type="hidden" id="noUsers" name="noUsers"/>
@@ -252,7 +252,7 @@ function getUsersSearchResult(searchValue){
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
@@ -512,7 +512,7 @@ function exportToPdf(){
 			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
 			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			       	    	}else{
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			       	    	}
 			       	    	
 			       	    	opt = opt +"</div>";
@@ -1098,7 +1098,7 @@ function showList(viewType){
 			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			        			    }else{
-						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			        			    }
 					       	    	result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';

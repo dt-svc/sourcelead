@@ -87,7 +87,7 @@ public class UploadController {
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-		return "redirect:/usersList";
+		return "redirect:/path/usersList";
 	}
 /**
  * Handles Errored file Download

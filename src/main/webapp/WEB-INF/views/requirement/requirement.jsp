@@ -9,8 +9,8 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
-	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
 	
 	<script>
@@ -598,7 +598,7 @@ $(document).ready(function () {
             <div class="col-md-9">
               <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
-                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <span class="btn btn-primary" onchange="uploadButton();"><i class="fa fa-folder-open-o" ></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
@@ -1373,7 +1373,7 @@ function validate_fileupload(fileName)
       		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1914,7 +1914,7 @@ function approvalType(type){
 <script>
 function popupWindow(reqId){ 
 	  
-	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#popupWindow").removeAttr("style");
 	  var result = '';
 	    result = result +'<div class="modal-body clearfix">';
@@ -1959,7 +1959,7 @@ function getUserList(teamType){
 	   $('input[name^="assignUserId"]').each(function() {
 	 		selectedUsersForAssign.push($(this).val());
 	   });
- 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
@@ -2746,12 +2746,11 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
+function uploadButton(){
+	alert("hhhhhhh")
+	fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
+	}
 
-$(function() {
-	$("#uploadBtn").change(function() {
-		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
-	});
- }); 
 </script>
  
 <jsp:include page="../masterFooter.jsp" />

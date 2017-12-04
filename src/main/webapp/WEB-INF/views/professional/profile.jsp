@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
 
 <style>
 .margin-down{
@@ -18,7 +18,7 @@ $(document).ready(function(){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 

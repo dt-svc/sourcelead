@@ -6,12 +6,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 <style>
@@ -666,7 +666,7 @@ function getStatus(){
 		    	formData["estimatedHours"] = "0";
 		    } */
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -710,7 +710,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",

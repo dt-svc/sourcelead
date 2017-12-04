@@ -3,15 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}"
+<link href="/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}"
+<link href="/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}"
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}"
 	rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}"
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}"
 	type="text/css" rel="stylesheet" />
 
 <!-- Content Area -->
