@@ -206,4 +206,17 @@ public class CampaignDaoImpl implements CampaignDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteRecipientListByListId(Long campaignListId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query qry = null;
+			String query = "delete from CampaignRecipient creci where creci.campaignListId.id =:campaignListId ";
+	    	qry = session.createQuery(query).setLong("campaignListId", campaignListId);
+		int i = qry.executeUpdate();
+		return i;
+		
+	}
+
 }

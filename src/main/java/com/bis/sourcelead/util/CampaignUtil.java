@@ -177,9 +177,6 @@ public class CampaignUtil {
 		     if(response.getStatusCode() ==200 || response.getStatusCode() == 201) {
 		    	 str = response.getBody();
 		     }
-//		      System.out.println(response.getStatusCode());
-//		      System.out.println(response.getBody());
-//		      System.out.println(response.getHeaders());
 		    } catch (IOException ex) {
 		      throw ex;
 		    }
@@ -193,7 +190,6 @@ public class CampaignUtil {
 		 List<String> recipientList = new ArrayList<String>(Arrays.asList(jobListEmailCampaignDTO.getToemails().split(",")));
 		 String subject = jobListEmailCampaignDTO.getSubject();
 		    try {
-//		    	String p = "Currently, there is no limit to the number of categories you can track. However, we recommend no more than ~100 total unique categories as this will increase your ease of use in the Statistics area. Additionally, a high rate of unique categories on your account can negatively impact the rate at which we process the messages you send.";
 		        SendGrid sg = new SendGrid("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");
 		        Request request = new Request();
 		        request.setMethod(Method.POST);
@@ -201,8 +197,6 @@ public class CampaignUtil {
 		        request.setBody("{\"custom_unsubscribe_url\":\"www.sourcelead.com\",\"html_content\":\""+htmlContent+"\",\"list_ids\":"+recipientList+",\"sender_id\":"+senderId+",\"subject\":\""+subject+"\",\"plain_content\":\"Check out our sourcelead To unsubscribe, visit [unsubscribe].!\",\"title\":\""+subject+"\",\"categories\":[\""+subject+"\"]}");
 		        Response response = sg.api(request);
 		        isCampaignCreated = response.getBody();
-//		        System.out.println(response.getStatusCode());
-//		        System.out.println(response.getHeaders());
 		      } catch (IOException ex) {
 		        throw ex;
 		      }
@@ -303,21 +297,46 @@ public class CampaignUtil {
 
 	public String updaeteList(CampaignList campaignList, CampaignListDTO campaignListDTO) throws IOException
 	{
-	    try {
+	     String isUpdated = null;
+		try {
 	        SendGrid sg = new SendGrid("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");
 	        Request request = new Request();
 	        request.setMethod(Method.PATCH);
 	        request.setEndpoint("contactdb/lists/"+campaignList.getListId()+"");
 	        request.setBody("{\"name\":\""+campaignListDTO.getCpnListName()+"\"}");
-	        request.addQueryParam("list_id", ""+campaignList.getListId()+"");
+	        request.addQueryParam("list_id", "1");
 	        Response response = sg.api(request);
-	        System.out.println(response.getStatusCode());
-	        System.out.println(response.getBody());
-	        System.out.println(response.getHeaders());
+	        if(response.getStatusCode() == 200) {
+	        	isUpdated = response.getBody();
+	        }
 	      } catch (IOException ex) {
 	        throw ex;
 	      }
-		return null;
+		return isUpdated;
+	}
+
+	public int deleteRecipientFromList(Set<CampaignRecipient> recipientList, String listId) throws IOException
+	{
+		 int deletedStatus = 0;
+		for(CampaignRecipient campaignReci: recipientList) {
+			 try {
+			        SendGrid sg = new SendGrid("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");
+			        Request request = new Request();
+			        request.setMethod(Method.DELETE);
+			        request.setEndpoint("contactdb/lists/"+listId+"/recipients/"+campaignReci.getRecipientId()+"");
+			        request.addQueryParam("recipient_id", "1");
+			        request.addQueryParam("list_id", "1");
+			        Response response = sg.api(request);
+			       if(response.getStatusCode() == 204) {
+			    	   deletedStatus = response.getStatusCode();
+			       }
+			      } catch (IOException ex) {
+			        throw ex;
+			      }
+		}
+		return deletedStatus;
+	   
+		
 	}
 
 	

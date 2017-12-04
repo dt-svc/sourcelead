@@ -52,7 +52,7 @@ z-index: 1040 !important;
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                <c:if test="${not empty recipientList}"></c:if>
                <c:forEach items="${recipientList}" var="recipient">
-   						<option value='${recipient.id }' selected>'${recipient.email}'</option>
+   						<option value='${recipient.email }' selected>'${recipient.email}'</option>
 				</c:forEach>
                 </select>
                 
@@ -125,7 +125,6 @@ z-index: 1040 !important;
 		
 	<script>
   function selectRadio(){
-	  
 	  $("#mailBoxVendorsList").empty();
 	  $("#mailBoxClientsList").empty();
 	  

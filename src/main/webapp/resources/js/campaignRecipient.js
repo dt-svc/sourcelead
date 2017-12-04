@@ -13,10 +13,11 @@ function campaignRecipient(ele,listId) {
 						$.post(sourceleadUrl+"/saveRecipientList?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								recipientClose();
+								location.replace(sourceleadUrl+ "/recipientsList");
 							}else{
-								alert("Hai");
+								alert("Something went wrong ..!");
 								$("#loading").removeAttr("style");
-								$("#errorMessage").text("List not created please try again");
+								$("#errorMessage").text("List not created/updated please try again");
 							}
 						});
 						return true;
@@ -30,10 +31,10 @@ function campaignRecipient(ele,listId) {
            
 }
 
-/*$('body').on('blur', '#capn_add_sender', function() {
-	$("#capn_add_sender").showHelpOnFocus();
-	$("#capn_add_sender").validateOnBlur(false, validationSettings);
-});*/
+$('body').on('blur', '#capn_add_Recipient_List', function() {
+	$("#capn_add_Recipient_List").showHelpOnFocus();
+	$("#capn_add_Recipient_List").validateOnBlur(false, validationSettings);
+});
 
 function recipientClose() {
 	$(".popMask").fadeOut(200);

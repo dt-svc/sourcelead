@@ -14,6 +14,7 @@ function campaignSender(ele,senderId) {
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								senderClose();
+								location.replace(sourceleadUrl+ "/campaignSendersList");
 							}
 						});
 						return true;

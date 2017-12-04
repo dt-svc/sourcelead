@@ -153,13 +153,36 @@ public class CampaignServiceImpl implements CampaignService{
 	@Override
 	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
 	{
-		
+		boolean isListInserted = false;
 		if(StringUtils.isNotBlank(campaignListDTO.getContactListId())){
 			CampaignList campaignList = campaignDao.getCampaignListById(Long.parseLong(campaignListDTO.getContactListId()));
 			String listResponse = campaignUtil.updaeteList(campaignList,campaignListDTO);
-			
+			if(StringUtils.isNotBlank(listResponse)) {
+				JSONObject jObject  = new JSONObject(listResponse); 
+				String listId = jObject.getString("id");
+				campaignList.setListName(campaignListDTO.getCpnListName());
+				Date date = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+				int deletedStatus = campaignUtil.deleteRecipientFromList(campaignList.getCampaignRecipient(),listId);
+				if(deletedStatus == 204) {
+					List<String> recipientList = campaignListDTO.getRecipientEmail();
+					int i  = deleteRecipientListByListId(campaignList.getId());
+					if(i > 0) {
+						Set<CampaignRecipient>  recipientSet = getRecipientSet(recipientList,campaignList,date,user);
+						campaignList.setCampaignRecipient(recipientSet);
+						CampaignList list =campaignDao.saveRecipientList(campaignList);
+						
+						String res =  campaignUtil.addRecipientsToList(list);
+						if(res !=null) {
+							isListInserted = true;
+						}	
+					}
+					
+				}else {
+					isListInserted = false;
+				}
+			}
+			return isListInserted;
 		}
-		boolean isListInserted = false;
 		String listResponse = campaignUtil.createList(campaignListDTO);
 		if(StringUtils.isNotBlank(listResponse)) {
 			JSONObject jObject  = new JSONObject(listResponse); 
@@ -188,8 +211,16 @@ public class CampaignServiceImpl implements CampaignService{
 			if(res !=null) {
 				isListInserted = true;
 			}
+			return isListInserted;
 		}
 		return isListInserted;
+		
+	}
+
+
+	private int deleteRecipientListByListId(Long campaignListId) throws Exception
+	{
+		return campaignDao.deleteRecipientListByListId(campaignListId);
 	}
 
 	/**
