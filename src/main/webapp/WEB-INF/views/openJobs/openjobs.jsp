@@ -252,27 +252,27 @@ z-index: 1000000000 !important;
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">3 days ago
-						  <input type="radio" name="dateFilter" value="3 Days Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="3 Days Ago" ${postedOn=="3 Days Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 Week ago
-						  <input type="radio" name="dateFilter" value="1 Week Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Week Ago" ${postedOn=="1 Week Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">2 Weeks ago 
-						  <input type="radio" name="dateFilter" value="2 Weeks Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="2 Weeks Ago" ${postedOn=="2 Weeks Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 Month ago
-						  <input type="radio" name="dateFilter" value="1 Month Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Month Ago" ${postedOn=="1 Month Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">3 Months ago
-						  <input type="radio" name="dateFilter" value="3 Months Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="3 Months Ago" ${postedOn=="3 Months Ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>		
 				</ul>
@@ -284,32 +284,32 @@ z-index: 1000000000 !important;
 				<ul>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Australia
-						  <input type="radio" name="countryFilter" value="Australia" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="Australia" ${locationType=="Australia"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">France
-						  <input type="radio" name="countryFilter" value="France" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="France" ${locationType=="France"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">India
-						  <input type="radio" name="countryFilter" value="India" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="India" ${locationType=="India"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Singapore
-						  <input type="radio" name="countryFilter" value="Singapore" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="Singapore" ${locationType=="Singapore"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">United Kingdom
-						  <input type="radio" name="countryFilter" value="United Kingdom" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="United Kingdom" ${locationType=="United Kingdom"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">United States
-						  <input type="radio" name="countryFilter" value="United States" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="United States" ${locationType=="United States"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 				</ul>
@@ -320,37 +320,37 @@ z-index: 1000000000 !important;
 				<ul>
 					<li class="control-group">
 						<label class="control control--checkbox">C2C
-						  <input type="checkbox" name="typeFilter" value="C2C" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="C2C" ${employementType=="c2c"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">W-2
-						  <input type="checkbox" name="typeFilter" value="W-2" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="W-2" ${employementType=="w-2"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">C2H
-						  <input type="checkbox" name="typeFilter" value="C2H" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="C2H" ${employementType=="c2h"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Contract
-						  <input type="checkbox" name="typeFilter" value="Contract" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Contract" ${employementType=="contract"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Part Time
-						  <input type="checkbox" name="typeFilter" value="Part Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Part Time" ${employementType=="part-time"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Full Time
-						  <input type="checkbox" name="typeFilter" value="Full Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Full Time" ${employementType=="full-time"?"checked=checked":""}onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Other
-						  <input type="checkbox" name="typeFilter" value="Other" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Other" ${employementType=="other"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 				</ul>
