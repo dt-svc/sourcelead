@@ -144,6 +144,20 @@ function getRequestedAssociatesList(){
 				
 				 for(var i=0; i<json.resourceRequestList.length; i++){
 					 var opt = json.resourceRequestList[i];
+					 
+					 var startDate = '';
+					 var endDate = '';
+					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+						 startDate = opt.startDateStr;
+					 }else{
+						 startDate = "-------"
+					 }
+					 
+					 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+						 endDate = opt.startDateStr;
+					 }else{
+						 endDate = "-------"
+					 }
 					
 					    result = result +'<tr>';
 					    
@@ -164,11 +178,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.startDateStr+'">'+opt.startDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.endDateStr+'">'+opt.endDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
