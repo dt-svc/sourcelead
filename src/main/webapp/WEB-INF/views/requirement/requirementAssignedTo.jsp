@@ -73,6 +73,12 @@
 								<tbody id="selectedUsersGrid">
 								</tbody>
 							</table>
+							  <div class="panel-default text-center" id="noAssignedmembers">
+							    <div class="panel-body">
+								    <i class="fa fa-users fa-3x text-muted mt mb"></i>
+									<p>No Assigned Members</p>
+							    </div>
+							  </div>
 						</div>
 					</div>
 				</div>
@@ -307,6 +313,11 @@ function selectAssignUsers(){
 		$(this).removeAttr('onchange');
      });
 	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
 }
 
 function deSelectAssignUsers(){
@@ -321,6 +332,11 @@ function deSelectAssignUsers(){
 		selectAssignUsersIds = selectAssignUsersIds.filter(item => item !== deSelectedId);
 	});
 	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
+	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
+		$("#noAssignedmembers").show();
+	}else{
+		$("#noAssignedmembers").hide();
+	}
 }
 </script>
 
