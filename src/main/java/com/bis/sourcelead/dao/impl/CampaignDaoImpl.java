@@ -165,11 +165,11 @@ public class CampaignDaoImpl implements CampaignDao {
 	}	
     @Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CampaignList getRecipientListByListId(String listId) throws Exception
+	public CampaignList getRecipientListByListId(String listId,int campaignType) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignList campaignList = null;
-		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.listId= :listId and cpnList.status = 1 and cpnList.campaignType = 1").setString("listId", listId).setCacheable(true).list();
+		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.listId= :listId and cpnList.status = 1 and cpnList.campaignType = :campaignType").setString("listId", listId).setInteger("campaignType", campaignType).setCacheable(true).list();
 		
 		if(cpnList !=null && cpnList.size() >0) {
 			campaignList = cpnList.get(0);
