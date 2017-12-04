@@ -155,7 +155,8 @@ public class CampaignServiceImpl implements CampaignService{
 	{
 		
 		if(StringUtils.isNotBlank(campaignListDTO.getContactListId())){
-			CampaignList campaignList = campaignDao.getCampaignListById(campaignListDTO.getContactListId());
+			CampaignList campaignList = campaignDao.getCampaignListById(Long.parseLong(campaignListDTO.getContactListId()));
+			String listResponse = campaignUtil.updaeteList(campaignList,campaignListDTO);
 			
 		}
 		boolean isListInserted = false;
@@ -167,7 +168,11 @@ public class CampaignServiceImpl implements CampaignService{
 			campaignList.setListName(campaignListDTO.getCpnListName());
 			campaignList.setListId(listId);
 			campaignList.setStatus(1);
-			campaignList.setCampaignType(1);
+			if("hotlistCampaign".equalsIgnoreCase(campaignListDTO.getCampaignType())) {
+				campaignList.setCampaignType(0);
+			}else {
+				campaignList.setCampaignType(1);
+			}
 			campaignList.setCreatedBy(user);
 			campaignList.setUpdatedBy(user.getUserCode());
 			campaignList.setOrgLocation(orgLocation);
@@ -270,9 +275,9 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public CampaignList getCampaignById(long id)
+	public CampaignList getCampaignListById(long id)
 	{
-		return campaignDao.getCampaignById(id);
+		return campaignDao.getCampaignListById(id);
 	}
 
 	@Override

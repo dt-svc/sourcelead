@@ -301,6 +301,25 @@ public class CampaignUtil {
 		return deleteCampaignStatus;
 	}
 
+	public String updaeteList(CampaignList campaignList, CampaignListDTO campaignListDTO) throws IOException
+	{
+	    try {
+	        SendGrid sg = new SendGrid("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");
+	        Request request = new Request();
+	        request.setMethod(Method.PATCH);
+	        request.setEndpoint("contactdb/lists/"+campaignList.getListId()+"");
+	        request.setBody("{\"name\":\""+campaignListDTO.getCpnListName()+"\"}");
+	        request.addQueryParam("list_id", ""+campaignList.getListId()+"");
+	        Response response = sg.api(request);
+	        System.out.println(response.getStatusCode());
+	        System.out.println(response.getBody());
+	        System.out.println(response.getHeaders());
+	      } catch (IOException ex) {
+	        throw ex;
+	      }
+		return null;
+	}
+
 	
 	
 }

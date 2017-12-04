@@ -166,6 +166,7 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 		this.contactListId = contactListId;
 	}
 
+
 	public String getTypeOfCampaign()
 	{
 		return typeOfCampaign;
@@ -176,7 +177,15 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 		this.typeOfCampaign = typeOfCampaign;
 	}
 
-	
+	public String getCampaignType()
+	{
+		return campaignType;
+	}
+
+	public void setCampaignType(String campaignType)
+	{
+		this.campaignType = campaignType;
+	}
 	
 	
 	

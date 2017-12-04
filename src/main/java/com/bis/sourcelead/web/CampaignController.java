@@ -245,7 +245,7 @@ public class CampaignController {
 	public String campaignAddRecipientJsp(@RequestParam(value="listId", required=false) String listId,HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(StringUtils.isNotBlank(listId)) {
-			CampaignList campaignList = campaignService.getCampaignById(Long.parseLong(listId));
+			CampaignList campaignList = campaignService.getCampaignListById(Long.parseLong(listId));
 			model.addAttribute("campaignList", campaignList);
 			if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 				model.addAttribute("recipientList", campaignList.getCampaignRecipient());
