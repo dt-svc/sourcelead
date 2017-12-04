@@ -2230,12 +2230,18 @@ function addCandidateDetailsForOnboarding(){
 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +' </div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
-
+	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="dojDiv">';
 	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2489,6 +2495,27 @@ function validOnboardCandiate(){
 function toDate(selector) {
     var from = $(selector).val().split("-");
     return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function refreshRoleList(){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRoleList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Role</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.displayName+"</option>";
+				}
+	        	$("#onboardCandidateRole").empty();
+		        $("#onboardCandidateRole").append(output);
+		        $('#onboardCandidateRole').trigger("chosen:updated");
+	        }
+		 });
+	
 }
 </script>
   

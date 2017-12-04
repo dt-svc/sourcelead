@@ -145,13 +145,17 @@
                 
                <div class="form-group">
                   <label class="col-md-3">Department </label>
-                  <div class="col-md-9" id="chosen-role">
+                  <div class="col-md-9 chooRadius" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
                          <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
-		                        
 			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
+                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+			<a href="<c:url value="/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
                 </div> 
-                
+                 </div> 
                 <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger"></span></label>
          <div class="col-md-9">
@@ -171,16 +175,21 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9" id="chosen-role">
+                  <div class="col-md-9 chooRadius" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
 								</c:forEach>
 			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
+                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
+			             <a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			      </sec:authorize>
                 </div>
-               
+                </div> 
                
                <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
@@ -1033,5 +1042,32 @@ function editMe(local){
 		 $('#vendorcontact').trigger("chosen:updated");
 	 }
 	 </script>
-	 
+	 <script>
+function refreshRoleList(){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRoleList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Role</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+	        }
+		 });
+	
+}
+</script>
+<script>
+	 function managerListEmpty(){
+		 $('#reportingManager').empty();
+		 $('#reportingManager').append('<option value="">--Select Manager--</option>');
+		 $('#reportingManager').trigger("chosen:updated");
+	 }
+	 </script>
 	

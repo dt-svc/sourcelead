@@ -879,10 +879,6 @@ $(document).ready(function () {
                     </div>
                   </div>
                 </div>
-<%--                 <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="refreshRequirementClientList() ;" title="Refresh"></i>
-			</div> --%>	
               </div>
               <div class="form-group">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
