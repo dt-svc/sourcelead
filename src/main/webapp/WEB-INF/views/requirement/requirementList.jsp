@@ -958,11 +958,7 @@ function clearSearch(){
 	$('#country').val('').trigger('chosen:updated');
 	$('#visaType').val('').trigger('chosen:updated');
 	$('#requirementSkills').val('').trigger('chosen:updated');
-	$('#state').empty();
-	$('#state').append('<option value="">---select city---</option>');
 	$('#state').val('').trigger('chosen:updated');
-	$('#city').empty();
-	$('#city').append('<option value="">---select city---</option>');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
