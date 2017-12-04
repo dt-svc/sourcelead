@@ -5803,6 +5803,82 @@ float: left; top: 5px
 
 /*    Responsive CSS    */
 
+<<<<<<< HEAD
+/*    Responsive CSS    */
+
+.newMailSet {
+    position: relative;
+}
+.newMailSet span {
+    position: absolute; width: 10px; height: 10px; background-color: green; right: 10px; top: 12px;
+    border-radius: 50%; display: none;
+}
+.newMailSet i {
+    display: inline-block; width: 20px;
+}
+.newMailSet ul li a {
+    padding: 8px 25px 8px 15px !important; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+}
+.newMailSet ul li a.Active {
+    background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
+}
+.newMailSet ul li a.Active span {
+    display: block;
+}
+.newMailSet .cGmail {
+    color: #cd2900;
+}
+.newMailSet .cYahoo {
+    color: #5300b0;
+}
+.newMailSet .cOut {
+    color: #006bbb;
+}
+.newMailCon {
+    padding: 15px;
+}
+.newMailCon h4 {
+    padding: 0px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #323232;
+}
+.newMailCon p {
+    padding: 10px 0px 20px 0px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #666;
+}
+.newMailCon ul {
+    padding: 0px 0px; margin: 0px 0px;
+}
+.newMailCon ul li {
+    list-style-type: none; float: left; width: 23%; margin: 0px 2% 0px 0px;
+}
+.newMailCon ul li a {
+    display: block; width: 100%; border: 1px solid #dedede; border-radius: 4px; padding: 20px 0px 15px; color: #454545;
+    text-align: center;
+}
+.newMailCon ul li a img {
+    display: block; width: 70px; margin: 0px auto 20px;
+}
+.newMailCon ul li a:hover {
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.15); color: #375d81;
+}
+
+.newmailShow {
+    display: none;
+}
+.addMailContent {
+    
+}
+.addMailContent h3 {
+    padding: 0px 0px 15px 0px; margin: 0px 0px; color: #333;
+}
+.addMailContent h4 {
+    padding: 5px 0px 12px 0px; margin: 0px 0px; color: #333; font-size: 16px; font-weight: 500;
+}
+.addMailContent p {
+    padding: 0px 0px 10px 0px; margin: 0px 0px; color: #333; font-size: 14px;
+}
+.addMailContent b {
+    display: block; font-weight: 400; font-size: 12px; color: #454545; padding:2px 0px 0px 0px;
+}
+=======
 
 /*    Email Notification    */
 
@@ -5950,4 +6026,3 @@ float: left; top: 5px
 .addMailContent b {
 	display: block; font-weight: 400; font-size: 12px; color: #454545; padding:2px 0px 0px 0px;
 }
-

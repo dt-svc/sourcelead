@@ -25,7 +25,7 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
+        <li id="category"><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play"></i>|
           <div class="approved_pop">
             <ul>
                    <c:forEach var="report" items="${assetCategoriesList}">  
@@ -35,7 +35,7 @@ $(document).ready(function(){
           </div>
         </li>
         
-         <li><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play" id="workingStatus"></i>|
+         <li id="workingStatus"><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play"></i>|
           <div class="approved_pop">
             <ul>
                     <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
@@ -629,9 +629,9 @@ function removeAssetManagement(assetId){
 
 // Approved Popup
     $("#category").click(function(){
-    	$(this).next(".approved_pop").toggle();
-    	$("#workingStatus").next(".approved_pop").slideUp();
-    	
+    	$('#category').find(".approved_pop").toggle();
+    	$("#workingStatus").find(".approved_pop").slideUp();
+    	$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -641,8 +641,9 @@ function removeAssetManagement(assetId){
     });
     
     $("#workingStatus").click(function(){
-		$(this).next(".approved_pop").toggle();
-		$("#category").next(".approved_pop").slideUp();
+		$("#workingStatus").find(".approved_pop").toggle();
+		$("#category").find(".approved_pop").slideUp();
+		$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();

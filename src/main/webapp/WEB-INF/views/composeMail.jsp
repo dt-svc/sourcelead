@@ -50,7 +50,7 @@ display: none;
       <div class="pull-left">
         <h2>Compose Mail</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox/mails'/>"> Mailbox</a>
 			&raquo; Compose Email</div>
     </section>
     
@@ -270,7 +270,7 @@ $(function() {
 			  		        contentType:false, 
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox");
+			  						location.replace(sourceleadUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
@@ -488,6 +488,15 @@ function getContactsList(){
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+ 		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
+		<c:forEach var="conGroup" items="${contactsGroupList}">
+		result = result +' <option value="${conGroup.id}">${conGroup.groupName}</option>';
+        </c:forEach>
+ 		
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
+	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
 	 	
@@ -497,6 +506,7 @@ function getContactsList(){
 		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAllContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
+		result = result +'<th>Group</th>';
 		result = result +'<th>Source</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -514,6 +524,8 @@ function getContactsList(){
 	    $("#userList").append(result);
 	    contactUsers = [];
 	    contactsDataTableList();
+	   
+	    $("#groupsFilter").selectpicker("refresh");
 }
 </script>
 
@@ -523,7 +535,13 @@ function contactsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 var contactsGroups = '';
+	 if($("#groupsFilter").val() != null){
+		 contactsGroups = $("#groupsFilter").val();
+	 }
+	
+	 
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -546,6 +564,7 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "ischeck" },
             { "data": "contactName" },
             { "data": "email"},
+            { "data": "groups" },
             { "data": "source"}
            
         ],
@@ -584,6 +603,20 @@ function contactsPagination(url,sourceleadUrl){
               		
               }
 	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "groups",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.groupsList != null){
+	            		  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.groupsList+'">'+opt.groupsList+'</div></td>';
+	            	  }else{
+	            		  result = result + '<td data-title="Id"><div>----</div></td>';
+	            	  }
+	            	  
+		              return result;
+	              		
+	              }
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "source",

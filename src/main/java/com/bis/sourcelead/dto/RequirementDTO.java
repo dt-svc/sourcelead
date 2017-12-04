@@ -3,10 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Transient;
-
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 public class RequirementDTO extends CommonDTO {
 
@@ -126,6 +123,19 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfOfferedApplicants;
 	
+	private String sortColumn;
+	
+	private String sortOrder;
+	 
+	private List<Map<String, String>> order;
+	 
+	private String searchValue;
+	
+	private String jobCampaignType;
+	
+	private int start;
+	 
+	private int length;
 	
 
 	/*
@@ -1029,6 +1039,76 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setCurrentRateCurrency(String currentRateCurrency) {
 		this.currentRateCurrency = currentRateCurrency;
+	}
+
+	public String getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn)
+	{
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder()
+	{
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder)
+	{
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder()
+	{
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order)
+	{
+		this.order = order;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public String getJobCampaignType()
+	{
+		return jobCampaignType;
+	}
+
+	public void setJobCampaignType(String jobCampaignType)
+	{
+		this.jobCampaignType = jobCampaignType;
+	}
+
+	public int getStart()
+	{
+		return start;
+	}
+
+	public void setStart(int start)
+	{
+		this.start = start;
+	}
+
+	public int getLength()
+	{
+		return length;
+	}
+
+	public void setLength(int length)
+	{
+		this.length = length;
 	}
 
 }

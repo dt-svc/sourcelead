@@ -33,7 +33,7 @@ public class TimesheetReportsRestController {
  	private TimesheetReportService timesheetReportService;
 	
 	
-	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST )   
+	//@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST )   
 	public @ResponseBody String newTimesheet(HttpServletRequest request,
 		   @RequestParam(value="frequencyYear", required=false) String frequencyYear,
 		   @RequestParam(value="frequencyMonth", required=false) String frequencyMonth) throws Exception {
