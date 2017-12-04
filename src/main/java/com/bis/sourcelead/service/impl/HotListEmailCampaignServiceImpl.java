@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -107,7 +108,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	public void sendHotListEmailCampaign(HotListEmailCampaignDTO hotListEmailCampaignDTO, User user, OrgLocations orgLocation,MultipartFile multiFile) throws Exception {
 		
 		// Email Start
-	 EmailMessage emailMessage = new EmailMessage(); 
+//	 EmailMessage emailMessage = new EmailMessage(); 
 	 String fullName = null;
 	 String[] hotlistedCandidates = null;
 	 String signature = "";
@@ -126,23 +127,33 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 			
 		if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getToemails())){
 			
-	    	  String jsonArray = hotListEmailCampaignDTO.getToemails();
-			   emails = jsonArray.toString();
-	    	  if(null != emails){
-	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
-	    		  emails = emails.replaceAll("\"", "");
-	    	  }
-	    	 
-	    	  String[] recipantsEmails = emails.split(",");
-		    	 for(int i=0; i < recipantsEmails.length; i++){
-		    		 if(validateEmail(recipantsEmails[i])){
-		    			 toRecipantsEmailsList = toRecipantsEmailsList.append(recipantsEmails[i]);
-		    			 toRecipantsEmailsList.append(",");
-		    		 }
-		    	 }
+			String[] arr = hotListEmailCampaignDTO.getToemails().split(",");
+			
+			for(String listId : arr) {
+				CampaignList campaignList = campaignService.getRecipientListByListId(listId,0);
+				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
+					String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
+					toRecipantsEmailsList.append(reciEmail);
+				}
+			}			
+			
+//	    	  String jsonArray = hotListEmailCampaignDTO.getToemails();
+//			   emails = jsonArray.toString();
+//	    	  if(null != emails){
+//	    		  emails = emails.replaceAll("\\[", "").replaceAll("\\]","");
+//	    		  emails = emails.replaceAll("\"", "");
+//	    	  }
+//	    	 
+//	    	  String[] recipantsEmails = emails.split(",");
+//		    	 for(int i=0; i < recipantsEmails.length; i++){
+//		    		 if(validateEmail(recipantsEmails[i])){
+//		    			 toRecipantsEmailsList = toRecipantsEmailsList.append(recipantsEmails[i]);
+//		    			 toRecipantsEmailsList.append(",");
+//		    		 }
+//		    	 }
 		    	 
 		    	 emails = toRecipantsEmailsList.toString();
-		    	 emails = emails.substring(0,emails.length()-1);
+//		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
 		
@@ -177,9 +188,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		}
 		
 		
-		 emailMessage.setCreatedBy(user.getUserCode());
-		 emailMessage.setFromEmail(user.getEmail());
-		 emailMessage.setFromName(fullName);
+//		 emailMessage.setCreatedBy(user.getUserCode());
+//		 emailMessage.setFromEmail(user.getEmail());
+//		 emailMessage.setFromName(fullName);
 		
 		 if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getHotlistcandidates())){
 			    
@@ -194,72 +205,93 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 
 		 }
 		 
-		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO.getNamefield());
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		 
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("salutation", hotListEmailCampaignDTO.getSaluation());
-		 globalVarsMap.put("body", hotListEmailCampaignDTO.getBodytext());
-		 globalVarsMap.put("noOfCandidates", String.valueOf(hotlistedCandidates.length));
-		 
-		 globalVarsMap.put("hotlistTable", table);
-		 globalVarsMap.put("requestResume","<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>");
-		 
-		 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
+		
+		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
+		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
+		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
+		 jobListEmailCampaignDTO.setToemails(hotListEmailCampaignDTO.getToemails());
+		
+		 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
+		
+		 if(createCampaignRes !=null) {
+			 JSONObject jObject = new JSONObject(createCampaignRes);
+				String campaignId = jObject.getString("id");
+				 String scheduleCampaignRes = campaignUtil.sendCampaign(campaignId);
+				if(scheduleCampaignRes !=null) {
+				 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user);
+				 if(campaign !=null) {
+					 logger.info("Campaign saved into campaig his table");
+				 }
+				 
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("salutation", hotListEmailCampaignDTO.getSaluation());
+				 globalVarsMap.put("body", hotListEmailCampaignDTO.getBodytext());
+				 globalVarsMap.put("noOfCandidates", String.valueOf(hotlistedCandidates.length));
+				 
+				 globalVarsMap.put("hotlistTable", table);
+				 globalVarsMap.put("requestResume","<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>");
+				 
+				 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 
+				
+				 
+				 String url = sourceleadUrl;
+				 
+				 //construct HTML template using required data
+//				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+//				 emailMessage.setSubject(subject);
+//				 emailMessage.setMessageBody(emailTemplate);
+//				 emailMessage.setOrgLocationId(orgLocation.getId());
+//				 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
+				 
+				 ArrayList<EmailAttachment> attachmentList = null;
+				 EmailAttachment emailAttachment = new EmailAttachment();
+				 FileInfo fileInfo = null;
+				 if(hotListEmailCampaignDTO.getFileInfo() != null) {
+					   fileInfo = hotListEmailCampaignDTO.getFileInfo().get(0);
+					 if(fileInfo != null){
+						 attachmentList =  new ArrayList<EmailAttachment>();
+						 emailAttachment.setName(fileInfo.getFileName());
+						 emailAttachment.setFileUrl(fileInfo.getFileURL());
+						 emailAttachment.setType(fileInfo.getContentType());
+						 attachmentList.add(emailAttachment);
+					     FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
+					    }
+				 }
+				 
+				 ArrayList<EmailAttachment> fileAttachmentList = null;
+				 EmailAttachment attachment = new EmailAttachment();
+				 
+				 if(multiFile.getSize() > 0){
+					 fileAttachmentList =  new ArrayList<EmailAttachment>();
+					 attachment.setName(multiFile.getOriginalFilename());
+					 attachment.setDocFile(multiFile.getBytes());
+					 attachment.setType(multiFile.getContentType());
+					 fileAttachmentList.add(attachment);
+				 }
+				 
+						
+				//calling the sendEmail method of emailScenerioUtil
+//				 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
+				 
+				 //Email End
+				 
+				 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
+				 userMailBox.setCandidateId(candidates);
+				 userMailBox.setNameFields(hotListEmailCampaignDTO.getNamefield());
+				 userMailBoxService.saveUserMailBox(userMailBox);
+				 userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
+				 
+				}
+		 }
 		 
 		
-		 
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 emailMessage.setOrgLocationId(orgLocation.getId());
-		 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
-		 
-		 ArrayList<EmailAttachment> attachmentList = null;
-		 EmailAttachment emailAttachment = new EmailAttachment();
-		 FileInfo fileInfo = null;
-		 if(hotListEmailCampaignDTO.getFileInfo() != null) {
-			   fileInfo = hotListEmailCampaignDTO.getFileInfo().get(0);
-			 if(fileInfo != null){
-				 attachmentList =  new ArrayList<EmailAttachment>();
-				 emailAttachment.setName(fileInfo.getFileName());
-				 emailAttachment.setFileUrl(fileInfo.getFileURL());
-				 emailAttachment.setType(fileInfo.getContentType());
-				 attachmentList.add(emailAttachment);
-			     FileUploadUtil.moveFile(hotListEmailCampaignDTO.getStaticPath(), fileInfo, "Hotlist Campaign Documents");
-			    }
-		 }
-		 
-		 ArrayList<EmailAttachment> fileAttachmentList = null;
-		 EmailAttachment attachment = new EmailAttachment();
-		 
-		 if(multiFile.getSize() > 0){
-			 fileAttachmentList =  new ArrayList<EmailAttachment>();
-			 attachment.setName(multiFile.getOriginalFilename());
-			 attachment.setDocFile(multiFile.getBytes());
-			 attachment.setType(multiFile.getContentType());
-			 fileAttachmentList.add(attachment);
-		 }
-		 
-				
-		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
-		 
-		 //Email End
-		 
-		 UserMailBox userMailBox =  saveUserMailBox(user,orgLocation,iAdressArray,subject,table,UUID,hotListEmailCampaignDTO.getBodytext(),signature,fileInfo);
-		 userMailBox.setCandidateId(candidates);
-		 userMailBox.setNameFields(hotListEmailCampaignDTO.getNamefield());
-		 userMailBoxService.saveUserMailBox(userMailBox);
-		 userMailBoxService.saveOrUpdateUserMailBoxELK(userMailBox);
 	}
 	
 	
@@ -315,10 +347,153 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 }
 
 
-private String getHotListCandidatesTable(String[] hotlistedCandidates,String nameField) throws Exception{
+	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature) throws Exception{
+		
+		String tempHTML = "";
+		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
+		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
+		tempHTML = tempHTML + " <tr>";
+		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";
+		tempHTML = tempHTML + "<tr>";
+		tempHTML = tempHTML + "<td><table width='600' align='center'>";
+		tempHTML = tempHTML +  "<tr>";
+		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='"+imageUrl+"' width='200' height='45'> </span></td>";
+		tempHTML = tempHTML +  "</tr>";
+		tempHTML = tempHTML +  "</table></td>";
+		tempHTML = tempHTML + "</tr>";
+		tempHTML = tempHTML + "</table>";
+		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px;'>";
+		tempHTML = tempHTML +  "<tbody>";
+		tempHTML = tempHTML +   "<tr>";
+		tempHTML = tempHTML +   "<td align='left'>"+hotListEmailCampaignDTO.getSaluation()+",<br>";
+		tempHTML = tempHTML +     " <br></td>";
+		tempHTML = tempHTML +   " </tr>";
+		tempHTML = tempHTML +   "<tr>";
+		tempHTML = tempHTML +    " <td align='left'><p>"+hotListEmailCampaignDTO.getBodytext()+"/p></td>";
+		tempHTML = tempHTML +   "  </tr>";
+		tempHTML = tempHTML +    "</tbody>";
+		tempHTML = tempHTML + "</table>";
+		      //Table Design
+		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
+		 tempHTML = tempHTML+"<tr align='center'>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Name<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Experience<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Rate<span></th>";
+		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Skills<span></th>";
+		 tempHTML = tempHTML+"</tr>";
+		 
+		 Set<String> candidateEmailsList = new HashSet<String>();
+		 
+		 for(int i=0 ; i < hotlistedCandidates.length; i++){
+			 candidateEmailsList.add(hotlistedCandidates[i]);
+		 }
+		 
+		 for(String email : candidateEmailsList){
+			 
+			 StringBuilder candidateName = new StringBuilder();
+			 Integer experienceInYears = 0;
+			 Integer experienceInMonths = 0;
+			 StringBuilder totalExp = new StringBuilder();
+			 StringBuilder rate = new StringBuilder();
+			 
+			 StringBuilder nameBuilder = new StringBuilder();
+			 StringBuilder expBuilder = new StringBuilder();
+			 StringBuilder rateBuilder = new StringBuilder();
+			
+			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(email));
+			 
+			 if("firstname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+				 candidateName = nameBuilder.append(candidate.getFirstName());
+			 }
+		 	 else if("firstnameandlastName".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+				 if(!isNullOrEmpty(candidate.getLastName())){
+					 candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+			   	 }else{
+			   		candidateName = nameBuilder.append(candidate.getFirstName());
+			   	 }
+			 }
+		 	 else if("firstname1stletterlastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 		 if(!isNullOrEmpty(candidate.getLastName())){
+		 			candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
+		 		 }else{
+		 			candidateName = nameBuilder.append(candidate.getFirstName());
+		 		 }
+		 		
+		 	 }
+		 	 else if("1letterfirstnamelastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 		 if(!isNullOrEmpty(candidate.getLastName())){
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(candidate.getLastName());
+		 		 }else{
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+		 		 }
+		 		
+		 	 }
+		 	else if("1letterfirstname1letterlastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 		 if(!isNullOrEmpty(candidate.getLastName())){
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
+		 		 }else{
+		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0)));
+		 		 }
+		 		
+		 	 }
+			 
+			 if(!isNullOrEmpty(candidate.getExperienceYears())){
+				 experienceInYears = Integer.parseInt(candidate.getExperienceYears());
+			 }
+			 
+			 if(!isNullOrEmpty(candidate.getExperienceMonths())){
+				 experienceInMonths = Integer.parseInt(candidate.getExperienceMonths());
+			 }
+			 
+			 if(isNullOrEmpty(candidate.getExperienceMonths()) && isNullOrEmpty(candidate.getExperienceMonths())){
+				 totalExp = expBuilder.append("-----");
+			 }else{
+				 totalExp = expBuilder.append(experienceInYears).append(" Years ").append(experienceInMonths).append(" Months");
+			 }
+			 
+			 if(!isNullOrEmpty(candidate.getExpectedRate())){
+				 rate = rateBuilder.append(candidate.getExpectedRate()).append(" /").append(candidate.getRateType());
+			 }else{
+				 rate = rateBuilder.append("-----");
+			 }
+			 String skills;
+			 if(null != candidate.getSkillsName()){
+				 skills = candidate.getSkillsName();
+			 }else{
+				 skills = "-----";
+			 }
+			 tempHTML = tempHTML+"<tr align='center'>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+candidateName.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+totalExp.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+rate.toString()+"</td>";
+			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+skills+"</td>";
+			 
+			 tempHTML = tempHTML+"</tr>";
+			 
+		 }
+		 tempHTML = tempHTML+"</table>";
+			  // Table Design
+			 tempHTML = tempHTML + signature;
+		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
+		tempHTML = tempHTML +" <tr>";
+		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px;'>";
+		tempHTML = tempHTML + "<tr>";
+		tempHTML = tempHTML +"<td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
+		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";
+		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>3535 Victory Group Way, Building 4 Frisco, TX 75034, USA, Phone : (214) 295-5535, FAX : (972) 559-3641</p></td>";
+		tempHTML = tempHTML +"</tr>";
+		tempHTML = tempHTML +"<tr>";
+		tempHTML = tempHTML +"<td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p></td>";
+		tempHTML = tempHTML +" </tr>";
+		tempHTML = tempHTML + "</table></td>";
+		tempHTML = tempHTML +" </tr>";
+		tempHTML = tempHTML + " </table></td>";
+		tempHTML = tempHTML +"</tr>";
+		tempHTML = tempHTML +"</table>";
+        tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";
 		
 		
-		 String tempHTML = null;
+		/* String tempHTML = null;
 		 
 		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
@@ -418,7 +593,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 			 tempHTML = tempHTML+"</tr>";
 			 
 		 }
-		 tempHTML = tempHTML+"</table>";
+		 tempHTML = tempHTML+"</table>";*/
 		 
 		 return tempHTML;
 	}
@@ -450,7 +625,7 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 				String[] arr = jobListEmailCampaignDTO.getToemails().split(",");
 				
 				for(String listId : arr) {
-					CampaignList campaignList = campaignService.getRecipientListByListId(listId);
+					CampaignList campaignList = campaignService.getRecipientListByListId(listId,1);
 					if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 						String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
 						toRecipantsEmailsList.append(reciEmail);
@@ -685,8 +860,8 @@ private String getHotListCandidatesTable(String[] hotlistedCandidates,String nam
 
 	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO, String signature) throws Exception
 	{
-		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		String tempHTML = "";
+		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
 		tempHTML = tempHTML + " <tr>";
 		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";

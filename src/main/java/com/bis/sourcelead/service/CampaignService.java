@@ -36,7 +36,7 @@ public interface CampaignService {
 
 	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
 
-	CampaignList getRecipientListByListId(String listId) throws Exception;
+	CampaignList getRecipientListByListId(String listId, int campaignType) throws Exception;
 
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;;
 

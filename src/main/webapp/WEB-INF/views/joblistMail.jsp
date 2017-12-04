@@ -1154,8 +1154,9 @@ function getRecipientContactsList(){
 function vendorContactDataTableList(){
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
+	 var typeOfCampaign = "1";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
 	 vendorContactpagination(url);
 }
 </script>

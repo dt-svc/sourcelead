@@ -316,9 +316,9 @@ public class CampaignServiceImpl implements CampaignService{
 	{
 		return campaignDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable);
 	}
-	public CampaignList getRecipientListByListId(String listId) throws Exception
+	public CampaignList getRecipientListByListId(String listId,int campaignType) throws Exception
 	{
-		return campaignDao.getRecipientListByListId(listId);
+		return campaignDao.getRecipientListByListId(listId,campaignType);
 	}
 
 	@Override

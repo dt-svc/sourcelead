@@ -33,6 +33,7 @@ display: none;
 			 loadHotMailBoxDetails(UUID);
 		 }
 	 }
+	 getSenders(); 
 });
 </script> 
 
@@ -56,17 +57,19 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
-            <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly>
+           <%--  <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly> --%>
+             <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+			</select>  
           </div>
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="validate_email" data-validation-optional="true" name="Toemails">
+            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation-optional="true" data-validation-optional="true" name="Toemails">
 
             </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="selectRadio();listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+            <span class="select-multiple" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -74,23 +77,24 @@ display: none;
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h4 class="modal-title">Select Mailer</h4>
-                    <label class="paddingLeft paddingRight">
+                   <!--  <label class="paddingLeft paddingRight">
                	    <input  type="radio" id="clientsCheck" name="users" checked onclick="listChange()"><strong class="paddingLeft">Clients</strong></label>
                	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
+               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label> -->
                   </div>
                   
                    <div class="modal-body clearfix">
-                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
+                   <!-- <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
                           <select class="form-control" id="clientListType" onchange="listChange();">
                            <option value="listbyContact" selected>List by contact</option>
                             <option value="listbyClient">List by client</option>
                           </select>
-                    </div>
+                    </div>-->
                     <div class="clearfix"></div>
                     <!-- modal-body-custom mailerpopup filter-position --> 
                     <div class="clearfix">
-                     <div id="clientsList" class="datatable_filter"></div>
+                    <!--  <div id="clientsList" class="datatable_filter"></div> -->
+                       <div id="mailBoxVendorsList" class="datatable_filter"></div>
                     </div>
                   </div> 
                   
@@ -666,7 +670,7 @@ function getContactsList(){
   		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +' <th><input type="checkbox" id="checkAllContacts" onclick="toggleClientContacts(this);"></th>';
+		result = result +' <th><input type="checkbox" id="checkAllUsers" onclick="toggleClientContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
 		result = result +'<th>Group</th>';
@@ -1093,7 +1097,7 @@ function getAllEmailContacts(){
 	    $("#emailsList").append(internalOutput);
 		$("#emailsList").trigger("chosen:updated");
 		
-		$("input[name='emails[]']:checked").removeAttr('checked');
+		$("input[name='contactids[]']:checked").removeAttr('checked');
 		$('#checkAllUsers').removeAttr('checked');
 		
 		
@@ -1226,5 +1230,203 @@ document.getElementById("attachfileBtn").onchange = function () {
 <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
+
+<script>
+function getSenders(){
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Sender</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.senderId+ "'>"+opt.cpnSenderFromMail+"("+opt.cpnSenderName+")</option>";
+		
+		}
+		
+		$("#senderIdentity").empty();
+		$("#senderIdentity").append(output);
+		$('#senderIdentity').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
+ <!-- Added by rajashekar -->
+ <script>
+function getRecipientContactsList(){
+	    var result = "";
+	 	result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='vendorContactsDataTableSearch'/>";
+	 	result = result +"</div>";
+	 	
+	    result = result +'<div class="clearfix popupFilter">';
+  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+	 	
+  		result = result +'<table id="vendorconDataTable"   class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		 result = result +' <th><input type="checkbox" id="checkAllRecipantsntacts" onclick="toggleRecipantsContacts(this);"></th>'; 
+		result = result +'  <th>Contact List</th>';
+	   	result = result +'	<th>Contacts Count</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    result = result +'</div>'; 
+    	result = result +'<div class="clearfix">';
+    	result = result +'</div>'; 
+    	result = result +'</div>';
+    	result = result +'<div class="clearfix pull-right mr mb">';
+     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="vendorContactbtnId" onclick="getRecipantsContacts();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +' </div>'; 
+	    $("#mailBoxVendorsList").empty();
+	    $("#mailBoxVendorsList").append(result);
+	    recepiantscontactsList = {}
+	    vendorContactDataTableList();
+	    
+	   
+}
+</script>
+
+<script>
+function vendorContactDataTableList(){
+	 var searchValue = $("#vendorContactsDataTableSearch").val();
+	 var responderType ="JobCampaignVendor";
+	 searchValue = searchValue ? searchValue : "";
+	 var typeOfCampaign = "0";
+	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
+	 vendorContactpagination(url);
+}
+</script>
+
+<script>
+var recepiantscontactsList = {};
+function checkRecepiantsContacts(ele){
+	if($(ele).is(":checked")) {
+		recepiantscontactsList[$(ele).data("id")] = $(ele).val();
+	}
+}
+</script>
+
+<script>
+function toggleRecipantsContacts(source) {
+
+if($(source).is(":checked"))
+	  $('input[class="myRecipantsContactsCheckbox"]').prop('checked', 'checked');
+else 
+	  $('input[class="myRecipantsContactsCheckbox"]').removeProp('checked');
+
+$('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
+	  if($(this).is(":checked")) {
+		  recepiantscontactsList[$(this).data("id")] = $(this).val();
+	  } else {
+		  recepiantscontactsList[$(this).data("id")] = "";
+	  }
+});
+
+}
+</script>
+
+<script>
+	function vendorContactpagination(url){
+		var colIndex = 0;
+		 $('#vendorconDataTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'GET',
+	            pages: 10
+	        }),
+	        "columns": [
+	        	{ "data": "" },
+	            { "data": "listName" },
+	            { "data": "listCount"},
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "ischeck",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		 var result = "";
+		    	  		 var flag = false;
+		    	  		
+		    	  	   for(var e in recepiantscontactsList) {
+		    	  		 if(report.listId+"" === recepiantscontactsList[e].split(",")[0]) {
+		    	  				 flag = true;
+		    	  				 break;
+		    	  			 }
+		    	  		 }  
+		    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.listId+'" data-id="'+report.listId+'" value="'+report.listId+','+report.listName+'" value="'+report.id+'" onchange="checkRecepiantsContacts(this);"  type="checkbox" name="contactids[]"  class="myRecipantsContactsCheckbox" ></td>'; 
+		    	  		
+		    	  		  return result;
+		    	  	}
+		      },{
+	            "targets": colIndex++,
+	            "data": "listName",
+	            "render": function ( data, type, report, meta ) {
+	            	     var result = "";
+		    	  		 result = result +'<input type="hidden" value="row'+report.id+'" id="row'+report.id+'">';
+		    	  		 result = result +'<td><div class="tbldata-dotdot-100" title="'+report.listName+'">'+report.listName+'</div></td>';
+			             return  result;
+	            }
+	          },{
+		            "targets": colIndex++,
+		            "data": "spocName",
+		            "render": function ( data, type, report, meta ) {
+		            	     
+		            	    
+		            	     var result = "";
+				   			 result = result +'<td><div class="proj_show" ><span title="'+report.listCount+'">'+report.listCount+'</span></div></td>';
+			                 return result; 
+		            }
+		          }],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[1,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": false,
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": ""
+		     		
+		     }
+	    } );
+		$("#vendorconDataTable").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>");
+	    $("input[type=search]").hide();
+	    $("#vendorContactsDataTableSearch").keyup(function(e) {
+	    	   if(e.which === 13) {
+	    		   vendorContactDataTableList();
+	    	   }
+	    	});
+}
+</script>
+
+ <!-- Vendor contacts List Ends Here Here-->
+
+<script>
+function getRecipantsContacts(){
+		var internalOutput = "";
+		
+		var internalOutput = "";
+		 for(var e in recepiantscontactsList) {
+			 var checkbox_value = recepiantscontactsList[e].split(",");
+			 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+		  }
+		
+		
+		    $("#emailsList").append(internalOutput);
+			$("#emailsList").trigger("chosen:updated");
+			
+			$("input[name='contactids[]']:checked").removeAttr('checked');
+			$('#checkAllRecipantsntacts').removeAttr('checked');
+		
+}
+</script>
+  <!-- End -->
   
 <jsp:include page="masterFooter.jsp" />
