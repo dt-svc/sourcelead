@@ -43,6 +43,7 @@ $(document).ready(function(){
     </div>
     <div class="require_wrap_table table-wrap">
     <div id="popUp"></div>
+     <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
      
     </div>
@@ -56,7 +57,8 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		  $.ajax({
+		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
@@ -113,7 +115,9 @@ $(document).ready(function(){
 	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetCategoryList").empty();  
-	   	    	    $("#assetCategoryList").append(result)
+	   	    	    $("#assetCategoryList").append(result);
+	   	    	 	$("#assetCategoryLoderDiv").empty();
+	   	      		$("#assetCategoryLoderDiv").removeAttr('style');
 	   	    	    pagination();
 	   	    	 $(".addcon-pop1").click(function(){
 	   	    		 $(".collapse-div-adduser").toggleClass("show-div");
