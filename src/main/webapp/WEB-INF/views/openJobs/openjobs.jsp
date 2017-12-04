@@ -63,8 +63,9 @@ window.onload = function () {
 		}
 		
 	}else{
-		getOpenJobsELKList();
 		getDropDownCount();
+		getOpenJobsELKList();
+		
 	}
  };
 </script>
@@ -225,8 +226,8 @@ z-index: 1000000000 !important;
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
-			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKList(); clearFilters();"></span>
+			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
+			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
 			<h3><b id="ADS">Advanced Search</b></h3>
 			<div class="clear"></div>
 		</section>
@@ -241,37 +242,37 @@ z-index: 1000000000 !important;
 				<ul id="show">
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Today
-						  <input type="radio" name="dateFilter" value="today" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="today" ${postedOn=="today"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 day ago
-						  <input type="radio" name="dateFilter" value="1 Day Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Day Ago" ${postedOn=="1-day-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">3 days ago
-						  <input type="radio" name="dateFilter" value="3 Days Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="3 Days Ago" ${postedOn=="3-days-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 Week ago
-						  <input type="radio" name="dateFilter" value="1 Week Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Week Ago" ${postedOn=="1-week-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">2 Weeks ago 
-						  <input type="radio" name="dateFilter" value="2 Weeks Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="2 Weeks Ago" ${postedOn=="2-weeks-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">1 Month ago
-						  <input type="radio" name="dateFilter" value="1 Month Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="1 Month Ago" ${postedOn=="1-month-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">3 Months ago
-						  <input type="radio" name="dateFilter" value="3 Months Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="dateFilter" value="3 Months Ago" ${postedOn=="3-months-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>		
 				</ul>
@@ -283,32 +284,32 @@ z-index: 1000000000 !important;
 				<ul>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Australia
-						  <input type="radio" name="countryFilter" value="Australia" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="Australia" ${locationType=="australia"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">France
-						  <input type="radio" name="countryFilter" value="France" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="France" ${locationType=="france"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">India
-						  <input type="radio" name="countryFilter" value="India" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="India" ${locationType=="india"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">Singapore
-						  <input type="radio" name="countryFilter" value="Singapore" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="Singapore" ${locationType=="singapore"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">United Kingdom
-						  <input type="radio" name="countryFilter" value="United Kingdom" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="United Kingdom" ${locationType=="united-kingdom"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control-radio control--checkbox-ra">United States
-						  <input type="radio" name="countryFilter" value="United States" onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
+						  <input type="radio" name="countryFilter" value="United States" ${locationType=="united-states"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
 				</ul>
@@ -319,37 +320,37 @@ z-index: 1000000000 !important;
 				<ul>
 					<li class="control-group">
 						<label class="control control--checkbox">C2C
-						  <input type="checkbox" name="typeFilter" value="C2C" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="C2C" ${employementType.indexOf("c2c")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">W-2
-						  <input type="checkbox" name="typeFilter" value="W-2" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="W-2" ${employementType.indexOf("w-2")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">C2H
-						  <input type="checkbox" name="typeFilter" value="C2H" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="C2H" ${employementType.indexOf("c2h")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Contract
-						  <input type="checkbox" name="typeFilter" value="Contract" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Contract" ${employementType.indexOf("contract")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Part Time
-						  <input type="checkbox" name="typeFilter" value="Part Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Part Time" ${employementType.indexOf("part-time")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Full Time
-						  <input type="checkbox" name="typeFilter" value="Full Time" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Full Time" ${employementType.indexOf("full-time")!=-1?"checked=checked":""}onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 					<li class="control-group">
 						<label class="control control--checkbox">Other
-						  <input type="checkbox" name="typeFilter" value="Other" onclick="requirementsFilter();"/><div class="control__indicator"></div>
+						  <input type="checkbox" name="typeFilter" value="Other" ${employementType.indexOf("other")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
 						</label>
 					</li>
 				</ul>
@@ -766,14 +767,24 @@ function clearFilters(){
 
 <script>
 	function getDropDownCount() {
+		var selectedExperience = '${openJobsExperience}';
+		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
+			selectedExperience = 0;
+		}
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled>Experience(Years)</option>")';
+				+ '("<option></option>")';
 		for (var i = 1; i <= 25; i++) {
-			result = result + '("<option value='+i+'>' + i + '</option>")';
+			if(i == selectedExperience){
+				result = result + '("<option selected value='+i+'>' + i + '</option>")';
+			}
+			else{
+				result = result + '("<option value='+i+'>' + i + '</option>")';
+			}
+			
 		}
 		result = result + '</select>';
 		$('#dropDownCountId').empty();
@@ -783,31 +794,27 @@ function clearFilters(){
 
 <script>
 function requirementsFilter(type){
-	var reqType = [];
+	getDropDownCount();
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = document.getElementById("openJobsExperienceId").value;
+	
+	var dates = $('input:radio[name=dateFilter]:checked').val();
+	
+	var country = $('input:radio[name=countryFilter]:checked').val();
+	var reqType = "";
 	$('input:checkbox[name=typeFilter]:checked').each(function() 
     {
-		reqType.push($(this).val());
+// 		reqType.push($(this).val());
+		reqType	+=	(reqType==""?"":"--") + $(this).val();
     });
 	
-	var orgLocationIds = [];
+	var orgLocationIds = "";
 	$('input:checkbox[name=orgName]:checked').each(function() 
     {
-		orgLocationIds.push($(this).val());
+// 		orgLocationIds.push($(this).val());
+		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
-	
-	var dates = "";
-	$('input:radio[name=dateFilter]:checked').each(function() 
-    {
-		dates = ($(this).val());
-    });
-	
-	var country = "";
-	$('input:radio[name=countryFilter]:checked').each(function() 
-    {
-		country = ($(this).val());
-    });
-	
-	
 	
 	var offset = 0;
 	if(type == "more"){
@@ -819,55 +826,70 @@ function requirementsFilter(type){
 		postedOrgName = $("#postedOrg").val();
 	}
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
 	
-	 $.ajax({ 
-	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
-	    success: function(data) {
-	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length > 10){
-	    			$("#loadMoreReq").css("display", "block");
-	    		}
-	    		$("#noResultsDiv").css("display", "none");
-	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	$("#openJobsRequirementTitleId").val('');
-				$("#openJobsLocationId").val('');
-				$("#openJobsExperienceId").val('');
-	        	$('#openJobsRequirementsList').empty();
-	        	$("#openJobsRequirementsList").show();
-	        	$("#openJobsRequirementsSummary").hide();
-	        	$("#loadMoreReq").css("display", "none");
-	        	$("#noResultsDiv").css("display", "block");
-	        	/* var result ="";
-	         	result = result + '<div>No Records Found...</div>';
-	         	$('#loadMoreReq').append(result); */
-	        }
-	    }
-	 }); 
+	var url = "?";
+	if(dates!=undefined && dates!=""){
+		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"postedOn="+dates.toString().toLowerCase().replace(/ /g ,"-");
+	}
+	if(country!=undefined && country!=""){
+		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"locationType="+country.toString().toLowerCase().replace(/ /g ,"-");
+	}
+	if(reqType!=undefined && reqType!=""){
+		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"employementType="+reqType.toString().toLowerCase().replace(/ /g ,"-");
+	}
+	if(orgLocationIds!=undefined && orgLocationIds!=""){
+		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"companies="+orgLocationIds.toString().toLowerCase().replace(/ /g ,"-");
+	}
+	window.location.href = url;
 }
 </script>
 
 
 <script>
-function getOpenJobsELKList(type){
-	var title = document.getElementById("openJobsRequirementTitleId").value;
-	var location = document.getElementById("openJobsLocationId").value;
-	var experience = $("#openJobsExperienceId").val();
-	alert("experience"+experience)
+function getOpenJobsELKListJOBS(){
+	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
+	var openJobsLocation = document.getElementById("openJobsLocationId").value;
+	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
+	location.href = sourceleadUrl+"/ws/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
+	
+}
+</script>
+
+<script>
+function getOpenJobsELKList(){
+	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
+	var openJobsLocation = document.getElementById("openJobsLocationId").value;
+	var openJobsExperience = $("#openJobsExperienceId").val();
+    var dates = $('input:radio[name=dateFilter]:checked').val();
+	var country = $('input:radio[name=countryFilter]:checked').val();
+	var reqType = "";
+	$('input:checkbox[name=typeFilter]:checked').each(function() 
+    {
+// 		reqType.push($(this).val());
+		reqType	+=	(reqType==""?"":"--") + $(this).val();
+    });
+	
+	var orgLocationIds = "";
+	$('input:checkbox[name=orgName]:checked').each(function() 
+    {
+// 		orgLocationIds.push($(this).val());
+		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
+    });
 	var offset = 0;
-	if(type == "more"){
+	var sourceleadUrl ='${sourceleadUrl}';
+	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
-	}
+	} */
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
-	/*  $.ajax({ 
-	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+// 	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
+	  $.ajax({ 
+	   	type: "GET",
+	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience+"&dates="+dates+"&country="+country+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -885,7 +907,7 @@ function getOpenJobsELKList(type){
 				$("#noResultsDiv").css("display", "block");
 	        }
 	    }
-	 });  */
+	 });  
  }
 </script>
 
@@ -1087,7 +1109,7 @@ function getOrgsList(alphabet,type){
 					var opt = json[i];
 					org = org +'	<li class="control-group">';
 					org = org +'		<label class="control control--checkbox"><span>'+opt.orgName+'</span>';
-					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'"/><div class="control__indicator"></div>';
+					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}
@@ -1099,8 +1121,8 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
-				    	result = result +'</label>';
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
 		    	}
@@ -1113,7 +1135,7 @@ function getOrgsList(alphabet,type){
 					var opt1 = json[i];
 					org = org +'	<li class="control-group">';
 					org = org +'		<label class="control control--checkbox" title="'+opt1.orgName+'" ><span>'+opt1.orgName+'</span>';
-					org = org +'		  <input type="checkbox" name="orgName" value="'+opt1.id+'"/><div class="control__indicator"></div>';
+					org = org +'		  <input type="checkbox" name="orgName" value="'+opt1.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}

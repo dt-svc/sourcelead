@@ -70,9 +70,11 @@ public class OpenJobsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/ws/getOpenJobsELK/{title}/{location}/{experience}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/getOpenJobsELK")
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
-			@PathVariable("title") String openJobsRequirementTitle,@PathVariable("location") String openJobsLocation,@PathVariable("experience") String openJobsExperience,
+			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
+			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
+			@RequestParam(value = "openJobsExperience", required = false) String openJobsExperience,
 			@RequestParam(value = "reqType", required = false) String reqType,
 			@RequestParam(value = "orgLocationIds", required = false) String orgLocationIds,
 			@RequestParam(value = "dates", required = false) String dates,

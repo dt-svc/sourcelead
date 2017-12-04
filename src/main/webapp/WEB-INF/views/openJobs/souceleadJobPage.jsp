@@ -74,7 +74,7 @@ function getPostValueDetails(){
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if(${requirementUUID != null} ){
+		if('${requirementUUID != null}'){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
@@ -83,7 +83,7 @@ function getPostValueDetails(){
 	  }
 	});
 </script>
-
+ 
 <style>
 .footer-area {
 display: none;}
@@ -457,7 +457,7 @@ $(window).scroll(function (e) {
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled>Experience(Years)</option>")';
+				+ '("<option selected disabled></option>")';
 		for (var i = 1; i <= 25; i++) {
 			result = result + '("<option value='+i+'>' + i + '</option>")';
 		}
@@ -469,7 +469,7 @@ $(window).scroll(function (e) {
 
 
 
-<script>
+<!-- <script>
 function getOpenJobsELKList(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
@@ -618,12 +618,12 @@ function getOpenJobsELKList(){
 	    }
 	 }); 
  }
-</script>
+</script> -->
 
 
 
 
- <script>
+  <script>
 function getOpenJobsRequirementSummary(requirementsUUID){
 	 
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -749,7 +749,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	   	   	}
 		});  
 }
-</script>
+</script> 
 
 
 <script>
@@ -762,7 +762,7 @@ var validationSettings = {
 </script>
 
 
-<script>
+<!-- <script>
 function openJobSearchRequirement(){
  			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
 			
@@ -867,7 +867,7 @@ function openJobSearchRequirement(){
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);
 			});
-</script>
+</script> -->
 
 
 
@@ -892,7 +892,7 @@ function openJobSearchRequirement(){
 	})(jQuery);
 </script>
 
-<script>
+<!-- <script>
 function getStates(){
 	var countryName = $("#country").val();
 	
@@ -926,10 +926,10 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>  -->
 
 
-<script>
+<!-- <script>
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
@@ -957,7 +957,7 @@ function getCities(){
     	$('#city').trigger("chosen:updated");
 	}
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
@@ -1073,7 +1073,7 @@ function getCities(){
 
 
 <!--  Forgot password -->
-<script>
+<!-- <script>
 	$("#forpass").hide();
 	$("#pass").click(function() {
 		$("#forpass").show();
@@ -1083,11 +1083,11 @@ function getCities(){
 		$("#forpass").hide();
 		$("#signin").show();
 	});
-</script>
+</script> -->
 
 
 <!--   Responsive Menu   -->
-<script>
+<!-- <script>
 	$("#menuIcon").click(function() {
 		$(".mask").fadeIn(200);
 		$(".resMenu").addClass("resMenuAct");
@@ -1111,7 +1111,7 @@ function getCities(){
 							".accordion-panel:visible").slideToggle();
 				})
 	});
-</script>
+</script> -->
 
 <!--  Blog Responsive  -->
 <script>
@@ -1121,7 +1121,7 @@ $(".blogWrapRight h2").click(function(){
 </script>    
 
 <!--   FreeTrial Pop   -->
-<script>
+<!-- <script>
 	$(document).ready(function() {
 		$(".freeTrail").click(function() {
 			$("#freeTrial").addClass("activePop");
@@ -1149,7 +1149,7 @@ $(".blogWrapRight h2").click(function(){
 			$(".clPop").removeClass("clPopA");
 		}
 	});
-</script>
+</script> -->
 
 
 
@@ -1176,7 +1176,7 @@ $(".blogWrapRight h2").click(function(){
 </script>  -->
 
 
-<script>
+<!-- <script>
 function loadOpenJobsChosenRequirementScripts(){
 	 $('#country').val('${loginCountryName}'); 
      $('#state').val(''); 
@@ -1195,7 +1195,7 @@ function loadOpenJobsChosenRequirementScripts(){
 	 $("#allReqKeyWord").empty();
 	 $("#excludeReqKeyWord").empty();
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
