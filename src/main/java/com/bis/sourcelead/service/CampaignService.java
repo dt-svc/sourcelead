@@ -32,7 +32,7 @@ public interface CampaignService {
 
 	ResponseList<CampaignListDTO> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 
-	CampaignList getCampaignById(long id);
+	CampaignList getCampaignListById(long id);
 
 	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
 

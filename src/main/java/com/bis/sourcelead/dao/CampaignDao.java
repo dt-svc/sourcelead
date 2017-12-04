@@ -26,10 +26,7 @@ public interface CampaignDao {
 
 	ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation, CampaignListDTO campaignListDTO) throws Exception;
 
-
-	CampaignList getCampaignById(long id);
-
-	CampaignList deleteCampaign(CampaignList campaignList);
+	CampaignList getCampaignListById(long id);
 	
 	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable);
 
@@ -37,6 +34,5 @@ public interface CampaignDao {
 
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;
 
-	CampaignList getCampaignListById(String contactListId) throws Exception;
 
 }

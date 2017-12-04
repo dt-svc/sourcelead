@@ -103,6 +103,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		return createSenderList;
 	}
 
+	@SuppressWarnings({ "unused", "unchecked" })
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation,CampaignListDTO campaignListDTO) throws Exception
@@ -122,12 +123,14 @@ public class CampaignDaoImpl implements CampaignDao {
 		cpnList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
+		@SuppressWarnings("unchecked")
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (campaignListDTO != null) {
+			@SuppressWarnings("unchecked")
 			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
@@ -139,16 +142,14 @@ public class CampaignDaoImpl implements CampaignDao {
 
 		response.setData(cpnList);
 		return response;
-//		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-//		return cpnList;
 		
 		
 		
 	}
 
 	@Override
-	@Transactional
-	public CampaignList getCampaignById(long id)
+	@Transactional(rollbackFor = { Exception.class })
+	public CampaignList getCampaignListById(long id)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CampaignList campaignList where campaignList.id=:id";
@@ -188,40 +189,21 @@ public class CampaignDaoImpl implements CampaignDao {
 		return campaign;
 
 	}
-	
-	@Override
-	@Transactional
-	public CampaignList deleteCampaign(CampaignList campaignList)
-	{
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (campaignList != null) {
-				session.saveOrUpdate(campaignList);
-			}
-		} catch (Exception exception) {
-		}
-		return campaignList;
-	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = { Exception.class })
 	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-			
-		String query = "from "+fromTable+" frm where frm.orgLocation.id = :orgLocationId and frm.status = '1' and frm.listName = :name";
+		String query = "from " + fromTable
+				+ " frm where frm.orgLocation.id = :orgLocationId and frm.status = '1' and frm.listName = :name";
 		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
-		if(found.size() > 0){
+		if (found.size() > 0) {
 			return true;
-		}else{
+		}
+		else {
 			return false;
 		}
 	}
 
-	@Override
-	public CampaignList getCampaignListById(String contactListId) throws Exception
-	{
-		return null;
-	}
-	
 }
