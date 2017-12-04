@@ -100,14 +100,14 @@
                   </div>
                   
                  <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">*</span></label>
+                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
                   </div>
                   </div>
                   
                 <div class="form-group" id="FirstNameDiv">
-                  <label class="col-md-3">First Name<span class="text-danger">*</span></label>
+                  <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
@@ -170,7 +170,7 @@
        </div>
                 
                 <div class="form-group">
-                  <label class="col-md-3">Role<span class="text-danger">*</span></label>
+                  <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9" id="chosen-role">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
@@ -224,7 +224,7 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager</label>
+                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
                         <option value="">-Select Manager-</option>

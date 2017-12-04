@@ -5,6 +5,7 @@
 <link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 .clsDatePicker {
@@ -60,16 +61,12 @@
 								 </c:if>
 								</c:forEach>
 							</select> 
-                <span class="input-group-addon cursorPointer bg-blue" onclick=" "><i class="fa fa-refresh "></i></span>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList(); "><i class="fa fa-refresh "></i></span>
                 </div>	
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize>                						
 					</div>
-<%-- 					  <div class="col-md-2 noPad refreshBtnStyle">
-				<a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default formic1" title="Add Client"> </i></a>
-				<i class="fa fa-refresh btn btn-default formic1" onclick="validateEmail();getSpocUserDetails();getRolesList();" title="Refresh"></i>
-			</div>   --%>
 				</div>
 			</div>
 			
@@ -343,4 +340,32 @@ function saveClientProject(){
 					});
  }
 </script>
-
+<script>
+function refreshClientList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#clientOrgLocId").empty();
+		        $("#clientOrgLocId").append(output);
+		        $('#clientOrgLocId').trigger("chosen:updated");
+	        }
+		 });
+		 
+	
+	
+}
+</script>
