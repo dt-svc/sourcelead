@@ -14,6 +14,13 @@ function campaignSender(ele,senderId) {
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								senderClose();
+								location.replace(sourceleadUrl+ "/campaignSendersList");
+								 $("#selector1").removeAttr("style");
+					  			 $("#selector1").css({ display: "block" });
+					  			 $("#msgDiv").html("Successfullyy Created sender identity");
+					  			 $("#popUp").empty();
+					 			 $(".project_inn_mask").fadeOut(200);
+					             msgFadein();	
 							}
 						});
 						return true;

@@ -35,7 +35,11 @@ public interface CampaignDao {
 
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;
 
+
 	List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long orgLocationId);
+
+	int deleteRecipientListByListId(Long campaignListId)throws Exception;
+
 
 
 }

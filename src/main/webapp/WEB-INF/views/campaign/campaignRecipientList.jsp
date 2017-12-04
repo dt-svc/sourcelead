@@ -14,8 +14,8 @@
     <div class="pull-left">
             <h2>Contact List<span class="select-fild">
                 	<select id="typeOfCampaign" onchange="getCampaignRecipientList();">
-                  		 <option value="1"  selected="selected">Job List</option>
-                         <option value="0" >Hot List</option> 
+                  		 <option value="1">Job List</option>
+                         <option value="0" selected="selected">Hot List</option> 
                     </select>
                 </span>            	
             </h2>

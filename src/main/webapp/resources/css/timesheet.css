@@ -6076,3 +6076,16 @@ float: left; top: 5px
 .popupFoot p {
 	display: block; width: 100%; text-align: center; color: red; font-size: 12px;
 }
+
+
+.ReciViewPop {
+	position: fixed; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+.listView {
+	padding: 0px 0px 0px 6px !important;
+}
+
+
+
+

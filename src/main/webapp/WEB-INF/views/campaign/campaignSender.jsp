@@ -10,6 +10,9 @@
 
 <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
+ 	<div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
 		<form:form id="capn_add_sender" name="capn_add_sender" method="post">
 		<div class="popupHead">
 			<h2>Add Sender</h2><a onclick="senderClose();" href="javascript:void(0)" class="fa fa-close"></a>
@@ -54,6 +57,7 @@
 		</div>
 		</form:form>
 		
+<div id="popUp"></div>
 		
 <script type="text/javascript">
         var validationSettings = {
@@ -63,34 +67,12 @@
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-		
-
-<!-- <script type="text/javascript">
-function validateNickName(){
-	var nickName = document.getElementById("nickNameDiv").value;
-	if(nickName != null){
-		$.ajax({
-			type : "GET",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
-			success : function(data) {
-				var result = data;
-				if(result == 'Invalid Email') {
-					$('#nickNameDiv').find('p.jquery_form_error_message').remove();
-					$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
-					document.getElementById("cpnNickName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("cpnNickName").setAttribute( 'record-exist-errorMsg',"You already have a sender identity with the same nickname.");
-					
-				}else if(result == 'Valid Email') {
-					$('input#cpnNickName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#cpnNickName').attr('class','valid form-control');
-					$('#nickNameDiv').find('p.jquery_form_error_message').remove();
-					
-				}
-			},
-
-		});
-	}
+		  
+ <script>
+ function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
 }
-</script> -->
+</script>
 
 <!--   Popup Code  -->  
