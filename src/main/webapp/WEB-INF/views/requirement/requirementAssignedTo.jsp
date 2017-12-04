@@ -12,7 +12,7 @@
 
 				<div class="row">
 					<div class="clearfix"></div>
-					<div class="swaptables datatable_filter">
+					<div class="swaptables">
 						<div class="row positionRelative">
 							<div class="col-md-5 mb5">
 								<select id="teamSelectionCategory" class="selectpicker" multiple data-actions-box="true"
@@ -25,10 +25,10 @@
 							</div> -->
 						</div>
 
-						<div class="clearfix">
+						<div class="clearfix positionRelative assignTableScroll">
 							<table id="assignToDataTableId"
 								class="display table table-stripped table-bordered dataTable no-footer"
-								role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" width="100%" cellspacing="0">
+								role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
 								<thead>
 									<tr role="row">
 										<th style="vertical-align: middle"><input type="checkbox" id="checkAll"></th>
@@ -55,11 +55,11 @@
 						</div>
 					</div>
 					<div class="swaptables">
-						<div class="clearfix mt40" style="height:250px; overflow-y:auto;" id="assignToSelectedDataTableDiv">
+						<div class="clearfix mt40 assignTableScroll" style="height:250px; overflow-y:auto;" id="assignToSelectedDataTableDiv">
 							<table id="assignToSelectedDataTableId"
 								class="display table table-stripped table-bordered dataTable no-footer"
 								role="grid" aria-describedby="assignToDataTableId_info"
-								style="width: 100%;" width="100%" cellspacing="0">
+								style="width: 100%;" cellspacing="0">
 								<thead>
 									<tr role="row">
 										<th style="vertical-align: middle"><input id="checkAllSelected" type="checkbox"></th>
@@ -129,13 +129,13 @@ function getTeamsList(reqId){
 				  output = output + "<optgroup label='Teams'>";
 				  for (var i = 0; i < json.teams.length; i++) {
 						var opt = json.teams[i];
-						/* if('Y' == opt.isTeamAssigned){
+						if('Y' == opt.isTeamAssigned){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
 						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
-					    }else{ */
+					    }else{
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
-						/* } */
+						}
 
 					}
 				  output = output + "</optgroup>";
@@ -146,13 +146,13 @@ function getTeamsList(reqId){
 				  output = output + "<optgroup label='Roles'>"; 
 					for (var i = 0; i < json.roles.length; i++) {
 						var opt = json.roles[i];
-						/* if('Y' == opt.isRoleAssigned){
+						if('Y' == opt.isRoleAssigned){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
 						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-						}else{ */
+						}else{
 							output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
-						/* } */
+						}
 					}
 					output = output + "</optgroup>";
 			  }
@@ -261,7 +261,9 @@ function getUserList(teamType){
 	                       //paginations(); 
 			    		}
                  	}
-          		},
+          		},complete: function (data) {
+                	selectAssignUsers();
+                }
        		});
   	} 
 </script>
@@ -345,7 +347,12 @@ function deSelectAssignUsers(){
 			$(this).closest( 'td' )[0].remove();
 			return $(this).val();
 	    }).toArray();
-		$("#showGrid").text(selectedIDs.length);
+		$(".showGrid").text(selectedIDs.length);
+		if(selectedIDs.length===0){
+			$("#showGrid").prop('disabled', 'disabled');
+		}else{
+			$("#showGrid").removeAttr('disabled');
+		}
 	    $("#assignedTeamId").empty();
 	    $("#assignedTeamId").val(selectedIDs);
 	}
@@ -355,7 +362,8 @@ function deSelectAssignUsers(){
 		$("#assignedTeamId").val('');
 		$("#selectedUsersGrid").empty();
 		$("#assignedTeamsOrUsers").empty();
-		$("#showGrid").text('0');
+		$(".showGrid").text('0');
+		$("#showGrid").prop('disabled', 'disabled');
 		teamRoleIds = [];
 		selectAssignUsersIds = [];
 		$("#teamSelectionCategory").empty();

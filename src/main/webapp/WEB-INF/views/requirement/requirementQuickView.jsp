@@ -400,7 +400,7 @@
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
 	
-	<input type="text" name="assignedTeamId" id="assignedTeamId" value=""/>
+	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
 
 <script>
