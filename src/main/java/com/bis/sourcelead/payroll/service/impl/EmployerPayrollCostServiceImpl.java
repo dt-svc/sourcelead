@@ -304,7 +304,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
 							userPayroll.setId(i);
 							if(pm.getProjectMemberCandidteId() !=null) {
-								userPayroll.setEmpId(pm.getProjectMemberCandidteId().getId().toString());	
+								String employeeId = wageTaxSummaryService.getWagesAndTaxEmployeeId(pm.getCandidateId());
+								userPayroll.setEmpId(employeeId);	
 								userPayroll.setUserId(pm.getProjectMemberCandidteId().getConsultantUser());
 							}
 							userPayroll.setOrgLocationId(orgLocation);

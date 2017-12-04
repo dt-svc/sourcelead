@@ -108,30 +108,32 @@ public class CampaignDaoImpl implements CampaignDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<CampaignList> getRecipientListByUserId(User user, OrgLocations orgLocation,CampaignListDTO campaignListDTO) throws Exception
 	{
-		
+		int campaignType = Integer.parseInt(campaignListDTO.getTypeOfCampaign());
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CampaignList> cpnList = null;
 		ResponseList<CampaignList> response = new ResponseList<>();
-		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = 1";
-		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.status = 1 and cpnList.campaignType = 1";
+		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = :campaignType";
+		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.status = 1 and cpnList.campaignType = :campaignType";
 		Query queryObj = session.createQuery(query);
 		if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
 			queryObj.setFirstResult(campaignListDTO.getStart());
 			queryObj.setMaxResults(campaignListDTO.getLength());
-			queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
 		}
 		cpnList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		@SuppressWarnings("unchecked")
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
+
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (campaignListDTO != null) {
-			@SuppressWarnings("unchecked")
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).list();
+
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}

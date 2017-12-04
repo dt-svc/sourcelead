@@ -11,9 +11,15 @@
 
  <section class="content-wraper">
     <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Recipient list</h2>
-      </div>
+    <div class="pull-left">
+            <h2>Contact List<span class="select-fild">
+                	<select id="typeOfCampaign" onchange="getCampaignRecipientList();">
+                  		 <option value="1"  selected="selected">Job List</option>
+                         <option value="0" >Hot List</option> 
+                    </select>
+                </span>            	
+            </h2>
+          </div>
       <div class="pull-right brud-crum">Home &raquo; Recipient list</div>
     </section>
     <div class="timesheet_out">
@@ -34,9 +40,11 @@
 function getCampaignRecipientList(){
        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
        var userId = '${SourceLeadWeb_user.id}';
+       var typeOfCampaign = $("#typeOfCampaign").val();
+       alert(typeOfCampaign);
        $.ajax({
        type : "GET",
-        url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,       
+        url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&typeOfCampaign="+typeOfCampaign,       
         success :function(json) {
                 populategRecipientList(json);
        },
@@ -119,6 +127,8 @@ function deleteCampaignContactList(id){
 
 }
 </script>
+
+
   
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
