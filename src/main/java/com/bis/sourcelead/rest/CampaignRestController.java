@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
@@ -221,4 +223,24 @@ public class CampaignRestController {
 		flag = campaignService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
 		return flag;
 	}
+	
+	@RequestMapping(value = "/listViewPop")
+	public @ResponseBody  List<CampaignListDTO> getlistViewPop(CampaignListDTO campaignListDTO, @RequestParam(value = "viewListId", required = false) String viewListId, HttpServletRequest request) throws Exception
+	{
+		List<CampaignListDTO> campaiList = new ArrayList<>() ; 
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CampaignRecipient> campList = campaignService.getRecipientListByListIdAndOrgLocationId(viewListId, orgLocation.getId());
+		for (CampaignRecipient campaignRecipient : campList) {
+			CampaignListDTO campaignListdto = new CampaignListDTO(); 
+			campaignListdto.setFirstName("");
+			campaignListdto.setLastName("");
+			campaignListdto.setEmail(campaignRecipient.getEmail());
+			campaiList.add(campaignListdto);
+		}
+		
+		return campaiList;
+		
+	}
+	
+	
 }
