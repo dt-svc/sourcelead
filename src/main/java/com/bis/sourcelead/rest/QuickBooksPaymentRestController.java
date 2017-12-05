@@ -21,7 +21,7 @@ import com.bis.sourcelead.service.QuickBookPaymentService;
  */
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class QuickBooksPaymentRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(QuickBooksPaymentRestController.class);

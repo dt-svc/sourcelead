@@ -47,7 +47,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ProfessionalRequirementsController {
 
 	@Value("${sourceleadUrl}")
@@ -98,7 +98,7 @@ public class ProfessionalRequirementsController {
 	}
 	
 	
-	 @RequestMapping(value = "/ws/register")
+	 @RequestMapping(value = "/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
@@ -148,7 +148,7 @@ public class ProfessionalRequirementsController {
 	 			return model;
 	 	}
 	 
-	 @RequestMapping(value = "/ws/resetloginCredentials")
+	 @RequestMapping(value = "/resetloginCredentials")
 	 	public ModelAndView resetloginCredentials(HttpServletRequest request,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 	 			@RequestParam(value = "referUUID", required = false) String referUUID) {
@@ -294,7 +294,7 @@ public class ProfessionalRequirementsController {
 		public @ResponseBody void userRequirementSummary(@PathVariable String requirementUUID, HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
 			StringBuilder redirectUrl = new StringBuilder();
-			response.sendRedirect(redirectUrl.append("/path/requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+			response.sendRedirect(redirectUrl.append("/app/requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 
 	 }
 	 
@@ -302,7 +302,7 @@ public class ProfessionalRequirementsController {
 		public @ResponseBody void userSummary(@PathVariable String requirementUUID,@PathVariable String referUUID, HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
 			StringBuilder redirectUrl = new StringBuilder();
-			response.sendRedirect(redirectUrl.append("/path/requirementProfileDetails?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+			response.sendRedirect(redirectUrl.append("/app/requirementProfileDetails?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
 
 	 }
 	 
@@ -335,7 +335,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	    @RequestMapping(value = "/ws/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
 		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
@@ -384,7 +384,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/ws/referRequirementToProfessional")
+	 @RequestMapping(value = "/referRequirementToProfessional")
 		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "contactUUID", required = false) String contactUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) {
@@ -526,7 +526,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/ws/jobAlertRequirementSummary")
+	 @RequestMapping(value = "/jobAlertRequirementSummary")
 		public ModelAndView jobAlertRequirementSummary(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
 			
 		 ModelAndView model = new ModelAndView();

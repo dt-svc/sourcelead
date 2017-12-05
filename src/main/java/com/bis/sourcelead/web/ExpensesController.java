@@ -36,7 +36,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesController {
 	
 	@Value("${sourceleadUrl}")

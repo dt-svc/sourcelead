@@ -55,7 +55,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.math.BigDecimal;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesApprovalRestController {
 
 	@Autowired

@@ -44,7 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class TeamRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TeamRestController.class);
 	@Value("${sourceleadUrl}")

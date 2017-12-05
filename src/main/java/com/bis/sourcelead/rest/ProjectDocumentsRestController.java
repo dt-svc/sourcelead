@@ -12,7 +12,7 @@ import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 
 @RestController
-@RequestMapping("/path/projectDocuments")
+@RequestMapping("/app/projectDocuments")
 public class ProjectDocumentsRestController {
 
 	@Autowired

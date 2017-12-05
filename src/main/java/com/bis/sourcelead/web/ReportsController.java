@@ -24,7 +24,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ReportsController {
 
 private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);

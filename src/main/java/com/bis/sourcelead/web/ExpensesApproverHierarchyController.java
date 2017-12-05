@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 */
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesApproverHierarchyController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApproverHierarchyController.class);

@@ -62,7 +62,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ProjectsRestController {
 	
 	@Value("${static.path}")
@@ -367,7 +367,7 @@ public class ProjectsRestController {
 		}
 		
 	// Validate for Cilent Website
-	@RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	@RequestMapping(value = "/validateClientWebsite", method = RequestMethod.GET)
 	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
 			@RequestParam(value = "sourceleadBLockedwebsites", required = false) String sourceleadBLockedwebsites) {
 		String status = "success";

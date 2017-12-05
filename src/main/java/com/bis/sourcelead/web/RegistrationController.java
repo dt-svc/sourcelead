@@ -47,7 +47,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class RegistrationController {
 	
 	 
@@ -163,7 +163,7 @@ public class RegistrationController {
 	 * @throws Exception 
 	  */
 	 
-	 @RequestMapping(value = "/ws/acceptClientOrVendorInvitation")
+	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
 		public void acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,
@@ -242,7 +242,7 @@ public class RegistrationController {
 		    
 			if(null == actionLink){
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/path/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
+				response.sendRedirect(redirectUrl.append("/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
 			}else{
 				 StringBuilder redirectUrl = new StringBuilder();
 				 if("acceptNotification".equalsIgnoreCase(actionLink)){
@@ -275,7 +275,7 @@ public class RegistrationController {
 					 }
 				 }
 				 
-				 response.sendRedirect(redirectUrl.append("/path/dashboard/").append(respondingPartyOrgLocationId).toString());
+				 response.sendRedirect(redirectUrl.append("/app/dashboard/").append(respondingPartyOrgLocationId).toString());
 			}
 			
 		}
@@ -460,7 +460,7 @@ public class RegistrationController {
 	 
 	 
 	 
-	  @RequestMapping(value = "/ws/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -474,7 +474,7 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/ws/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -495,7 +495,7 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/ws/validateCrowdSourcingUserName",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingUserName",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingUserName(@RequestParam(value="userName", required=false) String userName) throws Exception {
 		  
 		  User user = userService.getUserByUserName(userName);
@@ -506,7 +506,7 @@ public class RegistrationController {
 		  }
 	   }
 	  
-	  @RequestMapping(value = "/ws/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingResetUserName(@RequestParam(value="userName", required=false) String userName,
 			   @RequestParam(value="resetUserName", required=false) String resetUserName) throws Exception {
 		  

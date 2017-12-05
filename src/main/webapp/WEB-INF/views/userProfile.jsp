@@ -220,7 +220,7 @@ function resetProfile(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -267,7 +267,7 @@ function resetProfile(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
 					</div>
 				  </div>
 				  </form:form>

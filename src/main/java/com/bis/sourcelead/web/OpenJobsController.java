@@ -27,7 +27,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Controller
-@RequestMapping("/path")
 public class OpenJobsController {
 
 	@Autowired
@@ -47,7 +46,7 @@ public class OpenJobsController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/ws/openJobs")
+	@RequestMapping(value = "/openJobs")
 		 public ModelAndView openJobs() throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 List<Countries> countriesList = countriesService.getAllCountries();
@@ -60,7 +59,7 @@ public class OpenJobsController {
 	}
 	
 	
-	@RequestMapping(value = "/ws/jobs/{title}/{location}/{experience}")
+	@RequestMapping(value = "/jobs/{title}/{location}/{experience}")
 	 public String openRequirementsRedirect(ModelMap modelMap,@PathVariable String title,@PathVariable String location,@PathVariable String experience,
 			 @RequestParam(value = "postedOn",defaultValue ="", required = false) String postedOn,@RequestParam(value = "locationType",defaultValue ="", required = false) String locationType,
 			 @RequestParam(value = "employementType",defaultValue ="", required = false) String employementType,@RequestParam(value = "companies",defaultValue ="", required = false) String companies,
@@ -84,9 +83,32 @@ public class OpenJobsController {
 	 return "openJobs/openjobs";
 }
 	
+	@RequestMapping(value = "/jobs")
+	 public String openRequirementsRedirect(ModelMap modelMap,
+			 @RequestParam(value = "postedOn",defaultValue ="", required = false) String postedOn,@RequestParam(value = "locationType",defaultValue ="", required = false) String locationType,
+			 @RequestParam(value = "employementType",defaultValue ="", required = false) String employementType,@RequestParam(value = "companies",defaultValue ="", required = false) String companies,
+			 HttpServletRequest request) throws Exception{
+		 return "forward:/jobs/null/null/null";
+	}
+	
+	@RequestMapping(value = "/jobs/{title}")
+	 public String openRequirementsRedirect(ModelMap modelMap,@PathVariable String title,
+			 @RequestParam(value = "postedOn",defaultValue ="", required = false) String postedOn,@RequestParam(value = "locationType",defaultValue ="", required = false) String locationType,
+			 @RequestParam(value = "employementType",defaultValue ="", required = false) String employementType,@RequestParam(value = "companies",defaultValue ="", required = false) String companies,
+			 HttpServletRequest request) throws Exception{
+		return "forward:/jobs/title/null/null";
+	}
+	
+	@RequestMapping(value = "/jobs/{title}/{location}")
+	 public String openRequirementsRedirect(ModelMap modelMap,@PathVariable String title,@PathVariable String location,
+			 @RequestParam(value = "postedOn",defaultValue ="", required = false) String postedOn,@RequestParam(value = "locationType",defaultValue ="", required = false) String locationType,
+			 @RequestParam(value = "employementType",defaultValue ="", required = false) String employementType,@RequestParam(value = "companies",defaultValue ="", required = false) String companies,
+			 HttpServletRequest request) throws Exception{
+		return "forward:/jobs/title/location/null";
+	}
 	
 	
-	@RequestMapping(value = "/ws/openJobsPublicPage")
+	@RequestMapping(value = "/openJobsPublicPage")
 		public ModelAndView openJobsforApplicants(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

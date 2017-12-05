@@ -26,7 +26,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class JobAlertController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JobAlertController.class);
@@ -79,7 +79,7 @@ public class JobAlertController {
 	
 	
 	
-	@RequestMapping(value = "/ws/viewAllJobAlerts")
+	@RequestMapping(value = "/viewAllJobAlerts")
  	public ModelAndView viewAllJobAlerts(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		    

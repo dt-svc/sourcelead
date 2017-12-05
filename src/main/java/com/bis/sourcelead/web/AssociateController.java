@@ -34,7 +34,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class AssociateController {
 	private static final Logger logger = LoggerFactory.getLogger(AssociateController.class);
 	@Value("${sourceleadUrl}")

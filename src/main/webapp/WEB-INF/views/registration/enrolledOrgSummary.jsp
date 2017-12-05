@@ -198,7 +198,7 @@ z-index: 9999999999 !important;
 					<div class="clearfix">
 					<div class="pull-right">
 					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/path/enrolledOrgsList'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/enrolledOrgsList'">
 					</div>
 					</div>
 					</div>

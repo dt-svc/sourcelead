@@ -29,7 +29,7 @@ function prepareBisChecksList(url){
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='clearfix col-md-12 mb10'>";
- 	result = result +'<a href="/path/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
+ 	result = result +'<a href="/app/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
  	result = result +"</div>";

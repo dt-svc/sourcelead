@@ -33,7 +33,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ProfessionalProfileController {
 
 	@Value("${sourceleadUrl}")

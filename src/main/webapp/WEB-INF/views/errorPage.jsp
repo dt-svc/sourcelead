@@ -16,7 +16,7 @@
                  <br/>Please try again later. <span class="text-info"></span></p>
                 <p class="positionRelative move-btn btn-group">
                 <i class="fa fa-home btn btn-primary"></i>
-                <a href="/path/dashboard" type="button" class="btn btn-primary">Go to Home Page<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
+                <a href="/app/dashboard" type="button" class="btn btn-primary">Go to Home Page<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
                 </span></a>
                 </p>
               </div>

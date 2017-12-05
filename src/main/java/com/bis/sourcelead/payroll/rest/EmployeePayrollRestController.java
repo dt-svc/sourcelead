@@ -59,7 +59,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class EmployeePayrollRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeePayrollRestController.class);

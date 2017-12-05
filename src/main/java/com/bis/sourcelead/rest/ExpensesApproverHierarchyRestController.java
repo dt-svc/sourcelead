@@ -21,7 +21,7 @@ import com.bis.sourcelead.web.HomeController;
 */
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesApproverHierarchyRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);

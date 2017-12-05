@@ -66,7 +66,7 @@ function redirectPageStatic(){
 	alert("title"+title)
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("dropDownCountId").value;
-	window.location.href = sourceleadUrl+"path/ws/openRequirementsRedirect?&title="+title+"&location="+location+"&experience="+experience;
+	window.location.href = sourceleadUrl+"app/openRequirementsRedirect?&title="+title+"&location="+location+"&experience="+experience;
 }
 </script>
 <script>
@@ -104,7 +104,7 @@ function getOpenJobsELKList(){
 	var offset = 0;
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	     $("#openJobsRequirementsList").empty();
 	     var json = JSON.parse(data);
@@ -146,7 +146,7 @@ function getOpenJobsELKList(){
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
-					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
@@ -164,7 +164,7 @@ function getOpenJobsELKList(){
 					}
 					result = result +'	</div>';	
 					
-					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
 					result = result +'	<span>';

@@ -71,7 +71,7 @@ $(document).ready(function(){
 			</li>
 			
         		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/path/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
+				<li><a href="<c:url value="/app/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
 				</sec:authorize>
                 <div class="clearfix"></div>
             </ul>

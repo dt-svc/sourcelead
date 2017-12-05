@@ -60,7 +60,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ReportRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportRestController.class);

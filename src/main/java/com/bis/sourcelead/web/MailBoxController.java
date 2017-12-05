@@ -47,7 +47,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class MailBoxController {
 	
 
@@ -167,7 +167,7 @@ public class MailBoxController {
 	
 	
 
-	@RequestMapping(value = "/ws/requestForCandidateResume")
+	@RequestMapping(value = "/requestForCandidateResume")
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();

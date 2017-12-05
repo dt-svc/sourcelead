@@ -46,7 +46,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class TimesheetController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);
@@ -132,7 +132,7 @@ public class TimesheetController {
 	}
 	
 	
-	@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheet")
+	@RequestMapping(value = "/acceptOrRejectReopenTimeSheet")
 	@ResponseBody  ModelAndView acceptOrRejectReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="userId", required=false) Long userId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,

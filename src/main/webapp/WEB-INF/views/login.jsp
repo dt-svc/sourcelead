@@ -77,15 +77,15 @@
 	            <div class= "clearfix"></div>
 	            
 	            <c:if test="${!empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
 	            <c:if test="${!empty requirementUUID && !empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
 	            <c:if test="${empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register'/>">Sign up</a></h5></div>
 	            </c:if>
 	            
             </form>          

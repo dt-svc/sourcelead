@@ -54,7 +54,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class TimesheetSubmissionListController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionListController.class);

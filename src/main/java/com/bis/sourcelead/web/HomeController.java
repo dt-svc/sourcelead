@@ -120,7 +120,7 @@ public class HomeController {
 	}
 	
 	
-   @RequestMapping(value = "/ws/forgotPassword")
+   @RequestMapping(value = "/forgotPassword")
  	public ModelAndView forgotPassword() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("forgotPassword");
@@ -129,7 +129,7 @@ public class HomeController {
  	}
    
    
-   @RequestMapping(value = "/ws/resetPassword")
+   @RequestMapping(value = "/resetPassword")
   	public ModelAndView resetPassword(HttpServletRequest request) {
   			ModelAndView model = new ModelAndView();
   			model.setViewName("resetPassword");
@@ -171,7 +171,7 @@ public class HomeController {
 			}else{
 				StringBuilder redirectUrl = new StringBuilder();
 				try {
-					response.sendRedirect(redirectUrl.append("/path/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				} catch (IOException e) {
 					
 				}

@@ -84,7 +84,7 @@ function requirementTemplateList(){
 	                    	 result = result +"<tr>"; 
 	                    	 result = result +"<td>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/path/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
+		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/app/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
 		                     '</sec:authorize>';
 		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<div class="tbldata-dotdot"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></div>';

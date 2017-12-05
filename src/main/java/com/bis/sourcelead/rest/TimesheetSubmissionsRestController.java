@@ -47,7 +47,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController 
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class TimesheetSubmissionsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsRestController.class);

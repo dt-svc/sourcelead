@@ -104,7 +104,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class UsersListRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);
@@ -539,7 +539,7 @@ public class UsersListRestController {
 	public @ResponseBody void userSummary(@PathVariable Long userId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/path/userSummaryDetails?userId=").append(userId).toString());
+		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userId=").append(userId).toString());
 
 	}
 
