@@ -604,7 +604,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel < (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
-	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", role.getRoles().getId()).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
         return userRoleList;
 	}
 

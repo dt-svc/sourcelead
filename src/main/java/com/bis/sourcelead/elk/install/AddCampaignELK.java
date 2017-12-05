@@ -94,6 +94,10 @@ public class AddCampaignELK {
 						campaignIndex.setPhno(rs.getString("PHONE_NO"));
 					}
 					
+					if(!isNullOrEmpty(rs.getString("MAIL_TYPE"))){
+						campaignIndex.setMailType(rs.getString("MAIL_TYPE"));
+					}
+					
 					if(!isNullOrEmpty(rs.getString("COMMENTS"))){
 						campaignIndex.setComments(rs.getString("COMMENTS"));
 					}
