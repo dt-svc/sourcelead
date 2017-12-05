@@ -803,32 +803,8 @@ function professionalProfile(candidateId){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		//Adding Customized Skills to the list
-        var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                $("#skillName option").each(function(){
-                      $(this).siblings("[value='"+ this.value+"']").remove();
-                });
-                //end
-        		$("#skillName").trigger("chosen:updated");
-        		
-	        }
-	    });
-	    //Adding Customized Skills to the list
-		
-		
+		//Adding Customized Skills to the list this method is slead-common.js
+		tagIt("skillName", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','');
 		
 	}
 

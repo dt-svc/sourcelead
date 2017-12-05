@@ -22,6 +22,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "ASSET", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "asset")
@@ -80,9 +82,13 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftAEmployee;
 	
 	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
@@ -95,9 +101,13 @@ public class Asset implements Serializable{
 	@Column(name = "SHIFT_A_FILE_NAME")
 	private String shiftAFileName;
 	
+	@Column(name = "SHIFT_A_FILE_URL")
+	private String shiftAFileUrl;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftBEmployee;
 	
 	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
@@ -109,6 +119,9 @@ public class Asset implements Serializable{
 	
 	@Column(name = "SHIFT_B_FILE_NAME")
 	private String shiftBFileName;
+	
+	@Column(name = "SHIFT_B_FILE_URL")
+	private String shiftBFileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -435,5 +448,31 @@ public class Asset implements Serializable{
 	{
 		this.shiftBDocFile = shiftBDocFile;
 	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public String getShiftAFileUrl() {
+		return shiftAFileUrl;
+	}
+
+	public void setShiftAFileUrl(String shiftAFileUrl) {
+		this.shiftAFileUrl = shiftAFileUrl;
+	}
+
+	public String getShiftBFileUrl() {
+		return shiftBFileUrl;
+	}
+
+	public void setShiftBFileUrl(String shiftBFileUrl) {
+		this.shiftBFileUrl = shiftBFileUrl;
+	}
+	
+	
 	
 }

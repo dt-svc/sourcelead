@@ -14,6 +14,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
@@ -59,6 +61,9 @@ public class BackOfficeRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -448,17 +453,53 @@ public class BackOfficeRestController {
 	 */
 	@RequestMapping(value = "/getAssetById")
 	@ResponseBody
-	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+	public AssetDTO getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String resultJson = null;
+		//String resultJson = null;
 		Asset asset = assetService.getAssetById(assetId);
-		
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
-		asset.setEmployeesList(employeesList);
-		resultJson = toJSON(asset);
-		return resultJson;
+		AssetDTO assetDTO = new AssetDTO();
+		
+		if(asset.getAssetCategory() != null){
+			assetDTO.setCategoryName(asset.getAssetCategory().getCategoryName());	
+			assetDTO.setCategoryId(asset.getAssetCategory().getId().toString());
+			
+			if(asset.getShiftAEmployee() != null){
+			assetDTO.setShiftAEmployee(asset.getShiftAEmployee().getId().toString());
+			}
+			if(asset.getShiftBEmployee() != null){
+			assetDTO.setShiftBEmployee(asset.getShiftBEmployee().getId().toString());
+			}
+		}
+		
+		assetDTO.setSno(asset.getSlno());
+		assetDTO.setMake(asset.getMake());
+		assetDTO.setMonitor(asset.getMonitor());
+		assetDTO.setCpu(asset.getCpu());
+	/*	assetDTO.setShiftAEmp(asset.getShiftAEmployee().toString());
+		assetDTO.setShiftBEmp(asset.getShiftBEmployee().toString());*/
+		assetDTO.setWorkingStatus(asset.getWorkingStatus());
+		assetDTO.setModel(asset.getModel());
+		assetDTO.setMemory(asset.getMemory());
+		assetDTO.setHarddisk(asset.getHardDisk());
+		assetDTO.setFileName(asset.getFileName());
+		assetDTO.setFileUrl(asset.getFileUrl());
+		assetDTO.setFileContentType(asset.getFileContentType());
+		assetDTO.setShiftAFileContentType(asset.getShiftAFileContentType());
+		assetDTO.setShiftAFileName(asset.getShiftAFileName());
+		assetDTO.setShiftAFileUrl(asset.getShiftAFileUrl());
+		assetDTO.setShiftBFileContentType(asset.getShiftBFileContentType());
+		assetDTO.setShiftBFileName(asset.getShiftBFileName());
+		assetDTO.setShiftBFileUrl(asset.getShiftBFileUrl());
+		assetDTO.setEmployeesList(employeesList);
+		assetDTO.setShiftAEmpName(asset.getShiftAEmpName());
+		assetDTO.setShiftBEmpName(asset.getShiftBEmpName());
+		assetDTO.setName(asset.getName());
+		assetDTO.setDescription(asset.getDescription());
+		
+		return assetDTO;
 	}
 	
 	
@@ -513,15 +554,15 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,@RequestParam(value="assetId", required=false) String assetId,MultipartHttpServletRequest request) throws Exception {
+	   public String addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
-		    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
+		    assetDTO.setStaticPath(staticPath);
+		    /*String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);*/
 			
-			assetService.saveAssetDetails(jsonObj, assetId, user, orgLocations, request);
+			assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
 			
 		
 		   return "home";

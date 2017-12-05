@@ -74,6 +74,10 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String vendorCreateduserName;
 	
+	private String jobCampaignType;
+	
+	private String searchValue;
+	
 	public String getVendorCreateduserName()
 	{
 		return vendorCreateduserName;
@@ -568,6 +572,24 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.paymentRemittanceEmail = paymentRemittanceEmail;
 	}
 
+	public String getJobCampaignType()
+	{
+		return jobCampaignType;
+	}
 
+	public void setJobCampaignType(String jobCampaignType)
+	{
+		this.jobCampaignType = jobCampaignType;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
 
 }

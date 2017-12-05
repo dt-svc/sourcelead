@@ -12,7 +12,15 @@
  </c:if>
 
  <script type="text/javascript">
-    var staticTime='${staticTime}'
+    var staticTime='${staticTime}';
+    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
  </script>
  
 <meta charset="utf-8">
@@ -539,7 +547,7 @@ function preventTabkey(e){
             </sec:authorize>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+            	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
@@ -1779,8 +1787,12 @@ function geolocate(latitudeId,longtitudeId) {
             var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+                document.getElementById("latitude").value = latitude;
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                document.getElementById("longitude").value = longitude;
+            }
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
     }
