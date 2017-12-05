@@ -20,6 +20,7 @@
 	<c:forEach var="userRole" items="${roleList}">
 	   <input type="hidden" id="isTwoStepEnabled${userRole.id}" name="isTwoStepEnabled${userRole.id}" value="${userRole.orgLocations.loginSecurity}"/>
 		<div class="orgCta clearfix">
+		<input type="hidden" value="${userRole.user.loginSecurity}" id="userLoginSecurity"/>
 		<c:if test="${userRole.isPrimary == 1}">
 			<div class="raBtn raBtnActive" id="locDiv${userRole.id}">
 				   <input id="userRoleId${userRole.id}" name="userRoleId" type="radio" class="with-font" value="${userRole.id}" checked />
@@ -36,8 +37,9 @@
 			<span></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
-				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
+				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : userRole.orgLocations.country}</p>
 				<p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
+				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p>
 			</div>
 	    </div>
 	</c:forEach>
@@ -58,8 +60,9 @@ function validateTwoStepAuth() {
 	    	userRoleId = $(this).val();
 	    }
 	});
+	var userLoginSecurity = $("#userLoginSecurity").val();
 	var isTwoStepEnabled = $("#isTwoStepEnabled"+userRoleId).val();
-	if(isTwoStepEnabled != null && isTwoStepEnabled != '' && isTwoStepEnabled != 'undefined' && isTwoStepEnabled  == 'N'){
+	if(isTwoStepEnabled != null && isTwoStepEnabled != '' && isTwoStepEnabled != 'undefined' && isTwoStepEnabled  == 'N' && userLoginSecurity == 'N'){
 		$.ajax({
 		      type : "POST",
 		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        

@@ -429,10 +429,10 @@ function cancelOrgImg(){
 	               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
 	               			<div class="col-md-7 toggle-button">
 		                      <label class="switch">
-		                      <c:if test="${!empty orgLocations.loginSecurity}">
+		                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
 		                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
 		                      </c:if>
-		                      <c:if test="${empty orgLocations.loginSecurity}">
+		                      <c:if test="${orgLocations.loginSecurity == 'N'}">
 		                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
 		                      </c:if>
 		                      <div class="slider round"></div>

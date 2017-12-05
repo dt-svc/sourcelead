@@ -310,6 +310,7 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
+			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			orgLocationsList.add(clientOrgLocations);

@@ -1,7 +1,7 @@
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/jquery-fun.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
 
 
 <div id="enrolledLocDiv" style="display:none">
@@ -23,6 +23,7 @@ window.onload = function() {
 	    	   $("#enrolledLocDiv").attr("style","display : block");
 	    	   $("#enrolledLocDiv").empty();
 	    	   $("#enrolledLocDiv").append(data);
+	    	   $(".signWrap").addClass("orgOutWrap");
 	      },
 	  }); 
 }
@@ -40,20 +41,7 @@ function getUserDetailsByUserRoleId(id,userName,password){
 		    	   $("#twoStepAuthDiv").attr("style","display : block");
 	    		   $("#twoStepAuthDiv").empty();
 	    		   $("#twoStepAuthDiv").append(data);
-// 	    		   alert('${loginUserId}')
-// 	    		   $("#username").val('${username}');
-// 	    		   $("#password").val('${password}');
-// 	    		   $("#userId").val('${loginUserId}');
-// 	    		   $("#userRoleId").val(id)
-// 	    		   $("#emailLabel").html('${emailId}');
-// 	    		   var mobilePhone = '${mobilePhone}'
-// 	    		   if(mobilePhone != '' && mobilePhone != null && mobilePhone != 'undefined'){
-// 	    			   $("#mobileSpan").show();
-// 	    			   $("#mobileLabel").html(mobilePhone);
-// 	    		   }else{
-// 	    			   $("#mobileSpan").hide();
-// 	    			   $("#mobileLabel").html("---");
-// 	    		   }
+	    		   $("#gobackBtn").attr("style","display:block");
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -71,8 +59,8 @@ function getUserDetailsByUserRoleId(id,userName,password){
 function goToLocations(){
 	$("#enrolledLocDiv").removeAttr("style");
     $("#enrolledLocDiv").attr("style","display : block");
-	$("#twoStepVerfDiv").removeAttr("style");
-    $("#twoStepVerfDiv").attr("style","display : none");
+	$("#twoStepAuthDiv").removeAttr("style");
+    $("#twoStepAuthDiv").attr("style","display : none");
     $(".signWrap").removeClass("orgOutWrap");
 }
 </script>

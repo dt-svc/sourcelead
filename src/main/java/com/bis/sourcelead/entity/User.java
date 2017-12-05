@@ -198,6 +198,9 @@ public class User implements Serializable{
     
     @Column(name = "URL_SENTTIME")
 	private Date urlSentTime;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 	
 	@Transient
 	private String isPrimaryAdmin;
@@ -802,4 +805,15 @@ public class User implements Serializable{
 	{
 		this.urlSentTime = urlSentTime;
 	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+	
 }

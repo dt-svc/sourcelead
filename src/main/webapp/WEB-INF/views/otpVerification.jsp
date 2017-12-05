@@ -3,10 +3,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
+<c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/jquery-fun.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
+</c:if>
 
 <style>
 
@@ -23,11 +25,13 @@
 <!--  OTP Wrap  -->
     <div class="otp_wrap" style="display:block">
     
-	<div class="backBtn">
-		<a onclick="goToLocations();"><u class="fa fa-arrow-left OtpBack"></u></a>
-	</div>       
+<%--     <c:if test='${empty SourceLeadWeb_sourceleadUrl}'> --%>
+	    <div class="backBtn" id="gobackBtn">
+			<a id="backAnch" onclick="goToLocations();"><u class="fa fa-arrow-left OtpBack"></u></a>
+		</div>
+<%--     </c:if> --%>
              
-		<img src="resources/images/otp.png" alt=""/>
+		<img src="/resources/images/otp.png" alt=""/>
 		<div class="otpMail">
 			<span class="clearfix">
 				<input type="hidden" name="userRoleId" id="userRoleId" value="${userRoleId}">

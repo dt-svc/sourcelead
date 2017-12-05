@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
@@ -879,15 +880,15 @@ public class RegistrationRestController {
 				//url expiry
 				status = "expired";
 			}
+			
+			model.addObject("userId",user.getId());
+			model.addObject("token",token);
+			model.addObject("sourceleadUrl",sourceleadUrl);
 		}else{
 			//home page
 			status = "home";
 		}
 		model.addObject("status", status);
-		model.addObject("userId",user.getId());
-		model.addObject("token",token);
-		model.addObject("sourceleadUrl",sourceleadUrl);
-		
 		model.setViewName("verifyAccount");
 		return model;
 	}
@@ -915,9 +916,17 @@ public class RegistrationRestController {
 	}
 	   
 	@RequestMapping(value = "/ws/verificationDone", method = RequestMethod.POST)
-	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone) throws Exception
+	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		if("".equalsIgnoreCase(userName) || userName == null){
+			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+			if(userLoginSession != null){
+				if(Constants.YES.equalsIgnoreCase(verfDone))
+					userLoginSession.setAuthenticated(Constants.YES);
+				request.getSession().setAttribute("userLoginSession", userLoginSession);
+			}
+		}
 		SecurityContextHolder.clearContext();
 		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userRole, userName, password,verfDone));
 		return "true";
@@ -927,16 +936,25 @@ public class RegistrationRestController {
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		UserRole userRole = userRoleService.getUserRoleById(roleId);
+		UserRole userRole = null;
+		if(roleId != null)
+			userRole = userRoleService.getUserRoleById(roleId);
+		else{
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
 		if(userRole.getUser() != null){
 			model.addObject("userId",userRole.getUser().getId());
+			model.addObject("userLoginSecurity",userRole.getUser().getLoginSecurity());
 			model.addObject("userRoleId",userRole.getId());
 			model.addObject("emailId",userRole.getUser().getEmail());
 			if(StringUtils.isNotBlank(userRole.getUser().getMobilePhone()))
 				model.addObject("mobilePhone",userRole.getUser().getMobilePhone());
 		}
-		model.addObject("username",userName);
-		model.addObject("password",password);
+		if(userName != null)
+			model.addObject("username",userName);
+		if(password != null)
+			model.addObject("password",password);
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("otpVerification");
 		return model;
@@ -959,18 +977,6 @@ public class RegistrationRestController {
 		model.setViewName("otpVerification");
 		return model;
 	}
-	
-	@RequestMapping(value = "/ws/verifyOTP", method = RequestMethod.POST)
-	public String verifyOTP(@RequestParam(value = "token", required = false) String token, HttpServletRequest request) throws Exception
-	{
-		String sentToken = (String) request.getParameter("authorizationToken");
-		if(token.equals(sentToken)){
-			return "redirect:/ws/verificationDone";
-		}else{
-			return "false";
-		}
-	}
-	  
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());

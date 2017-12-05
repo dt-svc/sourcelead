@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,6 +68,7 @@ public class UserLoginHelper {
 		OrgLocations orgLocations = null;
 		  Org org = null;
 		  List<SourceleadActions> actionsList = null;
+		  List<GrantedAuthority> authorities = null;
 		
 		  if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
 			  orgLocations = userRole.getOrgLocations();
@@ -77,19 +79,19 @@ public class UserLoginHelper {
 				e1.printStackTrace();
 			} 
 			try {
-				actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				//actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		  }else{
 			  try {
-				actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
-			} catch (Exception e) {
+				//actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+			  } catch (Exception e) {
 				e.printStackTrace();
 			} 
 		  }
 		
-		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
+		  
 		  try {
 			  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			  userRole.setUserState(Status.ACTIVE);
@@ -124,6 +126,7 @@ public class UserLoginHelper {
 				    	userLoginSession.setAuthenticated("N");
 				    }
 				    userLoginSession.setLoginTime(new Date());
+				    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
 				    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 				    request.getSession().setAttribute("userLoginSession", userLoginSession);
 			    }

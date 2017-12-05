@@ -186,13 +186,15 @@ public class LoginSessionController {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
-		
+		OrgLocations orgLocations = null;
 		if(orgLocationId != null){
-			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
 		}else{
 			if(userRoleId != null){
 				userRole = userRoleService.getUserRoleById(userRoleId);
+				user = userRole.getUser();
+				orgLocations = userRole.getOrgLocations();
 			}else{
 				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			}
@@ -204,12 +206,33 @@ public class LoginSessionController {
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
 		
+		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+		if(userLoginSession != null){
+			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated", userLoginSession.getAuthenticated());
+		}
+		
+		/*if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
+			if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
+				if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
+					model.addObject("userId",user.getId());
+					model.addObject("userRoleId",userRole.getId());
+					model.addObject("emailId",user.getEmail());
+					if(StringUtils.isNotBlank(user.getMobilePhone()))
+						model.addObject("mobilePhone",user.getMobilePhone());
+					model.setViewName("otpVerification");
+					return model;
+				}
+			}
+		}*/
+		
 		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		List<SourceleadActions> actionsList = null;
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
-			OrgLocations orgLocations = userRole.getOrgLocations();
+			orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();
 			List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+			actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
@@ -229,13 +252,6 @@ public class LoginSessionController {
 				
 			}
 
-			String isAuthenticated = "";
-			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-			if(userLoginSession != null){
-				isAuthenticated = userLoginSession.getAuthenticated();
-				SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated", isAuthenticated);
-			}
-				
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 			
@@ -295,6 +311,9 @@ public class LoginSessionController {
 			userRole.setNewlyLoginUser(Constants.NO);
 			userRoleService.addUserRole(userRole);
 			
+
+			String userName = (String) authentication.getPrincipal();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			setLoginSession(request, authentication,user,userRole);
 			
 			if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(userRole.getRoles().getRoleName())){
@@ -380,6 +399,12 @@ public class LoginSessionController {
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);
+			
+			actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+			String userName = (String) authentication.getPrincipal();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
+			
+			
 			setSessionUserAttributes(user,request,sourceleadUrl);
 			setSessionOrgAttributes(userRole.getOrgId(),userRole.getOrgLocations(),request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
@@ -395,7 +420,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
-			OrgLocations orgLocations = userRole.getOrgLocations();
+			orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());

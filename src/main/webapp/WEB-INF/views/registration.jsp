@@ -554,6 +554,7 @@ window.onload = function () {
         </div>
       </div>
         </div>
+      <div class="clearfix"></div>
       </div>
   </div>
 </div>
@@ -703,7 +704,6 @@ function validateEmail(type){
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-					    	    
 					    	    $('#pwdDiv').attr("style" , "display : none"); 
 					    	    $('#confirmPassword').removeAttr('data-validation');
 						 		$('#confirmPassword').attr('data-validation-optional',"true");
@@ -728,6 +728,8 @@ function validateEmail(type){
 								$('#password').removeAttr('data-validation-optional');
 								$('#password').attr("data-validation","required");
 								$('#emailDiv').find('p.jquery_form_error_message').remove(); 
+								$('input#email').removeAttr('record-exist');
+			    				$('input#email').removeAttr('record-exist-errorMsg'); 
 					     }
 				       	else{
 				       		 $('#pwdDiv').attr("style" , "display : none"); 

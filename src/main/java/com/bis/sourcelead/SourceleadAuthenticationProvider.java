@@ -82,6 +82,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           User  user = userService.findByUserName(username);
           UserRole userRole = null;
           List<Long> modulesId = null;
+          List<UserRole> userRolesList = null;
 			
           try {
         	    if(user != null){
@@ -104,10 +105,16 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  
         		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
-        		  if(flag == true)
+        		  try {
+					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        		  if(userRolesList.size() > 1)
         			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
+        		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
+        			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
         		  else{
-        			  
         			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
         			  
         			  /*OrgLocations orgLocations = null;

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+ <jsp:include page="staticHeader.jsp" /> 
 <html>
 <head>
      <meta charset="utf-8">
@@ -15,23 +16,24 @@
     <title>::. Verify Your Account .::</title>
     <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
-	<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >   
-	<link href="resources/css/jquery-ui.css" rel="stylesheet"> 
+	<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+	<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css" >   
+	<link href="/resources/css/jquery-ui.css" rel="stylesheet"> 
 </head>
 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
 window.onload = function () {
+	var sourceleadUrl ='${sourceleadUrl}';
 	var status = '${status}';
 	 if(status == "success"){
 		 $("#emailVerifiedDiv").removeAttr("style");
-	 }else if(status == "already Verified"){
-		 $("#alreadyVerifiedDiv").removeAttr("style");
+	 }else if(status == "already Verified" || status == "home"){
+		 window.location.href = "/login";
 	 }else if(status == "expired"){
 		 $("#urlExpiredDiv").removeAttr("style");
 	 }else{
@@ -42,18 +44,6 @@ window.onload = function () {
 
 <body>
 
-<header class="emailOut">
-    <div class="emailHead">
-        <div class="elogo"><a href="javascript:void(0)"><img src="resources/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
-        <ul>
-<!--             <li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li> -->
-<!--             <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li> -->
-            <li class="hideres"><a href="<c:url value='/login'/>"><i class="fa fa-user"></i> Login</a></li>
-            <div class="clear"></div>
-        </ul>        
-        <div class="clear"></div>
-    </div>
-</header>
 
 <div class="success_pop" id="selector1" style="display: none;">
 	<i class="fa fa-check-circle iConSize"></i><strong id="msgDiv"></strong>
@@ -61,31 +51,22 @@ window.onload = function () {
 
 <section class="emailBg">
     <section class="emailVeri" id="thanksForRegisterDiv" style="display:none">
-<!--         <span><img src="resources/images/email-veri.png" alt=""/></span> -->
+<!--         <span><img src="/resources/images/email-veri.png" alt=""/></span> -->
         <h2>Thank You! For Registering into Sourcelead.</h2>
-		<p>You are almost done! We have emailed you a verification link on your registered email. Kindly click on the link sent for verifying your email.</p>
+		<p>You are almost done! We have emailed you a verification link on your registered email. Kindly click on the link.</p>
 		<p>If you have not received the email, click on the link below to resend the verification mail.</p>
-        <p>Click to <a onclick="resendVerf();">Resend</a></p>
+        <p><a onclick="resendVerf();">Resend Verification Mail</a></p>
     </section>
     
     <section class="emailVeri" id="urlExpiredDiv" style="display:none">
-        <span><img src="resources/images/email-veri.png" alt=""/></span>
+        <span><img src="/resources/images/email-veri.png" alt=""/></span>
         <h2>Sorry your verification Link has been expired</h2>
-		<p>You are almost done! We have emailed you a verification link on your registered email. Kindly click on the link sent for verifying your email.</p>
-		<p>If you have not received the email, click on the link below to resend the verification mail.</p>
-        <p>Click to <a onclick="resendVerf();">Resend</a></p>
-    </section>
-    
-    
-    
-    <section class="emailVeri" id="alreadyVerifiedDiv" style="display:none">
-        <span><img src="resources/images/email-veri.png" alt=""/></span>
-        <h2>Your Email was Verified</h2>
-        <p>Click to <a onclick="redirect();">Login</a></p>
+		<p>Your Verification link has expired,kindly click on the link below to resend the verification mail.</p>
+        <p><a onclick="resendVerf();">Resend Verification Mail</a></p>
     </section>
     
     <section class="emailVeri" id="emailVerifiedDiv" style="display:none">
-        <span><img src="resources/images/email-veri.png" alt=""/></span>
+        <span><img src="/resources/images/email-veri.png" alt=""/></span>
         <h2>Congratulations !! </h2><p>Your Sourcelead account was successfully verified. You may start using your account.</p>
         <p>Click to <a onclick="redirect();">Login</a></p>
     </section>
@@ -126,7 +107,7 @@ function resendVerf(){
 function redirect(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var token = '${token}';
-	window.location.href = sourceleadUrl + "/login?&token="+token
+	window.location.href = "/login?&token="+token
 }
 </script>
 
@@ -137,5 +118,5 @@ function redirect(){
 	}
 </script>
 
-
+<jsp:include page="staticFooter.jsp" />
 </html>

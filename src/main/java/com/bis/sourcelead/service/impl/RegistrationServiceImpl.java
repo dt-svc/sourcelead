@@ -513,6 +513,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
@@ -1256,7 +1257,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>Click here..</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

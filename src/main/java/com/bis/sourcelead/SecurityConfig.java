@@ -90,7 +90,6 @@ public class SecurityConfig  {
         protected void configure(HttpSecurity http) throws Exception {
         	http
     		.authorizeRequests()                                                                
-
     			.antMatchers("/path/login").permitAll() 
     			.antMatchers("/path/Inlogin").permitAll() 
 //    			.antMatchers("/path/register").permitAll() 
@@ -122,6 +121,7 @@ public class SecurityConfig  {
 //    			.antMatchers("/path/storeCsv").permitAll() 
 //    			.antMatchers("/path/getRequirementProfessionalProfileDetails").permitAll() 
     			.antMatchers("/path/ws/**").permitAll() 
+    			.antMatchers("/ws/**").permitAll() 
 //    			.antMatchers("/path/verifyResetPassword").permitAll() 
 //    			.antMatchers("/path/acceptClientOrVendorInvitation").permitAll() 
 //    			.antMatchers("/path/acceptOrRejectInterview").permitAll() 

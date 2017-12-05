@@ -33,7 +33,7 @@
 
 
 <div class="signin_wrap SignSlide">
-	<img src="resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
+	<img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
 		<h1>Sign In</h1>
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
@@ -83,7 +83,7 @@
         <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
-		<div class="for-pas-text"><a href="<c:url value='/ws/forgotPassword'/>"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
+		<div class="for-pas-text"><a onclick="forgotPassword();"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
 <!-- 		<input type="button" value="Login" class="sign_btn" id="OrgVi" /> -->
 		<input type="submit" value="Submit" class="sign_btn" />
 		
@@ -185,10 +185,10 @@
     </div>
   </div>   --%>
   
-	<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
     
 </body>
 
@@ -245,7 +245,100 @@ function msgFadein() {
 </script>
 
 <script>
+function forgotPassword(){
+	$(".signWrap").removeClass("orgOutWrap");
+	$(".signWrap").addClass("forPassOut");
+	$("#signinDiv").removeAttr("style");
+	$("#signinDiv").attr("style","display:none");
+	$("#forgotPasswordDiv").removeAttr("style");
+	$(".ForPasSlide").attr("style","display:block");
+}
+</script>
+
+<script>
   $('#selector').delay(2000).fadeOut('slow');
-</script> 
+</script>
+
+
+<script>
+$(function () {
+     applyInputSlide();
+});
+
+function applyInputSlide() {
+    $(".signin_wrap span input").each(function (i) {
+        if ($(this).val().trim() !== "")
+            $(this).parent(".signin_wrap span").find('label').addClass('test');
+    });
+    $(".signin_wrap span input").on('focus', function () {
+        $(this).parent(".signin_wrap span").find('label').addClass('test');
+    });
+    $(".signin_wrap span input").on('blur', function () {
+        if ($(this).val().trim() === "")
+            $(this).parent(".signin_wrap span").find('label').removeClass('test');
+    });	    
+}
+</script>
+
+
+
+
+<script type="text/javascript">
+        $('#forgetPassword_form')
+           .submit(function(e) {
+        	    e.preventDefault(); 
+        		var form = $('#forgetPassword_form').serializeFormJSON();
+        		var sourceleadUrl ='${sourceleadUrl}';
+        		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+        		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+                $.ajax({
+            	      type: "POST",
+            	      data :JSON.stringify(form),
+            	      contentType : 'application/json; charset=utf-8',
+            	      dataType : 'json',
+                  	  url: sourceleadUrl+"/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                    	success: function(json) {
+                    		if(json.status == 'Invalid'){
+	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+	             		         document.getElementById("email").setAttribute('class','error signin_fild');
+	             		         $("input#email").after("<span class='jquery_form_error_message'> <font color='red'>Invalid User Name</font></span>");
+	             				 document.getElementById("email").setAttribute('pass-exist','yes');
+	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid User Name'); 
+	             				 $("input#email").removeAttr("style");
+	             				 $("#loading").removeAttr("style");
+    			        	}
+                    		else if(json.status == 'login'){
+    			        		  location.replace(sourceleadUrl+"/login"); 
+    			        	}
+                    		else{
+                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+    			        	}
+			        },  
+                });
+            });
+</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+ 
 
 </html>
