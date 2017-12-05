@@ -290,7 +290,7 @@ function getUsersSearchResult(searchValue){
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
@@ -481,7 +481,7 @@ function exportToPdf(){
     		 offset = 0;
     	}
 	
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -591,7 +591,7 @@ function exportToPdf(){
 <script type="text/javascript">
 function resendInvitation(userId){
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 

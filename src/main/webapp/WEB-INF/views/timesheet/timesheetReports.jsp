@@ -6,8 +6,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 <style type ="text/css">
 .timesheet_container {
@@ -75,7 +75,7 @@ $(document).ready(function() {
   	           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
   	        	 frequencyMonth = '';
                $("#timesheetReportsDiv").empty();
-               $("#timesheetReportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+               $("#timesheetReportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      dataType : 'json',
