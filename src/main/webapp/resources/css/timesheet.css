@@ -4058,8 +4058,19 @@ position: relative; padding: 0px 0px 5px 0px;
     font-weight:400;
     }
 .timesheetRepTab table div {
-    position:relative;
+ 	position:relative;
     }
+    
+ .timesheetRepTab.timesheetRep-table table div {
+ 	position: inherit;
+    }
+   .timesheetRepTab.timesheetRep-table table tr th, .timesheetRepTab.timesheetRep-table tr td {
+   border-left:none !important; border-right:none !important; vertical-align: middle;
+   }
+   .timesheetRepTab.timesheetRep-table tr td {
+   padding:2px 10px 5px 10px;
+   }
+   
 .timesheetRepTab table div i {
     font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; text-align: left;
 }

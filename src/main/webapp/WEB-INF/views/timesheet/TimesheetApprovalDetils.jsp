@@ -70,7 +70,7 @@
 	<textarea placeholder="Enter comment here"></textarea>
 	<a href="javascript:void(0)">Submit</a><a class="close_color" href="javascript:void(0)">Cancel</a>
 </div>	
-<div class="timesheet_appr_table datatable_filter overflow_inherint">
+<div class="datatable_filter overflow_inherint">
 	 <div id="approverDataTimesheetDiv"> 
 		<jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
 	</div> 

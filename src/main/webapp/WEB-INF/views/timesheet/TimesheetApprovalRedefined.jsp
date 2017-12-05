@@ -61,7 +61,8 @@
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
-	        		    	  prepareChosenScripts();  
+	        		    	  prepareChosenScripts();
+	        		    	  preparePagination(1);
 	        		      }
 	        	    }); 
 	}

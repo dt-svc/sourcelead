@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetApprovalDTO;
 import com.bis.sourcelead.dto.TimesheetApprovalSubmissionDetailsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -387,7 +388,33 @@ public class TimeApprovalRedefinedRestController {
 			return timesheetApprovalDTO;
 		}
 		
+		
+		
+		
+		@RequestMapping(value = "/timesheetEmployeeSubmissionDetails", method = RequestMethod.POST ) 
+		public ModelAndView timesheetEmployeeSubmissionDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();	
+			timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO);
+			timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
+			model.addObject("timesheetApproval", timesheetApprovalDTO);
+			model.setViewName("timesheet/timesheetApprovalTableData");
+			return model;
+			
+		}
 		private TimesheetApprovalDTO timesheetEmployeeSubmissionDetails(HttpServletRequest request, TimesheetApprovalDTO timesheetApprovalDTO) throws Exception {
+			
+			int start = timesheetApprovalDTO.getStart();
+			int length = 0;
+			if(timesheetApprovalDTO.getPageNo()<1) {
+				timesheetApprovalDTO.setPageNo(1);
+			}
+			if(timesheetApprovalDTO.getPageSize()<1) {
+				length = 10;
+				timesheetApprovalDTO.setPageSize(10);
+			}else {
+				length = timesheetApprovalDTO.getPageSize();
+			}
+			
 			OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
@@ -401,11 +428,26 @@ public class TimeApprovalRedefinedRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getClient()) && !timesheetApprovalDTO.getClient().equalsIgnoreCase("All")){
 	        	clientId =Long.parseLong(timesheetApprovalDTO.getClient());
 	        }
-	        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId());
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length);
 	        HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
-	        if(projectMembers != null && !projectMembers.isEmpty()){
+	        
+	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
+			
+			int totalRows = projectMembers.getRecordsTotal();
+			if(totalRows > 0) {
+				 int remainder = totalRows % length;
+				 int pageCount = totalRows / length;
+				 if(remainder > 0) {
+					 timesheetApprovalDTO.setPageCount(pageCount+1);
+				 }
+				 else {
+					 timesheetApprovalDTO.setPageCount(pageCount);
+				 }
+			}
+	        
+	        if(projectMembers != null && !projectMembers.getData().isEmpty()){
 	        	if(StringUtils.isNotEmpty(timesheetApprovalDTO.getTimesheetFrequency()) && timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Bi-Weekly")){
-		        	for(ProjectMembers pm :projectMembers){
+		        	for(ProjectMembers pm :projectMembers.getData()){
 		        		 Date biweeklyStrDate = null;
 		        		 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
 		        		 if(CalendarUtil.getNumberOfDays(biweeklyStrDate, actualStartDate)%14==0){
@@ -414,13 +456,13 @@ public class TimeApprovalRedefinedRestController {
 		        	 }
 	        	 }
 	        	 else{
-			        	freshProjectMembers = new HashSet<>(projectMembers);
+			        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 			        }
 	         }
 	        if(freshProjectMembers != null && !freshProjectMembers.isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
-	        for (ProjectMembers projectMember : projectMembers){
+	        for (ProjectMembers projectMember : projectMembers.getData()){
 	        	 TimesheetApprovalSubmissionDetailsDTO ts = new TimesheetApprovalSubmissionDetailsDTO();
 				 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 				 String fileUrl = "";
