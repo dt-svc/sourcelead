@@ -71,7 +71,7 @@ $(document).ready(function(){
 	      }
 	      else{
 	      	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	      	location.replace(sourceleadUrl+"/dashboardLinks?orgLocationId="+orgLocationId);
+	      	location.replace(sourceleadUrl+"/dashboard?orgLocationId="+orgLocationId);
 	      }
     }
 </script>
