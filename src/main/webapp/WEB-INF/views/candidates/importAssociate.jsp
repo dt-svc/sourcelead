@@ -34,8 +34,8 @@
         
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
-        <div class="well">
-          <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
+        <div class="well positionRelative">
+          <div class="input-group col-md-6 clearUpload" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
@@ -915,3 +915,9 @@ function  removeValiationVendorContact() {
 	 
 });
  </script>
+ 
+ <script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	});
+</script>

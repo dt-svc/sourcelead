@@ -108,10 +108,16 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <span class="input-group-addon" onClick="clearProjectStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>  
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <span class="input-group-addon" onClick="clearProjectEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>  
 						  </div> 		  
 						</div>
 	              </div>
@@ -568,6 +574,14 @@ function flushDetailsExpenses(){
 		}
 	} 
 }
+</script>
+ <script>
+function clearProjectStartDate(){
+	$("#projectStartDateExpensesId").val("");
+	};
+function clearProjectEndDate(){
+		$("#projectEndDateExpensesId").val("");
+		};	
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

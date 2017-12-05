@@ -594,7 +594,11 @@ function editCancel(){
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Due Date</label>';
 			result = result	+ '           <div class="col-md-8">';
+			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
+			 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+			 result = result +'</div>';
+			 
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
@@ -903,3 +907,9 @@ $('body').on('blur', '#projectTask_form', function() {
 	})(jQuery);
 </script>
  
+ <script>
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+
+</script>

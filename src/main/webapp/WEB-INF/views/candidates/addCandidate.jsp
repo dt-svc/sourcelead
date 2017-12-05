@@ -413,8 +413,8 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
-							<div class="col-md-9 zindex">
-								<div class="input-group col-md-12" id="uploadFileGroup"
+							<div class="col-md-9 zindex positionRelative">
+								<div class="input-group col-md-12 clearUpload" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
@@ -1053,4 +1053,8 @@ function  removeValiationVendorContact() {
 	});
  });
  </script>
-
+<script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	});
+</script>
