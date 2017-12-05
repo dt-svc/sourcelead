@@ -1548,12 +1548,17 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
+					result = result + '<div class="input-group">';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
 						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearhiredate();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
 					}else{
 						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearhiredate1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
 					}
-					result = result + ' </div>';	
+					result = result + ' </div></div>';	
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
@@ -2728,4 +2733,14 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+	 
+ <script>
+function clearhiredate(){
+	$("#DateofJoin").val("");
+	};
+function clearhiredate1(){
+	$("#DateofJoin").val("");
+	};
+	
+</script>
 	 

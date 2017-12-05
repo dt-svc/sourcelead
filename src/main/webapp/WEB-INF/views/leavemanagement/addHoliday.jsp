@@ -72,9 +72,11 @@ $(document).ready(function() {
               <label class="col-md-3">Date<span class="text-danger">*</span></label>
               <div class="col-md-9">
                       <div class="clearfix row">
-                      
                       <div class="col-sm-5 paddingRight" id="errFromDate">
+                      <div class="input-group errorInptgroup">
                       <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
+                      <span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
+                      </div>
                       </div>
                       
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
@@ -111,7 +113,10 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt10 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
+                      <div class="input-group errorInptgroup">
                       <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
+                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
+                      </div>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
@@ -314,4 +319,13 @@ function validateHolidayName(){
 	}
 </script>
 
+<script>
+function clearStartDate(){
+	$("#fromDate").val("");
+	};
+function clearToDate(){
+	$("#toDate").val("");
+	};
+	
+</script>
 <jsp:include page="../masterFooter.jsp" />
