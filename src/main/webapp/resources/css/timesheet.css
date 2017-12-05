@@ -6038,14 +6038,14 @@ float: left; top: 5px
 
 /*   Pop Up Css  */
 .popMask {
-    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:9999; display:none;
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:999999; display:none;
 }
 .popUpOut {
-	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .popUpReci {
-	position: absolute; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	position: absolute; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .popupHead {
@@ -6079,13 +6079,15 @@ float: left; top: 5px
 
 
 .ReciViewPop {
-	position: fixed; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	position: fixed; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .listView {
 	padding: 0px 0px 0px 6px !important;
 }
-
+.clossIconPosi {
+	right: -17px !important; top: -15px !important;
+}
 
 
 

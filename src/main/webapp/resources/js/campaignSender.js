@@ -28,6 +28,12 @@ function campaignSender(ele,senderId) {
 						return false;
 					}
 	            });
+			 
+			 $("#resetForm").click(function(){
+				 $("#capn_add_sender")[0].reset();
+				 $("#recipientEmail").empty();
+				  $("#recipientEmail").trigger("chosen:updated");
+			 });
 			
 	            
 		});
