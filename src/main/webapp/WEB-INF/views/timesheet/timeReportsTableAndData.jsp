@@ -3,9 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="resources/js/jquery.twbsPagination.js"></script>
+<script src="resources/js/tableHeadFixer.js"></script>
+
+
 <div id="reportTableData"></div>
-<div class="clients_wrap_table timesheetRepTab">
-   	<table class="" style="width:100%;">
+<div class="timesheetRepTab timesheetRep-table">
+   	<table id="fixTable" class="table">
 		<thead>
            	<tr>
            	   <th>Employee</th>
@@ -13,12 +16,12 @@
                <th>Frequency</th>
                <th>Rate</th>
                		<c:forEach var="dateFrequency" items="${timesheetReportsDTO.dataTableDateList}">
-               			<th>${dateFrequency}</th>
+               			<th class="tblminwidth-125">${dateFrequency}</th>
                		</c:forEach>
                <th>Total</th>
                <th>Stage</th>
-               <th>Project To Date</th>
-               <th>Last Month</th>
+               <th class="tblminwidth-125">Project To Date</th>
+               <th class="tblminwidth-125">Last Month</th>
             </tr>
 		</thead>	
                 <tbody id="tableData">
@@ -30,7 +33,7 @@
   <div class="col-md-6">
   <div class="pull-left mt">
   <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
-  <div class="dropdown-select pull-left mr5">
+  <div class="dropdown-select pull-left mr5 tblminwidth-50">
   <select id="pageSize" onchange="getTableDataByPageSize()">
   	<option value="10" ${timesheetReportsDTO.pageSize == 10 ? 'selected' : ''}>10</option>
   	<option value="15" ${timesheetReportsDTO.pageSize == 15 ? 'selected' : ''}>15</option>
@@ -45,7 +48,14 @@
   <div id="paginationholder" class="col-md-6">
   <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
   </div>
-</div> 
+</div>
+
+
+<script>
+$(document).ready(function() {
+	$("#fixTable").tableHeadFixer({"head" : false, "left" : 4}); 
+});
+</script> 
 
  <script>
       function getTableDataByPageSize(){
