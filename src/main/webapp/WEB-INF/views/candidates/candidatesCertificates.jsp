@@ -427,16 +427,8 @@ function addCertification(candidateId) {
 		 });
 		 
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatCerSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatCerSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatCerSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatCerSave = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
+		  
 		 
 	  $('#StartDate').datepicker({
 	      dateFormat: finalDateFormatCerSave,
@@ -608,50 +600,14 @@ function addCertification(candidateId) {
 								
 								
 								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 var cerStartDateSplit = cerStartDate.split("-");
-								 var cerEndDateSplit = cerEndDate.split("-");
 								 
 								 var finalDateFormatCerEditOneSave = '';
-								  var cerStartDateEdit = '';
-								  var cerEndDateEdit = '';
+								 // written common method in slead-common.js for date formats start
+								  var cerStartDateEdit = getJSDate(cerStartDate,locationDate);
+								  var cerEndDateEdit = getJSDate(cerEndDate,locationDate);
 								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
-									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[2])+parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
-									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[0])+parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
-									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[0])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
-									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[2])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
-								  }
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
-									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[2])-parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
-									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[0])-parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
-									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[0])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
-									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[2])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
-								  }
-								  var finalDateFormatCerUpdate = '';
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerUpdate = 'yy-mm-dd';
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerUpdate = 'dd-mm-yy'; 
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerUpdate = 'mm-dd-yy'; 
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerUpdate = 'yy-dd-mm'; 
-								  }
+								  var finalDateFormatCerUpdate = getJSDateFormat(locationDate);
+								  //end
 							   
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerUpdate,

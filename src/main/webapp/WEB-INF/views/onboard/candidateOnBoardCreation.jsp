@@ -2206,7 +2206,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2264,14 +2264,14 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<label class="col-md-3 control-label">Manager <i class="fa fa-info-circle" title="Here manager will be a reporting manager for a Candidate in organisation"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Team</label>';
+	 result = result +'<label class="col-md-3 control-label">Team <i class="fa fa-info-circle" title="select the team which candidate need to work with"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
 	 result = result +'</select>';

@@ -223,32 +223,15 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	@RequestMapping(value = "/downloadInvoiceAttachment")
-    public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
-		
-		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);
-		    response.setContentType("application/octet-stream");
-		    StringBuilder fileName = new StringBuilder();
-	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
-			try {
-				OutputStream outStream = response.getOutputStream();
-
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-
-				inputStream.close();
-				outStream.close();
-
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
- }
-	
+	/**
+	 * save invoice
+	 * @param invoiceDTO
+	 * @param saveType
+	 * @param invoiceType
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
@@ -299,13 +282,12 @@ public class InvoiceRestController {
     
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects> getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectsList = projectsService.getClientProjectsByOrgRelationId(orgRelationId,loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(projectsList);
- 	  return resultJson;
+// 	  resultJson = commonUtil.toJSON(projectsList);
+ 	  return projectsList;
  	}
     
     @RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
@@ -712,7 +694,7 @@ public class InvoiceRestController {
 	     	
 	 	}
     
-	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	/*  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
 	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
 		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
 			    response.setContentType("application/octet-stream");
@@ -736,7 +718,7 @@ public class InvoiceRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}  
+		} */ 
 
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
@@ -792,8 +774,8 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
-				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
-				if (null != projectMember.getEmployee().getUser().getId()) {
+				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
+				if (null != projectMember.getProjectMemberCandidteId().getId()) {
 //					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != projectMember.getProjectMemberCandidteId()){
 						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
@@ -938,13 +920,13 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
+     	//String resultJson;
      	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
- 	    resultJson = commonUtil.toJSON(projectList);
- 	    return resultJson;
+ 	   // resultJson = commonUtil.toJSON(projectList);
+ 	    return projectList;
  	}
 	
 	/**
@@ -1403,7 +1385,8 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId);
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId,loginOrgCurrencyCode);
 		if(invoiceList !=null){
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}

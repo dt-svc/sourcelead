@@ -108,7 +108,7 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
                   </div>
                 </div>
@@ -116,7 +116,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" data-validation-optional="true"  field-name="Last Name" data-validation=" validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -190,7 +190,7 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Drop the vendor Details,from where the user received'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
@@ -207,8 +207,8 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager</label>
-                  <div class="col-md-9">
+                  <label class="col-md-3">Manager <i class='fa fa-info-circle' title='Manager will be a reporting manager for a user in organisation'></i></label>
+                      <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
@@ -855,16 +855,9 @@ function getAssociateUserDetails(){
 <script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat = 'yy-dd-mm'; 
-	  }
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
 	  $('#DateofJoin').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -914,27 +907,6 @@ function getAssociateUserDetails(){
 	
  }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#reportingManager").chosen();
-	       $("#role").chosen();
-	       $("#invoiceFrequency").chosen();
-	       
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
- 
 
 <script>
 function maskme(){

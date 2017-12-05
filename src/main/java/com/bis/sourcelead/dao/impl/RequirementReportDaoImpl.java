@@ -87,18 +87,30 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
-				query.setLong(str, (long) params.get( str ));
+		{
+			if (str.equalsIgnoreCase("orgLocationId")) {
+				query.setLong(str, orgLocation.getId());
+			} else if (str.equalsIgnoreCase("userId")) {
+				query.setLong(str, user.getId());
+			} else if (str.equalsIgnoreCase("approverUserId")) {
+				query.setLong(str, user.getId());
+			} else if (str.equalsIgnoreCase("managerUserId")) {
+				query.setLong(str, user.getId());
+			} else if (str.equalsIgnoreCase("level")) {
+				query.setInteger(str, 1);
+			} else if (str.equalsIgnoreCase("level1")) {
+				query.setInteger(str, 1);
+			} else if (str.equalsIgnoreCase("level2")) {
+				query.setInteger(str, 2);
+			} else if (str.equalsIgnoreCase("loginUserCode")) {
+				query.setString(str, user.getUserCode());
+			}else if (str.equalsIgnoreCase("startDateUTC")) {
+				query.setDate(str,startDateUTC);
+			}else if (str.equalsIgnoreCase("endDateUTC")) {
+				query.setDate(str, endDateUTC);
 			}
-			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
-				query.setInteger(str, (int) params.get( str ));
-			}
-			else{
-				query.setParameter( str, params.get( str ) );
-			}
-        	
-        }
+
+		}
 		
 		return query.setCacheable(true).list();
 	}

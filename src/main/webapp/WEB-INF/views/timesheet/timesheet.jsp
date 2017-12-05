@@ -11,6 +11,7 @@
 <script>
 // project side bar tabs
 $(document).ready(function() {
+	// to flush files from form
 	timesheetEntriesDiv();
 });
 </script>  
@@ -1086,6 +1087,7 @@ function newSaveTimesheet(status,savingType){
 		 if (attr!= null && attr != "" && attr !='undefined' && attr != 'hidden') {}
 		 else{
 			 var currentInputValue = $(this).prev("input").val();
+			 alert(currentInputValue);
 			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
 				 unfilledDates.push(currentInputValue);
 			 }
@@ -1127,12 +1129,6 @@ function newSaveTimesheet(status,savingType){
 </script>
 
 
-
-
-
-
-
-
 <script>
  function timesheetDbSave(status,savingType){
 	     $("#choicepopUp").empty(); 
@@ -1161,6 +1157,9 @@ function newSaveTimesheet(status,savingType){
 		    	  maskme();
 		    	  var startDate = $("#tabStartDate").val();
 		    	  var endDate = $("#tabEndDate").val();
+	    		  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+	    			$("#timesheet_form input[data-id*=docFile]").remove();
+	    		  }
 		    	  if(startDate != null && startDate != '' && startDate != 'undefined' && 
 		    			  endDate != null && endDate != '' && endDate != 'undefined'){
 		    		  timesheetDivAfterSaving(startDate,endDate,status);

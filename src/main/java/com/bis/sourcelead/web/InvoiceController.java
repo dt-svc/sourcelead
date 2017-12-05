@@ -147,6 +147,7 @@ public class InvoiceController {
 			model.setViewName("billing/createInvoice");
 		}
 		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
+		model.addObject("isDraft",invoice.getId());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -363,7 +364,7 @@ public class InvoiceController {
 	
 	
 	
-	 @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
 	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,
 	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
@@ -387,6 +388,6 @@ public class InvoiceController {
 		          sos.flush();
 		          sos.close();
 
-		} 
+		} */
 	
 }

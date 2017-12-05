@@ -19,6 +19,7 @@
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 
+	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
@@ -76,7 +77,16 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+		                    <option ${contract.contractType == 'NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType == 'NSA' ? 'selected' : ''}>NSA</option>
+		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+		                 </select>
 				    </c:when>
 				    <c:otherwise>
 				    <c:if test = "${!empty contractType}">
@@ -1396,6 +1406,9 @@ function contractTypeLabels(){
 		$("#jurisdiction").val(''); 
 		$("#mainDescription").val(''); 
 		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");   

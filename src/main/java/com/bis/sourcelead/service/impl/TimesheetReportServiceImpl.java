@@ -245,7 +245,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
 		 //DateFormat format = Constants.DF_DMY;
 		 //DateFormat format= LoginSessionController.DATEFORMAT;
-		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		  DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
@@ -297,10 +297,16 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			for (ProjectMembers projectMember : projectMembers)
 			{
 				 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+				  User consultantUser = null;
+					 String fileUrl = "";
+				 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+						consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
+						fileUrl = consultantUser.getFileUrl();
+					}
 				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
 					 timesheetApprovalDiv.append("  <td>")
 					                       .append("<div class='lg clearfix'>")
-					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
+					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
 				                                             .append("<i title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</i>");

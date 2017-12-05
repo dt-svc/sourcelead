@@ -236,11 +236,15 @@ public class ClientRestController {
 	    		@RequestParam(value="orgName", required=false) String orgName,
 	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
-			Org org = orgService.getOrgByOrgName(orgName);
 			OrgLocations orgLocations = null;
-			if(org != null && orgLocationId != null){
+			if(orgLocationId != null){
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+			}else {
+				orgLocations = orgLocationService.getOrgLocationsByOrgLocationName(orgName);
+				if(orgLocations != null) {
+					orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
+				}
 			}
 			return commonUtil.toJSON(orgLocations);
 			
@@ -288,7 +292,7 @@ public class ClientRestController {
 			 if(userRole == null){
 				 User spocuser = userService.findByEmail(email);
 				 if(spocuser != null) {
-					 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+				/*	 List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
 					 if(orgSpocList != null && orgSpocList.size() > 0) {
 						 for(OrgSpoc orgSpoc : orgSpocList) {
 							 if(contactType.equalsIgnoreCase("vendor")) {
@@ -306,7 +310,8 @@ public class ClientRestController {
 							 }
 						 }
 						 
-					 }
+					 }*/
+					 return "Valid Email";
 				 }
 			 }else{
 				result = "Invalid Email";
@@ -1418,6 +1423,12 @@ public class ClientRestController {
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
+		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			/**
+			 * this fields for job campaigns
+			 */
+			String[] tableColumns = {"ischeck", "responderOrgName",  "website", "responderCity", "createdBy", "noContacts"};
+			tableColumns1 = tableColumns;
 		}
 		
 	     int sortColumnIndex = 4; //by default sorting using updated date
@@ -1436,7 +1447,7 @@ public class ClientRestController {
 		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 
 		 String responderType= "";
-		 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+		 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			 responderType = Constants.CLIENT;
 		 }else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			 responderType = Constants.VENDOR; 
@@ -1466,6 +1477,9 @@ public class ClientRestController {
 		 BoolQueryBuilder initiatorQueryBuilderCount = QueryBuilders.boolQuery();
 		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 		 initiatorQueryBuilderCount.must(QueryBuilders.matchQuery("initiatorType", responderType));
+		 
+		
+		 
 		 
 		 BoolQueryBuilder responderQueryBuilderCount = QueryBuilders.boolQuery();
 		 responderQueryBuilderCount.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
@@ -1562,9 +1576,9 @@ public class ClientRestController {
 			}
 			
 			//Country
-			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
-		    }
+//			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+//		    }
 			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCountry", clientVendorDTO.getCountry()));
@@ -1572,18 +1586,18 @@ public class ClientRestController {
 			
 			
 			 //State
-			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
-		    }
-			
+//			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+//		    }
+//			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getState())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorState", clientVendorDTO.getState()));
 		    }*/
 			
 			//City
-			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
-		    }
+//			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
+//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
+//		    }
 			
 			/*if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
@@ -1724,8 +1738,22 @@ public class ClientRestController {
 			/*
 			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 			 */
-			String[] tableColumns = {"clientLocationId", "clientUserFirstName", "clientUserEmail", "", "ownerUserId", "spocStatus","invitationStatus",""};
-		     int sortColumnIndex = 0; //by default sorting using updated date
+		 
+		    String[] tableColumns1 = null;
+			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+				String[] tableColumns = {"", "orgName",  "spocName", "spocEmail", "spocStatus"};
+				tableColumns1 = tableColumns;
+			}else{
+				String[] tableColumns = {"clientLocationId", "clientUserFirstName", "clientUserEmail", "", "ownerUserId", "spocStatus","invitationStatus",""};
+				tableColumns1 = tableColumns;
+			}
+			
+			if(clientVendorDTO.getResponderType().equalsIgnoreCase(Constants.JOB_CAMPAIGN_VENDOR)){
+				clientVendorDTO.setResponderType(Constants.VENDOR);
+			}
+			
+			
+			int sortColumnIndex = 1; //by default sorting using updated date
 			boolean sortColumnOrder = false; //by default descending order
 			if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(clientVendorDTO.getOrder().get(0).get("column"));
@@ -1939,7 +1967,7 @@ public class ClientRestController {
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
-								clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+								clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns1[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 				
 
 				SearchHit searchHits[] = searchResponse.getHits().getHits();
