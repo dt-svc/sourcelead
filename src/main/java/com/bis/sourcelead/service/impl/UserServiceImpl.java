@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -163,6 +165,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Autowired
+	private RegistrationService registrationService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -172,7 +177,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User addUser(User user) throws Exception {
 		logger.debug("In UserService class...");
-		user.setCreatedDate(new Date());
+//		user.setCreatedDate(new Date());
 		user.setUpdatedDate(new Date());
 		return userDao.addUser(user);
 	}
@@ -219,6 +224,11 @@ public class UserServiceImpl implements UserService {
 		   user = getUserDetails(addUserDTO,loginuser.getUserCode());
 		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
  		   user.setPassword(sourceleadPasswordEncoder.encode(password));
+ 		   
+ 		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+ 		  user.setUrlSentTime(new Date());
+ 		  user.setIsVerified(Constants.NO);
+ 		  
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -342,6 +352,10 @@ public class UserServiceImpl implements UserService {
 			/*
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
+			
+			if(isUserActive == false)
+				registrationService.sendActivationEmail(user1);
+			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
         return user1;
@@ -1377,6 +1391,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId, Long orgLocationId)
 			throws Exception {
 		return userDao.getUserListByRoleActionIdAndOrgLocationId(roleActionId, orgLocationId);
+	}
+
+	@Override
+	public User getUserByVerficationUUID(String token)
+	{
+		return userDao.getUserByVerficationUUID(token);
 	}
 	
 }

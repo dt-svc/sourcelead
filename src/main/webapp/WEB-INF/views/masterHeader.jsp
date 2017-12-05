@@ -48,6 +48,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
+<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
@@ -552,7 +553,13 @@ function preventTabkey(e){
 			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 			              
 				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-					              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+					              
+					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
+					              		<a class="sopcSwith">
+					              </c:if>
+					              <c:if test="${links.orgLocations.id != SourceLeadWeb_orgLocationId}">
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
+					              </c:if>
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
@@ -732,13 +739,63 @@ function preventTabkey(e){
     </nav>
   </header>
   
+  <div class="authenticationMask" >
+  <div class="proj_close"></div>
+  <div class="signWrapOtp">
+  	<div id="twoStepAuthDiv">
+  		<jsp:include page="otpVerification.jsp"></jsp:include>
+  	</div>
+  </div>
+  </div>
+  
+ <script type="text/javascript">
+ function checkAuth(locationId,roleId,orgSecurity){
+	 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+		 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+		 $(".authenticationMask").fadeIn();
+		 getUserDetailsbyroleId(roleId);
+	 }else{
+		 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	 }
+ }
+ $(".proj_close").click(function(){
+	 $(".authenticationMask").fadeOut();
+ })
+
+ function getUserDetailsbyroleId(roleId){
+	 $.ajax({
+		 type : "GET",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#twoStepAuthDiv").empty();
+	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },						     
+	}); 
+ }
+ </script>
+ 
+ 
   
   <script>
-	$('.sopcSwith').each(function() {
+	$('.sopcSwith, .authenticationMask').each(function() {
 		var $this = $(this);
 		$this.on("contextmenu",function(e){
 			  return false;
 		});
+		
+		$(document).keydown(function (event) {
+			if (event.keyCode == 123) { // Prevent F12
+		        return false;
+		    }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I        
+		        return false;
+		    }
+		});
+		 
 	})
   </script>
   

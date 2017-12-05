@@ -3461,7 +3461,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
     padding: 10px 20px;
 }
 .welBtns input {
-    float:left; background-color: #666; padding: 5px 20px; border-radius: 2px; color: #fff; font-size: 14px; font-weight: 400;
+    float:left; background-color: #666; padding: 6px 20px; border-radius: 2px; color: #fff; font-size: 14px; font-weight: 400;
     border: 1px solid #454545;
 }
 .welBtns input:hover {
@@ -5499,7 +5499,7 @@ position: static !important;
 bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 }
 .minHeBtn {
-min-height: 34px; padding: 9px 12px 0px;
+min-height: 34px; padding: 9px 12px 0px !important;
 }
 .cOrange {
     color: #f17929 !important;
@@ -5561,19 +5561,24 @@ bottom:-30px !important; padding: 0px 6px 0px 6px !important;
 }
 
 .timeErrorLeft {
-left: 25% !important;
+	left: 25% !important;
 }
 
 .timBtnWidth {
-width: 240px;
+	width: 240px;
 }
 .timBtnWidth b {
-width: 47%; margin: 0px 3% 0px 0px; float: left;
+	width: 47%; margin: 0px 3% 0px 0px; float: left;
 }
 .timBtnWidth .glyphicon-comment {
-float: left; top: 5px
+	float: left; top: 5px
 }
-
+.refreshBtnStyle i {
+    display: inline-table; height: 34px; line-height: 22px; margin: 0px 1px; width: 37%; padding: 6px 0px;
+}
+.timeNewSe_month .chosen-drop {
+	width:160px !important;
+}
 
 
 
@@ -5835,19 +5840,14 @@ float: left; top: 5px
 	display: inline-block; padding: 0px 10px 0px 0px;
 }
 .emailBg {
-	position: fixed; width: 100%; height: 100%; background-color: #ebebeb; text-align: center;
-	background-image: url(../images/email_bg.png); background-position: left bottom; background-repeat: repeat-x;
-	background-size:auto;
+	padding: 30px 0px 50px;
 }
 .emailVeri {
-	width: 600px; margin: 90px auto 0px; background-color: #fff; box-sizing: border-box; padding: 45px; min-height: 300px;
+	width: 1150px; margin:0px auto; background-color: #fff; box-sizing: border-box; padding: 25px 40px 40px; min-height: 150px;
 	border-radius: 6px; box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
 }
-.emailVeri img {
-	width: 140px;
-}
 .emailVeri h2 {
-	padding: 18px 0px 0px; margin: 0px 0px; font-size: 22px; font-weight: 500; color: #29a032;
+	padding: 10px 0px; margin: 0px 0px; font-size: 22px; font-weight: 500; color: #29a032;
 }
 .emailVeri p {
 	padding: 12px 0px 0px; margin: 0px 0px; font-size: 15px; font-weight: 400; color: #454545; line-height: 22px;
@@ -5950,4 +5950,110 @@ float: left; top: 5px
 .addMailContent b {
 	display: block; font-weight: 400; font-size: 12px; color: #454545; padding:2px 0px 0px 0px;
 }
+.campaignWrap {}
+.campaignWrap .glyphicon-ok {
+	color: green !important;
+}
+.campaignWrap .text-danger {
+	color: #fe4556 !important;
+}
 
+/*   Pop Up Css  */
+.popMask {
+    position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:9999; display:none;
+}
+.popUpOut {
+	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+.popUpReci {
+	position: absolute; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 10000;
+	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+.popupHead {
+	border-bottom: 1px solid #ededed; position: relative;
+}
+.popupHead h2 {
+	padding: 0px 0px 10px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #454545;
+}
+.popupHead a {
+	position: absolute; right: 0px; top: 0px; color: #999;
+}
+.popupHead a:hover {
+	color: #DB5151;
+}
+.popupMid {
+	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed;
+}
+.popupMidPad {
+	padding: 5px 0px 0px 0px;
+}
+.popupFoot {
+	padding: 15px 0px 0px 0px; text-align: right;
+}
+.popUpReci .chosen-choices {
+	padding: 2px 5px !important;
+
+}
+
+
+/*   Company Log Profile   */
+
+.comLogBg {
+    width:100%; height: 100%; position: fixed; background-image: url(../images/mainBg.jpg); background-repeat: no-repeat;
+    background-position: center; background-attachment: fixed; top: 0px; left: 0px; overflow-y: auto;
+}
+.comLogInn {
+    width:1000px; margin: 10px auto; position: relative;
+}
+.comLogHead {
+    background-color: rgba(255,255,255,1); border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+}
+.comLogLogoText {
+    width:40%; float: left; padding: 22px 10px 0px 20px; font-size: 24px; font-weight: 400; color: #333333; height: 73px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.comLogHead ul {
+    float:right; margin: 0px; padding: 15px 15px 0px 0px;
+}
+.comLogHead ul li {
+    float:left; list-style-type: none; text-align: center; margin: 0px 2px;  position: relative;
+}
+.comLogHead ul li span {
+    display:block; height: 35px; background-color: #fff; border-radius: 2px; margin: 3px auto; position: relative;
+    padding: 7px 12px 0px 12px; font-size: 14px; font-weight: 400; color: #787878; border: 1px solid #bdbdbd;
+    z-index: 100;
+}
+.line {
+    position:absolute;  width: 80px; height: 6px; background-color: #bdbdbd; left: 0px; top: 17px; border-radius: 2px;
+    z-index: 50;
+}
+.comLogHead ul li b {
+    display:block; font-size: 11px; font-weight: 500; color: #666;
+}
+.comLogHead ul li.actLi {    
+}
+.comLogHead ul li.actLi span {
+    background-color: #fff; color: #368ee0; border: 1px solid #247ac9;
+}
+.comLogHead ul li.actLi span.fill {
+    background-color: #247ac9; color: #fff;
+}
+.comLogHead ul li.actLi .line {
+    background-color: #247ac9;
+}
+.comLogContent {
+    background-color: rgba(255,255,255,1); border-radius: 2px; padding: 20px 20px; margin: 3px 0px 0px 0px;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.3); min-height: 300px;
+}
+.comProImg {
+	padding: 12px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+	margin: 0px 0px 15px 0px; min-height: 180px;
+}
+.comProImg .uploadfile {
+	left: 14%;
+}
+
+.welBtns.welBtnsA {
+	background-color: #fff;
+}

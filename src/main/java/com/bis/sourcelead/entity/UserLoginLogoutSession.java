@@ -43,7 +43,10 @@ public class UserLoginLogoutSession  implements Serializable{
 	
 	@Column(name = "LOGOUTIME")
 	private Date logoutTime;
-	
+
+	@Column(name = "IS_AUTHENTICATED")
+	private String authenticated;
+
 	@Column(name = "ACTION_UUID")
 	private String actionUUID;
 
@@ -93,6 +96,16 @@ public class UserLoginLogoutSession  implements Serializable{
 
 	public void setActionUUID(String actionUUID) {
 		this.actionUUID = actionUUID;
+	}
+
+	public String getAuthenticated()
+	{
+		return authenticated;
+	}
+
+	public void setAuthenticated(String authenticated)
+	{
+		this.authenticated = authenticated;
 	}
 
 }

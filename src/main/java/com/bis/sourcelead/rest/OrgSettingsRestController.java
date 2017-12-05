@@ -531,6 +531,20 @@ public class OrgSettingsRestController {
 		return orgLocatDateFormat;
 	}
 	
+	@RequestMapping(value = "/updateLoginSecurity",method = RequestMethod.GET)
+	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		if(Constants.YES.equalsIgnoreCase(security)){
+			orgLocations.setLoginSecurity(Constants.YES);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}else{
+			orgLocations.setLoginSecurity(Constants.NO);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
+	}
+	
 	private String toJSON(Object obj)
 	{
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -15,27 +18,34 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AuthTokenDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
@@ -51,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UserLoginHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -59,7 +70,11 @@ import com.google.gson.GsonBuilder;
 @RequestMapping("/app")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
-	@Autowired
+	 
+	@Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
+	
+	 @Autowired
 	 RegistrationService registrationService;
 	
 	 @Autowired
@@ -73,6 +88,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 OrgService orgService;
+	 
+	 @Autowired
+	 UserLoginHelper userLoginHelper;
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -271,6 +289,13 @@ public class RegistrationRestController {
 			 HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveProfessional(csuRegistrationDTOO,contactUUID);
+		 Long profUserId = null;
+		if (result.contains("success")) {
+			String s2[] = result.split("success");
+			profUserId = Long.parseLong(s2[s2.length - 1]);
+			result = "success";
+		}
+		SourceLeadSessionManager.setSessionAttribute(request, "profUserId", profUserId);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
@@ -281,6 +306,13 @@ public class RegistrationRestController {
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
+		 Long recUserId = null;
+			if (result.contains("success")) {
+				String s2[] = result.split("success");
+				recUserId = Long.parseLong(s2[s2.length - 1]);
+				result = "success";
+			}
+			SourceLeadSessionManager.setSessionAttribute(request, "profUserId", recUserId);
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
@@ -814,8 +846,137 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	    
+	    
+	@RequestMapping(value = "/ws/activateEmail", method = RequestMethod.GET)
+	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		String status = "";
+		User user = userService.getUserByVerficationUUID(token);
+		if(user != null){
+			Date uuidSentTime = user.getUrlSentTime();
+			Calendar cal = Calendar.getInstance(); // creates calendar
+			Date current = cal.getTime();
+		    cal.setTime(uuidSentTime); // sets calendar time/date
+		    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+		    Date addedDtime = cal.getTime();
+			if((current.after(uuidSentTime) && current.before(addedDtime)) || current.equals(addedDtime)){
+				String isVerified = user.getIsVerified();
+				if(Constants.NO.equalsIgnoreCase(isVerified)){
+					user.setIsVerified(Constants.YES);
+					user.setUpdatedDate(new Date());
+					userService.addUser(user);
+					if(Constants.INDIVIDUAL_RECRUITER.equalsIgnoreCase(user.getUserType()))
+						registrationService.sendEmailToIndividualRecruiter(user);
+					else
+						registrationService.sendEmailToProfessional(user);
+					status = "success";
+					// verified click to login
+				}else{
+					status = "already Verified";
+				}
+			}else{
+				//url expiry
+				status = "expired";
+			}
+			
+			model.addObject("userId",user.getId());
+			model.addObject("token",token);
+			model.addObject("sourceleadUrl",sourceleadUrl);
+		}else{
+			//home page
+			status = "home";
+		}
+		model.addObject("status", status);
+		model.setViewName("verifyAccount");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/ws/resendVerificationEmail", method = RequestMethod.GET)
+	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = null;
+		if(userId != null)
+			user = userService.getUserById(userId);
+		else
+			user = userService.findByUserName(userName);
+		if (Constants.NO.equalsIgnoreCase(user.getIsVerified())) {
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			userService.addUser(user);
+			registrationService.sendActivationEmail(user);
+			return "success";
+		}
+		else {
+			return "failure";
+		}
+	}
 	   
-	   
+	@RequestMapping(value = "/ws/verificationDone", method = RequestMethod.POST)
+	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		if("".equalsIgnoreCase(userName) || userName == null){
+			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+			if(userLoginSession != null){
+				if(Constants.YES.equalsIgnoreCase(verfDone))
+					userLoginSession.setAuthenticated(Constants.YES);
+				request.getSession().setAttribute("userLoginSession", userLoginSession);
+			}
+		}
+		SecurityContextHolder.clearContext();
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userRole, userName, password,verfDone));
+		return "true";
+	}
+	
+	@RequestMapping(value = "/ws/getUserDetailsByRoleId", method = RequestMethod.GET)
+	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		UserRole userRole = null;
+		if(roleId != null)
+			userRole = userRoleService.getUserRoleById(roleId);
+		else{
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
+		if(userRole.getUser() != null){
+			model.addObject("userId",userRole.getUser().getId());
+			model.addObject("userLoginSecurity",userRole.getUser().getLoginSecurity());
+			model.addObject("userRoleId",userRole.getId());
+			model.addObject("emailId",userRole.getUser().getEmail());
+			if(StringUtils.isNotBlank(userRole.getUser().getMobilePhone()))
+				model.addObject("mobilePhone",userRole.getUser().getMobilePhone());
+		}
+		if(userName != null)
+			model.addObject("username",userName);
+		if(password != null)
+			model.addObject("password",password);
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.setViewName("otpVerification");
+		return model;
+	}
+	
+	@RequestMapping(value = "/ws/sendOtpToUser", method = RequestMethod.GET)
+	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		User user = userService.getUserById(userId);
+		String otp = registrationService.sendOtpToUser(user,type);
+		if(user != null){
+			model.addObject("emailId",user.getEmail());
+			if(StringUtils.isNotBlank(user.getMobilePhone()))
+				model.addObject("mobilePhone",user.getMobilePhone());
+		}
+		model.addObject("authToken",otp);
+		model.addObject("status","success");
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.setViewName("otpVerification");
+		return model;
+	}
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());

@@ -417,7 +417,30 @@ function cancelOrgImg(){
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
                 			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
-            			</div>            			
+            			</div> 
+            			
+            			<div class="tab-content panel-body">
+                           <div class="clearfix mb">
+                               <div class="pull-left">
+                                   <h4>Login Security</h4>
+                               </div>
+                           </div>
+               			<div class="form-group">
+	               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
+	               			<div class="col-md-7 toggle-button">
+		                      <label class="switch">
+		                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+		                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+		                      </c:if>
+		                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+		                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+		                      </c:if>
+		                      <div class="slider round"></div>
+		                      </label>
+                   			</div>
+               			</div>         
+           			</div> 
+           			           			
         			</div>
     			</div>
     
@@ -437,6 +460,27 @@ function cancelOrgImg(){
 $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
+</script>
+
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateLoginSecurity?security="+security+"&locationId="+locationId,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+	
+}
 </script>
 
 <script type="text/javascript">

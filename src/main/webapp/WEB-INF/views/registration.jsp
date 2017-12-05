@@ -355,6 +355,22 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
+                
+                <div id="pwdDiv">
+                <div class="col-xs-12 col-md-12 mb10">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
+	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Confirm Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
+	           </div>
+	               
                 </div>
             </div>
             
@@ -435,6 +451,22 @@ window.onload = function () {
                     </select>
                     <b></b>
                 </div>
+                
+                <div id="pwdDiv">
+                <div class="col-xs-12 col-md-12 mb10">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
+	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Confirm Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
+                </div>
+                
                 </div>
             </div>
             
@@ -522,6 +554,7 @@ window.onload = function () {
         </div>
       </div>
         </div>
+      <div class="clearfix"></div>
       </div>
   </div>
 </div>
@@ -625,6 +658,39 @@ function resetCredentials(type){
 </script>
 
 <script type="text/javascript">
+(function($) {
+	$.fn.checkPass = function() {   
+		var pass1 = document.getElementById('password');  
+	    var pass2 = document.getElementById('confirmPassword');
+	    $("#submit_button").attr("disabled", "disabled");
+	    
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#confirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#passwordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#confirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#confirmPassword').attr('record-exist','yes');
+			$('input#confirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
+<script type="text/javascript">
 function validateEmail(type){
 	
     var email = document.getElementById("email").value;
@@ -638,6 +704,12 @@ function validateEmail(type){
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $('#pwdDiv').attr("style" , "display : none"); 
+					    	    $('#confirmPassword').removeAttr('data-validation');
+						 		$('#confirmPassword').attr('data-validation-optional',"true");
+						 		$('#password').removeAttr('data-validation');
+						 		$('#password').attr('data-validation-optional',"true");
+						 		
 					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#email').attr('record-exist','yes');
 			    				$('input#email').attr('record-exist-errorMsg',email+' is Invalid'); 
@@ -648,9 +720,24 @@ function validateEmail(type){
 					    	    $("input#email").after("<p class='jquery_form_error_message'>Invalid Domain Name. Domain name should not with org extension</span>");
 			    				$('input#email').attr('record-exist','yes');
 			    				$('input#email').attr('record-exist-errorMsg','Invalid Domain Name'); 
-					     } 
-					     
+					     }else if(data == 'Not found'){
+					    	 $("#register_button").removeAttr("disabled");
+					    	 	$('#pwdDiv').attr("style" , "display : block"); 
+						 		$('#confirmPassword').removeAttr('data-validation-optional');
+								$('#confirmPassword').attr("data-validation","required");
+								$('#password').removeAttr('data-validation-optional');
+								$('#password').attr("data-validation","required");
+								$('#emailDiv').find('p.jquery_form_error_message').remove(); 
+								$('input#email').removeAttr('record-exist');
+			    				$('input#email').removeAttr('record-exist-errorMsg'); 
+					     }
 				       	else{
+				       		 $('#pwdDiv').attr("style" , "display : none"); 
+				       		$('#confirmPassword').removeAttr('data-validation');
+					 		$('#confirmPassword').attr('data-validation-optional',"true");
+					 		$('#password').removeAttr('data-validation');
+					 		$('#password').attr('data-validation-optional',"true");
+					 		
 				       		 $("#register_button").removeAttr("disabled");
 							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
@@ -685,6 +772,13 @@ function validateRecruiterEmail(type){
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
 					    	    $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    
+					    	    $('#pwdDiv').attr("style" , "display : none"); 
+					    	    $('#confirmPassword').removeAttr('data-validation');
+						 		$('#confirmPassword').attr('data-validation-optional',"true");
+						 		$('#password').removeAttr('data-validation');
+						 		$('#password').attr('data-validation-optional',"true");
+					    	    
 					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#recruiterEmail').attr('record-exist','yes');
 			    				$('input#recruiterEmail').attr('record-exist-errorMsg',email+' is Invalid'); 
@@ -695,9 +789,24 @@ function validateRecruiterEmail(type){
 					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>Invalid Domain Name. Domain name should not with org extension</span>");
 			    				$('input#recruiterEmail').attr('record-exist','yes');
 			    				$('input#recruiterEmail').attr('record-exist-errorMsg','Invalid Domain Name'); 
-					     } 
+					     } else if(data == 'Not found'){
+					    	    $("#recruiter_register").removeAttr("disabled");
+					    	 	$('#pwdDiv').attr("style" , "display : block"); 
+						 		$('#confirmPassword').removeAttr('data-validation-optional');
+								$('#confirmPassword').attr("data-validation","required");
+								$('#password').removeAttr('data-validation-optional');
+								$('#password').attr("data-validation","required");
+								$('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+					     }
 					     
 				       	else{
+				       		
+				       		$('#pwdDiv').attr("style" , "display : none"); 
+				    	    $('#confirmPassword').removeAttr('data-validation');
+					 		$('#confirmPassword').attr('data-validation-optional',"true");
+					 		$('#password').removeAttr('data-validation');
+					 		$('#password').attr('data-validation-optional',"true");
+				       		
 				       		 $("#recruiter_register").removeAttr("disabled");
 							 $('input#recruiterEmail').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
@@ -843,9 +952,9 @@ var validationSettings = {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
 			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
-			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+									location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        			location.replace(sourceleadUrl+"/verifyAccount");  
 			        		}
 			        		
 			        	}else if((result == 'login')){
@@ -913,9 +1022,9 @@ var validationSettings = {
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
+			        			location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        			location.replace(sourceleadUrl+"/verifyAccount");  
 			        		}
 			        	}else if((result == 'login')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){

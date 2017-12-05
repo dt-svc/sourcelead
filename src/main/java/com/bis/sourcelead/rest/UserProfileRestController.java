@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -291,6 +292,22 @@ public class UserProfileRestController {
 				}
 				
 	  }
+	   
+	   
+	@RequestMapping(value = { "/updateUserLoginSecurity","/rest/updateUserLoginSecurity" }, method = RequestMethod.GET)
+	public String passwordSettings(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request) throws Exception
+	{
+		User user = null;
+		user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (Constants.YES.equalsIgnoreCase(addUserProfileDTO.getLoginSecurity())) {
+			user.setLoginSecurity(Constants.YES);
+			userService.addUser(user);
+		}else {
+			user.setLoginSecurity(Constants.NO);
+			userService.addUser(user);
+		}
+		return "Success";
+	}
 
 
 	private static BufferedImage colorImage(BufferedImage image) {
