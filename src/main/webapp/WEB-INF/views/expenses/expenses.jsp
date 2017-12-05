@@ -49,7 +49,9 @@
 	<div class="timesheet_head">
         	<ul>
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
-				    <div class="pull-left mt5 mr">   		
+				    <div class="input-group">
+				    <div class="pull-left mt5 mr"> 
+				    <div class="input-group">  		
 				     <span class="dashboard-datepkr pull-left">
 					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
 					 <p id="reportStartDate" class="ReError"></p>
@@ -59,6 +61,7 @@
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
 					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
+					</div>
 					</div>
 					
 					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
@@ -494,8 +497,16 @@ function expenseView(expenseId){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatExpenses,
-			onSelect : function(selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 			}
 		
 		});
@@ -504,8 +515,16 @@ function expenseView(expenseId){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatExpenses,
-			onSelect : function(selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 			}
 		});
 		
