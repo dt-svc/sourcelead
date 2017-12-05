@@ -92,6 +92,9 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 
 /**
  * 
@@ -601,9 +604,50 @@ public class RequirementServiceImpl implements RequirementService {
 			oldAssigntoTeamList = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirement.getId(), orgLocations.getId());
 		}
 		HashSet<RequirementAssignTo> requirementAssignToList = new HashSet<RequirementAssignTo>();
-		if (StringUtils.isNotBlank(requirementDTO.getAssignedToMaxCount())) {
-			String assignedToMaxCount = requirementDTO.getAssignedToMaxCount();
-			int teamCount = 0;
+		/*if (StringUtils.isNotBlank(requirementDTO.getAssignedToMaxCount())) {
+			String assignedToMaxCount = requirementDTO.getAssignedToMaxCount();*/
+
+		for (Iterable<String> iterable : Iterables.partition(Splitter.on(",").split(requirementDTO.getAssignedTeamId()), 2)) {
+			if(!iterable.toString().equalsIgnoreCase("[]")){
+				String userId = Joiner.on(",").join(iterable).split(",")[0];
+			    String teamId = Joiner.on(",").join(iterable).split(",")[1];
+			    
+			    RequirementAssignTo requirementAssignTo;
+			    User assignedUser = new User();
+				assignedUser.setId(Long.parseLong(userId));
+				if (requirement.getId() != null) {
+					requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assignedUser.getId());
+					if (requirementAssignTo == null) {
+						requirementAssignTo = new RequirementAssignTo();
+					}
+				}
+				else {
+					requirementAssignTo = new RequirementAssignTo();
+				}
+				if(StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined")){
+					Team assignedTeam = new Team();
+					assignedTeam.setId(Long.parseLong(teamId));
+					requirementAssignTo.setTeamId(assignedTeam);
+				}
+				
+				requirementAssignTo.setAssignUserId(assignedUser);
+				requirementAssignTo.setRequirementId(requirement);
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assignedUser.getId(), orgLocations.getId());
+				requirementAssignTo.setRoleId(userRole.getRoles());
+				requirementAssignTo.setStatus(Constants.MEMBER_ACTIVE);
+				requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+				requirementAssignTo.setCreatedBy(user.getUserCode());
+				requirementAssignTo.setUpdatedBy(user.getUserCode());
+				requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+				requirementAssignToList.add(requirementAssignTo);
+			}
+		}
+		
+		
+		
+		
+		
+		/*int teamCount = 0;
 			ArrayList<String> assignedTeamId = new ArrayList<String>();
 			if (StringUtils.isNotBlank(requirementDTO.getAssignedTeamId())) {
 				String[] assignedTeamAndRoleIds = requirementDTO.getAssignedTeamId().split(",");
@@ -664,8 +708,8 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementAssignToList.add(requirementAssignTo);
 					}
 				}
-			}
-		}
+			}*/
+		/*}*/
 		if (!requirementDTO.getSaveType().equalsIgnoreCase("draft")) {
 			requirement.setRequirementAssignTo(requirementAssignToList);
 		}
