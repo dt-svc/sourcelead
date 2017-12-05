@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -67,7 +62,9 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -150,6 +147,11 @@ public class RequirementController {
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
 	
+	@Autowired
+	TeamService teamService;
+	
+	@Autowired
+	RolesService roleService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -461,6 +463,51 @@ public class RequirementController {
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+		/*CombinedList combinedList = new CombinedList();
+		List<RequirementAssignTo> requirementAssignTo = null;
+		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
+		if (isTeamViewAccess) {
+			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+			if (null != teamsList) {
+				for (Team team : teamsList) {
+					if (null != requirementAssignTo) {
+						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null
+								&& t.getTeamId().getId().equals(team.getId()))) {
+							team.setIsTeamAssigned("Y");
+						}
+					}
+				}
+				combinedList.setTeams(teamsList);
+			}
+		}
+		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		if (null != rolesList) {
+			for (Roles role : rolesList) {
+				if (null != requirementAssignTo) {
+					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null
+							&& t.getRoleId() != null
+							&& t.getRoleId().getId().equals(role.getId()))) {
+						role.setIsRoleAssigned("Y");
+					}
+				}
+			}
+			combinedList.setRoles(rolesList);
+		}
+		model.addObject("combinedList", combinedList);
+		
+		
+		List<User> usersListForAssignTeam = userService.getUsersByTeamTypeAndTabId(orgLocations.getId(),"", Long.valueOf(Constants.TAB_REQUIREMENT));
+		for(User user : usersListForAssignTeam){
+	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocations.getId());
+	            user.setAssignJobCount(assign.size());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+		   }
+		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
+		
 
 		return model;
 
