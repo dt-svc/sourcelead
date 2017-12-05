@@ -41,7 +41,7 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-    <div class="require_wrap_table table-wrap">
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
     <div id="popUp"></div>
      <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
@@ -135,9 +135,9 @@ function pagination(){
     $('#assetCategoryList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
