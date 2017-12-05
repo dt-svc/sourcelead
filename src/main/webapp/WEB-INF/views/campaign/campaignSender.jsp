@@ -38,8 +38,7 @@
                 	<input type="text" class="form-control" id="cpnReplyMail" name="cpnReplyMail" value="${sender.replyTo}" data-validation="required validate_length length1-250 validate_email" field-name="Reply Mail">
 				</div>
 			</div>
-		<div class="form-group" id="nickNameDiv">
-			<div class="col-sm-12 noPad mt clearfix">
+			<div class="col-sm-12 noPad mt clearfix" id="nickNameDiv">
 				<label class="col-md-3 padding_left">Nickname<span
 					class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9 padding_right">
@@ -48,13 +47,14 @@
 						data-validation="required validate_length length1-250"
 						field-name="Nick Name" onblur="validateNickName(${sender.id});">
 				</div>
-			</div>
+			</div>		
 		</div>
 		<div class="popupFoot">
             <input value="Save" class="btn btn-primary" id="saveCampaignSender" name="" type="button">
+            <input value="reset" class="btn btn-primary" type="button" id="resetForm">
             <input onclick="senderClose();" value="Cancel" class="btn btn-default ml" type="button">
           </div>		
-		</div>
+		
 		</form:form>
 		
 <div id="popUp"></div>

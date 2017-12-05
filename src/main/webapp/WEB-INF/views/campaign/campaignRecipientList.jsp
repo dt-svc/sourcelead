@@ -93,14 +93,14 @@ function populategRecipientList(json){
 
 <div class="ReciViewPop">
 		<div class="popupHead">
-			<h2>View recipient list</h2><a onclick="viewListClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>View recipient list</h2><a onclick="viewListClose();" href="javascript:void(0)" class="fa fa-close popCan clossIconPosi"></a>
 		</div>
 		<div id="loading"></div>
-		<div id= "viewListDev" class="datatable_filter"></div>
+		
 		<div class="popupMid popupMidPad clearfix">
 		
           <div class="clients_wrap_table">
-	
+          <div id= "viewListDev" class="datatable_filter"></div>
 			</div>	
 	
 		</div>
@@ -127,14 +127,13 @@ function listViewPop(viewListId){
 
 
 function populategViewList(json){
-	alert(json)
     var result = '';
     result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0" id="viewListTableId">';
     result = result +' <thead>';
     result = result +' <tr>';
+    result = result +' <th>Email</th>';
     result = result +' <th>First Name</th>';
     result = result +' <th>Last Name</th>';
-    result = result +' <th>Email</th>';
     result = result +' </tr>';
     result = result +' </thead>';
     result = result +' <tbody>';
@@ -142,23 +141,22 @@ function populategViewList(json){
 for (var i=0; i<json.length; i++){
         var report = json[i];
         result = result +'  <tr>';                                                                                                                  
-        result = result +'  <td>';         
+        result = result +'  <td>'; 
+        result = result +    '<div class="tbldata-dotdot-sm" title="'+report.email+'">'+report.email+'</div>';
+        result = result +'  </td>';  
+        result = result +'  <td>'; 
         if(report.firstName != null && report.firstName !='' && report.firstName !='undefined'){
         	result = result +    '<div class="tbldata-dotdot-sm" title="'+report.firstName+'">'+report.firstName+'</div>';
         }else{
         	result = result +  '<div class="tbldata-dotdot-sm">--</div>';
         }
-        
-        result = result +'  </td>';  
-        result = result +'  <td>'; 
+        result = result +'  </td>';
+        result = result +'  <td>';                                                                                                                  
         if(report.lastName != null && report.lastName !='' && report.lastName !='undefined'){
         	result = result +    '<div class="tbldata-dotdot-sm" title="'+report.lastName+'">'+report.lastName+'</div>';
         }else{
         	result = result +  '<div class="tbldata-dotdot-sm">--</div>';
-        }
-        result = result +'  </td>';
-        result = result +'  <td>';                                                                                                                  
-        result = result +    '<div class="tbldata-dotdot-sm" title="'+report.email+'">'+report.email+'</div>';                                                                                                            
+        }                                                                                                            
         result = result +'  </td>';
         result = result +'</tr>';                                                                                                                                                                                                                                        
         
@@ -279,14 +277,3 @@ function cancelDeleteCampaignList(){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-
-
- 
-
-
- 
- 
-
- 
- 
