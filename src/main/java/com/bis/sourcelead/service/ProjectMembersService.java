@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -86,6 +87,8 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId);
     
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
+	
+	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate,Date endDate,Long locationsId, Long approverUserId, String searchValue, int start, int length);
 	
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
     

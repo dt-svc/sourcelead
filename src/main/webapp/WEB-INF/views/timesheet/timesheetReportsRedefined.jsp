@@ -55,28 +55,35 @@ $(document).ready(function() {
 
 
 <script>  
-	function timesheetReportsDiv(){ 
+	function timesheetReportsDiv(searchData){ 
                var sourceleadUrl ='${sourceleadUrl}';
                var frequencyYear = $("#frequencyYear").val();
                if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
             	   frequencyYear = '';
-//   	           var frequencyMonth = $('#frequencyMonth').val();
   	           var frequencyMonth = null;
   	           if(frequencyYear!=null && frequencyYear!='')
   	           frequencyMonth = $(".time_months[data-year="+frequencyYear+"]").find("select").val();
   	           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
   	        	 frequencyMonth = '';
+  	           
+  	           var searchvalue = '';
+  	           if(searchData != null && searchData !='' && searchData!='undefined'){
+  	        	 searchValue = searchData;
+  	           }else{
+  	        	 searchValue = '';
+  	           }
                $("#reportsDiv").empty();
                $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	   $.ajax({
 	      	          type : "POST",
-        	      	  url: sourceleadUrl+"/timesheetReportsDiv?&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth,		
+        	      	  url: sourceleadUrl+"/timesheetReportsDiv?&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&searchValue="+searchValue,		
         		      success :function(result) {
         		    	  	  $("#reportsDiv").empty();
 	        		    	  $("#reportsDiv").append(result);
 	        		    	  $("#loadTime").removeAttr('style');
-	        		    	  pagination();
 	        		    	  prepareChosenScripts();
+	        		    	  $('#pagination-demo').twbsPagination('destroy');
+	        		    	  preparePagination(1);
         		      }
         	    }); 
 	}
@@ -99,11 +106,6 @@ $(document).ready(function() {
 </script> 
 
 <script>
-/*     function mypop(){
-		$("#exportPop").toggle();
-		$(".export_pop, #filter2ApprovedPop").slideUp();
-    }
- */
  function exportToggle(){
 	 $("#exportPop").toggle();
 	 $(".export_pop").slideUp();
@@ -128,9 +130,8 @@ function exportTimeSheetReportsToPdf(type){
       frequencyMonth = $(".time_months[data-year="+frequencyYear+"]").find("select").val();
       if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
    	 frequencyMonth = '';
-	window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
-	
-	
+      var searchValue = $('#dataTableSearchExpenses').val() ;
+	 window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type+"&searchValue="+searchValue;
 }
 </script>
 

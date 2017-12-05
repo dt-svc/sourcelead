@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,17 +19,22 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ReportsTimeDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeReportsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetReportsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -36,6 +46,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimesheetReportService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -62,6 +73,9 @@ public class TimesheetReportsRedefinedRestController {
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
+	@Autowired
+	private TimesheetReportService timesheetReportService;
+	
 	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST ) 
 	public ModelAndView prapareTimesheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		ModelAndView model = new  ModelAndView();
@@ -72,18 +86,6 @@ public class TimesheetReportsRedefinedRestController {
 		
 	}
 
-
-	/*@RequestMapping(value = "/prepareTimeReportsSubmissionDetails") 
-	public ModelAndView prepareSubmissionDetailsWeb(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
-		ModelAndView model = new  ModelAndView();
-		timesheetReportsDTO = newTimesheet(timesheetReportsDTO,request);
-		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
-		model.setViewName("timesheet/timeReportsSubmissionData");
-		return model;
-		
-	}*/
-	
-	
 	private TimesheetReportsDTO newTimesheet(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		   LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
 			 LinkedList<String>  allMonthsList = CalendarUtil.getAllMonths();
@@ -193,7 +195,29 @@ public class TimesheetReportsRedefinedRestController {
 		return timesheetReportsDTO;
 	}
 	
+	
+	
+	@RequestMapping(value = "/getMemberReports", method = RequestMethod.POST ) 
+	public ModelAndView prepareSubmissionDetailsWeb(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
+		ModelAndView model = new  ModelAndView();
+		prepareDateFrequencyForTimeSheetReports(timesheetReportsDTO,request);
+		timesheetReportsDTO = prepareSubmissionDetails(timesheetReportsDTO,request);
+		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
+		model.setViewName("timesheet/timeReportsSubmissionData");
+		return model;
+	}
 	private TimesheetReportsDTO prepareSubmissionDetails(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
+		int start = timesheetReportsDTO.getStart();
+		int length = 0;
+		if(timesheetReportsDTO.getPageNo()<1) {
+			timesheetReportsDTO.setPageNo(1);
+		}
+		if(timesheetReportsDTO.getPageSize()<1) {
+			length = 10;
+			timesheetReportsDTO.setPageSize(10);
+		}else {
+			length = timesheetReportsDTO.getPageSize();
+		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<TimeReportsSubmissionDetailsDTO> detailsList = new ArrayList<TimeReportsSubmissionDetailsDTO>();
@@ -202,10 +226,26 @@ public class TimesheetReportsRedefinedRestController {
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		
-		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
-        if(projectMembers != null && !projectMembers.isEmpty()){
-
-        	
+		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),start,length);
+		if(projRespList.getData() != null){
+		List<ProjectMembers> projectMembers = projRespList.getData();
+		
+		
+		timesheetReportsDTO.setTotalRows(projRespList.getRecordsTotal());
+		
+		
+		
+		int totalRows = projRespList.getRecordsTotal();
+		if(totalRows > 0) {
+			 int remainder = totalRows % length;
+			 int pageCount = totalRows / length;
+			 if(remainder > 0) {
+				 timesheetReportsDTO.setPageCount(pageCount+1);
+			 }
+			 else {
+				 timesheetReportsDTO.setPageCount(pageCount);
+			 }
+		}
         for (ProjectMembers projectMember : projectMembers)	{	
         TimeReportsSubmissionDetailsDTO details = new TimeReportsSubmissionDetailsDTO();
 		/* ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());*/
@@ -362,5 +402,37 @@ public class TimesheetReportsRedefinedRestController {
         	}	
         }
 		return timesheetReportsDTO;
+	}
+	
+	@RequestMapping(value = "/timeSheetReportExportList")   
+	public @ResponseBody void timeSheetReportExportList(HttpServletRequest request,HttpServletResponse response,TimesheetReportsDTO timesheetReportsDTO) throws Exception {
+		   File timesheetReportFile = null;
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   if(timesheetReportsDTO.getExportType().equalsIgnoreCase("pdf")){
+		    timesheetReportFile = timesheetReportService.prepareTimeSheetExport(timesheetReportsDTO,user,orgLocations);
+		   }else{
+			timesheetReportFile = timesheetReportService.prepareTimeSheetExportExcel(timesheetReportsDTO,user,orgLocations);   
+		   }
+		   String mimeType = URLConnection.guessContentTypeFromName(timesheetReportFile.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			StringBuilder timesheetfileName = new StringBuilder();
+			int pos = timesheetReportFile.getName().lastIndexOf("-");
+			String result = timesheetReportFile.getName().substring(fileName.length(), pos);
+			int index = timesheetReportFile.getName().lastIndexOf(".");
+			String fileType = timesheetReportFile.getName().substring(index, timesheetReportFile.getName().length());
+			String tsFileName = timesheetfileName.append(result).append(fileType).toString();
+			
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(tsFileName).append("\"").toString());
+			response.setContentLength((int) timesheetReportFile.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(timesheetReportFile));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
 	}
 }

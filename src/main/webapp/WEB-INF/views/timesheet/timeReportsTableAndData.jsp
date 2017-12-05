@@ -3,8 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="resources/js/jquery.twbsPagination.js"></script>
+<div id="reportTableData"></div>
 <div class="clients_wrap_table timesheetRepTab">
-   	<table class="table">
+   	<table class="" style="width:100%;">
 		<thead>
            	<tr>
            	   <th>Employee</th>
@@ -30,29 +31,75 @@
   <div class="pull-left mt">
   <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
   <div class="dropdown-select pull-left mr5">
-  <select>
-  	<option value="10">10</option>
-  	<option value="15">15</option>
-  	<option value="20">20</option>
+  <select id="pageSize" onchange="getTableDataByPageSize()">
+  	<option value="10" ${timesheetReportsDTO.pageSize == 10 ? 'selected' : ''}>10</option>
+  	<option value="15" ${timesheetReportsDTO.pageSize == 15 ? 'selected' : ''}>15</option>
+  	<option value="20" ${timesheetReportsDTO.pageSize == 20 ? 'selected' : ''}>20</option>
   </select>
   </div>
   <span class="pull-left mt10">entries</span>
   </label> 
-  <span class="pull-left mt10 ml">Show page number</span>
+  <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
   </div>
   </div>
-  <div class="col-md-6">
+  <div id="paginationholder" class="col-md-6">
   <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
   </div>
 </div> 
-  <script>
-  var options = {
-		  totalPages: 50,
-		  visiblePages: 5
-		  };
-  $('#pagination-demo').twbsPagination(options);
-  
-  </script>
+
+ <script>
+      function getTableDataByPageSize(){
+    	  $('#pagination-demo').twbsPagination('destroy'); 
+    	  getTableData(1);
+      }
+	  function getTableData(pageNo) {
+		  $("#reportTableData").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+          var frequencyYear = $("#frequencyYear").val();
+          var pageSize = $("#pageSize").val();
+          if(frequencyYear != null && frequencyYear != '' &&  frequencyYear != 'undefined'){
+        	  frequencyMonth = $(".time_months[data-year="+frequencyYear+"]").find("select").val();
+        	  if(frequencyMonth != null && frequencyMonth != '' && frequencyMonth != 'undefined'){
+        		  var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
+        		  $.ajax({
+          	          type : "POST",
+        	      	  url: sourceleadUrl+"/getMemberReports?frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+        		      success :function(data) {
+        		    	  $("#tableData").empty();
+        		    	  $("#tableData").append(data);
+        		    	  $("#reportTableData").removeAttr('style');
+        		    	  preparePagination(pageNo);
+        		      }
+        	     });  
+        	  }
+          }
+      }
+	  function preparePagination(pageNo) {
+		  var totalRows =  $('#totalRows').val();
+		  var pageCount = $('#pageCount').val();
+		  var pageSize = $("#pageSize").val();
+		  var searchData = '${timesheetReportsDTO.searchValue}';
+		  $('#dataTableSearchExpenses').val('') ;
+		  $('#dataTableSearchExpenses').val(searchData); 
+		  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+		  var endingRecord = parseInt(pageNo*pageSize);
+		  if(endingRecord > totalRows){
+			  endingRecord = totalRows;
+		  }
+		  var options = {
+		              currentPage : '${timesheetReportsDTO.pageNo}',
+		              totalPages: pageCount,
+		              initiateStartPageClick: false,
+		              onPageClick: function (event, page) {
+		              getTableData(""+page+"");
+		              }
+	      };
+	      $("#pagination-demo").twbsPagination(options);
+	      var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+	      $('#pageMsg').html('');
+	      $('#pageMsg').html(pageMsg);
+	 }
+  </script>  
       
 
     
