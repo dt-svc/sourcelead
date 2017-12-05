@@ -47,7 +47,7 @@ public class OpenJobsController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/ws/openRequirements")
+	@RequestMapping(value = "/ws/openJobs")
 		 public ModelAndView openJobs() throws Exception{
 		 ModelAndView model = new ModelAndView();
 		 List<Countries> countriesList = countriesService.getAllCountries();
