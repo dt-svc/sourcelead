@@ -17,11 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectPlanningNewResourceRequestDao;
 import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
-import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
-import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository

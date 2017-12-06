@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -609,10 +610,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId);
+			Long approverUserId,String searchValue, int start, int length) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length);
 	}
 	
 	@Override
@@ -711,7 +712,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			Long locationsId, Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
 	}
-
+	
+	@Override
+	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate, Date endDate,
+			Long locationsId, Long approverUserId, String searchValue,int start,int length) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate,endDate,locationsId,approverUserId,searchValue,start,length);
+	}
+	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(startDate,endDate,locationsId,approverUserId);
