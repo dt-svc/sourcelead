@@ -213,10 +213,14 @@ public class ClientController {
 			
 			if(orgSpocUUID != null){
 				OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+			if(orgSpoc != null){
+				
 				model.addObject("spocId", orgSpoc.getId());
 				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
 				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
 				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
+				
+			 }
 			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
