@@ -37,7 +37,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	    });
 	}else if(type =="skills"){
 	
-		var select, chosen;
+	var select, chosen;
 	    select = $("#"+id);
 	    select.chosen({ no_results_text: noResultText });
 	    chosen = select.data('chosen');
