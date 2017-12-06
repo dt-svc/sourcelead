@@ -14,7 +14,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -91,6 +90,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private AssetDao assetDao;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -230,7 +232,30 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
-	
+	@RequestMapping(value = "/deleteDoc", method = RequestMethod.POST)
+	public String deleteDoc(@RequestParam(value="assetId", required=false) String assetId,@RequestParam(value="url", required=false) String url,HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       Asset asset = assetService.getAssetById(Long.parseLong(assetId));
+	       if(url.equals(asset.getFileUrl())){
+	       asset.setFileUrl(null);
+	       asset.setFileContentType(null);
+	       asset.setFileName(null);
+	       }if(url .equals(asset.getShiftAFileUrl())){
+	    	  asset.setShiftAFileUrl(null);
+			  asset.setShiftAFileName(null);
+			  asset.setShiftAFileContentType(null); 
+	       }
+	       if(url.equals(asset.getShiftBFileUrl())){
+	    	   asset.setShiftBFileUrl(null);
+			   asset.setShiftBFileName(null);
+			   asset.setShiftBFileContentType(null);   
+	       }
+	       assetDao.saveAsset(asset);	
+
+		return "success";
+
+	}
 	
 	@RequestMapping(value = "/getComericaTransactions")
 	@ResponseBody

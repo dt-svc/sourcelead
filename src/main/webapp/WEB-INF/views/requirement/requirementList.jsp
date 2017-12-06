@@ -583,15 +583,23 @@ function changeStatusAuthorisation(requirementId){
 <script type="text/javascript">
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	$("tr").find("td.sorting_1").removeClass("sorting_1");
+	if(status == "FILLEDCLOSED" || status == "OPEN"){
+		$("#job_"+requirementId).addClass("row-success");
+	}else if(status == "CANCEL"){
+		$("#job_"+requirementId).addClass("row-danger");
+	}else{
+		$("#job_"+requirementId).addClass("row-warning");
+	}
+
 	 var userId ='${SourceLeadWeb_userId}';
-     if(requirementStatus == "DRAFT"){
+     if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  location.replace(sourceleadUrl+"/requirementList");
+	           	  //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }else{
@@ -600,7 +608,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 location.replace(sourceleadUrl+"/requirementList");
+	           	 //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }
@@ -614,8 +622,16 @@ function changeStatus(requirementId, requirementStatus){
 		 var table = $('#requirementPagination').DataTable();
 		 $('#Row_'+requirementId).remove();
 	 } */
-     
+	 setTM();
 	}
+	function setTM (){
+		  setTimeout(function() { 
+		  $("tr").removeClass("row-info");
+		  $("tr").removeClass("row-success");
+		  $("tr").removeClass("row-warning");
+		  $("tr").removeClass("row-danger");
+		}, 2000);
+	};
 </script>
 <script>
 $('#mypop').click(function(){

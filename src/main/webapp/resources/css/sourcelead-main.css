@@ -7394,6 +7394,72 @@ border: 1px solid #ccc !important;
 .minHeight40{
 min-height: 40px;
 }
+.tableStyles {
+	position: relative; border: 1px solid #ddd;
+}
+.tableStyles table tbody{
+	background-color: #FAFAFA; border: 1px solid #BDBDBD;
+}
+.tableStyles table tr th {
+	font-weight: normal; color: #333; padding: 10px; border-bottom: 1px solid #BDBDBD;
+}
+.tableStyles table thead {
+	background-color: #CBCBCB;
+}
+.tableStyles table tr {
+	border-bottom: 1px solid #BDBDBD;
+}
+.tableStyles table tr td {
+	position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
+}
+.tableStyles_head {
+	position: relative; min-height: 40px;
+}
+.action-div {
+	position: relative; text-align: center;
+}
+.action-div .action-inner ul {
+	margin-bottom: 0; clear: both; display: inline-block; background-color: #FFF; float: left; padding: 5px;
+	border: 1px solid #EEEEEE; position: absolute; right: 20px; top: -10px; transition: all 0.3s ease-in-out;
+}
+.action-div .action-inner {
+	display: none;
+}
+.action-div:hover .action-inner {
+	display: block;
+}
+.action-div .action-inner ul li{
+	float: left; list-style-type: none; padding:2px 5px;
+}
+.action-div .action-inner ul li a {
+	 color: #757575;
+}
+.action-div .action-inner ul li a:hover{
+	color: #424242;
+}
+/* Sanjeev Styles for Date picker background white for calendar and attachment */
+.hasDatepicker.form-control[readonly], #uploadFile.form-control {
+background-color: #fff;
+}
+.clearUpload:after {
+padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
+.clearDate:after {
+padding: 0px; bottom: 75%; right:10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
+.colorRed{
+color:red;
+}
+.dashboard-datepkr.datakrmrnone input[type="text"]
+{
+margin-right: 0;
+}
+/* Sanjeev Styles for Date picker background white for calendar and attachment */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
