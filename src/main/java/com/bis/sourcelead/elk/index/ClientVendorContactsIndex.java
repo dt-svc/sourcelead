@@ -85,9 +85,6 @@ public class ClientVendorContactsIndex implements Serializable {
 
 	private String orgSpocUUUID;
 	
-	public Long getOwnerUserId() {
-
-	
 	private String checkbox;
 	
 	
