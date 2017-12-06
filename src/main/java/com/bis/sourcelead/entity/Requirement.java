@@ -1862,6 +1862,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setProjectName(String projectName)
 	{
 		this.projectName = projectName;
+	}
 
 	public String getOrgRelationUUID()
 	{
