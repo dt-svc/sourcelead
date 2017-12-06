@@ -29,7 +29,7 @@
             	</tbody>
    </table>
 </div>
-<div class="clearfix">
+<div id="paginationDiv" class="clearfix">
   <div class="col-md-6">
   <div class="pull-left mt5">
   <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
@@ -89,6 +89,8 @@ $(document).ready(function() {
 		  var pageCount = $('#pageCount').val();
 		  var pageSize = $("#pageSize").val();
 		  var searchData = '${timesheetReportsDTO.searchValue}';
+		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
+		  $('#paginationDiv').show();
 		  $('#dataTableSearchExpenses').val('') ;
 		  $('#dataTableSearchExpenses').val(searchData); 
 		  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
@@ -108,6 +110,13 @@ $(document).ready(function() {
 	      };
 	      $("#pagination-demo").twbsPagination(options);
 	      var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+	  }else{
+		  $("#fixTable").empty();
+    	  $("#fixTable").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+		  $('#dataTableSearchExpenses').val('') ;
+		  $('#dataTableSearchExpenses').val(searchData);
+		  $('#paginationDiv').hide();
+	  }
 	      $('#pageMsg').html('');
 	      $('#pageMsg').html(pageMsg);
 	 }

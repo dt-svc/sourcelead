@@ -200,7 +200,7 @@ public class TimesheetReportsRedefinedRestController {
 	@RequestMapping(value = "/getMemberReports", method = RequestMethod.POST ) 
 	public ModelAndView prepareSubmissionDetailsWeb(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		ModelAndView model = new  ModelAndView();
-		prepareDateFrequencyForTimeSheetReports(timesheetReportsDTO,request);
+		timesheetReportsDTO = prepareDateFrequencyForTimeSheetReports(timesheetReportsDTO,request);
 		timesheetReportsDTO = prepareSubmissionDetails(timesheetReportsDTO,request);
 		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
 		model.setViewName("timesheet/timeReportsSubmissionData");
@@ -362,7 +362,12 @@ public class TimesheetReportsRedefinedRestController {
 		    	        
 		    	        String date = null;
 		    	        StringBuilder  dateBuilder = new StringBuilder();
-						date = (dateBuilder.append(shortormat.format(entry.getKey())).append("-").append(shortormat.format(entry.getValue())).toString());
+		    	        if(entry.getKey().equals(entry.getValue())) {
+		    	        	date = dateBuilder.append(shortormat.format(entry.getKey())).toString();
+		    	        }else {
+		    	        	date = (dateBuilder.append(shortormat.format(entry.getKey())).append("-").append(shortormat.format(entry.getValue())).toString());
+		    	        }
+						
 		    	        entryList.put(date,reportsTimeDTO);
 		    	     }
 		    	 details.setReportsTimeMap(entryList);

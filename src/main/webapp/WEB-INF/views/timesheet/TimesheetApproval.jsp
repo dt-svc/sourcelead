@@ -47,7 +47,7 @@ $(document).ready(function() {
 	      	          type : "POST",
 	          	      dataType : 'json',
 	          	    // url: sourceleadUrl+"/timesheetApprovalDetails?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode,
-	          	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode,
+	          	   url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode,
         		      success :function(result) {
         		    	    $("#timesheetApprovalDiv").removeAttr("style");
         		    	    $("#timesheetApprovalDiv").empty();

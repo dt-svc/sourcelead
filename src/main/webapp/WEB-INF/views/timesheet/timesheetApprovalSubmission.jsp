@@ -45,7 +45,7 @@ $(document).ready(function() {
 </div>
 <div id= "paginationDiv" class="clearfix">
 	<div class="col-md-6">
-		<div class="pull-left mt">
+		<div class="pull-left mt5">
 			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
 				<div class="dropdown-select pull-left mr5 tblminwidth-50">
 					<select id="pageSize" onchange="getTableDataByPageSize()">
@@ -58,8 +58,8 @@ $(document).ready(function() {
 				 <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
 		</div>
 	</div>
-	<div id="paginationholder" class="col-md-6">
-		<ul id="pagination-demo" class="pagination-sm pull-right"></ul>
+	<div id="paginationholder" class="col-md-6 pagiPad">
+		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
 
