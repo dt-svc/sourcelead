@@ -835,17 +835,16 @@ public class RequirementListRestController {
 	}
 	
 	
-	
-	
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
 	String saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
@@ -866,12 +865,13 @@ public class RequirementListRestController {
 	
 	@RequestMapping(value = "/saveChangedStatusFromDraft", method = RequestMethod.POST)
 	@ResponseBody
-	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId) throws Exception
+	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
 	{
 		User loginUser = userService.getUserById(userId);
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
