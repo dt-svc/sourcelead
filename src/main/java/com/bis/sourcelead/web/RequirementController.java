@@ -662,9 +662,9 @@ private ProjectClientService projectClientService;
 		}else {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
-		
+		if(requirement.getClientId() != null && requirement.getClientId().getUUID() !=null){
 		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
-		
+		}
 		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 		
