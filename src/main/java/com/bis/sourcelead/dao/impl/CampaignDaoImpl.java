@@ -16,6 +16,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -235,6 +236,21 @@ public class CampaignDaoImpl implements CampaignDao {
 		int i = qry.executeUpdate();
 		return i;
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (campaignStats != null) {
+				session.saveOrUpdate(campaignStats);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return campaignStats;
 	}
 
 

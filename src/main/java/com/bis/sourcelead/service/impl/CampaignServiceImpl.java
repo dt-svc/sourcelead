@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -238,7 +239,7 @@ public class CampaignServiceImpl implements CampaignService{
 		Set<CampaignRecipient> recipientSet = new HashSet<CampaignRecipient>();
 		for (String recipientMail : setReci) {
 			CampaignRecipient campaignRecipient = new CampaignRecipient();
-			String res = campaignUtil.createRecipientsl(recipientMail);
+			String res = campaignUtil.createRecipients(recipientMail);
 			JSONObject reciJObject = new JSONObject(res);
 			JSONArray recipientsIds = reciJObject.getJSONArray("persisted_recipients");
 			String recipientId = (String) recipientsIds.get(0);
@@ -332,6 +333,12 @@ public class CampaignServiceImpl implements CampaignService{
 	public List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long orgLocationId)
 	{
 		return campaignDao.getRecipientListByListIdAndOrgLocationId(viewListId, orgLocationId);
+	}
+
+	@Override
+	public CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception
+	{
+		return campaignDao.saveCampaignStats(campaignStats);
 	}
 
 }
