@@ -233,6 +233,8 @@ public class Constants {
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
+	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
+		
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
 	

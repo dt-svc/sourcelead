@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Holiday;
@@ -19,5 +20,9 @@ public interface HolidayDAO {
 	Holiday saveDeleteHoliday(Holiday holidays) throws Exception;
 
 	List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
+
+	List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,  Date endDate,Long orgLocationId)throws Exception;
+
+	
 	
 }
