@@ -353,12 +353,12 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearFromtDt();">';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearToDt();">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
@@ -851,4 +851,12 @@ function toDate(selector) {
 }
 </script>
 
-<!-- script for dateformat in datepicker End -->             
+<!-- script for dateformat in datepicker End -->     
+<script>
+function clearFromtDt(){
+	$("#StartDate").val("");
+	};
+function clearToDt(){
+	$("#EndDate").val("");
+	};
+</script>        

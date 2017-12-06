@@ -461,8 +461,8 @@ $(document).ready(function () {
                       <label class="col-md-3">Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text"  name="closedDate" class="form-control" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -578,8 +578,8 @@ $(document).ready(function () {
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-            <div class="col-md-9">
-              <div class="input-group attachfile" id= "uploadFileGroup">
+            <div class="col-md-9 positionRelative">
+              <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -2238,6 +2238,18 @@ $(function() {
 	});
  }); 
 </script>
+
+
+<script>
+function clearDate(){
+	$("#closedDate").val("");
+	};
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	});
+	
+	</script>
+
 <script>
 $("#showGrid").click(function(){
 	var shogridlist = $('#showGrid').find(".showGrid");
@@ -2253,6 +2265,7 @@ $("button.btnShowlist").click(function(){
     }
     return false; 
 });
+
 </script>
  
 <jsp:include page="../masterFooter.jsp" />
