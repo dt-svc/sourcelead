@@ -206,12 +206,16 @@ public class AssetServiceImpl implements AssetService{
 			 Employees shiftAEmp = new Employees();
 			 shiftAEmp.setId(Long.parseLong(assetDTO.getShiftAEmp()));
 			 asset.setShiftAEmployee(shiftAEmp);
+		 }else{
+			 asset.setShiftAEmployee(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getShiftBEmp())){
 			 Employees shiftBEmp = new Employees();
 			 shiftBEmp.setId(Long.parseLong(assetDTO.getShiftBEmp()));
 			 asset.setShiftBEmployee(shiftBEmp);
+		 }else{
+			 asset.setShiftBEmployee(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getDescription())){
@@ -229,8 +233,10 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setFileName(fileInfo.getFileName());
 			 asset.setFileContentType(fileInfo.getContentType());
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
-			
-			 
+		 }else{
+			 asset.setFileUrl(null);
+			 asset.setFileName(null);
+			 asset.setFileContentType(null);
 		 }
 		 
 		 if(assetDTO.getUploadBtndskAUpload() != null){
@@ -239,6 +245,10 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setShiftAFileName(fileInfo1.getFileName());
 			 asset.setShiftAFileContentType(fileInfo1.getContentType());
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo1, "assetDocuments");
+			 }else{
+			 asset.setShiftAFileUrl(null);
+			 asset.setShiftAFileName(null);
+			 asset.setShiftAFileContentType(null);
 			 }
 			 
 			 if(assetDTO.getUploadBtndskBUpload()!= null){
@@ -247,6 +257,10 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setShiftBFileName(fileInfo2.getFileName());
 			 asset.setShiftBFileContentType(fileInfo2.getContentType());
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo2, "assetDocuments");
+			 }else{
+			 asset.setShiftBFileUrl(null);
+			 asset.setShiftBFileName(null);
+			 asset.setShiftBFileContentType(null); 
 			 }
 		    		 
 		 asset.setOrgLocations(orgLocations);

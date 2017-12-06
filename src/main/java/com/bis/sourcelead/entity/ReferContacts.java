@@ -2,16 +2,20 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -24,6 +28,8 @@ import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Contact_Source;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.Contact;
 
 @Entity
 @Table(name = "REFER_CONTACTS", catalog = "sourcelead")
@@ -98,12 +104,18 @@ public class ReferContacts implements Serializable{
 	@Column(name = "CONTACT_USER_EMAIL2")
 	private String contactUserEmail2;
 	
+	@Column(name = "GROUP_ID" , columnDefinition = "TEXT default NULL")
+	private String groupId;
+	
 	@Transient
 	private String contactUserName;
 	
 	@Transient
 	@JsonProperty
 	private String fullName;
+	
+	@ManyToMany(mappedBy="contactsList")
+	private List<ContactsGroup> groupList;
 	
 	
 	public Long getId() {
@@ -287,6 +299,28 @@ public class ReferContacts implements Serializable{
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
+	public String getGroupId()
+	{
+		return groupId;
+	}
+
+	public void setGroupId(String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+
+	public List<ContactsGroup> getGroupList()
+	{
+		return groupList;
+	}
+
+	public void setGroupList(List<ContactsGroup> groupList)
+	{
+		this.groupList = groupList;
+	}
+
 	
 
 }

@@ -509,7 +509,7 @@
 			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedHours =  $('#estimatedHours'+maxRowNum).val();
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
-				estimatedHours = "--";
+				estimatedHours = "0";
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -520,7 +520,7 @@
 			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var estimatedBudget =  $('#estimatedBudget'+maxRowNum).val();
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
-				estimatedBudget = "--";
+				estimatedBudget = "0";
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -934,7 +934,6 @@ function loadRequestDetails(){
 	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
-	        	  $("input[name = 'maxRowCount']").val(json.newResourceRequestList.length);
 	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
 	        	 
 	        	 
@@ -1083,7 +1082,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			var estimatedHours =  report.estimatedHours;
 			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
 				estimatedHours = "0";
-				$("#estimatedHours"+maxRowNum).val(0);
+				$("#estimatedHours"+maxRowNum).val("");
 			}
 			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
 			cell7.innerHTML = divRowTd7Str;
@@ -1095,7 +1094,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			var estimatedBudget =  report.estimatedBudget;
 			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
 				estimatedBudget = "0";
-				$("#estimatedBudget"+maxRowNum).val(0);
+				$("#estimatedBudget"+maxRowNum).val("");
 			}
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
@@ -1115,7 +1114,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			totalEstimatedHours(maxRowNum);
 			totalEstimatedBudget(maxRowNum);			
 	 }
-	 
+	     $("input[name = 'maxRowCount']").val(newResourceRequestList.length);
 	    $("#totalResourcesId").val(requestedResources);
 		$("#totalEstHours").val(estimatedHours);
 		$("#totalEstBudget").val(estimatedBudget);
