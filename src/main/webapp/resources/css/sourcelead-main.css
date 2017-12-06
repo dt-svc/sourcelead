@@ -3367,8 +3367,8 @@ border-bottom: none !important;
 }
 .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
     content: ''; background: #EEEEEE; border: 1px solid #BDBDBD;
-    display: inline-block; vertical-align: middle; border-radius: 3px; width: 20px;
-	line-height: 20px; height:20px; padding: 5px; margin-right: 3px; text-align: center;
+    display: inline-block; vertical-align: middle; border-radius: 3px; width: 18px;
+	line-height: 18px; height:18px; padding: 5px; margin-right: 3px; text-align: center;
 }
 .checkbox-custom:checked + .checkbox-custom-label:before {
 	font-family: Fontawesome; content: '\f00c'; color: #3081cb; padding: 0; font-size: 15px;
@@ -7057,7 +7057,7 @@ position: absolute; left: 100%; top: 5px;
 }
 .manageLables-div {
 	position: absolute; right: 0%; width: 250px; background-color: #F5F5F5; padding:10px  15px; z-index: 9999;
-	box-shadow: 1px 1px 5px #9E9E9E; min-height: 100px; max-height: 250px; overflow-y: auto; top: 30px; display: none;
+	box-shadow: 1px 1px 5px #9E9E9E; min-height: 200px; max-height: 400px; overflow-y: auto; top: 30px; display: none;
 }
 .manageLables-div .closemld {
 	position: absolute; right:10px; top: 0; font-size: 20px; color: #6E0002;
@@ -7071,11 +7071,17 @@ position: absolute; left: 100%; top: 5px;
 .manageLables-div ul li:hover .folder-ed {
 	display: block;
 }
-.collpasePannel a {
- color:#333; clear:both; display: inline-block; width: 100%;	
-}
 .collpasePannel {
-	background-color: #f5f5f5; border: 1px solid #ccc; padding:0 10px; border-radius:3px 3px 0 0;
+background-color: #f5f5f5; border: 1px solid #ccc; padding:0 10px; border-radius:3px 3px 0 0;
+}
+.collpasePannel a {
+ color:#333; clear:both; display: inline-block; width: 95%;	
+}
+.collpasePannel .edit-assignedMembers .fa-edit{
+font-size: 1.3em; padding: 5px;color: #909090; position: relative; top: 5px;
+}
+.collpasePannel .edit-assignedMembers .fa-edit:hover {
+color: #333;
 }
 .collpasePannel .fa-sort-down {
 	font-size: 20px; padding: 4px 15px; color:#204d74;
@@ -7147,6 +7153,21 @@ background-color: #ddd; padding:10px 0;
 }
 .swaptables-buttons {
 	width: 3%; min-height: 200px; max-height: 500px; float: left; text-align: center; position: relative;
+}
+.assigned-Table table tr td {
+	padding: 5px 10px 5px 10px; vertical-align: middle; border: none;
+}
+.assigned-Table .tbldata-dotdot-custom {
+	display: block;
+}
+.assigned-Table {
+	margin-bottom: 5px; 
+}
+.assigned-Table table {
+	border-bottom: 1px solid #ddd !important;
+}
+.assignTableScroll {
+	min-height: 50px; max-height:240px; overflow-y:auto;
 }
 .modalHeader {
 	padding: 10px 15px 0;
@@ -7261,19 +7282,184 @@ ul.vendor-listcount li label {
 	list-style-position: inside; list-style-type: circle; line-height: 22px;
 }
 .jobsimort-header {
- border-bottom: 1px solid #ddd; padding:0 0 10px 0; margin-bottom: 15px;
-	-webkit-transition:all 0.3s ease-in-out; transition: all 0.3s ease-in-out;
+border-bottom: 1px solid #ddd; padding:0 0 10px 0; margin-bottom: 15px;
+-webkit-transition:all 0.3s ease-in-out; transition: all 0.3s ease-in-out;
 }
 .jobsimort-header h4{
-	margin: 0;
+margin: 0;
 }
 .jobsimort-header-fixed {
-	position: fixed; background:#f5f5f5; top: 50px; width: 81.5%; z-index: 999;
-    right: 30px; padding:10px 0;
+position: fixed; background:#f5f5f5; top: 50px; width: 81.5%; z-index: 999;
+right: 30px; padding:10px 0;
 }
 .companysnapshot-header {
-  border-bottom: 1px solid #e0e0e0; padding: 5px 0 15px 0;
+border-bottom: 1px solid #e0e0e0; padding: 5px 0 15px 0;
 }
+.fmtabs-left{
+padding: 10px 0px 10px 0px; background-color: #FAFAFA;box-shadow: 0px 0px 2px #BDBDBD; border-radius: 2px;
+ box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); border-top: 1px solid #E0E0E0;
+}
+.fm-tabcontent {
+padding:10px 15px; background-color: #fff; box-shadow: 0px 0px 2px #BDBDBD; border-radius: 2px;
+box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); border-top: 1px solid #E0E0E0;
+}
+.fmtabs-left>li {
+float: none; clear: both; border-bottom: 1px solid #eee; margin-right:0px; position: relative; clear: both;
+}
+.fmtabs-left>li.active>a,
+.fmtabs-left>li.active>a:hover,
+.fmtabs-left>li.active>a:focus {
+border-bottom-color: #ddd;
+border-right-color: transparent; color:#f60;
+}
+.fmtabs-left > li > a {
+border-radius: 0; display:block; width: 100%; color: #333;
+}
+.fmtabs-left.nav > li > a {
+	border: 0 !important; padding: 8px 15px !important;
+}
+.fmsettings-dropdown {
+position: absolute; right: 10px; top: 10px;
+}
+.fmtabs-left>li.active>a, .fmtabs-left>li.active>a:hover, .fmtabs-left>li.active>a:focus {
+background: #fff; border-radius: 0 !important; border: none;
+border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;
+}
+ul.fmdropdown-menu li {
+width: 100%; clear: both; display: block; font-size: 13px;
+}
+ul.fmdropdown-menu li a {
+width: 100%; clear: both; display: inline-block; font-size: 13px; padding:5px 10px;
+border-bottom: 1px solid #e0e0e0;
+}
+table.fmTable {
+border-collapse: collapse; 
+}
+table.fmTable tr {
+position: relative;
+}
+table.fmTable tr td {
+position: relative; min-height: 35px; text-align: left !important; display: block;
+border-bottom:1px solid #ddd; clear: both; padding: 8px 0 0 0;
+}
+table.fmTable tr td .faDownload {
+display: none; float: right; top: 4px; position: relative; color: #616161;
+}
+.extrafields a {
+font-size: 12px; 
+}
+.fileManager_details {
+padding: 20px; min-height: 450px;
+}
+.fileManager_details .col-md-4 {
+	width: 28%;
+}
+.fileManager_details .col-md-8 {
+	width: 72%;
+}
+.col-md-95 {
+width: 95%; float: left;
+}
+table.fmTable tr td .extrafields {
+position: absolute; right: 0; top:2px; margin-bottom: 0; padding: 2px 10px; display: none;
+transition: all 0.3s linear; background-color: #fff;
+}
+table.fmTable tr td .extrafields li a{
+color: #616161;
+}
+table.fmTable tr td .extrafields li a:hover{
+color: #286090;
+}
+table.fmTable tr td:hover .extrafields, table.fmTable tr td:hover .faDownload {
+display: block;
+}
+.modal-dialog.fm-modaldialog {
+width:500px;
+}
+.modal-dialog.fm-modaldialog .modal-content {
+border-radius:2px;
+}
+.modal-dialog.fm-modaldialog .modal-content label {
+font-size: 13px;
+}
+.modal-dialog.fm-modaldialog .modal-header, .modal-dialog.fm-modaldialog .modal-footer {
+background-color: #F5F5F5;
+}
+.modal-dialog.fm-modaldialog .modal-content .form-control {
+border-radius: 2px;
+}
+.form-control {
+border: 1px solid #ccc !important;
+}
+.minHeight40{
+min-height: 40px;
+}
+.tableStyles {
+	position: relative; border: 1px solid #ddd;
+}
+.tableStyles table tbody{
+	background-color: #FAFAFA; border: 1px solid #BDBDBD;
+}
+.tableStyles table tr th {
+	font-weight: normal; color: #333; padding: 10px; border-bottom: 1px solid #BDBDBD;
+}
+.tableStyles table thead {
+	background-color: #CBCBCB;
+}
+.tableStyles table tr {
+	border-bottom: 1px solid #BDBDBD;
+}
+.tableStyles table tr td {
+	position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
+}
+.tableStyles_head {
+	position: relative; min-height: 40px;
+}
+.action-div {
+	position: relative; text-align: center;
+}
+.action-div .action-inner ul {
+	margin-bottom: 0; clear: both; display: inline-block; background-color: #FFF; float: left; padding: 5px;
+	border: 1px solid #EEEEEE; position: absolute; right: 20px; top: -10px; transition: all 0.3s ease-in-out;
+}
+.action-div .action-inner {
+	display: none;
+}
+.action-div:hover .action-inner {
+	display: block;
+}
+.action-div .action-inner ul li{
+	float: left; list-style-type: none; padding:2px 5px;
+}
+.action-div .action-inner ul li a {
+	 color: #757575;
+}
+.action-div .action-inner ul li a:hover{
+	color: #424242;
+}
+/* Sanjeev Styles for Date picker background white for calendar and attachment */
+.hasDatepicker.form-control[readonly], #uploadFile.form-control {
+background-color: #fff;
+}
+.clearUpload:after {
+padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
+.clearDate:after {
+padding: 0px; bottom: 75%; right:10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
+.colorRed{
+color:red;
+}
+.dashboard-datepkr.datakrmrnone input[type="text"]
+{
+margin-right: 0;
+}
+/* Sanjeev Styles for Date picker background white for calendar and attachment */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -7634,7 +7820,11 @@ padding: 14.7px 14px;
     min-width: 100%;
 }
 }
-
+@media only screen and (max-width:1020px) {
+.fileManager_details .col-md-4, .fileManager_details .col-md-8 {
+	width: 100%;
+}
+}
 @media (min-width: 768px) and (max-width: 1024px) {
 .cand-advsrch-popup {
 width: 350px; overflow-y:auto !important;

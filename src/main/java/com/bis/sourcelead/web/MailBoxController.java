@@ -462,5 +462,13 @@ public class MailBoxController {
 
 	}
 	
+	@RequestMapping(value = "/campaignStats")
+	public ModelAndView employeeCancelLeavesLeaves(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStats");
+	       return model;
+	}
+	
 	
 }
