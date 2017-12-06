@@ -46,6 +46,8 @@ public interface CampaignService {
 
 	CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception;
 
+	List<Campaign> getAllCampaigns()  throws Exception;
+
 
 
 

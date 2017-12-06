@@ -1,8 +1,10 @@
 package com.bis.sourcelead.util;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CreateSender;
@@ -350,23 +353,29 @@ public class CampaignUtil {
 
 	/**
 	 * Get the campaign stats based on category
+	 * @param campaign 
 	 * @return String
 	 * @throws IOException
 	 */
-	public String readCampaignStatsByCategory() throws IOException
+	public String readCampaignStatsByCategory(Campaign campaign) throws IOException
 	{
 		String stats = null;
+		Date sDate = campaign.getCreatedDate();
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String cmpn_satrt_date = newFormat.format(sDate);
+		Date eDate = new Date();
+		String cmpn_end_date = newFormat.format(eDate);
 		try {
-			SendGrid sg = new SendGrid(sendgridKey);
+			SendGrid sg = new SendGrid(""+sendgridKey+"");
 			Request request = new Request();
 			request.setMethod(Method.GET);
 			request.setEndpoint("categories/stats");
-			 request.addQueryParam("end_date", "2017-12-06");
+			 request.addQueryParam("end_date", cmpn_end_date);
 			// request.addQueryParam("aggregated_by", "day");
 			// request.addQueryParam("limit", "1");
 			// request.addQueryParam("offset", "1");
-			request.addQueryParam("start_date", "2017-12-04");
-			request.addQueryParam("categories", "hotlist");
+			request.addQueryParam("start_date", cmpn_satrt_date);
+			request.addQueryParam("categories", campaign.getCampaignCategory());
 			Response response = sg.api(request);
 			if (response.getStatusCode() == 200) {
 				stats = response.getBody();
