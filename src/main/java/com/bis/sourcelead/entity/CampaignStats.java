@@ -37,6 +37,10 @@ public class CampaignStats {
 	@Column(name = "CATEGORY_NAME")
 	private String categoryName;
 	
+	@Column(name = "CAMPAIGN_ID")
+	private String campaignId;
+	
+	
 	@Column(name = "BLOCKS")
 	private String blocks;
 	
@@ -350,6 +354,16 @@ public class CampaignStats {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCampaignId()
+	{
+		return campaignId;
+	}
+
+	public void setCampaignId(String campaignId)
+	{
+		this.campaignId = campaignId;
 	}
 	
 }

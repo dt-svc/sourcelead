@@ -341,4 +341,10 @@ public class CampaignServiceImpl implements CampaignService{
 		return campaignDao.saveCampaignStats(campaignStats);
 	}
 
+	@Override
+	public List<Campaign> getAllCampaigns() throws Exception
+	{
+		return campaignDao.getAllCampaigns();
+	}
+
 }

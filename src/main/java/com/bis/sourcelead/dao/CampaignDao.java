@@ -43,6 +43,8 @@ public interface CampaignDao {
 
 	CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception;
 
+	List<Campaign> getAllCampaigns() throws Exception;
+
 
 
 }
