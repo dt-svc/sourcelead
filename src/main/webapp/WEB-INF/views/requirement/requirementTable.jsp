@@ -263,8 +263,15 @@ function jpagination(url,sourceleadUrl){
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-           	     result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
-           		   
+           			
+           			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+           	         '</sec:authorize>';
+           	         
+	           	      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	     	            result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
+	     	         '</sec:authorize>';
+           	         
            		   }else{
            	      	 result = result +"<td><div>-----</div></td>";
            	       }

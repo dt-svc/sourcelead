@@ -170,9 +170,18 @@
 		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${!empty requirement.spocName ? requirement.spocName : ' -- '}</a></div>
 			            	<div class="clearfix"></div> 
 		                </div>
-		                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${!empty requirement.clientName ? requirement.clientName : ' -- '}</a></div>
-			            	<div class="clearfix"></div> 
-			            </div>  
+		              
+		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${!empty requirement.clientName ? requirement.clientName : ' -- '}</a></div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
+			            
+			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big">${!empty requirement.clientName ? requirement.clientName : ' -- '}</div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
 			            
 			            <c:choose>
 						    <c:when test="${!empty requirement.parentRequirement}">
