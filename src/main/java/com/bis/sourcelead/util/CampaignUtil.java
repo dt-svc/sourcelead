@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.entity.CampaignList;
@@ -25,6 +28,14 @@ import com.sendgrid.SendGrid;
 
 @Component
 public class CampaignUtil {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Value("${sendgridKey}")
+	private String sendgridKey;
+	
+	
 	
 	/**
 	 * Create Sender Identity
@@ -57,7 +68,7 @@ public class CampaignUtil {
 		StringBuilder sb = new StringBuilder();
 		address = sb.append(city).append(",").append(state).append(country).toString();
 		try {
-			SendGrid sg = new SendGrid("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");
+			SendGrid sg = new SendGrid(sendgridKey);
 			Request request = new Request();
 			request.setMethod(Method.POST);
 			request.setEndpoint("senders");
@@ -110,7 +121,7 @@ public class CampaignUtil {
 		StringBuilder sb = new StringBuilder();
 		address = sb.append(city).append(",").append(state).append(country).toString();
 		try {
-			SendGrid sg = new SendGrid("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");
+			SendGrid sg = new SendGrid(sendgridKey);
 			Request request = new Request();
 			request.setMethod(Method.PATCH);
 			request.setEndpoint("senders/" + createSender.getSenderId() + "");
@@ -141,7 +152,7 @@ public class CampaignUtil {
 	{
 		String isListCreated = null;
 		try {
-			SendGrid sg = new SendGrid("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");
+			SendGrid sg = new SendGrid(sendgridKey);
 			Request request = new Request();
 			request.setMethod(Method.POST);
 			request.setEndpoint("contactdb/lists");
@@ -162,13 +173,13 @@ public class CampaignUtil {
 	 * @return response string
 	 * @throws Exception
 	 */
-	public String createRecipientsl(String email) throws Exception
+	public String createRecipients(String email) throws Exception
 	{
 		  String str = null;
 		try {
 			 String lasteName = "";
 			 String firstName = "";
-		      SendGrid sg = new SendGrid("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");
+		      SendGrid sg = new SendGrid(sendgridKey);
 		      Request request = new Request();
 		      request.setMethod(Method.POST);
 		      request.setEndpoint("contactdb/recipients");
@@ -190,7 +201,7 @@ public class CampaignUtil {
 		 List<String> recipientList = new ArrayList<String>(Arrays.asList(jobListEmailCampaignDTO.getToemails().split(",")));
 		 String subject = jobListEmailCampaignDTO.getSubject();
 		    try {
-		        SendGrid sg = new SendGrid("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");
+		        SendGrid sg = new SendGrid(sendgridKey);
 		        Request request = new Request();
 		        request.setMethod(Method.POST);
 		        request.setEndpoint("campaigns");
@@ -207,7 +218,7 @@ public class CampaignUtil {
 	{
 		  String isScheduledCpn = null;
 		try {
-		      SendGrid sg = new SendGrid("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");
+		      SendGrid sg = new SendGrid(sendgridKey);
 		      Request request = new Request();
 		      request.setMethod(Method.POST);
 		      request.setEndpoint("campaigns/"+campaignId+"/schedules/now");
@@ -236,7 +247,7 @@ public class CampaignUtil {
 		String recipientsIds = sb.toString();
 		recipientsIds = recipientsIds.substring(0, recipientsIds.length() - 1);
 		 try {
-		      SendGrid sg = new SendGrid("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");
+		      SendGrid sg = new SendGrid(sendgridKey);
 		      Request request = new Request();
 		      request.setMethod(Method.POST);
 		      request.setEndpoint("contactdb/lists/"+list.getListId()+"/recipients");
@@ -255,7 +266,7 @@ public class CampaignUtil {
 	{
 		int statusCode = 0;
 		 try {
-		      SendGrid sg = new SendGrid("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");
+		      SendGrid sg = new SendGrid(sendgridKey);
 		      Request request = new Request();
 		      request.setMethod(Method.DELETE);
 		      request.setEndpoint("senders/"+senderId+"");
@@ -279,7 +290,7 @@ public class CampaignUtil {
 		 List<String> listIds = new ArrayList<>();
 		 listIds.add(listId);
 	    try {
-	        SendGrid sg = new SendGrid("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");
+	        SendGrid sg = new SendGrid(sendgridKey);
 	        Request request = new Request();
 	        request.setMethod(Method.DELETE);
 	        request.setEndpoint("contactdb/lists");
@@ -299,7 +310,7 @@ public class CampaignUtil {
 	{
 	     String isUpdated = null;
 		try {
-	        SendGrid sg = new SendGrid("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");
+	        SendGrid sg = new SendGrid(sendgridKey);
 	        Request request = new Request();
 	        request.setMethod(Method.PATCH);
 	        request.setEndpoint("contactdb/lists/"+campaignList.getListId()+"");
@@ -320,7 +331,7 @@ public class CampaignUtil {
 		 int deletedStatus = 0;
 		for(CampaignRecipient campaignReci: recipientList) {
 			 try {
-			        SendGrid sg = new SendGrid("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");
+			        SendGrid sg = new SendGrid(sendgridKey);
 			        Request request = new Request();
 			        request.setMethod(Method.DELETE);
 			        request.setEndpoint("contactdb/lists/"+listId+"/recipients/"+campaignReci.getRecipientId()+"");
@@ -335,10 +346,104 @@ public class CampaignUtil {
 			      }
 		}
 		return deletedStatus;
-	   
-		
 	}
 
+	/**
+	 * Get the campaign stats based on category
+	 * @return String
+	 * @throws IOException
+	 */
+	public String readCampaignStatsByCategory() throws IOException
+	{
+		String stats = null;
+		try {
+			SendGrid sg = new SendGrid(sendgridKey);
+			Request request = new Request();
+			request.setMethod(Method.GET);
+			request.setEndpoint("categories/stats");
+			 request.addQueryParam("end_date", "2017-12-06");
+			// request.addQueryParam("aggregated_by", "day");
+			// request.addQueryParam("limit", "1");
+			// request.addQueryParam("offset", "1");
+			request.addQueryParam("start_date", "2017-12-04");
+			request.addQueryParam("categories", "hotlist");
+			Response response = sg.api(request);
+			if (response.getStatusCode() == 200) {
+				stats = response.getBody();
+			}
+//			System.out.println(response.getBody());
+			// System.out.println(response.getHeaders());
+		} catch (IOException ex) {
+			throw ex;
+		}
+		return stats;
+	}
 	
+	/**
+	 * Add Multiple Other Recipients
+	 * @param reciList
+	 * @return response string
+	 * @throws Exception
+	 */
+	public List<String> createOtherRecipients(List<String> otherRecipient) throws Exception
+	{
+		List<String> otherrecipientIds = new ArrayList<>();
+		try {
+			for(String otherReci : otherRecipient) {
+				 String lasteName = "";
+				 String firstName = "";
+			      SendGrid sg = new SendGrid(sendgridKey);
+			      Request request = new Request();
+			      request.setMethod(Method.POST);
+			      request.setEndpoint("contactdb/recipients");
+			      request.setBody("[{\"last_name\":\""+lasteName+"\",\"email\":\""+otherReci+"\",\"first_name\":\""+firstName+"\"}]");
+			      Response response = sg.api(request);
+			     if(response.getStatusCode() ==200 || response.getStatusCode() == 201) {
+			    	 String res = response.getBody();
+			    	   JSONObject reciJObject = new JSONObject(res);
+						JSONArray recipientsIds = reciJObject.getJSONArray("persisted_recipients");
+						String recipientId = (String) recipientsIds.get(0);
+						otherrecipientIds.add(recipientId);
+			     }	
+			}
+			
+		    } catch (IOException ex) {
+		      throw ex;
+		    }
+		return otherrecipientIds;
+	}
 	
+	/**
+	 * Adding other recipient to list
+	 * @param otherRecipientList
+	 * @param string 
+	 * @returnn String
+	 * @throws IOException
+	 */
+	public String addOtherRecipientsToList(List<String> otherRecipientList, String listIds) throws IOException
+	{
+		String isRecipientAddedToList = null;
+		 List<String> listId = new ArrayList<String>(Arrays.asList(listIds.split(",")));
+		 StringBuilder sb = new StringBuilder();
+		 for(String email : otherRecipientList) {
+				sb.append("\"").append(email).append("\"").append(",");
+			}
+			String recipientsIds = sb.toString();
+			recipientsIds = recipientsIds.substring(0, recipientsIds.length() - 1);
+		 
+		 try {
+		      SendGrid sg = new SendGrid(sendgridKey);
+		      Request request = new Request();
+		      request.setMethod(Method.POST);
+		      request.setEndpoint("contactdb/lists/"+listId.get(0)+"/recipients");
+		      request.setBody("["+recipientsIds+"]");
+		      Response response = sg.api(request);
+		      if(response.getStatusCode() ==200 || response.getStatusCode() == 201) {
+		    	  isRecipientAddedToList = response.getBody();
+		      }
+		    } catch (IOException ex) {
+		      throw ex;
+		    }
+		return isRecipientAddedToList;
+	}
 }

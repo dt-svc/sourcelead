@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -38,7 +39,9 @@ public interface CampaignDao {
 
 	List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long orgLocationId);
 
-	int deleteRecipientListByListId(Long campaignListId)throws Exception;
+	int deleteRecipientListByListId(Long campaignListId) throws Exception;
+
+	CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception;
 
 
 

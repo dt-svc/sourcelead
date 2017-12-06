@@ -175,6 +175,15 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	 
 	    	 otherEmails = otherRecipantsEmailsList.toString();
 	    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
+	    	 
+	    	 List<String> othEmail = new ArrayList<String>(Arrays.asList(otherEmails.split(",")));
+	    	 List<String> otherRecipientList = campaignUtil.createOtherRecipients(othEmail);
+	    	 if(otherRecipientList !=null && otherRecipientList.size() >0) {
+	    		String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,hotListEmailCampaignDTO.getToemails());
+	    		if(res !=null) {
+	    			logger.info("Other Recipient Added to list");
+				}	
+	    	 }
 		}
 		
 		StringBuilder tomaillBuilder = new StringBuilder();
@@ -213,7 +222,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
 		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
 		 jobListEmailCampaignDTO.setToemails(hotListEmailCampaignDTO.getToemails());
-		
+		 jobListEmailCampaignDTO.setBodytext(hotListEmailCampaignDTO.getBodytext());
+		 
 		 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
 		
 		 if(createCampaignRes !=null) {
@@ -670,6 +680,15 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		    	 
 		    	 otherEmails = otherRecipantsEmailsList.toString();
 		    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
+		    	 
+		    	 List<String> othEmail = new ArrayList<String>(Arrays.asList(otherEmails.split(",")));
+		    	 List<String> otherRecipientList = campaignUtil.createOtherRecipients(othEmail);
+		    	 if(otherRecipientList !=null && otherRecipientList.size() >0) {
+		    		String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,jobListEmailCampaignDTO.getToemails());
+		    		if(res !=null) {
+		    			logger.info("Other Recipient Added to list");
+					}	
+		    	 }
 			}
 			
 			StringBuilder tomaillBuilder = new StringBuilder();

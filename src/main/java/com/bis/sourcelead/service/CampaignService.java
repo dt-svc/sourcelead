@@ -6,6 +6,7 @@ import com.bis.sourcelead.entity.Campaign;
 
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 
 import java.util.List;
@@ -42,6 +43,8 @@ public interface CampaignService {
 	Campaign saveCampaignScheduledHistroy(Campaign campaign) throws Exception;
 
 	List<CampaignRecipient> getRecipientListByListIdAndOrgLocationId(String viewListId, Long id);
+
+	CampaignStats saveCampaignStats(CampaignStats campaignStats) throws Exception;
 
 
 
