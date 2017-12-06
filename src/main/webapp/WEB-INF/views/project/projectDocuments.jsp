@@ -14,55 +14,77 @@
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 	function projectDocuments(projectId, status) {
+		
 		var result = "";
 		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectDocumentsList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId,
+					url : sourceleadUrl	+ "/getProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId,
 					success : function(json) {
 						var result = "";
-						result = result + '<div class="project_tabs_inn_head">';
-							result = result	+ '<span class="pad-sea">';
-							result = result	+ '<a href="javascript:void(0)" onclick="addProjectDocument('+projectId+');"><i class="glyphicon glyphicon-plus"></i>Add Documents</a>';
-							result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
-							result = result  +'     </div>  '; 
-							result = result	+ '</span>';
-						result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
+						result = result + '<input type="hidden" id="projectId" name="projectId" value="'+projectId+'">';
+						result = result + '                                                                                        ';
+						result = result + '	 	<div class="fileManager_details">                                                  ';
+						result = result + '    	<div class="clearfix mb">                                                          ';
+						result = result + '    		<div class="pull-right">                                                       ';
+						result = result + '    			<button type="button" class="btn btn-primary btn-sm mr" data-toggle="modal" data-target="#uploadFile_fm">UPLOAD</button>    ';
+						result = result + '    			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createFolder">CREATE FOLDER</button> ';
+						result = result + '    		</div>                                                                                    ';
+						result = result + '    	</div>                                                                                        ';
 						
-						
-						result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
-						result = result	+ '<div id="tasksLoadingImg"></div>';
-						result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
-						result = result + '<thead>';
-						result = result + '<tr id="projectTaskTableId">';
-						result = result + '<th>Document Name</th>';
-						result = result + '<th>Document</th>';
-						result = result + '<th>Document Description</th>';
-						result = result + '<th>Action</th>';
-						result = result + '</tr>';
-						result = result + '</thead>';
-						result = result + '<tbody>';
-						for (var i = 0; i < json.length; i++) {
+						result = result + '    	<div  class="row">                                                                            ';
+						result = result + '	 		<div class="col-md-4">                                                                    ';
+						result = result + '	 		  <ul class="nav nav-tabs fmtabs-left">                                                   ';
+						result = result + '	 		  <li class="active">                                                                     ';
+						result = result + '	 			<a href="#id-1" data-toggle="tab" onclick="getdocumentListById();">                                                    ';
+						result = result + '	 				<i class="fa fa-folder-o mr"></i>All Folders                                      ';
+						result = result + '	 		    </a>                                                                                  ';
+						result = result + '	 			</li>                                                                                 ';
+						 
+						for (var i=0; i<json.length; i++)
+		   				{
 							var report = json[i];
-							var description = "";
-							if(report.description != null && report.description != '' && report.description !="undefined"){
-								description = report.description
-							}else{
-								description = "--";
-							} 
-							result = result + '<tr>';
-							result = result+ '<td><div class="tbldata-dotdot-me"><span title="'+report.fileName+'" >'+ report.fileName+ '</span></div></td>';
-							result = result+ '<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');" class="fa fa-eye ml10 paddingRight"></a><a class="paddingLeft glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\" title="Download"></a></div></td>';
-							result = result+ '<td><div class="tbldata-dotdot-big"><span title="'+description+'" >'+description+ '</span></div></td>';
-							result = result	+ '<td><div><a class="glyphicon glyphicon-pencil padddigRight" title="Edit" onclick="getDocument('+projectId+', '+report.id+');"></a><i title="Delete" class="glyphicon glyphicon-trash paddingLeft" onclick="removeProjectDocuments('+report.id+','+projectId+');"></i></div></td>';
-							result = result + '</tr>';
-
-						}
-						result = result + '</tbody>';
-						result = result + '</table>   ';
-						result = result + '</div>';
+							result = result + '	 			<li> ';     
+							result = result + '	 			<a href="#id-1" data-toggle="tab" onclick="getdocumentListById('+report.id+',\''+report.foderName+'\');">                                    ';
+							result = result + '	 				<i class="fa fa-folder-o mr"></i>'+report.foderName+'  (<span>'+report.count+'</span>)';
+							result = result + '	 		    </a>                                                                  ';
+							result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
+							result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
+							result = result + '	 					<i class="fa fa-gear text-muted cursorPointer"></i>           ';
+							result = result + '	 					</span>                                                       ';
+							result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
+							result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
+							result = result + '	 						<li><a href="#" onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
+							result = result + '	 						<li><a href="#"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
+							result = result + '	 					</ul>                                                                  ';
+							result = result + '	 				</span>                                                                    ';
+							result = result + '	 			</li>     ';
+							                                                                                                               
+		   				}
+						
+						//append floder name in uploadFile
+						output = "";
+						output = output + '<option value="">-- Select Folder --</option>';
+						for (var i=0; i<json.length; i++)
+		   				{
+							var report = json[i];
+							output = output + '<option value="'+report.id+'">'+report.foderName+'</option>';
+							                                                                                                               
+		   				}
+						$("#projectFolderId").empty();
+						$("#projectFolderId").append(output);
+						
+						
+						result = result + '	 		  </ul>    ';
+						result = result + '	 		</div>     ';
+						result = result + '	 		<div id="documentListDivId"/>    ';
+						
+						result = result + '  <div class="clearfix"></div>                    ';
+						result = result + '      </div>                                      ';
+						result = result + '   </div>';
+								          	
 						$("#tab-1").empty();
 						$("#tab-3").empty();
 						$("#tab-2").empty();
@@ -71,6 +93,7 @@
 						$("#tab-3").append(result);
 						$("#tab-3").show();
 						
+						 getdocumentListById();
 						$(".project-tabs-menu a").click(
 								function(event) {
 									event.preventDefault();
@@ -82,170 +105,487 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-						taskPagination();
 
 					}
 				});
 
 	}
-</script>
+	
+	
+	//get the document list
+	function getdocumentListById(folderId,folderName){
+		if(folderName != null && folderName != "" && folderName != 'undefined'){
+			folderName 
+		}else{
+			folderName = "All Directory";
+		}
+		var projectId = $("#projectId").val();
+		if(folderId != null && folderId != '' && folderId != 'undefined'){
+			folderId 
+		}else{
+			folderId = "";
+		}
+		
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl	+ "/getEachProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&folderId="+folderId,
+			success : function(json) {
+				var result = "";
+				result = result + '	 		<div class="col-md-8">                                                                    ';
+				result = result + '	 		  <div class="tab-content fm-tabcontent">                                                 ';
+				result = result + '	 			<div class="tab-pane active" id="id-1">                                               ';
+				result = result + '	 				<table class="fmTable" width="100%;">                                             ';
+				result = result + '	 					<tbody>                                                                       ';
+				result = result + '	 						<tr>                                                                      ';
+				result = result + '	 							<td>                                                                  ';
+				result = result + '	 							<div class="clearfix">                                                ';
+				result = result + '	 								<div class="pull-left mr10">                                      ';
+				result = result + '	 									<input id="documentCheckbox" class="checkbox-custom fmcheckbox" name="documentCheckbox" type="checkbox" onclick="toggleDocuments(this);getAllCheckBoxes();">  ';
+				result = result + '	 									<label for="documentCheckbox" class="checkbox-custom-label fmcheckbox-lable"></label>               ';
+				result = result + '	 								</div>                                                                                            ';
+				result = result + '	 								<div class="col-md-95">                                                                           ';
+				result = result + '	 								<span class="pull-left"><i class="fa fa-folder-o tblminwidth-30 mr10"></i>'+folderName+' (<span id="allFolderCount"></span>)</span>                 ';
+				result = result + '	 								<ul class="pull-right list-unstyled list-inline extrafields" style="display:block">                                     ';
+				result = result + '	 										<li><a href="javascript:void(0)" onclick="getAllDocumentDownload();"><i class="fa fa-download"></i></a></li>                  ';
+				result = result + '	 										<li><a href="javascript:void(0)" onclick="deleteAllDcouments();"><i class="fa fa-trash"></i></a></li>                     ';
+				result = result + '	 									</ul>                                                                                         ';
+				result = result + '	 								</div>                                                                                            ';
+				result = result + '	 								</div>                                                                                            ';
+				result = result + '	 							</td>                                                                                                 ';
+				result = result + '	 						</tr>                                                                                                     ';
+				for (var i=0; i<json.length; i++)
+   				{
+					var report = json[i];
+					result = result + '	 						<tr>                                                                                                      ';
+					result = result + '	 							<td>                                                                                                  ';
+					result = result + '	 							<div class="clearfix">                                                                                ';
+					result = result + '	 								<div class="pull-left mr10">                                                                      ';
+					result = result + '	 									<input id="checkbox'+report.id+'" value="'+report.id+'" name="documentIds[]"  class="checkbox-custom fmcheckbox"  type="checkbox">   ';
+					result = result + '	 									<label for="checkbox'+report.id+'" class="checkbox-custom-label fmcheckbox-lable"></label>                ';
+					result = result + '	 								</div>                                                                                             ';
+					result = result + '	 								<div class="col-md-95">                                                                            ';
+					result = result + '	 								<div class="pull-left mr">';
+					if(report.fileFormat == 'doc' || report.fileFormat == 'docx'){
+						result = result + '	 									<i class="fa fa-2x text-primary fa-file-word-o"></i>                                                          ';
+					}else if(report.fileFormat == 'xlsx'){
+						result = result + '	 									<i class="fa fa-2x text-success fa-file-excel-o"></i>                                                          ';
+					}else if(report.fileFormat == 'pdf'){
+						result = result + '	 									<i class="fa fa-2x text-danger fa-file-pdf-o"></i>                                                          ';
+					}else if(report.fileFormat == 'jpg' || report.fileFormat == 'jpeg' || report.fileFormat == 'png' || report.fileFormat == 'tif' || report.fileFormat == 'gif'){
+						result = result + '	 									<i class="fa fa-2x text-warning fa-file-image-o"></i>                                                          ';
+					}else if(report.fileFormat == 'txt'){
+						result = result + '	 									<i class="fa fa-2x text-stylish fa-file-text-o"></i>                                                          ';
+					}else if(report.fileFormat == 'java' || report.fileFormat == 'sql' || report.fileFormat == 'js' || report.fileFormat == 'css'){
+						result = result + '	 									<i class="fa fa-2x text-stylish fa-file-code-o"></i>                                                          ';
+					}
+					
+					result = result + '	 								</div>                                                                                            ';
+					result = result + '	 								<div class="pull-left">                                                                         ';
+					result = result + '	 										<label>'+report.fileName+'</label>                                                         ';
+					result = result + '	 										<p class="small text-muted mb5"><strong>Created by:</strong> '+report.createdByName+', '+report.createdDateStr+' </p>';
+					result = result + '	 								</div>                                                                                            ';
+					result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
+					result = result + '	 										<li>                                                                                       ';
+					result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+					result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
+					result = result + '	 										Download                                                                                       ';
+					result = result + '	 										</a></li>                                                                                  ';
+					result = result + '	 										<li>                                                                                       ';
+					result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+					result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
+					result = result + '	 										</a></li>                                                                                  ';
+					
+					result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail">               ';
+					result = result + '	 												<i class="fa fa-envelope-o"></i> <br> Email    ';
+					result = result + '	 											</a>  </li>       ';
+					
+					result = result + '	 										<li>     ';
+					result = result + '	 											<a href="javascript:void(0)" data-toggle="modal" data-target="#fmRename"  value="'+report.id+'" onclick="renameFilePop('+report.id+',\''+report.fileName+'\');">';
+					result = result + '	 												<i class="fa fa-pencil-square-o"></i> <br>  Rename                                                                   ';
+					result = result + '	 											</a> </li>                                                                            ';
+					
+					result = result + '	 										<li>                                                                             ';
+					result = result + '	 											<a href="javascript:void(0)" onclick="deleteEachDcouments();">                                                ';
+					result = result + '	 												<i class="fa fa-trash"></i> <br>       Delete ';
+					result = result + '	 											</a> </li>          ';
+					
+					result = result + '	 										<li>  <a href="javascript:void(0)"> ';
+					result = result + '	 												<i class="fa fa-key"></i> <br> Permission  ';
+					result = result + '	 										</a>  </li>    ';
+					result = result + '	 									</ul>        ';
+					result = result + '	 								</div>           ';
+					result = result + '	 								</div>           ';
+					result = result + '	 							</td>                ';
+					result = result + '	 						</tr>                    ';
+					
+   				}
+				result = result + '	 					</tbody>                     ';
+				result = result + '	 				</table>                         ';
+				result = result + '	 			</div>                               ';
 
-<script>
-function addProjectDocument(projectId) {
-	var result = "";
-	result = result  +'<!-- Popup Div -->';
-	result = result  +'<form role="form"  id="projectDocumentType_form" name="projectDocumentType_form" method="post" > ';
-	result = result  +'<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	result = result  +'<div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
+				result = result + '	 		  </div>                                 ';
+				result = result + '	 		</div>                                   ';
+				
+				
+				$("#documentListDivId").empty();
+				$("#documentListDivId").append(result);
+				$("#allFolderCount").append(json.length);
+				
+			}
+		});
+		
+	}
 	
-// 	result = result + '<div class="col-md-6 mb10 clearfix"><lable class="paddingRight">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
-	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadProjectDocument();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
-	result = result+'</span> </label>';
-	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
-	result = result+'</div>';
-	result = result  +'<div class="clearfix"></div>';
-	result = result+'</div>';  
-	result = result+'</div>'; 
- 
-	result = result+'<div class="clearfix mb10 mt25">';
-	result = result+'<div class="col-md-12">';
-	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control"></textarea>';
-	result = result+'</div>';
-	result = result+'</div>';  
+	//Get all check box checked script started
+	function getAllCheckBoxes(){
+		var documentIds = [];
+		 $("input[name='documentIds[]']:checked").each( function (i) {
+			 documentIds[i] = $(this).val();
+		});
+	}
+	function toggleDocuments(source) {
+	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#documentCheckbox)').click(function() {
+	    if(!this.checked) {
+	        $('#documentCheckbox').removeAttr('checked');
+	    }
+	});
+	}
+	//Get all check box checked script ends
 	
 	
-	result = result  +'<div class="clearfix mr" id="docAddButton">';
-    result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="storeProjectDocument('+projectId+');" />'; 
-	result = result  +'</div>';
-	result = result  +'</div>';
-	result = result  +'</form>';
-	$("#popUpDiv").empty();
-	$("#popUpDiv").append(result);
-	
-	$(".edit-details").toggleClass("edit-details-active");
-	 $(".close-div").click(function(){ 
-		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+	function deleteAllDcouments(){
+		var documentIds = [];
+		 $("input[name='documentIds[]']:checked").each( function (i) {
+			 documentIds[i] = $(this).val();
+		});
+		 
+		 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/deleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
+				success : function(data) {
+					getdocumentListById();
+				}
 		 });
-	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-		 e.stopPropagation();
-	 });
-	 
-	 /* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn").onchange = function () {
-	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-	   }; 
-	    
-	    /* upload file script for size validation 2MB*/
-	/*     var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    }); */
- 
+		 
+	}
+	
+	function getAllDocumentDownload(){
+		var projectId = $("#projectId").val();
+		var documentIds = [];
+		 $("input[name='documentIds[]']:checked").each( function (i) {
+			 documentIds[i] = $(this).val();
+		}); 	 
+		 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/getAllDocumentDownload?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
+				success : function(data) {
+					 if(data && data.endsWith(".zip")){
+						location.href=sourceleadUrl+"/downloadFile.html?file="+data;
+						projectDocuments(projectId);
+					}  
+				}
+		 });
+	}
+	
+	function deleteEachDcouments(){
+		var projectId = $("#projectId").val();
+		var documentId = [];
+		 $("input[name='documentIds[]']:checked").each( function (i) {
+			 documentId[i] = $(this).val();
+		});
+		 alert("documentId"+documentId)
+		 if(documentId != null && documentId != '' &&  documentId != 'undefined'){
+			 $.ajax({
+					type : "POST",
+	 				url : sourceleadUrl+"/eachDeleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
+					success : function(data) {
+						projectDocuments(projectId);
+					}
+			 });
+		 }else{
+			 alert("please check the checkBox");
+		 }
+		 
+	}
+	
+	
+ 	function deleteFolder(folderId){
+		var projectId = $("#projectId").val();
+		 $.ajax({
+				type : "POST",
+				url : sourceleadUrl+"/deleteProjectDcoumentFolder?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&projectId="+projectId,
+				success : function(data) {
+					projectDocuments(projectId);
+				}
+		 });
+	} 
+	function folederReName(folderId){
+	    var result = "";
+	    result = result  +'<form role="form"  id="reNameFolder_form" name="reNameFolder_form" method="post" > ';
+		result = result +'<div class="modal-content">';
+	    result = result +'<div class="modal-header">';
+		result = result +'     <button type="button" class="close" data-dismiss="modal">&times;</button>';
+		result = result +'     <h4 class="modal-title">Create Folder</h4>';
+		result = result +'   </div>';
+		result = result +'   <div class="modal-body mt mb">';
+		result = result +'     <div class="row">';
+		result = result +'     	<label class="col-md-3">ReName Folder</label>';
+		result = result +'     	<div class="col-md-9">';
+		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">';
+		result = result +'     	</div>';
+		result = result +'     </div>';
+		result = result +'   </div>';
+		result = result +'   <div class="modal-footer">';
+		result = result +'    <button type="button" class="btn btn-primary mr10" onclick="saveReNameFolder('+folderId+');">Save</button>';
+		result = result +'     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+		result = result +'   </div>';
+		result = result +' </div>';
+		result = result  +'</form>';
+		$("#renameFolderDivId").empty();
+		$("#renameFolderDivId").append(result); 
+		
 	}
 </script>
-<script>
-function uploadProjectDocument(){
-	fileUpload("uploadBtn", "ProjectDoument", "projectDocumentType_form");
-}
-function editUploadProjectDocument(){
-	fileUpload("uploadBtn", "ProjectDoument", "editProjectDocumentType_form");
-}
 
-</script>
 <script>
-function getDocument(projectId, documentId){
-	var sourceleadUrl ='${sourceleadUrl}';
+function saveReNameFolder(folderId){
+	var projectId = $("#projectId").val();
+	var folderName = $("#folderName").val();
+	if ($('#reNameFolder_form').validate(false, validationSettings)){
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/getProjectDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-   		    	var result = "";
-   		    	var description = "";
-   		    	if(json.description != null && json.description !='' && json.description != 'undefined'){
-   		    		description = json.description;
-   		    	}
-	   		 	result = result  +'<!-- Popup Div -->';
-	   		 	result = result  +'<form role="form"  id="editProjectDocumentType_form" name="editProjectDocumentType_form" method="post" > ';
-	   		 	result = result  +'<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	   		 	result = result  +'<div class="form-horizontal clearfix"> ';
-	   		 	result = result  +'   ';
-	   		 	
-	   		 	result = result+'<div class="clearfix mb10" id="uploadDocDiv" style="display: none;">';
-	   		 	result = result+'<div class="col-md-12 validation_p">';
-	   		 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	   		 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadProjectDocument();" ><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	   		 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
-	   		 	result = result+'</span> </label>';
-	   		 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document">';
-	   		 	result = result+'</div>';
-	   		 	result = result+'</div>';  
-	   		 	result = result+'</div>'; 
-	   		  
-	   			result = result+'<div class="clearfix mb10" id="docNameDiv">';
-	   			result = result+'<div class="col-md-12 mt">';
-	   			result = result+'<label id="docsName" name="docName" class="text-primary tbldata-dotdot-me pull-left paddingRight" title="'+json.fileName+'">'+json.fileName+'</label><span id="delete_doc" onclick="removeDocNameDiv();"><i class="cursorPointer text-danger paddingLeft fa fa-trash removeIcon" title="Delete"></i></span>';
-	   			result = result+'</div>';
-	   			result = result+'</div>';
-	   			
-	   		 	result = result+'<div class="clearfix mb10 mt25">';
-	   		 	result = result+'<div class="col-md-12">';
-	   		 	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control">'+description+'</textarea>';
-	   		 	result = result+'</div>';
-	   		 	result = result+'</div>';  
-	   		 	
-	   		 	result = result  +'<div class="clearfix mr" id="docAddButton">';
-	   		     result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="editStoreProjectDocument('+projectId+','+documentId+');" />'; 
-	   		 	result = result  +'</div>';
-	   		 	result = result  +'</div>';
-	   		 	result = result  +'</form>';
-	   		 	$("#popUpDiv").empty();
-	   		 	$("#popUpDiv").append(result);
-	   		 	
-	   		 	$(".edit-details").toggleClass("edit-details-active");
-	   		 	 $(".close-div").click(function(){ 
-	   		 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
-	   		 		 });
-	   		 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-	   		 		 e.stopPropagation();
-	   		 	 });
-	   		 	 
-	   		 	 /* upload file script to show selected file name*/
-	   		 	    document.getElementById("uploadBtn").onchange = function () {
-	   		 	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-	   		 	   }; 
-	   		 	    
-	   		 	    /* upload file script for size validation 2MB*/
-	   		 	    var selectedFile = document.getElementById("uploadBtn");
-	   		 	    selectedFile.addEventListener("change", function() {
-   		 	      var docSize = this.files[0].size;
-   		 	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-   		 	      if(docSize > 2097152){
-   		 	    	  document.getElementById("uploadFile").value = '';
-   		 	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-   		 	      }
-   		 	    });
-   		    }
-	     });
+			type : "POST",
+				url : sourceleadUrl+"/projectDocumentFolderRename?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&folderName="+folderName,
+			success : function(data) {
+				$(".modal-backdrop, .modal").fadeOut();
+				projectDocuments(projectId);
+			}
+	 }); 
+		return true;
+	 }else{ 
+			return false;
+	 } 
 }
+$('body').on('blur', '#reNameFolder_form', function() {
+	$("#reNameFolder_form").showHelpOnFocus();
+	$("#reNameFolder_form").validateOnBlur(false, validationSettings);
+});
 </script>
+
+
+  <div class="modal fade" id="reNameCreateFolder" role="dialog">
+    <div class="modal-dialog fm-modaldialog">
+      <div id="renameFolderDivId"></div>
+    </div>
+  </div>
+  
+  
+ <!-- Create Folder Popup Modal-->
+ <form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
+  <div class="modal fade" id="createFolder" role="dialog">
+    <div class="modal-dialog fm-modaldialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Create Folder</h4>
+        </div>
+        <div class="modal-body mt mb">
+          <div class="row">
+          	<label class="col-md-3">Create Folder</label>
+          	<div class="col-md-9">
+          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
+          	</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName();">Save</button>
+          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+<!-- Create Folder Popup ends -->
 
 <script type="text/javascript">
-	function storeProjectDocument(projectId){
-			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
+	function saveFolderName(){
+		var projectId = $("#projectId").val();
+			 if ($('#projectFolder_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var formData =  getFormData('projectFolder_form'); 
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+						url : sourceleadUrl+"/saveProjectDocumentFolder?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+						success : function(result) {
+								$(".modal-backdrop, .modal").fadeOut();
+								projectDocuments(projectId);
+						},
+					}); 
+					return true;
+			 }else{ 
+					return false;
+			 } 
+		}
+		$('body').on('blur', '#projectFolder_form', function() {
+		$("#projectFolder_form").showHelpOnFocus();
+		$("#projectFolder_form").validateOnBlur(false, validationSettings);
+	});
+		
+</script>
+
+
+
+ <!-- Upload file Popup Modal-->
+ <form role="form"  id="projectDocumentType_form" name="projectDocumentType_form" method="post" >
+		<div class="modal fade" id="uploadFile_fm" role="dialog">
+		    <div class="modal-dialog fm-modaldialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title">Upload File</h4>
+		        </div>
+		        <div class="modal-body mt mb">
+		          <div class="row">
+		          <div class="clearfix mb minHeight40" id="uploadDocDiv"> 
+		            <label class="col-md-3">Upload File</label>
+					  <div class="col-md-9"> 
+						  <div class="input-group positionRelative errorInptgroup" id="uploadFileGroup"> 
+							  <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadProjectDocument();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File 
+							  <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload"> 
+							  </span> </label> 
+						  		<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required"> 
+						  </div> 
+						  <div class="clearfix"></div> 
+					  </div> 
+					</div> 
+					<div class="clearfix mb minHeight40 dropdown-select">
+					<label class="col-md-3">Select Folder</label>
+		           	<div class="col-md-9">
+    				   <select class="form-control" name="projectFolderId" id="projectFolderId"  field-name="Folder" data-validation="required">
+		           	  </select>
+		          	</div>
+		          	</div>
+		          </div>
+		        </div>
+		        <div class="modal-footer">
+		        <input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-primary mr10" onClick ="storeProjectDocument();" />
+		          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+</form>
+<!-- Upload file Popup ends -->
+
+
+
+
+<!-- Rename Popup Modal-->
+  <div class="modal fade" id="fmRename" role="dialog">
+    <div class="modal-dialog fm-modaldialog">
+      <div id="renameFileDivId"></div>
+    </div>
+  </div>
+<!-- Create Folder Popup ends -->
+<script>
+function renameFilePop(documentId,fileName){
+	var result = "";
+	result = result  +'<form role="form"  id="reNameFile_form" name="reNameFile_form" method="post" > ';
+	result = result +'<div class="modal-content">';
+	result = result +'  <div class="modal-header">';
+	result = result +'    <button type="button" class="close" data-dismiss="modal">&times;</button>';
+	result = result +'    <h4 class="modal-title">Rename File</h4>';
+	result = result +'  </div>';
+	result = result +'  <div class="modal-body mt mb">';
+	result = result +'    <div class="row">';
+	result = result +'    	<label class="col-md-4">Enter a New Name</label>';
+	result = result +'    	<div class="col-md-8">';
+	result = result +'    		<input type="text" class="form-control input-sm" placeholder="Enter a New Name" id="reNamefile" name ="fileNmae" value="'+fileName+'">';
+	result = result +'    	</div>';
+	result = result +'    </div>';
+	result = result +'  </div>';
+	result = result +'  <div class="modal-footer">';
+	result = result +'   <button type="button" class="btn btn-primary mr10" onclick="saveRenameFile('+documentId+');">Save</button>';
+	result = result +'    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+	result = result +'  </div>';
+	result = result +'</div>';
+	result = result  +'</form>';
+  	$("#renameFileDivId").empty();
+  	$("#renameFileDivId").append(result);
+}
+function saveRenameFile(documentId){
+	var projectId = $("#projectId").val();
+	var fileName = $("#reNamefile").val();
+	 if ($('#reNameFile_form').validate(false, validationSettings)){
+			var sourceleadUrl = '${sourceleadUrl}';
+			//It will escape all the special characters
+	        var formData =  getFormData('reNameFile_form'); 
+			$.ajax({
+					type : "POST",
+	        	    data: formData,
+					url : sourceleadUrl+"/saveReNameProjectDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId+"&fileName="+fileName,
+					success : function(result) {
+						$(".modal-backdrop, .modal").fadeOut();
+							projectDocuments(projectId);
+					},
+				}); 
+				return true;
+		 }else{ 
+				return false;
+		 } 
+}
+$('body').on('blur', '#reNameFile_form', function() {
+	$("#reNameFile_form").showHelpOnFocus();
+	$("#reNameFile_form").validateOnBlur(false, validationSettings);
+});
+</script>
+<script>
+$(".close, .cancel").click(function(){
+	//Recet the form
+	$("#projectDocumentType_form")[0].reset();
+	$("#projectFolder_form")[0].reset();
+	
+	//Rescet the form validations 
+	$("projectDocumentType_form").validate().resetForm();
+	$("projectFolder_form").validate().resetForm();
+	
+});
+</script>
+ 
+<script>
+document.getElementById("uploadBtn").onchange = function () {
+	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+};
+/* upload file script for size validation 2MB*/
+   var selectedFile = document.getElementById("uploadBtn");
+    selectedFile.addEventListener("change", function() {
+  var docSize = this.files[0].size;
+  $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+  if(docSize > 2097152){
+	  document.getElementById("uploadFile").value = '';
+	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+  }
+});
+function uploadProjectDocument(){
+	fileUpload("uploadBtn", "ProjectDoument", "projectDocumentType_form");
+}
+</script>
+ 
+
+<script type="text/javascript">
+	function storeProjectDocument(){
+		var projectId = $("#projectId").val();
+			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
+				var sourceleadUrl = '${sourceleadUrl}';
 				//It will escape all the special characters
 		        var formData =  getFormData('projectDocumentType_form'); 
 				$.ajax({
@@ -253,8 +593,7 @@ function getDocument(projectId, documentId){
 		        	    data: formData,
 						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
-								closePopup();
-								$("#popUpDiv").removeClass("edit-details-active");
+							$(".modal-backdrop, .modal").fadeOut();
 								projectDocuments(projectId);
 						},
 					}); 
@@ -269,6 +608,59 @@ function getDocument(projectId, documentId){
 	});
 		
 </script>
+
+
+
+
+<!-- Email Popup Modal-->
+  <div class="modal fade" id="fmEmail" role="dialog">
+    <div class="modal-dialog fm-modaldialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Email</h4>
+        </div>
+        <div class="modal-body mt mb">
+          <div class="row">
+          	<label class="col-md-3">Send To</label>
+          	<div class="col-md-9">
+          		<input type="text" class="form-control input-sm" placeholder="Send To">
+          	</div>
+          </div>
+          <div class="row mt mb">
+          	<label class="col-md-3">Subject</label>
+          	<div class="col-md-9">
+          		<input type="text" class="form-control input-sm" placeholder="Subject">
+          	</div>
+          </div>
+         <div class="row">
+          	<label class="col-md-3">Message</label>
+          	<div class="col-md-9">
+          		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm"></textarea>
+          	</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-primary mr10">Email</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Email Folder Popup ends -->
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script type="text/javascript">
 	function editStoreProjectDocument(projectId,documentId){

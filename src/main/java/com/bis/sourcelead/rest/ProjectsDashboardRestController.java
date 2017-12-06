@@ -1,20 +1,28 @@
 package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -28,29 +36,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ProjectsDocumentFolderDTO;
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -65,6 +73,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
@@ -99,6 +108,9 @@ public class ProjectsDashboardRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	 @Autowired
+	 HttpServletRequest request;
 	
 	 @Autowired
 	 private ProjectsService projectsService; 
@@ -177,7 +189,14 @@ public class ProjectsDashboardRestController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
-		/**
+	
+	@Autowired
+    ProjectDocumentFolderService projectDocumentsFolderService;
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	/**
 		 * to filter the projects based on client and project status
 		 * @author David Sammeta
 		 * @param values
@@ -845,4 +864,207 @@ public class ProjectsDashboardRestController {
 		 }
 		 
 		 
+		 /**
+		  * @author Laxman
+		  * @param projectsDocumentFolderDTO
+		  * @return success
+		  * @throws Exception
+		  */
+	 
+		 @RequestMapping(value = "/saveProjectDocumentFolder", method = RequestMethod.POST)
+			public @ResponseBody String saveProjectDocumentFolder(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
+			{
+			       projectDocumentsFolderService.saveProjectDocumentFolder(projectsDocumentFolderDTO);
+					return "success";
+			}
+		 
+		 
+		 /**
+		  * @author Laxman
+		  * @param projectId
+		  * @return projectDocumentFolderList
+		  * @throws Exception
+		  */
+		   @RequestMapping(value = "/getProjectDocumentsFolderList",method = RequestMethod.POST)
+			public List<ProjectDocumentFolder> getProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+			{
+				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId);
+				return projectDocumentFolderList;
+			}
+		   
+		   /**
+		    * @author Laxman
+		    * @param projectId
+		    * @param folderId
+		    * @return projectDocumentsList
+		    * @throws Exception
+		    */
+		   @RequestMapping(value = "/getEachProjectDocumentsFolderList",method = RequestMethod.POST)
+			public List<ProjectDocuments> getEachProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "folderId", required = false) Long folderId) throws Exception
+			{
+				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, folderId);
+				return projectDocumentsList;
+			}
+		   
+		   /**
+		    * @author Laxman
+		    * @param documentIds
+		    * @return projectDocumentsList
+		    * @throws Exception
+		    */
+		   
+		   @RequestMapping(value = "/deleteDocuments",method = RequestMethod.POST)
+			public List<ProjectDocuments> deleteDocuments(@RequestParam(value = "documentIds", required = false) String documentIds) throws Exception
+			{
+				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getDeleteProjectDocumentsListByDocumentId(documentIds);
+				return projectDocumentsList;
+			}
+		   
+		   /**
+		    * @author Laxman
+		    * @param documentId
+		    * @return
+		    * @throws Exception
+		    */
+		   @RequestMapping(value = "/eachDeleteDocuments",method = RequestMethod.POST)
+			public ProjectDocuments eachDeleteDocuments(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
+			{
+			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
+			    pd.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				pd.setUpdatedBy(user);
+				pd.setUpdatedDate(commonUtil.currentDate());
+				pd.setUpdatedByName(user.getFullName());
+				projectDocumentsService.updateProjectDocuments(pd);
+				return pd;
+			}
+		   
+		   
+		   /**
+		    * @author Laxman
+		    * @param documentId
+		    * @param fileName
+		    * @return
+		    * @throws Exception
+		    */
+		   @RequestMapping(value = "/saveReNameProjectDocument", method = RequestMethod.POST)
+			public @ResponseBody String saveReNameProjectDocument(@RequestParam(value = "documentId", required = false) Long documentId,@RequestParam(value = "fileName", required = false) String fileName) throws Exception
+			{
+			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
+			   if(pd != null){
+					   pd.setFileName(fileName);
+					   pd.setUpdatedBy(user);
+					   pd.setUpdatedDate(commonUtil.currentDate());
+					   projectDocumentsService.updateProjectDocuments(pd);
+					   return "success";
+			   }else {
+					return "exception";
+				}
+            }
+		 
+		   @RequestMapping(value = "/projectDocumentFolderRename", method = RequestMethod.POST)
+			public @ResponseBody String projectDocumentFolderRename(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "folderName", required = false) String folderName) throws Exception
+			{
+			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   ProjectDocumentFolder pdf = projectDocumentsFolderService.getProjectDocumentFolderByDocumentId(folderId);
+			     if(pdf != null){
+				       pdf.setFoderName(folderName);
+				       pdf.setUpdatedBy(user);
+				       pdf.setUpdatedDate(commonUtil.currentDate());
+				       projectDocumentsFolderService.saveProjectDocumentFolder(pdf);
+					   return "success";
+			   }else {
+					return "exception";
+				}
+           }
+		   
+		   
+		   
+		   @RequestMapping(value = "/deleteProjectDcoumentFolder",method = RequestMethod.POST)
+			public @ResponseBody String deleteProjectDcoumentFolder(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+			{
+			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,folderId);
+			   for(ProjectDocuments pd:projectDocumentsList) {
+				   pd.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					pd.setUpdatedBy(user);
+					pd.setUpdatedDate(commonUtil.currentDate());
+					pd.setUpdatedByName(user.getFullName());
+					projectDocumentsService.updateProjectDocuments(pd);
+			   }
+			   ProjectDocumentFolder pdf = projectDocumentsFolderService.getProjectDocumentFolderByDocumentId(folderId);
+			   if(pdf != null) {
+				   pdf.setStatus(String.valueOf(Constants.CANDIDATE_IN_ACTIVE));
+				   pdf.setUpdatedBy(user);
+				   pdf.setUpdatedDate(commonUtil.currentDate());
+				   projectDocumentsFolderService.saveProjectDocumentFolder(pdf);
+			   }
+				return "success";
+			}
+		   
+		  
+		   @RequestMapping(value = "/getAllDocumentDownload",method = RequestMethod.POST)
+			public @ResponseBody String getAllDocumentDownload(@RequestParam(value = "documentIds", required = false) String documentid,HttpServletResponse response) throws Exception
+			{
+		    	 File file = null;
+			     if(!isNullOrEmpty(documentid)){
+					String[] documentIds = documentid.split(",");
+					
+					String path =StringUtils.removeEnd(staticPath, "/slead-static");
+					   file = File.createTempFile("ProjectDocuments",".zip");
+					   FileOutputStream   fos = new FileOutputStream(file);
+						ZipOutputStream zos = new ZipOutputStream(fos);
+					for(int j=0; j< documentIds.length; j++) {
+						ProjectDocuments projectDocuments =  projectDocumentsService.getDocumentById(Long.valueOf(documentIds[j]));
+						try {
+						      byte[] buffer = new byte[128];
+						        File currentFile = new File(path+projectDocuments.getFileUrl());
+						        if (!currentFile.isDirectory()) {
+						          ZipEntry entry = new ZipEntry(currentFile.getName());
+						          FileInputStream fis = new FileInputStream(currentFile);
+						          zos.putNextEntry(entry);
+						          int read = 0;
+						          while ((read = fis.read(buffer)) != -1) {
+						            zos.write(buffer, 0, read);
+						          }
+						          zos.closeEntry();
+						          fis.close();
+						        }
+						    } catch (FileNotFoundException e) {
+						      System.out.println("File not found : " + e);
+						    }
+						  }
+
+					  zos.close();
+				      fos.close();
+				}
+			   return file.getAbsolutePath();
+				 
+			}
+
+		    @RequestMapping(value = "/downloadFile.html")
+		    public void downloadFile(HttpServletResponse response, String file) {
+		        try {
+		            File file1 = new File(URLDecoder.decode(file, "utf-8"));
+		            response.setContentType("application/octet-stream");
+		            response.setHeader("Content-Disposition", "attachment;filename=" + file1.getName());
+
+		            OutputStream outStream;
+		            try (FileInputStream inputStream = new FileInputStream(file1)) {
+		                outStream = response.getOutputStream();
+		                byte[] buffer = new byte[4096];
+		                int bytesRead = -1;
+		                while ((bytesRead = inputStream.read(buffer)) != -1) {
+		                    outStream.write(buffer, 0, bytesRead);
+		                }
+		            }
+		            outStream.close();
+
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+
+		        }
+		    }
+		   
 }

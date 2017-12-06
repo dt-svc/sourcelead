@@ -138,4 +138,21 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		}
 		return projectDocuments;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectDocuments> projectDocumentList  = null;
+		if(folderId != null) {
+			String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectFolderId.id =:folderId and projectDoc.status ='1'";
+			   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setLong("folderId", folderId).setCacheable(true).list();
+		}else {
+			String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectDoc.status ='1'";
+			   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		}
+		   
+		return projectDocumentList;
+	}
 }

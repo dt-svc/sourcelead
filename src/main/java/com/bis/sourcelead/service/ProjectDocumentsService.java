@@ -25,4 +25,9 @@ public interface ProjectDocumentsService {
 	ProjectDocuments storeProjectDocuments(JSONObject jsonObj, Long projectId, MultipartFile multiFile,Long documentId) throws JSONException, Exception;
 	
 	ProjectDocuments storeProjectDocuments(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception;
+	
+    List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception;
+     
+    List<ProjectDocuments> getDeleteProjectDocumentsListByDocumentId(String documentid) throws Exception;
+    
 }

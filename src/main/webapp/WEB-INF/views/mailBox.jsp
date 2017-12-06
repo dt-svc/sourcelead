@@ -470,7 +470,7 @@ function deleteMail(){
 	 $("input[name='mailIds[]']:checked").each( function (i) {
 		 mailIds[i] = $(this).val();
 	});
-	 
+	 alert("mailIds"+mailIds)
 	 if(mailIds.length > 0){
 		 document.getElementById("trashBtn").style.display="";
 	 }else{

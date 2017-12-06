@@ -14,6 +14,7 @@ public class ProjectsDocumentsDTO {
 	
 	private String documentId ;
 	
+	private String projectFolderId;
 
 	public String getStaticPath() {
 		return staticPath;
@@ -54,5 +55,12 @@ public class ProjectsDocumentsDTO {
 	public void setDocumentId(String documentId) {
 		this.documentId = documentId;
 	}
-	
+
+	public String getProjectFolderId() {
+		return projectFolderId;
+	}
+
+	public void setProjectFolderId(String projectFolderId) {
+		this.projectFolderId = projectFolderId;
+	}
 }

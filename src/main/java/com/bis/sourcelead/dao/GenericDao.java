@@ -31,4 +31,6 @@ public interface GenericDao<T extends Serializable> {
 	ProjectDocuments getDocumentById(Long porjectDocumentId)throws Exception;
 	
 	ProjectDocuments updateProjectDocuments(ProjectDocuments projectDocuments) throws Exception;
+	
+	List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception;
 }
