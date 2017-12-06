@@ -1,6 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -121,6 +120,7 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  purpose = "--";
 	        		  }
+	    	  		  
 	    	  		  result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
 		             return  result;
 	    	  	}
@@ -135,7 +135,7 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  projectName = "--";
 	        		  }
-	    	  		  result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
+	    	  		 result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" title="'+projectName+'">'+projectName+'</a></div></td>';
 		            return  result;
 	    	  	}
 	      },{
@@ -149,7 +149,8 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  clientName = "--";
 	        		  }
-	    	  		 result = result +"<td><div title="+clientName+">"+clientName+"</div></td>";
+	    	  		result = result +"<td><div title="+clientName+">"+clientName+"</div></td>";
+	    	  		/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard">'+clientName+'</a></div></td>'; */
 		            return  result;
 	    	  	}
 	      },{
