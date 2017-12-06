@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -644,13 +645,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}else{
 		  clientId = null;
 		}
-		
-		 List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		String searchValue = "";
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0);
 		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
-         if(projectMembers != null && !projectMembers.isEmpty()){
+         if(projectMembers != null){
         	
         	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
-	        	for(ProjectMembers pm :projectMembers){
+	        	for(ProjectMembers pm :projectMembers.getData()){
 	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
@@ -659,7 +660,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        	}
         	}
         	 else{
-		        	freshProjectMembers = new HashSet<>(projectMembers);
+		        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 		        }
          }
 	        
@@ -982,11 +983,12 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 		Row writeRow = null;
 		// to get list of project members from data base.
-		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
+		String searchValue = "";
+		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0);
 		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
-        if(projectMembers != null && !projectMembers.isEmpty()){
+        if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
-	        	for(ProjectMembers pm :projectMembers){
+	        	for(ProjectMembers pm :projectMembers.getData()){
 	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
@@ -995,7 +997,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        	}
        	}
        	 else{
-		        	freshProjectMembers = new HashSet<>(projectMembers);
+		        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 		        }
         }
 		
@@ -1004,7 +1006,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		// Iteration of project members list.
 		int column = 0;
-		for (ProjectMembers proMembers : projectMembers) {
+		for (ProjectMembers proMembers : projectMembers.getData()) {
 			writeRow = createExcelsheet.createRow(column + 5);
 			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations.getId(), proMembers);
 			column++;
