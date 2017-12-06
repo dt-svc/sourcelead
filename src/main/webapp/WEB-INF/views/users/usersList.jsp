@@ -22,6 +22,9 @@ width: 100%;
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
 }
+.filter_position .dataTables_filter {
+  position: relative !important; top: -60px !important;
+}
 </style>
 <script type="text/javascript">
 window.onload = function () {
@@ -239,14 +242,6 @@ function getUsersSearchResult(searchValue){
                 </c:forEach>
 				</select>
 		   </li>
-		   
-		 <li id="searchIdDiv">
-			  <a href="javascript:void(0)">
-			  <i class="fa fa-user"></i></a>
-				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');" title="Search"><i class="fa fa-search"></i></span>
-		  </li> 
-		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
 	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
@@ -265,6 +260,20 @@ function getUsersSearchResult(searchValue){
 				</div>
 		   </li>
 		    </sec:authorize>
+		    <li id="searchIdDiv">
+			  <a>
+			  <i class="fa fa-user"></i>
+				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName" ></span>
+				<span class="action-search" title="Search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
+				</a>
+		  </li>
+		  <li id="dynamicSearch" style="display:none;">
+			  <span class="width215px">
+			  
+			  </span>
+		  </li>
+		  
+		  
         </ul>
       </div>
       </div>
@@ -445,15 +454,23 @@ function exportToPdf(){
   Script is used search  based on search key if Enter Key is Pressed -->
   
  <script type="text/javascript">
-   
-    $("#searchByName").keydown(function (e) {
-			  if (e.keyCode == 13) {
-			    $('input[name = searchByName]').click();
-				 $("#user_forms")[0].reset();
-				 getUsersList("manual");
-			  }
-			});
-  </script> 
+ $(document).ready(function(){
+	// Handles the enter keypress
+		$("#searchByName").keypress(function(event) {
+			if (event.keyCode == 13) {
+				getUsersList("manual");
+			}
+		});
+});
+
+/*  $("#searchByName").keydown(function (e) {
+		  if (e.keyCode == 13) {
+		    $('input[name = searchByName]').click();
+			 $("#user_forms")[0].reset();
+			 getUsersList("manual");
+		  }
+		}); */
+	</script> 
  
  <!--  David
   this script is not used -->    
@@ -1021,7 +1038,7 @@ function showGrid(){
 	$("#userListViewDiv").hide();
 	getUsersList('manual');
 	$("#usersListBody").show();
-	
+	$("#dynamicSearch").hide();
 }
 
 function showList(viewType){
@@ -1030,6 +1047,7 @@ function showList(viewType){
 	getUsersListView('manual',viewType);
 	$("#userListViewDiv").show();
 	$('#loadMoreDiv').empty();
+	$("#dynamicSearch").show();
 	
 }
 </script>

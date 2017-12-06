@@ -124,19 +124,19 @@
         
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Locatin" data-validation="required"></input>
+          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Address" data-validation="required"></input>
           <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('profileLocation','profileCountry','profileState','profileCity','profileZipCode','address');"></i>
           </div>
           </div>
         </div>
 		
 		 <div class="form-group">
-          <label class="col-md-3">Address</label>
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
 		
@@ -531,24 +531,16 @@ function validate_fileupload(fileName)
 }
 </script>
 
+<script>
+  $(function() { 
+		tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','select Education');
+
+	});
+ </script>
+ 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
-		    
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	var allSkills = $(event.target).val();
 		   
@@ -564,75 +556,8 @@ function validate_fileupload(fileName)
 			    });
 		    	
 		    });
-		   
-		    
-		    chosen.search_field.on('keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-				    			var newSkill = this.value.replace(","," ");
-				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                {
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-				                     select.append(option);
-				                     select.find(option).prop('selected', true);
-				                     $("#candidateSkills option").each(function(){
-				                         $(this).siblings("[value='"+ this.value+"']").remove();
-				                   });
-				                   $("#candidateSkills").trigger("chosen:updated");
-				                }
-						       
-			    	         }
-		    	});
-		    //Adding Customized Skills to the list
-		    
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateEducation").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-	       
-	       
-	       
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			$("#candidateSkills").val('').trigger("chosen:updated");
+		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
 				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->

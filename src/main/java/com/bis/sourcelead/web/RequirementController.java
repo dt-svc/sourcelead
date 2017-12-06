@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+
 import org.eclipse.core.internal.resources.Project;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +69,9 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -151,11 +155,18 @@ public class RequirementController {
 	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
+
 	private ProjectsService projectsService;
 	
 	@Autowired
 private ProjectClientService projectClientService;
 	
+
+	TeamService teamService;
+	
+	@Autowired
+	RolesService roleService;
+
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -488,6 +499,51 @@ private ProjectClientService projectClientService;
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+		/*CombinedList combinedList = new CombinedList();
+		List<RequirementAssignTo> requirementAssignTo = null;
+		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
+		if (isTeamViewAccess) {
+			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+			if (null != teamsList) {
+				for (Team team : teamsList) {
+					if (null != requirementAssignTo) {
+						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null
+								&& t.getTeamId().getId().equals(team.getId()))) {
+							team.setIsTeamAssigned("Y");
+						}
+					}
+				}
+				combinedList.setTeams(teamsList);
+			}
+		}
+		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		if (null != rolesList) {
+			for (Roles role : rolesList) {
+				if (null != requirementAssignTo) {
+					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null
+							&& t.getRoleId() != null
+							&& t.getRoleId().getId().equals(role.getId()))) {
+						role.setIsRoleAssigned("Y");
+					}
+				}
+			}
+			combinedList.setRoles(rolesList);
+		}
+		model.addObject("combinedList", combinedList);
+		
+		
+		List<User> usersListForAssignTeam = userService.getUsersByTeamTypeAndTabId(orgLocations.getId(),"", Long.valueOf(Constants.TAB_REQUIREMENT));
+		for(User user : usersListForAssignTeam){
+	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocations.getId());
+	            user.setAssignJobCount(assign.size());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}
+		   }
+		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
+		
 
 		return model;
 
@@ -1129,7 +1185,7 @@ private ProjectClientService projectClientService;
 		}
 
 
-@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
+/*@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
 	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
 			@PathVariable("title") String title, HttpServletResponse response)
 			throws Exception {
@@ -1152,7 +1208,7 @@ private ProjectClientService projectClientService;
 		sos.flush();
 		sos.close();
 
-	}	
+	}*/	
 
 
 @RequestMapping(value = "/viewOfferDocumentDocView/{title}", method = RequestMethod.GET)

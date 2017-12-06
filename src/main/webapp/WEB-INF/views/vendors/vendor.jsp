@@ -294,12 +294,12 @@ function getVendorDetails(){
 						</div>
 
 						<div class="form-group" id="locationDiv" style="display: block;">
-							<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="locationField">
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
 										id="vendorLocation" name="location"
-										placeholder="Enter your Location" type="text"
+										placeholder="Enter your Address" type="text"
 										field-name="Location" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
@@ -308,20 +308,20 @@ function getVendorDetails(){
 							</div>
 						</div>
 						<div class="form-group" id="orgLocationDiv" style="display: none;">
-							<label class="col-md-3">Location</label>
+							<label class="col-md-3">Address</label>
 							<div class="col-md-9">
 								<div class="positionRelative">
 									<input class="form-control positionRelative" id="orgLocation"
-										name="orgLocation" placeholder="Enter your Location"
-										type="text" field-name="Location" readonly></input>
+										name="orgLocation" placeholder="Enter your Address"
+										type="text" field-name="Address" readonly></input>
 								</div>
 							</div>
 						</div>
 
                         <div class="form-group ">
-							<label class="col-md-3">Address</label>
+							<label class="col-md-3">Street Address</label>
 							<div class="col-md-9">
-								<input type="text" id="addressId" name="address"   field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"/>
+								<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Addres" data-validation="validate_length length2-250" data-validation-optional="true"/>
 							</div>
 						</div>
 						
@@ -539,7 +539,8 @@ function getVendorDetails(){
 
 						<div class="form-group">
 							<label class="col-md-3">Owner Name<span
-								class="text-danger">&nbsp;*</span></label>
+								class="text-danger">&nbsp;*</span>
+								<i class='fa fa-info-circle' title='Owner for the vendor contact.For single contact can have multiple owners'></i></label>
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
@@ -1235,31 +1236,4 @@ function getCities(){
 	}
 }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       $("#owner").chosen();
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-		  
-});
-</script>
+ 

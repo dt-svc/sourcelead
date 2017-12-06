@@ -1,8 +1,10 @@
 package com.bis.sourcelead.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -287,19 +289,21 @@ public class CommonUtil {
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
 	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
 	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-	    if(     
-	    		//If the Login User As Location Admin Of Client
-	    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-	    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-	    		||
-	    		//If the Login User As Top-Level(Level2) Approver Of Client
-	    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-	    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-	    		
-	      ){
-	    	isSuperUser = true;
-	  }
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
 	    return isSuperUser;
 	}
 	/**
@@ -1265,6 +1269,34 @@ public class CommonUtil {
 			}
 			return bytesArray;
 		}
+		
+		private byte[] getByteArray(File file) throws IOException {
+		    ByteArrayOutputStream ous = null;
+		    InputStream ios = null;
+		    try {
+		        byte[] buffer = new byte[4096];
+		        ous = new ByteArrayOutputStream();
+		        ios = new FileInputStream(file);
+		        int read = 0;
+		        while ((read = ios.read(buffer)) != -1) {
+		            ous.write(buffer, 0, read);
+		        }
+		    }finally {
+		        try {
+		            if (ous != null)
+		                ous.close();
+		        } catch (IOException e) {
+		        }
+
+		        try {
+		            if (ios != null)
+		                ios.close();
+		        } catch (IOException e) {
+		        }
+		    }
+		    return ous.toByteArray();
+		
+	}
 		/**
 		 * Get Number of days Between two given dates
 		 * @param fromDate

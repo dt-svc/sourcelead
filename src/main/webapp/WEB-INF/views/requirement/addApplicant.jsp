@@ -63,7 +63,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
-	result = result + '<div class="input-group" id="uploadFileGroup">';
+	result = result + '<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearImpCanUpload()">';
 	result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
@@ -175,7 +175,7 @@ function getAddApplicant(requirementId){
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
 	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
-	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+	result = result + '			    <div class="input-group col-md-12 attachfile-error clearUpload" id="uploadFileGroup1" style="margin:0 auto" onClick="clearUpload()">';
 	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;"  id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
@@ -930,8 +930,6 @@ function discordApplicant(){
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
 	
-	 getCandidateStates();
-	 getSubmissionCandidateCities();
  }
 </script>
 
@@ -1453,7 +1451,7 @@ function getCandidateSelectionType(){
 			        	$("#candidateResumesList").empty();
 				        $("#candidateResumesList").append(output);
 				        
-				        document.getElementById("newResumeDiv").style.display="none";
+// 				        document.getElementById("newResumeDiv").style.display="none";
 				        
 				      
 				        $('#newUploadFile').removeAttr('data-validation');
@@ -1467,7 +1465,7 @@ function getCandidateSelectionType(){
 		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
 		        		
 		        		 document.getElementById("resumesDiv").style.display="none";
-		        		 document.getElementById("newResumeDiv").style.display="";
+// 		        		 document.getElementById("newResumeDiv").style.display="";
 		        		
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
@@ -1580,7 +1578,6 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
 		        	 $("input[name=FirstName]").val(json['firstName']);
 		        	 $("input[name=EmailId]").val(json['email']);
 		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
@@ -1685,8 +1682,6 @@ function getCandidateDetails(){
 		        	 }else{
 		        		 $("input[name=ExpectedCTC]").val(''); 
 		        	 }
-		        	 
-		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
 		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
 		        		 validateExpectedCTCRatePer();
@@ -1728,13 +1723,14 @@ function getCandidateDetails(){
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
     	 $("input[name=EmailId]").removeAttr("readonly");
-    	 
-    	 
+    	 $("input[name=AlternateNumber]").val(''); 
+    	 $("#submissionZipCode").val('');
+		 $("#submissionCity").val('');
+		 $("#submissionState").val('');
+		 $("#submissionCountry").val('');
+		 $("#submissionLocation").val('');
     	 $("input[name=PhoneNumber]").val('');
     	 $("input[name=Designation]").val('');
-    	 $("select[name=country]").val('');
-    	 $("select[name=state]").val('');
-    	 $("select[name=city]").val('');
     	 $("select[name=NoticePeriod]").val('');
     	 $("select[name=WorkExperience]").val('');
     	 $("input[name=ExpectedCTC]").val('');
@@ -1869,7 +1865,6 @@ function getSubmittedCandidateDetails(submissionId){
 		        	 }else{
 		        		 $("select[name=currentCTCRateType]").val(''); 
 		        	 } 
-		        	 
 		        	 if(json.currentCTC != null && json.currentCTC != "" && json.currentCTC != 'undefined'){
 		        		 $("input[name=CurrentCTC]").val(json.currentCTC);
 		        	 }else{
@@ -1962,25 +1957,38 @@ function getRecomededCandidateDetails(candidateId){
 		        		 $("input[name=Education]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#submissionLocation").val(json['location']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#submissionLocation").val('');
+		        	 }
+		        	 
+		        	 
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("#submissionCountry").val(json['country']);
+		        	 }else{
+		        		 $("#submissionCountry").val('');
 		        	 }
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates(json['state']);
+		        		 $("#submissionState").val(json['state']);
 		        	 }else{
-		        		 $("select[name=state]").val('');
+		        		 $("#submissionState").val('');
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getSubmissionCandidateCities(json['city']);
+		        		 $("#submissionCity").val(json['city']);
 		        	 }else{
-		        		 $("select[name=city]").val('');
+		        		 $("#submissionCity").val('');
 		        	 }
 		        
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#submissionZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#submissionZipCode").val('');
+		        	 }
+		        
+		        	 
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 		        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
 		        	 }else{
@@ -2052,13 +2060,13 @@ function getRecomededCandidateDetails(candidateId){
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
     	 $("input[name=EmailId]").removeAttr("readonly");
-    	 
-    	 
     	 $("input[name=PhoneNumber]").val('');
     	 $("input[name=Designation]").val('');
-    	 $("select[name=country]").val('');
-    	 $("select[name=state]").val('');
-    	 $("select[name=city]").val('');
+    	 $("#submissionZipCode").val('');
+		 $("#submissionCity").val('');
+		 $("#submissionState").val('');
+		 $("#submissionCountry").val('');
+		 $("#submissionLocation").val('');
     	 $("select[name=NoticePeriod]").val('');
     	 $("select[name=WorkExperience]").val('');
     	 $("input[name=ExpectedCTC]").val('');
@@ -2082,131 +2090,12 @@ function getExpYears(){
 }
 </script>
 
-
-<script type="text/javascript">
-function getAllSubmissionCandidateCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#submissionCountry').empty();
-        	$('#submissionCountry').append('<option value="">---Select Country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
-            		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#submissionCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#submissionCountry').trigger("chosen:updated");
-            getCandidateStates();
-        },
-        error: function(e){
-        }
-    }); 
-} 
-</script>
-
-<script>
-function getCandidateStates(state){
-	
-	var countryName = $("#submissionCountry").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#submissionState').empty();
-	        	$('#submissionState').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != 'undefined' && json[i] == state){
-	            		$('#submissionState').append('<option value="'+state+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{
-	            		$('#submissionState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            }
-	            $('#submissionState').trigger("chosen:updated");
-	            
-	            $('#submissionCity').empty();
-	            $('#submissionCity').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#submissionState').empty();
-    	$('#submissionState').append('<option value="">---Select State---</option>');
-    	$('#submissionState').trigger("chosen:updated");
-    	$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select City---</option>');
-        $('#submissionCity').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getSubmissionCandidateCities(city){
-	
-	var countryName = $("#submissionCountry").val();
-	var stateName = $("#submissionState").val();
-	
-	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("state");
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#submissionCity').empty();
-	        	$('#submissionCity').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	var selected = '';
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#submissionCity').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
-	            }
-	            $('#submissionCity').trigger("chosen:updated");
-	            $("#loading").removeAttr("style"); 
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select City---</option>');
-    	$('#submissionCity').trigger("chosen:updated");
-	}
-}
-</script>
+ 
 <script type="text/javascript">
 function init(){
-	getAllSubmissionCandidateCountries();
 	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
 	var country = '${SourceLeadWeb_orgLocations.country}';
 	$("#submissionCountry").val(country)
-	      
-	       /* $("#submissionCountry").on('change', function (e) {
-	    	   getCandidateStates();
-	    	   getSubmissionCandidateCities();
-	       });
-	       $("#submissionState").on('change', function (e) {
-	    	   getSubmissionCandidateCities();
-	       }); */
-	      
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
@@ -2718,4 +2607,13 @@ function validate_fileupload(fileName)
 		 }); 
  }
  </script>
+ 
+ <script>
+	function clearUpload(){
+		$("#newUploadFile").val("");
+	}
+	function clearImpCanUpload(){
+		$("#uploadFile").val("");
+	}
+</script>
  

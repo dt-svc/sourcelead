@@ -79,7 +79,7 @@ function editCandidate(candidateId){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-      if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
+       
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
@@ -180,7 +180,7 @@ function editCandidate(candidateId){
 							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
 						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
 						    result  = result + '</div>';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright" > <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result = result + '		    <div class="candidate-editdetails col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
@@ -491,9 +491,8 @@ function editCandidate(candidateId){
 						      }
 							employementType();
 							getVendorsByOrgLocation();
-							$(".edit-details").toggleClass("edit-details-active");
-							$(".collapse-div").removeClass("edit-details-active");
-							
+							$(".candidate-editdetails").addClass("candidate-editdetails-active");
+// 							$(".collapse-div").removeClass("edit-details-active");
 							
 							$(function(){
 							    var config = {
@@ -533,7 +532,7 @@ function editCandidate(candidateId){
                  },
                    
               }); 
-		 }
+		 
 }
 </script>
 
@@ -959,14 +958,14 @@ function candidateProfile(candidateId,candidateType){
 								
 								//end visa type
 								
-								 $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-									 $(".collapse-div").removeClass("edit-details-active");
-								 });
+// 								 $(".addUser-org").click(function(){
+// 									 $(".edit-details").toggleClass("edit-details-active");
+// 									 $(".collapse-div").removeClass("edit-details-active");
+// 								 });
 								 $(".close-div").click(function(){
 									 $(this).parent().toggleClass("edit-details-active");
 									 });
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .edit-details-active").click(function(e){
 									 e.stopPropagation();
 								 });
 								/*  $('html').click(function(){
@@ -1011,64 +1010,9 @@ function candidateProfile(candidateId,candidateType){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		  //Adding Customized Skills to the list
-		   var select, chosen;
-	        select = $("#skillName");
-	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#skillName").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#skillName option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#skillName").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#skillName").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		    
-		  
-	    
-	    //Adding Customized Skills to the list
+		//Adding Customized Skills to the list this method is slead-common.js
+		tagIt("skillName", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','');
+		
 	}
 
 	function saveSkill(candidateId){

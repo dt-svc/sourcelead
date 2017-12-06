@@ -1,0 +1,19 @@
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','MEDICAL_CLEARENCE','VARCHAR(50) NULL AFTER `FILE_NAME`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','SECURITY_CLEARANCE','VARCHAR(50) NULL AFTER `MEDICAL_CLEARENCE`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','OVER_TIME','VARCHAR(50) NULL AFTER `SECURITY_CLEARANCE`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','BACKGROUNG_CHECK','VARCHAR(50) NULL AFTER `OVER_TIME`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','GENDER','VARCHAR(50) NULL AFTER `BACKGROUNG_CHECK`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','EXPERIENCE_LEVEL','VARCHAR(50) NULL AFTER `GENDER`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','CLIENT_MAX_RATE','VARCHAR(10) NULL AFTER `CLIENT_RATE`');
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','PROJECT_ClientID','BIGINT NULL AFTER `ORG_LOCATION_ID`');
+ALTER TABLE `sourcelead`.`REQUIREMENT` ADD FOREIGN KEY FK1_PROJECT_ClientID_REQUIREMENT (PROJECT_ClientID) REFERENCES `sourcelead`.PROJECT_CLIENTS(ID);
+

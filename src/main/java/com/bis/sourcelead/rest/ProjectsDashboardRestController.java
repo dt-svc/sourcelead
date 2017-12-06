@@ -353,9 +353,9 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
-			 HttpServletRequest request) throws Exception{ 
+			 @RequestParam(value="roleIds", required=false) String roleIds, HttpServletRequest request) throws Exception{ 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
 		 return employeeList;
 	  }
 	 

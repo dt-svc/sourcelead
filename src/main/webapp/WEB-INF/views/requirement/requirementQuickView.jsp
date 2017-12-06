@@ -5,6 +5,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ <jsp:include page="requirementAssignedTo.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
@@ -110,14 +111,19 @@
 			            </c:if>
 					</div></div>
 					<div class="collpasePannel clearfix mt10"> 
-		              <a href="javascript:void(0)" id="assignedGrid"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount1">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           	  <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount2">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
+		           	  <span class="pull-right cursorPointer edit-assignedMembers" title="Edit Assigned Members"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});"><i class="fa fa-edit"></i></a></span>
 		           </div> 
-			      
+		          
 			            
                  <div class="clearfix"> 
-                 	<div class="clearfix row"> 
+                 	<div class="clearfix row">
+                 	<div class="col-md-12">
+                 	<div id="assignedMemberList" class="assignedMemberList"></div>
+                 	</div>
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
-          				<div id="assignedMemberList"></div> 
+          				
           				
           				
 				        <h1>Description:</h1> 
@@ -464,6 +470,8 @@
 	<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter"></div>
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
+	
+	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
 
 <script>
@@ -474,10 +482,17 @@ function hideButtonOnClick(){
 </script>
 <script>
 $(function(){
-	$("#assignedMemberList").hide();
-	$("#assignedGrid").click(function(){
-		$("#assignedMemberList").slideToggle();
-		assignedMemberList(${requirement.id});
+	$('.assignedGrid2').hide();
+	$('.assignedGrid1').click(function(){
+		$("#assignedMemberList").slideDown();
+		$(".assignedGrid1").hide();
+		$(".assignedGrid2").show(); 
+		 assignedMemberList(${requirement.id});
+	});
+	$('.assignedGrid2').click(function(){
+		$("#assignedMemberList").slideUp();
+		$(".assignedGrid2").hide();
+		 $(".assignedGrid1").show();
 	});
 });
 </script>

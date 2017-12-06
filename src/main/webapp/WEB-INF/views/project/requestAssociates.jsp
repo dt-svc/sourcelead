@@ -48,7 +48,7 @@
              <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
             
             <div class="form-group">
-              <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='Approver who need to approve the list of request resources'></i></label>
               <div class="col-md-9">
                 <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
                 </select>
@@ -482,7 +482,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 	 
 	for(var i=0; i<resourceRequestList.length; i++){
 		 var opt = resourceRequestList[i];
-		    if(opt.resourceStatus == null || opt.resourceStatus == 'Rejected'){
+		    if(opt.resourceStatus == 'Draft' || opt.resourceStatus == 'Rejected'){
 			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
 				var tbl = document.getElementById("addRequestTbl");
 				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -1075,8 +1075,9 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var result = "";
 	            	    var candidateResume = "";
 	            	    
-	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+	            	    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+	            	    	candidateResume = '<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 

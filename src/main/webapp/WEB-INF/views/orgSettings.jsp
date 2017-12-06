@@ -372,7 +372,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="SignatureHeading">Create Default Signature</h4>
+                                    <h4 id="SignatureHeading">Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i></h4>
                                     <div id="signLoading"></div>
                                     <div id="restorePopUp"></div>
                                 </div>
@@ -638,7 +638,7 @@ function configCoolingOff(){
 function loadSignature(){
 	
 	$("#campaignSignatrue").empty(); 
-	$("#SignatureHeading").html("Create Default Signature");
+	$("#SignatureHeading").html("Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i>");
 	document.getElementById("reset").style.display="";
 	document.getElementById("settings").style.display="none";
 
@@ -1549,19 +1549,19 @@ function createOrg(){
 	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
           
 				result = result +'           <div class="form-group">';
-				result = result +' 			<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>';
+				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
 				result = result +' 		 </div>';
 				
 			    result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Address</label>';
+	            result = result +'<label class="col-md-3">Street Address</label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="addressId" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 		            

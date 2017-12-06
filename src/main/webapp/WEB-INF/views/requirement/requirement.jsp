@@ -9,6 +9,10 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
+	<c:if test="${empty requirement.id}">
+	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+	</c:if>
+	
 	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
 	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
@@ -22,27 +26,6 @@
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
-	var requirementAssignedIds ='${requirementAssignedIds}';
-	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
-	{
-		
-		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-			var result = "";
-			var requirementAssignedToIds = [];
-			requirementAssignedToIds = requirementAssignedIds.split("&");
-			var count = 1;
-			
-			for (i=0;i < requirementAssignedToIds.length;i++)
-	        {
-	        	 result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='defaultAssignUserId"+count+"' id='defaultAssignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-	        	 count++;
-	        }
-			result = result+"<input type='hidden' name='defaultAssignedToMaxCount' id='defaultAssignedToMaxCount' value='"+count+"'/>";
-			$("#defaultAssignedToSavingDiv").empty();
-			$("#defaultAssignedToSavingDiv").append(result); 
-			assignedToValidation();
-		}	
-	} 
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
@@ -496,8 +479,8 @@ $(document).ready(function () {
                       <label class="col-md-3">Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text"  name="closedDate" class="form-control" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -525,9 +508,9 @@ $(document).ready(function () {
 		     </c:if>
           
           <div class="form-group">
-				<label class="col-md-3">Location<span class="text-danger paddingLeft">*</span></label>
+				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
-				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Location" data-validation="required"></input>
+				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
           			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
 		</div>
@@ -755,8 +738,8 @@ $(document).ready(function () {
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-            <div class="col-md-9">
-              <div class="input-group attachfile" id= "uploadFileGroup">
+            <div class="col-md-9 positionRelative">
+              <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -870,7 +853,7 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -879,7 +862,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -961,7 +944,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Rate what client Proposed,this is only for internal reference. This rate will not visible publicly'></i></label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1230,37 +1213,6 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group">
-             
-            <div id="assignedToSavingDiv"></div>
-            <div id="defaultAssignedToSavingDiv"></div>
-													
-            <label class="col-md-3">Assign To</label>
-            <div class="col-md-9">
-                <div class="form-icon">
-                <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-				
-                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
-                  </span>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
-                  </div>
-                <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam"   class="modal fade">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button class="close" type="button" id="closebtnId" onclick="clearSelections();">×</button>
-                        <h4 class="modal-title">Assign To</h4>
-                      </div>
-                       <!-- <div id="userList"></div> -->
-                       <div id="popupWindow"></div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <!-- Assign To modal popup ends -->
-              </div>
-          </div>
-          <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
@@ -1283,6 +1235,26 @@ $(document).ready(function () {
           </div>
         </div>
         
+        <div class="form-group">
+             
+            <!-- <div id="assignedToSavingDiv"></div>
+            <div id="defaultAssignedToSavingDiv"></div> -->
+													
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            
+            <div class="col-md-9">
+              <div class="form-icon">
+              <c:if test="${empty requirement.id}"> 
+              	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
+              </c:if>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  </div>
+              </div>
+              <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
+          </div>
+          <div class="col-md-12 assigned-Table" id='assignedTeamsOrUsers' style="display: none">
+          </div>
+        
         <div class="clearfix"></div>
          <div class="form-group">
 				<div class="ml">
@@ -1295,7 +1267,8 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>&nbsp;<i class='fa fa-info-circle' title='Job will be visible to all users in the organization,Users can submit the applicants for the job'></i>
+					
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1647,85 +1620,18 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
+
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
+
+	});
+ </script>
+
+
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-	       
-	     //Adding Customized Skills to the list
-	       var select, chosen;
-		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
-		    chosen = select.data('chosen');
-				   chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#skills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#skills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                   });
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#skills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#skills").trigger("chosen:updated"); 
-				                }
-			    	         }
-		    	});
-		    
-		    //Adding Customized Educations to the list 
-		    var selectone, chosenone;
-		    selectone = $("#education");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace("\'","");
-		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-			        {
-		    		   var par = this.parent;
-			            var option = $("<option>").val(newEducation).text(newEducation);
-			            selectone.append(option);
-			            selectone.find(option).prop('selected', true);
-			            
-			            $("#education option").each(function(){
-	                         $(this).siblings("[value='"+ this.value+"']").remove();
-	                   });
-			            
-			            $("#education").trigger("chosen:updated");
-			           
-			        }
-		    
-		    });
-            
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
 			//document.getElementById("uploadFile").value = this.value;
@@ -2202,409 +2108,6 @@ function approvalType(type){
 }
 </script>
 
-<%-- 
-     @author : sarath kumar.
-     this script is for get model dialog box.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     AssignedTo model dialog box
---%>
-
-<script>
-function popupWindow(reqId){ 
-	  
-	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $("#popupWindow").removeAttr("style");
-	  var result = '';
-	    result = result +'<div class="modal-body clearfix">';
- 		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
- 		result = result +'         <div class="input-group">';
- 		result = result +'           <input type="search" class="form-control" value="">';
- 		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> ';
- 		result = result +'			</div>';
- 		result = result +'       </div>';
- 		
- 		result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10">';
- 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
- 		result = result +'          </select>';
- 		result = result +'       </div>';
- 		
- 		result = result +'  <div id="usersGrid" class="clearfix datatable_filter">'; 
-    	
- 		result = result +'     </div>';
-		result = result +'     </div>';
-		$("#popupWindow").empty();
-	    $("#popupWindow").append(result); 
-	    
-	    getTeamsList(reqId);
-	    $("#rolesDiv").selectpicker("refresh");
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get users list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     append Users list to AssignedTo model dialog box
---%>
-
-
-
-<script>
-function getUserList(teamType){  
-	   var selectedUsersForAssign = [];
-	   $('input[name^="assignUserId"]').each(function() {
-	 		selectedUsersForAssign.push($(this).val());
-	   });
- 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 	   $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
-            success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
-			    	     $("#usersGrid").removeAttr("style");
-	                	    var result = '';
-	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-	                		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-	                		result = result +'           <thead>';
-	                		result = result +'           <tr>';
-	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
-	                		result = result +'           </tr>';
-	                		result = result +'           </thead>';
-		                    result = result +"<tbody>"; 
-		                    var json = JSON.parse(data);
-		                    var refreshIds = [];
-		                    for (var i = 0; i < json.length; i++) {
-		                    	 var opt = json[i]; 
-		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "";
-		                    	 
-		                    	 $(".defaultAssignCheckBox").each(function() {
-         							var localValue = this.value;
-         						    var assignedUserId = '' ;
-         						    var assignedTeamId = '' ;
-         							if(localValue != null && localValue != '' && localValue != 'undefined'){
-         								var res = localValue.split(",")
-         								assignedUserId = res[0];
-         								assignedTeamId = res[1];
-	         							if(assignedUserId == opt.id){
-	         								localCheckedStatus = "checked";
-	         							}  
-         							}
-		                    	 });
-		                    	 
-		                    	 var lastName = '';
-		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		                    		 lastName = ' '+opt.lastName;
-		                    	 }
-		                    	 var owner ='';
-		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
-		         					 owner = opt.isAssignedOwner;
-		         				 }
-		         				 var assignedTeam = '';
-		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
-		         					 assignedTeam = opt.assignedTeam;
-		         				 }
-		                    	 
-		                    	 if(ids.indexOf(''+opt.id) > -1){
-		                    		 refreshIds.push(''+opt.id);
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
-		                    	 }else if('' != assignedTeam){
-		                    		 if(localCheckedStatus == "checked"){
-			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }else{
-		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();"  value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }
-		                    	 }else if(localCheckedStatus == "checked"){
-		                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    		 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    	 }else{
-		                    		 if(localCheckedStatus == "checked"){
-			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-			                    		 result = result +'  <td><input class="myCheckbox"  type="checkbox" onclick="handleClick();" checked="checked"></td>';
-		                    		 }else{
-		                    			 
-		                    			 var selectedUserIdForAssign = "";
-		                    			 var iteratedUserValue = opt.id+","+opt.assignedTeamId;
-				                    	 $.each(selectedUsersForAssign, function (i, value)  
-		                                 {  
-				                    		 selectedUserIdForAssign = value;
-		                                     if(selectedUserIdForAssign == iteratedUserValue){
-		                                    	 localCheckedStatus = "checked";
-		                                     }
-		                                 });
-		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }
-		                    	 }
-		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
-		                    	 result = result +'           </tr>';
-	                       }
-		                   ids =  refreshIds;
-		                    
-	                       result = result +" </tbody>";
-	                       result = result +"</table>"; 
-	                       result = result +'   <div class="clearfix"></div>'; 
-	                 	   result = result +'   </div>'; 
-	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
-	                 	   result = result +'   <div class="clearfix">';
-	                 	  result = result +'   <div class="pull-right mt">';
-	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
-	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
-	                 	   result = result +'   </div>'; 
-	                 	   result = result +'   </div>'; 
-	                 	   $("#usersGrid").empty(); 
-	                       $("#usersGrid").append(result); 
-	                       paginations(); 
-			    		}
-                 	}else{
-                	 	$("#usersGrid").removeAttr("style");
-  	    	        	var result ="";
-		        		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-		        		result = result +'           <thead>';
-		        		result = result +'           <tr>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
-		        		result = result +'           </tr>';
-		        		result = result +'           </thead>';
-		        		result = result +'           </table>';
-		        		var refreshIds = [];
-		        		ids =  refreshIds;
-		        		
-                 	    result = result +'   <div class="modal-footer mt">';
-                 	    result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
-                 	    result = result +'   </div>'; 
-						$("#usersGrid").empty();
-					    $("#usersGrid").append(result); 
-					    paginations(); 
-                	}
-          		},
-       		}); 
-  	} 
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get checked users.
-     1.usage     : onload.
-     declared 'ids' as a global variable for keep all checked user ids
---%>
-<script>
-window.ids = new Array();
-function handleClick() {
-	ids = [];
-	$("input:checkbox[name=team]:checked").each(function(){
-		$('span.jquery_form_error_message').hide();
-		ids.push($(this).val());
-	});
-	if(ids.length < 1){
-		$('span.jquery_form_error_message').show();
-	}
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get selected team(s) and role(s).
-     1.usage     : onload.
-     declared 'teamRoleIds' as a global variable for keep all selected role and teams
---%>
-<script>
-window.teamRoleIds = new Array();
-function handleTeamRoleClick() {
-	teamRoleIds = [];
-	$("option[name=TeamAndRole]:selected").each(function(){
-		teamRoleIds.push($(this).val());
-	});
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get Roles and Teams list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     append Roles and Teams list to AssignedTo model dialog box
---%>
-<script>
-function getTeamsList(reqId){
-	if(reqId == '' || reqId == 'undefined' || reqId == null){
-		reqId = '';
-	}
-	  
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
-            success :function(data) {
-            	var json = JSON.parse(data);
-				var output = "";
-			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
-			  if(json.teams.length > 0){
-				  output = output + "<optgroup label='Teams'>";
-				  for (var i = 0; i < json.teams.length; i++) {
-						var opt = json.teams[i];
-						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
-						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
-					    }else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
-						}
-
-					}
-				  output = output + "</optgroup>";
-			  }
-			  '</sec:authorize>';
-
-			  if(json.roles.length > 0){
-				  output = output + "<optgroup label='Roles'>"; 
-					for (var i = 0; i < json.roles.length; i++) {
-						var opt = json.roles[i];
-						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
-						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-						}else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
-						}
-					}
-					output = output + "</optgroup>";
-			  }
-				$("#rolesDiv").empty();
-			    $("#rolesDiv").append(output);
-			    $("#rolesDiv").selectpicker("refresh");
-            	
-            },
-            complete: function (data) {
-            	var teamType = $("#rolesDiv").val();
-          		getUserList(teamType);
-            }
-            
-      }); 
- } 
-</script>
-
-<script type="text/javascript">
-	function filterTeamMembers(){
-		var teamType = $("#rolesDiv").val();
-		getUserList(teamType);
-	}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for clear uncheck all users.
-     1.usage     : onload.
-     clear all checked users when click on cancel and close buttons of AssignedTo model dialog
---%>
-<script type="text/javascript">
-	function clearSelections(){
-		$('#cancelbtnId').attr("data-dismiss","modal");
-		$('#closebtnId').attr("data-dismiss","modal");
-		$("#assignedToSavingDiv").empty();
-		teamRoleIds = [];
-		$("#rolesDiv").empty();
-	}
-</script>
-
-
-<%-- 
-     @author : sarath kumar.
-     this script is for prepare pagination to requirementList.
-     1.usage     : used in candidateList() function.
---%>
-
-<script>
-
-function paginations(){
-    $("#assignToDataTableId").DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"aaSorting": [[1,'desc']],
-    	"ordering": true,
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
-}
-</script>
-
-
-
-<script>
-function assignMembers() {
-	handleTeamRoleClick();
-	var result = "";
-	var oTable = $('#assignToDataTableId').DataTable();
-	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
-	//var totalCount = $("[type='checkbox']:checked").length;
-	var count = 1;
-	var totalCount = oTable
-    .rows()
-    .nodes()
-    .to$()
-	.find('input[type="checkbox"].myCheckbox:checked').length;
-	
-	if(totalCount == 0){
-		$('span.jquery_form_error_message').show();
-	}else{
-		$("#assignedToSavingDiv").empty();
-		$('#assignbtnId').attr("data-dismiss","modal");
-		rowcollection.each(function(index,elem){
-		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
-		    count++;
-		});
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		//$("#assignedToSavingDiv").empty();
-		$("#assignedToSavingDiv").append(result);
-		assignedToValidation();
-		$("#assignedTeamId").val($("#rolesDiv").val());
-	}
-}
-</script>
-
-
-<script type="text/javascript">
-	function assignedToValidation() {
-		var count = $('#assignedToMaxCount').val();
-		if(count != null && count != 'undefined' && count!= ''){
-				 $('#assignedTo').attr("data-validation-optional","true"); 
-		} 
-	}
-</script>	
-
-
 <script type="text/javascript">
 	function flushStoreTeam() { 
 		document.getElementById("team_form").reset();
@@ -2852,24 +2355,6 @@ function getLevel2Approvers(currentApproverId){
  }
  </script>     
  
- <script>
-function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[name="team"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-    }
-$('input:checkbox:not(#checkAll)').click(function() {
-	
-    if(!this.checked) {
-        $('#checkAll').removeAttr('checked');
-    }
-});
-}
-</script>
- 
- <!-- Job Id validation script ends here -->
- 
 <script>
 //Function to validate if maximum exp value is more the minimum exp value
 function minMaxExperience(){
@@ -3100,6 +2585,35 @@ $(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
 	});
  }); 
+</script>
+
+
+<script>
+function clearDate(){
+	$("#closedDate").val("");
+	};
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	});
+	
+	</script>
+
+<script>
+$("#showGrid").click(function(){
+	var shogridlist = $('#showGrid').find(".showGrid");
+	if($(shogridlist).text() > 0){
+		$("#assignedTeamsOrUsers").slideToggle();
+	}
+	});
+$("button.btnShowlist").click(function(){
+    if ($("#sl").text() === 'Hide List') {
+        $("#sl").text('Show List');
+    } else {
+        $("#sl").text('Hide List');        
+    }
+    return false; 
+});
+
 </script>
  
 <jsp:include page="../masterFooter.jsp" />
