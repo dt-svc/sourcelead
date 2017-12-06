@@ -658,7 +658,7 @@ $(document).ready(function () {
 		 </div>
 		 
 		 <div class="form-group" id="addOverTime" style="display:block">
-				<label class="col-md-3">Overtime</label>
+				<label class="col-md-3">OT</label>
 				<div class="col-md-9">
 				<c:if test="${requirement.overTime == 'Y'}">
 				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
@@ -703,7 +703,7 @@ $(document).ready(function () {
 		 <div class="form-group" id="addGender" style="display:block">
 				<label class="col-md-3">Gender</label>
 				<div class="col-md-9">
-				<c:if test="${requirement.gender == 'male'}">
+				<c:if test="${requirement.gender == 'Male'}">
 				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
 				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
 				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
@@ -713,7 +713,7 @@ $(document).ready(function () {
 				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
 				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
 				</c:if>
-				<c:if test="${requirement.gender == 'all'}">
+				<c:if test="${requirement.gender == 'All'}">
 				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
 				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
 				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
@@ -963,7 +963,7 @@ $(document).ready(function () {
 	                </div>
 	                <div class="pull-left input_minmax">
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
-	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
 	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
@@ -1017,7 +1017,7 @@ $(document).ready(function () {
 	                </div>
 	                    <div class="pull-left input_minmax">
 	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
-	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
 	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">

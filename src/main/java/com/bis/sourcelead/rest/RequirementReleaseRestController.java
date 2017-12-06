@@ -523,7 +523,7 @@ public class RequirementReleaseRestController {
 		//requirement.setClientRate(parentRequirement.getClientRate());
 		//requirement.setClientRateType(parentRequirement.getClientRateType());
 		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
-		requirement.setClientRate(parentRequirement.getRate());
+		requirement.setClientRate(parentRequirement.getClientRate());
 		requirement.setClientMaxRate(parentRequirement.getClientMaxRate());
 		requirement.setClientRateType(parentRequirement.getRateType());
 		requirement.setTotalApplicants(0);
