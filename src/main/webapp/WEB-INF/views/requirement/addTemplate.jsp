@@ -236,7 +236,7 @@ width: 100% !important;
 		 </div>
 		 
 		 <div class="form-group">
-				<label class="col-md-3">Overtime</label>
+				<label class="col-md-3">OT</label>
 				<div class="col-md-9">
 				<c:if test="${requirement.overTime == 'Y'}">
 				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
@@ -273,27 +273,27 @@ width: 100% !important;
 		 </div> 
 		 
 		 <div class="form-group">
-				<label class="col-md-3">Gender</label>
+				<label class="col-md-3">Gender ${requirement.gender}</label>
 				<div class="col-md-9">
-				<c:if test="${requirement.backgroundCheck == 'male'}">
-				<span class="paddingRight"><input type="radio" checked value="male" name="gender"><span class="mr5"></span>Male</span>
-				<span class="paddingLeft paddingRight"><input type="radio" value="female" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" value="all" name="gender"><span class="mr5"></span>All</span>
+				<c:if test="${requirement.gender == 'Male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
 				</c:if>
-				<c:if test="${requirement.backgroundCheck == 'Female'}">
-				<span class="paddingRight"><input type="radio"  value="male" name="gender"><span class="mr5"></span>Male</span>
-				<span class="paddingLeft paddingRight"><input type="radio" checked value="female" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" value="all" name="gender"><span class="mr5"></span>All</span>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
 				</c:if>
-				<c:if test="${requirement.backgroundCheck == 'all'}">
-				<span class="paddingRight"><input type="radio"  value="male" name="gender"><span class="mr5"></span>Male</span>
-				<span class="paddingLeft paddingRight"><input type="radio"  value="female" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" checked value="all" name="gender"><span class="mr5"></span>All</span>
+				<c:if test="${requirement.gender == 'All'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
 				</c:if>
-				<c:if test="${empty requirement.backgroundCheck}">
-				<span class="paddingRight"><input type="radio"  value="male" name="gender"><span class="mr5"></span>Male</span>
-				<span class="paddingLeft paddingRight"><input type="radio"  value="female" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" value="all" name="gender"><span class="mr5"></span>All</span>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
 				</c:if>
 				
 				</div>
