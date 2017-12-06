@@ -409,8 +409,8 @@ public class TimeApprovalRedefinedRestController {
 				timesheetApprovalDTO.setPageNo(1);
 			}
 			if(timesheetApprovalDTO.getPageSize()<1) {
-				length = 10;
-				timesheetApprovalDTO.setPageSize(10);
+				length = 5;
+				timesheetApprovalDTO.setPageSize(5);
 			}else {
 				length = timesheetApprovalDTO.getPageSize();
 			}

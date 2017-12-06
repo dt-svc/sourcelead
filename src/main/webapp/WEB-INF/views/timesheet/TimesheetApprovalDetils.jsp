@@ -57,6 +57,10 @@
 	</ul>
 </div>
 
+<div class="remove_search">
+       		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
+</div>
+
 <div class="clearfix"></div>
 </div>
 <div class="time_appr_side_wrap">
@@ -76,5 +80,14 @@
 	</div> 
 </div>
 
-
+<script>
+$("#dataTableSearchExpenses").keyup(function(event) {
+    if (event.keyCode === 13) {
+    	var searchData = $('#dataTableSearchExpenses').val();
+    	timesheetApprovalDetils('',searchData)
+    	$('#dataTableSearchExpenses').val(searchData);
+    }
+});
+</script>
+	
 

@@ -8,7 +8,7 @@
 
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
-   	<table id="fixTable" class="table">
+   	<table id="fixTable" class="display">
 		<thead>
            	<tr>
            	   <th>Employee</th>
@@ -31,7 +31,7 @@
 </div>
 <div class="clearfix">
   <div class="col-md-6">
-  <div class="pull-left mt">
+  <div class="pull-left mt5">
   <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
   <div class="dropdown-select pull-left mr5 tblminwidth-50">
   <select id="pageSize" onchange="getTableDataByPageSize()">
@@ -45,17 +45,17 @@
   <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
   </div>
   </div>
-  <div id="paginationholder" class="col-md-6">
+  <div id="paginationholder" class="col-md-6 pagiPad">
   <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
   </div>
 </div>
 
 
-<script>
+<!-- <script>
 $(document).ready(function() {
 	$("#fixTable").tableHeadFixer({"head" : false, "left" : 4}); 
 });
-</script> 
+</script> --> 
 
  <script>
       function getTableDataByPageSize(){
@@ -99,6 +99,8 @@ $(document).ready(function() {
 		  var options = {
 		              currentPage : '${timesheetReportsDTO.pageNo}',
 		              totalPages: pageCount,
+		              prev:'',
+		              next:'',
 		              initiateStartPageClick: false,
 		              onPageClick: function (event, page) {
 		              getTableData(""+page+"");

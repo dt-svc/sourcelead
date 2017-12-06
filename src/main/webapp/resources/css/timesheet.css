@@ -4043,9 +4043,13 @@ position: relative; padding: 0px 0px 5px 0px;
  
 .timesheetRepTab {
     width:100%;  overflow-x: auto;
+    
+    -webkit-transition: all 0s !important; -ms-transition: all 0s !important; -moz-transition: all 0s !important; transition: all 0s !important; 
+  
 }  
 .timesheetRepTab table {
     width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
+     -webkit-transition: all 0s !important; -ms-transition: all 0s !important; -moz-transition: all 0s !important; transition: all 0s !important; 
     }
 .timesheetRepTab table tr:nth-child(even) {background: #fff;}
 .timesheetRepTab table tr:nth-child(odd) {background: #eef1fc;}         
@@ -6311,7 +6315,9 @@ text-shadow: 0 1px 0 #fff;
 .project_tabs_inn, .canreq-tabs-menu_inn {
     padding:0px; display:none; position: relative;
     }
-
+.pagiPad .pagination {
+	margin: 10px 0px !important;
+}
 
 
 /*  Immigration CSS */

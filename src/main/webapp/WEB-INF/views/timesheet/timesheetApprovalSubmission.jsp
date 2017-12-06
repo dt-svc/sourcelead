@@ -16,14 +16,14 @@ $(document).ready(function() {
 </script>
 
 
-
+<div id="loadTime"></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
 <div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
-<div class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
- <table id='exampleApprover' class='table'>
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+ <table id='exampleApprover' class='display'>
 	<thead> 
     <tr> 
     <th>Employee</th>
@@ -43,12 +43,13 @@ $(document).ready(function() {
    </tbody>
   </table>
 </div>
-<div class="clearfix">
+<div id= "paginationDiv" class="clearfix">
 	<div class="col-md-6">
 		<div class="pull-left mt">
 			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
 				<div class="dropdown-select pull-left mr5 tblminwidth-50">
 					<select id="pageSize" onchange="getTableDataByPageSize()">
+						<option value="5" >5</option>
 						<option value="10" >10</option>
 						<option value="15" >15</option>
 						<option value="20" >20</option>
@@ -61,28 +62,6 @@ $(document).ready(function() {
 		<ul id="pagination-demo" class="pagination-sm pull-right"></ul>
 	</div>
 </div>
-
-
-
-
-
-<!-- <script>
-function pagination(){
-    $('#exampleApprover').DataTable( {
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-    		"sSearch": "",
-    		"sZeroRecords": "", "sEmptyTable": ""
-    	}
-    });
-    $('#exampleApprover').wrap("<div class='overflow_Auto width100percnt'></div>");
-}
-</script> -->
-
 
 
 <script>
@@ -310,26 +289,6 @@ function exportTimeSheetToPdfOrExcel(exportType){
  });
 </script>  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  <script>
       function getTableDataByPageSize(){
     	  $('#pagination-demo').twbsPagination('destroy'); 
@@ -349,41 +308,57 @@ function exportTimeSheetToPdfOrExcel(exportType){
           var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
           var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
           var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
-         /*  $("#timeApprovaldiv").empty(); */
           $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
           	          type : "POST",
-          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start,		
+          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
-        		    	  $("#loadTime").removeAttr('style');
-        		    	  preparePagination(pageNo);
+        		    	  var totalRows =  $('#totalRows').val();
+        		    		  $("#loadTime").removeAttr('style');
+            		    	  preparePagination(pageNo);
+        		    	 
         		      }
         	     });  
       }
 	  function preparePagination(pageNo) {
 		  var totalRows =  $('#totalRows').val();
-		  var pageCount = $('#pageCount').val();
-		  var pageSize = $("#pageSize").val();
-		/*   var searchData = '${timesheetReportsDTO.searchValue}';
-		  $('#dataTableSearchExpenses').val('') ;
-		  $('#dataTableSearchExpenses').val(searchData);  */
-		  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
-		  var endingRecord = parseInt(pageNo*pageSize);
-		  if(endingRecord > totalRows){
-			  endingRecord = totalRows;
+		  var pageMsg = '';
+		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
+			  $('#paginationDiv').show();
+			  var pageCount = $('#pageCount').val();
+			  var pageSize = $("#pageSize").val();
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData); 
+			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+			  var endingRecord = parseInt(pageNo*pageSize);
+			  if(endingRecord > totalRows){
+				  endingRecord = totalRows;
+			  }
+			  var options = {
+			              currentPage : pageNo,
+			              totalPages: pageCount,
+			              prev:'',
+			              next:'',
+			              initiateStartPageClick: false,
+			              onPageClick: function (event, page) {
+			              getTableData(""+page+"");
+			              }
+		      };
+		      $("#pagination-demo").twbsPagination(options);
+		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
 		  }
-		  var options = {
-		              currentPage : pageNo,
-		              totalPages: pageCount,
-		              initiateStartPageClick: false,
-		              onPageClick: function (event, page) {
-		              getTableData(""+page+"");
-		              }
-	      };
-	      $("#pagination-demo").twbsPagination(options);
-	      var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		  else{
+			  $("#tableContent").empty();
+	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#paginationDiv').hide();
+			  
+			  
+		  }
 	      $('#pageMsg').html('');
 	      $('#pageMsg').html(pageMsg);
 	 }

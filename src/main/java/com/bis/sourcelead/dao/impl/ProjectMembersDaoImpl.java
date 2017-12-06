@@ -361,16 +361,48 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
 		
+		
+		StringBuilder searchCountQuery = new StringBuilder();
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+		searchCountQuery.append("and ( (pm.projectMemberCandidteId.firstName like '" + searchValue + "%' OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
+					.append("OR (concat(pm.projectMemberCandidteId.firstName,pm.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
+					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
+					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
+					.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pm.masterCandidateId.id IN")
+					.append( " (select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
+					.append( " )");
+		}
+		
+		
 		String dateQuery = "";
 		String userQuery = "";
 		String clientQuery = "";
 		String statusQuery = "";
 		String fillingOptionQuery = "";
+		String sortingOrder = "";
 		
+		String fillingOptionCountQuery = "";
 		String dateCountQuery = "";
 		String userCountQuery = "";
 		String clientCountQuery = "";
 		String statusCountQuery = "";
+		
+		StringBuilder searchQuery = new StringBuilder();
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+		 searchQuery.append("and( (candidate.firstName like '" + searchValue + "%' OR candidate.lastName like '%" + searchValue + "' )")
+					.append("OR (concat(candidate.firstName,candidate.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR candidate.email like '%" + searchValue + "%' ")
+					.append("OR candidate.mobilePhone like '%" + searchValue + "%' ")
+					.append("OR candidate.designationType like '%" + searchValue + "%' ")
+					.append("OR projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pm.masterCandidateId.id IN")
+					.append( " (select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
+					.append( " )");
+		}
+		
+		sortingOrder = "order by pm.id desc";
 		
 		if(startDate != null && endDate != null){
 			   dateQuery =  " and pm.id IN ( "
@@ -397,7 +429,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	    	 statusQuery = " and pm.masterCandidateId.id NOT IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
 	    	 statusCountQuery = statusQuery;
 	     }
-	     fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id) and pc.projectId.id = projects.id)) OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
+	     fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id) and pc.projectId.id = projects.id)) "
+	     		+ "                   OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
+	     		+ "                         and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
+	     
+	     fillingOptionCountQuery =        "	and ("
+								+	 "           (pm.projectClientsId.id IN"
+								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id) and pc.projectId.id = pm.projects.id)"
+								+	 "           ) "
+								+    "        OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
+								+    "                and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))"
+								+    "           )"
+							    +    "      )";
+	     
+	     
+	     
 	     userQuery =  " and ( "
 					+  "      (  projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
@@ -428,16 +474,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				    + statusQuery
 				    +clientQuery
 				    + dateQuery
-					+ userQuery;
+					+ userQuery
+					+searchQuery
+					+sortingOrder;
 		Query query = session.createQuery(queryStr.toString());
 		
 		
 		String countQuery = " Select count(*) from ProjectMembers pm where pm.projects.invoiceFrequency = :timesheetFrequency and pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
-				+ "	and ((pm.projectClientsId.id IN(select pm.projectClientsId.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id) and pm.projectClientsId.projectId.id = pm.projects.id)) OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))"
+				+fillingOptionCountQuery
 				+ statusCountQuery
 				+ clientCountQuery
 				+ dateCountQuery
-				+ userCountQuery;
+				+ userCountQuery
+				+searchCountQuery;
 		
 		
 		

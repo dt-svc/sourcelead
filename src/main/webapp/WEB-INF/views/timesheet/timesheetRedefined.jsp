@@ -13,7 +13,7 @@
           <div class="pull-right brud-crum">Home &raquo; General Form &raquo; Create User</div>
         </section>
 		 <form id="timesheet_form" name="timesheet_form">
-		 	    <div class='timesheet_out'>
+		 	    <div class='timesheet_out' id="timesheet_out">
 				<div class='timesheet_wrap' id='timesheet_wrap'>
 				 <div id ="timesheetEntriesDiv">
 				   <div class='data_loading' id="loadTime"></div>
@@ -154,10 +154,16 @@
 	        	      	  url: sourceleadUrl+"/getTimesheetEntryDetails?timeSheetsFor=user",		
 	        		      success :function(data) {
 	        		    	  $("#timesheetEntriesDiv").empty();
-	        		    	  $("#timesheetEntriesDiv").append('<div cla"<div class=\'data_loading\' id="loadTime"></div>')   		    	  
 	        		    	  $("#timesheetEntriesDiv").append(data);
-	        		    	  $("#loadTime").removeAttr('style');
-	        		    	  prepareChosenScripts();
+	        		    	  var projectMemberId = $("#projectMemberId").val();
+	        		    	  if(projectMemberId !=null && projectMemberId != 'undefined' && projectMemberId != ''){
+	        		    		  $("#loadTime").removeAttr('style');
+		        		    	  prepareChosenScripts();
+	        		    	  }else{
+	        		    		  $("#timesheet_out").empty();
+	        		    		  $("#timesheet_out").append('<div class="dataTables_empty">  </div>');
+	        		    	  }
+	        		    	 
 	        		      }
 	        	    }); 
 	}
