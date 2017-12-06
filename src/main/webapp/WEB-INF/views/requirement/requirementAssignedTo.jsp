@@ -94,7 +94,7 @@
 					  </c:otherwise>
 					</c:choose>
 					<c:if test="${empty requirement.id}"> 
-					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Clear</button>
+					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
 					</c:if>
 				</div>
 			</div>
