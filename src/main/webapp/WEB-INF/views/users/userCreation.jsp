@@ -92,8 +92,8 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -974,3 +974,8 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+<script>
+function clearDate(){
+	$("#DateofJoin").val("");
+	};
+</script>
