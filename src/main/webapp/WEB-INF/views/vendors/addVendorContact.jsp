@@ -87,10 +87,10 @@
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
+                    <option ${report.id == vid ? 'selected':''}  value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
+                  	 	<option ${report.id == vid ? 'selected':''} value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -795,7 +795,6 @@ function getRolesList(){
 </script>
  <script>
  function getVendorsByOrgLocation(){
-	 alert("inside");
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",

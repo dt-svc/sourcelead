@@ -244,9 +244,11 @@
                  </select>
                    <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			</sec:authorize>
+		 </span>
 		</div>
 		</div>
 		 </c:if>
@@ -914,3 +916,9 @@ function candidateEmptyVendorContact(){
    $('#vendorcontact').trigger("chosen:updated");
 }
 </script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>

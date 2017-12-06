@@ -171,10 +171,10 @@ function getOrgDetails()
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
+                    <option ${report.id == cid ? 'selected':''}  value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
+                  	 	<option  ${report.id == cid ? 'selected':''} value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
@@ -762,9 +762,9 @@ function refreshClientList(){
 				{
 		        		var opt = json[i];
 		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        			output = output + "<option value='"+opt.id+","+opt.orgid+"' selected>"+opt.orgName+"</option>";
 		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        			output = output + "<option value='"+opt.id+","+opt.orgid+"'>"+opt.orgName+"</option>";
 		        		}
 				}
 	        	$("#vendorName").empty();

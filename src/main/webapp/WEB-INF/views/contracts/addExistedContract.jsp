@@ -187,9 +187,11 @@ $(document).ready(function(){
 					 </c:choose>
 					  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
-                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-                 </sec:authorize>
+                 <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+		 </span>
             </div>
              </div>
             
@@ -235,9 +237,11 @@ $(document).ready(function(){
 					 </c:choose>
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 					 </div>
-					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                    <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>					 
-               </sec:authorize>
+					  <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			           <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			           <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			         </sec:authorize>
+			</span>
               </div>
 
             </div>
@@ -1917,7 +1921,18 @@ function addExistedEmptyClientContact(){
 }
 
 </script>
-
+<script>
+	 function selectedVendor(){
+		 var vid =   $("#orgRelationId").val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+	 <script>
+	 function selectedClient(){
+		 var cid =  $("#clientOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

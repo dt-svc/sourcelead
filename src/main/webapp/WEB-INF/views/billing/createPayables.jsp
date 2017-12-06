@@ -94,9 +94,11 @@ function errRemoveVendorContact(){
 								</select>
 								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
 							</div>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			                         <a href="<c:url value="/addVendorContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			                 </sec:authorize>
+							<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			                  <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			                    <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			                  </sec:authorize>
+		                    </span>
 						</div>
                              	</div>
 						<div class="form-group">
@@ -2187,5 +2189,10 @@ function createpayablesEmptyVendorContact(){
    $('#vendorContact').trigger("chosen:updated");
 }
 </script>
-
+<script>
+	 function selectedVendor(){
+		 var vid =  $("#vendorOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
 <jsp:include page="../masterFooter.jsp" />

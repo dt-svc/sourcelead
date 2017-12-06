@@ -912,9 +912,11 @@ $(document).ready(function () {
                     
                    <span class="input-group-addon cursorPointer bg-blue wid40" id="contactRefreshId" value="" onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
               </div>
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addClientContact" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-               </sec:authorize>
+             <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			      	</sec:authorize>
+			  </span>
                 </div>
               </div>
               <div class="form-group">
@@ -2969,6 +2971,13 @@ var valueArray = a.getAttribute('value').split(",");
 	}
 }
 </script>
-
+<script>
+	 function selectedClient(){
+		 var a = document.getElementById('contactRefreshId');
+		 var valueArray = a.getAttribute('value').split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
  
 <jsp:include page="../masterFooter.jsp" />
