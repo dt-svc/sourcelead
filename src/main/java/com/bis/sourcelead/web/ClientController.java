@@ -108,6 +108,7 @@ public class ClientController {
 				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
 				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
+				@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
 				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
 		 
@@ -198,7 +199,7 @@ public class ClientController {
 			
 			if(orgRelationUUID != null){
 				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
-				if(orgRelations.getLocationId().equals(orgLocations.getId())){
+				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					model.addObject("clientOrgLocationId", orgRelations.getResponderLocationId().getId());
 					model.addObject("clientName", orgRelations.getResponderLocationId().getOrgLocationName());
 				}else{
@@ -208,6 +209,14 @@ public class ClientController {
 				
 				model.addObject("orgRelationId", orgRelations.getId());
 				model.addObject("orgRelationUUID", orgRelationUUID);
+			}
+			
+			if(orgSpocUUID != null){
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+				model.addObject("spocId", orgSpoc.getId());
+				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
+				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
 			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);

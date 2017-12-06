@@ -330,6 +330,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String orgRelationUUID;
 	
 	@Transient
+	@JsonProperty
+	private String spocUUID;
+	
+	@Transient
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
@@ -1753,6 +1757,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setOrgRelationId(String orgRelationId)
 	{
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
 	}
 
 	

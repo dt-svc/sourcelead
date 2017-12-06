@@ -60,6 +60,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -83,6 +84,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -164,6 +166,9 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -1861,6 +1866,11 @@ public class RequirementListRestController {
 	            			requirement.setOrgRelationUUID(orgRelations.getUUID());
 	            		}
 	            		
+	            		if(requirement.getSpocId() != null){
+	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+	            			requirement.setSpocUUID(orgSpoc.getUUID());
+	            		}
+	            		
 	            		
 	            		reqList.add(requirement);
 	            	}
@@ -1949,6 +1959,7 @@ public class RequirementListRestController {
       	requirement.setGeneratedId(requirementIndex.getGeneratedId());
       	String convertedStirng = requirementIndex.getCreatedDate();
       	requirement.setOrgRelationId(requirementIndex.getOrgRelationId());
+      	
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
       	Date elkDate = elkFormat.parse(convertedStirng);

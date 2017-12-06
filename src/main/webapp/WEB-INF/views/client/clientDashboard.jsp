@@ -389,6 +389,13 @@ window.onload = function () {
 	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
 			clientSideBar('${clientOrgLocationId}','${orgRelationId}','${clientName}');
 		}
+	
+
+	if('${spocId}' != null && '${spocId}' != '' && '${spocId}' != 'undefined'){
+		clientSpocSideBar("${spocId}","${ownerId}","${spocUserId}","","","","","${tempOwnerId}");
+		
+	}
+	
  };
 </script>
 
@@ -1583,7 +1590,6 @@ function updateSpocStatus(spocId){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-
 		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	}
 </script>

@@ -530,6 +530,7 @@ public class RequirementController {
 			}
 			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
 			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+			requirement.setSpocUUID(requirement.getSpocId().getUUID());
 		}
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
