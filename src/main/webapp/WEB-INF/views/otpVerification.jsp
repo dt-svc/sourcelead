@@ -56,7 +56,7 @@
    		<h2>Enter OTP</h2>
    		<p id="otpText"></p>
    		<input type="text" id="enteredOTP" class="otpfeild" placeholder="Enter OTP"/>
-		<button id="verifyOTP">Verify</button>	
+		<button id="verifyOTP" onclick="verifyOTP();">Verify</button>	
    		<p class="text-danger" id="errorDiv" style="display:none"></p>
     </div>               
 <!--  OTP Wrap  -->
@@ -78,7 +78,7 @@ function sendOtp() {
 	var type = "email";
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/ws/sendOtpToUser?id="+userId+"&type="+type,        
+	       url: sourceleadUrl+"/sendOtpToUser?id="+userId+"&type="+type,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		    $("#twoStepAuthDiv").empty();
@@ -100,7 +100,7 @@ function sendOtp() {
 	  }); 
 }
 
-$("#verifyOTP").click(function() {
+function verifyOTP(){
 	var enteredOTP = $("#enteredOTP").val();
 	var userRoleId = $("#userRoleId").val();
 	var username = $("#username").val();
@@ -112,7 +112,7 @@ $("#verifyOTP").click(function() {
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/ws/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       url: sourceleadUrl+"/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId);   
@@ -125,7 +125,7 @@ $("#verifyOTP").click(function() {
 		$("#errorDiv").html("Incorrect OTP");
 	}
 	
-});
+}
 </script>
 <script>
 function countdown( elementName, minutes, seconds )

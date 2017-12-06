@@ -766,7 +766,7 @@ function preventTabkey(e){
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
 		 type : "GET",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#twoStepAuthDiv").empty();

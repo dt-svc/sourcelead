@@ -88,15 +88,15 @@
 		<input type="submit" value="Submit" class="sign_btn" />
 		
 		<c:if test="${!empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${!empty requirementUUID && !empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/ws/register'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register'/>">Sign up</a></h5></div>
         </c:if>
 		
 		</form>
@@ -226,7 +226,7 @@ function resend() {
 	 var userName = document.getElementById("usernameval").value; 
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/ws/resendVerificationEmail?userName="+userName,        
+       url: sourceleadUrl+"/resendVerificationEmail?userName="+userName,        
        success :function(data) {
        if(data == "success"){
        		$("#selector1").removeAttr("style");
@@ -296,7 +296,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();

@@ -7,9 +7,9 @@
  <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="resources/css/login.css" rel="stylesheet">
+    <link href="resources/css/jquery-ui.css" rel="stylesheet">
 
  
 <script>
@@ -76,7 +76,7 @@ function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#signinDiv").removeAttr("style");

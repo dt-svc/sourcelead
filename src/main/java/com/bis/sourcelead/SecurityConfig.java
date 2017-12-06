@@ -92,7 +92,14 @@ public class SecurityConfig  {
 
     		.authorizeRequests()
     			
+    			.antMatchers("/").permitAll() 
+    			.antMatchers("/**").permitAll() 
+    		    .antMatchers("/login").permitAll() 
+    		    .antMatchers("/*.html").permitAll() 
     			.antMatchers("/app/resources/**").permitAll()
+    			.antMatchers("/resources/**").permitAll()
+    			.antMatchers("/app/ws/**").permitAll()
+    			.antMatchers("/jobs/**").permitAll()
     			.antMatchers("/app/**").fullyAuthenticated()
     			.anyRequest().authenticated()                                                   
     			.and()

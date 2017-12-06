@@ -162,4 +162,6 @@ public interface RequirementService {
 	 * public boolean addGeneratedIdRecordsToJobsForOldRecords(Long
 	 * orglocationId) throws Exception;
 	 */
+
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
 }

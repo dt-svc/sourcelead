@@ -34,11 +34,8 @@ import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
-import com.bis.sourcelead.dto.AuthTokenDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
-import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -67,7 +64,7 @@ import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+//@RequestMapping("/app")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
 	 
@@ -848,7 +845,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/ws/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -894,7 +891,7 @@ public class RegistrationRestController {
 	}
 	
 	
-	@RequestMapping(value = "/ws/resendVerificationEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/resendVerificationEmail", method = RequestMethod.GET)
 	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = null;
@@ -915,7 +912,7 @@ public class RegistrationRestController {
 		}
 	}
 	   
-	@RequestMapping(value = "/ws/verificationDone", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
@@ -932,7 +929,7 @@ public class RegistrationRestController {
 		return "true";
 	}
 	
-	@RequestMapping(value = "/ws/getUserDetailsByRoleId", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserDetailsByRoleId", method = RequestMethod.GET)
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -960,7 +957,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/ws/sendOtpToUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/sendOtpToUser", method = RequestMethod.GET)
 	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();

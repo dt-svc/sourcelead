@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -143,5 +144,5 @@ public interface RequirementDao {
 
 	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);*/
 
-	
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
 }

@@ -22,7 +22,7 @@ function changeCountry(){
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="path/dashboard">Home</a> &raquo; <a href="path/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="app/dashboard">Home</a> &raquo; <a href="path/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>

@@ -1203,7 +1203,7 @@ function redirectPage(){
 	var title = document.getElementById("openJobsRequirementTitleId").value;
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("openJobsExperienceId").value;
-	window.location.href = "app/jobs/"+title+"/"+location+"/"+experience;
+	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
 }
 </script>
 

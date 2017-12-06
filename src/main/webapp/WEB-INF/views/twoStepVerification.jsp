@@ -34,7 +34,7 @@ function getUserDetailsByUserRoleId(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#twoStepAuthDiv").removeAttr("style");

@@ -65,7 +65,6 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -3330,4 +3329,11 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 		return data;
    }
+	
+	@Override
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception
+	{
+		return requirementDao.getRequirementByShortURL(shortURL);
+	}
+	
 }

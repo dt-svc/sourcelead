@@ -80,7 +80,6 @@ import com.bis.sourcelead.util.UserLoginHelper;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class LoginSessionController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LoginSessionController.class);
@@ -175,7 +174,7 @@ public class LoginSessionController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
+	@RequestMapping(value = "/app/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response,
@@ -1127,7 +1126,7 @@ public class LoginSessionController {
     }
   
   
-  @RequestMapping(value = "/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
   public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
