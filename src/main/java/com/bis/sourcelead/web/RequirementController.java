@@ -569,6 +569,7 @@ private ProjectClientService projectClientService;
 		sessionData.setNav(Constants.Requirement);
 		
 		
+		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
@@ -598,6 +599,7 @@ private ProjectClientService projectClientService;
 			if (requirement.getClientId() != null) {
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
 					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
@@ -615,6 +617,7 @@ private ProjectClientService projectClientService;
 			}
 			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
 			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+			requirement.setSpocUUID(requirement.getSpocId().getUUID());
 		}
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
@@ -659,6 +662,8 @@ private ProjectClientService projectClientService;
 		}else {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
+		
+		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 		
 		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		model.addObject("requirementAssignToListCount",requirementAssignToListCount);

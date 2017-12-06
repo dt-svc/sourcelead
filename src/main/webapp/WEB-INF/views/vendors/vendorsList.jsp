@@ -2373,6 +2373,12 @@ $(document).ready(function() {
 
 // project side bar tabs
 $(document).ready(function() {
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+		vendorSideBar('${vendorLocationId}','${orgRelationId}','${vendorName}');
+	}
+	
+	
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();

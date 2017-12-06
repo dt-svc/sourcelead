@@ -66,6 +66,10 @@ public class RequirementIndex {
 	
 	private String client;
 	
+	private String orgRelationId;
+	
+	private String spocId;
+	
 	private String[] skills;
 	
 	private String[] noticePeriod;
@@ -865,6 +869,7 @@ public class RequirementIndex {
 		this.generatedId = generatedId;
 	}
 
+
 	public String getMedicalClearence()
 	{
 		return medicalClearence;
@@ -936,6 +941,26 @@ public class RequirementIndex {
 	}
 
 
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(String spocId)
+	{
+		this.spocId = spocId;
+	}
 	
 	
 }

@@ -358,6 +358,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String spocUUID;
+	
+	@Transient
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
@@ -400,6 +408,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String noOfApplicants;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
 	
 	@Transient
 	@JsonProperty
@@ -538,6 +550,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Transient
     @JsonProperty
     private String isRequirementRelesedToPublic;
+    
+    
 	 
     @Transient
 	@JsonProperty
@@ -1757,6 +1771,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.fileURL = fileURL;
 	}
 
+
 	public String getMedicalClearence()
 	{
 		return medicalClearence;
@@ -1847,6 +1862,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setProjectName(String projectName)
 	{
 		this.projectName = projectName;
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+
 	}
 
 	

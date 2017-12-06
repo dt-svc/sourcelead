@@ -240,6 +240,7 @@ public class AddElkRequirement {
 					}
 					requirementIndex.setClientContactName(clientContactName);
 					requirementIndex.setClientContactEmail(clientContactEmail);
+					requirementIndex.setOrgRelationId(rs.getString("ORG_RELATION_ID"));
 				}
 				
 				if(null != rs.getString("FIRST_NAME") && null != rs.getString("LAST_NAME")){
