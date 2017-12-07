@@ -14,7 +14,7 @@
 					<div class="clearfix"></div>
 					<div class="swaptables">
 						<div class="row positionRelative">
-							<div class="col-md-5 mb5">
+							<div class="col-md-6 mb5 bootSelectpicker">
 								<select id="teamSelectionCategory" class="selectpicker" multiple data-actions-box="true"
 									onchange="filterTeamMembers();" style="display: block !important"
 									title="--Select Assign Team--">
@@ -371,6 +371,7 @@ function deSelectAssignUsers(){
 		}
 	    $("#assignedTeamId").empty();
 	    $("#assignedTeamId").val(selectedIDs);
+	    $("#usersGrid").empty();
 	}
 	
 	function clearAssignedTeamsOrUsers(){
@@ -405,6 +406,7 @@ function deSelectAssignUsers(){
 		            	
 		            },
 	   		});
+		$("#usersGrid").empty();
 	}
 </script>
 

@@ -335,9 +335,9 @@ function editAssetManagement(assetId){
 				 result = result + '  <input type="text" class="form-control" readonly name="shiftAUploadFile" id="shiftAUploadFile" placeholder="Files are not selected...">';
 				 result = result + ' </div>';
 				 result = result + '</div>';
-				 
+				 var blockA = "A";
 				 result = result+'  <div class="col-md-6" id="shiftADocNameDiv" style="display: none;">';
-				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeShiftAFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeDoc('+assetId+',\''+json.shiftAFileUrl+'\',\''+blockA+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftAExisitngFile" name="shiftAExisitngFile" value="'+shiftAFileName+'">';
 				 result = result+'  </div>';
 				 
@@ -368,9 +368,9 @@ function editAssetManagement(assetId){
 				result = result + '  <input type="text" class="form-control" readonly id="shiftBUploadFile" placeholder="Files are not selected...">';
 				result = result + '</div>';
 				result = result + '</div>';
-				
+				var blockB = "B";
 				 result = result+'  <div class="col-md-6" id="shiftBDocNameDiv" style="display: none;">';
-				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeShiftBFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeDoc('+assetId+',\''+json.shiftBFileUrl+'\',\''+blockB+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
@@ -386,9 +386,9 @@ function editAssetManagement(assetId){
 			result = result + '<input type="text" class="form-control" name="attachment" readonly id="uploadFile1Attachment" placeholder="Files are not selected...">';
 			result = result + ' </div>';
 			result = result + ' </div>';
-			
+			var blockC = "C";
 			result = result+'  <div class="col-md-6" id="docNameDiv" style="display: none;">';
-			result = result+'  <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title="'+fileName+'" ></label>&nbsp;&nbsp;<span id="delete_file" onclick="removeFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+			result = result+'  <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title="'+fileName+'" ></label>&nbsp;&nbsp;<span id="delete_file" onclick="removeDoc('+assetId+',\''+json.fileUrl+'\',\''+blockC+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 			result = result	+ '<input type="hidden" id="generalExisitingFile" name="generalExisitingFile" value="'+fileName+'">';
 			result = result+'  </div>';
 			
@@ -488,34 +488,39 @@ function manageDocs(fileName,shiftAFileName,shiftBFileName){
 </script>
 
 <script>
-function removeFileNameDiv(){
-	$("#docNameDiv").hide();
-	$("#fileAttachmentDiv").show();
-	$("#generalExisitingFile").val('');
-	$('#uploadFile1Attachment').attr("data-validation-optional","true");
-	$("#uploadFile1Attachment").attr("data-validation", "validatedoc");
-}
-</script>
+function removeDoc(assetId,url,block){
+	var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 		if(block == 'A'){
+		    $("#shiftADocNameDiv").hide();
+		 	$("#shiftAFileAttachmentDiv").show();
+		 	$("#shiftAExisitngFile").val('');
+		 	$('#shiftAUploadFile').attr("data-validation-optional","true"); 
+		 	$("#shiftAUploadFile").attr("data-validation", "validatedoc"); 
+		    }if(block == 'B'){
+		    $("#shiftBDocNameDiv").hide();
+		 	$("#shiftBFileAttachmentDiv").show();
+		 	$("#shiftBExisitngFile").val('');
+		 	$('#shiftBUploadFile').attr("data-validation-optional","true");
+		 	$("#shiftBUploadFile").attr("data-validation", "validatedoc");
+		    }
+		 	if(block == 'C'){
+		 	$("#docNameDiv").hide();
+			$("#fileAttachmentDiv").show();
+			$("#generalExisitingFile").val('');
+			$('#uploadFile1Attachment').attr("data-validation-optional","true");
+			$("#uploadFile1Attachment").attr("data-validation", "validatedoc");
+		    }
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteDoc?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+   		    success: function(data) {
+   		   
+   		    },
+   		    });		
+		}
+</script>		 
 
-<script>
-function removeShiftAFileNameDiv(){
-	$("#shiftADocNameDiv").hide();
-	$("#shiftAFileAttachmentDiv").show();
-	$("#shiftAExisitngFile").val('');
-	$('#shiftAUploadFile').attr("data-validation-optional","true"); 
-	$("#shiftAUploadFile").attr("data-validation", "validatedoc");
-}
-</script>
-
-<script>
-function removeShiftBFileNameDiv(){
-	$("#shiftBDocNameDiv").hide();
-	$("#shiftBFileAttachmentDiv").show();
-	$("#shiftBExisitngFile").val('');
-	$('#shiftBUploadFile').attr("data-validation-optional","true");
-	$("#shiftBUploadFile").attr("data-validation", "validatedoc");
-}
-</script>
 
 <!-- <script type="text/javascript">
   function checkGeneralAttachment() {

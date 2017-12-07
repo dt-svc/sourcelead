@@ -2,13 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-
-<c:forEach var="subDetails" items="${timesheetReportsDTO.timeReportsSubmissionDetails}">
-<tr id="row859" role="row" class="odd">
+<c:forEach var="subDetails" items="${timesheetReportsDTO.timeReportsSubmissionDetails}" varStatus="subDetailsStatus">
+<tr id="row${subDetails.projectMemberId}" role="row" class="odd">
 	<td class="sorting_1">
 		<div class="lg clearfix">
+		     <c:if test="${subDetailsStatus.index == 0}">
+		       <input type="hidden" id="totalRows" name="totalRows" value="${timesheetReportsDTO.totalRows}">
+		       <input type="hidden" id="pageCount" name="totalRows" value="${timesheetReportsDTO.pageCount}">
+		    </c:if>
 			<div class="uimg">
 				<img id="userImage" onerror="predefineProfileImage(this);" src="${subDetails.fileUrl}" alt="Profile Image" class="img-circle img-responsive">
 			</div>
@@ -120,79 +121,8 @@
 </tr>
 </c:forEach>
 
-<script>
-function pagination(){ 
-    $('#timesheetReportsPageNation').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $('#timesheetReportsPageNation').wrap('<div class="width100percnt overflow_Auto"></div>');
-}
-</script>
 
-<!-- <script>
-$(document).ready(function() {
-	reportslList();
-});
-</script>
 
-<script>
-function reportslList(){
-    var url = '';
-    var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-    var frequencyYear = $("#frequencyYear").val();
-    if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
- 	   frequencyYear = '';
-      var frequencyMonth = null;
-      if(frequencyYear!=null && frequencyYear!='')
-      frequencyMonth = $(".time_months[data-year="+frequencyYear+"]").find("select").val();
-      if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
-   	 frequencyMonth = '';
-	 url = sourceleadUrl+"/prepareTimeReportsSubmissionDetails?&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth;
-     prepareReportsList(url,sourceleadUrl); 
-} 
-
-function prepareReportsList(url1,sourceleadUrl){
-	
-	 $.ajax({
-	          type : "POST",
-     	  url: url1,		
-	      success :function(data) {
-	    	  	  $("#tableData").empty();
-		    	  $("#tableData").append(data);
-		    	  pagination();
-	      }
-   }); 
-	 
-	/* var colIndex = 0;
-	   $('#timesheetReportsPageNation').DataTable( {
-	  	"processing": true,
-    	"serverSide": true,
-    	"searching": false,
-    	"ajax": $.fn.dataTable.pipeline({
-         	url: url,
-        	method: 'GET',
-        	pages: 1
-     }),
-    
-    "scrollCollapse": false,
-	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	"aaSorting": [[8,'desc']],
-	"bLengthChange": true,
-	"bDestroy": true,
-	"ordering": true,
- });  */
-}
-
-</script>
- -->
 
 
 
