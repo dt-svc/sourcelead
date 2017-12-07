@@ -66,9 +66,36 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getMedicalClearence() != null){
+			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
+			}
+			if(requirement.getSecurityClearance() != null){
+			requirementIndex.setSecurityClearance(requirement.getSecurityClearance());
+			}
+			if(requirement.getOverTime() != null){
+			requirementIndex.setOverTime(requirement.getOverTime());
+			}
+			if(requirement.getBackgroundCheck() != null){
+			requirementIndex.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() != null){
+			requirementIndex.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() != null){
+			requirementIndex.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
+			
+			if(requirement.getProjectClientID() != null){
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().toString());
+				}
+				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
+			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
+				}
+
 			if(requirement.getClientId()!= null && requirement.getClientId().getId()!= null){
 			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
 			}
+
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}
