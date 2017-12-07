@@ -1844,6 +1844,8 @@ public class UsersListRestController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}else{
+				employees.setHireDate(null);
 			}
 			employees.setUpdatedBy(loginUser.getUserCode());
 			employees.setUpdatedDate(commonUtil.currentDate());
