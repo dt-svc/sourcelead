@@ -533,6 +533,7 @@ public class RequirementController {
 		sessionData.setNav(Constants.Requirement);
 		
 		
+		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
@@ -558,6 +559,7 @@ public class RequirementController {
 			if (requirement.getClientId() != null) {
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
 					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
@@ -575,6 +577,7 @@ public class RequirementController {
 			}
 			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
 			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+			requirement.setSpocUUID(requirement.getSpocId().getUUID());
 		}
 		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
 		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
@@ -618,6 +621,10 @@ public class RequirementController {
 			requirement.setIsLoginUserAsInitiator("true");
 		}else {
 			requirement.setIsLoginUserAsInitiator("false");
+		}
+		
+		if(requirement.getClientId() != null){
+		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 		}
 		
 		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
