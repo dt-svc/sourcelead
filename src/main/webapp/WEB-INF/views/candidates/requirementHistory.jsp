@@ -281,7 +281,7 @@ function getRateListDiv(candidateId,submissionId){
 	  }  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);

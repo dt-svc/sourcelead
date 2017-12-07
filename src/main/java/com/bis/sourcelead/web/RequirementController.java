@@ -888,7 +888,7 @@ public class RequirementController {
 
 	}
 	
-	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirementOffer")
 	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
@@ -1065,7 +1065,7 @@ public class RequirementController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		

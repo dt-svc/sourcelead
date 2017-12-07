@@ -167,7 +167,7 @@ public class MailBoxController {
 	
 	
 
-	@RequestMapping(value = "/requestForCandidateResume")
+	@RequestMapping(value = "/ws/requestForCandidateResume")
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();

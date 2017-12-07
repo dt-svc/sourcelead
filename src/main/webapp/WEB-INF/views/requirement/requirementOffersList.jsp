@@ -88,7 +88,7 @@
               
                <td><div><span>
 	               <c:if test="${not empty reqSub.submissionId.attachment}">
-	            	 <a href="<c:url value='${appPath}/downloadOfferAttachment?offerId=${reqSub.submissionId.offerId}'/>"><i class="fa fa-paperclip"></i> </a>
+	            	 <a href="<c:url value='${appPath}/ws/downloadOfferAttachment?offerId=${reqSub.submissionId.offerId}'/>"><i class="fa fa-paperclip"></i> </a>
 	            	 <a class="fa fa-eye ml10" onclick="viewOffersListAttachment('${reqSub.submissionId.offerId}','shiva')"></a>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.attachment}">

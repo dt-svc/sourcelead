@@ -64,7 +64,7 @@ import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-//@RequestMapping("/app")
+@RequestMapping("/app")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
 	 
@@ -786,7 +786,7 @@ public class RegistrationRestController {
 	   @RequestMapping(value = "/orgSummary/{orgId}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/app/enrolledOrgSummary?orgId=").append(orgId).toString());
+				response.sendRedirect(redirectUrl.append("/enrolledOrgSummary?orgId=").append(orgId).toString());
 				
 		   }
 	   
@@ -912,7 +912,7 @@ public class RegistrationRestController {
 		}
 	}
 	   
-	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
+	@RequestMapping(value = "/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
