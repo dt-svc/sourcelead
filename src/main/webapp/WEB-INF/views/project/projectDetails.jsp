@@ -197,7 +197,15 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
-						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						

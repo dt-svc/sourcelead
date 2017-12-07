@@ -45,26 +45,22 @@ public class TimeSheet_Day_Entries implements Serializable{
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
-	@Column(name = " TIMESHEET_DATE")
+	@Column(name = "TIMESHEET_DATE")
 	private Date timesheetDate;
 	
 	@Column(name = "BILLABLE_HOURS")
-	private Integer billableHours;
+	private String billableHours;
 	
 	 
 	@Column(name = "NONBILLABLE_HOURS")
-	private Integer nonBillableHours;
+	private String nonBillableHours;
 	  
 	@Column(name = "TOTALHOURS")
 	private String totalHours;
-	
 	 
-	 
-	@Column(name = "COMMENTS")
-	@Type(type="text")
+	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
 	 
-	  
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
@@ -113,19 +109,19 @@ public class TimeSheet_Day_Entries implements Serializable{
 		this.timesheetDate = timesheetDate;
 	}
 
-	public Integer getBillableHours() {
+	public String getBillableHours() {
 		return billableHours;
 	}
 
-	public void setBillableHours(Integer billableHours) {
+	public void setBillableHours(String billableHours) {
 		this.billableHours = billableHours;
 	}
 
-	public Integer getNonBillableHours() {
+	public String getNonBillableHours() {
 		return nonBillableHours;
 	}
 
-	public void setNonBillableHours(Integer nonBillableHours) {
+	public void setNonBillableHours(String nonBillableHours) {
 		this.nonBillableHours = nonBillableHours;
 	}
 

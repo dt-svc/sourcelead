@@ -1032,6 +1032,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
+				projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
  	  }
 	    
 		

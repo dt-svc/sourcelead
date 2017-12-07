@@ -49,6 +49,8 @@ public class ProjectMembersDTO implements Serializable {
 	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
+	private String orgRelationUUID;
+	
 	
 
 	public String getExpenseId() {
@@ -228,6 +230,16 @@ public class ProjectMembersDTO implements Serializable {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
 	}
 	
 	
