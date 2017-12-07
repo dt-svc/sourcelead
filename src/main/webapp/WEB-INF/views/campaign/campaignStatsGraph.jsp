@@ -4,17 +4,20 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
-<script type="text/javascript">
+
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
-		$(document).ready(function() {
-			campaignStatsGraph();
-		});
-	</script>
-	
+$(document).ready(function() {
+ 	var campaignId = '${campaignId}';
+	campaignStatsGraph(campaignId);
+
+});
+
+</script>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -30,26 +33,26 @@
           			  <div class="panel panel-default panel-campaignsStats">
 						<div class="panel-body text-center">
 						 <div class="panelHeading text-center">Delivered</div>
-							<h3 class="text-success">66.7%</h3>
-							<span class="clearfix">2</span>
+							<!-- <h3 class="text-success">66.7%</h3> -->
+							<span class="clearfix" id="delivered"></span>
 						</div>
 					  </div>
           		</div>
           		<div class="col-md-3">
           			  <div class="panel panel-default panel-campaignsStats">
 						<div class="panel-body text-center">
-						<div class="panelHeading text-center">Unique Opens</div>
-							<h3 class="text-warning">66.7%</h3>
-							<span class="clearfix">2</span>
+						<div class="panelHeading text-center">Opens</div>
+							<!-- <h3 class="text-warning">66.7%</h3> -->
+							<span class="clearfix" id="opens"></span>
 						</div>
 					  </div>
           		</div>
           		<div class="col-md-3">
           			  <div class="panel panel-default panel-campaignsStats">
 						<div class="panel-body text-center">
-						<div class="panelHeading text-center">Unique Clicks</div>
-							<h3 class="text-info">66.7%</h3>
-							<span class="clearfix">2</span>
+						<div class="panelHeading text-center">Clicks</div>
+							<!-- <h3 class="text-info">66.7%</h3> -->
+							<span class="clearfix" id="clicks"></span>
 						</div>
 					  </div>
           		</div>
@@ -58,16 +61,16 @@
 						<div class="panel-body">
 							 <ul class="list-unstyled campaignsstats-list mb0">
 							 	<li><span class="fa fa-circle mr10 text-success"></span>Requests
-							 	<span class="campaignsstatslist-count">00.00%</span>
+							 	<span class="campaignsstatslist-count" id="requests"></span>
 							 	</li>
 							 	<li><span class="fa fa-circle mr10 text-info"></span>Bounces
-							 	<span class="campaignsstatslist-count">00.00%</span>
+							 	<span class="campaignsstatslist-count" id="bounces"></span>
 							 	</li>
 							 	<li><span class="fa fa-circle mr10 text-warning"></span>Unsubscribes
-							 	<span class="campaignsstatslist-count">00.00%</span>
+							 	<span class="campaignsstatslist-count" id="unsubscribes"></span>
 							 	</li>
 							 	<li><span class="fa fa-circle mr10 text-danger"></span>Spam Reports
-							 	<span class="campaignsstatslist-count">00.00%</span>
+							 	<span class="campaignsstatslist-count" id="spamReports"></span>
 							 	</li>
 							 </ul>
 						</div>
@@ -81,6 +84,24 @@
         </div>
       </div>
   </section>
+  
+  
+   <script>
+  function campaignStatsGraph(campaignId){
+	  alert("Hai"+campaignId);
+      $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignId="+campaignId,       
+       success :function(json) {
+    	   
+       /* 	populategCampaignStats(json); 
+       delivered  opens clicks requests bounces unsubscribes spamReports
+       */
+      },
+       
+  }); 
+  }
+  </script>
   
   <script>
 			AmCharts.makeChart("campaignsstats",
@@ -293,4 +314,6 @@
 			);
 	</script>
   
+  
+ 
   <jsp:include page="../masterFooter.jsp" />

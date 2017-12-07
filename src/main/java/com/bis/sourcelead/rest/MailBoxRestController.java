@@ -842,29 +842,6 @@ public class MailBoxRestController {
 		  return successval;
 			
 		}
-	 @RequestMapping(value = "/getCampaignStats")
-	 public List<CampaignStatsDTO> getCampaignStats(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)throws Exception
-	 {
-		 List<CampaignStatsDTO> campaignStatsList = new ArrayList<>() ; 
-//			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId);
-			for (CampaignStats campaignStats : campStats) {
-				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
-				campaignStatsListDTO.setId(campaignStats.getId());
-				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
-				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
-				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
-				campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
-				campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
-				campaignStatsListDTO.setOpens(campaignStats.getOpens());
-				campaignStatsList.add(campaignStatsListDTO);
-			}
-			
-			return campaignStatsList;
-			
-		 
-	 }
-	 
 	 
 	 
 }
