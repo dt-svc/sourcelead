@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +20,13 @@ import com.bis.sourcelead.dao.RequirementAssignToDao;
 
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
@@ -46,7 +52,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId";
+		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId and rat.status <> '0' ";
 		return session.createQuery(query)
 				      .setLong("requirementId", requirementId)
 				      .setCacheable(true)
@@ -62,7 +68,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementAssignTo> assignedToList = null;
 		ResponseList<RequirementAssignTo> response = new ResponseList<>();
-		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId";
+		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId and rat.status <> '0'";
 		Query queryObj = session.createQuery(query);
 		if (requirementAssignToDTO != null && requirementAssignToDTO.getLength() > 0) {
 			queryObj.setFirstResult(requirementAssignToDTO.getStart());
@@ -212,7 +218,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rato   where rato.requirementId.id = :requirementId and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
+		String query = "from RequirementAssignTo rato   where rato.requirementId.id = :requirementId and rato.status <> '0' and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
 		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
@@ -240,7 +246,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<RequirementAssignTo> getAllAssignedRequirementByOrglocationId(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId";
+		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId and rato.status <> '0'";
 		return  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
@@ -265,7 +271,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			params.put("usrId", usrId);
 			subQuery = subQuery + " and rato.assignUserId.id = :usrId";
 		}
-		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.assignUserId left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId "+subQuery;
+		String query = "from RequirementAssignTo  rato left join fetch rato.teamId team left join fetch rato.assignUserId left join fetch rato.requirementId requirement where requirement.orgLocationId.id = :orgLocationId and rato.status <> '0' "+subQuery;
 		Query qry = session.createQuery(query);
 		for (String str : qry.getNamedParameters())
         {
@@ -292,7 +298,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 			Long teamId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rat    where  rat.teamId.orgLocationsId.id =:orgLocationId and rat.teamId.id =:teamId  GROUP BY rat.id";
+		String query = "from RequirementAssignTo rat    where  rat.teamId.orgLocationsId.id =:orgLocationId and rat.status <> '0' and rat.teamId.id =:teamId  GROUP BY rat.id";
 		return session.createQuery(query)
 				      .setLong("orgLocationId", orgLocationId)
 				      .setLong("teamId", teamId)
@@ -322,7 +328,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public Integer getRequirementAssignToListCountByRequirementId(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select count(*)from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId";
+		String query = "select count(*)from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId and rat.status <> '0'";
 		List<Long>  requirementAssignToCount = session.createQuery(query.toString()).setLong("requirementId", requirementId) .setCacheable(true) .list();
 		Integer count = 0;
 		if(null != requirementAssignToCount && !requirementAssignToCount.isEmpty()){
@@ -331,6 +337,21 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		return count;
 			 
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementAssignTo> updateRequirementAssignToListByRequirementId(List<RequirementAssignTo> requirementAssignToList) throws Exception
+	{
+		List<RequirementAssignTo> newlyUpdatedRequirementAssignToList = new ArrayList<RequirementAssignTo>();
+		Session session = this.sessionFactory.getCurrentSession();
+		if (requirementAssignToList.size() > 0) {
+			for (RequirementAssignTo rat : requirementAssignToList) {
+				session.saveOrUpdate(rat);
+				newlyUpdatedRequirementAssignToList.add(rat);
+			}
+		}
+		return newlyUpdatedRequirementAssignToList;
 	}
 }
 

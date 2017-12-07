@@ -5,6 +5,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ <jsp:include page="requirementAssignedTo.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
@@ -110,8 +111,9 @@
 			            </c:if>
 					</div></div>
 					<div class="collpasePannel clearfix mt10"> 
-		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
-		           <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
+		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount1">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           	  <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount2">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
+		           	  <span class="pull-right cursorPointer edit-assignedMembers" title="Edit Assigned Members"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});"><i class="fa fa-edit"></i></a></span>
 		           </div> 
 		          
 			            
@@ -165,15 +167,23 @@
 			            </div> 
 
 			      <c:if test="${requirement.isClientJob == 'Y'}">
-		                <h2>Client Details:</h2> 
+		                <h2>Client Details :</h2> 
 		                <div class="require_one"> 
-		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><span>${!empty requirement.spocName ? requirement.spocName : ' -- '}</span>
+		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${!empty requirement.spocName ? requirement.spocName : ' -- '}</a></div>
 			            	<div class="clearfix"></div> 
 		                </div>
-		                
-		                <div class="require_wrap_details_cta"> <b>Client Name:</b><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span>
-			            	<div class="clearfix"></div> 
-			            </div>  
+		              
+		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${!empty requirement.clientName ? requirement.clientName : ' -- '}</a></div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
+			            
+			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big">${!empty requirement.clientName ? requirement.clientName : ' -- '}</div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
 			            
 			            <c:choose>
 						    <c:when test="${!empty requirement.parentRequirement}">
@@ -397,6 +407,8 @@
 	<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter"></div>
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
+	
+	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
 
 <script>

@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -90,6 +90,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private AssetDao assetDao;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -229,7 +232,30 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
-	
+	@RequestMapping(value = "/deleteDoc", method = RequestMethod.POST)
+	public String deleteDoc(@RequestParam(value="assetId", required=false) String assetId,@RequestParam(value="url", required=false) String url,HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       Asset asset = assetService.getAssetById(Long.parseLong(assetId));
+	       if(url.equals(asset.getFileUrl())){
+	       asset.setFileUrl(null);
+	       asset.setFileContentType(null);
+	       asset.setFileName(null);
+	       }if(url .equals(asset.getShiftAFileUrl())){
+	    	  asset.setShiftAFileUrl(null);
+			  asset.setShiftAFileName(null);
+			  asset.setShiftAFileContentType(null); 
+	       }
+	       if(url.equals(asset.getShiftBFileUrl())){
+	    	   asset.setShiftBFileUrl(null);
+			   asset.setShiftBFileName(null);
+			   asset.setShiftBFileContentType(null);   
+	       }
+	       assetDao.saveAsset(asset);	
+
+		return "success";
+
+	}
 	
 	@RequestMapping(value = "/getComericaTransactions")
 	@ResponseBody
@@ -452,17 +478,53 @@ public class BackOfficeRestController {
 	 */
 	@RequestMapping(value = "/getAssetById")
 	@ResponseBody
-	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+	public AssetDTO getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String resultJson = null;
+		//String resultJson = null;
 		Asset asset = assetService.getAssetById(assetId);
-		
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
-		asset.setEmployeesList(employeesList);
-		resultJson = toJSON(asset);
-		return resultJson;
+		AssetDTO assetDTO = new AssetDTO();
+		
+		if(asset.getAssetCategory() != null){
+			assetDTO.setCategoryName(asset.getAssetCategory().getCategoryName());	
+			assetDTO.setCategoryId(asset.getAssetCategory().getId().toString());
+			
+			if(asset.getShiftAEmployee() != null){
+			assetDTO.setShiftAEmployee(asset.getShiftAEmployee().getId().toString());
+			}
+			if(asset.getShiftBEmployee() != null){
+			assetDTO.setShiftBEmployee(asset.getShiftBEmployee().getId().toString());
+			}
+		}
+		
+		assetDTO.setSno(asset.getSlno());
+		assetDTO.setMake(asset.getMake());
+		assetDTO.setMonitor(asset.getMonitor());
+		assetDTO.setCpu(asset.getCpu());
+	/*	assetDTO.setShiftAEmp(asset.getShiftAEmployee().toString());
+		assetDTO.setShiftBEmp(asset.getShiftBEmployee().toString());*/
+		assetDTO.setWorkingStatus(asset.getWorkingStatus());
+		assetDTO.setModel(asset.getModel());
+		assetDTO.setMemory(asset.getMemory());
+		assetDTO.setHarddisk(asset.getHardDisk());
+		assetDTO.setFileName(asset.getFileName());
+		assetDTO.setFileUrl(asset.getFileUrl());
+		assetDTO.setFileContentType(asset.getFileContentType());
+		assetDTO.setShiftAFileContentType(asset.getShiftAFileContentType());
+		assetDTO.setShiftAFileName(asset.getShiftAFileName());
+		assetDTO.setShiftAFileUrl(asset.getShiftAFileUrl());
+		assetDTO.setShiftBFileContentType(asset.getShiftBFileContentType());
+		assetDTO.setShiftBFileName(asset.getShiftBFileName());
+		assetDTO.setShiftBFileUrl(asset.getShiftBFileUrl());
+		assetDTO.setEmployeesList(employeesList);
+		assetDTO.setShiftAEmpName(asset.getShiftAEmpName());
+		assetDTO.setShiftBEmpName(asset.getShiftBEmpName());
+		assetDTO.setName(asset.getName());
+		assetDTO.setDescription(asset.getDescription());
+		
+		return assetDTO;
 	}
 	
 	

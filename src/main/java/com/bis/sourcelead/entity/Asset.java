@@ -22,6 +22,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "ASSET", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "asset")
@@ -86,6 +88,7 @@ public class Asset implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftAEmployee;
 	
 	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
@@ -104,6 +107,7 @@ public class Asset implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
+	@JsonProperty
 	private Employees shiftBEmployee;
 	
 	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")

@@ -66,6 +66,9 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getClientId()!= null && requirement.getClientId().getId()!= null){
+			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
+			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}

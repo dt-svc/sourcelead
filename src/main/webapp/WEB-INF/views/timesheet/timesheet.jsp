@@ -1087,6 +1087,7 @@ function newSaveTimesheet(status,savingType){
 		 if (attr!= null && attr != "" && attr !='undefined' && attr != 'hidden') {}
 		 else{
 			 var currentInputValue = $(this).prev("input").val();
+			 alert(currentInputValue);
 			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
 				 unfilledDates.push(currentInputValue);
 			 }
@@ -1126,12 +1127,6 @@ function newSaveTimesheet(status,savingType){
 	$("#timesheet_form").validateOnBlur(false, validationSettings);  
 }); */
 </script>
-
-
-
-
-
-
 
 
 <script>
