@@ -371,13 +371,13 @@ function projectsPagination(url,sourceleadUrl){
 	            	  var result = "";
 	            	  
 	            	    if(opt.client != null && opt.client != '' && opt.client != 'undefined'){
-	            	    	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+	            	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.client+'">'+opt.client+'</a></span></div></td>';
-	            	    	</sec:authorize>
+	            	    	'</sec:authorize>';
 	            	    	
-	            	    	<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+	            	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'">'+opt.client+'</span></div></td>';
-	            	    	</sec:authorize>
+	            	    	'</sec:authorize>';
    		    		     }else{
    		    		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
 	   		    		}

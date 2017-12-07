@@ -633,8 +633,14 @@ function invoicePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
             		 
-  				     result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">'+report.clientName+'</a></div>';
-  				
+            		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+  				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+'</a></div>';
+  				     '</sec:authorize>';
+  				     
+  				   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+				     '</sec:authorize>';
+  				     
             	 }else{
             		 result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
             	 }
