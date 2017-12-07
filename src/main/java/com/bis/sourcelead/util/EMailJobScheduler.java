@@ -2009,7 +2009,7 @@ public class EMailJobScheduler {
 		}
 	 
 	 
-	@Scheduled(cron = "0 0/1 * 1/1 * ?")
+	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	 public void holidayNotificationToUsers() throws Exception
     {
@@ -2033,6 +2033,7 @@ public class EMailJobScheduler {
     List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate,holidayEndDate, orgLocations.getId());
     String holidayNames = "";
     int i=0;
+    if(holidayList!=null && !holidayList.isEmpty()){
     for(Holiday holiday : holidayList){
     	 if (i == holidayList.size() - 1) 
     		 holidayNames += holiday.getHolidayName();
@@ -2045,9 +2046,10 @@ public class EMailJobScheduler {
     for (User user : userList) {
     EmailMessage emailMessage = new EmailMessage();
     emailMessage.setFirstName(user.getFirstName());
+    if(StringUtils.isNotBlank(user.getLastName()))
     emailMessage.setLastName(user.getLastName());
     emailMessage.setToEmail(user.getEmail());
-    emailMessage.setFromEmail("info@sourcelead.com");
+    emailMessage.setFromEmail(defaultFromEmailAddressForProd);
     StringBuilder msgBuild = new StringBuilder();
     emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
     // setting the class filed values
@@ -2079,6 +2081,7 @@ public class EMailJobScheduler {
     // calling the sendEmail method of emailScenerioUtil
     emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
     String actionLink = "";
+    }
     }
     }
     }}
