@@ -499,6 +499,7 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setFilledTimeSubFrequencies(filledTimeSubFrequencies);
 			 timesheetEntryDetailsDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 			 timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
+			 timesheetEntryDetailsDTO.setTimesheetFor(timesheetFor);
 			 eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
         }
 	  }	
@@ -619,7 +620,7 @@ public class TimesheetRestController {
 	  Long projectMemberId = eedDTO.getProjectMembersId();
 	  ModelAndView model = new ModelAndView();
 	  if(projectMemberId != null) {
-		      ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+		     ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
 			 eedDTO.setUserId(loginUser.getId());
 			 eedDTO.setLocationCode(orgLocations.getLocationCode());
 			 eedDTO.setProjectsId(pm.getProjects().getId());
@@ -628,6 +629,16 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setProjectMemberId(projectMemberId);
 			 timesheetEntryDetailsDTO.setProjectId(pm.getProjects().getId());
 			 timesheetEntryDetailsDTO.setMasterCandidateId(pm.getMasterCandidateId().getId());
+			 
+			 String fileUrl = "";
+			 if(pm != null && pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null)
+				 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
+			 
+			 timesheetEntryDetailsDTO.setProfileImageFileUrl(fileUrl);
+			 timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
+			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+			 
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
 		     LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tsDTO);
