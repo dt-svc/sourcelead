@@ -62,7 +62,6 @@ function populategCampaignStats(json){
            result = result +    '<div class="tbldata-dotdot-sm" title="'+report.opens+'">'+report.opens+'</div>';
            result = result +'  </td>';  
            result = result +'  <td>';   
-           alert(sourceleadUrl)
            result = result +    '<a href="'+sourceleadUrl+'/campaignStatsGraph"<div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></a>';
            result = result +'  </td>';
            result = result +'  <td>';   
