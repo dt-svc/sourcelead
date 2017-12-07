@@ -98,7 +98,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class UserRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
@@ -1137,13 +1137,13 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 return orgLocationDTO;
 		 }
 		 
-		 @RequestMapping(value = "/ws/restAuthenticate", method = RequestMethod.POST)
+		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
 		 public @ResponseBody RestResponsetUtil restAuthenticate(HttpServletRequest request) throws Exception {
 		 
 			 String json = IOUtils.toString(request.getInputStream());
 			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 			 if(StringUtils.isNotEmpty(json)){
-				 String sourceleadUrl = request.getRequestURL().toString().replace("/ws/restAuthenticate","");
+				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
 				 //TODO remove this sysout. Just for rest call testing purpose
 				 System.out.println("sourceleadURL =======> "+sourceleadUrl);
 				 JSONObject jsonObject = new JSONObject(json);

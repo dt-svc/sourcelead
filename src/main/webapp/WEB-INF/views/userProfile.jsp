@@ -61,7 +61,11 @@ function resetProfile(){
 	$('#twitterDiv').find('p.jquery_form_error_message').remove();
 	$('#fbDiv').find('p.jquery_form_error_message').remove();
 	$('#gplusDiv').find('p.jquery_form_error_message').remove();
+	$('#configure').hide();
 	
+}
+function getConfiguredList(){
+	$('#configure').show();
 }
 </script>
 
@@ -97,6 +101,7 @@ function resetProfile(){
 		  <ul class="nav nav-tabs">
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#password">Password</a></li>
+			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -220,7 +225,7 @@ function resetProfile(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -267,7 +272,7 @@ function resetProfile(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/path/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -275,6 +280,35 @@ function resetProfile(){
 				 </div>
 			</div>
 			</div>
+			
+			
+			<div id="configure" class="tab-pane fade">
+			  <div class="tab-content panel-body">
+                  <div class="clearfix mb">
+                      <div class="pull-left">
+                          <h4>Login Security</h4>
+                      </div>
+                  </div>
+			<div class="col-xs-12 col-sm-9 col-md-9">
+				<div class="form-group">
+					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
+					<div class="col-md-7 toggle-button">
+						<label class="switch">
+						 <c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+								<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+						 </c:if>
+						 <c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+								<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						 </c:if>
+							<div class="slider round"></div>
+						</label>
+					</div>
+				</div>
+			</div>
+			</div>
+			</div>
+			
+			
 		   </div>
 		</div>
 			<!-- Tab for Profile setting-area ends -->
@@ -329,6 +363,24 @@ function resetProfile(){
 	 }
  </script>
 
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateUserLoginSecurity?loginSecurity="+security,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+}
+</script>
 
 
 <script type="text/javascript">

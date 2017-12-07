@@ -130,7 +130,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
+						url : sourceleadUrl+"/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

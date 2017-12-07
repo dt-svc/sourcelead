@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateDocumentsService;
@@ -618,7 +619,7 @@ public class CandidateServiceImpl implements CandidateService {
         
          globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
          StringBuilder loginBuilder = new StringBuilder();
-         globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/ws/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+         globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
          //setting the Recipient information
          //setting the Recipient information
@@ -1684,6 +1685,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		canList.setData(candtoList);
 		return canList;
+	}
+	
+	@Override
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception
+	{
+		return candidateDao.getCandidateByShortURL(shortURL);
 	}
 
 }

@@ -97,7 +97,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
 	
 	@Value("${sourceleadUrl}")
@@ -160,13 +160,13 @@ public class CrowdSourcingRequirementsRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/ws/getUserById/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserById/{id}", method = RequestMethod.GET)
 	public String getAllOrgs(@PathVariable Long id) throws Exception {
 		
 		
 		return commonUtil.toJSON(userService.getUserById(id));
 	}
-	@RequestMapping(value = "/ws/getAllUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllUsers", method = RequestMethod.GET)
 	public @ResponseBody String getAllUsers() throws Exception {
 		//userService.getUsers()
 		//getAllOrgLocations

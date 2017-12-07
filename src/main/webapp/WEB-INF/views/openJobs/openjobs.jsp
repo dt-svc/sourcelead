@@ -43,10 +43,6 @@
 <script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
- var sourceleadUrl = '${sourceleadUrl}';
-</script>
-
-<script type="text/javascript">
 window.onload = function () {
 	
 	setTimeout(function() {
@@ -166,7 +162,7 @@ z-index: 1000000000 !important;
     	<ul>
         	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
             <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="${sourceleadUrl}/login"><i class="fa fa-user-o"></i> Login</a></li>
+            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
             <div class="clear"></div>
         </ul>
     	<div class="clear"></div>    
@@ -176,36 +172,36 @@ z-index: 1000000000 !important;
     <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="/login"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
-    	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="${sourceleadUrl}/ws/openRequirements" class="rcolor">Jobs</a></li>
+    	<li><a href="/login"><i class="fa fa-home"></i></a></li>
+		<li><a href="/openJobs" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
-				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="../ats.html">ATS</a></li>
-                <li><a href="../vms.html">VMS</a></li>
+				<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
+            	<li><a href="/ats.html">ATS</a></li>
+                <li><a href="/vms.html">VMS</a></li>
                 <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
             </ul>
         </li>
-        <li><a href="javascript:void(0)" class="ma">/resources<i class="fa fa-caret-down"></i></a>
+        <li><a href="javascript:void(0)" class="ma">resources<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../demo.html">Product Videos</a></li>
+            	<li><a href="/demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
-                <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li>
+                <li><a style="border-bottom:none;" href="/faqs.html">FAQs</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../about-us.html">About SourceLead</a></li>
-                <li><a href="../team.html">Our team</a></li>
+            	<li><a href="/about-us.html">About SourceLead</a></li>
+                <li><a href="/team.html">Our team</a></li>
                 <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="../contact.html">Contact</a></li>
+                <li><a style="border-bottom:none;" href="/contact.html">Contact</a></li>
             </ul>        
         </li>
-        <li><a href="blog4.html">Blogs</a></li>
+        <li><a href="/blog4.html">Blogs</a></li>
         <li><a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a></li>
         <div class="clear"></div>
     </ul>
@@ -224,7 +220,7 @@ z-index: 1000000000 !important;
 
 	<div class="innerPageSearch">
 		<section class="searchWrap">
-			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
+			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle==null?'':openJobsTitle}" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
 			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
@@ -664,38 +660,38 @@ z-index: 1000000000 !important;
     	<div class="footerInnCta resFoot">
         	<h3>SourceLead</h3>
             <ul>
-            	<li><a href="about-us.html"><i class="fa fa-caret-right"></i>About us</a></li>
-                <li><a href="team.html"><i class="fa fa-caret-right"></i>Our team</a></li>
+            	<li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About us</a></li>
+                <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our team</a></li>
                 <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
-                <li><a href="testimonial.html"><i class="fa fa-caret-right"></i>Testimonial</a></li>
+                <li><a href="/testimonial.html"><i class="fa fa-caret-right"></i>Testimonial</a></li>
                 <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
-                <li><a href="contact.html"><i class="fa fa-caret-right"></i>Contact us</a></li>
+                <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact us</a></li>
             </ul>
         </div>
     	<div class="footerInnCta resFoot">
         	<h3>What we do</h3>
             <ul>
-				<li><a href="../crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="../ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="../vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="../timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
+				<li><a href="/crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+            	<li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
             </ul>
         </div> 
     	<div class="footerInnCta">
 <div class="hBlogs">
-            	<a href="../blog4.html">
+            	<a href="/blog4.html">
                 	<span>Loyal Relationships with Recruiters</span>
                     <b>FEB 20, 2017</b>
                 </a>            
-            	<a href="../blog3.html">
+            	<a href="/blog3.html">
                 	<span>Recruiting Through Social Media Platform</span>
                     <b>FEB 15, 2017</b>
                 </a>            
-            	<a href="../blog.html">
+            	<a href="/blog.html">
                 	<span>Existing Process without using any Tool</span>
                     <b>DEC 20, 2016</b>
                 </a>
-            	<a href="../blog4.html">Viwe all</a>                                                
+            	<a href="/blog4.html">Viwe all</a>                                                
             </div>
         </div>  
     	<div class="footerInnCta">
@@ -719,8 +715,8 @@ z-index: 1000000000 !important;
     	<div class="copyright">
     	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
-        	<a href="../privacy.html">Privacy Policy</a>
-            <a href="../terms.html">Terms of Use</a>
+        	<a href="/privacy.html">Privacy Policy</a>
+            <a href="/terms.html">Terms of Use</a>
         </span><div class="clear"></div>
         </div>
     </div>  
@@ -855,8 +851,7 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-	location.href = sourceleadUrl+"/ws/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
-	
+	location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
 }
 </script>
 
@@ -881,22 +876,21 @@ function getOpenJobsELKList(){
 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
 	var offset = 0;
-	var sourceleadUrl ='${sourceleadUrl}';
 	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	} */
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-// 	location.href = "path/ws/getOpenJobsELK/"+title+"/"+location+"/"+experience;
+// 	location.href = "app/getOpenJobsELK/"+title+"/"+location+"/"+experience;
 	  $.ajax({ 
 	   	type: "GET",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience+"&dates="+dates+"&country="+country+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds,
+	   	url: "/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience+"&dates="+dates+"&country="+country+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
 	    		if(json.length > 10){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
-	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
+	    		prepareOpenJobsElkList(data,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -912,7 +906,7 @@ function getOpenJobsELKList(){
 </script>
 
 <script>
-function prepareOpenJobsElkList(data,sourceleadUrl,offset){
+function prepareOpenJobsElkList(data,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
     var json = JSON.parse(data);
@@ -973,7 +967,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
-				link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+				link = "/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1052,8 +1046,8 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
-				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
+				result = result +'   <a href="/login?requirementUUID="'+requirements.requirementUUID+'">Apply</a>';
+				result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 				result = result +'	</div>';
 				result = result +'	</div>';
 			}
@@ -1099,7 +1093,7 @@ function getOrgsList(alphabet,type){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: "/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1164,7 +1158,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		   	url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
@@ -1225,7 +1219,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</div>';					
 				result = result +'	<span>';
 				
-				link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+json.requirementUUID;
+				link = "/openJobsPublicPage?requirementUUID="+json.requirementUUID;
 				description =  description+'Job Title:'+json.jobTitle+";";
 				
 				if(json.jobType != null && json.jobType != '' && json.jobType !='undefined'){
@@ -1264,8 +1258,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'    </div>';			
 				result = result +'  <div class="jobApply">';
 				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'  <a href="'+sourceleadUrl+"/login?requirementUUID="+json.requirementUUID+'">Apply</a>';
-				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
+				result = result +'  <a href="/login?requirementUUID="'+json.requirementUUID+'">Apply</a>';
+				result = result +'	<a href="/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	<div class="share hidden">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
@@ -1305,7 +1299,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/ws/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -1350,9 +1344,8 @@ function backtoList(){
 
 <script>
 function viewJobSummaryDocument(jobId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/ws/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open('/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 
@@ -1379,7 +1372,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : "/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1430,7 +1423,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/path/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -1444,7 +1437,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 
-										link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+										link = "/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 										description =  description+'Job Title:'+requirements.jobTitle+";";
 										
 										result = result +'	<div class="jobShare">';
@@ -1459,8 +1452,8 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-										result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
-										result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
+										result = result +'   <a href="/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
+										result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 													
 										result = result +'	</div>';
 										$("#openJobsRequirementsSummary").empty();
@@ -1508,7 +1501,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1546,7 +1539,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1916,13 +1909,10 @@ function alertClose(){
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
-	 
-	
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	 $.ajax({
         type : "GET",
-        url: sourceleadUrl+"/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+        url: "/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
          success :function(data) {
         	 
         	 var json = JSON.parse(data);
@@ -2200,11 +2190,10 @@ function createAlert(requirementUUID){
         	    chosen = select.data('chosen');
         	    
         	    $("#candidateSkills").chosen().change(function(event) {
-        	    	 var sourceleadUrl ='${sourceleadUrl}';
         	    	var allSkills = $(event.target).val();
         	    	$.ajax({
         		    	type: "POST",
-        		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        		        url: "/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
         		        success: function(data) {
         		        	var primarySkill = data;
         		        	      $("#primarySkill").val(primarySkill);
@@ -2292,9 +2281,9 @@ var validationSettings = {
 							data: formData,
 			  		        processData: false,
 			  		        contentType:false, 
-        					url : sourceleadUrl+"/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : "/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace(sourceleadUrl+"/ws/openRequirementsRedirect");
+        							location.replace("/openRequirementsRedirect");
         					},
         				});
                 
@@ -2366,7 +2355,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2409,7 +2398,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2466,7 +2455,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();
@@ -2510,13 +2499,12 @@ function getRate(){
 <script>
 function validateAlertUserEmail(){
 	var email = document.getElementById("email").value;
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(email != null && email != ''){
 		$("#alert_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       url: "/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){

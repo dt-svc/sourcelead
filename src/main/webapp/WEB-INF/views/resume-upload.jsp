@@ -381,7 +381,7 @@ var count = 1;
 						});
 				} else {
 					alert("No Session found");
-					location.href='/path/login';
+					location.href='/app/login';
 				}
 			});
 			

@@ -128,4 +128,6 @@ public interface UserRoleService {
 	 
 	 UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
 
+	public UserRole getUserRoleByVerficationUUID(String uuid);
+
 }

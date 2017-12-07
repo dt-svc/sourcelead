@@ -36,7 +36,7 @@ import com.bis.sourcelead.validation.FileValidator;
  * Handles uploads
  */
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class UploadController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
@@ -87,7 +87,7 @@ public class UploadController {
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-		return "redirect:/path/usersList";
+		return "redirect:/app/usersList";
 	}
 /**
  * Handles Errored file Download

@@ -98,7 +98,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ClientRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientRestController.class);
@@ -717,7 +717,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/ws/isClientNameValid", method = RequestMethod.GET)
+	@RequestMapping(value = "/isClientNameValid", method = RequestMethod.GET)
 	@ResponseBody String isClientNameValidated(
 			@RequestParam(value = "clientName", required = false) String clientName,HttpServletRequest request,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
@@ -757,7 +757,7 @@ public class ClientRestController {
 	
 	
 	
-	@RequestMapping(value = "/ws/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
+	@RequestMapping(value = "/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
 	@ResponseBody String isInvitedClientOrVendorOrgValid(
 			@RequestParam(value = "orgName", required = false) String orgName,HttpServletRequest request) throws Exception {
 		

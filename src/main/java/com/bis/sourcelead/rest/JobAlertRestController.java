@@ -42,7 +42,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class JobAlertRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -79,7 +79,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = "/ws/storeJobAlert", method = RequestMethod.POST)
+    @RequestMapping(value = "/storeJobAlert", method = RequestMethod.POST)
    	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
        	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
@@ -113,7 +113,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/ws/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -124,7 +124,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/ws/validateAlertUserEmail", method = RequestMethod.GET)
+	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
@@ -136,7 +136,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		
 	 
-	 @RequestMapping(value = "/ws/getAllJobsAlertList")
+	 @RequestMapping(value = "/getAllJobsAlertList")
 	 	public String getAllJobsAlertList(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			    String jobAlertsTable = null;

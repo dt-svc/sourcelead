@@ -56,7 +56,7 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ProjectsController {
 	
 	

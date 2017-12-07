@@ -30,7 +30,7 @@ import com.bis.sourcelead.service.UserService;
  */
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class DisplayImageRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DisplayImageRestController.class);

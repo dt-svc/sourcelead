@@ -43,7 +43,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class RequirementInterviewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementInterviewController.class);
@@ -70,7 +70,7 @@ public class RequirementInterviewController {
 	CommonUtil commonUtil;
 	
 	
-	@RequestMapping(value = "/ws/acceptOrRejectInterview")
+	@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -199,7 +199,7 @@ public class RequirementInterviewController {
 	
 	
 	
-	@RequestMapping(value = "/ws/proposeNewTimePublicpage")
+	@RequestMapping(value = "/proposeNewTimePublicpage")
 	 @ResponseBody  ModelAndView proposeNewTimePublicpage(@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();

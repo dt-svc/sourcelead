@@ -82,7 +82,7 @@ import com.itextpdf.text.ListItem;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesRestController.class);
 	@Value("${sourceleadUrl}")

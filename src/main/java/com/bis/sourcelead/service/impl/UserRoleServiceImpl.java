@@ -180,6 +180,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserByUserId(Long userId) throws Exception {
 		return userRoleDao.getUserByUserId(userId);
 	}
+	
 	@Override
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
 		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
@@ -612,6 +613,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
 	}
 
-
+	@Override
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		return userRoleDao.getUserRoleByVerficationUUID(uuid);
+	}
 
 }

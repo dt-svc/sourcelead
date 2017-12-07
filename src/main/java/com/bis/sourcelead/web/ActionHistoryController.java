@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.service.ActionHistoryService;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ActionHistoryController {
 	
 	@Value("${sourceleadUrl}")
@@ -25,7 +25,7 @@ public class ActionHistoryController {
 	ActionHistoryService actionHistoryService;
 	
 	
-	@RequestMapping(value = "/ws/getActionHistoryList/{actionUUID}" , method = RequestMethod.GET)
+	@RequestMapping(value = "/getActionHistoryList/{actionUUID}" , method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView getActionHistoryList(@PathVariable String actionUUID,HttpServletRequest request) throws Exception
 	{

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class RequirementInterviewerController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementInterviewerController.class);

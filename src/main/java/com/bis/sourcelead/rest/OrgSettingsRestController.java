@@ -65,7 +65,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class OrgSettingsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsRestController.class);
 	@Value("${sourceleadUrl}")
@@ -164,7 +164,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/ws/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = "/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -272,7 +272,7 @@ public class OrgSettingsRestController {
 	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/path/enrollRoleActions?roleId=").append(roleId).toString());
+		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?roleId=").append(roleId).toString());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
@@ -529,6 +529,20 @@ public class OrgSettingsRestController {
 		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		String orgLocatDateFormat = orgLocationService.getDateFormatByOrgLocation(orgLocations1);
 		return orgLocatDateFormat;
+	}
+	
+	@RequestMapping(value = "/updateLoginSecurity",method = RequestMethod.GET)
+	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId) throws Exception
+	{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		if(Constants.YES.equalsIgnoreCase(security)){
+			orgLocations.setLoginSecurity(Constants.YES);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}else{
+			orgLocations.setLoginSecurity(Constants.NO);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
 	}
 	
 	private String toJSON(Object obj)

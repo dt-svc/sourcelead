@@ -46,7 +46,7 @@ margin-right: 15px;
         <h2>Orgs List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="path/dashboard">Home</a> &raquo; Orgs List </div>
+    <div class="pull-right brud-crum"><a href="app/dashboard">Home</a> &raquo; Orgs List </div>
     <input id="searchOrgElement" type="hidden"></input>
     </section>
      <input type="hidden" id="noOrgsList" name="noOrgsList"/>
@@ -176,7 +176,7 @@ margin-right: 15px;
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/path/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
+	       	    	result = result +"<h4><a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+org.location+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";

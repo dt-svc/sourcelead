@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class ExpensesReportsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

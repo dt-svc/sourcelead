@@ -24,7 +24,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class TimesheetEntriesController {
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesController.class);
 	@Value("${sourceleadUrl}")

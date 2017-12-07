@@ -116,7 +116,7 @@ public class StaticWebController {
 	public String index(HttpServletRequest request) {
 	    Map<String,String> map =new HashMap();
 	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
-		return "openJobs/souceleadJobPage";
+		return "openJobs/sourceleadJobPage";
 	}
 	
 	@RequestMapping("/job-details.html")

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/path")
+@RequestMapping("/app")
 public class CandidateReferencesController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateReferencesController.class);
 	@Value("${sourceleadUrl}")

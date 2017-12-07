@@ -109,29 +109,29 @@ display: none;}
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="${sourceleadUrl}/ws/openRequirements" class="rcolor">Jobs</a></li>
+		<li><a href="index.html" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
-				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="../ats.html">ATS</a></li>
-                <li><a href="../vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
+				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
+            	<li><a href="ats.html">ATS</a></li>
+                <li><a href="vms.html">VMS</a></li>
+                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../demo.html">Product Videos</a></li>
+            	<li><a href="demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
                 <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../about-us.html">About SourceLead</a></li>
-                <li><a href="../team.html">Our team</a></li>
+            	<li><a href="about-us.html">About SourceLead</a></li>
+                <li><a href="team.html">Our team</a></li>
                 <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="../contact.html">Contact</a></li>
+                <li><a style="border-bottom:none;" href="contact.html">Contact</a></li>
             </ul>        
         </li>
         <li><a href="blog4.html">Blogs</a></li>
@@ -374,27 +374,27 @@ display: none;}
     	<div class="footerInnCta resFoot">
         	<h3>What we do</h3>
             <ul>
-				<li><a href="../crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="../ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="../vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="../timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
+				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
             </ul>
         </div> 
     	<div class="footerInnCta">
 <div class="hBlogs">
-            	<a href="../blog4.html">
+            	<a href="blog4.html">
                 	<span>Loyal Relationships with Recruiters</span>
                     <b>FEB 20, 2017</b>
                 </a>            
-            	<a href="../blog3.html">
+            	<a href="blog3.html">
                 	<span>Recruiting Through Social Media Platform</span>
                     <b>FEB 15, 2017</b>
                 </a>            
-            	<a href="../blog.html">
+            	<a href="blog.html">
                 	<span>Existing Process without using any Tool</span>
                     <b>DEC 20, 2016</b>
                 </a>
-            	<a href="../blog4.html">Viwe all</a>                                                
+            	<a href="blog4.html">Viwe all</a>                                                
             </div>
         </div>  
     	<div class="footerInnCta">
@@ -418,8 +418,8 @@ display: none;}
     	<div class="copyright">
     	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
-        	<a href="../privacy.html">Privacy Policy</a>
-            <a href="../terms.html">Terms of Use</a>
+        	<a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Use</a>
         </span><div class="clear"></div>
         </div>
     </div>  
@@ -478,7 +478,7 @@ function getOpenJobsELKList(){
 	var offset = 0;
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	     $("#openJobsRequirementsList").empty();
 	     var json = JSON.parse(data);
@@ -520,7 +520,7 @@ function getOpenJobsELKList(){
 					result = result +'	<a href="#" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');"><h3 style="font-size:20px;color:#368ee0;">'+requirements.jobTitle+'</h3></a>';
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
-					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					
 					if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 					result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
@@ -538,7 +538,7 @@ function getOpenJobsELKList(){
 					}
 					result = result +'	</div>';	
 					
-					link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+					link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 					description =  description+'Job Title:'+requirements.jobTitle+";";
 					
 					result = result +'	<span>';
@@ -629,7 +629,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
+		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
@@ -683,7 +683,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</span>';
 				result = result +'    </div>';
 				
-				link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+json.requirementUUID;
+				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+json.requirementUUID;
 				description =  description+'Job Title:'+json.jobTitle+";";
 				
 				result = result +'    <div class="jobDetailsLogo">';
@@ -784,7 +784,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -821,7 +821,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/path/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -834,7 +834,7 @@ function openJobSearchRequirement(){
 										result = result +'	</span>';
 										result = result +'	</div>';
 										
-										link = sourceleadUrl+"/ws/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+										link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 										description =  description+'Job Title:'+requirements.jobTitle+";";
 										
 										result = result +'	<div class="jobShare">';
@@ -900,7 +900,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: sourceleadUrl+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -938,7 +938,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1203,7 +1203,7 @@ function redirectPage(){
 	var title = document.getElementById("openJobsRequirementTitleId").value;
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("openJobsExperienceId").value;
-	window.location.href = "path/ws/jobs/"+title+"/"+location+"/"+experience;
+	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
 }
 </script>
 
