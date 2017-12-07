@@ -56,8 +56,8 @@
 							result = result + '	 					</span>                                                       ';
 							result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
 							result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
-							result = result + '	 						<li><a href="#" onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
-							result = result + '	 						<li><a href="#"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
+							result = result + '	 						<li><a href="#"  onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
+							result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#folderPermission"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
 							result = result + '	 					</ul>                                                                  ';
 							result = result + '	 				</span>                                                                    ';
 							result = result + '	 			</li>     ';
@@ -145,7 +145,7 @@
 				result = result + '	 								</div>                                                                                            ';
 				result = result + '	 								<div class="col-md-95">                                                                           ';
 				result = result + '	 								<span class="pull-left"><i class="fa fa-folder-o tblminwidth-30 mr10"></i>'+folderName+' (<span id="allFolderCount"></span>)</span>                 ';
-				result = result + '	 								<ul class="pull-right list-unstyled list-inline extrafields" style="display:block">                                     ';
+				result = result + '	 								<ul class="pull-right list-unstyled list-inline extrafields" style="display:none" id="checkBoxCheckedId">                                     ';
 				result = result + '	 										<li><a href="javascript:void(0)" onclick="getAllDocumentDownload();"><i class="fa fa-download"></i></a></li>                  ';
 				result = result + '	 										<li><a href="javascript:void(0)" onclick="deleteAllDcouments();"><i class="fa fa-trash"></i></a></li>                     ';
 				result = result + '	 									</ul>                                                                                         ';
@@ -160,7 +160,7 @@
 					result = result + '	 							<td>                                                                                                  ';
 					result = result + '	 							<div class="clearfix">                                                                                ';
 					result = result + '	 								<div class="pull-left mr10">                                                                      ';
-					result = result + '	 									<input id="checkbox'+report.id+'" value="'+report.id+'" name="documentIds[]"  class="checkbox-custom fmcheckbox"  type="checkbox">   ';
+					result = result + '	 									<input id="checkbox'+report.id+'" value="'+report.id+'" name="documentIds[]"  class="checkbox-custom fmcheckbox"  type="checkbox" onclick="getAllCheckBoxes()">   ';
 					result = result + '	 									<label for="checkbox'+report.id+'" class="checkbox-custom-label fmcheckbox-lable"></label>                ';
 					result = result + '	 								</div>                                                                                             ';
 					result = result + '	 								<div class="col-md-95">                                                                            ';
@@ -195,7 +195,7 @@
 					result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
 					result = result + '	 										</a></li>                                                                                  ';
 					
-					result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail">               ';
+					result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail" onclick="sendMailPopUp('+report.id+');">               ';
 					result = result + '	 												<i class="fa fa-envelope-o"></i> <br> Email    ';
 					result = result + '	 											</a>  </li>       ';
 					
@@ -242,6 +242,13 @@
 		 $("input[name='documentIds[]']:checked").each( function (i) {
 			 documentIds[i] = $(this).val();
 		});
+		 
+		 if(documentIds.length > 0){
+			 $("ul#checkBoxCheckedId").show();
+		 }else{
+			 $("ul#checkBoxCheckedId").hide();
+		 }
+		 
 	}
 	function toggleDocuments(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -264,7 +271,6 @@
 		 $("input[name='documentIds[]']:checked").each( function (i) {
 			 documentIds[i] = $(this).val();
 		});
-		 
 		 $.ajax({
 				type : "POST",
 				url : sourceleadUrl+"/deleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
@@ -299,6 +305,7 @@
 		 $("input[name='documentIds[]']:checked").each( function (i) {
 			 documentId[i] = $(this).val();
 		});
+		 alert("hello")
 		 alert("documentId"+documentId)
 		 if(documentId != null && documentId != '' &&  documentId != 'undefined'){
 			 $.ajax({
@@ -387,14 +394,22 @@ $('body').on('blur', '#reNameFolder_form', function() {
   
  <!-- Create Folder Popup Modal-->
  <form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
-  <div class="modal fade" id="createFolder" role="dialog">
+  <div class="modal fade" id="folderPermission" role="dialog">
     <div class="modal-dialog fm-modaldialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Create Folder</h4>
+          <h4 class="modal-title">Permissions</h4>
         </div>
         <div class="modal-body mt mb">
+        <div class="row">
+          	<label class="col-md-3">Permission</label>
+          	<div class="col-md-9">
+          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
+          	</div>
+          </div>
+          </div>
+          <div class="modal-body mt mb">
           <div class="row">
           	<label class="col-md-3">Create Folder</label>
           	<div class="col-md-9">
@@ -417,8 +432,6 @@ $('body').on('blur', '#reNameFolder_form', function() {
 		var projectId = $("#projectId").val();
 			 if ($('#projectFolder_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
 		        var formData =  getFormData('projectFolder_form'); 
 				$.ajax({
@@ -548,6 +561,33 @@ $('body').on('blur', '#reNameFile_form', function() {
 	$("#reNameFile_form").validateOnBlur(false, validationSettings);
 });
 </script>
+
+
+<form role="form"  id="projectDocumentPermission_form" name="projectDocumentPermission_form" method="post" >
+  <div class="modal fade" id="createFolder" role="dialog">
+    <div class="modal-dialog fm-modaldialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Create Folder</h4>
+        </div>
+        <div class="modal-body mt mb">
+          <div class="row">
+          	<label class="col-md-3">Create Folder</label>
+          	<div class="col-md-9">
+          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
+          	</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName();">Save</button>
+          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+  
 <script>
 $(".close, .cancel").click(function(){
 	//Recet the form
@@ -586,6 +626,9 @@ function uploadProjectDocument(){
 		var projectId = $("#projectId").val();
 			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_doc").attr("disabled", "disabled");
+         		$("#save_doc" ).addClass('button').val('Processing..');
+         		
 				//It will escape all the special characters
 		        var formData =  getFormData('projectDocumentType_form'); 
 				$.ajax({
@@ -613,70 +656,68 @@ function uploadProjectDocument(){
 
 
 <!-- Email Popup Modal-->
+
   <div class="modal fade" id="fmEmail" role="dialog">
     <div class="modal-dialog fm-modaldialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Email</h4>
-        </div>
-        <div class="modal-body mt mb">
-          <div class="row">
-          	<label class="col-md-3">Send To</label>
-          	<div class="col-md-9">
-          		<input type="text" class="form-control input-sm" placeholder="Send To">
-          	</div>
-          </div>
-          <div class="row mt mb">
-          	<label class="col-md-3">Subject</label>
-          	<div class="col-md-9">
-          		<input type="text" class="form-control input-sm" placeholder="Subject">
-          	</div>
-          </div>
-         <div class="row">
-          	<label class="col-md-3">Message</label>
-          	<div class="col-md-9">
-          		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm"></textarea>
-          	</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-primary mr10">Email</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        </div>
-      </div>
+      <div id="sendEmailPopupDivId"></div>
     </div>
   </div>
-<!-- Email Folder Popup ends -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript">
-	function editStoreProjectDocument(projectId,documentId){
-			 if ($('#editProjectDocumentType_form').validate(false, validationSettings)){
+ 
+ <script>
+ function sendMailPopUp(documentId){
+	   var result = "";
+	     result = result  +'<form role="form"  id="sendEmail_form" name="sendEmail_form" method="post" >';
+		result = result  +'	 <div class="modal-content">';
+		result = result  +'     <div class="modal-header">';
+		result = result  +'       <button type="button" class="close" data-dismiss="modal">&times;</button>';
+		result = result  +'       <h4 class="modal-title">Email</h4>';
+		result = result  +'     </div>';
+		result = result  +'     <div class="modal-body mt mb">';
+		result = result  +'       <div class="row">';
+		result = result  +'       	<label class="col-md-3">Send To</label>';
+		result = result  +'       	<div class="col-md-9">';
+		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Send To">';
+		result = result  +'       	</div>';
+		result = result  +'       </div>';
+		result = result  +'       <div class="row mt mb">';
+		result = result  +'       	<label class="col-md-3">Subject</label>';
+		result = result  +'       	<div class="col-md-9">';
+		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Subject">';
+		result = result  +'       	</div>';
+		result = result  +'       </div>';
+		result = result  +'      <div class="row">';
+		result = result  +'       	<label class="col-md-3">Message</label>';
+		result = result  +'       	<div class="col-md-9">';
+		result = result  +'       		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm"></textarea>';
+		result = result  +'       	</div>';
+		result = result  +'       </div>';
+		result = result  +'     </div>';
+		result = result  +'     <div class="modal-footer">';
+		result = result  +'      <button type="button" class="btn btn-primary mr10" onclick="sendEmail('+documentId+');">Email</button>';
+		result = result  +'       <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+		result = result  +'     </div>';
+		result = result  +'   </div>';
+		result = result  +'  </form>';
+		$("#sendEmailPopupDivId").empty();
+		$("#sendEmailPopupDivId").append(result);
+		
+		
+ }
+ </script>
+ <script type="text/javascript">
+	function sendEmail(documentId){
+		var projectId = $("#projectId").val();
+			 if ($('#sendEmail_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_doc").attr("disabled", "disabled");
-         		$("#save_doc" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
-		        var formData =  getFormData('editProjectDocumentType_form'); 
+		        var formData =  getFormData('projectDocumentType_form'); 
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&documentId="+documentId,
+						url : sourceleadUrl+"/projectDocumentMailSending?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
 						success : function(result) {
-								closePopup();
-								$("#popUpDiv").removeClass("edit-details-active");
+							$(".modal-backdrop, .modal").fadeOut();
 								projectDocuments(projectId);
 						},
 					}); 
@@ -685,12 +726,14 @@ function uploadProjectDocument(){
 					return false;
 			 } 
 		}
-		$('body').on('blur', '#editProjectDocumentType_form', function() {
-		$("#editProjectDocumentType_form").showHelpOnFocus();
-		$("#editProjectDocumentType_form").validateOnBlur(false, validationSettings);
+		$('body').on('blur', '#sendEmail_form', function() {
+		$("#sendEmail_form").showHelpOnFocus();
+		$("#sendEmail_form").validateOnBlur(false, validationSettings);
 	});
 		
 </script>
+
+<!-- Email Folder Popup ends -->
 
 
 
@@ -735,22 +778,6 @@ function removeDocNameDiv(){
 }
 </script>
 
-<script>
-function removeProjectDocuments(documentId,projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/terminateProjectDoc?${_csrf.parameterName}=${_csrf.token}&porjectDocumentId="+documentId, 	   
-		    success: function(data) {
-		    	projectDocuments(projectId);
-		    },
-     });
-
-}
-
-
-</script>
- 
 <script> 	
 // Edit pop
 <script type="text/javascript">
@@ -767,23 +794,7 @@ $(document).ready(function() {
 	
 </script> 
 <!-- Add Task Script start -->
-
-<script>
-function taskPagination(){  
-    $('#projectTaskPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"autoWidth": false,
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    } );
-}
-</script>
+ 
 
 
 

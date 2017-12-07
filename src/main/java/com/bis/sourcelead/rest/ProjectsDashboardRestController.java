@@ -1003,6 +1003,15 @@ public class ProjectsDashboardRestController {
 				return "success";
 			}
 		   
+		   
+		   @RequestMapping(value = "/projectDocumentMailSending", method = RequestMethod.POST)
+			public @ResponseBody String projectDocumentMailSending(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
+			{
+			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
+			   return "success";
+           }
+		   
 		  
 		   @RequestMapping(value = "/getAllDocumentDownload",method = RequestMethod.POST)
 			public @ResponseBody String getAllDocumentDownload(@RequestParam(value = "documentIds", required = false) String documentid,HttpServletResponse response) throws Exception
