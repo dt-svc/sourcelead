@@ -7401,7 +7401,8 @@ min-height: 40px;
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
 }
 .tableStyles table tr th {
-	font-weight: normal; color: #333; padding: 10px; border-bottom: 1px solid #BDBDBD;
+	font-weight: normal; color: #333; padding: 10px !important; border-bottom: 1px solid #BDBDBD;
+	height: 40px; vertical-align: middle;
 }
 .tableStyles table thead {
 	background-color: #CBCBCB;
@@ -7420,7 +7421,8 @@ min-height: 40px;
 }
 .action-div .action-inner ul {
 	margin-bottom: 0; clear: both; display: inline-block; background-color: #FFF; float: left; padding: 5px;
-	border: 1px solid #EEEEEE; position: absolute; right: 20px; top: -10px; transition: all 0.3s ease-in-out;
+	border: 1px solid #EEEEEE; position: absolute; right: 0px; top: -8px; transition: all 0.3s ease-in-out;
+	min-width: 60px;
 }
 .action-div .action-inner {
 	display: none;
