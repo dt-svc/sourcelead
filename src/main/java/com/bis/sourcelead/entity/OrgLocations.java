@@ -115,6 +115,14 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
+	@Column(name = "DBA")
+	private String dba;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
+	private LookUpData businessType;
+	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -157,7 +165,6 @@ public class OrgLocations implements Serializable{
     @Column(name = "GENERATED_USER_ID")
 	private String generatedUserId;
     
-    
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
@@ -165,6 +172,10 @@ public class OrgLocations implements Serializable{
     @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
     @Type(type="text")
 	private String billingAddress;
+    
+    
+    @Column(name = "IS_COMPANY_ONBOARDED")
+	private String isCompanyOnboarded;
     
     @Transient
     private String orgName;
@@ -699,6 +710,30 @@ public class OrgLocations implements Serializable{
 
 	public void setVendorOnboardId(Long vendorOnboardId) {
 		this.vendorOnboardId = vendorOnboardId;
+	}
+
+	public String getIsCompanyOnboarded() {
+		return isCompanyOnboarded;
+	}
+
+	public void setIsCompanyOnboarded(String isCompanyOnboarded) {
+		this.isCompanyOnboarded = isCompanyOnboarded;
+	}
+
+	public String getDba() {
+		return dba;
+	}
+
+	public void setDba(String dba) {
+		this.dba = dba;
+	}
+
+	public LookUpData getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(LookUpData businessType) {
+		this.businessType = businessType;
 	}
 	
 }

@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
@@ -35,7 +37,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
-
+	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
 		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
@@ -100,7 +102,16 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
+        
+        if(orgSettings.getBusinessType() != null || orgSettings.getBusinessType().isEmpty()){
+          LookUpData businessTypeLookUpData = new LookUpData();
+          businessTypeLookUpData.setId(Long.valueOf(orgSettings.getBusinessType()));
+          orgLocations.setBusinessType(businessTypeLookUpData);
+        }
       
+        if(orgLocations.getDba() != null || orgLocations.getDba().isEmpty()){
+        	orgLocations.setDba(orgSettings.getDba());
+        }
         if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
 			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		}

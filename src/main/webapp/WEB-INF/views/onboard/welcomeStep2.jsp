@@ -15,6 +15,7 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
+
 <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">

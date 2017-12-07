@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -328,6 +330,19 @@ public class LoginSessionController {
 					}else{
 						model.setViewName("dashboard");
 					}
+				}else{
+					model.setViewName("dashboard");
+				}
+			}
+			
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded())) {
+				if(orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+					List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+					model.addObject("bussinessTypesList", bussinessTypesList);
+					List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+					model.addObject("timezoneList", timezoneList);
+					model.setViewName("onboard/companyOnboard");
 				}else{
 					model.setViewName("dashboard");
 				}
@@ -978,6 +993,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+		  if(orgLocations.getDba() == null || orgLocations.getDba().isEmpty()){
+			  SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+		  }
+		
 	}
 	
 	
