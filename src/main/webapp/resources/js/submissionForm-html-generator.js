@@ -533,7 +533,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             	 defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
-                 onSelect : function(selected) {
+                 showOn: 'focus',
+                 showButtonPanel: true,
+                 closeText: 'Clear',
+                 onClose : function(selected) {
+                	  var event = arguments.callee.caller.caller.arguments[0];
+                     if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                         $(this).val('');
+                     }
                 	 $('p.jquery_form_error_message').remove();
                  }
                  

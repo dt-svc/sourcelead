@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -622,12 +622,13 @@ public class TimesheetApprovalRestController {
 		        	clientId =Long.parseLong(client);
 		        }
 		        
-		        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId());
+		        String searchValue = "";
+				ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue ,0,0);
 		        HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
-		        if(projectMembers != null && !projectMembers.isEmpty()){
+		        if(projectMembers != null && !projectMembers.getData().isEmpty()){
 		        	
 		        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
-			        	for(ProjectMembers pm :projectMembers){
+			        	for(ProjectMembers pm :projectMembers.getData()){
 			        		 Date biweeklyStrDate = null;
 			        		/* if(actualStartDate.before(CommonUtil.currentDate()) || actualStartDate == CommonUtil.currentDate()){*/
 			        			 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
@@ -642,7 +643,7 @@ public class TimesheetApprovalRestController {
 			        	}
 		        	}
 		        	 else{
-				        	freshProjectMembers = new HashSet<>(projectMembers);
+				        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 				        }
 		         }
 		        
@@ -688,7 +689,7 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("	                </tr>");
 					timesheetApprovalDiv.append("				</thead>");
 					timesheetApprovalDiv.append("	        	<tbody>");
-					for (ProjectMembers projectMember : projectMembers)
+					for (ProjectMembers projectMember : projectMembers.getData())
 					{
 						 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 						 String fileUrl = "";

@@ -2,6 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <jsp:include page="../views/expenses/expensesCommonList.jsp" />
 
@@ -13,7 +14,7 @@ $(document).ready(function(){
 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix">Expenses &nbsp;&nbsp;</h4>
+          <h4 class="clearfix"><a id="expensesLink" href="<c:url value="/expenses"/>">Expenses &nbsp;&nbsp;</a></h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
             
@@ -201,6 +202,12 @@ function expensesCount(expenseType){
 		        	  
 		 		}
 		  });
+		 
+		 if(expenseType == "myExpenses"){
+			 $("#expensesLink").attr("href", "<c:url value='/expenses'/>");
+		 }else{
+			 $("#expensesLink").attr("href", "<c:url value='/expensesApprovalList'/>");
+		 }
 	}
 </script>
 

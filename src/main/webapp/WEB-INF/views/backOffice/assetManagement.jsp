@@ -25,7 +25,7 @@ $(document).ready(function(){
   <div class="vendor_wrap">
     <div class="timesheet_head">
       <ul>
-        <li><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play" id="category"></i>|
+        <li id="category"><i class="fa fa-filter"></i><span>Category</span><i class="glyphicon glyphicon-play"></i>|
           <div class="approved_pop">
             <ul>
                    <c:forEach var="report" items="${assetCategoriesList}">  
@@ -35,7 +35,7 @@ $(document).ready(function(){
           </div>
         </li>
         
-         <li><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play" id="workingStatus"></i>|
+         <li id="workingStatus"><i class="fa fa-filter"></i><span>Working Status</span><i class="glyphicon glyphicon-play"></i>|
           <div class="approved_pop">
             <ul>
                     <li><input id="c1" type="checkbox"  name="workingStatus"  value ="Working"  onclick="getAssetList();"  ><label>Working</label></li>
@@ -196,6 +196,7 @@ $(document).ready(function(){
       
     <!-- list Table -->
     <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
+    <div id= "assetManagementLoderDiv"></div>
     <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
       
     </div>
@@ -320,7 +321,7 @@ var validationSettings = {
 	    {
 			workingStatus.push($(this).val());
 	    });
-		
+		$("#assetManagementLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetList?"+tokenParamName+"="+tokenValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus, 	   
@@ -394,7 +395,9 @@ var validationSettings = {
 		   	     	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetManagementList").empty();  
-	   	    	    $("#assetManagementList").append(result)
+	   	    	    $("#assetManagementList").append(result);
+	   	    	    $("#assetManagementLoderDiv").empty();
+	   	    	    $("#assetManagementLoderDiv").removeAttr('style');
 	   	    	    assetPagination();
 	   	    	     
 	   	    	    
@@ -629,9 +632,9 @@ function removeAssetManagement(assetId){
 
 // Approved Popup
     $("#category").click(function(){
-    	$(this).next(".approved_pop").toggle();
-    	$("#workingStatus").next(".approved_pop").slideUp();
-    	
+    	$('#category').find(".approved_pop").toggle();
+    	$("#workingStatus").find(".approved_pop").slideUp();
+    	$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();
@@ -641,8 +644,9 @@ function removeAssetManagement(assetId){
     });
     
     $("#workingStatus").click(function(){
-		$(this).next(".approved_pop").toggle();
-		$("#category").next(".approved_pop").slideUp();
+		$("#workingStatus").find(".approved_pop").toggle();
+		$("#category").find(".approved_pop").slideUp();
+		$(".collapse-div-adduser").removeClass("show-div");
 	});
     $("html").click(function() {
         $(".approved_pop").slideUp();

@@ -220,6 +220,9 @@ public class ContractRestController {
 			}
 			
 		}
+		
+		
+		
 		/*if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
 		if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
@@ -704,6 +707,8 @@ public class ContractRestController {
 		 	}
 		 	
 		 	}
+		 	
+		 	contract.setOrgRelationUUID(contract.getOrgRelations().getUUID());
 		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();
