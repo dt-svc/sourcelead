@@ -306,7 +306,7 @@
 					<%-- <li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li> --%>
 				<li class="side-nav-active"> 
 				<a href="#" class="tree-view">
-					<span><i class="fa fa-clock-o"></i></span><i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i> </a>
+					<span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i> </a>
 					<ul class="collapses">
 					<li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
 					<li><a href="<c:url value='/campaignSendersList'/>">Senders</a></li>
