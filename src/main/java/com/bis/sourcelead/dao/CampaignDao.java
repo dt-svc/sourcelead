@@ -45,6 +45,8 @@ public interface CampaignDao {
 
 	List<Campaign> getAllCampaigns() throws Exception;
 
+	CampaignStats getCampaignStatsByCampaignId(String campaignId)throws Exception;
+
 
 
 }

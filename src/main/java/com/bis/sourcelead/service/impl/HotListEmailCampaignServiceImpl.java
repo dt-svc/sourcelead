@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
@@ -156,7 +157,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
-		
+		String otherRecilistId = null;
 		if(StringUtils.isNotBlank(hotListEmailCampaignDTO.getOtherEmails())){
 			 String jsonArray = hotListEmailCampaignDTO.getOtherEmails();
 			   otherEmails = jsonArray.toString();
@@ -175,11 +176,15 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	 
 	    	 otherEmails = otherRecipantsEmailsList.toString();
 	    	 otherEmails = otherEmails.substring(0,otherEmails.length()-1);
-	    	 
 	    	 List<String> othEmail = new ArrayList<String>(Arrays.asList(otherEmails.split(",")));
 	    	 List<String> otherRecipientList = campaignUtil.createOtherRecipients(othEmail);
 	    	 if(otherRecipientList !=null && otherRecipientList.size() >0) {
-	    		String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,hotListEmailCampaignDTO.getToemails());
+	    		 CampaignListDTO campaignListDTO = new CampaignListDTO();
+	    		 campaignListDTO.setCpnListName(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+	    		 String listResponse = campaignUtil.createList(campaignListDTO);
+	    		 JSONObject jObject  = new JSONObject(listResponse); 
+	    		 otherRecilistId = jObject.getString("id");
+	    		 String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,otherRecilistId);
 	    		if(res !=null) {
 	    			logger.info("Other Recipient Added to list");
 				}	
@@ -224,7 +229,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 jobListEmailCampaignDTO.setToemails(hotListEmailCampaignDTO.getToemails());
 		 jobListEmailCampaignDTO.setBodytext(hotListEmailCampaignDTO.getBodytext());
 		 
-		 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
+		 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherRecilistId);
 		
 		 if(createCampaignRes !=null) {
 			 JSONObject jObject = new JSONObject(createCampaignRes);
@@ -661,7 +666,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    	 emails = emails.substring(0,emails.length()-1);
 			}
 			
-			
+			String otherReciListId = null; 
 			if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getOtherEmails())){
 				 String jsonArray = jobListEmailCampaignDTO.getOtherEmails();
 				   otherEmails = jsonArray.toString();
@@ -684,7 +689,12 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		    	 List<String> othEmail = new ArrayList<String>(Arrays.asList(otherEmails.split(",")));
 		    	 List<String> otherRecipientList = campaignUtil.createOtherRecipients(othEmail);
 		    	 if(otherRecipientList !=null && otherRecipientList.size() >0) {
-		    		String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,jobListEmailCampaignDTO.getToemails());
+		    		 CampaignListDTO campaignListDTO = new CampaignListDTO();
+		    		 campaignListDTO.setCpnListName(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+		    		 String listResponse = campaignUtil.createList(campaignListDTO);
+		    		 JSONObject jObject  = new JSONObject(listResponse); 
+		 			  otherReciListId = jObject.getString("id");
+		    		String res =  campaignUtil.addOtherRecipientsToList(otherRecipientList,otherReciListId);
 		    		if(res !=null) {
 		    			logger.info("Other Recipient Added to list");
 					}	
@@ -718,7 +728,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
-			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
+			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
 					String campaignId = jObject.getString("id");
@@ -846,36 +856,6 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		return reciEmail;
 	}
 
-	/**
-	 * Send Job mail campaign through sendgrid
-	 */
-	@Override
-	public void sendJobCampaignThroughSendgrid(JobListEmailCampaignDTO jobListEmailCampaignDTO, User user, OrgLocations orgLocation, MultipartFile multiFile) throws Exception
-	{
-		String[] campaignJobs = null;
-		 String jobs = null;
-		String UUID = SourceLeadRandomCodeHelper.generateUUID();
-		
-		 if(StringUtils.isNotBlank(jobListEmailCampaignDTO.getCampaignjobs())){
-			    
-			 String jsonArray = jobListEmailCampaignDTO.getCampaignjobs();
-			 jobs = jsonArray.toString();
-			 if(null != jobs){
-				 jobs = jobs.replaceAll("\\[", "").replaceAll("\\]","");
-				 jobs = jobs.replaceAll("\"", "");
-				 campaignJobs = jobs.split(",");
-			 }
-	 }
-		 String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		String table = getJobListCampaignsTable(campaignJobs, UUID,jobListEmailCampaignDTO,signature);
-		String test = campaignUtil.createCampaign(jobListEmailCampaignDTO, table);
-		if (test != null) {
-			JSONObject jObject = new JSONObject(test);
-			String campaignId = jObject.getString("id");
-			System.out.println("campaign id is :" + campaignId);
-			campaignUtil.sendCampaign(campaignId);
-		}
-	}
 
 	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO, String signature) throws Exception
 	{

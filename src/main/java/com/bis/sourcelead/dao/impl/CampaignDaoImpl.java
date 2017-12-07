@@ -262,5 +262,18 @@ public class CampaignDaoImpl implements CampaignDao {
 		return cpnList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		CampaignStats campaignStats = null;
+		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.campaignId = :campaignId").setString("campaignId", campaignId).setCacheable(true).list();
+		if (statsList != null && statsList.size() > 0) {
+			campaignStats = statsList.get(0);
+		}
+		return campaignStats;
+	}
+
 
 }

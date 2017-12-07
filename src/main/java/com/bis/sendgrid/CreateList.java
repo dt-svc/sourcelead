@@ -24,7 +24,7 @@ public static String getEmailCategoryStats() throws IOException {
 		      Request request = new Request();
 		      request.setMethod(Method.GET);
 		      request.setEndpoint("categories/stats");
-		      request.addQueryParam("end_date", "2017-12-06");
+		      request.addQueryParam("end_date", "2017-12-04");
 //		      request.addQueryParam("aggregated_by", "day");
 //		      request.addQueryParam("limit", "1");
 //		      request.addQueryParam("offset", "1");

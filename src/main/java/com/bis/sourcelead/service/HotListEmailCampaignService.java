@@ -13,5 +13,4 @@ public interface HotListEmailCampaignService {
 	
 	public void sendJobListEmailCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
 	
-	public void sendJobCampaignThroughSendgrid(JobListEmailCampaignDTO jobListEmailCampaignDTO,User user,OrgLocations orgLocation,MultipartFile multiFile) throws Exception;
 }
