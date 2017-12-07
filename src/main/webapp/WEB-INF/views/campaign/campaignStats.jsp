@@ -62,7 +62,8 @@ function populategCampaignStats(json){
            result = result +    '<div class="tbldata-dotdot-sm" title="'+report.opens+'">'+report.opens+'</div>';
            result = result +'  </td>';  
            result = result +'  <td>';   
-           result = result +    '<a href="'+sourceleadUrl+'/campaignStatsGraph"<div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></a>';
+           result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignId='+report.campaignId+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
+         /*   result = result +   "<a href="'+sourceleadUrl+'/campaignStatsGraph?campaignId='+report.campaignId+'"><div class='tbldata-dotdot-sm' title=''+report.categoryName+''+report.categoryName+'</div></a>"; */
            result = result +'  </td>';
            result = result +'  <td>';   
            result = result +    '<div class="tbldata-dotdot-sm" title="'+report.delivered+'">'+report.delivered+'</div>';

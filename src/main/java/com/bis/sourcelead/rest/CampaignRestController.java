@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
@@ -346,5 +347,82 @@ public class CampaignRestController {
 		
 	}
 	
+	/**
+	 * Reading Single campaign stats
+	 * 
+	 * @param orgLocationId
+	 * @param request
+	 * @return List<CampaignStatsDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getCampaignStats")
+	public List<CampaignStatsDTO> getCampaignStats(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
+	{
+		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
+		// SourceLeadSessionManager.getSessionAttribute(request,
+		// "orgLocations");
+		List<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId);
+		for (CampaignStats campaignStats : campStats) {
+			CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
+			campaignStatsListDTO.setId(campaignStats.getId());
+			campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
+			campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
+			campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
+			campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
+			campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
+			campaignStatsListDTO.setOpens(campaignStats.getOpens());
+			campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+			campaignStatsListDTO.setBlocks(campaignStats.getBlocks());
+			campaignStatsListDTO.setBounceDrops(campaignStats.getBounceDrops());
+			campaignStatsListDTO.setBounces(campaignStats.getBounces());
+			campaignStatsListDTO.setClicks(campaignStats.getClicks());
+			campaignStatsListDTO.setDeferred(campaignStats.getDeferred());
+			campaignStatsListDTO.setInvalidEmails(campaignStats.getInvalidEmails());
+			campaignStatsListDTO.setProcessed(campaignStats.getProcessed());
+			campaignStatsListDTO.setRequest(campaignStats.getRequest());
+			campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
+			campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
+			campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
+			campaignStatsList.add(campaignStatsListDTO);
+		}
+		return campaignStatsList;
+	}
+	
+	
+	/**
+	 * Reading Single campaign stats
+	 * 
+	 * @param orgLocationId
+	 * @param request
+	 * @return List<CampaignStatsDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getCampaignStatsByCampaignId")
+	public CampaignStatsDTO getCampaignStatsByCampaignId(@RequestParam(value = "campaignId", required = false) String campaignId, HttpServletRequest request) throws Exception
+	{
+		CampaignStats campaignStats = campaignService.getCampaignStatsByCampaignId(campaignId);
+		CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
+		campaignStatsListDTO.setId(campaignStats.getId());
+		campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+		campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
+		campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
+		campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
+		campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
+		campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
+		campaignStatsListDTO.setOpens(campaignStats.getOpens());
+		campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+		campaignStatsListDTO.setBlocks(campaignStats.getBlocks());
+		campaignStatsListDTO.setBounceDrops(campaignStats.getBounceDrops());
+		campaignStatsListDTO.setBounces(campaignStats.getBounces());
+		campaignStatsListDTO.setClicks(campaignStats.getClicks());
+		campaignStatsListDTO.setDeferred(campaignStats.getDeferred());
+		campaignStatsListDTO.setInvalidEmails(campaignStats.getInvalidEmails());
+		campaignStatsListDTO.setProcessed(campaignStats.getProcessed());
+		campaignStatsListDTO.setRequest(campaignStats.getRequest());
+		campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
+		campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
+		campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
+		return campaignStatsListDTO;
+	}
 	
 }

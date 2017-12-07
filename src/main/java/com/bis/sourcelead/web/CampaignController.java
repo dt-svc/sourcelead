@@ -257,5 +257,20 @@ public class CampaignController {
 		return "campaign/campaignRecipient";
 	}
 	
+	/**
+	 * returning campaign stats graph
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/campaignStatsGraph")
+	public ModelAndView campaignStatsGraph(@RequestParam(value="campaignId",required=false) String campaignId,HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("campaignId", campaignId);
+		   model.setViewName("campaign/campaignStatsGraph");
+	       return model;
+	}
+	
 	
 }
