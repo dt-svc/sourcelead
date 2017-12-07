@@ -2049,7 +2049,7 @@ public class EMailJobScheduler {
     if(StringUtils.isNotBlank(user.getLastName()))
     emailMessage.setLastName(user.getLastName());
     emailMessage.setToEmail(user.getEmail());
-    emailMessage.setFromEmail("info@sourcelead.com");
+    emailMessage.setFromEmail(defaultFromEmailAddressForProd);
     StringBuilder msgBuild = new StringBuilder();
     emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
     // setting the class filed values
