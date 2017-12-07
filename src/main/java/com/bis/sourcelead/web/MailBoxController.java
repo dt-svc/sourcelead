@@ -462,5 +462,21 @@ public class MailBoxController {
 
 	}
 	
+	@RequestMapping(value = "/campaignStats")
+	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStats");
+	       return model;
+	}
+	
+	@RequestMapping(value = "/campaignStatsGraph")
+	public ModelAndView campaignStatsGraph(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStatsGraph");
+	       return model;
+	}
+	
 	
 }

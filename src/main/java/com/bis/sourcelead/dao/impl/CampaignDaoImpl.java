@@ -263,6 +263,15 @@ public class CampaignDaoImpl implements CampaignDao {
 	}
 
 	@Override
+	@Transactional
+	public List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CampaignStats> cpnStatsList = session.createQuery("from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return cpnStatsList;
+	}
+
+    @Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
 	{
@@ -273,6 +282,7 @@ public class CampaignDaoImpl implements CampaignDao {
 			campaignStats = statsList.get(0);
 		}
 		return campaignStats;
+
 	}
 
 

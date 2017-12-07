@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
@@ -41,6 +43,8 @@ import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
@@ -54,6 +58,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
+import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.EmailService;
@@ -131,6 +136,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	EmailAccountSettingsService emailAccountSettingsService;
+	
+	@Autowired
+	CampaignService campaignService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -834,4 +842,29 @@ public class MailBoxRestController {
 		  return successval;
 			
 		}
+	 @RequestMapping(value = "/getCampaignStats")
+	 public List<CampaignStatsDTO> getCampaignStats(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)throws Exception
+	 {
+		 List<CampaignStatsDTO> campaignStatsList = new ArrayList<>() ; 
+//			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId);
+			for (CampaignStats campaignStats : campStats) {
+				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
+				campaignStatsListDTO.setId(campaignStats.getId());
+				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
+				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
+				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
+				campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
+				campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
+				campaignStatsListDTO.setOpens(campaignStats.getOpens());
+				campaignStatsList.add(campaignStatsListDTO);
+			}
+			
+			return campaignStatsList;
+			
+		 
+	 }
+	 
+	 
+	 
 }
