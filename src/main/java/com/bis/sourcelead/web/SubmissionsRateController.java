@@ -51,7 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller  
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+//@RequestMapping("/app")
 public class SubmissionsRateController {
 	
 	@Autowired
@@ -96,7 +96,7 @@ public class SubmissionsRateController {
 	 * this method is used to Accept or reject or to negotiate rate from Candidate
 	 *
 	 */
-	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
+	@RequestMapping(value = "/ws/acceptOrRejectOrRateNegotiateApplicantRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
@@ -183,7 +183,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject or Negotiate Rate from User.
 	 */
-	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateUserRates")
+	@RequestMapping(value = "/ws/acceptOrRejectOrRateNegotiateUserRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateUserRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
@@ -258,7 +258,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject Rate from Candidate.
 	 */
-	@RequestMapping(value = "/acceptOrRejectRequirement")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirement")
 	public ModelAndView acceptOrRejectRequirement(@RequestParam(value="rateStatus", required=false) String rateStatus,@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
 		

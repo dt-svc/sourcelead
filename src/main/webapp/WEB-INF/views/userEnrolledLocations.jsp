@@ -65,7 +65,7 @@ function validateTwoStepAuth() {
 	if(isTwoStepEnabled != null && isTwoStepEnabled != '' && isTwoStepEnabled != 'undefined' && isTwoStepEnabled  == 'N' && userLoginSecurity == 'N'){
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
+		       url: sourceleadUrl+"/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId);   

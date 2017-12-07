@@ -508,7 +508,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	   	url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);
@@ -728,7 +728,7 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
+			url: sourceleadUrl+"/ws/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},

@@ -132,7 +132,7 @@ public class TimesheetController {
 	}
 	
 	
-	@RequestMapping(value = "/acceptOrRejectReopenTimeSheet")
+	@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheet")
 	@ResponseBody  ModelAndView acceptOrRejectReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="userId", required=false) Long userId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,

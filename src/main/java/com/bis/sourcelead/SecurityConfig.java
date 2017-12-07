@@ -99,6 +99,8 @@ public class SecurityConfig  {
     			.antMatchers("/app/resources/**").permitAll()
     			.antMatchers("/resources/**").permitAll()
     			.antMatchers("/app/ws/**").permitAll()
+    			.antMatchers("/ws/**").permitAll() 
+    			.antMatchers("/app/ws/acceptOrRejectRequirement").permitAll() 
     			.antMatchers("/jobs/**").permitAll()
     			.antMatchers("/app/**").fullyAuthenticated()
     			.anyRequest().authenticated()                                                   

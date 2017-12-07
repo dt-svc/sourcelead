@@ -163,7 +163,7 @@ public class RegistrationController {
 	 * @throws Exception 
 	  */
 	 
-	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
+	 @RequestMapping(value = "/ws/acceptClientOrVendorInvitation")
 		public void acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,

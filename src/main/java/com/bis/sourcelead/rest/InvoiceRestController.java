@@ -224,7 +224,7 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	@RequestMapping(value = "/downloadInvoiceAttachment")
+	@RequestMapping(value = "/ws/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
 		
 		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);

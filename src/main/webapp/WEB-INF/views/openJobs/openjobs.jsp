@@ -1299,7 +1299,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"/ws/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -2355,7 +2355,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
