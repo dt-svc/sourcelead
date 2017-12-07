@@ -18,6 +18,10 @@ public class ExpensesDTOConverter {
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
 		expensesDTO.setExpensePurpose(expenses.getPurpose());
 		expensesDTO.setTotalAmount(expenses.getTotalAmount());
+		
+		if(expenses.getOrgRelationUUID() != null){
+		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());
+		}
 		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
 		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
