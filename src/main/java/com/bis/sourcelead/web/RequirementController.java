@@ -623,7 +623,9 @@ public class RequirementController {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
 		
+		if(requirement.getClientId() != null){
 		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+		}
 		
 		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		model.addObject("requirementAssignToListCount",requirementAssignToListCount);

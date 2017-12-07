@@ -524,14 +524,6 @@ $(document).ready(function () {
 				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
 				</div>
 		</div>
-		
-		
-		
-		
-		
-		
-		
-		
 	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -579,6 +571,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
+             <c:if test="${empty requirement.id}">
               <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
@@ -589,6 +582,42 @@ $(document).ready(function () {
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
+              </c:if>
+              <c:if test="${!empty requirement.id}">
+              
+                 <c:if test="${empty requirement.fileName}">
+                 <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+              </div> 
+              </c:if>
+              
+              <c:if test="${!empty requirement.fileName}">
+              
+              <div class="input-group attachfile clearUpload" id= "uploadFileGroup123" style="display: none;">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+              </div>
+              
+              <div class="col-md-6" id="uploadDocNameDiv" >
+				 <label id="uploadDocumentName" name="uploadDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="${requirement.fileName}" >${requirement.fileName}</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeReqDoc(${requirement.id});"><i class="fa fa-trash removeIcon"></i></span>
+				 <input type="hidden" id="uploadExisitngFile" name="uploadExisitngFile" value="${requirement.fileName}">
+				</div>
+				
+				 </c:if>
+              </c:if>
             </div>
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
@@ -2268,5 +2297,22 @@ $("button.btnShowlist").click(function(){
 });
 
 </script>
+<script type="text/javascript">
+function removeReqDoc(requirementId){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteJobDoc?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    success: function(data) {
+		    	$("#uploadDocNameDiv").hide();
+		     	$("#uploadFileGroup123").show();
+		     	$("#uploadExisitngFile").val('');
+		     	$('#uploadFile').attr("data-validation-optional","true"); 
+		     	$("#uploadFile").attr("data-validation", "validatedoc"); 
+		    },
+		    });		
+	
+}
+</script>
+
  
 <jsp:include page="../masterFooter.jsp" />
