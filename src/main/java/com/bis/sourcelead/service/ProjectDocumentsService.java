@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.entity.ProjectDocuments;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.model.ProjectDocumentBO;
 
 public interface ProjectDocumentsService {
@@ -29,5 +30,7 @@ public interface ProjectDocumentsService {
     List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception;
      
     List<ProjectDocuments> getDeleteProjectDocumentsListByDocumentId(String documentid) throws Exception;
+
+	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user)throws Exception;
     
 }

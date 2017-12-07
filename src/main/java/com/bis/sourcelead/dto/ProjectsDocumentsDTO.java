@@ -15,6 +15,12 @@ public class ProjectsDocumentsDTO {
 	private String documentId ;
 	
 	private String projectFolderId;
+	
+	private String sendTo;
+	
+	private String subject;
+
+	private String message;
 
 	public String getStaticPath() {
 		return staticPath;
@@ -62,5 +68,29 @@ public class ProjectsDocumentsDTO {
 
 	public void setProjectFolderId(String projectFolderId) {
 		this.projectFolderId = projectFolderId;
+	}
+
+	public String getSendTo() {
+		return sendTo;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setSendTo(String sendTo) {
+		this.sendTo = sendTo;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

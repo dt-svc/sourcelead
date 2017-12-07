@@ -1005,10 +1005,10 @@ public class ProjectsDashboardRestController {
 		   
 		   
 		   @RequestMapping(value = "/projectDocumentMailSending", method = RequestMethod.POST)
-			public @ResponseBody String projectDocumentMailSending(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
+			public @ResponseBody String projectDocumentMailSending(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
 			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   ProjectDocuments pd = projectDocumentsService.getDocumentById(documentId);
+			   ProjectDocuments pd = projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO,user);
 			   return "success";
            }
 		   

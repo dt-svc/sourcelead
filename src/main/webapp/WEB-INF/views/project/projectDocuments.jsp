@@ -393,7 +393,7 @@ $('body').on('blur', '#reNameFolder_form', function() {
   
   
  <!-- Create Folder Popup Modal-->
- <form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
+ <form role="form"  id="projectFolderPermission_form" name="projectFolderPermission_form" method="post" >
   <div class="modal fade" id="folderPermission" role="dialog">
     <div class="modal-dialog fm-modaldialog">
       <div class="modal-content">
@@ -401,24 +401,50 @@ $('body').on('blur', '#reNameFolder_form', function() {
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Permissions</h4>
         </div>
-        <div class="modal-body mt mb">
-        <div class="row">
+        <div class="modal-body">
+        <div class="row mb minHeight40">
           	<label class="col-md-3">Permission</label>
-          	<div class="col-md-9">
-          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
+          	<div class="col-md-9 dropdown-select">
+          		<select class="form-control">
+          		<option>-- Select Permission --</option>
+          		<option>Permission-1</option>
+          		<option>Permission-2</option>
+          		<option>Permission-3</option>
+          		</select>
+          	</div>
+          </div>
+          <div class="panel panel-default">
+          <div class="panel-body">
+          <div class="row minHeight40">
+          	<label class="col-md-3">Roles</label>
+          	<div class="col-md-9 dropdown-select">
+          		<select class="form-control">
+	          		<option>-- Select Roles --</option>
+	          		<option>Roles-1</option>
+	          		<option>Roles-2</option>
+	          		<option>Roles-3</option>
+          		</select>
+          	</div>
+          </div>
+          <p class="text-muted mt10 mb10 clearfix text-center col-md-8 col-md-offset-3">------------------------------ OR ------------------------------</p>
+          <div class="row minHeight40">
+          	<label class="col-md-3">Others</label>
+          	<div class="col-md-9 dropdown-select">
+          		<select class="form-control">
+          		<option>-- Select Others --</option>
+	          		<option>Others-1</option>
+	          		<option>Others-2</option>
+	          		<option>Others-3</option>
+          		</select>
           	</div>
           </div>
           </div>
-          <div class="modal-body mt mb">
-          <div class="row">
-          	<label class="col-md-3">Create Folder</label>
-          	<div class="col-md-9">
-          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
-          	</div>
           </div>
+          
         </div>
+        
         <div class="modal-footer">
-         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName();">Save</button>
+         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName111111();">Apply</button>
           <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -677,19 +703,19 @@ function uploadProjectDocument(){
 		result = result  +'       <div class="row">';
 		result = result  +'       	<label class="col-md-3">Send To</label>';
 		result = result  +'       	<div class="col-md-9">';
-		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Send To">';
+		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Send To" name="sendTo">';
 		result = result  +'       	</div>';
 		result = result  +'       </div>';
 		result = result  +'       <div class="row mt mb">';
 		result = result  +'       	<label class="col-md-3">Subject</label>';
 		result = result  +'       	<div class="col-md-9">';
-		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Subject">';
+		result = result  +'       		<input type="text" class="form-control input-sm" placeholder="Subject" name="subject">';
 		result = result  +'       	</div>';
 		result = result  +'       </div>';
 		result = result  +'      <div class="row">';
 		result = result  +'       	<label class="col-md-3">Message</label>';
 		result = result  +'       	<div class="col-md-9">';
-		result = result  +'       		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm"></textarea>';
+		result = result  +'       		<textarea rows="2" cols="50" placeholder="Message" class="form-control input-sm" name="message"></textarea>';
 		result = result  +'       	</div>';
 		result = result  +'       </div>';
 		result = result  +'     </div>';
@@ -711,7 +737,7 @@ function uploadProjectDocument(){
 			 if ($('#sendEmail_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
 				//It will escape all the special characters
-		        var formData =  getFormData('projectDocumentType_form'); 
+		        var formData =  getFormData('sendEmail_form'); 
 				$.ajax({
 						type : "POST",
 		        	    data: formData,

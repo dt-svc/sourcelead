@@ -186,4 +186,10 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		return null;
 	}
 
+	@Override
+	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
