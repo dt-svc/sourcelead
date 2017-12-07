@@ -48,6 +48,10 @@ private static final long serialVersionUID = 1L;
 	private BigDecimal expenseAmountDivId;
 	
 	private List<Long> removedDocumentIds;
+	
+	private String projectClientUUID;
+	 
+	private String projectUUID;
 
 	public Long getId() {
 		return id;
@@ -221,6 +225,26 @@ private static final long serialVersionUID = 1L;
 
 	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
 		this.removedDocumentIds = removedDocumentIds;
+	}
+
+	public String getProjectClientUUID()
+	{
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID)
+	{
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getProjectUUID()
+	{
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID)
+	{
+		this.projectUUID = projectUUID;
 	}
 
 }
