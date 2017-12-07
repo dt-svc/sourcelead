@@ -4,7 +4,7 @@
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
-  <script type="text/javascript">
+<script type="text/javascript">
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -20,7 +20,7 @@
       <div class="pull-left">
         <h2>Campaigns Stats</h2>
       </div>
-      <div class="pull-right brud-crum">Bank Office &raquo; Campaigns List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='campaignStats'/>">Bank Office</a>&raquo; Campaigns List</div>
     </section>
       <div class="clearfix">
         <div class="tableStyles_head clearfix positionRelative"> 

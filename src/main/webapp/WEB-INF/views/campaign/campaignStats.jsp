@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Campaigns Stats</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='hotListCampaigns'/>">Bank Office</a> &raquo; Campaigns List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='hotListCampaigns'/>">Bank Office</a> &raquo; Campaigns Stats</div>
     </section>
       <div class="clearfix">
         <div class="tableStyles_head clearfix positionRelative">
