@@ -57,6 +57,10 @@
 	</ul>
 </div>
 
+<div class="remove_search">
+       		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
+</div>
+
 <div class="clearfix"></div>
 </div>
 <div class="time_appr_side_wrap">
@@ -70,11 +74,20 @@
 	<textarea placeholder="Enter comment here"></textarea>
 	<a href="javascript:void(0)">Submit</a><a class="close_color" href="javascript:void(0)">Cancel</a>
 </div>	
-<div class="timesheet_appr_table datatable_filter overflow_inherint">
+<div class="datatable_filter overflow_inherint">
 	 <div id="approverDataTimesheetDiv"> 
 		<jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
 	</div> 
 </div>
 
-
+<script>
+$("#dataTableSearchExpenses").keyup(function(event) {
+    if (event.keyCode === 13) {
+    	var searchData = $('#dataTableSearchExpenses').val();
+    	timesheetApprovalDetils('',searchData)
+    	$('#dataTableSearchExpenses').val(searchData);
+    }
+});
+</script>
+	
 

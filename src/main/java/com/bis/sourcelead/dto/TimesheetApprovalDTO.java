@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TimesheetApprovalDTO implements Serializable {
+public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String frequencyMonth;
@@ -16,23 +16,24 @@ public class TimesheetApprovalDTO implements Serializable {
 	private String weekFrequency;
 	private String client;
 	private String stage;
-	
 	private Long userId;
 	private String locationCode;
-	
 	private String frequencyStartDate;
 	private String frequencyEndDate;
-	
 	private LinkedHashSet<String> frequencyMonthList;
 	private LinkedHashSet<String> timesheetFrequencyList;
 	private Map<String,String> weekFrequencyList;
 	private Map<Long,String> clientList;
 	private LinkedHashSet<String> stagesList;
 	private List<String> dataTableWeekDateList;
-	
 	private LinkedHashMap<Date,Date> displayWeekList;
-	
 	private List<TimesheetApprovalSubmissionDetailsDTO> timesheetSubmission;
+	
+	private String exportType;
+	private int totalRows;
+	private int pageNo;
+	private int pageSize;
+	private int pageCount;
 	
 	public String getWeekFrequency() {
 		return weekFrequency;
@@ -135,6 +136,36 @@ public class TimesheetApprovalDTO implements Serializable {
 	}
 	public void setDisplayWeekList(LinkedHashMap<Date, Date> displayWeekList) {
 		this.displayWeekList = displayWeekList;
+	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	public int getTotalRows() {
+		return totalRows;
+	}
+	public void setTotalRows(int totalRows) {
+		this.totalRows = totalRows;
+	}
+	public int getPageNo() {
+		return pageNo;
+	}
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	public int getPageCount() {
+		return pageCount;
+	}
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
 	}
 	
 	

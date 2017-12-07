@@ -545,14 +545,6 @@ $(document).ready(function () {
 				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
 				</div>
 		</div>
-		
-		
-		
-		
-		
-		
-		
-		
 	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -742,7 +734,26 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
-              <div class="input-group attachfile" id= "uploadFileGroup">
+          
+              <c:if test="${!empty requirement.id}">
+              
+                 <c:if test="${empty requirement.fileName}">
+                 <div class="input-group attachfile" id= "uploadFileGroup">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
+              </div> 
+              </c:if>
+              
+              <c:if test="${!empty requirement.fileName}">
+              
+              <div class="input-group attachfile" id= "uploadFileGroup123" style="display: none;">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -753,6 +764,14 @@ $(document).ready(function () {
               <div class="clearfix"></div> <div class="clearfix"></div>
               <div class="clearUpload"></div>
               </div>
+              
+              <div class="col-md-6" id="uploadDocNameDiv" >
+				 <label id="uploadDocumentName" name="uploadDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="${requirement.fileName}" >${requirement.fileName}</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeReqDoc(${requirement.id});"><i class="fa fa-trash removeIcon"></i></span>
+				 <input type="hidden" id="uploadExisitngFile" name="uploadExisitngFile" value="${requirement.fileName}">
+				</div>
+				
+				 </c:if>
+              </c:if>
             </div>
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
@@ -1256,7 +1275,8 @@ $(document).ready(function () {
               </div>
               <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
           </div>
-          <div class="col-md-12 assigned-Table" id='assignedTeamsOrUsers' style="display: none">
+          <div class="col-md-12 assigned-Table">
+          <div class="assignTableScroll" id="assignedTeamsOrUsers" style="display: none"></div>
           </div>
         
         <div class="clearfix"></div>
@@ -2623,5 +2643,22 @@ $("button.btnShowlist").click(function(){
 });
 
 </script>
+<script type="text/javascript">
+function removeReqDoc(requirementId){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteJobDoc?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    success: function(data) {
+		    	$("#uploadDocNameDiv").hide();
+		     	$("#uploadFileGroup123").show();
+		     	$("#uploadExisitngFile").val('');
+		     	$('#uploadFile').attr("data-validation-optional","true"); 
+		     	$("#uploadFile").attr("data-validation", "validatedoc"); 
+		    },
+		    });		
+	
+}
+</script>
+
  
 <jsp:include page="../masterFooter.jsp" />

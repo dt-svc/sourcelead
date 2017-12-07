@@ -91,6 +91,11 @@ public class RequirementHelper {
 				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
 			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
 				}
+
+			if(requirement.getClientId()!= null && requirement.getClientId().getId()!= null){
+			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
+			}
+
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}
