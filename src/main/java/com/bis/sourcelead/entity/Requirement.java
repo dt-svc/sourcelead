@@ -310,13 +310,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "GENDER")
 	private String gender;
 	
-	@Column(name = "EXPERIENCE_LEVEL")
-	private String experienceLevel;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-    @JoinColumn(name="PROJECT_ClientID", nullable=true) 
+    @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
 	private ProjectClients projectClientID;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="EXPERIENCE_LEVEL", nullable=true) 
+	private LookUpData experienceLevel;
 	
 	 
 	@Transient
@@ -1822,16 +1827,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.gender = gender;
 	}
 
-	public String getExperienceLevel()
-	{
-		return experienceLevel;
-	}
-
-	public void setExperienceLevel(String experienceLevel)
-	{
-		this.experienceLevel = experienceLevel;
-	}
-
 	public String getClientMaxRate()
 	{
 		return clientMaxRate;
@@ -1893,6 +1888,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		this.spocUUID = spocUUID;
 
+	}
+
+	public LookUpData getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(LookUpData experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
 	}
 
 	

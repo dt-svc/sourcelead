@@ -314,6 +314,10 @@ private ProjectClientService projectClientService;
 		}else{
 			requirement = new Requirement();
 		}
+		
+		List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
+		 model.addObject("experienceLevelList", experienceLevelList);
+		 
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		

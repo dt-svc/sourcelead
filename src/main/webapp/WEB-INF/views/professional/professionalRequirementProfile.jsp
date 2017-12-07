@@ -408,7 +408,7 @@ function requirementDetails(requirementUUID){
 				 }
 				 if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel != 'undefined')
 					{
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="'+json.experienceLevel+'">'+json.experienceLevel+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					}

@@ -231,7 +231,7 @@
 				            <div class="require_wrap_details_cta"> <b>Gender:</b><span>${!empty requirement.gender ? requirement.gender : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div> 	
-				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel ? requirement.experienceLevel : ' -- '}</span>
+				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 				            </div> 			            
 				            <div class="clearfix"></div> 

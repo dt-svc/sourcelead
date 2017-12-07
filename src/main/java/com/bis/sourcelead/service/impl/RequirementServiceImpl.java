@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -447,7 +448,10 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getClientRateType())) {
 			requirement.setClientRateType(requirementDTO.getClientRateType());
 		}
-		
+		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
+		LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
+		requirement.setExperienceLevel(experienceLevel);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getIsClient())
 				&& StringUtils.isNotBlank(requirementDTO.getClientSubmissionForm())) {
 			if (requirementDTO.getIsClient().equalsIgnoreCase("Y")
@@ -488,9 +492,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getGender())) {
 			requirement.setGender(requirementDTO.getGender());
 		}
-		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
-			requirement.setExperienceLevel(requirementDTO.getExperienceLevel());
-		}
+		
 		requirement.setStatus(Constants.TEAM_ACTIVE);
 		// requirement status
 		if (StringUtils.isNotBlank(requirementDTO.getSaveType())) {
@@ -3007,8 +3009,9 @@ public class RequirementServiceImpl implements RequirementService {
 			reqTemplate.setGender(requirementDTO.getGender());
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
-			reqTemplate.setExperienceLevel(requirementDTO.getExperienceLevel());
-		}
+			LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
+			reqTemplate.setExperienceLevel(experienceLevel);
+			}
 		reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 		reqTemplate.setCreatedDate(commonUtil.currentDate());
 		reqTemplate.setCreatedBy(user);

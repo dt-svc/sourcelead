@@ -457,6 +457,7 @@ public class Constants {
 	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
+	public static final String EXPERIENCELEVEL = "Experience Level";
 	
 	public static final String NOTES_JOBS = "Jobs";
     public static final String NOTES_CONTRACTS = "Contracts";

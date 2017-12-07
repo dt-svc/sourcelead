@@ -1057,7 +1057,7 @@ public class CommonUtil {
 			requirementDTO.setGender(requirement.getGender());
 			}
 			if(requirement.getExperienceLevel() !=null){
-			requirementDTO.setExperienceLevel(requirement.getExperienceLevel());
+			requirementDTO.setExperienceLevel(requirement.getExperienceLevel().toString());
 			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementDTO.setDescription(requirement.getDescription());

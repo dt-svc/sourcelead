@@ -353,10 +353,13 @@ $(document).ready(function () {
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel" id="experienceLevel">
             	<option value="">--Select Level--</option>
-            	<option ${requirement.experienceLevel  == 'Level-1' ? 'selected' : ''}>Level-1</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+            	<option value="${level.uniqueKey}">${level.name}</option>
+            	</c:forEach>
+            	<%-- <option ${requirement.experienceLevel  == 'Level-1' ? 'selected' : ''}>Level-1</option>
             	<option ${requirement.experienceLevel  == 'Level-2' ? 'selected' : ''}>Level-2</option>
             	<option ${requirement.experienceLevel  == 'Level-3' ? 'selected' : ''}>Level-3</option>
-            	<option ${requirement.experienceLevel  == 'Level-4' ? 'selected' : ''}>Level-4</option>
+            	<option ${requirement.experienceLevel  == 'Level-4' ? 'selected' : ''}>Level-4</option> --%>
             </select>
             
             </div>
@@ -739,7 +742,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
-              <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
+              <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -748,6 +751,7 @@ $(document).ready(function () {
                 
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
+              <div class="clearUpload"></div>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -1995,6 +1999,7 @@ $(document).ready(function() {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+    $(".clearUpload").hide();
 });
 
 // Show hide Approver script
@@ -2583,6 +2588,7 @@ $(document).ready(function(){
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
+		$(".clearUpload").show();
 	});
  }); 
 </script>
@@ -2593,7 +2599,9 @@ function clearDate(){
 	$("#closedDate").val("");
 	};
 	$(".clearUpload").click(function(){
-		$("#uploadFile").val("");
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#requirement_form input[data-id*=uploadBtn]").remove();
 	});
 	
 	</script>
