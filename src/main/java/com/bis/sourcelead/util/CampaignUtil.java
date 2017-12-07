@@ -197,11 +197,14 @@ public class CampaignUtil {
 		return str;
 	}
 
-	public String createCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, String htmlContent) throws IOException
+	public String createCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, String htmlContent, String otherRecilistId) throws IOException
 	{
 		 String isCampaignCreated = null;
 		 String senderId = jobListEmailCampaignDTO.getSenderIdentity();
 		 List<String> recipientList = new ArrayList<String>(Arrays.asList(jobListEmailCampaignDTO.getToemails().split(",")));
+		 if(StringUtils.isNotBlank(otherRecilistId)) {
+			 recipientList.add(otherRecilistId);
+		 }
 		 String subject = jobListEmailCampaignDTO.getSubject();
 		    try {
 		        SendGrid sg = new SendGrid(sendgridKey);
@@ -354,27 +357,27 @@ public class CampaignUtil {
 	/**
 	 * Get the campaign stats based on category
 	 * @param campaign 
+	 * @param currentDate 
 	 * @return String
 	 * @throws IOException
 	 */
-	public String readCampaignStatsByCategory(Campaign campaign) throws IOException
+	public String readCampaignStatsByCategory(Campaign campaign, Date currentDate) throws IOException
 	{
 		String stats = null;
-		Date sDate = campaign.getCreatedDate();
+//		Date sDate = campaign.getCreatedDate();
 		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String cmpn_satrt_date = newFormat.format(sDate);
-		Date eDate = new Date();
-		String cmpn_end_date = newFormat.format(eDate);
+//		String cmpn_satrt_date = newFormat.format(sDate);
+		String cmpn_current_date = newFormat.format(currentDate);
 		try {
 			SendGrid sg = new SendGrid(""+sendgridKey+"");
 			Request request = new Request();
 			request.setMethod(Method.GET);
 			request.setEndpoint("categories/stats");
-			 request.addQueryParam("end_date", cmpn_end_date);
+			 request.addQueryParam("end_date", "2017-12-04");
 			// request.addQueryParam("aggregated_by", "day");
 			// request.addQueryParam("limit", "1");
 			// request.addQueryParam("offset", "1");
-			request.addQueryParam("start_date", cmpn_satrt_date);
+			request.addQueryParam("start_date", "2017-12-04");
 			request.addQueryParam("categories", campaign.getCampaignCategory());
 			Response response = sg.api(request);
 			if (response.getStatusCode() == 200) {

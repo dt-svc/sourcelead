@@ -352,5 +352,11 @@ public class CampaignServiceImpl implements CampaignService{
 	{
 		return campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId);
 	}
+	@Override
+	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
+	{
+		return campaignDao.getCampaignStatsByCampaignId(campaignId);
+
+	}
 
 }

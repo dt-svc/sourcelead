@@ -48,7 +48,11 @@ public interface CampaignService {
 
 	List<Campaign> getAllCampaigns()  throws Exception;
 
+
 	List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception;
+
+	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
+
 
 
 
