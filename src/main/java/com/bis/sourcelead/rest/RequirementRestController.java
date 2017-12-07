@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -137,6 +138,9 @@ public class RequirementRestController {
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
 	 
+	 @Autowired
+	 private RequirementDao requirementDao; 
+	 
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -230,8 +234,19 @@ public class RequirementRestController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", reqTemplateSuccessMessage.append("Success!! ").append(requirementDTO.getJobTitle()).append(" template  saved").toString());
 		return "success";
 	}
-	
-	
+	@RequestMapping(value = "/deleteJobDoc", method = RequestMethod.POST)
+	public @ResponseBody String deleteJobDoc(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if(requirement != null){
+		requirement.setFileURL(null);
+		requirement.setFileName(null);
+		requirement.setFileContentType(null);
+		requirementDao.storeRequirement(requirement);
+		}
+		return "success";
+	}
 	/**
 	 * @author sarath kumaar
 	 * @since oct 18 2016

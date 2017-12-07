@@ -52,6 +52,8 @@ private static final long serialVersionUID = 1L;
 	private String projectClientUUID;
 	 
 	private String projectUUID;
+	
+	private String orgRelationUUID;
 
 	public Long getId() {
 		return id;
@@ -246,5 +248,17 @@ private static final long serialVersionUID = 1L;
 	{
 		this.projectUUID = projectUUID;
 	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+	
+	
 
 }
