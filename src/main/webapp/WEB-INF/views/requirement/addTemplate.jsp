@@ -187,11 +187,10 @@ width: 100% !important;
             <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel">
-            	<option>--Select Level--</option>
-            	<option ${requirement.experienceLevel  == 'Level-1' ? 'selected' : ''}>Level-1</option>
-            	<option ${requirement.experienceLevel  == 'Level-2' ? 'selected' : ''}>Level-2</option>
-            	<option ${requirement.experienceLevel  == 'Level-3' ? 'selected' : ''}>Level-3</option>
-            	<option ${requirement.experienceLevel  == 'Level-4' ? 'selected' : ''}>Level-4</option>
+            	<option value="">--Select Level--</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+                   <option value="${level.uniqueKey}" ${requirement.experienceLevel.name  == level.name ? 'selected' : ''} >${level.name}</option>  
+            	</c:forEach>
             </select>
             
             </div>

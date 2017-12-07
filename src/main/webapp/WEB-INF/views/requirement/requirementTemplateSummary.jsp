@@ -214,7 +214,7 @@
 						if(json.experienceLevel != null && json.experienceLevel != "" && json.experienceLevel != 'undefined'){
 							result = result + '<div class="project_details_cta project_details_view clearfix">';
 							result = result + '<strong>Experience Level :</strong>';
-							result = result + '<span class="fix" title="'+json.experienceLevel+'">'+json.experienceLevel+'</span>';
+							result = result + '<span class="fix" title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
 							}
 						 
 							 else{

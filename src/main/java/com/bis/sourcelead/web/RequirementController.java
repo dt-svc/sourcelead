@@ -951,6 +951,9 @@ private ProjectClientService projectClientService;
 			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);*/
 			
+			List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
+			 model.addObject("experienceLevelList", experienceLevelList);
+			
 			if(requirement != null && requirement.getId() != null){
 
 				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());

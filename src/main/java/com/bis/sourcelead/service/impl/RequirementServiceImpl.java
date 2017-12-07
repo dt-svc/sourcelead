@@ -262,8 +262,14 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getJobId())) {
 			requirement.setJobId(requirementDTO.getJobId());
 		}
+		else{
+			requirement.setJobId(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getPositions())) {
 			requirement.setPositions(requirementDTO.getPositions());
+		}
+		else{
+			requirement.setPositions(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
 			requirement.setCountry(requirementDTO.getCountryReq());
@@ -296,11 +302,20 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getZipCode())) {
 			requirement.setZipCode(requirementDTO.getZipCode());
 		}
+		else{
+			requirement.setZipCode(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getMaxExp())) {
 			requirement.setMaxExp(requirementDTO.getMaxExp());
 		}
+		else{
+			requirement.setMaxExp(null);	
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getMinExp())) {
 			requirement.setMinExp(requirementDTO.getMinExp());
+		}
+		else{
+			requirement.setMinExp(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			requirement.setRate(requirementDTO.getRate());
@@ -312,6 +327,9 @@ public class RequirementServiceImpl implements RequirementService {
 			// requirement.setDescription(java.net.URLDecoder.decode(jsonObj.getString("description"),
 			// "utf-8"));
 			requirement.setDescription(requirementDTO.getDescription());
+		}
+		else{
+			requirement.setDescription(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getCoolingOff())) {
 			requirement.setReqCoolingOffPeriod(requirementDTO.getCoolingOff());
@@ -451,6 +469,10 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
 		LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
 		requirement.setExperienceLevel(experienceLevel);
+		}
+		else{
+			
+			requirement.setExperienceLevel(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getIsClient())
 				&& StringUtils.isNotBlank(requirementDTO.getClientSubmissionForm())) {
@@ -3012,6 +3034,10 @@ public class RequirementServiceImpl implements RequirementService {
 			LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
 			reqTemplate.setExperienceLevel(experienceLevel);
 			}
+		else{
+			
+			reqTemplate.setExperienceLevel(null);
+		}
 		reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 		reqTemplate.setCreatedDate(commonUtil.currentDate());
 		reqTemplate.setCreatedBy(user);
