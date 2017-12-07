@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<script src="resources/js/jquery.twbsPagination.js"></script>
+
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
@@ -14,13 +16,14 @@ $(document).ready(function() {
 </script>
 
 
-
+<div id="loadTime"></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
 <div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
- <table id='exampleApprover' class='display' cellspacing='0' width='100%' >
+<div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
+ <table id='exampleApprover' class='display'>
 	<thead> 
     <tr> 
     <th>Employee</th>
@@ -35,29 +38,30 @@ $(document).ready(function() {
 	<th>Action</th>
     </tr> 
     </thead>
-    <tbody>
+    <tbody id="approvalTableData">
     	 <jsp:include page="timesheetApprovalTableData.jsp"></jsp:include>
    </tbody>
   </table>
-
-
-<script>
-function pagination(){
-    $('#exampleApprover').DataTable( {
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-    		"sSearch": "",
-    		"sZeroRecords": "", "sEmptyTable": ""
-    	}
-    });
-    $('#exampleApprover').wrap("<div class='overflow_Auto width100percnt'></div>");
-}
-</script>
-
+</div>
+<div id= "paginationDiv" class="clearfix">
+	<div class="col-md-6">
+		<div class="pull-left mt5">
+			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
+				<div class="dropdown-select pull-left mr5 tblminwidth-50">
+					<select id="pageSize" onchange="getTableDataByPageSize()">
+						<option value="5" >5</option>
+						<option value="10" >10</option>
+						<option value="15" >15</option>
+						<option value="20" >20</option>
+					</select>
+				</div> <span class="pull-left mt10">entries</span> </label>
+				 <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
+		</div>
+	</div>
+	<div id="paginationholder" class="col-md-6 pagiPad">
+		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
+	</div>
+</div>
 
 
 <script>
@@ -284,6 +288,92 @@ function exportTimeSheetToPdfOrExcel(exportType){
      e.stopPropagation();
  });
 </script>  
+
+ <script>
+      function getTableDataByPageSize(){
+    	  $('#pagination-demo').twbsPagination('destroy'); 
+    	  getTableData(1);
+      }
+	  function getTableData(pageNo) {
+		 
+		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+          var locationCode ='${SourceLeadWeb_locationCode}';
+          var userId = '${SourceLeadWeb_user.id}';
+          var frequencyMonth = $("#frequencyMonth").val();
+	      var timesheetFrequency = $('#timesheetFrequency').val();
+	      var weekFrequency = $('#weekFrequency').val();
+          var stage = $('#stage').val();
+          var client = $('#client').val();
+          var pageSize = $("#pageSize").val();
+          var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
+          var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
+          var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
+          $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  $.ajax({
+          	          type : "POST",
+          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+        		      success :function(data) {
+        		    	  $("#approvalTableData").empty();
+        		    	  $("#approvalTableData").append(data);
+        		    	  var totalRows =  $('#totalRows').val();
+        		    		  $("#loadTime").removeAttr('style');
+            		    	  preparePagination(pageNo);
+        		    	 
+        		      }
+        	     });  
+      }
+	  function preparePagination(pageNo) {
+		  var totalRows =  $('#totalRows').val();
+		  var pageMsg = '';
+		  var searchData = '${timesheetApprovalDTO.searchValue}';
+		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
+			  $('#paginationDiv').show();
+			  var pageCount = $('#pageCount').val();
+			  var pageSize = $("#pageSize").val();
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData); 
+			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+			  var endingRecord = parseInt(pageNo*pageSize);
+			  if(endingRecord > totalRows){
+				  endingRecord = totalRows;
+			  }
+			  var options = {
+			              currentPage : pageNo,
+			              totalPages: pageCount,
+			              prev:'',
+			              next:'',
+			              initiateStartPageClick: false,
+			              onPageClick: function (event, page) {
+			              getTableData(""+page+"");
+			              }
+		      };
+		      $("#pagination-demo").twbsPagination(options);
+		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		  }
+		  else{
+			  $("#tableContent").empty();
+	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#paginationDiv').hide();
+			  
+			  
+		  }
+	      $('#pageMsg').html('');
+	      $('#pageMsg').html(pageMsg);
+	 }
+  </script>  
+
+
+
+
+
+
+
+
+
+
+
 
 
 

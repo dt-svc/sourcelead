@@ -2,16 +2,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script>
-window.onload = function () {
-	pagination();
-};
-</script>
 
-<c:forEach var="timesheetSubmission" items="${timesheetApprovalDTO.timesheetSubmission}" >
+<c:forEach var="timesheetSubmission" items="${timesheetApprovalDTO.timesheetSubmission}" varStatus="submissionStatus" >
     	<tr id="row${timesheetSubmission.projectMemberId}" role="row" class="odd">
 			<td class="sorting_1">
 				<div class="time_appr_user">
+						<c:if test="${submissionStatus.index == 0}">
+					       <input type="hidden" id="totalRows" name="totalRows" value="${timesheetApprovalDTO.totalRows}">
+					       <input type="hidden" id="pageCount" name="totalRows" value="${timesheetApprovalDTO.pageCount}">
+					    </c:if>
+				
 					<img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetSubmission.profileImageFileUrl}" alt="Profile Image" class="img-circle img-responsive"> 
 					<span>
 						<b title="${timesheetSubmission.employeeName}">${timesheetSubmission.employeeName}</b>
@@ -34,9 +34,8 @@ window.onload = function () {
 				<td><div class="sm">0.0/${weekTot}</div></td>
 			</c:if>
 	</c:forEach>	
-
-	<input type="hidden" name="totalHours" id="totalHours" value="${timesheetSubmission.totalHours}">
 	<td>
+	<input type="hidden" name="totalHours" id="totalHours" value="${timesheetSubmission.totalHours}">
 		<div class="sm">
 			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
 		</div>

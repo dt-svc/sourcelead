@@ -1060,7 +1060,8 @@ $(document).ready(function () {
               </div>
               <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
           </div>
-          <div class="col-md-12 assigned-Table" id='assignedTeamsOrUsers' style="display: none">
+          <div class="col-md-12 assigned-Table">
+          <div class="assignTableScroll" id="assignedTeamsOrUsers" style="display: none"></div>
           </div>
         
         <div class="clearfix"></div>
