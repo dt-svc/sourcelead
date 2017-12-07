@@ -373,11 +373,11 @@ public class CampaignUtil {
 			Request request = new Request();
 			request.setMethod(Method.GET);
 			request.setEndpoint("categories/stats");
-			 request.addQueryParam("end_date", "2017-12-04");
+			 request.addQueryParam("end_date", cmpn_current_date);
 			// request.addQueryParam("aggregated_by", "day");
 			// request.addQueryParam("limit", "1");
 			// request.addQueryParam("offset", "1");
-			request.addQueryParam("start_date", "2017-12-04");
+			request.addQueryParam("start_date", cmpn_current_date);
 			request.addQueryParam("categories", campaign.getCampaignCategory());
 			Response response = sg.api(request);
 			if (response.getStatusCode() == 200) {
