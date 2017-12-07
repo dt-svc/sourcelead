@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,6 +25,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
@@ -83,6 +85,9 @@ public class ProjectClients implements Serializable{
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
 	
+	@Transient
+	@JsonProperty
+	private String clientName;
 	
 	/*@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -204,5 +209,14 @@ public class ProjectClients implements Serializable{
 		this.isEndClient = isEndClient;
 	}
 
-	
+	public String getClientName()
+	{
+		return clientName;
+	}
+
+	public void setClientName(String clientName)
+	{
+		this.clientName = clientName;
+	}
+
 }
