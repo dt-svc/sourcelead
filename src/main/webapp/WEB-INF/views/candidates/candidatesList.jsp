@@ -819,12 +819,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector" style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
-    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
