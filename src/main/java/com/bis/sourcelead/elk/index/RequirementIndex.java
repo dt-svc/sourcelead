@@ -168,7 +168,7 @@ public class RequirementIndex {
 	private String referUUID;
 	
 	private String[] visaTypes;
-	
+	private String url;
 	private String generatedId;
 	
 	public String getManagerUserId() {
@@ -848,6 +848,16 @@ public class RequirementIndex {
 
 	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
 	}
 
 	

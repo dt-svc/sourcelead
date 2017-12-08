@@ -138,7 +138,7 @@ margin-right: 15px;
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
+	    	url: "/app/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
