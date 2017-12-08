@@ -2037,7 +2037,7 @@ function getRateListDiv(submissionId, candidateId){
 	  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);

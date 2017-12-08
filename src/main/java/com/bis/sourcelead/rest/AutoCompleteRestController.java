@@ -69,7 +69,7 @@ public class AutoCompleteRestController {
     	return resultJson;
 	}
     
-    @RequestMapping(value = "/ws/countryAutoComplete")
+    @RequestMapping(value = "/countryAutoComplete")
     public String countryAutoComplete() throws Exception {
     	
     	ArrayList<String> countriesList = new ArrayList<>();

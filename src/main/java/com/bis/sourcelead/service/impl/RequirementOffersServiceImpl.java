@@ -512,8 +512,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             
         //commented by prasad salina, here i am sending offer id    
-       /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
-        globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
+       /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"ws/acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+        globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"ws/acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
 
          StringBuilder acceptLinkBuilder=new StringBuilder();
          StringBuilder rejectLinkBuilder=new StringBuilder();
@@ -524,9 +524,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
-            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
+            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
         }else{
-            globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
+            globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
         }
 

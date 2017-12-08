@@ -378,7 +378,7 @@ public class RequirementInterviewRestController {
 	   }
 	 
 	 
-	 /*@RequestMapping(value = "/acceptOrRejectInterview")
+	 /*@RequestMapping(value = "/ws/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {

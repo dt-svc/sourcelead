@@ -1388,11 +1388,11 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (requirement.getFileName() != null && !requirement.getFileName().isEmpty()) {
 			StringBuilder attachmentBuild = new StringBuilder();
-			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
 		}
 		else {
 			StringBuilder attachmentBuild = new StringBuilder();
-			globalVarsMap.put(" ", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
+			globalVarsMap.put(" ", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/").append("downloadRequirementAttachment?requirementId=").append(requirement.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>").toString());
 		}
 		// setting the Recipient information
 		/*

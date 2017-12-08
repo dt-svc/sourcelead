@@ -500,7 +500,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -555,7 +555,7 @@ function getOfferDetails(submissionId){
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/ws/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -1793,7 +1793,7 @@ function getAllSubmissionCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
