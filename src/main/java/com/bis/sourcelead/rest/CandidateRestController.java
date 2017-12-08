@@ -180,6 +180,8 @@ public class CandidateRestController {
 		} else{
 			return "DataMissing";
 		}
+		 SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+		
 		return "success";
 	}
 	
