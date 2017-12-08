@@ -100,6 +100,7 @@ public class SecurityConfig  {
     			.antMatchers("/resources/**").permitAll()
     			.antMatchers("/app/ws/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
+    			.antMatchers("/submissionRate.jsp").permitAll() 
 //    			.antMatchers("/app/ws/acceptOrRejectRequirement").permitAll() 
     			.antMatchers("/jobs/**").permitAll()
     			.antMatchers("/app/**").fullyAuthenticated()

@@ -129,7 +129,7 @@ public class OpenJobsController {
 		return "static-web/about-us";
 	}
 
-	@RequestMapping(value = "/openJobsPublicPage")
+	@RequestMapping(value = {"/openJobsPublicPage", "/app/openJobsPublicPage"})
 	public ModelAndView openJobsforApplicants(
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
 		ModelAndView model = new ModelAndView();

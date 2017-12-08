@@ -1400,7 +1400,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';

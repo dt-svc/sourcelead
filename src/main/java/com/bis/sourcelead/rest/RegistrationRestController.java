@@ -64,7 +64,6 @@ import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class RegistrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationRestController.class);
 	 
@@ -110,7 +109,7 @@ public class RegistrationRestController {
 	 @Autowired
 	 private RegistrationOptionalServicesService registrationOptionalServicesService;
 	 
-	 @RequestMapping(value = "/getOrgsList")
+	 @RequestMapping(value = "/app/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
 				@RequestParam(value = "offset", required = false) Integer offset,
@@ -153,7 +152,7 @@ public class RegistrationRestController {
 	}
 	 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
@@ -195,7 +194,7 @@ public class RegistrationRestController {
 	
 	
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
 		 	
 		 /*json = "{"+json+"}";
@@ -210,7 +209,7 @@ public class RegistrationRestController {
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/changePrimaryAdmin" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/changePrimaryAdmin" , method = RequestMethod.POST)
 	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
@@ -233,7 +232,7 @@ public class RegistrationRestController {
 	 
 	 
 	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/editOrgPrimaryUser" , method = RequestMethod.POST)
 	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
 			 @RequestParam(value="userId", required=false) Long userId ,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
@@ -387,7 +386,7 @@ public class RegistrationRestController {
 	 
 	
 	   @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
+	   @RequestMapping(value = "/app/updateOrgModules" , method = RequestMethod.POST)
 	   public String updateOrgModules(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
@@ -669,7 +668,7 @@ public class RegistrationRestController {
 		return resResponsetUtil;
 	 }
 	
-	   @RequestMapping(value = "/validateOrgWebsite", method = RequestMethod.GET)
+	   @RequestMapping(value = "/app/validateOrgWebsite", method = RequestMethod.GET)
 	   public @ResponseBody String validateOrgWebsite(
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
@@ -692,7 +691,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
+	   @RequestMapping(value = "/app/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
 	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
 			String status = null;
@@ -722,7 +721,7 @@ public class RegistrationRestController {
 	   
 	   
 	   
-	   @RequestMapping(value = "/validateRegiseredCompanyName", method = RequestMethod.GET)
+	   @RequestMapping(value = "/app/validateRegiseredCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateRegiseredCompanyName(
 	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
 			String status = null;
@@ -757,7 +756,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	   @RequestMapping(value = "/getUserDetails",  method = RequestMethod.POST)
+	   @RequestMapping(value = "/app/getUserDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getUserDetails(@RequestParam(value="email", required=false) String email,
 	    		@RequestParam(value="json", required=false) String json) {
 			
@@ -783,7 +782,7 @@ public class RegistrationRestController {
 		}
 	   
 	   @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")	   
-	   @RequestMapping(value = "/orgSummary/{orgId}" , method = RequestMethod.GET)
+	   @RequestMapping(value = "/app/orgSummary/{orgId}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
 				response.sendRedirect(redirectUrl.append("/enrolledOrgSummary?orgId=").append(orgId).toString());
@@ -792,7 +791,7 @@ public class RegistrationRestController {
 	   
 	   
 	   
-	   @RequestMapping(value = "/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
+	   @RequestMapping(value = "/app/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
 	   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
 	   		@RequestParam(value="email", required=false) String email) throws Exception {
@@ -800,7 +799,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	    @RequestMapping(value = "/getRegisteredOrgsLocationsList")
+	    @RequestMapping(value = "/app/getRegisteredOrgsLocationsList")
 		public @ResponseBody String getRegisteredOrgsLocationsList(HttpServletRequest request) {
 
 		String resultJson;
@@ -845,7 +844,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -891,7 +890,7 @@ public class RegistrationRestController {
 	}
 	
 	
-	@RequestMapping(value = "/resendVerificationEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/resendVerificationEmail", method = RequestMethod.GET)
 	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = null;
@@ -912,7 +911,7 @@ public class RegistrationRestController {
 		}
 	}
 	   
-	@RequestMapping(value = "/verificationDone", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
@@ -929,7 +928,7 @@ public class RegistrationRestController {
 		return "true";
 	}
 	
-	@RequestMapping(value = "/getUserDetailsByRoleId", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/getUserDetailsByRoleId", method = RequestMethod.GET)
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -957,7 +956,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/sendOtpToUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/sendOtpToUser", method = RequestMethod.GET)
 	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();

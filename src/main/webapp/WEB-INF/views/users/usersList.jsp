@@ -252,7 +252,7 @@ function getUsersSearchResult(searchValue){
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 

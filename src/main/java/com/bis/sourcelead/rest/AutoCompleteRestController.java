@@ -35,7 +35,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
-@RequestMapping("/app")
 public class AutoCompleteRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteRestController.class);
@@ -131,7 +130,7 @@ public class AutoCompleteRestController {
         return result;
 	}
     
-    @RequestMapping(value = "/getStatesByCountry")
+    @RequestMapping(value = {"/getStatesByCountry", "/app/getStatesByCountry"})
     public String getStatesByCountry(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
     	
     	ArrayList<String> statesList = new ArrayList<>();
@@ -154,7 +153,7 @@ public class AutoCompleteRestController {
 	}
     
     
-    @RequestMapping(value = "/getCitiesByStateAndCountry")
+    @RequestMapping(value = {"/getCitiesByStateAndCountry", "/app/getCitiesByStateAndCountry"})
     public String getCitiesByStateAndCountry(@RequestParam(value="countryName", required=false) String countryName, @RequestParam(value="stateName", required=false) String stateName) throws Exception {
     	
     	ArrayList<String> citiesList = new ArrayList<>();
