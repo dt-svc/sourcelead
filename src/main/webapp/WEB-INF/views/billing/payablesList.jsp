@@ -692,8 +692,16 @@ function payablePagination(url){
               "render": function ( data, type, report, meta ) {
             	  var result = "";
             	  result = result +'         <td>   ';
-  				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-  				result = result +'         </td> ';
+            	 
+            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
+            	  '</sec:authorize>';
+            	  
+            	  '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+	           	   result = result +' <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
+	           	  '</sec:authorize>';
+           	  
+            	  result = result +'         </td> ';
 	              return result;
               		
               }

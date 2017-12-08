@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Org;
@@ -75,6 +76,7 @@ import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
@@ -161,6 +163,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	HolidayService holidayService;
 	
 	@Autowired
 	OrgService orgService;
@@ -2002,4 +2007,81 @@ public class EMailJobScheduler {
 		    cal.add(Calendar.DATE, -1);
 		    return cal.getTime();
 		}
-}
+	 
+	 
+	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	 public void holidayNotificationToUsers() throws Exception
+    {
+    DateTime zoned = new DateTime();
+    DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+    DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+    DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    // to fire remainder one week before
+    DateTime week = zoned.plusDays(1);
+    String startDate = outputFormatter1.print(week);
+    String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+    Date holidayStartDate = ts.parse(startDateString);
+    String endDate = outputFormatter.print(week);
+    String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+    Date holidayEndDate = ts.parse(endDateString);
+
+    List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+    /*OrgLocations orgLocations = orgLocationsList.get(1);..for single org*/
+    for (OrgLocations orgLocations : orgLocationsList) {
+    List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate,holidayEndDate, orgLocations.getId());
+    String holidayNames = "";
+    int i=0;
+    if(holidayList!=null && !holidayList.isEmpty()){
+    for(Holiday holiday : holidayList){
+    	 if (i == holidayList.size() - 1) 
+    		 holidayNames += holiday.getHolidayName();
+    	 else
+    		 holidayNames += holiday.getHolidayName()+",";
+    	 i++;
+    }
+    
+    List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+    for (User user : userList) {
+    EmailMessage emailMessage = new EmailMessage();
+    emailMessage.setFirstName(user.getFirstName());
+    if(StringUtils.isNotBlank(user.getLastName()))
+    emailMessage.setLastName(user.getLastName());
+    emailMessage.setToEmail(user.getEmail());
+    emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+    StringBuilder msgBuild = new StringBuilder();
+    emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+    // setting the class filed values
+    Map<String, String> globalVarsMap = new HashMap<String, String>();
+    globalVarsMap.put("loginUser", emailMessage.getFromName());
+    StringBuilder name = new StringBuilder();
+    if (user.getLastName() != null && user.getLastName() != "" && user.getLastName() != "undefined") {
+    globalVarsMap.put("UserName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+    }
+    else {
+    globalVarsMap.put("UserName", user.getFirstName());
+    }
+    globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+    globalVarsMap.put("date", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
+    globalVarsMap.put("holidayname", holidayNames);
+    InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+    // getting the current EmailScenario by EmailScenario unique
+    // name and entity type
+    EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+    // covert subject,body and signature
+    String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+    String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+    String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+    String url = sourceleadUrl;
+    // construct HTML template using required data
+    String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
+    emailMessage.setSubject(subject);
+    emailMessage.setMessageBody(emailTemplate);
+    // calling the sendEmail method of emailScenerioUtil
+    emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+    String actionLink = "";
+    }
+    }
+    }
+    }}

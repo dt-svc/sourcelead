@@ -71,11 +71,23 @@
 					</div>
 					 <div class="project_details_cta">
 						<strong>Client:</strong><span> 
+						
+						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 						  <c:if test="${pm.projectId == expenses.projectId}">
-						   ${pm.clientName}
+						   <a href="<c:url value="/clientDashboard?orgRelationUUID=${pm.orgRelationUUID}"/>"> ${pm.clientName}</a>
 						  </c:if>
 						</c:forEach>
+						</sec:authorize>
+						
+						<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
+						  <c:if test="${pm.projectId == expenses.projectId}">
+						    ${pm.clientName}
+						  </c:if>
+						</c:forEach>
+						</sec:authorize>
+						
 		             </span><div class="clearfix"></div>
 					</div> 
 					<div class="project_details_cta">

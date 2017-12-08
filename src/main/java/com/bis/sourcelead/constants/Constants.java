@@ -234,6 +234,8 @@ public class Constants {
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
+	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
+		
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
 	
@@ -457,6 +459,7 @@ public class Constants {
 	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
+	public static final String EXPERIENCELEVEL = "Experience Level";
 	
 	public static final String NOTES_JOBS = "Jobs";
     public static final String NOTES_CONTRACTS = "Contracts";

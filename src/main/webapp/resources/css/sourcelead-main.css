@@ -60,6 +60,9 @@ textarea {
 .mb {
 	margin-bottom: 15px;
 }
+.mb0 {
+	margin-bottom: 0;
+}
 .mt10 {
 	margin-top: 10px !important;
 }
@@ -200,7 +203,7 @@ search-area .btn-default:hover {
 }
 .search-area .form-control {
 background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
-height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3); border-left:none;
+height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3) !important; border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
 color: #bdbdbd; opacity: 1;
@@ -7400,27 +7403,29 @@ min-height: 40px;
 .tableStyles table tbody{
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
 }
-.tableStyles table tr th {
-	font-weight: normal; color: #333; padding: 10px; border-bottom: 1px solid #BDBDBD;
+tableStyles table tr th {
+font-weight: normal; color: #333; padding: 10px !important; border-bottom: 1px solid #BDBDBD;
+height: 40px; vertical-align: middle;
 }
 .tableStyles table thead {
-	background-color: #CBCBCB;
+background-color: #CBCBCB;
 }
 .tableStyles table tr {
-	border-bottom: 1px solid #BDBDBD;
+border-bottom: 1px solid #BDBDBD;
 }
 .tableStyles table tr td {
-	position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
+position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
 }
 .tableStyles_head {
-	position: relative; min-height: 40px;
+position: relative; min-height: 40px;
 }
 .action-div {
-	position: relative; text-align: center;
+position: relative; text-align: center;
 }
 .action-div .action-inner ul {
-	margin-bottom: 0; clear: both; display: inline-block; background-color: #FFF; float: left; padding: 5px;
-	border: 1px solid #EEEEEE; position: absolute; right: 20px; top: -10px; transition: all 0.3s ease-in-out;
+margin-bottom: 0; clear: both; display: inline-block; background-color: #FFF; float: left; padding: 5px;
+border: 1px solid #EEEEEE; position: absolute; right: 0px; top: -8px; transition: all 0.3s ease-in-out;
+min-width: 60px;
 }
 .action-div .action-inner {
 	display: none;
@@ -7441,11 +7446,11 @@ min-height: 40px;
 .hasDatepicker.form-control[readonly], #uploadFile.form-control {
 background-color: #fff;
 }
-.clearUpload:after {
+/*.clearUpload:after {
 padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
 background-color: #fff;
-}
+}*/
 .clearDate:after {
 padding: 0px; bottom: 75%; right:10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
@@ -7459,7 +7464,39 @@ color:red;
 margin-right: 0;
 }
 /* Sanjeev Styles for Date picker background white for calendar and attachment */
-
+.panel.panel-campaignsStats {
+	margin-bottom: 15px; min-height: 105px;
+}
+.panel.panel-campaignsStats .panel-body {
+	padding: 10px; color: #757575;
+}
+.panel.panel-campaignsStats h3{
+	margin: 0 0 5px 0; 
+}
+.panel.panel-campaignsStats .panelHeading {
+	border-bottom: 1px solid #ededed; margin-bottom: 10px; padding-bottom: 5px; color: #757575;
+}
+.panel.panel-campaignsStats .campaignsstats-list li {
+	font-size: 13px;margin-bottom: 3px; cursor: pointer;
+}
+.panel.panel-campaignsStats .campaignsstatslist-count {
+	float: right;
+}
+.row-success {
+	background-color: #dff0d8 !important;
+}
+.row-info {
+	background-color: #d9edf7 !important;
+}
+.row-warning {
+	background-color: #fcf8e3 !important;
+}
+.row-danger {
+	background-color: #f2dede !important;
+}
+.bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+width: 220px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
