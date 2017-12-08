@@ -43,7 +43,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class RequirementInterviewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementInterviewController.class);
