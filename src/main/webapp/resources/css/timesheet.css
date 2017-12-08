@@ -6578,11 +6578,24 @@ text-shadow: 0 1px 0 #fff;
 	width: 90px; text-align: center; padding: 0px 10px !important;
 }
 .cusFielAction i {
-	font-size: 14px; display: inline-block; padding: 0px 4px; cursor: pointer;
+	font-size: 14px; display: inline-block; padding: 0px 3px; cursor: pointer;
 }
-
-
-
+.cusFielAction .fa-trash {
+	color: #f65947;
+}
+.cusFielAction .fa-eye {
+	color: #428fd8;
+}
+.cusFielAction .fa-sort {
+	color: #666;
+}
+.cusFielAction .hideIcon {
+	opacity: 0; visibility: hidden;
+}
+.cusFielPopup {
+	position: fixed; width: 600px; background-color: #fff; top: 5%; margin: 0px auto; display: none; z-index: 1000000;
+	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
 
 
 
