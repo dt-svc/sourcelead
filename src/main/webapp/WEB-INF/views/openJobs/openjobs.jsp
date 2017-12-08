@@ -477,37 +477,39 @@ z-index: 1000000000 !important;
           <form:form id="openJobsAdvancedForm" name="openJobsAdvancedForm"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i class="fa fa-close"></i></a>
             <div class="row">
-              <div class="col-md-8">
-                <label>Keyword <i class="fa fa-info-circle" title="Keyword"></i></label>
+              <div class="col-md-4">
+                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
                 
                 <div class="clearfix">
-					<input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Keyword">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
 				 </div>
               </div>
-               <div class="col-md-4">
-                  <label>Experience</label>
-                  <div class="clearfix row">
-                    <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
-                       <option value="" selected>Min Years</option>
-                       <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
-                         <option value="" selected>Max Years</option>
-                         <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
+              <div class="col-md-4">
+                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <div class="clearfix">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
+				 </div>
+                
+              </div>
+              <div class="col-md-4">
+                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <div class="clearfix">
+				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
+				 </div>
+                
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Details:</h4>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Job Title</label>
+                  <div class="clearfix">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
                   </div>
                 </div>
-            </div>
-            <div class="clearfix">
-            <div class="row">
                 <div class="col-md-8">
                   <div class="row">
                     <div class="col-md-6">
@@ -546,6 +548,29 @@ z-index: 1000000000 !important;
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Experience</label>
+                  <div class="clearfix row">
+                    <div class="col-md-6">
+                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
+                       <option value="" selected>Min Years</option>
+                       <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
+                         <option value="" selected>Max Years</option>
+                         <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-md-4">
                   <label>Notice Period</label>
                   <div class="clearfix">
@@ -558,10 +583,9 @@ z-index: 1000000000 !important;
                     </select>
                   </div>
                 </div>
+                
               </div>
               <div class="clearfix">
-              </div>
-              <div class="row">
                 <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
@@ -592,10 +616,9 @@ z-index: 1000000000 !important;
                                </select>
 				  </div>
 			  </div>
-			  </div>
               </div>
+              
               <div class="clearfix">
-              <div class="row">
                 <div class="col-md-4">
                 <label>Organizations <i class="fa fa-info-circle" title="Organizations"></i></label>
                 <div class="clearfix">
@@ -619,7 +642,6 @@ z-index: 1000000000 !important;
                     </select>
                   </div>
                 </div>
-                </div>
               </div>
             </div>
             <div class="row form-footer">
@@ -628,6 +650,7 @@ z-index: 1000000000 !important;
                <input type="button" value="Cancel" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-default ml10"/> 
               </div>
             </div>
+          </div>
    </form:form>
 	</section>        
 <!-- Content Area Ends-->
@@ -828,6 +851,10 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
+var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
+	
+	alert("search "+search);
+	openJobsRequirementTitle = search;
 	location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
 }
 </script>
@@ -835,6 +862,10 @@ function getOpenJobsELKListJOBS(){
 <script>
 function getOpenJobsELKList(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
+	
+	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
+	
+	alert("search "+search);
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
     var dates = $('input:radio[name=dateFilter]:checked').val();
@@ -1276,7 +1307,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"/ws/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -1330,7 +1361,7 @@ function viewJobSummaryDocument(jobId,title){
 <script>
 function openJobSearchRequirement(){
  			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
-			alert("pradeep")
+			
 			var frm = $('#openJobsAdvancedForm').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1400,7 +1431,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -2332,7 +2363,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
