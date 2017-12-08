@@ -48,7 +48,8 @@ public class CampaignServiceImpl implements CampaignService{
 		CreateSender createSender = null;
 		if(StringUtils.isNotBlank(createSenderDTO.getSenderId())) {
 			 createSender  = campaignDao.findSenderIdentityById(Long.parseLong(createSenderDTO.getSenderId()));
-			 senderCreated = campaignUtil.updateSender(createSender, orgLocation);
+			 createSenderDTO.setSenderId(createSender.getSenderId());
+			 senderCreated = campaignUtil.updateSender(createSenderDTO, orgLocation);
 		}else {
 			 senderCreated = campaignUtil.createSender(createSenderDTO, orgLocation);
 			 createSender = new CreateSender();

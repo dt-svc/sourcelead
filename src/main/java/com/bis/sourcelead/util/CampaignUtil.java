@@ -101,7 +101,7 @@ public class CampaignUtil {
 	 * @return String
 	 * @throws IOException
 	 */
-	public String updateSender(CreateSender createSender, OrgLocations orgLocation) throws IOException
+	public String updateSender(CreateSenderDTO createSenderDto, OrgLocations orgLocation) throws IOException
 	{
 		String isSenderCreated = null;
 		String city = "";
@@ -127,14 +127,14 @@ public class CampaignUtil {
 			SendGrid sg = new SendGrid(sendgridKey);
 			Request request = new Request();
 			request.setMethod(Method.PATCH);
-			request.setEndpoint("senders/" + createSender.getSenderId() + "");
+			request.setEndpoint("senders/" + createSenderDto.getSenderId() + "");
 			request.setBody("{\"city\":\"" + city + "\"," + "\"from\":{\"email\":\""
-					+ createSender.getFromMail() + "\"," + "\"name\":\""
-					+ createSender.getFromName() + "\"}," + "\"zip\":\"" + zipcode + "\","
+					+ createSenderDto.getCpnSenderFromMail() + "\"," + "\"name\":\""
+					+ createSenderDto.getCpnSenderName() + "\"}," + "\"zip\":\"" + zipcode + "\","
 					+ "\"country\":\"" + country + "\"," + "\"state\":\"" + state + "\","
 					+ "\"address_2\":\"\"," + "\"address\":\"" + address + "\","
-					+ "\"reply_to\":{\"email\":\"" + createSender.getReplyTo() + "\","
-					+ "\"name\":\"\"}," + "\"nickname\":\"" + createSender.getNickName() + "\"}");
+					+ "\"reply_to\":{\"email\":\"" + createSenderDto.getCpnReplyMail() + "\","
+					+ "\"name\":\"\"}," + "\"nickname\":\"" + createSenderDto.getCpnNickName() + "\"}");
 			Response response = sg.api(request);
 			if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
 				isSenderCreated = response.getBody();

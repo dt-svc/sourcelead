@@ -92,16 +92,16 @@ $(document).ready(function() {
       type : "GET",
        url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignId="+campaignId,       
        success :function(json) {
-    	   $("#delivered").html(json.delivered)
-    	   $("#opens").html(json.opens);
-    	   $("#clicks").html(json.clicks);
-    	   $("#request").html(json.request);
-    	   $("#bounces").html(json.bounces);
-    	   $("#unsubscribes").html(json.unsubscribes);
-    	   $("#spamReports").html(json.spamReports);
-    	   campaignStatsAmchart(json);
-       /* 	populategCampaignStats(json); 
-       */
+    	  if(json !=null){
+    		  $("#delivered").html(json.delivered)
+       	   $("#opens").html(json.opens);
+       	   $("#clicks").html(json.clicks);
+       	   $("#request").html(json.request);
+       	   $("#bounces").html(json.bounces);
+       	   $("#unsubscribes").html(json.unsubscribes);
+       	   $("#spamReports").html(json.spamReports);
+       	   campaignStatsAmchart(json);  
+    	  }
       },
        
   }); 
