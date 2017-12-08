@@ -112,6 +112,16 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         if(orgLocations.getDba() != null || orgLocations.getDba().isEmpty()){
         	orgLocations.setDba(orgSettings.getDba());
         }
+        
+        
+        if(orgSettings.getGeneratedUserId() != null || orgSettings.getGeneratedUserId().isEmpty()){
+        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId());
+        }
+        
+        if(orgSettings.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(orgSettings.getAverageWorkingHours());
+        }
+        
         if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
 			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		}

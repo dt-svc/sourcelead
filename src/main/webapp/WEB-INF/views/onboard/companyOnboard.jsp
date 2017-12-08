@@ -58,7 +58,6 @@ right: 15px;
 			  <div class="clearfix"></div>
 		  </div>
 	
-	 <div id="tab-a">
 	 <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 	  
 	<div class="comLogContent">
         <h2>Organization Details</h2>
@@ -106,7 +105,7 @@ right: 15px;
                      
                    <div class="mrleft8 mr mt5">
 		              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
-		              			<label for="dbaCheckbox" class="checkbox-custom-label"></label>
+		              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
           			</div>
                 </div>
             </div>
@@ -218,10 +217,25 @@ right: 15px;
 			<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 			</div>
 		</div>
+		
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Fax</label>
 			<div class="col-md-9 padding_right">
 			<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb" id="generatedUserIdDiv">
+			<label class="col-md-3 noPad">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Working Hours<span class="text-danger">&nbsp;*</span></label>
+			<div class="col-md-9 padding_right">
+			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 			</div>
 		</div>
 			
@@ -233,20 +247,18 @@ right: 15px;
 		</div>				
 		</div>
 		</div>
-	</div>			  
-		  
-<div class="welBtns welBtnsA">
+		
+		<div class="welBtns welBtnsA">
 	<input type="submit" value="Save & Continue"  id="save_button" class="Brig">
 	<div class="clearfix"></div>
 </div>
+	</div>			  
+		  
+
 </form:form>
+ </section>
+</section> 
 </div>
- <jsp:include page="companyOnboardLocations.jsp" /> 
-		</section>
-	</section> 
-	
-	
-	</div>
 	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
@@ -279,6 +291,50 @@ right: 15px;
 </script> 
  
 <script src="resources/js/formvalidator.js"></script>
+
+
+
+<script>
+function validateOrgShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgShortId = $("#generatedUserId").val();
+	$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+$(function(){
+	$("#generatedUserId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+$(function() {
+	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+$(function(){
+    $("#averageWorkingHours").keyup(function(event){
+        var ew = $("#averageWorkingHours").val();
+        $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+        if(ew > 24){
+        	$("#averageWorkingHours").val('');
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        }
+    });
+});
+
+</script>
 
 
 <script>
@@ -487,7 +543,7 @@ var validationSettings = {
 	              	      
 	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 	                      	success: function(result) {
-	                      		loadRegisteredOrgs();
+	                      		location.replace(sourceleadUrl+"/companyOnboardLocations");	
 	  			        },  
 	                  }); 
              		}

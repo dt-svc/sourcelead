@@ -41,6 +41,8 @@ public class OrgSettings {
     private String dba;
     
     private String businessType;
+    
+    private Integer averageWorkingHours;
 	
 
 	public Integer getId() {
@@ -191,6 +193,14 @@ public class OrgSettings {
 
 	public void setBusinessType(String businessType) {
 		this.businessType = businessType;
+	}
+
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
 	}
 
 }

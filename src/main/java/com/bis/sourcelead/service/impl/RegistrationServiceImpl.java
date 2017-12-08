@@ -511,6 +511,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		orgLocations.setIsCompanyOnboarded(Constants.NO);
 		
+	    if(registration.getDba() != null || registration.getDba().isEmpty()){
+        	orgLocations.setDba(registration.getDba());
+        }
+        
+        if(registration.getGeneratedUserId() != null || registration.getGeneratedUserId().isEmpty()){
+        	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
+        }
+        
+        if(registration.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(registration.getAverageWorkingHours());
+        }
+		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);
 		}
