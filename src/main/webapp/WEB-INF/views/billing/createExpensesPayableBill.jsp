@@ -119,7 +119,10 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="errDuedate">
+              <div class="input-group errorInptgroup">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+                 <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                </div>
               </div>
             </div>
               
@@ -1810,6 +1813,10 @@ function attachFile(id){
 }
 </script>
 
-
+<script>
+function clearDate(){
+	$("#dueDate").val("");
+	};	
+</script>
 
  <jsp:include page="../masterFooter.jsp" />	

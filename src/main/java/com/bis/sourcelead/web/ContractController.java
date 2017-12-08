@@ -162,6 +162,8 @@ public class ContractController {
 		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
 		
 		ModelAndView model = new ModelAndView();
+		
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);

@@ -18,6 +18,10 @@ public class ExpensesDTOConverter {
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
 		expensesDTO.setExpensePurpose(expenses.getPurpose());
 		expensesDTO.setTotalAmount(expenses.getTotalAmount());
+		
+		if(expenses.getOrgRelationUUID() != null){
+		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());
+		}
 		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
 		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 		expensesDTO.setExpenseAmountDivId(totalAmountRoundOff);
@@ -27,6 +31,8 @@ public class ExpensesDTOConverter {
 			expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 			expensesDTO.setProjectId(expenses.getProjectMembers().getProjects().getId());
 			expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
+			expensesDTO.setProjectUUID(expenses.getProjectMembers().getProjects().getProjectUUID());
+			expensesDTO.setProjectClientUUID(expenses.getProjectMembers().getProjectClientUUID());
 		}
 		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){

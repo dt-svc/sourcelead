@@ -206,12 +206,16 @@ public class AssetServiceImpl implements AssetService{
 			 Employees shiftAEmp = new Employees();
 			 shiftAEmp.setId(Long.parseLong(assetDTO.getShiftAEmp()));
 			 asset.setShiftAEmployee(shiftAEmp);
+		 }else{
+			 asset.setShiftAEmployee(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getShiftBEmp())){
 			 Employees shiftBEmp = new Employees();
 			 shiftBEmp.setId(Long.parseLong(assetDTO.getShiftBEmp()));
 			 asset.setShiftBEmployee(shiftBEmp);
+		 }else{
+			 asset.setShiftBEmployee(null);
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getDescription())){
@@ -229,8 +233,6 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setFileName(fileInfo.getFileName());
 			 asset.setFileContentType(fileInfo.getContentType());
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
-			
-			 
 		 }
 		 
 		 if(assetDTO.getUploadBtndskAUpload() != null){

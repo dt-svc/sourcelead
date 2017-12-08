@@ -436,6 +436,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String projectClientUUID;
 	
+	
+	@Transient
+	@JsonProperty
+	private int timeReportsTotalCountValue;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -1489,6 +1494,15 @@ public class ProjectMembers implements Serializable {
 		this.projectClientUUID = projectClientUUID;
 	}
 
+	public int getTimeReportsTotalCountValue() {
+		return timeReportsTotalCountValue;
+	}
+
+	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
+		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
+	}
+
+	
 	
 	
 }

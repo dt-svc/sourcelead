@@ -934,7 +934,6 @@ function loadRequestDetails(){
 	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
-	        	  $("input[name = 'maxRowCount']").val(json.newResourceRequestList.length);
 	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
 	        	 
 	        	 
@@ -1115,7 +1114,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			totalEstimatedHours(maxRowNum);
 			totalEstimatedBudget(maxRowNum);			
 	 }
-	 
+	     $("input[name = 'maxRowCount']").val(newResourceRequestList.length);
 	    $("#totalResourcesId").val(requestedResources);
 		$("#totalEstHours").val(estimatedHours);
 		$("#totalEstBudget").val(estimatedBudget);

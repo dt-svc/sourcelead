@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.HolidayDTO;
@@ -20,6 +21,6 @@ public interface HolidayService {
 
 	public List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 
-	
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate,Long orgLocationId)throws Exception;
 
 }

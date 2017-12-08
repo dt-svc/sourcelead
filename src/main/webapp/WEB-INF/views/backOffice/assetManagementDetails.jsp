@@ -8,13 +8,10 @@
 
 <script>
 function assetDetails(assetId) {
-		
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
-			success : function(data) {
-				var json = JSON.parse(data);
-				    
+			success : function(json) {
 				    var make = "NO DATA";
 				    var model = "NO DATA";
 				    var name = "NO DATA";
@@ -58,7 +55,6 @@ function assetDetails(assetId) {
 					if (json.monitor != null && json.monitor != '' && json.monitor != 'undefined') {
 						monitor = json.monitor;
 					}
-					
 					if (json.description != null && json.description != '' && json.description != 'undefined') {
 						description = json.description;
 					} 
@@ -74,17 +70,16 @@ function assetDetails(assetId) {
 					}else{
 						shiftBEmpName = "NO DATA";
 					}
-					
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
-					result = result + '<h1>'+json.assetCategory.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
+					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>Category Name:</b> <span>'+json.assetCategory.categoryName+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b>Category Name:</b> <span>'+json.categoryName+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>S. No.:</b> <span>'+json.slno+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b>S. No.:</b> <span>'+json.sno+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
@@ -175,8 +170,7 @@ function editAssetManagement(assetId){
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
-		success : function(data) {
-			var json = JSON.parse(data);
+		success : function(json) {
 			
 			var make = "";
 		    var model = "";
@@ -257,7 +251,6 @@ function editAssetManagement(assetId){
 			if(json.workingStatus == 'Out Of Service'){
 				selected2 = 'selected';
 			} 
-			
            var result = "";
            result = result + '<div id="updateLoading"></div>';
            result = result + '<div class="form-horizontal req-dtls myForm row">';
@@ -273,7 +266,7 @@ function editAssetManagement(assetId){
 			result = result + '<div class="form-horizontal clearfix">';
 			
 			result = result + '<div class="col-md-6">';
-			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.slno+'" field-name="Sl No" data-validation="required validate_Space validate_length length2-200" placeholder="Serial Number *">';
+			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Sl No" data-validation="required validate_Space validate_length length2-200" placeholder="Serial Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-6" id="workingStatusDiv">';
@@ -291,9 +284,8 @@ function editAssetManagement(assetId){
 			result = result + ' <div class="col-md-6">';
 			result = result + '  <input type="text" class="form-control input-sm" name="model" value="'+model+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Model">';
 			result = result + ' </div>';
-			
 			//this block not visible to others category assets
-			if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && (json.assetCategory.id == 1 || json.assetCategory.id ==2)) {
+			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
 				result = result + ' <div class="col-md-6">';
 				result = result + '  <input type="text" class="form-control input-sm" name="memory" value="'+memory+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-50" placeholder="Memory">';
@@ -307,7 +299,7 @@ function editAssetManagement(assetId){
 				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
 				
-				if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id == 2) {
+				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-6">';
 					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Monitor">';
 					result = result + '</div>';
@@ -325,8 +317,9 @@ function editAssetManagement(assetId){
 					for (var i=0; i<json.employeesList.length; i++)
 					{
 						empA = json.employeesList[i];
-		 	    	   var selected = '';
-		 	    	  if(json.shiftAEmployee != null && json.shiftAEmployee != "" && json.shiftAEmployee != 'undefined' && json.shiftAEmployee.id == empA.id){
+		 	    	   var selected = ''; 
+		 	    	   
+		 	    	  if(json.shiftAEmployee != null && json.shiftAEmployee != "" && json.shiftAEmployee != 'undefined' && json.shiftAEmployee == empA.id){
 		 	    		 selected = 'selected';
 		 	    	 }
 		 	    	result = result+"<option value='"+empA.id+"' "+selected+">"+empA.user.firstName+" "+empA.user.lastName+"</option>"; 
@@ -342,9 +335,9 @@ function editAssetManagement(assetId){
 				 result = result + '  <input type="text" class="form-control" readonly name="shiftAUploadFile" id="shiftAUploadFile" placeholder="Files are not selected...">';
 				 result = result + ' </div>';
 				 result = result + '</div>';
-				 
+				 var blockA = "A";
 				 result = result+'  <div class="col-md-6" id="shiftADocNameDiv" style="display: none;">';
-				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeShiftAFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeDoc('+assetId+',\''+json.shiftAFileUrl+'\',\''+blockA+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftAExisitngFile" name="shiftAExisitngFile" value="'+shiftAFileName+'">';
 				 result = result+'  </div>';
 				 
@@ -359,7 +352,7 @@ function editAssetManagement(assetId){
 					{
 						empB = json.employeesList[i];
 		 	    	   var selected = '';
-		 	    	  if(json.shiftBEmployee != null && json.shiftBEmployee != "" && json.shiftBEmployee != 'undefined' && json.shiftBEmployee.id == empB.id){
+		 	    	  if(json.shiftBEmployee != null && json.shiftBEmployee != "" && json.shiftBEmployee != 'undefined' && json.shiftBEmployee == empB.id){
 		 	    		 selected = 'selected';
 		 	    	 }
 		 	    	result = result+"<option value='"+empB.id+"' "+selected+">"+empB.user.firstName+" "+empB.user.lastName+"</option>"; 
@@ -375,9 +368,9 @@ function editAssetManagement(assetId){
 				result = result + '  <input type="text" class="form-control" readonly id="shiftBUploadFile" placeholder="Files are not selected...">';
 				result = result + '</div>';
 				result = result + '</div>';
-				
+				var blockB = "B";
 				 result = result+'  <div class="col-md-6" id="shiftBDocNameDiv" style="display: none;">';
-				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeShiftBFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeDoc('+assetId+',\''+json.shiftBFileUrl+'\',\''+blockB+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
@@ -393,9 +386,9 @@ function editAssetManagement(assetId){
 			result = result + '<input type="text" class="form-control" name="attachment" readonly id="uploadFile1Attachment" placeholder="Files are not selected...">';
 			result = result + ' </div>';
 			result = result + ' </div>';
-			
+			var blockC = "C";
 			result = result+'  <div class="col-md-6" id="docNameDiv" style="display: none;">';
-			result = result+'  <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title="'+fileName+'" ></label>&nbsp;&nbsp;<span id="delete_file" onclick="removeFileNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+			result = result+'  <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title="'+fileName+'" ></label>&nbsp;&nbsp;<span id="delete_file" onclick="removeDoc('+assetId+',\''+json.fileUrl+'\',\''+blockC+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 			result = result	+ '<input type="hidden" id="generalExisitingFile" name="generalExisitingFile" value="'+fileName+'">';
 			result = result+'  </div>';
 			
@@ -495,34 +488,39 @@ function manageDocs(fileName,shiftAFileName,shiftBFileName){
 </script>
 
 <script>
-function removeFileNameDiv(){
-	$("#docNameDiv").hide();
-	$("#fileAttachmentDiv").show();
-	$("#generalExisitingFile").val('');
-	$('#uploadFile1Attachment').attr("data-validation-optional","true");
-	$("#uploadFile1Attachment").attr("data-validation", "validatedoc");
-}
-</script>
+function removeDoc(assetId,url,block){
+	var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 		if(block == 'A'){
+		    $("#shiftADocNameDiv").hide();
+		 	$("#shiftAFileAttachmentDiv").show();
+		 	$("#shiftAExisitngFile").val('');
+		 	$('#shiftAUploadFile').attr("data-validation-optional","true"); 
+		 	$("#shiftAUploadFile").attr("data-validation", "validatedoc"); 
+		    }if(block == 'B'){
+		    $("#shiftBDocNameDiv").hide();
+		 	$("#shiftBFileAttachmentDiv").show();
+		 	$("#shiftBExisitngFile").val('');
+		 	$('#shiftBUploadFile').attr("data-validation-optional","true");
+		 	$("#shiftBUploadFile").attr("data-validation", "validatedoc");
+		    }
+		 	if(block == 'C'){
+		 	$("#docNameDiv").hide();
+			$("#fileAttachmentDiv").show();
+			$("#generalExisitingFile").val('');
+			$('#uploadFile1Attachment').attr("data-validation-optional","true");
+			$("#uploadFile1Attachment").attr("data-validation", "validatedoc");
+		    }
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteDoc?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+   		    success: function(data) {
+   		   
+   		    },
+   		    });		
+		}
+</script>		 
 
-<script>
-function removeShiftAFileNameDiv(){
-	$("#shiftADocNameDiv").hide();
-	$("#shiftAFileAttachmentDiv").show();
-	$("#shiftAExisitngFile").val('');
-	$('#shiftAUploadFile').attr("data-validation-optional","true"); 
-	$("#shiftAUploadFile").attr("data-validation", "validatedoc");
-}
-</script>
-
-<script>
-function removeShiftBFileNameDiv(){
-	$("#shiftBDocNameDiv").hide();
-	$("#shiftBFileAttachmentDiv").show();
-	$("#shiftBExisitngFile").val('');
-	$('#shiftBUploadFile').attr("data-validation-optional","true");
-	$("#shiftBUploadFile").attr("data-validation", "validatedoc");
-}
-</script>
 
 <!-- <script type="text/javascript">
   function checkGeneralAttachment() {

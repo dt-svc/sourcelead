@@ -405,6 +405,7 @@ public class CampaignRestController {
 	@RequestMapping(value = "/getCampaignStatsByCampaignId")
 	public CampaignStatsDTO getCampaignStatsByCampaignId(@RequestParam(value = "campaignId", required = false) String campaignId, HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CampaignStats campaignStats = campaignService.getCampaignStatsByCampaignId(campaignId);
 		CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
 		campaignStatsListDTO.setId(campaignStats.getId());
@@ -427,6 +428,9 @@ public class CampaignRestController {
 		campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
 		campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
 		campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String campaignDate = newFormat.format(campaignStats.getCampaignDate());
+		campaignStatsListDTO.setCreatedDate(campaignDate);
 		return campaignStatsListDTO;
 	}
 	

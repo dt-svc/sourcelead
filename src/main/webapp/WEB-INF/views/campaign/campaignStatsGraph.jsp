@@ -61,7 +61,7 @@ $(document).ready(function() {
 						<div class="panel-body">
 							 <ul class="list-unstyled campaignsstats-list mb0">
 							 	<li><span class="fa fa-circle mr10 text-success"></span>Requests
-							 	<span class="campaignsstatslist-count" id="requests"></span>
+							 	<span class="campaignsstatslist-count" id="request"></span>
 							 	</li>
 							 	<li><span class="fa fa-circle mr10 text-info"></span>Bounces
 							 	<span class="campaignsstatslist-count" id="bounces"></span>
@@ -92,9 +92,15 @@ $(document).ready(function() {
       type : "GET",
        url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignId="+campaignId,       
        success :function(json) {
-    	   
+    	   $("#delivered").html(json.delivered)
+    	   $("#opens").html(json.opens);
+    	   $("#clicks").html(json.clicks);
+    	   $("#request").html(json.request);
+    	   $("#bounces").html(json.bounces);
+    	   $("#unsubscribes").html(json.unsubscribes);
+    	   $("#spamReports").html(json.spamReports);
+    	   campaignStatsAmchart(json);
        /* 	populategCampaignStats(json); 
-       delivered  opens clicks requests bounces unsubscribes spamReports
        */
       },
        
@@ -102,7 +108,28 @@ $(document).ready(function() {
   }
   </script>
   
+		   
+  
   <script>
+  function campaignStatsAmchart(json){
+	       var chartData = [
+				{
+					"date": json.createdDate,
+	        		"column-1": json.request,
+	        		"column-2": json.delivered,
+	        		"column-3": json.opens,
+	        		"column-4": json.uniqueOpens,
+	        		"column-5": json.clicks,
+	        		"column-6": json.uniqueClicks,
+	        		"column-7": json.bounceDrops,
+	        		"column-8": json.spamReportDrops,
+	        		"column-9": json.unsubscribes,
+	        		"column-10": json.bounces,
+	        		"column-11": json.spamReports,
+	        		"column-12": json.invalidEmails
+				}
+			];
+
 			AmCharts.makeChart("campaignsstats",
 				{
 					"type": "serial",
@@ -202,115 +229,11 @@ $(document).ready(function() {
 						"valueWidth": 0
 					},
 					"titles": [],
-					"dataProvider": [
-						{
-							"date": "2014-03-01",
-							"column-1": 8,
-							"column-2": 5,
-							"column-3": 92,
-							"column-4": 70,
-							"column-5": 59,
-							"column-6": 18,
-							"column-7": 19,
-							"column-8": 53,
-							"column-9": 45,
-							"column-10": 58,
-							"column-11": 38,
-							"column-12": 40
-						},
-						{
-							"date": "2014-03-02",
-							"column-1": 6,
-							"column-2": 7,
-							"column-3": 58,
-							"column-4": 16,
-							"column-5": 67,
-							"column-6": 68,
-							"column-7": 33,
-							"column-8": 50,
-							"column-9": 72,
-							"column-10": 97,
-							"column-11": 94,
-							"column-12": 40
-						},
-						{
-							"date": "2014-03-03",
-							"column-1": 2,
-							"column-2": 3,
-							"column-3": 90,
-							"column-4": 28,
-							"column-5": 74,
-							"column-6": 84,
-							"column-7": 66,
-							"column-8": 61,
-							"column-9": 4,
-							"column-10": 99,
-							"column-11": 5,
-							"column-12": 37
-						},
-						{
-							"date": "2014-03-04",
-							"column-1": 1,
-							"column-2": 3,
-							"column-3": 39,
-							"column-4": 67,
-							"column-5": 8,
-							"column-6": 68,
-							"column-7": 99,
-							"column-8": 4,
-							"column-9": 2,
-							"column-10": 41,
-							"column-11": 38,
-							"column-12": 36
-						},
-						{
-							"date": "2014-03-05",
-							"column-1": 2,
-							"column-2": 1,
-							"column-3": 47,
-							"column-4": 99,
-							"column-5": 37,
-							"column-6": 8,
-							"column-7": 83,
-							"column-8": 33,
-							"column-9": 3,
-							"column-10": 15,
-							"column-11": 62,
-							"column-12": 42
-						},
-						{
-							"date": "2014-03-06",
-							"column-1": 3,
-							"column-2": 2,
-							"column-3": 87,
-							"column-4": 54,
-							"column-5": 52,
-							"column-6": 58,
-							"column-7": 55,
-							"column-8": 9,
-							"column-9": 65,
-							"column-10": 0,
-							"column-11": 72,
-							"column-12": 79
-						},
-						{
-							"date": "2014-03-07",
-							"column-1": 6,
-							"column-2": 8,
-							"column-3": 3,
-							"column-4": 33,
-							"column-5": 35,
-							"column-6": 95,
-							"column-7": 45,
-							"column-8": 32,
-							"column-9": 21,
-							"column-10": 12,
-							"column-11": 27,
-							"column-12": 51
-						}
-					]
+					"dataProvider":chartData
 				}
 			);
+			
+  }
 	</script>
   
   
