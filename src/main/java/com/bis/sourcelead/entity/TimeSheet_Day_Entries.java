@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "TIMESHEET_Day_ENTRIES")
+@Table(name = "TIMESHEET_DAY_ENTRIES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheet_Day_Entries")
 public class TimeSheet_Day_Entries implements Serializable{
 	
