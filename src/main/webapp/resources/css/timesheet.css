@@ -4043,13 +4043,9 @@ position: relative; padding: 0px 0px 5px 0px;
  
 .timesheetRepTab {
     width:100%;  overflow-x: auto;
-    
-    -webkit-transition: all 0s !important; -ms-transition: all 0s !important; -moz-transition: all 0s !important; transition: all 0s !important; 
-  
 }  
 .timesheetRepTab table {
     width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;
-     -webkit-transition: all 0s !important; -ms-transition: all 0s !important; -moz-transition: all 0s !important; transition: all 0s !important; 
     }
 .timesheetRepTab table tr:nth-child(even) {background: #fff;}
 .timesheetRepTab table tr:nth-child(odd) {background: #eef1fc;}         
@@ -4062,19 +4058,8 @@ position: relative; padding: 0px 0px 5px 0px;
     font-weight:400;
     }
 .timesheetRepTab table div {
- 	position:relative;
+    position:relative;
     }
-    
- .timesheetRepTab.timesheetRep-table table div {
- 	position: inherit;
-    }
-   .timesheetRepTab.timesheetRep-table table tr th, .timesheetRepTab.timesheetRep-table tr td {
-   border-left:none !important; border-right:none !important; vertical-align: middle;
-   }
-   .timesheetRepTab.timesheetRep-table tr td {
-   padding:2px 10px 5px 10px;
-   }
-   
 .timesheetRepTab table div i {
     font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; text-align: left;
 }
@@ -5617,6 +5602,22 @@ padding:2px 10px 5px 10px;
 .clossIconPosi {
   right: -17px; top: -15px;
 }
+.pagiPad .pagination {
+	margin: 10px 0px !important;
+}
+.dbaCheck {
+	height: 34px; background-color: #f1f1f1; padding: 0px; text-align: center; line-height: 34px;
+}
+
+.welSiO.onboard-logoutbtn {
+	position: absolute; top: 0; right: 0;
+}
+.dbaCheck.dbaCheck-cs .mrleft8 {
+	position: relative; right: 14px;
+}
+.dbaCheck.dbaCheck-cs {
+	background-color: #337ab7; border-radius: 0 5px 5px 0;
+}
 
 /*    Responsive CSS    */
 
@@ -6134,10 +6135,9 @@ width: 100% !important;
 .comLogContent .col-md-3 {
 	margin: 0px; font-size: 13px;
 }
-
-
-
-
+.comLogContent .jquery_form_error_message {
+position: absolute;
+}
 
 
 .cusFieldSideWrap {
@@ -6327,7 +6327,6 @@ text-shadow: 0 1px 0 #fff;
 .immigraTabs_inn {
     padding:0px; display:none; position: relative;
     }
-
 .immigraTabsHead {
 	background-color: #fff; text-align: right; padding: 6px 15px;
 }
@@ -6468,6 +6467,9 @@ text-shadow: 0 1px 0 #fff;
 .addImmiHead {
 	padding: 15px 20px !important; position: relative;
 }
+.addImmiHead .bootstrap-select {
+	position: absolute; left: 120%; top: -7px; border:none !important; width:140px !important; 
+}
 .addImmiWrap {
 	padding: 20px; width: auto;
 }
@@ -6533,12 +6535,52 @@ text-shadow: 0 1px 0 #fff;
 
 /*  Immigration CSS  */
 
-.pagiPad .pagination {
-	margin: 10px 0px !important;
+/*  Custom */
+
+.cusFieldHead {
+	padding: 15px 20px !important; position: relative;
+}
+.cusFieldHead .bootstrap-select {
+	position: absolute; left: 120%; top: -7px; border:none !important; width:150px !important; 
+}
+.cusFielInn {
+    padding:0px 0px 15px 0px; position: relative;
+    }
+.cusFielInnHead {
+	background-color: #fff; padding: 6px 15px;
+}
+.cusFielInnHead h2 {
+	float: left; font-size: 18px; color: #454545; font-weight: 500; padding: 6px 0px; margin: 0px 0px;
+}
+.cusFielInnHead a {
+	display: inline-block; margin: 0px; color: #454545; font-size: 14px; font-weight: 500; float: right;
+	padding: 7px 5px;
+}
+.cusFielInnHead a i {
+	display: inline-block; padding: 0px 5px 0px 0px;
+}
+.cusFielInnHead span {
+	display: inline-block; padding: 0px 0px 0px 15px;
+}
+.cusFielTable {}	
+.cusFielTable table {
+    border:none; width: 100%; background-color: #fff;
+}
+.cusFielTable table tr th {
+	background-color: #f5f5f5; text-align: left; padding: 10px 15px; border-top: 1px solid #ededed; font-size: 14px;
+	font-weight: 500; color: #368ee0;
+}
+.cusFielTable table tr td {
+	text-align: left; padding: 0px 15px; border-top: 1px solid #ededed; font-size: 14px;
+	font-weight: 400; color: #454545; height: 40px;
+}
+.cusFielAction {
+	width: 90px; text-align: center; padding: 0px 10px !important;
+}
+.cusFielAction i {
+	font-size: 14px; display: inline-block; padding: 0px 4px; cursor: pointer;
 }
 
-
-/*  Immigration CSS */
 
 
 
