@@ -58,4 +58,14 @@ public class CompanyOnboardController {
 			model.setViewName("onboard/companyOnboardLocations");
 			return model;
 		}
+		
+		@RequestMapping(value = "/companyOnboardFederalAndStateTaxes")
+		public ModelAndView companyOnboardFederalAndStateTaxes(HttpServletRequest request) throws Exception  {
+			
+			ModelAndView model = new ModelAndView();  
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("onboard/companyOnboardFederalAndStateTaxes");
+			return model;
+		}
+		
 }

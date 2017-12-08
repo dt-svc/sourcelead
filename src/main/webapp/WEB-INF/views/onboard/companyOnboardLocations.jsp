@@ -56,8 +56,8 @@ right: 15px;
 				  <div class="clearfix"></div>
 			  </div>
 			  
-      <div id="loading"></div> 
 	  <div class="comLogContent">
+	   <div id="loading"></div> 
 	         <div class="pull-left">
        		  <h2 class="clearfix locaPadding" id="locationOrgsName"></h2>
 	        </div>
@@ -74,7 +74,7 @@ right: 15px;
                			<div id="registeredOrgs"></div>
     			<div class="welBtns welBtnsA">
 					<input type="button" value="Prev"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
-					<a href="company-onboarding-federal.html"><input type="button" value="Skip this step" class="skipBtn"></a>
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardFederalAndStateTaxes'/>'">
 					<div class="clearfix"></div>
 				</div>
        			</form:form>
@@ -131,7 +131,7 @@ function loadRegisteredOrgs(){
      
      
      var sourceleadUrl = '${sourceleadUrl}';
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      
      $.ajax({ 
 	    	type: "POST",
@@ -905,7 +905,7 @@ var validationSettings = {
      
 	</script>
 	
-	<script type="text/javascript">
+<script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
 
