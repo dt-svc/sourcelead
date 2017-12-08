@@ -525,7 +525,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/jobAlertRequirementSummary")
+	 @RequestMapping(value = "/jobAlertRequirementSummary")
 		public ModelAndView jobAlertRequirementSummary(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
 			
 		 ModelAndView model = new ModelAndView();

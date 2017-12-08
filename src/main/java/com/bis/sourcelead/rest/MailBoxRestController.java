@@ -204,7 +204,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@RequestMapping(value = {"sendRequestForResume", "/app/sendRequestForResume"}, method = RequestMethod.POST)
+	@RequestMapping(value = "/sendRequestForResume", method = RequestMethod.POST)
 	public String sendRequestForResume(HotListEmailCampaignDTO hotListEmailCampaignDTO,	@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
 			@RequestParam(value = "UUID", required = false) String UUID, HttpServletRequest request) throws Exception {
 		hotListEmailCampaignDTO.setStaticPath(staticPath);

@@ -42,7 +42,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class JobAlertRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -70,7 +69,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	}
     
     
-    @RequestMapping(value = "/getJobAlertList")
+    @RequestMapping(value = "/app/getJobAlertList")
 	 public String getJobAlertList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -97,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/deleteJobAlert", method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/deleteJobAlert", method = RequestMethod.POST)
 	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -113,7 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = "/app/getJobDetailsForJobAlert", method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
