@@ -1609,11 +1609,15 @@ public class TimesheetRestController {
 		            if(tsDTO.getTimesheetEntries() !=null && !tsDTO.getTimesheetEntries().isEmpty()){
 		            	 LinkedHashMap<Long, TimesheetEntries> entriesMap = new LinkedHashMap<>();
 		            	for(TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()){
+		            		
 		            		if((teDTO.getTimesheetTaskDTO() == null) || (teDTO.getTimesheetTaskDTO() == null && teDTO.getTimesheetTaskDTO().getId() == null))
 		            			continue;
 		            		Long taskId = teDTO.getTimesheetTaskDTO().getId();
 		            		ProjectTasks projectTasks = projectTasksService.getTasksId(teDTO.getTimesheetTaskDTO().getId().toString());
 		            		String taskType = teDTO.getTimesheetTaskDTO().getTaskType();
+		            	
+		            		
+		            		
 		            		TimesheetEntries timesheetEntries = entriesMap.get(taskId);
 		            		if(timesheetEntries == null){
 		            			timesheetEntries = new TimesheetEntries();

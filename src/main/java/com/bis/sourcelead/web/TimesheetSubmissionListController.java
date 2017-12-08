@@ -111,7 +111,7 @@ public class TimesheetSubmissionListController {
 	 * @return
 	 * @throws Null Exception
 	 */
-	 @RequestMapping(value = "/getTimesheetListByStatus", method = RequestMethod.POST)
+	 //@RequestMapping(value = "/getTimesheetListByStatus", method = RequestMethod.POST)
 	 public @ResponseBody String getTimesheetListByStatus(@RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception{ 
 		    String resultJson = "";
 			request.setAttribute("status", status);
