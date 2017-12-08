@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
@@ -20,7 +22,6 @@ import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 @Repository
 public class CampaignDaoImpl implements CampaignDao {
 	@Autowired
@@ -261,15 +262,74 @@ public class CampaignDaoImpl implements CampaignDao {
 		List<Campaign> cpnList = session.createQuery("from Campaign").setCacheable(true).list();
 		return cpnList;
 	}
-
+	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
-	public List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CampaignStats> cpnStatsList = session.createQuery("from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		return cpnStatsList;
-	}
+		List<CampaignStats> cpnStatsList = null;
+		ResponseList<CampaignStats> response = new ResponseList<>();
+		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
+//				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+//		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
+		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
+		
+//			List<InvoiceData> invoiceDetailsList = null;
+//			ResponseList<InvoiceData> response = new ResponseList<>();
+//			String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId";
+//			String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId";
+			
+			StringBuilder query1 = new StringBuilder("");
+				if(campaignStatsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(campaignStatsDTO.getSearchValue())) {
+				query1.append(" and cpnstats.categoryName like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+						.append("OR cpnstats.opens like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+						.append("OR cpnstats.delivered like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+						.append("OR cpnstats.uniqueOpens like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+						.append("OR cpnstats.uniqueClicks like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+						.append("OR cpnstats.unsubscribes like '%" + campaignStatsDTO.getSearchValue() + "%' ");
+//						.append("OR ind.lastmodified like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.dueDate like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.rate like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.qty like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.amount like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.arPaid like '%" + campaignStatsDTO.getSearchValue() + "%' ")
+//						.append("OR ind.oldNew like '%" + campaignStatsDTO.getSearchValue() + "%' ");
+				}
+			Query queryObj = session.createQuery(query + query1.toString());
+			if (campaignStatsDTO != null && campaignStatsDTO.getLength() > 0) {
+				queryObj.setFirstResult(campaignStatsDTO.getStart());
+				queryObj.setMaxResults(campaignStatsDTO.getLength());
+				queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			}
+			cpnStatsList = queryObj.list();
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			if(countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+			if (campaignStatsDTO != null) {
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocationId).list();
+				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
+				}
+				response.setRecordsFiltered(filteredCount);
+			} 
+//				response.setData(getInvoiceListSorting(invoiceDetailsList));
+				response.setData(cpnStatsList);
+			
+			return response;
+		}
+			
+		
+		
+		
+	
+	
+	
+	
 
     @Override
 	@Transactional(rollbackFor = { Exception.class })

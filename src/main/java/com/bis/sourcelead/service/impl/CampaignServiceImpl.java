@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
@@ -349,9 +350,9 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception
+	public ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
 	{
-		return campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId);
+		return campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
 	}
 	@Override
 	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception

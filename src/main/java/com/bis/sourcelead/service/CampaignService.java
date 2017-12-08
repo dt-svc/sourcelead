@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.CreateSender;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -49,7 +50,7 @@ public interface CampaignService {
 	List<Campaign> getAllCampaigns()  throws Exception;
 
 
-	List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception;
+	ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
 
 	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
 

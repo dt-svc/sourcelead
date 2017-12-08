@@ -576,7 +576,7 @@ function getEmailDetails(uuid,type){
                 result = result +'</div>';
 			    result = result +'<div class="mailbox-read-info">';
 			    result = result +'<h3 class="col-md-4 padding_left">'+opt.subject+'</h3>';
-			    result = result +' <a href="<c:url value='/campaignStats'/>" class="pull-left btn btn-sm btn-primary">Stats</a>';
+// 			    result = result +' <a href="<c:url value='/campaignStats'/>" class="pull-left btn btn-sm btn-primary">Stats</a>';
 			    result = result +'<div class="clearfix"></div>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
 			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
