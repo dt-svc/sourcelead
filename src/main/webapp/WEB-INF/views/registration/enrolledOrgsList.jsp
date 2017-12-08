@@ -46,7 +46,7 @@ margin-right: 15px;
         <h2>Orgs List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="app/dashboard">Home</a> &raquo; Orgs List </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
     <input id="searchOrgElement" type="hidden"></input>
     </section>
      <input type="hidden" id="noOrgsList" name="noOrgsList"/>

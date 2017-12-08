@@ -231,7 +231,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/ws/displayOrgImageInMail/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImageInMail/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -293,7 +293,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
