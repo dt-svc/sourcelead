@@ -1065,7 +1065,7 @@ public class RequirementController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/ws/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		

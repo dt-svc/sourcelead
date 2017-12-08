@@ -282,7 +282,7 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/ehCacheTest" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/ehCacheTest" ,  "/app/ehCacheTest"}, method = RequestMethod.GET)
 	public ModelAndView ehCachePage() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("ehCacheTest");
@@ -316,7 +316,7 @@ public class HomeController {
 	 * @return ModelAndView
 	 */
 	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
-	@RequestMapping(value = "/uploadForm")
+	@RequestMapping(value = "/app/uploadForm")
 	public ModelAndView fileUploadForm(HttpServletRequest request) {
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");

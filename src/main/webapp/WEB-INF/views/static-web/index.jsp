@@ -104,7 +104,7 @@ function getOpenJobsELKList(){
 	var offset = 0;
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url:"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	     $("#openJobsRequirementsList").empty();
 	     var json = JSON.parse(data);

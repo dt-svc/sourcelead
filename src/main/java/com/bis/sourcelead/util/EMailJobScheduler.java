@@ -1858,7 +1858,7 @@ public class EMailJobScheduler {
 						 tempHTML = tempHTML+"<tr>";
 						 tempHTML = tempHTML+"<td style='width:100%;padding:0px 0px 10px 0px;text-align:left;border-bottom:1px solid #ddd; line-height: 18px;'>";
 						 tempHTML = tempHTML+"<p style='Margin:0;font-size:14px;Margin-bottom:2px;color:#1976d2;padding:0;text-decoration:none;''>";
-						 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"ws/jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
+						 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
 						 tempHTML = tempHTML+"</p>";
 						 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;padding:0;'>"+requirementIndex.getPostedOrg()+" </p>";
 						 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;color:#757575;padding:0;'> "+location.toString()+" </p>";
@@ -1883,7 +1883,7 @@ public class EMailJobScheduler {
 			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
 			 
 			 if(requirementList.size() > 10){
-				 tempHTML = tempHTML+"<a href='"+sourceleadUrl+"/"+"ws/viewAllJobAlerts?jobAlertUUID="+jobAlertUUID+"' style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
+				 tempHTML = tempHTML+"<a href='"+sourceleadUrl+"/"+"viewAllJobAlerts?jobAlertUUID="+jobAlertUUID+"' style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
 			 }
 			 
 			 tempHTML = tempHTML+"</tr>";
