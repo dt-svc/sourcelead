@@ -29,6 +29,7 @@ public class RequirementURL {
 	{
 		DataSource dataSource = comboPooledDataSource();
 		try (Connection con = dataSource.getConnection()) {
+			
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT req.*FROM " + table + " req");
