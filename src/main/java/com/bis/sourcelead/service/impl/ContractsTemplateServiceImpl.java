@@ -824,6 +824,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}*/
 			
+			if(contracts.getTemplateFileURL() != null){
+				venContractsDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
+			
 			if(contracts.getId() != null){
 				venContractsDto.setId(contracts.getId());
 			}
@@ -954,6 +958,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				clientConDto.setEndDateStr(endDateInTimezone);
+			}
+			
+			if(contracts.getTemplateFileURL() != null){
+				clientConDto.setTemplateFileURL(contracts.getTemplateFileURL());
 			}
 			
 			if(contracts.getId() != null){

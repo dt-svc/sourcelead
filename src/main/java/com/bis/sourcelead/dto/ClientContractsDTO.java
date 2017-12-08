@@ -95,6 +95,7 @@ public class ClientContractsDTO {
 	private String tempUUID;
 	private Long approverUserId;
 	private Long ownerUser;
+	private String templateFileURL;
 	
 	public Long getId()
 	{
@@ -915,4 +916,13 @@ public class ClientContractsDTO {
 	{
 		this.ownerUser = ownerUser;
 	}
+
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
+	
 }
