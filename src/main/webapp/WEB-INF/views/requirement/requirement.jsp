@@ -1266,7 +1266,9 @@ $(document).ready(function () {
               <c:if test="${empty requirement.id}"> 
               	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
               </c:if>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
+                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  </span>
                   </div>
               </div>
               <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
