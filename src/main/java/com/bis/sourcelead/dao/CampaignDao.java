@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
@@ -46,9 +47,10 @@ public interface CampaignDao {
 	List<Campaign> getAllCampaigns() throws Exception;
 
 
-	List<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId) throws Exception;
+	ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
 
 	CampaignStats getCampaignStatsByCampaignId(String campaignId)throws Exception;
+
 
 
 

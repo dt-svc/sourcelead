@@ -88,7 +88,6 @@ $(document).ready(function() {
   
    <script>
   function campaignStatsGraph(campaignId){
-	  alert("Hai"+campaignId);
       $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignId="+campaignId,       

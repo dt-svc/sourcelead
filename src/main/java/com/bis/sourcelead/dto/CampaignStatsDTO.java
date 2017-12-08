@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dto;
 
-public class CampaignStatsDTO {
+public class CampaignStatsDTO extends SearchDTO {
 	
 	private long id;
 	private long orgLocation;

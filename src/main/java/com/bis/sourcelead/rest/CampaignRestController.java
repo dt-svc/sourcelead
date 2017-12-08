@@ -356,13 +356,15 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCampaignStats")
-	public List<CampaignStatsDTO> getCampaignStats(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
+	public ResponseList<CampaignStatsDTO> getCampaignStats(CampaignStatsDTO campaignStatsDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
 	{
+		ResponseList<CampaignStatsDTO> campaignStatsResList = new ResponseList<>();
+		
 		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
 		// SourceLeadSessionManager.getSessionAttribute(request,
 		// "orgLocations");
-		List<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId);
-		for (CampaignStats campaignStats : campStats) {
+		ResponseList<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
+		for (CampaignStats campaignStats : campStats.getData()) {
 			CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
 			campaignStatsListDTO.setId(campaignStats.getId());
 			campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
@@ -385,7 +387,10 @@ public class CampaignRestController {
 			campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
 			campaignStatsList.add(campaignStatsListDTO);
 		}
-		return campaignStatsList;
+		campaignStatsResList.setData(campaignStatsList);
+		campaignStatsResList.setRecordsTotal(campStats.getRecordsTotal());
+		campaignStatsResList.setRecordsFiltered(campStats.getRecordsFiltered());
+		return campaignStatsResList;
 	}
 	
 	
