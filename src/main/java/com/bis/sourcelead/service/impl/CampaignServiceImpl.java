@@ -24,9 +24,12 @@ import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ReferContactsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CampaignUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -40,10 +43,16 @@ public class CampaignServiceImpl implements CampaignService{
 	CommonUtil commonUtil;
 	
 	@Autowired
-	CampaignDao campaignDao;
+	CampaignDao campaignDao; 
+	
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	ReferContactsService referContactsService;
 	
 	@Override
 	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
@@ -257,6 +266,21 @@ public class CampaignServiceImpl implements CampaignService{
 			campaignRecipient.setUpdatedDate(date);
 			campaignRecipient.setEmail(recipientMail);
 			campaignRecipient.setRecipientId(recipientId);
+			User usr = userService.findByEmail(recipientMail);
+			if(usr != null) {
+				campaignRecipient.setFirstName(usr.getFirstName());
+				if(usr.getLastName() != null) {
+					campaignRecipient.setLastName(usr.getLastName());
+				}
+			}else {
+				ReferContacts referContacts = referContactsService.findByEmail(recipientMail);
+				if(referContacts !=null) {
+					campaignRecipient.setFirstName(referContacts.getFirstName());
+					if(referContacts.getLastName() != null) {
+						campaignRecipient.setLastName(referContacts.getLastName());
+					}
+				}
+			}
 			recipientSet.add(campaignRecipient);
 		}
 		return recipientSet;

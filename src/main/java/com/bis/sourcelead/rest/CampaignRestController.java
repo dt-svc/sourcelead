@@ -251,8 +251,10 @@ public class CampaignRestController {
 		List<CampaignRecipient> campList = campaignService.getRecipientListByListIdAndOrgLocationId(viewListId, orgLocation.getId());
 		for (CampaignRecipient campaignRecipient : campList) {
 			CampaignListDTO campaignListdto = new CampaignListDTO(); 
-			campaignListdto.setFirstName("");
-			campaignListdto.setLastName("");
+			campaignListdto.setFirstName(campaignRecipient.getFirstName());
+			if(campaignRecipient.getLastName() !=null) {
+				campaignListdto.setLastName(campaignRecipient.getLastName());
+			}
 			campaignListdto.setEmail(campaignRecipient.getEmail());
 			campaiList.add(campaignListdto);
 		}
