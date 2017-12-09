@@ -370,11 +370,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		
-		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
+		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;  margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
-		tempHTML = tempHTML + " <td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";
+		tempHTML = tempHTML + " <td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;  margin:0px;'>";
 		tempHTML = tempHTML + "   <tr>";
-		tempHTML = tempHTML + "  <td><table width='600' align='center'>";
+		tempHTML = tempHTML + "  <td><table width='600' align='center' style='margin:0px;'>";
 		tempHTML = tempHTML + "     <tr>";
 		tempHTML = tempHTML + "      <td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src="+imageUrl+" width='200' height='45'> </span></td>";
 		tempHTML = tempHTML + "     </tr>";
@@ -393,7 +393,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "   </tbody>";
 		tempHTML = tempHTML + "  </table>";
 		      // table start
-		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;'>";
+		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;  margin:0px;'>";
 		 tempHTML = tempHTML + "<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Name<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Experience<span></th>";
@@ -500,7 +500,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		      // table end
 		      tempHTML = tempHTML + " <table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
 		      tempHTML = tempHTML + " <tr>";
-		      tempHTML = tempHTML + "   <td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px;'>";
+		      tempHTML = tempHTML + "   <td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px;'>";
 		      tempHTML = tempHTML + "     <tr>";
 		      tempHTML = tempHTML + "     <td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
 		      tempHTML = tempHTML + "       <p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";
@@ -872,18 +872,18 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	{
 		String tempHTML = "";
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
-		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
+		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial; margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
-		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";
+		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0; margin:0px;'>";
 		tempHTML = tempHTML + "<tr>";
-		tempHTML = tempHTML + "<td><table width='600' align='center'>";
+		tempHTML = tempHTML + "<td><table width='600' align='center' style='margin:0px;'>";
 		tempHTML = tempHTML +  "<tr>";
 		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='"+imageUrl+"' width='200' height='45'> </span></td>";
 		tempHTML = tempHTML +  "</tr>";
 		tempHTML = tempHTML +  "</table></td>";
 		tempHTML = tempHTML + "</tr>";
 		tempHTML = tempHTML + "</table>";
-		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px;'>";
+		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px; margin:0px;'>";
 		tempHTML = tempHTML +  "<tbody>";
 		tempHTML = tempHTML +   "<tr>";
 		tempHTML = tempHTML +   "<td align='left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
@@ -895,7 +895,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";
 		      //Table Design
-		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle'>";
+		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; margin:0px;'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Job Title<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Location<span></th>";
@@ -968,7 +968,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 tempHTML = tempHTML+"</tr>";;
 			 tempHTML = tempHTML+"<tr style='background-color:#ffffff;min-height:32px;'>";
 			 tempHTML = tempHTML+"<td style='padding-top:15px;padding-bottom:15px;padding-right:10px;padding-left:10px;'>";
-			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff;'>";
+			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff; margin:0px;'>";
 			 tempHTML = tempHTML+"<tbody>";
 			 tempHTML = tempHTML+"<tr>";
 			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
@@ -988,9 +988,9 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 tempHTML = tempHTML+"<br><br>";
 			  // Table Design
 			 tempHTML = tempHTML + signature;
-		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='15px 0 15px 0; background-color:#ededed; padding:0px;margin:0'>";
+		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='15px 0 15px 0; background-color:#ededed; padding:0px; margin:0px'>";
 		tempHTML = tempHTML +" <tr>";
-		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0'>";
+		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px'>";
 		tempHTML = tempHTML + "<tr>";
 		tempHTML = tempHTML +"<td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
 		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";
