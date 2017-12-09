@@ -24,6 +24,9 @@ window.onload = function() {
 	    	   $("#enrolledLocDiv").empty();
 	    	   $("#enrolledLocDiv").append(data);
 	    	   $(".signWrap").addClass("orgOutWrap");
+	    	   $(".SignSlide").hide();
+	    	   $(".orgWrap").show();
+// 	    	   $(".signWrap").addClass("orgOutWrap");
 	      },
 	  }); 
 }

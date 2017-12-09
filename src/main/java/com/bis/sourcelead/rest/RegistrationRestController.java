@@ -982,17 +982,39 @@ public class RegistrationRestController {
 	}
 	
 	@RequestMapping(value = "/validateWhitelistIp", method = RequestMethod.GET)
-	public String validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
+	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
 		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String[] currentIp = ipAddress.split("\\.");
+		boolean matched = false;
 		for(WhiteListIPAddressDTO wlipDto : ipList){
 			String fromip = wlipDto.getFromIpAddress();
-			String tomip = wlipDto.getToIpAddress();
+			String toip = wlipDto.getToIpAddress();
+			
+			String[] fromipaddr = fromip.split("\\.");
+			String[] toipaddr = toip.split("\\.");
+			
+			if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
+				if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
+					if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
+						if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
+							matched = true;
+						}else{
+							matched = false;
+						}
+					}else{
+						matched = false;
+					}
+				}else{
+					matched = false;
+				}
+			}else{
+				matched = false;
+			}
 		}
-		
-		return "true";
+		return matched;
 	}
 	
 	   protected boolean isNullOrEmpty(String str) {
