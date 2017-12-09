@@ -37,8 +37,6 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	
 	private String dashboardTimeStatus;
 	
-	private String requestFrom;
-	
 	public String getWeekFrequency() {
 		return weekFrequency;
 	}
@@ -177,12 +175,7 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	public void setDashboardTimeStatus(String dashboardTimeStatus) {
 		this.dashboardTimeStatus = dashboardTimeStatus;
 	}
-	public String getRequestFrom() {
-		return requestFrom;
-	}
-	public void setRequestFrom(String requestFrom) {
-		this.requestFrom = requestFrom;
-	}
+	
 	
 	
 }

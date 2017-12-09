@@ -417,7 +417,6 @@ public class TimeApprovalRedefinedRestController {
 			OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
-			if(timesheetApprovalDTO.getRequestFrom().equalsIgnoreCase("timeSheetApprovalList")) {
 			Date actualStartDate=null;
 		    Date actualEndDate=null;
 		    try {
@@ -561,7 +560,6 @@ public class TimeApprovalRedefinedRestController {
 	         }
 	        timesheetApprovalDTO.setTimesheetSubmission(subDetails);
 	       }
-		}
 	        return timesheetApprovalDTO;
 	}
 		

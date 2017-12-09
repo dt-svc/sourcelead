@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -130,6 +132,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
+	
+	@Autowired
+	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
 	@Autowired
 	TimesheetSubmissionsDocumentsService TimesheetSubmissionsDocumentsService;
@@ -1606,6 +1611,7 @@ public class TimesheetRestController {
 		            	}
 		            }
 		            LinkedList<TimesheetEntries> entriesList = new LinkedList<>();
+		            LinkedList<TimeSheetDayEntries> entriesDayList = new LinkedList<>();
 		            if(tsDTO.getTimesheetEntries() !=null && !tsDTO.getTimesheetEntries().isEmpty()){
 		            	 LinkedHashMap<Long, TimesheetEntries> entriesMap = new LinkedHashMap<>();
 		            	for(TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()){
@@ -1617,7 +1623,31 @@ public class TimesheetRestController {
 		            		String taskType = teDTO.getTimesheetTaskDTO().getTaskType();
 		            	
 		            		
-		            		
+		            		// Timesheet day entries saving 
+		            		TimeSheetDayEntries timesheetDayEntries = new TimeSheetDayEntries();
+								timesheetDayEntries.setProjectTask(projectTasks);
+								timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
+								if(taskType.equalsIgnoreCase("Billable")) {
+									timesheetDayEntries.setBillableHours(teDTO.getHours());
+									timesheetDayEntries.setTotalHours(teDTO.getHours());
+								}else if(taskType.equalsIgnoreCase("Non-Billable")) {
+									timesheetDayEntries.setBillableHours(teDTO.getHours());
+									timesheetDayEntries.setTotalHours(teDTO.getHours());
+								}
+								timesheetDayEntries.setComments(teDTO.getComments());
+								timesheetDayEntries.setTimesheetDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),teDTO.getDate()));
+								timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
+								timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
+								timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
+								timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
+		            	/*	if(teDTO.getId() != null){
+		            			timesheetDayEntries.setId(teDTO.getId());
+							}
+							else{
+								timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
+							}*/
+		            		entriesDayList.add(timesheetDayEntries);
+
 		            		TimesheetEntries timesheetEntries = entriesMap.get(taskId);
 		            		if(timesheetEntries == null){
 		            			timesheetEntries = new TimesheetEntries();
@@ -1786,6 +1816,12 @@ public class TimesheetRestController {
 								timesheetEntries.setSunHours("00:00");
 							}
 		            		entriesMap.put(taskId,timesheetEntries);
+		            	}
+	            		
+	            		if(entriesDayList != null && !entriesDayList.isEmpty()){
+		            		for(TimeSheetDayEntries timesheetdayEntries :entriesDayList){
+		            			timesheetdayEntries = timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetdayEntries);
+		            		}
 		            	}
 		            	
 		            	if(entriesMap != null && !entriesMap.isEmpty()){
