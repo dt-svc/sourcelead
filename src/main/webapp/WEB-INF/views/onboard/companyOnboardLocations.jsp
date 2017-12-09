@@ -73,7 +73,7 @@ right: 15px;
 				<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
                			<div id="registeredOrgs"></div>
     			<div class="welBtns welBtnsA">
-					<input type="button" value="Prev"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
+					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
 					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardFederalAndStateTaxes'/>'">
 					<div class="clearfix"></div>
 				</div>
@@ -853,13 +853,11 @@ var validationSettings = {
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-            	alert("1");
         		var frm = $('#createOrg_form').serializeFormJSON();
             	var con = JSON.stringify(frm);
 			    con = con.replace(/[{}]/g, ""); 
 			    var jsonData = encodeURIComponent(con);
          		var sourceleadUrl ='${sourceleadUrl}';
-         		alert("2");
          		 var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();

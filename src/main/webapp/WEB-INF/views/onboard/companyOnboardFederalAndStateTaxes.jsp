@@ -20,7 +20,7 @@
 <link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 
 <script type="text/javascript">
@@ -49,8 +49,9 @@ window.onload = function () {
 				  <div class="clearfix"></div>
 			  </div>
 			  
-			 <form:form class="login-form clearfix"  id="fedralAndTax_form"  name="fedralAndTax_form" method="post" >   
+	 	<form:form class="login-form clearfix"  id="fedralAndTax_form"  name="fedralAndTax_form" method="post" > 
 			  <div class="comLogContent">
+			    <div id="loading"></div> 
       			  <h2>Federal & State Taxes</h2>
 			         <div class="row clearfix"> 
 			         	
@@ -59,7 +60,7 @@ window.onload = function () {
 					   		<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Federal EIN<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" field-name="fedralEIN"  data-validation="required validate_length length9-9" maxlength="9">
+								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" value="${SourceLeadWeb_orgLocations.federalEin}" field-name="fedralEIN"  data-validation="required validate_length length9-9" maxlength="9">
 								</div>
 							</div>
 							
@@ -67,10 +68,10 @@ window.onload = function () {
 							<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Deposit Schedule<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								<select  class="chosen-select form-control" name="depositeSchedule" id="depositeSchedule" field-name="Deposit Schedule"  data-validation="required ">
+								<select  class="chosen-select form-control" name="depositeSchedule" id="depositeSchedule"  field-name="Deposit Schedule"  data-validation="required ">
 											<option value="">--Select Deposit Schedule--</option>
-											<option value="Monthly">Monthly</option>
-											<option value="Semi Monthly">Semi Monthly</option>
+											<option value="Monthly"  ${SourceLeadWeb_orgLocations.depositSchedule  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+											<option value="Semi Monthly" ${SourceLeadWeb_orgLocations.depositSchedule  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
 					                 </select>
 								</div>
 							</div>
@@ -80,9 +81,9 @@ window.onload = function () {
 								<div class="col-md-8 padding_right">
 								<select  class="chosen-select form-control" name="fillingForm" id="fillingForm" field-name="Filling Form"  data-validation="required ">
 									<option value="">--Select Filling form --</option>
-									<option value="Quarterly[940]">Quarterly[940]</option>
-									<option value="Annuallu[944]">Annuallu[944]</option>
-									<option value="House hold[H]">House hold[H]</option>
+									<option value="Quarterly[940]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'Quarterly[940]' ? 'selected' : ''}>Quarterly[940]</option>
+									<option value="Annuallu[944]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'Annuallu[944]' ? 'selected' : ''}>Annuallu[944]</option>
+									<option value="House hold[H]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'House hold[H]' ? 'selected' : ''}>House hold[H]</option>
 								  </select>
 								</div>
 							</div>
@@ -90,12 +91,25 @@ window.onload = function () {
 							<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Unemployment Tax?</label>
 								<div class="col-md-8 padding_right">
-					              <label class="col-md-5 noPad">
-					                <input name="unemploymentTax" type="radio" value="Exempt">
+					              
+					              <c:if test="${empty SourceLeadWeb_orgLocations.unemploymentTax}">
+					                <label class="col-md-5 noPad">
+					                <input name="unemploymentTax" type="radio" value="Exempt"  >
 					                <strong class="paddingLeft">Exempt</strong></label>
-					              <label class="col-md-5 noPad">
-					                <input name="unemploymentTax" type="radio" value="Unexempt" checked>
+					                <label class="col-md-5 noPad">
+					                <input name="unemploymentTax" type="radio" value="Unexempt" checked >
 					                <strong class="paddingLeft">Unexempt</strong></label>
+					              </c:if>
+					              
+					              <c:if test="${!empty SourceLeadWeb_orgLocations.unemploymentTax}">
+					                <label class="col-md-5 noPad">
+					                <input name="unemploymentTax" type="radio" value="Exempt" ${SourceLeadWeb_orgLocations.unemploymentTax  == 'Exempt' ? 'checked' : ''} >
+					                <strong class="paddingLeft">Exempt</strong></label>
+					                <label class="col-md-5 noPad">
+					                <input name="unemploymentTax" type="radio" value="Unexempt" ${SourceLeadWeb_orgLocations.unemploymentTax  == 'Unexempt' ? 'checked' : ''} >
+					                <strong class="paddingLeft">Unexempt</strong></label>
+					              </c:if>
+					            
 					            </div>
 							</div>
 			  </div>		
@@ -104,13 +118,14 @@ window.onload = function () {
 					<div class="col-md-10">	
 					<h3>State Taxes</h3>
 					<div id="stateTaxesList"></div>
+					
 		         	</div>
 		       </div>
 			       
 			         
 				<div class="welBtns welBtnsA">
-					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardLocations'/>'"><input type="button" value="Save & Continue" class="Brig">
-					<input type="button" value="Skip this step" class="skipBtn"></a>
+					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardLocations'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardBankingDetails'/>'"></a>
 					<div class="clearfix"></div>
 				</div>
 			         
@@ -122,7 +137,38 @@ window.onload = function () {
 </div>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+	<div id="divDocsTd1" style="display: none; float: left;">
+		  <div class="dropdown-select paddingRight">
+		              <select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="REPLACEROWIDstateName" name="stateTaxesList[REPLACEROWID].stateName">
+		                <option selected value="">-- Select State --</option>
+		                <c:forEach var="state" items="${statesList}">
+							<option value="${state.stateName}" >${state.stateName}</option>
+		    			</c:forEach> 
+		              </select>
+		  </div>
+ 	</div>
+					  
+	  <div id="divDocsTd2" style="display: none; float: left;">
+	  <div class="clearfix mt5" id="REPLACEROWIDstateUnemploymentTax" name="REPLACEROWIDstateUnemploymentTax">
+		<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[REPLACEROWID].stateUnemploymentTax" id="REPLACEROWIDstateUnemploymentTax">
+	  </div>
+	 </div>
+	  
+	 
+	  <div id="divDocsTd3" style="display: none; float: left;">
+	  <div class="clearfix mt5" id="REPLACEROWIDstateTaxAccountNumber" name="REPLACEROWIDstateTaxAccountNumber">
+		<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[REPLACEROWID].stateTaxAccountNumber" id="REPLACEROWIDstateTaxAccountNumber">
+	 </div>
+	 </div>
+	  
+	  <div id="divDocsTd4" style="display: none; float: left;">
+      <div class="pull-right">
+	       <button type="button" class="btn btm-sm pull-right mt5" onclick="removeStatesTaxRow(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
+      </div>
+	</div> 
+					
+
+
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
@@ -133,6 +179,57 @@ window.onload = function () {
   <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
   <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+ <script src="resources/js/formvalidator.js"></script>
+ 
+ 
+ <script type="text/javascript">
+	function removeStatesTaxRow(rowId) {
+		 document.getElementById("divStatesTaxRow"+rowId).style.display = 'none';
+		 document.getElementById("divStatesTaxRow"+rowId).value= '';
+		 var  rId = "divStatesTaxRow"+rowId;
+		  var r = document.getElementById("statesTaxTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+ 
+ 
+ <script>
+function addStatesTaxRow(){
+	var checkMaxTsRowNum = $("#stateTaxMaxRowNumber").val();
+	var tbl = document.getElementById("statesTaxTable");
+	var maxRowNum = parseInt($("input[name = 'stateTaxMaxRowNumber']").val());
+	$("input[name = 'stateTaxMaxRowNumber']").val(maxRowNum + 1);
+	
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divStatesTaxRow" + maxRowNum);
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divDocsTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	 var cell1 = row.insertCell(1);
+	var divDocDescTdStr = document.getElementById("divDocsTd2").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell1.innerHTML = divDocDescTdStr; 
+	
+	var cell2 = row.insertCell(2);
+	var divDocDescTdStr = document.getElementById("divDocsTd3").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocDescTdStr; 
+	
+	var cell3 = row.insertCell(3);
+	var divDocDescTdStr = document.getElementById("divDocsTd4").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell3.innerHTML = divDocDescTdStr; 
+}
+</script>
 
 <script>
 		function logoutFormSubmit() {
@@ -146,34 +243,36 @@ function getStateTaxes(){
 	 var result = "";
 	 
 	 
-	 result = result +'<div class="clearfix mb10 mt5 requestdocmntTable">';
-		result = result +'<input type="hidden" name="docuemntMaxRowNumber"  id="docuemntMaxRowNumber" value="1" />';
-		result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="requestedDocumentsTable" border="0">';
+	    result = result +'<div class="clearfix mb10 mt5 requestdocmntTable companyOnboardStateTaxTable">';
+		result = result +'<input type="hidden" name="stateTaxMaxRowNumber"  id="stateTaxMaxRowNumber" value="1" />';
+		result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="statesTaxTable" border="0">';
 		result = result +'<tbody>';
 		result = result +'<tr id="requestedDocumentsTsRow0">';
 		result = result +'<div id="0requestedDocumentsFileGroup">';
+		
+		
 		result = result +'<td width="500px">';
 		result = result +'<div class="dropdown-select">';
 		
-		result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="Document Type" onchange="getSelectedDocumentType(0);" id="0docType" name="requestDocumentList[0].docType">';
+		result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
 		result = result +'<option selected value="">-- Select State --</option>';
-		result = result + '<option value="rererere" >ererer</option>';
-		result = result + '<option value="rererere" >ererer</option>';
+			<c:forEach var="state" items="${statesList}">
+			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
+			</c:forEach>
 		result = result +'</select>';
-		
 
 		result = result +'</div>';
 		result = result +'</td>';
 		
 		result = result +'<td width="500px">';
 		result = result +'<div class="">';
-		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax " data-validation="required" field-name="Other Type" name="requestDocumentList[0].otherDocType" id="0otherDocType">';
+		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
 		result = result +'</div>';
 		result = result +'</td>';
 		
 		result = result +'<td width="500px">';
 		result = result +'<div class="">';
-		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required" field-name="Other Type" name="requestDocumentList[0].otherDocType" id="0otherDocType">';
+		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
 		result = result +'</div>';
 		result = result +'</td>';
 		
@@ -181,7 +280,7 @@ function getStateTaxes(){
 		result = result +'<div class="">';
 		
 		result = result +'<div class="pull-right">';
-		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addDocumentRow();"><i class="fa fa-plus text-primary"></i></button>';
+		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addStatesTaxRow();"><i class="fa fa-plus text-primary"></i></button>';
 		result = result +'</div>';
 		result = result +'</div>';
 		result = result +'</td>';
@@ -195,6 +294,52 @@ function getStateTaxes(){
 	$("#stateTaxesList").append(result);
 }
 </script>
+
+
+
+
+
+<script type="text/javascript">
+$('body').on('submit', '#fedralAndTax_form', function(e){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	if ($('#fedralAndTax_form').validate(false, validationSettings)){
+      e.preventDefault();
+      var sourceleadUrl ='${sourceleadUrl}';
+      alert(sourceleadUrl);
+      var formData = getFormData("fedralAndTax_form");
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $.ajax({
+		    	type: "POST",
+		    	data : formData,
+		    	  url: sourceleadUrl+"/saveOrgLocationsFederalAndStatesTax?${_csrf.parameterName}=${_csrf.token}",		
+		        success: function(result) {
+		        	
+		        	if(result == 'success'){
+		        		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+		        	}else{
+		        		$("#loading").removeAttr("style"); 
+		        	}
+		        },
+		    });   
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#fedralAndTax_form', function() {
+		$("#fedralAndTax_form").showHelpOnFocus();
+		$("#fedralAndTax_form").validateOnBlur(false, validationSettings);
+	});
+  </script> 
 
 
 
