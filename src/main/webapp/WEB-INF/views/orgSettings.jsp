@@ -159,6 +159,7 @@ function cancelOrgImg(){
         
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+        <li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -443,6 +444,28 @@ function cancelOrgImg(){
            			           			
         			</div>
     			</div>
+    			
+    			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                        <div id="whiteListLoading"></div>
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="whiteListHeading">WhiteList Ips</h4>
+                                </div>
+                                <div class="pull-right">
+                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
+                                </div>
+                             </div>
+                            </div>
+                            <div class="vendor_wrap_inn_table datatable_filter">
+                				<div id="whiteListIpsDiv"></div>   
+                			</div>         
+            			</div>
+            			
+        			</div>
+    			</div>
     
   	</div>
   </div>
@@ -455,6 +478,43 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+<<div class="comMask"></div>
+<!-- Add IP Modal -->
+  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add IP</h4>
+        </div>
+        <div class="modal-body">
+        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
+           <label class="col-md-3">From IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control">
+           </div>
+           </div>
+           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
+           <label class="col-md-3">To IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control">
+           </div>
+           </div>
+        
+        </form:form>
+          
+        </div>
+        <div class="clearfix"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="saveWhiteListIps();" >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add IP Modal -->
 
 <script>
 $("#faxId").keyup(function () {
@@ -480,6 +540,111 @@ function switchLoginSecurity(){
 	      },
 	  }); 
 	
+}
+</script>
+
+<script>
+function saveWhiteListIps(){
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+	   }; 
+	
+	var fromIpAddress = $("#fromIpAddress").val();
+	var toIpAddress = $("#toIpAddress").val();
+// 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
+// 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+// 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+		if ($(this).validate(false, validationSettings)){
+			$.ajax({
+			      type : "GET",
+			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress,        
+			       success :function(data) {
+			       if(data == "Success"){
+			    	   $("#fromIpAddress").val("");
+			    	   $("#toIpAddress").val("");
+			    	   $(".modal.addipPopup-modal").fadeOut();
+			    	   $(".comMask").fadeOut();
+			    	   getWhiteListIps();
+			       	} 
+			      },
+			  }); 
+		}
+		
+	/* }else{
+		if(fromIpAddress == null || fromIpAddress == '' || fromIpAddress =='undefined'){
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>From IP Address is required</span>");
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist-errorMsg',"From IP Address is required");
+		}
+		if(toIpAddress == null || toIpAddress == '' || toIpAddress =='undefined'){
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#toIpAddress").after( "<p class='jquery_form_error_message'>To IP Address is required</span>");
+			document.getElementById("toIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("toIpAddress").setAttribute( 'record-exist-errorMsg',"To IP Address is required");
+		}
+	} */
+}
+
+function getWhiteListIps(){
+	$.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getWhiteListIps",        
+       success :function(data) {
+    	   var result = '';
+    		 	result = result +  '<table id="WhiteListIpTable" class="display" cellspacing="0" width="100%" >';
+    			result = result + '	<thead>';
+    			result = result + '   <tr>';
+    			result = result + '    <th>From Ip</th>';
+    			result = result + '    <th>To Ip</th>';
+    			result = result + '    <th>Action</th>';
+    			result = result + '   </tr>';
+    			result = result + '	</thead>';
+    			result = result + '	<tbody>';
+    		if(data.length > 0){
+    			    for (var i = 0; i < data.length; i++) {
+    			    	var report= data[i];
+    			    	result = result + '<tr>';
+    			    	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.fromIpAddress+'</div>';
+    		        	result = result + '</td>';
+    		        	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.toIpAddress+'</div>';
+    		        	result = result + '</td>';	 
+    		        	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">---</div>';
+    		        	result = result + '</td>';
+    			        result = result + '</tr>';
+    			    }
+    				
+    		}
+    		result = result + '	</tbody>';
+    		result = result + '</table>';
+    		$("#whiteListIpsDiv").empty();
+    		$("#whiteListIpsDiv").append(result);
+    		WhiteListIpTablePagination();
+       	} 
+      }); 
+}
+
+</script>
+
+<script>
+function WhiteListIpTablePagination(){
+	$('#WhiteListIpTable').DataTable({ 
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
 }
 </script>
 
@@ -2459,7 +2624,21 @@ function addOrgRefreshGoogleApiLocation(){
 	$("#orgSetZipCode").val('');
 }
 </script>
+
+<script>
+function addipPopup(){
+	$(".modal.addipPopup-modal").fadeIn();
+	$(".comMask").fadeIn();
+}
+$(function(){
+$(".close").click(function(){
+	$(".modal.addipPopup-modal").fadeOut();
+	$(".comMask").fadeOut();
+});
+})
+</script>
 <jsp:include page="masterFooter.jsp" />
+
 </html>
 
 

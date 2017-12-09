@@ -7171,6 +7171,9 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
+.modal.addipPopup-modal {
+	display: none;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

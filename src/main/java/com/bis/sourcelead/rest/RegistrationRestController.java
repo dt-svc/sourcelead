@@ -36,6 +36,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -109,6 +112,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 private RegistrationOptionalServicesService registrationOptionalServicesService;
+	 
+	 @Autowired
+	 WhiteListIpAddressService whiteListIpAddressService;
 	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -973,6 +979,20 @@ public class RegistrationRestController {
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("otpVerification");
 		return model;
+	}
+	
+	@RequestMapping(value = "/validateWhitelistIp", method = RequestMethod.GET)
+	public String validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		for(WhiteListIPAddressDTO wlipDto : ipList){
+			String fromip = wlipDto.getFromIpAddress();
+			String tomip = wlipDto.getToIpAddress();
+		}
+		
+		return "true";
 	}
 	
 	   protected boolean isNullOrEmpty(String str) {
