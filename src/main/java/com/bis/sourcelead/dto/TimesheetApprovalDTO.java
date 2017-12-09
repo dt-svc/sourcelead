@@ -17,6 +17,7 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private String client;
 	private String stage;
 	private Long userId;
+	private Long projectMembersId;
 	private String locationCode;
 	private String frequencyStartDate;
 	private String frequencyEndDate;
@@ -166,6 +167,12 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	}
 	public void setPageCount(int pageCount) {
 		this.pageCount = pageCount;
+	}
+	public Long getProjectMembersId() {
+		return projectMembersId;
+	}
+	public void setProjectMembersId(Long projectMembersId) {
+		this.projectMembersId = projectMembersId;
 	}
 	
 	
