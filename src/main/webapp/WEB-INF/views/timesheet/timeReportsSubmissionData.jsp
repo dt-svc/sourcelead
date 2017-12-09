@@ -32,7 +32,7 @@
 	  <c:if test="${reportTime.key == dateFrequency}">
 			<td>
 				<div class="week">
-					<span class="draft"><d title="week-Total-Hours:${reportTime.value.weekTotalHours}">${reportTime.value.weekTotalHours}</d></span>
+					<span class="${reportTime.value.approvalClass}"><d title="week-Total-Hours:${reportTime.value.weekTotalHours}">${reportTime.value.weekTotalHours}</d></span>
 					<div class="progress">
 						<div
 							class="progress-bar progress-bar-striped active progress-bar-info"
@@ -52,7 +52,7 @@
 	</c:forEach> 
 	<td>
 		<div class="week">
-			<span class="draft"><d title="Month-Total-Hours:${subDetails.monthTotalHours}">${subDetails.monthTotalHours}</d></span>
+			<span class="${subDetails.combinedApprovalClass}"><d title="Month-Total-Hours:${subDetails.monthTotalHours}">${subDetails.monthTotalHours}</d></span>
 			<div class="progress">
 				<div
 					class="progress-bar progress-bar-striped active progress-bar-info"
@@ -74,10 +74,10 @@
 		<c:if test="${subDetails.approvalStatus == 'NEW'}">
 			<b class="bgGReen" title="NEW">NEW</b>
 		</c:if>
-		<c:if test="${subDetails.approvalStatus == 'approved'}">
+		<c:if test="${subDetails.approvalStatus == 'Approved'}">
 			<b class="proj_active" title="APPROVED">APPROVED</b>
 		</c:if>
-		<c:if test="${subDetails.approvalStatus == 'rejected'}">
+		<c:if test="${subDetails.approvalStatus == 'Rejected'}">
 			<b class="proj_closed" title="REJECTED">REJECTED</b>
 		</c:if>
 		<c:if test="${subDetails.approvalStatus == 'submitted for approval'}">
