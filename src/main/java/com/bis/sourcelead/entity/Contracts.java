@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Entity for CONTRACTS_TEMPLATE
  * @author root
@@ -193,9 +195,9 @@ public class Contracts {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
+//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+//	@Lob
+//	private  byte[] docFile;
 	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
@@ -320,6 +322,14 @@ public class Contracts {
 	@Transient
 	private Long ownerUser;
 	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String spocUUID;
+	
 	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
@@ -417,13 +427,13 @@ public class Contracts {
 		this.fileName = fileName;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
+//	public byte[] getDocFile() {
+//		return docFile;
+//	}
+//
+//	public void setDocFile(byte[] docFile) {
+//		this.docFile = docFile;
+//	}
 
 	public String getFileType() {
 		return fileType;
@@ -1071,6 +1081,25 @@ public class Contracts {
 		this.fileURL = fileURL;
 	}
 
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
 	public String getTemplateFileURL() {
 		return templateFileURL;
 	}
@@ -1078,5 +1107,4 @@ public class Contracts {
 	public void setTemplateFileURL(String templateFileURL) {
 		this.templateFileURL = templateFileURL;
 	}
-
 }

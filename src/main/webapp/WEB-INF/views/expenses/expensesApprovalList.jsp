@@ -3,12 +3,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <script type="text/javascript">
 		window.onload = function () {
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
-	       		pagination();
+	       		//pagination();
 	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -23,11 +24,14 @@
 	       		}
 	       		$("#temp").val("temp");
 			}else{
-				getExpensesApprovalDataList();
+				expensesApprovalList('${sourceleadUrl}');
 			}
 		 };
 		 
 </script>
+
+
+
 <style type="text/css">
 
 
@@ -98,16 +102,16 @@ margin-top: 3px;
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="expensesApprovalList('${sourceleadUrl}');" /></span>
 					</div>
 
 					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
-								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="expensesApprovalList('${sourceleadUrl}');"><label >All</label></li>
+								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Sub for Approval</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Approved</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Rejected</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
@@ -137,10 +141,20 @@ margin-top: 3px;
 					</div> -->
 					<div class="clearfix"></div>
 				</div>
+				
+				 <div class='remove_search'>
+		        		<input type='text' placeholder='search' value="" id='dataTableSearchExpenses'/>
+		         </div>
+				
 				<div class="timesheet_appr_table datatable_filter overflow_inherint">
 					<div id="approverDataExpensesDiv"></div>
-
 				</div>
+				
+				<!-- <div class="require_wrap_table datatable_filter">
+				<div id="expensesApprovalListTable"></div>
+			</div> -->
+				
+				
 			</div>
 		</div>
 		<!-- Project -->
@@ -153,7 +167,12 @@ margin-top: 3px;
 <div id="expensesApprovalViewDiv"></div>
 </div>
 
-<script type="text/javascript">
+
+
+
+
+
+<!-- <script type="text/javascript">
 function getExpensesApprovalDataList(){
 var startDate = $("#filterStartDate").val();
 var endDate = $("#filterEndDate").val();
@@ -296,7 +315,7 @@ $.ajax({
   }
 });
 }
-</script>
+</script> -->
 
 <script>
 function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
@@ -418,7 +437,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	        	 else{
 	        		 $("#row"+expenseId).empty();
 			    	 $("#row"+expenseId).html(rowHtmlContent);
-			    	 $("#status"+expenseId).html("Approved");
+			    	 $("#status"+expenseId).html("APPROVED");
 			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
 		    	 
@@ -553,7 +572,7 @@ $(document).ready(function() {
 </script>   
 
     
- <script>
+<!--  <script>
 function pagination(){ 
     $('#example').DataTable({ 
     	"scrollCollapse": false,
@@ -569,7 +588,7 @@ function pagination(){
     });
     $("#example").wrap("<div class='overflow_Auto'></div>");
 }
-</script>
+</script> -->
 <script>
 function exportToPdf(type){
 	var temp = $("#temp").val();
@@ -638,11 +657,19 @@ function expensesCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#filterEndDate").datepicker("option", "minDate", dt);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		
 		});
@@ -651,15 +678,23 @@ function expensesCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#filterStartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		});
 		
 	});
 </script>
-
+<jsp:include page="expensesApproverTable.jsp" />
 <jsp:include page="../masterFooter.jsp" />

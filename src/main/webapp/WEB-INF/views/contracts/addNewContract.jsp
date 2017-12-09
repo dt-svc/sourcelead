@@ -19,6 +19,7 @@
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
 
+	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
@@ -254,12 +255,18 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
+						  <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
 						<div id="endDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						   <span class="input-group-addon" onClick="clearEndDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						</div>
 					  </div>
 					</div>
@@ -2212,6 +2219,14 @@ function removeValid(){
 $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 }
+</script>
+<script>
+function clearStartDt(){
+	$("#startDate").val("");
+	};
+function clearEndDt(){
+	$("#endDate").val("");
+	};
 </script>
 
 <!-- Footer Area -->

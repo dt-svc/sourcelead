@@ -97,6 +97,7 @@ public class RegistrationRestController {
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
+				@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "userState", required = false) String userState) {
 
 		String resultJson;
@@ -106,7 +107,7 @@ public class RegistrationRestController {
 		ArrayList<Org> regOrgsList = new ArrayList<Org>();
 
 		try {
-			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
+			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName,offset);
 			for(Org regOrg : orgsList){
 				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
@@ -687,6 +688,42 @@ public class RegistrationRestController {
 		   }
 		   
 	       return status;
+	   }
+	   
+	   
+	   
+	   @RequestMapping(value = "/validateRegiseredCompanyName", method = RequestMethod.GET)
+	   public @ResponseBody String validateRegiseredCompanyName(
+	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
+			String status = null;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			if(!loginOrgLocation.getOrgLocationName().equalsIgnoreCase(companyName)) {
+				boolean flag = false;
+				try {
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+					if(null != orgLocationsList){
+						for(OrgLocations orgLocations : orgLocationsList){
+							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+								flag = true;
+							}
+						}
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		   
+		   if(flag == true){
+			   status = "Company Duplicated";
+		   }else{
+			   status = "success";
+		   }
+		}else {
+			 status = "success";
+		}
+		   
+       return status;
 	   }
 	   
 	   

@@ -115,7 +115,10 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="errDuedate">
+              <div class="input-group errorInptgroup">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+                <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                </div>
               </div>
             </div>
             
@@ -307,8 +310,8 @@ function getProjectsList(projectName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
 	for (var i=0; i<json.length; i++)
@@ -1025,7 +1028,7 @@ function calculateDisCount(){
        //=======================================
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
@@ -1758,6 +1761,13 @@ function errInvoiceDate(){
 function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_invoice_form","fileInfo");
 }
+</script>
+<script>
+function clearDate(){
+	$("#dueDate").val("");
+	};
+	
+	
 </script>
     
  <jsp:include page="../masterFooter.jsp" />	

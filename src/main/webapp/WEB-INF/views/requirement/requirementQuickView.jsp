@@ -4,14 +4,8 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-a.disabledLink {
-   pointer-events: none;
-   cursor: default;
-}
-</style>
- 
  <jsp:include page="recommendationListTable.jsp"></jsp:include>
+ <jsp:include page="requirementAssignedTo.jsp"></jsp:include>
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
@@ -82,12 +76,12 @@ a.disabledLink {
 		<li class="${empty type ? 'current' : ''}" id="detailsTab"><a href="#tab-1" onclick="sideBar('${requirement.id}');">Details</a></li>
 		<c:if test="${requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'REJECTED'}">
 			<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT','ROLE_VIEW_APPLICANT','ROLE_ADD_INTERVIEW','ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW','ROLE_RATE_NEGOTIATION','ROLE_SHORTLIST','ROLE_SUBMIT_TO_CLIENT','ROLE_CREAE_OFFER','ROLE_VIEW_OFFER','ROLE_VIEW_ACCEPT_OFFER','ROLE_VIEW_REJECT_OFFER')">
-			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a class="disabledLink" href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
+			    <li class="${!empty type ? 'current' : ''}" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a  href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Applicants</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a class="disabledLink" href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
-			<li><a class="disabledLink" href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
+			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
@@ -104,10 +98,8 @@ a.disabledLink {
           	   </c:if>
 			   <div id="rejectRequirementAlert" ></div>   
 		       <div class="clearfix"> 
-		           <div class="pull-left"> 
-		              <h2>Assigned Members</h2>  
-		           </div> 
 		           <div class="pull-right mt10"> 
+
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
 			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
@@ -117,34 +109,20 @@ a.disabledLink {
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
-					</div> 
-			     </div> 
+					</div></div>
+					<div class="collpasePannel clearfix mt10"> 
+		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount1">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
+		           	  <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount2">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
+		           	  <span class="pull-right cursorPointer edit-assignedMembers" title="Edit Assigned Members"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});"><i class="fa fa-edit"></i></a></span>
+		           </div> 
+		          
 			            
                  <div class="clearfix"> 
-                 	<div class="clearfix row"> 
+                 	<div class="clearfix row">
+                 	<div class="col-md-12">
+                 	<div id="assignedMemberList" class="assignedMemberList"></div>
+                 	</div>
               			<div class="col-md-12 divskill divsAssigned pull-left"> 
-          				<div id="assignedMemberList"></div> 
-          				
-          				<%-- <div class="clearfix mt5 mb">
-						    <table class="table table-responsive table-hover clearfix mb">
-							    <thead>
-								    <tr>
-									    <th>Name</th>
-									    <th>Role</th>
-									    <th>Team</th>
-								    </tr>
-							    </thead>
-							    <tbody>
-							    	<tr>
-								    	<c:forEach var ="assignTo" items="${requirement.requirementAssignTo}" varStatus="reqStatus">
-									        <td><div class="tbldata-dotdot">${assignTo.assignedUserName}</div></td>
-									    </c:forEach>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    			<td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>
-						    		</tr>
-							    <tbody>
-							</table>
-          				 </div> --%>
           				
           				
           				
@@ -162,7 +140,11 @@ a.disabledLink {
 				            <div class="require_wrap_details_cta"> <b>Industry:</b><span>${!empty requirement.industryName ? requirement.industryName : ' -- '}</span>
 				            	<div class="clearfix"></div> 
 					        </div> 
-					        
+					        <c:if test="${!empty requirement.projectName}">
+					         <div class="require_wrap_details_cta"> <b>Project Name:</b><span>${!empty requirement.projectName ? requirement.projectName : ' -- '}</span>
+				            	<div class="clearfix"></div> 
+					        </div> 
+					        </c:if>
 					        <div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"> <b>Attachment:</b><span>${!empty requirement.fileName ? requirement.fileName : ' -- '}</span>
 					            <c:if test="${!empty requirement.fileName}">
 					            	<a download class="glyphicon glyphicon-download-alt" target = "_blank" href="${requirement.fileURL}"></a><a class="fa fa-eye ml10" onClick="viewFile('${requirement.fileURL}','${requirement.fileName}','${requirement.fileContentType}');"></a>
@@ -184,51 +166,126 @@ a.disabledLink {
 				            
 				            <div class="require_wrap_details_cta"> <b>Visa:</b><span>${!empty requirement.visaType ? requirement.visaType : ' -- '}</span>
 				            	<div class="clearfix"></div> 
-				            </div> 				            
+				            </div> 	
+				            <c:if test="${requirement.medicalClearence == 'Y'}">
+				            <div class="require_wrap_details_cta"> <b>Medical Clearance:</b><span>Yes</span>
+				            	<div class="clearfix"></div> 
+				            </div> 	
+				            </c:if>
+				              <c:if test="${requirement.medicalClearence == 'N'}">
+				            <div class="require_wrap_details_cta"> <b>Medical Clearance:</b><span>No</span>
+				            	<div class="clearfix"></div> 
+				            </div> 	
+				            </c:if>
+				            <c:if test="${empty requirement.medicalClearence}">
+				            <div class="require_wrap_details_cta"> <b>Medical Clearance:</b><span>--</span>
+				            	<div class="clearfix"></div> 
+				            </div> 	
+				            </c:if>
+				             <c:if test="${requirement.securityClearance == 'Y'}">
+				            <div class="require_wrap_details_cta"> <b>Security Clearance:</b><span>Yes</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            </c:if>
+				               <c:if test="${requirement.securityClearance == 'N'}">
+				            <div class="require_wrap_details_cta"> <b>Security Clearance:</b><span>No</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            </c:if>
+				              <c:if test="${empty requirement.securityClearance}">
+				            <div class="require_wrap_details_cta"> <b>Security Clearance:</b><span>--</span>
+				            	<div class="clearfix"></div> 
+				            </div> 
+				            </c:if>
+				              <c:if test="${requirement.overTime == 'Y'}">
+				             <div class="require_wrap_details_cta"> <b>Over Time:</b><span>Yes</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				            <c:if test="${requirement.overTime == 'N'}">
+				             <div class="require_wrap_details_cta"> <b>Over Time:</b><span>No</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				             <c:if test="${empty requirement.overTime}">
+				             <div class="require_wrap_details_cta"> <b>Over Time:</b><span>--</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				             <c:if test="${requirement.backgroundCheck == 'Y'}">
+				              <div class="require_wrap_details_cta"> <b>Background Check:</b><span>Yes</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				             <c:if test="${requirement.backgroundCheck == 'N'}">
+				              <div class="require_wrap_details_cta"> <b>Background Check:</b><span>No</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				             <c:if test="${empty requirement.backgroundCheck}">
+				              <div class="require_wrap_details_cta"> <b>Background Check:</b><span>--</span>
+				            	<div class="clearfix"></div> 
+				            </div>  
+				            </c:if>
+				           
+				            <div class="require_wrap_details_cta"> <b>Gender:</b><span>${!empty requirement.gender ? requirement.gender : ' -- '}</span>
+				            	<div class="clearfix"></div> 
+				            </div> 	
+				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
+				            	<div class="clearfix"></div> 
+				            </div> 			            
 				            <div class="clearfix"></div> 
 			            </div> 
 
 			      <c:if test="${requirement.isClientJob == 'Y'}">
-		                <h2>Client Details:</h2> 
+		                <h2>Client Details :</h2> 
 		                <div class="require_one"> 
-		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><span>${!empty requirement.spocName ? requirement.spocName : ' -- '}</span>
+		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${!empty requirement.spocName ? requirement.spocName : ' -- '}</a></div>
 			            	<div class="clearfix"></div> 
 		                </div>
-		                
-		                <div class="require_wrap_details_cta"> <b>Client Name:</b><span>${!empty requirement.clientName ? requirement.clientName : ' -- '}</span>
-			            	<div class="clearfix"></div> 
-			            </div>  
+		              
+		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${!empty requirement.clientName ? requirement.clientName : ' -- '}</a></div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
+			            
+			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big">${!empty requirement.clientName ? requirement.clientName : ' -- '}</div>
+				            	<div class="clearfix"></div> 
+				            </div>  
+			            </sec:authorize>
 			            
 			            <c:choose>
 						    <c:when test="${!empty requirement.parentRequirement}">
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}   ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
 							    	<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.clientRate && !empty requirement.clientRateType}">
-						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						            	<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							            	<div class="clearfix"></div> 
 					               		</div> 
 							    	</c:when>
@@ -242,22 +299,22 @@ a.disabledLink {
 						    <c:otherwise>
 						    	<c:choose>
 						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
 						    		<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.rate}">
-						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
+						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
@@ -324,7 +381,7 @@ a.disabledLink {
            
                  </div> 	
                </div> 
-           
+           </div>
                </div> 
              </div> 
       </div>
@@ -421,6 +478,8 @@ a.disabledLink {
 	<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter"></div>
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
+	
+	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
 
 <script>
@@ -428,4 +487,20 @@ function hideButtonOnClick(){
 		$('#approverbut').hide();
 		$('#rejectedbut').hide();
 }
+</script>
+<script>
+$(function(){
+	$('.assignedGrid2').hide();
+	$('.assignedGrid1').click(function(){
+		$("#assignedMemberList").slideDown();
+		$(".assignedGrid1").hide();
+		$(".assignedGrid2").show(); 
+		 assignedMemberList(${requirement.id});
+	});
+	$('.assignedGrid2').click(function(){
+		$("#assignedMemberList").slideUp();
+		$(".assignedGrid2").hide();
+		 $(".assignedGrid1").show();
+	});
+});
 </script>

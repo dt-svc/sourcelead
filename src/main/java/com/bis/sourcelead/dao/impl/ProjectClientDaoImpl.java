@@ -111,6 +111,23 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		return pc;  
 		
 	}
+	
+	
+	@Override
+	@Transactional
+	public ProjectClients getProjectClientsByProjectID(Long projectId) throws Exception {
+		
+		logger.debug("In getProjectClientsListByProjectId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String candidateListQuery= "from ProjectClients pc where pc.projectId.id = :projectId and pc.status = '1' ";
+		List<ProjectClients> pcList =session.createQuery(candidateListQuery).setLong("projectId", projectId).setCacheable(true).list(); 
+		ProjectClients pc = null;
+		if(pcList != null && !pcList.isEmpty()){
+			pc = pcList.iterator().next();
+		}
+		return pc;  
+	}
+	
 
 	@Override
 	@Transactional
@@ -168,6 +185,16 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 			     + " ))");
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).setCacheable(true).list();
 		return projectClientsList;
+	}
+
+	@Override
+	@Transactional
+	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectClients pc left join fetch pc.orgLocationsId left join fetch pc.orgRelationId  where pc.status = '1' and (pc.projectId.projectStatus = 'INPROGRESS' or pc.projectId.projectStatus = 'NOTSTARTED') and pc.orgLocationsId =:orgLocationsId "; 
+		List<ProjectClients> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return projectsList;
 	}
 	
 }

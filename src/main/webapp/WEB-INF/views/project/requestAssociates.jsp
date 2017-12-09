@@ -35,7 +35,7 @@
          <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
-              <label class="col-md-3">Request Id </label>
+              <label class="col-md-3">Request Id <span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
                   <div class="form-icon">
 		                <input type="text" class="form-control pull-left" name="requestId" id="requestId" data-validation="required" field-name="Project Id">
@@ -48,7 +48,7 @@
              <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
             
             <div class="form-group">
-              <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
+              <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='Approver who need to approve the list of request resources'></i></label>
               <div class="col-md-9">
                 <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
                 </select>
@@ -126,9 +126,9 @@
 
 
 <div id="divTaskTd2" style="display: none; float: left;">
-	<div class="tbldata-dotdot-sm">
+	<div class="tbldata-dotdot-me">
          <small class="pull-left"><div id="REPLACEROWIDpayRateCurrency"></div></small>
-         <div class="tbldata-dotdot-100 pull-left" id="REPLACEROWIDpayRate" ></div>
+         <div class="tblminwidth-150 pull-left text-center" id="REPLACEROWIDpayRate" ></div>
          <small class="pull-right"><div id="REPLACEROWIDpayRateType" ></div></small>
 	</div>
 	
@@ -482,7 +482,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 	 
 	for(var i=0; i<resourceRequestList.length; i++){
 		 var opt = resourceRequestList[i];
-		    if(opt.resourceStatus == null || opt.resourceStatus == 'Rejected'){
+		    if(opt.resourceStatus == 'Draft' || opt.resourceStatus == 'Rejected'){
 			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
 				var tbl = document.getElementById("addRequestTbl");
 				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -817,7 +817,7 @@ function getAssociatesFilter(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
-  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+  		result = result +'<div class="clearfix popupFilter">'; 
 	 	
   		result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
     	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
@@ -1075,8 +1075,9 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var result = "";
 	            	    var candidateResume = "";
 	            	    
-	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+	            	    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+	            	    	candidateResume = '<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
+
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 

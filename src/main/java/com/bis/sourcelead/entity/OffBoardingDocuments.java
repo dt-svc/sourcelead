@@ -52,9 +52,9 @@ private static final long serialVersionUID = 1L;
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
-    @Column(name = "DOC_FILE",columnDefinition="mediumblob")
+   /* @Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
-	private  byte[] docFile;
+	private  byte[] docFile;*/
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -119,14 +119,6 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {

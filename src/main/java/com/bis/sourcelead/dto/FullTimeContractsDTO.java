@@ -95,6 +95,11 @@ public class FullTimeContractsDTO {
 	private String tempUUID;
 	private Long approverUserId;
 	private Long ownerUser;
+	private String templateId;
+	
+    private String orgRelationUUID;
+	
+	private String spocUUID;
 	
 	public Long getId()
 	{
@@ -915,4 +920,37 @@ public class FullTimeContractsDTO {
 	{
 		this.ownerUser = ownerUser;
 	}
+
+	public String getTemplateId()
+	{
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId)
+	{
+		this.templateId = templateId;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+	
+	
+	
 }

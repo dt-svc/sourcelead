@@ -92,8 +92,8 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -108,7 +108,7 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
                   </div>
                 </div>
@@ -116,7 +116,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" data-validation-optional="true"  field-name="Last Name" data-validation=" validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -190,7 +190,7 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Drop the vendor Details,from where the user received'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
@@ -207,8 +207,8 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager</label>
-                  <div class="col-md-9">
+                  <label class="col-md-3">Manager <i class='fa fa-info-circle' title='Manager will be a reporting manager for a user in organisation'></i></label>
+                      <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
@@ -907,27 +907,6 @@ function getAssociateUserDetails(){
 	
  }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#reportingManager").chosen();
-	       $("#role").chosen();
-	       $("#invoiceFrequency").chosen();
-	       
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
- 
 
 <script>
 function maskme(){
@@ -995,3 +974,8 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+<script>
+function clearDate(){
+	$("#DateofJoin").val("");
+	};
+</script>

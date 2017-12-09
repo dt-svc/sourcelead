@@ -85,6 +85,9 @@ public class CampaignIndexHelper {
 				campaignIndex.setUpdatedDate(new Date(userMailBox.getUpdatedDate().getTime()));
 			}
 			
+			if(userMailBox.getMailType() != null){
+			campaignIndex.setMailType(userMailBox.getMailType().toString());
+			}
 			
 			
 		}

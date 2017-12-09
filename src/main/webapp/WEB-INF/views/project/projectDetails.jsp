@@ -197,7 +197,15 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
-						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -570,11 +578,14 @@
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
+						result = result +'<div class="input-group">';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
+					    result = result +'<span class="input-group-addon" onClick="clearEndtDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+
 						result = result + '</div>';
-						
+						result = result +'</div>';
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Invoice Frequency<span class="text-danger">*</span></label>';
@@ -589,10 +600,10 @@
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
-						result = result  +' <option '+(json.timesheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-						result = result  +'	<option '+(json.timesheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +' <option '+(json.timeSheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.timeSheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
 						result = result + '</div>';
 				 
@@ -1055,3 +1066,10 @@ function toDate(selector) {
 }
 </script>
 
+<script>
+function clearEndtDate(){
+	$("#endDateStr1").val("");
+	};
+	
+	
+</script>

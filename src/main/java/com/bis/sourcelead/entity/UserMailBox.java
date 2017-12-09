@@ -73,9 +73,16 @@ public class UserMailBox implements Serializable{
 	@Type(type="text")
 	private String campaignTableData;
 	
+	@Column(name = "MAIL_TYPE")
+	private Integer mailType;
+	
 	@Column(name = "CANDIDATE_ID")
 	@Type(type="text")
 	private String candidateId;
+	
+	@Column(name = "REQUIREMENT_ID")
+	@Type(type="text")
+	private String requirementId;
 	
 	@Column(name = "UUID")
 	private String uuid;
@@ -113,9 +120,9 @@ public class UserMailBox implements Serializable{
 	private Integer totalUnReadMailsCount;
 	
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+/*	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
-	private  byte[] docFile;
+	private  byte[] docFile;*/
 		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -246,6 +253,17 @@ public class UserMailBox implements Serializable{
 		this.campaignTableData = campaignTableData;
 	}
 
+	
+	public Integer getMailType()
+	{
+		return mailType;
+	}
+
+	public void setMailType(Integer mailType)
+	{
+		this.mailType = mailType;
+	}
+
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -368,14 +386,7 @@ public class UserMailBox implements Serializable{
 		this.candidatesList = candidatesList;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
+	
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -455,4 +466,16 @@ public class UserMailBox implements Serializable{
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
+
+	public String getRequirementId()
+	{
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId)
+	{
+		this.requirementId = requirementId;
+	}
+	
+	
 }

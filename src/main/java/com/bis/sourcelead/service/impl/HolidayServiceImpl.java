@@ -214,4 +214,9 @@ public class HolidayServiceImpl implements HolidayService{
 	}
 	
 	
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate,Long orgLocationId)throws Exception {
+		return holidayDAO.getHolidaybyLocationIdAndFromdate(fromDate,endDate,orgLocationId);
+	}
+	
+	
 }

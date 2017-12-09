@@ -236,7 +236,7 @@ function getAssociatesFilter(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
-  		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
+  		result = result +'<div class="clearfix popupFilter">'; 
 	 	
   		result = result +'<div class="require_wrap_table datatable_filter overflow_inherint">';
     	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
@@ -492,8 +492,8 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var result = "";
 	            	    var candidateResume = "";
 	            	    
-	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+	            	    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
+	            	    	candidateResume = '<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 

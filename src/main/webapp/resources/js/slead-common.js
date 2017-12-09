@@ -1,3 +1,119 @@
+
+function tagIt(id, noResultText, func,type,placeholderName) {
+	if(type == "emails"){
+		var select, chosen;
+	    select = $("#"+id);
+	    select.chosen({ no_results_text: noResultText });
+	    chosen = select.data('chosen');
+	    chosen.search_field.bind(('keydown keyup'), function(e)
+	    { 
+	    	if(this.value === noResultText) {
+	    		this.placeholder = this.value;
+	    		this.value = "";
+	    	} else {
+	    		this.placeholder = "";
+	    	}
+	    	
+	    	 var enterEmailArray = this.value.split(/[ ,]+/);
+	    	 if(enterEmailArray.length > 1){
+	    		 for (var i=0; i < enterEmailArray.length; i++) {
+	    			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
+	    			 select.append(option);
+			             select.find(option).prop('selected', true);
+		        		 $("#"+id).trigger("chosen:updated");
+	             }
+	    	 }else{
+		    	var newEmail = this.value.replace(","," ");
+		        if (window[func](e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        {
+		        	preventTabkey(e); 
+		        	var par = this.parent;
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 select.append(option);
+				            select.find(option).prop('selected', true);
+			        		$("#"+id).trigger("chosen:updated");
+		        }
+	    	 }
+	    });
+	}else if(type =="skills"){
+	
+	var select, chosen;
+	    select = $("#"+id);
+	    select.chosen({ no_results_text: noResultText });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keydown keyup', function(e)
+			    {
+				    	if(this.value === placeholderName) {
+				    		this.placeholder = this.value;
+				    		this.value = "";
+				    	} else {
+				    		this.placeholder = "";
+				    	}
+					    	
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#"+id).trigger("chosen:updated");
+			                 }
+				    	 }else{
+				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+			    			var newSkill = this.value.replace(","," ");
+			    			 if (window[func](e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                 {
+			    				 preventTabkey(e);
+			                   // below code manually enter skills are taken
+			    				  
+			                   var isNewSkill = true;
+								 $("#"+id+" option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								
+									if(focussedSkills.length > 0){
+										var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+										select.append(skillOption);
+										select.find(skillOption).prop('selected',true);
+										select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+										$("#"+id).trigger("chosen:updated");
+								   }
+								   else{
+									   if(isNewSkill){
+										var option = $("<option>").val(newSkill).text(newSkill);
+										select.append(option);
+										select.find(option).prop('selected', true);
+									   }
+								   }
+								
+				               $("#"+id).trigger("chosen:updated"); 
+			                   
+			                }
+					       
+		    	         }
+	    	});
+	}
+	
+}
+
+$(function() {
+
+    for (var selector in config) {
+		$(selector).chosen(config[selector]);
+	}
+	
+    $('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+	});
+
+});
+
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
@@ -313,6 +429,20 @@ function getJSDateFormat(locationDate){
 		  jsDateFormat = 'yy-dd-mm'; 
 	  }
 	  return jsDateFormat;
+}
+
+function getOrgDateFormat(locationList){
+var reqListDate = '';
+	if(locationList.match("yyyy-MM-dd")){
+		  reqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqListDate = 'YYYY-DD-MM'; 
+	  } 
+	  return reqListDate;
 }
 function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	if($(ele).is(":visible")) {

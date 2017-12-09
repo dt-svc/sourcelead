@@ -425,7 +425,14 @@ function preparedContractListDraft(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+		        	 result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
+		        	 
 		         }
 		         result = result + '</td>';
 		         
@@ -453,7 +460,9 @@ function preparedContractListDraft(json){
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
-		     			result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     			if(report.templateId != null && report.templateId != '' && report.templateId != 'undefined'){
+		     				result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     			}
 		     		}else{
 		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 		     		}
@@ -514,7 +523,16 @@ function preparedContractListDraft(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	   opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	   opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 
 	         }
 	         opt = opt + '</td>';
 	         
@@ -538,7 +556,9 @@ function preparedContractListDraft(json){
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
 	     		  if(output.typeOfContract == "New"){
+	     			 if(output.templateId != null && output.templateId != '' && output.templateId != 'undefined'){
 	     			 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     			 }
 	     		  }else{
 	     		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	     		  }
@@ -624,7 +644,9 @@ function preparedContractListDraft(json){
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
+		     			if(appReport.templateId != null && appReport.templateId != '' && appReport.templateId != 'undefined'){
 		     			res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     			}
 		     		}else{
 		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
 		     		}
@@ -847,7 +869,14 @@ function preparedContractListWFA(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	 result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
 		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
+		        	 
 		         }
 		         result = result + '</td>';
 		         
@@ -958,7 +987,12 @@ function preparedContractListWFA(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	 opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
+	        	 '</sec:authorize>';
+	        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
 	         }
 	         opt = opt + '</td>';
 	         
@@ -1332,7 +1366,14 @@ function preparedContractListWTS(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
-		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	   result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
+		        	 
 		         }
 		         result = result + '</td>';
 		         
@@ -1411,12 +1452,20 @@ function preparedContractListWTS(json){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'" > '+output.vendorContactName+' </span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	 	opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+' </a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	 	opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+' </span></div>';
+	        	 '</sec:authorize>';
+	        	 
 	         }
 	         opt = opt + '</td>';
 	         
@@ -1748,7 +1797,13 @@ function preparedContractListWTV(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
-		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	   result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
 		         }
 		         result = result + '</td>';
 		         
@@ -1789,7 +1844,7 @@ function preparedContractListWTV(json){
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
  		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
-		        	 if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
 		         }
@@ -1848,7 +1903,14 @@ function preparedContractListWTV(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	  opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	  opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
+	        	 
 	         }
 	         opt = opt + '</td>';
 	         
@@ -1882,7 +1944,7 @@ function preparedContractListWTV(json){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
-	        	 if(output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		     		}
  	         }
@@ -1971,7 +2033,7 @@ function preparedContractListWTV(json){
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
  		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
-		        	 if(appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
+		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
 			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 			     		}
 		         }
@@ -2193,7 +2255,14 @@ function preparedContractListFinalize(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
-		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	  result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	  result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
+		        	 
 		         }
 		         result = result + '</td>';
 		         
@@ -2274,7 +2343,15 @@ function preparedContractListFinalize(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	    opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	    opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
+	        	 
 	         }
 	         opt = opt + '</td>';
 	         
@@ -2303,7 +2380,7 @@ function preparedContractListFinalize(json){
 	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
 	         opt = opt + '</td>'; */
 
- 	         opt = opt + '<td>';
+	         opt = opt + '<td>';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	         if(output.typeOfContract == "New" || output.typeOfContract == "Custom"){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></i></a></div>';
@@ -2597,7 +2674,13 @@ function preparedContractListExpired(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	 result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
 		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
 		         }
 		         result = result + '</td>';
 		         
@@ -2668,7 +2751,13 @@ function preparedContractListExpired(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	    opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+' </a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	    opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
 	         }
 	         opt = opt + '</td>';
 	         
@@ -2974,7 +3063,12 @@ function preparedContractListRejected(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	 result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+		        	 '</sec:authorize>';
+		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
 		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		        	 '</sec:authorize>';
 		         }
 		         result = result + '</td>';
 		         
@@ -3059,7 +3153,14 @@ function preparedContractListRejected(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
-	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 
+	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	  opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
+	        	 '</sec:authorize>';
+	        	 
+	        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	  opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	        	 '</sec:authorize>';
 	         }
 	         opt = opt + '</td>';
 	         

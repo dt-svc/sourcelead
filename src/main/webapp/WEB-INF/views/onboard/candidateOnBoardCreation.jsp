@@ -2206,7 +2206,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2238,13 +2238,19 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="dojDiv">';
 	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group errorInptgroup">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="endDateDiv">';
 	 result = result +'<label class="col-md-3 control-label">End Date</label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
@@ -2264,14 +2270,14 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<label class="col-md-3 control-label">Manager <i class="fa fa-info-circle" title="Here manager will be a reporting manager for a Candidate in organisation"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Team</label>';
+	 result = result +'<label class="col-md-3 control-label">Team <i class="fa fa-info-circle" title="select the team which candidate need to work with"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
 	 result = result +'</select>';
@@ -2329,7 +2335,10 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="dueDateDiv">';
 	 result = result +'<label class="col-md-3 control-label">Due Date</label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2477,3 +2486,14 @@ function toDate(selector) {
 }
 </script>
   
+<script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>

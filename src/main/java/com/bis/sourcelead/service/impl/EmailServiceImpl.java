@@ -197,7 +197,8 @@ public class EmailServiceImpl implements EmailService {
 		userMailBox.setIsMailRead(0);
 		userMailBox.setIsFavourite(0);
 		userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
-		userMailBox.setStatus(1);
+		userMailBox.setStatus(Constants.RECORD_ACTIVE);
+		userMailBox.setMailType(1);
 		userMailBox.setCreatedBy(user.getUserCode());
 		userMailBox.setCreatedDate(new Date());
 		userMailBox.setUpdatedBy(user.getUserCode());
@@ -237,6 +238,7 @@ public class EmailServiceImpl implements EmailService {
 					userMailBox.setIsFavourite(0);
 					userMailBox.setUuid(SourceLeadRandomCodeHelper.generateUUID());
 					userMailBox.setStatus(1);
+					userMailBox.setMailType(1);
 					userMailBox.setCreatedBy(user.getUserCode());
 					userMailBox.setCreatedDate(new Date());
 					userMailBox.setUpdatedBy(user.getUserCode());
