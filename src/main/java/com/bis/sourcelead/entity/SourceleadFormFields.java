@@ -43,7 +43,7 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "LABEL_INFO",columnDefinition = "TEXT default NULL")
 	private String labelInfo;
 	
-	@Column(name = "PLACE_HOLDER")
+	@Column(name = "PLACE_HOLDER",columnDefinition = "TEXT default NULL")
 	private String placeHolder;
 	
 	@Column(name = "FIELD_TYPE")
