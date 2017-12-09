@@ -625,48 +625,39 @@ a.alertBtn {
 				onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i
 				class="fa fa-close"></i></a>
 			<div class="row">
-				<div class="col-md-4">
-					<label>Any of Keyword <i class="fa fa-info-circle"
-						title="Any of Keyword"></i></label>
-
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<label>All Keywords <i class="fa fa-info-circle"
-						title="All Keywords"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="All KeyWord" id="allReqKeyWord"
-							name="allKeyWord"></select>
-					</div>
-
-				</div>
-				<div class="col-md-4">
-					<label>Exclude Keyword <i class="fa fa-info-circle"
-						title="Exclude Keyword"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Exclude KeyWord" id="excludeReqKeyWord"
-							name="excludeKeyWord"></select>
-					</div>
-
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<h4>Details:</h4>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Job Title</label>
+				<div class="col-md-8">
+					<label>Keyword</label>
 						<div class="clearfix">
 							<input type="text" id="requirementTitle" name="requirementTitle"
-								class="form-control input-sm" placeholder="Job Title">
+								class="form-control input-sm" placeholder="Keyword">
+						</div>
+				</div>
+				<div class="col-md-4">
+						<label>Experience</label>
+						<div class="clearfix row">
+							<div class="col-md-6">
+								<select class="chosen-select" id="minExp" name="minExp"
+									data-placeholder="Min Years">
+									<option value="" selected>Min Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<select class="chosen-select" id="maxExp" name="maxExp"
+									data-placeholder="Max Years">
+									<option value="" selected>Max Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 					</div>
+			</div>
+			<div class="row">
+				<div class="clearfix">
 					<div class="col-md-8">
 						<div class="row">
 							<div class="col-md-6">
@@ -708,31 +699,6 @@ a.alertBtn {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Experience</label>
-						<div class="clearfix row">
-							<div class="col-md-6">
-								<select class="chosen-select" id="minExp" name="minExp"
-									data-placeholder="Min Years">
-									<option value="" selected>Min Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<select class="chosen-select" id="maxExp" name="maxExp"
-									data-placeholder="Max Years">
-									<option value="" selected>Max Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
-					</div>
 					<div class="col-md-4">
 						<label>Notice Period</label>
 						<div class="clearfix">
@@ -746,7 +712,8 @@ a.alertBtn {
 							</select>
 						</div>
 					</div>
-
+				</div>
+				<div class="clearfix">
 				</div>
 				<div class="clearfix">
 					<div class="col-md-4">
@@ -1035,11 +1002,9 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-	alert("openJobsRequirementTitle "+openJobsRequirementTitle);
 var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
 	
 	openJobsRequirementTitle = search;
-	alert("search "+openJobsRequirementTitle);
 	location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
 }
 </script>
@@ -1361,7 +1326,6 @@ function openPopup(){
 } */
 
 function getOpenJobsURL(id,jobTitle){
-	alert(jobTitle+"-"+id);
 	//window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
 	window.location.href = jobTitle+"-"+id;
 } 
@@ -1378,8 +1342,6 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    		
 	    	  var json = JSON.parse(data);
-	    	  alert("jobTitle "+json.jobTitle)
-	    	 
 		      var result = "";
 
 		      var title="";
@@ -1670,7 +1632,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-										result = result +'   <a href="/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
+										result = result +'   <a href="/login?requirementUUID="'+requirements.requirementUUID+'">Apply</a>';
 										result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 													
 										result = result +'	</div>';
@@ -1788,7 +1750,7 @@ function getCities(){
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
 			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
+		   /*  var select, chosen;
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
@@ -1808,9 +1770,9 @@ function getCities(){
 	        		$("#anyKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		   
-		    var selectone, chosenone;
+		   /*  var selectone, chosenone;
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
@@ -1830,10 +1792,10 @@ function getCities(){
 	        		$("#allReqKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    
-		    var selecttwo, chosentwo;
+		    /* var selecttwo, chosentwo;
 		    selecttwo = $("#excludeReqKeyWord");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
@@ -1853,7 +1815,7 @@ function getCities(){
 	        		$("#excludeReqKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#organizations");
@@ -2042,9 +2004,9 @@ function loadOpenJobsChosenRequirementScripts(){
 	 $('#country').val('${loginCountryName}'); 
      $('#state').val(''); 
      $('#city').val('');
-     $("#anyKeyWord").val('').trigger("chosen:updated");
-	 $("#allReqKeyWord").val('').trigger("chosen:updated");
-	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+//      $("#anyKeyWord").val('').trigger("chosen:updated");
+// 	 $("#allReqKeyWord").val('').trigger("chosen:updated");
+// 	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
 	 $("#requirementTitle").val('').trigger("chosen:updated");
 	 $("#rate").val('').trigger("chosen:updated");
 	 $("#minExp").val('').trigger("chosen:updated");
@@ -2052,9 +2014,9 @@ function loadOpenJobsChosenRequirementScripts(){
 	 $("#skills").val('').trigger("chosen:updated"); 
 	 $("#noticePeriod").val('').trigger("chosen:updated"); 
 	 $("#organizations").val('').trigger("chosen:updated");
-	 $("#anyKeyWord").empty();
-	 $("#allReqKeyWord").empty();
-	 $("#excludeReqKeyWord").empty();
+// 	 $("#anyKeyWord").empty();
+// 	 $("#allReqKeyWord").empty();
+// 	 $("#excludeReqKeyWord").empty();
 }
 </script>
 
