@@ -85,7 +85,8 @@ function redirectPageStatic(){
 	}
 </script>
 <script type="text/javascript">
-	$(window).load(function() {requirementUUID != null} ){
+	$(window).load(function() {
+		if(requirementUUID != null){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{

@@ -981,7 +981,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/validateWhitelistIp", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/validateWhitelistIp", method = RequestMethod.GET)
 	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
