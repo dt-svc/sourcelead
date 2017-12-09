@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,15 +15,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "TIMESHEET_Day_ENTRIES")
+@Table(name = "TIMESHEET_DAY_ENTRIES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheet_Day_Entries")
 public class TimeSheet_Day_Entries implements Serializable{
 	

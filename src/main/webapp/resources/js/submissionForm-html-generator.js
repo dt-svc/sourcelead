@@ -10,8 +10,6 @@ function generateForm(sourceleadUrl,templateId) {
 
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
