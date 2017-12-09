@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -93,6 +95,8 @@ public class OrgSettingsRestController {
 	ModulesService modulesService;
 	@Autowired
 	WhiteListIpAddressService whiteListIpAddressService;
+	@Autowired
+	WhiteListIpAddressDao whiteListIpAddressDao;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/saveOrgSettings", method = RequestMethod.POST)
@@ -582,5 +586,18 @@ public class OrgSettingsRestController {
 	protected boolean isNullOrEmpty(String str)
 	{
 		return str == null || "".equals(str.trim());
+	}
+	
+	@RequestMapping(value = "/deleteIP", method = RequestMethod.POST)
+	public Boolean deleteWhiteListIpById(HttpServletRequest request,@RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
+	{
+		boolean isDeleted = false;
+		WhiteListIPAddress deleteWhiteListIPAddress = whiteListIpAddressService.getWhiteListIpsById(whiteListIpId);
+		 if(deleteWhiteListIPAddress !=null) {
+			 deleteWhiteListIPAddress.setStatus(Constants.INACTIVE);
+			 whiteListIpAddressDao.addWhiteListIps(deleteWhiteListIPAddress);
+			 isDeleted = true;
+		 }
+		return isDeleted;
 	}
 }

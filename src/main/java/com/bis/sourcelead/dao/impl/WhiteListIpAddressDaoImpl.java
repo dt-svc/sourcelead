@@ -51,7 +51,7 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (whiteListIPAddress != null) {
-				session.save(whiteListIPAddress);
+				session.saveOrUpdate(whiteListIPAddress);
 			}
 			logger.debug("orgLocations Added Successfully");
 		} catch (ConstraintViolationException exception) {
@@ -66,7 +66,7 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 	public List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation left join fetch wlip.createdBy left join fetch wlip.updatedBy where wlip.orgLocation.id = :locationId";
+		String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation left join fetch wlip.createdBy left join fetch wlip.updatedBy where wlip.orgLocation.id = :locationId and wlip.status = 'Active'";
 		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("locationId", locationId).setCacheable(false).list();
 		if(ipList != null && ipList.size() >0){
 			return ipList;
@@ -74,4 +74,16 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from WhiteListIPAddress wlip where wlip.id = :whiteListIpId";
+		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("whiteListIpId", whiteListIpId).setCacheable(false).list();
+		if(ipList != null && ipList.size() >0){
+			return ipList.get(0);
+		}
+		return null;
+	}
+	
 }

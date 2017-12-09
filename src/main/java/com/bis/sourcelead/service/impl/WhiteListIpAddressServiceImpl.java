@@ -75,5 +75,10 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 		}
 		return ipDtoList;
 	}
+
+	@Override
+	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId) {
+		return whiteListIpAddressDao.getWhiteListIpsById(whiteListIpId);
+	}
 	
 }
