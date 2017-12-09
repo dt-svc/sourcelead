@@ -245,3 +245,121 @@
 	</section>    
     
   </section>
+  
+  
+  
+  
+<!--   Popup Code  -->
+	<div class="popMask"></div>
+	<div class="cusFielPopup">
+		<div class="popupHead">
+			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		<div class="cuspopHead clearfix">
+			<div class="col-md-6 padding_left">
+				<select class="chosen-select form-control">
+				  <option>Select Section</option>
+				  <option>Section-1</option>
+				  <option>Section-2</option>
+				  <option>Section-3</option>
+				</select>				
+			</div>
+			<div class="col-md-6 noPad">
+				<select class="chosen-select form-control">
+				  <option>Choose Field</option>
+				  <option>Textfield</option>
+				  <option>Date field</option>
+				  <option>Select field</option>
+				  <option>Checkbox</option>
+				  <option>Radio button</option>
+				</select>				
+			</div>			
+		</div>
+		
+		<div class="popupMid clearfix">
+
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Label Text:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			  <div class="col-md-3 lblHeight">Required?  <input class="toggle-required" type="checkbox">
+			  </div>
+			</div>
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Option:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			  <div class="col-md-3 lblHeight">Selected?  <input class="toggle-required" type="checkbox">
+				  <span class="OpRemove"><i class="fa fa-close"></i></span>
+			  </div>
+			</div>																								
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Option:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			  <div class="col-md-3 lblHeight">Selected?  <input class="toggle-required" type="checkbox">
+				  <span class="OpRemove"><i class="fa fa-close"></i></span>
+			  </div>
+			</div>				          									
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Title Text:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			</div>
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Placeholder Text:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			</div>
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Alt Text:</div>
+			  <div class="col-md-6"><input class="field-label form-control input-sm" type="text"> </div>
+			</div>
+			<div class="col-sm-12 noPad mt clearfix">
+			  <div class="col-md-3 noPad labHeight">Help text:</div>
+			  <div class="col-md-9">
+			  	<textarea class="form-control input-sm"></textarea>
+			  </div>
+			</div>					
+		
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Add" class="" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>		
+		
+	</div>
+<!--   Popup Code  -->  
+  
+  <script>
+// Error pop addSen
+	$(document).ready(function() {
+		$("#addField").click(function(){
+			$(".popMask").fadeIn(200);
+			$(".cusFielPopup").fadeIn(100);
+		});
+		$(".popCan").click(function(){
+			$(".popMask").fadeOut(200);
+			$(".cusFielPopup").fadeOut(100);
+		});
+	});	
+</script>
+
+<script type="text/javascript">
+        var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : {allow_single_deselect:true},
+        '.chosen-select-no-single' : {disable_search_threshold:10},
+        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        '.chosen-select-width'     : {width:"95%"}
+        }
+        for (var selector in config) {
+        $(selector).chosen(config[selector]);
+        }
+        $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': '100%'});
+        })
+        $(document).ready(function(){
+        $("#cd").click(function(){
+        $(".clientDetails").toggleClass('hidden', 500);
+        });
+
+        });
+    </script> 
