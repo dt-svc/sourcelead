@@ -153,6 +153,7 @@
 		      	          type : "POST",
 	        	      	  url: sourceleadUrl+"/getTimesheetEntryDetails?timeSheetsFor=user",		
 	        		      success :function(data) {
+	        		    	  alert(data);
 	        		    	  $("#timesheetEntriesDiv").empty();
 	        		    	  $("#timesheetEntriesDiv").append(data);
 	        		    	  var projectMemberId = $("#projectMemberId").val();

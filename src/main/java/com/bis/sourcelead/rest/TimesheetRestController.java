@@ -685,7 +685,7 @@ public class TimesheetRestController {
 	   String currentTimeFrequency = eedDTO.getCurrentTimeFrequency();
 	   String currentTimeSubFrequency = eedDTO.getCurrentTimeSubFrequency();
 	   String timesheetFor = eedDTO.getTimeSheetsFor();
-	   if(StringUtils.isNotEmpty(timesheetFor)){
+	   if(StringUtils.isEmpty(timesheetFor)){
 		   timesheetFor = "user";
 	   }
 	   TimeSheetSubmissionDTO tsDTO = new TimeSheetSubmissionDTO();
@@ -1454,8 +1454,12 @@ public class TimesheetRestController {
 				 status = "Draft";
 			}
 			
-			if(StringUtils.isEmpty(tedDTO.getTimesheetFor()))
+			if(StringUtils.isEmpty(tedDTO.getTimesheetFor())){
 				savingType = "user";
+			}
+			else{
+				savingType = tedDTO.getTimesheetFor();
+			}
 			
 	    	ProjectMembers projectMember = null;
 			if(tedDTO != null && tedDTO.getProjectMemberId() != null){
@@ -1485,9 +1489,7 @@ public class TimesheetRestController {
 			       		 String frEndDate = frequency[1].trim();
 			       		 frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),frstartDate);
 			       		 frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),frEndDate);
-			       		
 					}
-					 
 		            Long total = 0l;
 		            Long totalBillableHours = 0l;
 		            Long totalNonBillableHours = 0l;
