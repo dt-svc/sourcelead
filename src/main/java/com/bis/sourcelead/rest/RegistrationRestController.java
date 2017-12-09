@@ -36,6 +36,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -109,8 +112,12 @@ public class RegistrationRestController {
 	 @Autowired
 	 private RegistrationOptionalServicesService registrationOptionalServicesService;
 	 
+	 
+	 @Autowired
+	 WhiteListIpAddressService whiteListIpAddressService;
+	 
 	 @RequestMapping(value = "/app/getOrgsList")
-		public @ResponseBody String getUsersList(HttpServletRequest request,
+	 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
 				@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "userState", required = false) String userState) {
@@ -972,6 +979,42 @@ public class RegistrationRestController {
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("otpVerification");
 		return model;
+	}
+	
+	@RequestMapping(value = "/validateWhitelistIp", method = RequestMethod.GET)
+	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String[] currentIp = ipAddress.split("\\.");
+		boolean matched = false;
+		for(WhiteListIPAddressDTO wlipDto : ipList){
+			String fromip = wlipDto.getFromIpAddress();
+			String toip = wlipDto.getToIpAddress();
+			
+			String[] fromipaddr = fromip.split("\\.");
+			String[] toipaddr = toip.split("\\.");
+			
+			if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
+				if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
+					if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
+						if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
+							matched = true;
+						}else{
+							matched = false;
+						}
+					}else{
+						matched = false;
+					}
+				}else{
+					matched = false;
+				}
+			}else{
+				matched = false;
+			}
+		}
+		return matched;
 	}
 	
 	   protected boolean isNullOrEmpty(String str) {
