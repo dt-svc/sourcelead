@@ -5,7 +5,7 @@
 	<div class="modal-dialog modal-lg" style="width: 98%;">
 		<div class="modal-content">
 			<div class="modalHeader">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">Assign To</h4>
 			</div>
 			<div class="modal-body">
@@ -25,7 +25,8 @@
 							</div> -->
 						</div>
 
-						<div class="clearfix positionRelative assignTableScroll">
+						<div class="clearfix positionRelative assignTableScroll  assignTableScroll-mnh">
+						<div id="usersGrid-loader"></div>
 							<table id="assignToDataTableId"
 								class="display table table-stripped table-bordered dataTable no-footer"
 								role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
@@ -184,7 +185,8 @@ function getTeamsList(reqId){
 </script>
 
 <script>
-function getUserList(teamType){ 
+function getUserList(teamType){
+	$("#usersGrid").empty(); 
 	var teamTypeArray = new Array();
 	var isTeamExists = false;
 	var isRoleExists = false;
@@ -203,7 +205,7 @@ function getUserList(teamType){
 	   $('input[name^="assignUserId"]').each(function() {
 	 		selectedUsersForAssign.push($(this).val());
 	   }); */
- 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	   $("#usersGrid-loader").attr('style','position:absolute; width:100%; height:200px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
@@ -256,7 +258,7 @@ function getUserList(teamType){
 	                       }
 		                    
 	                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
-	                 	   $("#usersGrid").empty(); 
+	                 	   $("#usersGrid-loader").removeAttr("style");
 	                       $("#usersGrid").append(result);
 	                       $("#checkAll").prop('checked', false);
 	                       if(isTeamExists && isRoleExists){
@@ -311,6 +313,7 @@ function selectAssignUsers(){
 		$(this).attr('name', 'selectedUser');
 		$(this).prop('disabled', false);
 		$(this).removeAttr('onchange');
+		$(this).attr('checked', false);
      });
 	$("#assignToSelectedPopupCount").text(" ("+$('#assignToSelectedDataTableDiv >table >tbody >tr').length+") ");
 	if($('#assignToSelectedDataTableDiv >table >tbody >tr').length == 0){
@@ -384,6 +387,7 @@ function deSelectAssignUsers(){
 		teamRoleIds = [];
 		selectAssignUsersIds = [];
 		$("#teamSelectionCategory").empty();
+		$("#usersGrid").empty();
 	}
 	
 	function editAssignedTeamsOrUsers(requirementId){
@@ -435,5 +439,8 @@ function handleChange(e){
 	});
 }
 
+$('#assignToPopUpCloseId').submit(function() {
+	$("#usersGrid").empty();
+});
 </script>
 
