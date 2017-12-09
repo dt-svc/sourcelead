@@ -3347,5 +3347,12 @@ public class RequirementServiceImpl implements RequirementService {
 	{
 		return requirementDao.getRequirementByShortURL(shortURL);
 	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	{
+		Requirement requirement = requirementDao.getRequirementByRequirementIdAndJobTitle(requirementId,title);
+		return requirement;
+	}
 	
 }

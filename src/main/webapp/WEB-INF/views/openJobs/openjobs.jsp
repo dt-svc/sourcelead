@@ -1,46 +1,81 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <c:if test="${staticTime == null || staticTime == 0 }">
-    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
- </c:if>
+	<c:set var='staticTime' value="<%=new java.util.Date().getTime()%>"
+		scope="application"></c:set>
+</c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
-<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
-<link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
-<link href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link
+	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
+	rel="stylesheet" type="text/css">
+<link rel="stylesheet"
+	href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
+<link
+	href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
+	rel="stylesheet">
+<link
+	href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet"
+	href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet"
+	href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link
+	href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}"
+	rel="stylesheet">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}"
+	rel="stylesheet" type="text/css">
+<link
+	href="/resources/css/dataTablePagination.css?staticTime=${staticTime}"
+	rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet"
+	href="/resources/css/timesheet.css?staticTime=${staticTime}"
+	type="text/css">
 
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU"
+	type="text/javascript"></script>
+<script
+	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script type="text/javascript"
+	src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script
+	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
 window.onload = function () {
@@ -50,14 +85,14 @@ window.onload = function () {
 	}, 1000);
 	
 	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
-		
-		if('${requirementReleaseStatus}' == 'Y'){
+		/* if('${requirementReleaseStatus}' == 'Y'){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
 			$("#noResultsDiv").css("display", "block");
-		}
-		
+		} */
+		getOpenJobsRequirementSummary('${requirementUUID}');
+		getDropDownCount();
 	}else{
 		getDropDownCount();
 		getOpenJobsELKList();
@@ -104,269 +139,375 @@ function getPostValueDetails(){
 		$("#selector").fadeIn(200);
         $('#selector').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <style>
 .footer-area {
-display: none;}
-
+	display: none;
+}
 
 a.alertBtn {
-    padding: 8px 15px !important;
+	padding: 8px 15px !important;
 }
+
 .ratetype p {
-    left: -45px !important;
-    position: absolute;
-    bottom: -14px;
+	left: -45px !important;
+	position: absolute;
+	bottom: -14px;
 }
+
 .adSearch .chosen-container .search-field input[type="text"] {
-width:100% !important;
+	width: 100% !important;
 }
+
 a.alertBtn {
-    padding: 8px 15px !important;
+	padding: 8px 15px !important;
 }
+
 .jobResultsCta.job_container {
-cursor: inherit !important;
+	cursor: inherit !important;
 }
-.jobResultsCta.job_container h3{
-	cursor: pointer; font-size: 18px; width: auto; clear: both; float: left;
+
+.jobResultsCta.job_container h3 {
+	cursor: pointer;
+	font-size: 18px;
+	width: auto;
+	clear: both;
+	float: left;
 }
-.jobResultsCta.job_container h4{
-	cursor: pointer; font-size: 16px; width: auto; clear: both; float: left;
+
+.jobResultsCta.job_container h4 {
+	cursor: pointer;
+	font-size: 16px;
+	width: auto;
+	clear: both;
+	float: left;
 }
-.jobDetails .jobResultsInn h3  {
-	cursor: pointer; font-size: 18px; width: auto; clear: both; float: left;
+
+.jobDetails .jobResultsInn h3 {
+	cursor: pointer;
+	font-size: 18px;
+	width: auto;
+	clear: both;
+	float: left;
 }
+
 .jobResultsInn.job_ResultsInn h3 {
-cursor: inherit; font-size: 18px; width: auto; clear: both; float: left; 
+	cursor: inherit;
+	font-size: 18px;
+	width: auto;
+	clear: both;
+	float: left;
 }
+
 .jobResultsInn.job_ResultsInn h4 {
-cursor: pointer; font-size: 16px; width: auto; clear: both; float: left;
+	cursor: pointer;
+	font-size: 16px;
+	width: auto;
+	clear: both;
+	float: left;
 }
+
 .profilerefresh-icon {
-	position: absolute; right:16px; top:1px; height: 28px; line-height: 14px;
+	position: absolute;
+	right: 16px;
+	top: 1px;
+	height: 28px;
+	line-height: 14px;
 }
+
 .pac-container {
-z-index: 1000000000 !important;
+	z-index: 1000000000 !important;
 }
+
 .pac-container::after {
-	display:none;
+	display: none;
 }
 </style>
 
 
 <!-- Content Area -->
-<div  id="loadTime"></div> 
+<div id="loadTime"></div>
 <header class="headerInpage">
-<section class="headTop headTopFix">
-	<div class="headTopInn">
-    	<ul>
-        	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
-            <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
-            <div class="clear"></div>
-        </ul>
-    	<div class="clear"></div>    
-    </div>
-</section>
-<div class="head_inn">
-    <div class="success_pop" id="selector" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-     </div>
-  <div class="logo"><a href="/login"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
-  <nav>
-  	<ul class="menu">
-    	<li><a href="/login"><i class="fa fa-home"></i></a></li>
-		<li><a href="/openJobs" class="rcolor">Jobs</a></li>
-        <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
+	<section class="headTop headTopFix">
+		<div class="headTopInn">
 			<ul>
-				<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="/ats.html">ATS</a></li>
-                <li><a href="/vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)" class="ma">resources<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="/demo.html">Product Videos</a></li>
-                <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
-                <li><a style="border-bottom:none;" href="/faqs.html">FAQs</a></li>
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="/about-us.html">About SourceLead</a></li>
-                <li><a href="/team.html">Our team</a></li>
-                <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
+				<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>
+						(214) 295-5535</a></li>
+				<li><a href="mailto:info@sourcelead.com"><i
+						class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
+				<li class="hideres"><a href="/login"><i
+						class="fa fa-user-o"></i> Login</a></li>
+				<div class="clear"></div>
+			</ul>
+			<div class="clear"></div>
+		</div>
+	</section>
+	<div class="head_inn">
+		<div class="success_pop" id="selector" style="display: none;">
+			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+		</div>
+		<div class="logo">
+			<a href="/login"><img src="/resources/css/jobs/images/logo.png"
+				alt="SourceLead" title="SourceLead" /></a>
+		</div>
+		<nav>
+			<ul class="menu">
+				<li><a href="/login"><i class="fa fa-home"></i></a></li>
+				<li><a href="/openJobs" class="rcolor">Jobs</a></li>
+				<li><a href="javascript:void(0)" class="ma">What we do<i
+						class="fa fa-caret-down"></i></a>
+					<ul>
+						<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
+						<li><a href="/ats.html">ATS</a></li>
+						<li><a href="/vms.html">VMS</a></li>
+						<li><a style="border-bottom: none;" href="../timesheet.html">Time
+								Management</a></li>
+					</ul></li>
+				<li><a href="javascript:void(0)" class="ma">resources<i
+						class="fa fa-caret-down"></i></a>
+					<ul>
+						<li><a href="/demo.html">Product Videos</a></li>
+						<li><a href="javascript:void(0)" class="requestDemo">Request
+								Personal Demo</a></li>
+						<li><a style="border-bottom: none;" href="/faqs.html">FAQs</a></li>
+					</ul></li>
+				<li><a href="javascript:void(0)">About SourceLead<i
+						class="fa fa-caret-down"></i></a>
+					<ul>
+						<li><a href="/about-us.html">About SourceLead</a></li>
+						<li><a href="/team.html">Our team</a></li>
+						<!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="/contact.html">Contact</a></li>
-            </ul>        
-        </li>
-        <li><a href="/blog4.html">Blogs</a></li>
-        <li><a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a></li>
-        <div class="clear"></div>
-    </ul>
-  </nav>
-  
-  <section class="responsiveMenu">
-  		<a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a>
-       <span id="resSe" class=""><i class="fa fa-search"></i></span>
-        <i id="menuIcon" class="fa fa-bars"></i>
-  </section>
-  
-  <div class="clear"></div>
-</div>
+						<li><a style="border-bottom: none;" href="/contact.html">Contact</a></li>
+					</ul></li>
+				<li><a href="/blog4.html">Blogs</a></li>
+				<li><a href="javascript:void(0)" class="freeTril freeTrail">Free
+						Trial</a></li>
+				<div class="clear"></div>
+			</ul>
+		</nav>
+
+		<section class="responsiveMenu">
+			<a href="javascript:void(0)" class="freeTril freeTrail">Free
+				Trial</a> <span id="resSe" class=""><i class="fa fa-search"></i></span>
+			<i id="menuIcon" class="fa fa-bars"></i>
+		</section>
+
+		<div class="clear"></div>
+	</div>
 </header>
 <section class="menuGapInpage"></section>
 
-	<div class="innerPageSearch">
-		<section class="searchWrap">
-			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle==null?'':openJobsTitle}" class="searchHome"></span>
-			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
-			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
-			<h3><b id="ADS">Advanced Search</b></h3>
-			<div class="clear"></div>
-		</section>
-	</div>
-	
-<section class="innerContent">
-<input type="hidden" name="openJobsOffset" id="openJobsOffset" value="0"/>
-		<div class="filter">
-			<h2>Fliter your search <i class="fa fa-refresh" aria-hidden="true" onclick="clearFilters(); getOpenJobsELKList();" style="cursor: pointer;"></i></h2>
-			<div class="filterCta" id="dateFilterId">
-				<h3>Posted on<i class="fa fa-caret-down arrAc"></i></h3>
-				<ul id="show">
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">Today
-						  <input type="radio" name="dateFilter" value="today" ${postedOn=="today"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 day ago
-						  <input type="radio" name="dateFilter" value="1 Day Ago" ${postedOn=="1-day-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">3 days ago
-						  <input type="radio" name="dateFilter" value="3 Days Ago" ${postedOn=="3-days-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 Week ago
-						  <input type="radio" name="dateFilter" value="1 Week Ago" ${postedOn=="1-week-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">2 Weeks ago 
-						  <input type="radio" name="dateFilter" value="2 Weeks Ago" ${postedOn=="2-weeks-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 Month ago
-						  <input type="radio" name="dateFilter" value="1 Month Ago" ${postedOn=="1-month-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">3 Months ago
-						  <input type="radio" name="dateFilter" value="3 Months Ago" ${postedOn=="3-months-ago"?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>		
-				</ul>
-			</div>
-			
-			
-			<div class="filterCta" id="countryFilterId">
-				<h3>Location <i class="fa fa-caret-down"></i></h3>
-				<ul>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">Australia
-						  <input type="radio" name="countryFilter" value="Australia" ${locationType=="australia"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">France
-						  <input type="radio" name="countryFilter" value="France" ${locationType=="france"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">India
-						  <input type="radio" name="countryFilter" value="India" ${locationType=="india"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">Singapore
-						  <input type="radio" name="countryFilter" value="Singapore" ${locationType=="singapore"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">United Kingdom
-						  <input type="radio" name="countryFilter" value="United Kingdom" ${locationType=="united-kingdom"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">United States
-						  <input type="radio" name="countryFilter" value="United States" ${locationType=="united-states"?"checked=checked":""} onclick="requirementsFilter(); getOrgsList('none','main');"/><div class="control__indicator_ra"></div>
-						</label>
-					</li>
-				</ul>
-			</div>
+<div class="innerPageSearch">
+	<section class="searchWrap">
+		<span><i class="fa fa-search"></i><input type="text"
+			placeholder="Search" id="openJobsRequirementTitleId"
+			value="${openJobsTitle==null?'':openJobsTitle}" class="searchHome"></span>
+		<span><i class="fa fa-map-marker"></i><input type="text"
+			placeholder="Location" value="${openJobsLocation}"
+			id="openJobsLocationId" class="searchHome"></span> <span><i
+			class="fa fa-briefcase"></i>
+			<p id="dropDownCountId"></p></span> <span><input type="button"
+			value="Search" class="searchBtn"
+			onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
+		<h3>
+			<b id="ADS">Advanced Search</b>
+		</h3>
+		<div class="clear"></div>
+	</section>
+</div>
 
-			<div class="filterCta" id="empTypediv">
-				<h3>Employment Type<i class="fa fa-caret-down"></i></h3>
-				<ul>
-					<li class="control-group">
-						<label class="control control--checkbox">C2C
-						  <input type="checkbox" name="typeFilter" value="C2C" ${employementType.indexOf("c2c")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">W-2
-						  <input type="checkbox" name="typeFilter" value="W-2" ${employementType.indexOf("w-2")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">C2H
-						  <input type="checkbox" name="typeFilter" value="C2H" ${employementType.indexOf("c2h")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Contract
-						  <input type="checkbox" name="typeFilter" value="Contract" ${employementType.indexOf("contract")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Part Time
-						  <input type="checkbox" name="typeFilter" value="Part Time" ${employementType.indexOf("part-time")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Full Time
-						  <input type="checkbox" name="typeFilter" value="Full Time" ${employementType.indexOf("full-time")!=-1?"checked=checked":""}onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-					<li class="control-group">
-						<label class="control control--checkbox">Other
-						  <input type="checkbox" name="typeFilter" value="Other" ${employementType.indexOf("other")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>
-						</label>
-					</li>
-				</ul>
-			</div>
-			
-			<div class="filterCta">
-				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
-				<ul id="orgList"></ul>
-			</div>														
-			
-			<!-- <div class="filLoad">
+<section class="innerContent">
+	<input type="hidden" name="openJobsOffset" id="openJobsOffset"
+		value="0" />
+	<div class="filter">
+		<h2>
+			Fliter your search <i class="fa fa-refresh" aria-hidden="true"
+				onclick="clearFilters(); getOpenJobsELKList();"
+				style="cursor: pointer;"></i>
+		</h2>
+		<div class="filterCta" id="dateFilterId">
+			<h3>
+				Posted on<i class="fa fa-caret-down arrAc"></i>
+			</h3>
+			<ul id="show">
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">Today <input
+						type="radio" name="dateFilter" value="today"
+						${postedOn=="today"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">1 day ago <input
+						type="radio" name="dateFilter" value="1 Day Ago"
+						${postedOn=="1-day-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">3 days ago <input
+						type="radio" name="dateFilter" value="3 Days Ago"
+						${postedOn=="3-days-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">1 Week ago <input
+						type="radio" name="dateFilter" value="1 Week Ago"
+						${postedOn=="1-week-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">2 Weeks ago <input
+						type="radio" name="dateFilter" value="2 Weeks Ago"
+						${postedOn=="2-weeks-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">1 Month ago <input
+						type="radio" name="dateFilter" value="1 Month Ago"
+						${postedOn=="1-month-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">3 Months ago <input
+						type="radio" name="dateFilter" value="3 Months Ago"
+						${postedOn=="3-months-ago"?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+			</ul>
+		</div>
+
+
+		<div class="filterCta" id="countryFilterId">
+			<h3>
+				Location <i class="fa fa-caret-down"></i>
+			</h3>
+			<ul>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">Australia <input
+						type="radio" name="countryFilter" value="Australia"
+						${locationType=="australia"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">France <input
+						type="radio" name="countryFilter" value="France"
+						${locationType=="france"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">India <input
+						type="radio" name="countryFilter" value="India"
+						${locationType=="india"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">Singapore <input
+						type="radio" name="countryFilter" value="Singapore"
+						${locationType=="singapore"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">United Kingdom <input
+						type="radio" name="countryFilter" value="United Kingdom"
+						${locationType=="united-kingdom"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control-radio control--checkbox-ra">United States <input
+						type="radio" name="countryFilter" value="United States"
+						${locationType=="united-states"?"checked=checked":""}
+						onclick="requirementsFilter(); getOrgsList('none','main');" />
+						<div class="control__indicator_ra"></div>
+				</label></li>
+			</ul>
+		</div>
+
+		<div class="filterCta" id="empTypediv">
+			<h3>
+				Employment Type<i class="fa fa-caret-down"></i>
+			</h3>
+			<ul>
+				<li class="control-group"><label
+					class="control control--checkbox">C2C <input
+						type="checkbox" name="typeFilter" value="C2C"
+						${employementType.indexOf("c2c")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">W-2 <input
+						type="checkbox" name="typeFilter" value="W-2"
+						${employementType.indexOf("w-2")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">C2H <input
+						type="checkbox" name="typeFilter" value="C2H"
+						${employementType.indexOf("c2h")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">Contract <input
+						type="checkbox" name="typeFilter" value="Contract"
+						${employementType.indexOf("contract")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">Part Time <input
+						type="checkbox" name="typeFilter" value="Part Time"
+						${employementType.indexOf("part-time")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">Full Time <input
+						type="checkbox" name="typeFilter" value="Full Time"
+						${employementType.indexOf("full-time")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+				<li class="control-group"><label
+					class="control control--checkbox">Other <input
+						type="checkbox" name="typeFilter" value="Other"
+						${employementType.indexOf("other")!=-1?"checked=checked":""}
+						onclick="requirementsFilter();" />
+						<div class="control__indicator"></div>
+				</label></li>
+			</ul>
+		</div>
+
+		<div class="filterCta">
+			<h3 onclick="getOrgsList('none','main');">
+				Companies<i class="fa fa-caret-down"></i>
+			</h3>
+			<ul id="orgList"></ul>
+		</div>
+
+		<!-- <div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
 				<h2 class="gradi"></h2>
 			</div> -->
-			
-		</div>
-		
-		<div class="jobResults jobResults_New">
-<!--		
+
+	</div>
+
+	<div class="jobResults jobResults_New">
+		<!--		
 			<div class="fliterHead">
 				<div>
 					<span>Fliter 1 <i class="fa fa-remove"></i></span>
@@ -379,8 +520,8 @@ z-index: 1000000000 !important;
 					<span>Fliter 8 <i class="fa fa-remove"></i></span>
 				</div>
 			</div>-->
-			
-<!--			<div class="jobResultsHead">
+
+		<!--			<div class="jobResultsHead">
 				<p>Show results of 10 of 100</p>
 				<span>
 					<a class="act" href="javascript:void(0)">Relevance</a>
@@ -391,26 +532,27 @@ z-index: 1000000000 !important;
 			<div class="filLoad filLoad_a"><h2 class="gradi"></h2></div>
 				
 			</div>-->
-<!-- 			<div class="noResults" id="noResultsDiv" style="display: none;"></div> -->
-			<div id="loadinggif"></div>
-			<div id= "openJobsRequirementsList"></div>
-			<div class="jobResultsNoRecords" id="noResultsDiv"></div>
-			<div id="loadMoreDiv"></div> 
-			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: none; cursor: pointer;">View more</div>
-			<div id= "openJobsRequirementsSummary"></div>
-			
-		
-			
-		</div>
-		<div class="clear"></div>
-		
-		<!-- for popup -->
-		
-		<div class="filPop">
-			<div class="filPopHead clearfix">
-				<span>Companies</span>
-<!-- 				<span><input type="text" placeholder="Search" class="filSearch"></span> -->
-				<!-- <span class="selectCountry">
+		<!-- 			<div class="noResults" id="noResultsDiv" style="display: none;"></div> -->
+		<div id="loadinggif"></div>
+		<div id="openJobsRequirementsList"></div>
+		<div class="jobResultsNoRecords" id="noResultsDiv"></div>
+		<div id="loadMoreDiv"></div>
+		<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq"
+			style="display: none; cursor: pointer;">View more</div>
+		<div id="openJobsRequirementsSummary"></div>
+
+
+
+	</div>
+	<div class="clear"></div>
+
+	<!-- for popup -->
+
+	<div class="filPop">
+		<div class="filPopHead clearfix">
+			<span>Companies</span>
+			<!-- 				<span><input type="text" placeholder="Search" class="filSearch"></span> -->
+			<!-- <span class="selectCountry">
 					<select class="chosen-select" data-placeholder="Employers" id="orgCountry" onchange="getOrgsList('none','sub');">
 					  <option value="">--Select Country--</option>
 					  <option value="Australia">Australia</option>
@@ -421,312 +563,354 @@ z-index: 1000000000 !important;
 	                  <option value="United States">United States</option>
 					</select>			
 				</span> -->
-				<i class="fa fa-times filPopClose CP" onclick="clearcheck();"></i>
+			<i class="fa fa-times filPopClose CP" onclick="clearcheck();"></i>
+		</div>
+		<div class="filPopInn">
+
+			<div class="LettSelec" id="selectLetter">
+				<a id="all" onclick="getOrgsList('none','sub');">ALL</a> <a
+					onclick="getOrgsList('A','sub');">A</a> <a
+					onclick="getOrgsList('B','sub');">B</a> <a
+					onclick="getOrgsList('C','sub');">C</a> <a
+					onclick="getOrgsList('D','sub');">D</a> <a
+					onclick="getOrgsList('E','sub');">E</a> <a
+					onclick="getOrgsList('F','sub');">F</a> <a
+					onclick="getOrgsList('G','sub');">G</a> <a
+					onclick="getOrgsList('H','sub');">H</a> <a
+					onclick="getOrgsList('I','sub');">I</a> <a
+					onclick="getOrgsList('J','sub');">J</a> <a
+					onclick="getOrgsList('K','sub');">K</a> <a
+					onclick="getOrgsList('L','sub');">L</a> <a
+					onclick="getOrgsList('M','sub');">M</a> <a
+					onclick="getOrgsList('N','sub');">N</a> <a
+					onclick="getOrgsList('O','sub');">O</a> <a
+					onclick="getOrgsList('P','sub');">P</a> <a
+					onclick="getOrgsList('Q','sub');">Q</a> <a
+					onclick="getOrgsList('R','sub');">R</a> <a
+					onclick="getOrgsList('S','sub');">S</a> <a
+					onclick="getOrgsList('T','sub');">T</a> <a
+					onclick="getOrgsList('U','sub');">U</a> <a
+					onclick="getOrgsList('V','sub');">V</a> <a
+					onclick="getOrgsList('W','sub');">W</a> <a
+					onclick="getOrgsList('X','sub');">X</a> <a
+					onclick="getOrgsList('Y','sub');">Y</a> <a
+					onclick="getOrgsList('Z','sub');">Z</a> <a
+					onclick="getOrgsList('Others','sub');">Others</a>
 			</div>
-			<div class="filPopInn">
-			
-				<div class="LettSelec" id="selectLetter">
-					<a id="all" onclick="getOrgsList('none','sub');">ALL</a>
-					<a onclick="getOrgsList('A','sub');">A</a>
-					<a onclick="getOrgsList('B','sub');">B</a>
-					<a onclick="getOrgsList('C','sub');">C</a>
-					<a onclick="getOrgsList('D','sub');">D</a>
-					<a onclick="getOrgsList('E','sub');">E</a>
-					<a onclick="getOrgsList('F','sub');">F</a>
-					<a onclick="getOrgsList('G','sub');">G</a>
-					<a onclick="getOrgsList('H','sub');">H</a>
-					<a onclick="getOrgsList('I','sub');">I</a>
-					<a onclick="getOrgsList('J','sub');">J</a>
-					<a onclick="getOrgsList('K','sub');">K</a>
-					<a onclick="getOrgsList('L','sub');">L</a>
-					<a onclick="getOrgsList('M','sub');">M</a>
-					<a onclick="getOrgsList('N','sub');">N</a>
-					<a onclick="getOrgsList('O','sub');">O</a>
-					<a onclick="getOrgsList('P','sub');">P</a>
-					<a onclick="getOrgsList('Q','sub');">Q</a>
-					<a onclick="getOrgsList('R','sub');">R</a>
-					<a onclick="getOrgsList('S','sub');">S</a>
-					<a onclick="getOrgsList('T','sub');">T</a>
-					<a onclick="getOrgsList('U','sub');">U</a>
-					<a onclick="getOrgsList('V','sub');">V</a>
-					<a onclick="getOrgsList('W','sub');">W</a>
-					<a onclick="getOrgsList('X','sub');">X</a>
-					<a onclick="getOrgsList('Y','sub');">Y</a>
-					<a onclick="getOrgsList('Z','sub');">Z</a>
-					<a onclick="getOrgsList('Others','sub');">Others</a>
-				</div>
-				
-				<ul id="remainingOrgs" class="clearfix">
-				</ul>		
-			</div>
-			<div class="filPopBot clearfix">
-				<div class="pull-right">
-<!-- 					<input type="button" class="btn btn-danger CP" value="Cancel"/> -->
-					<input type="button" class="btn btn-primary" onclick="clearcheck();" value="Clear All"/>
-					<input type="button" class="btn btn-success CP" onclick="requirementsFilter();" value="Search"/>
-				</div>
+
+			<ul id="remainingOrgs" class="clearfix">
+			</ul>
+		</div>
+		<div class="filPopBot clearfix">
+			<div class="pull-right">
+				<!-- 					<input type="button" class="btn btn-danger CP" value="Cancel"/> -->
+				<input type="button" class="btn btn-primary" onclick="clearcheck();"
+					value="Clear All" /> <input type="button"
+					class="btn btn-success CP" onclick="requirementsFilter();"
+					value="Search" />
 			</div>
 		</div>
-		
-</section>	
+	</div>
+
+</section>
 <section class="asMask" onclick="adSearchClose();"></section>
 
 
 <section class="adSearch">
-		
-          <form:form id="openJobsAdvancedForm" name="openJobsAdvancedForm"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i class="fa fa-close"></i></a>
-            <div class="row">
-              <div class="col-md-4">
-                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-                
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-				 </div>
-              </div>
-              <div class="col-md-4">
-                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
-				 </div>
-                
-              </div>
-              <div class="col-md-4">
-                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
-				 </div>
-                
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h4>Details:</h4>
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Job Title</label>
-                  <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
-                  </div>
-                </div>
-                <div class="col-md-8">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label>Rate</label>
-                      <div class="input-group">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker" id="currencyCode" name="currencyCode" >
-                            <option selected disabled>INR</option>
-                            <option>AUD</option>
-                            <option>USD</option>
-                            <option>GPB</option>
-                            <option>SGD</option>
-                            <option>EUR</option>
-                          </select>
-                        </div>
-                        <input type="text" class="form-control input-sm" name="minRate" id="minRate" value="" placeholder="Min Rate">
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <label>&nbsp;</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker">
-                            <option selected disabled>Per</option>
-                            <option>Hourly</option>
-                            <option>Weekly</option>
-                            <option>Bi-weekly</option>
-                            <option>Semi-Monthly</option>
-                            <option>Monthly</option>
-                            <option>Bi-Monthly</option>
-                            <option>Yearly</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Experience</label>
-                  <div class="clearfix row">
-                    <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
-                       <option value="" selected>Min Years</option>
-                       <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
+
+	<form:form id="openJobsAdvancedForm" name="openJobsAdvancedForm"
+		enctype='multipart/form-data'>
+		<div class="cand-advsrch-popup">
+			<a href="javascript:void(0)" class="close-div"
+				onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i
+				class="fa fa-close"></i></a>
+			<div class="row">
+				<div class="col-md-4">
+					<label>Any of Keyword <i class="fa fa-info-circle"
+						title="Any of Keyword"></i></label>
+
+					<div class="clearfix">
+						<select class="chosen-select form-control input-sm" multiple
+							data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<label>All Keywords <i class="fa fa-info-circle"
+						title="All Keywords"></i></label>
+					<div class="clearfix">
+						<select class="chosen-select form-control input-sm" multiple
+							data-placeholder="All KeyWord" id="allReqKeyWord"
+							name="allKeyWord"></select>
+					</div>
+
+				</div>
+				<div class="col-md-4">
+					<label>Exclude Keyword <i class="fa fa-info-circle"
+						title="Exclude Keyword"></i></label>
+					<div class="clearfix">
+						<select class="chosen-select form-control input-sm" multiple
+							data-placeholder="Exclude KeyWord" id="excludeReqKeyWord"
+							name="excludeKeyWord"></select>
+					</div>
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Details:</h4>
+				</div>
+				<div class="clearfix">
+					<div class="col-md-4">
+						<label>Job Title</label>
+						<div class="clearfix">
+							<input type="text" id="requirementTitle" name="requirementTitle"
+								class="form-control input-sm" placeholder="Job Title">
+						</div>
+					</div>
+					<div class="col-md-8">
+						<div class="row">
+							<div class="col-md-6">
+								<label>Rate</label>
+								<div class="input-group">
+									<div class="input-group-btn selp-custom-min custommin">
+										<select class="selectpicker" id="currencyCode"
+											name="currencyCode">
+											<option selected disabled>INR</option>
+											<option>AUD</option>
+											<option>USD</option>
+											<option>GPB</option>
+											<option>SGD</option>
+											<option>EUR</option>
+										</select>
+									</div>
+									<input type="text" class="form-control input-sm" name="minRate"
+										id="minRate" value="" placeholder="Min Rate">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<label>&nbsp;</label>
+								<div class="input-group">
+									<input type="text" class="form-control input-sm" value=""
+										name="maxRate" id="maxRate" placeholder="Max Rate">
+									<div class="input-group-btn selp-custom-min custommin">
+										<select class="selectpicker">
+											<option selected disabled>Per</option>
+											<option>Hourly</option>
+											<option>Weekly</option>
+											<option>Bi-weekly</option>
+											<option>Semi-Monthly</option>
+											<option>Monthly</option>
+											<option>Bi-Monthly</option>
+											<option>Yearly</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="col-md-4">
+						<label>Experience</label>
+						<div class="clearfix row">
+							<div class="col-md-6">
+								<select class="chosen-select" id="minExp" name="minExp"
+									data-placeholder="Min Years">
+									<option value="" selected>Min Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
 									</c:forEach>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
-                         <option value="" selected>Max Years</option>
-                         <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<select class="chosen-select" id="maxExp" name="maxExp"
+									data-placeholder="Max Years">
+									<option value="" selected>Max Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
 									</c:forEach>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>Notice Period</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" name="noticePeriod" id="noticePeriod" data-placeholder="Notice Period" multiple>
-                      <option>Immediately available</option>
-                      <option>15 Days</option>
-                      <option>1 Month</option>
-                      <option>2 Months</option>
-                      <option>3 Months</option>
-                    </select>
-                  </div>
-                </div>
-                
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-							  <label>Country</label>
-							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
-								  <option value="">--select Country--</option>
-								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
-						                </c:forEach>
-				                 </select>
-							  </div>
-						  </div>
-                <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix adv-srh-chosen">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---Select State---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							  </div>
-						  </div>
-			  <div class="col-md-4">
-				  <label>City</label>
-				  <div class="clearfix adv-srh-chosen">
-					  <select  class="chosen-select" name="city" id="city" field-name="City"  >
-					      <option value="">---Select City---</option>
-                               </select>
-				  </div>
-			  </div>
-              </div>
-              
-              <div class="clearfix">
-                <div class="col-md-4">
-                <label>Organizations <i class="fa fa-info-circle" title="Organizations"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Organizations" id="organizations" name="organizations"></select>
-				 </div>
-                
-              </div>
-              
-                <div class="col-md-8">
-                  <label>Skills</label>
-                  <div class="clearfix">
-                     <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
-                      <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
-	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill.name}">${skill.name}</option>
-	                		 </c:if>
-                    </c:forEach>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row form-footer">
-              <div class="pull-right mr"> 
-              <input type="button" value="Search" id="advancedOpenJobsSearch" onclick="openJobSearchRequirement();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-default ml10"/> 
-              </div>
-            </div>
-          </div>
-   </form:form>
-	</section>        
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<label>Notice Period</label>
+						<div class="clearfix">
+							<select class="chosen-select" name="noticePeriod"
+								id="noticePeriod" data-placeholder="Notice Period" multiple>
+								<option>Immediately available</option>
+								<option>15 Days</option>
+								<option>1 Month</option>
+								<option>2 Months</option>
+								<option>3 Months</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+				<div class="clearfix">
+					<div class="col-md-4">
+						<label>Country</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="country" id="country"
+								field-name="Country">
+								<option value="">--select Country--</option>
+								<c:forEach var="cntry" items="${countryList}">
+									<option value="${cntry.name}"
+										${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<label>State</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="state" id="state"
+								field-name="State">
+								<option value="">---Select State---</option>
+								<c:forEach var="state" items="${statesList}">
+									<option value="${state.stateName}">${state.stateName}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<label>City</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="city" id="city"
+								field-name="City">
+								<option value="">---Select City---</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="clearfix">
+					<div class="col-md-4">
+						<label>Organizations <i class="fa fa-info-circle"
+							title="Organizations"></i></label>
+						<div class="clearfix">
+							<select class="chosen-select form-control input-sm" multiple
+								data-placeholder="Organizations" id="organizations"
+								name="organizations"></select>
+						</div>
+
+					</div>
+
+					<div class="col-md-8">
+						<label>Skills</label>
+						<div class="clearfix">
+							<select class="chosen-select" id="skills" name="skills" multiple
+								data-placeholder="Select Skills">
+								<c:forEach var="skill" items="${skillsList}">
+									<c:if
+										test="${fn:contains(requirement.reqSkillsListString, skill)}">
+										<option selected value="${skill.name}">${skill.name}</option>
+									</c:if>
+									<c:if
+										test="${!fn:contains(requirement.reqSkillsListString, skill)}">
+										<option value="${skill.name}">${skill.name}</option>
+									</c:if>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row form-footer">
+				<div class="pull-right mr">
+					<input type="button" value="Search" id="advancedOpenJobsSearch"
+						onclick="openJobSearchRequirement();loadOpenJobsChosenRequirementScripts();"
+						class="btn btn-sm btn-primary" /> <input type="button"
+						value="Cancel"
+						onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"
+						class="btn btn-sm btn-default ml10" />
+				</div>
+			</div>
+		</div>
+	</form:form>
+</section>
 <!-- Content Area Ends-->
 
 <footer>
 	<div class="footerInn">
-    	<div class="footerInnCta resFoot">
-        	<h3>SourceLead</h3>
-            <ul>
-            	<li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About us</a></li>
-                <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our team</a></li>
-                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
-                <li><a href="/testimonial.html"><i class="fa fa-caret-right"></i>Testimonial</a></li>
-                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
-                <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact us</a></li>
-            </ul>
-        </div>
-    	<div class="footerInnCta resFoot">
-        	<h3>What we do</h3>
-            <ul>
-				<li><a href="/crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
-            </ul>
-        </div> 
-    	<div class="footerInnCta">
-<div class="hBlogs">
-            	<a href="/blog4.html">
-                	<span>Loyal Relationships with Recruiters</span>
-                    <b>FEB 20, 2017</b>
-                </a>            
-            	<a href="/blog3.html">
-                	<span>Recruiting Through Social Media Platform</span>
-                    <b>FEB 15, 2017</b>
-                </a>            
-            	<a href="/blog.html">
-                	<span>Existing Process without using any Tool</span>
-                    <b>DEC 20, 2016</b>
-                </a>
-            	<a href="/blog4.html">Viwe all</a>                                                
-            </div>
-        </div>  
-    	<div class="footerInnCta">
-        	<h3>Get in touch</h3>
-            <a href="mailto:info@sourcelead.com;"><b><i class="fa fa-envelope-o"></i>info@sourcelead.com</b></a>
-			<a href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA : (214) 295-5535</b></a>
-			<a href="tel:(972) 559-3641"><b><i class="fa fa-fax"></i>FAX : (972) 559-3641</b></a>
-			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
-          <h4>Go social</h4>
-            <div class="socila">
-            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
-            </div>
-        </div>                        
-    <div class="clear"></div>
-    </div>
-    <jsp:include page="../masterFooter.jsp" />
-    <div class="copyrightOut">
-    	<div class="copyright">
-    	<b>© 2016 SourceLead. All rights reserved.</b>
-        <span>
-        	<a href="/privacy.html">Privacy Policy</a>
-            <a href="/terms.html">Terms of Use</a>
-        </span><div class="clear"></div>
-        </div>
-    </div>  
-</footer> 
+		<div class="footerInnCta resFoot">
+			<h3>SourceLead</h3>
+			<ul>
+				<li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About
+						us</a></li>
+				<li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
+						team</a></li>
+				<!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
+				<li><a href="/testimonial.html"><i
+						class="fa fa-caret-right"></i>Testimonial</a></li>
+				<!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
+				<li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
+						us</a></li>
+			</ul>
+		</div>
+		<div class="footerInnCta resFoot">
+			<h3>What we do</h3>
+			<ul>
+				<li><a href="/crowdsourcing.html"><i
+						class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+				<li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+				<li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+				<li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time
+						Management</a></li>
+			</ul>
+		</div>
+		<div class="footerInnCta">
+			<div class="hBlogs">
+				<a href="/blog4.html"> <span>Loyal Relationships with
+						Recruiters</span> <b>FEB 20, 2017</b>
+				</a> <a href="/blog3.html"> <span>Recruiting Through Social
+						Media Platform</span> <b>FEB 15, 2017</b>
+				</a> <a href="/blog.html"> <span>Existing Process without
+						using any Tool</span> <b>DEC 20, 2016</b>
+				</a> <a href="/blog4.html">Viwe all</a>
+			</div>
+		</div>
+		<div class="footerInnCta">
+			<h3>Get in touch</h3>
+			<a href="mailto:info@sourcelead.com;"><b><i
+					class="fa fa-envelope-o"></i>info@sourcelead.com</b></a> <a
+				href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA
+					: (214) 295-5535</b></a> <a href="tel:(972) 559-3641"><b><i
+					class="fa fa-fax"></i>FAX : (972) 559-3641</b></a> <a
+				href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND :
+					+91. 40-6700-7676</b></a>
+			<h4>Go social</h4>
+			<div class="socila">
+				<a href="javascript:void(0)"><img
+					src="/resources/css/jobs/images/in.png" alt="" /></a> <a
+					href="javascript:void(0)"><img
+					src="/resources/css/jobs/images/fb.png" alt="" /></a> <a
+					href="javascript:void(0)"><img
+					src="/resources/css/jobs/images/tw.png" alt="" /></a> <a
+					href="javascript:void(0)"><img
+					src="/resources/css/jobs/images/gp.png" alt="" /></a>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<jsp:include page="../masterFooter.jsp" />
+	<div class="copyrightOut">
+		<div class="copyright">
+			<b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+				href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
+					of Use</a>
+			</span>
+			<div class="clear"></div>
+		</div>
+	</div>
+</footer>
 
 
-<section class="pageLoad"></section> 
+<section class="pageLoad"></section>
 <div class="backtotop">
 	<img src="/resources/css/jobs/images/backtotop.png" alt="" />
-</div>  
+</div>
 
 <!-- Footer Area -->
 <%-- <jsp:include page="../masterFooter.jsp" /> --%>
@@ -851,10 +1035,11 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
+	alert("openJobsRequirementTitle "+openJobsRequirementTitle);
 var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
 	
-	alert("search "+search);
 	openJobsRequirementTitle = search;
+	alert("search "+openJobsRequirementTitle);
 	location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
 }
 </script>
@@ -865,7 +1050,6 @@ function getOpenJobsELKList(){
 	
 	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
 	
-	alert("search "+search);
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
     var dates = $('input:radio[name=dateFilter]:checked').val();
@@ -887,11 +1071,26 @@ function getOpenJobsELKList(){
 	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	} */
+	var url ="/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	if(openJobsRequirementTitle)
+		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
+	if(openJobsLocation)
+		url+="&openJobsLocation="+openJobsLocation;
+	if(openJobsExperience)
+		url+="&openJobsExperience="+openJobsExperience;
+	if(dates)	
+		url+="&dates="+dates;
+	if(country)
+		url+="&country="+country;
+	if(reqType)
+		url+="&reqType="+reqType;
+	if(orgLocationIds)
+		url+="&orgLocationIds="+orgLocationIds;
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 // 	location.href = "app/getOpenJobsELK/"+title+"/"+location+"/"+experience;
 	  $.ajax({ 
 	   	type: "GET",
-	   	url: "/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience+"&dates="+dates+"&country="+country+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds,
+	   	url: url,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -968,11 +1167,10 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 					location = requirements.country;
 				}
-				
 				result = result +'	<div class="jobResultsCta job_container">';
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
-				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
+				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsURL(\''+requirements.requirementId+'\',\''+requirements.jobTitle.toLowerCase().replace(/ /g ,"-").replace(/ & /g, '-and-').replace(/&/g, "-and-").replace(/'/g, "-or-").replace(/ /g, "-").replace(/\//g, "-or-")+'\');">'+requirements.jobTitle+'</h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				link = "/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
@@ -1158,18 +1356,30 @@ function openPopup(){
 </script>
 
 <script>
+/* if("${uuid}"!=null){
+	getOpenJobsRequirementSummary("${uuid}");
+} */
+
+function getOpenJobsURL(id,jobTitle){
+	alert(jobTitle+"-"+id);
+	//window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+	window.location.href = jobTitle+"-"+id;
+} 
+
 function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#loadMoreReq").css("display", "none");
 	$("#openJobsRequirementsSummary").show();
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
-	 
 	 $.ajax({
 		 type: "POST",
 		   	url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
+	    		
 	    	  var json = JSON.parse(data);
+	    	  alert("jobTitle "+json.jobTitle)
+	    	 
 		      var result = "";
 
 		      var title="";
@@ -1332,7 +1542,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</section>'; 
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
-				$("#openJobsRequirementsSummary").append(result);  
+				$("#openJobsRequirementsSummary").append(result);
 				
 	   	   	   }
 	   	   	}
@@ -1535,7 +1745,7 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>
 
 
 <script>
@@ -1719,7 +1929,7 @@ function getCities(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script> 
+</script>
 
 
 
@@ -1769,7 +1979,7 @@ function getCities(){
 $(".blogWrapRight h2").click(function(){
 	$(".resSlide").slideToggle(200);
 });
-</script>    
+</script>
 
 <!--   FreeTrial Pop   -->
 <script>
@@ -1896,13 +2106,13 @@ $(".LettSelec a").click(function(){
 	$(this).toggleClass("actL");
 });	  
 </script>
-<!-- Create Alert modal Popup --> 
+<!-- Create Alert modal Popup -->
 <div class="pop_mask"></div>
- <!-- Modal -->
-  <div class="modal modal_createalert" id="myModal" role="dialog">
-    <div id="createAlertPopUpDiv"></div>
-  </div>
-  <!-- Create Alert modal Popup Ends -->
+<!-- Modal -->
+<div class="modal modal_createalert" id="myModal" role="dialog">
+	<div id="createAlertPopUpDiv"></div>
+</div>
+<!-- Create Alert modal Popup Ends -->
 <script>
 //Create Alert Poppup
 function alertFunction() {
@@ -2438,7 +2648,7 @@ function getStatesjobalert(country,state){
         $('#cityjobalert').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>
 
 
 <script>
@@ -2633,7 +2843,8 @@ function preventTabkey(e){
 	 }
 }
 </script>
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
+<script type="text/javascript"
+	src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
 <script src="/resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />
