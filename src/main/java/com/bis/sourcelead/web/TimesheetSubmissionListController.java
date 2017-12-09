@@ -112,7 +112,7 @@ public class TimesheetSubmissionListController {
 	 * @throws Null Exception
 	 */
 	 //@RequestMapping(value = "/getTimesheetListByStatus", method = RequestMethod.POST)
-	 public @ResponseBody String getTimesheetListByStatus(@RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception{ 
+	/* public @ResponseBody String getTimesheetListByStatus(@RequestParam(value="status", required=false) String status,HttpServletRequest request) throws Exception{ 
 		    String resultJson = "";
 			request.setAttribute("status", status);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -122,7 +122,7 @@ public class TimesheetSubmissionListController {
 		   // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		   // DateFormat format = simpleDateFormat;
 		    
-		    List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
+		    //List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
 		    StringBuilder sb = new StringBuilder();	
 	     	sb.append(" <table id='example'  style='width:100%' >");
 			sb.append(" <thead>");
@@ -231,7 +231,7 @@ public class TimesheetSubmissionListController {
 					    	     }
 					     }
 					
-					    /*sb.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
+					    sb.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");
 					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(CommonUtil.getHoursDisplayFormat(totalHours)).append("/").append(CommonUtil.getHoursDisplayFormat(estimatedTotalHours)).append("</a></div></td>");
 					    sb.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    sb.append("<td>");
@@ -272,6 +272,6 @@ public class TimesheetSubmissionListController {
 			
 		    return resultJson;
 	 }
-	 
+*/	 
 
 }

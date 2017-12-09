@@ -30,6 +30,8 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String actualEndDate;
 	private int tdSpanLength;
 	
+	private String orgRelationUUID;
+	
 	private String dashboardInvoiceFrequency;
 	private String dashboardDateList;
 	
@@ -176,6 +178,12 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	}
 	public void setDashboardDateList(String dashboardDateList) {
 		this.dashboardDateList = dashboardDateList;
+	}
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
 	}
 	
 	
