@@ -79,7 +79,9 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	
+	if('${requirementUUID}' == null && '${requirementUUID}' == '' && '${requirementUUID}' == 'undefined'){
+	$("#noResultsDiv").css("display", "block");
+	}
 	setTimeout(function() {
 		$(".pageLoad").fadeOut();
 	}, 1000);
@@ -1005,7 +1007,15 @@ function getOpenJobsELKListJOBS(){
 var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
 	
 	openJobsRequirementTitle = search;
-	location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
+	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience){
+			location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
+	}else if(openJobsRequirementTitle != null){
+		location.href = "/jobs/"+openJobsRequirementTitle;
+	}else if(openJobsLocation != null){
+		location.href = "/jobs/"+openJobsLocation;
+	}else if(openJobsExperience != null){
+				location.href = "/jobs/"+openJobsExperience;
+	}
 }
 </script>
 
@@ -1505,7 +1515,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
 				$("#openJobsRequirementsSummary").append(result);
-				
+				if(requirementUUID != null){
+					alert("sadasd");
+				$("#noResultsDiv").css("display", "block");
+				}
 	   	   	   }
 	   	   	}
 		});  
