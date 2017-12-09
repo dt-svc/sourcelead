@@ -30,7 +30,23 @@
 	        </div> 
 			
 			<div class="timesheet_appr_table datatable_filter pt5">
-					<div id="timesheetApprList">   </div>
+					<table id='example'  style='width:100%' >
+						<thead>                                
+						    <tr>                               
+						        <th>Employee</th>              
+						        <th>Project</th>               
+						        <th>Client</th>                
+						        <th>Frequency</th>             
+						        <th>Date</th>                  
+						        <th>Total</th>                 
+						        <th>Stage</th>                 
+						        <th>Action</th>                
+						    </tr>                              
+						</thead>                               
+							<tbody id="timesheetApprList">
+								<jsp:include page="timesheetDashboardTableData.jsp" />
+						</tbody>                              
+				</table>
 		    </div>
 		</div>
 		
@@ -51,18 +67,15 @@ function filter(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
+		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status,
 		        success: function(data) {
-		     /*    $("#timesheetApprList").empty();  
-		   	    $("#timesheetApprList").append(data);
-		    	pagination(); */
-		        	  if(data != null && data != 'undefined' && data != ""){
-					    		 $("#timesheetApprList").removeAttr("style");
+		        	alert(data);
+		        	   if(data != null && data != 'undefined' && data != ""){
 			                	 $("#timesheetApprList").empty();
 			                     $("#timesheetApprList").append(data); 
-			                     pagination();
-		                 }else{
-		                	 $("#timesheetApprList").removeAttr("style");
+			                     //pagination();
+		                 }/* else{
+		                	 //$("#timesheetApprList").removeAttr("style");
 		  	    	         var result ="";
 				    	     result = result+"   <div class='row'>"; 
 							 result = result+"	<div class='col-lg-12'>"; 
@@ -76,13 +89,13 @@ function filter(){
 							 result = result+"  </div> "; 
 							$("#timesheetApprList").empty();
 						    $("#timesheetApprList").append(result);
-		                 }
+		                 }  */
 		                
 		        },
 		    });
 } 
 </script>
-<jsp:include page="TimesheetApprovalCommonScripts.jsp" />
+<%-- <jsp:include page="TimesheetApprovalCommonScripts.jsp" /> --%>
 
 <jsp:include page="../masterFooter.jsp" />
 

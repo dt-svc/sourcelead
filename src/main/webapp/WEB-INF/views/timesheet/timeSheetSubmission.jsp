@@ -7,20 +7,47 @@
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 
 
-
-
-<!-- <div class="pull-left timeAppUse">
+ <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
+ <div class="pull-left timeAppUse">
 	<span><img id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofile-img.png"> </span>
 	<p>
-		<input class="timeUsName" type="text" readonly="readonly" value="ramya">
-		<input type="text" readonly="readonly" value="ramyavishnu15@gmail.com">
+		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
 	</p>
 	<div class="clearfix"></div>
-</div> -->
+</div>
+
+<div id="timesheetSubmissionStatusDiv" class="timeNewSe pull-right clearfix">
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
+					<b class="proj_closed pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+					<i class="glyphicon glyphicon-comment rejectedHover"> 
+					<div class="app_error_mes" id="rejectedMessage">${timesheetSubmissionDTO.rejectedReason}</div> </i>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+					<b class="proj_active pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW'}">
+					<b class="proj_new pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
+					<b class="proj_draft pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
+					<b class="proj_process pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+					<c:if 	test="${timesheetSubmissionDTO.modifyButtonVisible}">
+					    <b class="proj_withdraw pull-right"  onClick='withdrawMyTimesheet();'>MODIFY</b>
+					</c:if>
+				</c:if>
+				
+</div>
+
+</c:if>
 
 
 
 
+<c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'user'}">
 <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
 					<b class="proj_closed">${timesheetSubmissionDTO.timesheetStatus}</b>
@@ -44,6 +71,7 @@
 				</c:if>
 				
 </div>
+</c:if>
 <div class="clearfix"></div>
 <div class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -147,8 +175,8 @@
 										          <td> 
 										           <div>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
  
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -173,8 +201,8 @@
 									              <td> 
 									               <div>
 									                  <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -200,8 +228,8 @@
 									                <div>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -226,8 +254,8 @@
 									               <td> 
 									                <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                  
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -252,8 +280,8 @@
 									              <td> 
 									                <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                  
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -278,8 +306,8 @@
 									              <td> 
 									                 <div>
 									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                    
 									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										                <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -304,8 +332,8 @@
 									               <td> 
 									                 <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>

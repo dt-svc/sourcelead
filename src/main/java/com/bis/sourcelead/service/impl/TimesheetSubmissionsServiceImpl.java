@@ -201,21 +201,25 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		
 	    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		 
-		Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "APPROVED");
-		timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeList.size()));
+	    
+	    Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "APPROVED");
+	    
+		timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeCount));
+
 		 
-		Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "REJECTED");
-		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
+		Integer rejectedindividualEmployeeCount = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "REJECTED");
+	    
+		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeCount));
 		
 		
-		Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(masterCandidateId,"SUBMITTED");
-		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
+		 Integer submittedForApprovalindividualCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "SUBMITTED");
+			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualCount));
+
+		 Integer draftindividualEmployeeCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "DRAFT");
+
+		Integer savedTimesheetSubmissionCount = draftindividualEmployeeCount;
 		
-		//Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"NEW");
 		
-		Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(masterCandidateId,"DRAFT");
-		
-		Integer savedTimesheetSubmissionCount = draftindividualEmployeeList.size();
 		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		
 		return timeSheetSubmissionCount;
@@ -242,21 +246,19 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			Long orgLocationId) throws Exception {
 		
 		    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		
-		 
-		    Collection<SubmissionApproverHierarchy> approvedindividualEmployeeList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
-			timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeList.size()));
-			 
-			Collection<SubmissionApproverHierarchy> rejectedindividualEmployeeList = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
-			timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeList.size()));
+		   
+			Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId,  "APPROVED");
+			timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeCount));
 			
-			Collection<SubmissionApproverHierarchy> submittedForApprovalindividualEmployeeList   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTED");
-			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeList.size()));
+			Integer rejectedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId, "REJECTED");
+			timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeCount));
 			
-			//Collection<SubmissionApproverHierarchy> newindividualEmployeeList   = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"NEW");
+			Integer submittedForApprovalindividualEmployeeCount   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId,"SUBMITTED");
+			timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualEmployeeCount));
 			
-			Collection<SubmissionApproverHierarchy> draftindividualEmployeeList   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"DRAFT");
-			Integer savedTimesheetSubmissionCount = draftindividualEmployeeList.size();
+			Integer draftindividualEmployeeCount   = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId,"DRAFT");
+
+			Integer savedTimesheetSubmissionCount = draftindividualEmployeeCount;
 			
 			timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 			

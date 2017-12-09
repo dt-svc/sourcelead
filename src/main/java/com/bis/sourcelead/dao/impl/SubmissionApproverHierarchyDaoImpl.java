@@ -890,6 +890,26 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus) {
+		
+        Session session = this.sessionFactory.getCurrentSession();
+		
+		//Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+		
+		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionApprovalStatus = :submissionStatus and sah.hierarchyId.projectClientsId.level = '1' GROUP BY sah.submissionId.id" ;
+		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
+		Integer count = 0;
+		if(tslist != null && !tslist.isEmpty()){
+			count = tslist.size();
+	}
+		return count;
+		
+		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<SubmissionApproverHierarchy> getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId, String submissionStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -904,6 +924,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		
 		return tslist;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		//Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+				
+		String query = "Select Count(*) from  SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionStatus = :submissionStatus  and sah.hierarchyId.projectClientsId.level = '1' GROUP BY sah.submissionId.id" ;
+		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
+		Integer count = 0;
+		if(tslist != null && !tslist.isEmpty()){
+			count = tslist.size();
+	}
+		return count;
 	}
 
 
@@ -936,6 +973,42 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		return tslist;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
+				+ " ( "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  ("
+				+ "    sah.hierarchyId.approverUserId.id = :userId and "
+				+ "      ("
+				+ "        ( sah.hierarchyId.level = '2' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
+				+ "        OR (sah.hierarchyId.level = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "     ) "
+				+ "   ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id ) and (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0'))) "
+				+ "   ) "
+				
+				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)" ;
+		
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
+		Integer count = 0;
+		
+		if(tslist != null && !tslist.isEmpty()){
+			count = tslist.size();
+	}
+		return count;
+	}
+	
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
