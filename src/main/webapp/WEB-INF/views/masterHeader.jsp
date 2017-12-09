@@ -696,6 +696,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
+						  
+						  	<li><a href="<c:url value="/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  
 	              </ul>
 	            </div>
 	          </li>

@@ -35,6 +35,8 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private int pageSize;
 	private int pageCount;
 	
+	private String dashboardTimeStatus;
+	
 	public String getWeekFrequency() {
 		return weekFrequency;
 	}
@@ -167,6 +169,13 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	public void setPageCount(int pageCount) {
 		this.pageCount = pageCount;
 	}
+	public String getDashboardTimeStatus() {
+		return dashboardTimeStatus;
+	}
+	public void setDashboardTimeStatus(String dashboardTimeStatus) {
+		this.dashboardTimeStatus = dashboardTimeStatus;
+	}
+	
 	
 	
 }
