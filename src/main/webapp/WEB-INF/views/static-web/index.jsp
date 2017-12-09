@@ -63,7 +63,6 @@
 <script type="text/javascript">
 function redirectPageStatic(){
 	var title = document.getElementById("openJobsRequirementTitleId").value;
-	alert("title"+title)
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("dropDownCountId").value;
 	window.location.href = sourceleadUrl+"app/openRequirementsRedirect?&title="+title+"&location="+location+"&experience="+experience;
