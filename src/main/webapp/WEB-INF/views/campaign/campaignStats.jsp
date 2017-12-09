@@ -22,8 +22,9 @@
           <div id="campaignStatsDev" class="datatable_filter"></div>
         </div>
       </div>
+      <div id="popUp"></div>   
   </section>
-          
+       
 <script type="text/javascript">
 function getCampaignStats(){
 		var searchValue = $("#campaignStatsTableSearch").val();
@@ -53,7 +54,7 @@ function prepareCampaignStatsList(url){
 	    result = result +' <th>Unique Opens</th>';
 	    result = result +' <th>Unique Clicks</th>';
 	    result = result +' <th>Unsubscribes</th>';
-	    result = result +' <th>Actions</th>';
+	    result = result +' <th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -145,8 +146,7 @@ function campaignStatsPagination(url){
 	    	           result = result +'    <i class="fa fa-ellipsis-h cursorPointer"></i>';
 	    	           result = result +'    <div class="action-inner">';
 	    	           result = result +'    <ul>';
-	    	           result = result +'          <li><div title="Edit"><i class="fa fa-pie-chart cursorPointer" onClick="getStatsGraph();"></i></div></li>';       
-	    	           result = result +'          <li><div title="Delete"><i class="fa fa-trash-o text-danger cursorPointer"></i></div></li>';  
+	    	           result = result +'          <li><div title="Delete"><i class="fa fa-trash-o text-danger cursorPointer" onclick="deleteCampaignStas(\''+report.categoryName+'\');"></i></div></li>';  
 	    	           result = result +'    </ul>';
 	    	           result = result +'    </div>';
 	    	           result = result +'    </div>';                                                                                                              
@@ -176,11 +176,45 @@ function campaignStatsPagination(url){
 }
 </script>
 
-<script>
-function getStatsGraph(){
-	alert("Hai");
-}
-</script>
-
+ <script>
+ function deleteCampaignStas(categoryName){
+	 var result = "";
+		result = result +"	<div class='project_inn_mask'></div>"; 
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Are you sure you want to delete this campaign?</p>";
+		 /* result = result +"		<textarea  id='deleteStats' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";  */
+		result = result + ' <div id="deleteStatsDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteStats(\''+categoryName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+ }
+ </script>
+ 
+ <script>
+ function deleteStats(categoryName){
+			$("#deleteStatsDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+				 $.ajax({
+					   	type: "GET",
+					    url: sourceleadUrl+"/deleteStats?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
+			   		    success: function(data) {
+			   		    	if(data == true){
+			   		    		$("#popUp").empty();
+				   			 	$(".project_inn_mask").fadeOut(200);
+				   			 	location.replace(sourceleadUrl+"/campaignStats");	
+			   		    	}
+			   		    }
+				     });
+		
+ }
+ </script>
+ 
+ <script>
+ function cancelTermination(){
+		$("#popUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+	}
+ </script>
   
   <jsp:include page="../masterFooter.jsp" />

@@ -273,7 +273,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
 //				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 //		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
-		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
+		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
 		
 //			List<InvoiceData> invoiceDetailsList = null;
 //			ResponseList<InvoiceData> response = new ResponseList<>();
@@ -337,7 +337,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignStats campaignStats = null;
-		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName").setString("campaignName", campaignName).setCacheable(true).list();
+		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName and cmpStats.status = 1").setString("campaignName", campaignName).setCacheable(true).list();
 		if (statsList != null && statsList.size() > 0) {
 			campaignStats = statsList.get(0);
 		}
