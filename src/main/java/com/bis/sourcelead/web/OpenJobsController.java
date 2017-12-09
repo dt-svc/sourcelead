@@ -88,8 +88,10 @@ public class OpenJobsController {
 				: title;
 		ModelAndView modelAndView = new ModelAndView();
 		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementIdAndJobTitle(id, title);
+ 		if(requirementDeatilsSummary != null && requirementDeatilsSummary.getRequirementUUID() != null){
 		String uuid = requirementDeatilsSummary.getRequirementUUID();
 		modelAndView.addObject("requirementUUID", uuid);
+	}
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
