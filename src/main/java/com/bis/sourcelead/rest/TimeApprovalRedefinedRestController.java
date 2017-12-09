@@ -583,12 +583,40 @@ public class TimeApprovalRedefinedRestController {
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
        	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), timesheetApprovalDTO.getDashboardTimeStatus(), userRole);
+       	    int start = timesheetApprovalDTO.getStart();
+			int length = 0;
+			if(timesheetApprovalDTO.getPageNo()<1) {
+				timesheetApprovalDTO.setPageNo(1);
+			}
+			if(timesheetApprovalDTO.getPageSize()<1) {
+				length = 10;
+				timesheetApprovalDTO.setPageSize(10);
+			}else {
+				length = timesheetApprovalDTO.getPageSize();
+			}
+			
+		    ResponseList<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), timesheetApprovalDTO.getDashboardTimeStatus(), userRole,timesheetApprovalDTO.getSearchValue(),start,length);
 		    int tdSpanLength = 8;
-		    if(list != null && !list.isEmpty())
+		    if(list != null && !list.getData().isEmpty())
 		    {
+		    	
+		    	timesheetApprovalDTO.setTotalRows(list.getRecordsTotal());
+				
+				int totalRows = list.getRecordsTotal();
+				if(totalRows > 0) {
+					 int remainder = totalRows % length;
+					 int pageCount = totalRows / length;
+					 if(remainder > 0) {
+						 timesheetApprovalDTO.setPageCount(pageCount+1);
+					 }
+					 else {
+						 timesheetApprovalDTO.setPageCount(pageCount);
+					 }
+				}
+		    	
+		    	
 		    	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
-		    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list) {
+		    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list.getData()) {
 		    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
 		    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
 		    	 if(actualStartDate != null && actualEndDate != null){
@@ -651,6 +679,9 @@ public class TimeApprovalRedefinedRestController {
     							timeSub.setClientName(projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getOrgLocationName());
     						}
     					}
+    					
+    					timeSub.setOrgRelationUUID(projectMember.getProjectClientsId().getOrgRelationId().getUUID());
+    					
 			     }else{
 			    	 timeSub.setClientName("--");
 				}

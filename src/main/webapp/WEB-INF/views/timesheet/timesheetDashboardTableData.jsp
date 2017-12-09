@@ -2,10 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-				<c:forEach var="submission" items="${timesheetApprovalDTO.timesheetSubmission}">
+				<c:forEach var="submission" items="${timesheetApprovalDTO.timesheetSubmission}" varStatus="approvalStatus">
 									<tr id="row${submission.dashboardDateList}" role="row" class="odd">
 										<td class="sorting_1">
 											<div class="time_appr_user">
+												<c:if test="${approvalStatus.index == 0}">
+													<input type="hidden" id="totalRows" name="totalRows" value="${timesheetApprovalDTO.totalRows}">
+					       							<input type="hidden" id="pageCount" name="pageCount" value="${timesheetApprovalDTO.pageCount}">
+				       							</c:if>
 												<img id="userImage" onerror="predefineProfileImage(this);"	src="${submission.profileImageFileUrl}" alt="Profile Image" class="img-circle img-responsive">
 													<span><b title="${submission.employeeName}">${submission.employeeName}</b>
 														<b title="${submission.employeeEmail}">${submission.employeeEmail}</b>
@@ -18,7 +22,7 @@
 											</div>
 										</td>
 										<td>
-											<div>${submission.clientName}</div>
+											<div><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>"> ${submission.clientName} </a></div>
 										</td>
 										<td>
 											<div>${submission.dashboardInvoiceFrequency}</div>
