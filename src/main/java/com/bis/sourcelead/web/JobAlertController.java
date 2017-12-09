@@ -79,7 +79,7 @@ public class JobAlertController {
 	
 	
 	
-	@RequestMapping(value = "/viewAllJobAlerts")
+	@RequestMapping(value = "/ws/viewAllJobAlerts")
  	public ModelAndView viewAllJobAlerts(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		    

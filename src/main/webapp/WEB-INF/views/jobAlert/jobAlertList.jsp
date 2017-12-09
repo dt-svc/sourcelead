@@ -76,7 +76,7 @@ function createAlert(){
 	
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		url: sourceleadUrl+"/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		success : function(data) {
 			if(data != null && data != ''){
 				
@@ -333,7 +333,7 @@ function saveAlert(){
 					data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+					url : sourceleadUrl+"/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
 							$("#jobAlert2").removeAttr("style");

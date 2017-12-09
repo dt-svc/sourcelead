@@ -781,7 +781,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/ws/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -822,7 +822,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("userName",user.getEmail());
 		 globalVarsMap.put("updatedDate",user.getUpdatedDate().toString());
 		 StringBuilder sbLink = new StringBuilder();
-		 globalVarsMap.put("forgotPasswordLink",sbLink.append("<a href=").append(sourceleadUrl).append("/forgotPassword").append(" target='_blank' style='outline:none; border:none;'>Forgot Password</a>").toString());
+		 globalVarsMap.put("forgotPasswordLink",sbLink.append("<a href=").append(sourceleadUrl).append("/ws/forgotPassword").append(" target='_blank' style='outline:none; border:none;'>Forgot Password</a>").toString());
 		 StringBuilder linkBuilder = new StringBuilder();
 		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='support@sourcelead.com' target='_blank' style='outline:none; border:none;'>support@sourcelead.com</a>").toString());
 		 StringBuilder sourceLink = new StringBuilder();

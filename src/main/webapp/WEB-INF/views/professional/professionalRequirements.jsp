@@ -1865,7 +1865,7 @@ function createAlert(requirementUUID){
 	
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		url: sourceleadUrl+"/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		success : function(data) {
 			if(data != null && data != ''){
 				
@@ -1873,7 +1873,7 @@ function createAlert(requirementUUID){
 					
 					 $.ajax({
 					        type : "GET",
-					        url: sourceleadUrl+"/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+					        url: sourceleadUrl+"/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
 					         success :function(data) {
 					        	 
 					        	 var json = JSON.parse(data);
@@ -2265,7 +2265,7 @@ var validationSettings = {
         					 data: formData,
         	  		         processData: false,
         	  		         contentType:false, 
-        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : sourceleadUrl+"/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
 	        					    $("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });

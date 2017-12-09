@@ -125,7 +125,7 @@ public class HomeController {
 		}
 	}
 
-	@RequestMapping(value = "/forgotPassword")
+	@RequestMapping(value = "/app/ws/forgotPassword")
 	public ModelAndView forgotPassword() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("forgotPassword");
@@ -133,7 +133,7 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = "/resetPassword")
+	@RequestMapping(value = "/app/ws/resetPassword")
 	public ModelAndView resetPassword(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("resetPassword");

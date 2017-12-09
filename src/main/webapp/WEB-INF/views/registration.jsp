@@ -699,7 +699,7 @@ function validateEmail(type){
 			$("#register_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -767,7 +767,7 @@ function validateRecruiterEmail(type){
 			$("#recruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -834,7 +834,7 @@ function validatepopEmail(type){
 			$("#popregister_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -873,7 +873,7 @@ function validatepopRecruiterEmail(type){
 			$("#poprecruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url:"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url:"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -1017,7 +1017,7 @@ var validationSettings = {
          	 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: "/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
+                	  url: "/ws/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
@@ -1084,7 +1084,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	  url: "/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
+                	  url: "/ws/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');
@@ -1143,7 +1143,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	url: "/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	url: "/ws/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');

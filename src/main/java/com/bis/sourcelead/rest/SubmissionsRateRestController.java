@@ -187,7 +187,7 @@ public class SubmissionsRateRestController {
 
 //	}
 	
-	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/storeNegotiation", method = RequestMethod.POST)
 	public @ResponseBody String storeNegotiation(RequirementRateSubmissionNegotiationDTO reqRateSubNegotiationDTO,@RequestParam(value = "submissionId", required = false) String submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
 	 
 		/*String jsonc = "{" + json + "}";
@@ -275,7 +275,7 @@ public class SubmissionsRateRestController {
 	}
 	
 
-	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
 															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,

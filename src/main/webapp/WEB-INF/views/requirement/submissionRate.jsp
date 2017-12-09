@@ -291,7 +291,7 @@ width: auto;
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
@@ -330,7 +330,7 @@ function tagItBykeyForEmails(e){
 			var candidateId = '${candidateId}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/ws/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
 						success : function(data) {
 							if("success"){
 								var json = JSON.parse(data);

@@ -173,7 +173,7 @@
                  css: "resources/css/",
                  js: "resources/js/",
                  authpage : sourceleadUrl+"/resources/oauth.html",
-                 apiurl:sourceleadUrl+"/getAPIService"
+                 apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });
         /*  var shareObj = {
@@ -210,7 +210,7 @@
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCsv?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/ws/storeCsv?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 								
 						},

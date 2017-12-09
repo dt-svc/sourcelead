@@ -134,7 +134,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 			 }
 		 
 			 StringBuilder feedbackBuilder = new StringBuilder();
-			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
+			 globalVarsMap.put("feedBackLink", feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/ws/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewer.getId()).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
 			
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			

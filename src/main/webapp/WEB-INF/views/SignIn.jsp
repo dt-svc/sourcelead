@@ -296,7 +296,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: sourceleadUrl+"/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -311,7 +311,7 @@ function applyInputSlide() {
     			        		  location.replace(sourceleadUrl+"/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+                    			  location.replace(sourceleadUrl+"/ws/resetPassword"); 
     			        	}
 			        },  
                 });
