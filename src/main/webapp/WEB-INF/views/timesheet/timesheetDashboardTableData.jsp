@@ -39,26 +39,35 @@
 											</div>
 										</td>
 										<td>
-											<div class="sm" id="status${submission.projectMemberId}">${submission.submissionStatus}</div>
+										<c:if test="${!empty submission.submissionStatus && submission.submissionStatus == 'DRAFT'}">
+										
+										<div class="sm" id="status${submission.projectMemberId}">NEW</div>
+										</c:if>
+										
+										<c:if test="${!empty submission.submissionStatus && submission.submissionStatus != 'DRAFT'}">
+										
+										<div class="sm" id="status${submission.projectMemberId}">${submission.submissionStatus}</div>
+										</c:if>
+										
 										</td>
 										<td>
 											<div class="sm text-center">
-											<c:if test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'submitted for approval'}">
+											<c:if test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'SUBMITTED FOR APPROVAL'}">
 											<i class="fa fa-check" title="Approve" alt="Approve" onclick=""></i>|<i
 											class="fa fa-times" title="Reject" alt="Rejected" onclick=";"></i>
 											</c:if>
 												<%-- <h3 title = "${submission.submissionApprovalStatus}">${submission.submissionApprovalStatus}</h3> --%>
-												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'approved'}">
-												<h3 title = "APPROVED">APPROVED</h3>
+												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'APPROVED'}">
+												<h3 title = "${submission.submissionApprovalStatus}">${submission.submissionApprovalStatus}</h3>
 												<b class="Rname" title="${submission.actionPerformedBy}">By : ${submission.actionPerformedBy}</b>
 												</c:if>
-												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'rejected'}">
-												<h3 class ="reje_color" title = "REJECTED">REJECTED</h3>
+												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'REJECTED'}">
+												<h3 class ="reje_color" title = "${submission.submissionApprovalStatus}">${submission.submissionApprovalStatus}</h3>
 												<i class="glyphicon glyphicon-comment" id=""	onclick="rejectedMessage();">
 												</i>
 												<b class="Rname" title="${submission.actionPerformedBy}">By : ${submission.actionPerformedBy}</b>
 												</c:if>
-												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'new'}">
+												<c:if  test="${!empty submission.submissionApprovalStatus && submission.submissionApprovalStatus == 'NEW'}">
 												<b class="Rname" title="">---</b>
 												</c:if>
 												

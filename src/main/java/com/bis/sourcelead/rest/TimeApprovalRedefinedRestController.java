@@ -716,8 +716,8 @@ public class TimeApprovalRedefinedRestController {
 			         }
 		    	    timeSub.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
 		    	    timeSub.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours));
-		    	    timeSub.setSubmissionStatus(sah.getSubmissionStatus().getValue());
-		    	    timeSub.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus().getValue());
+		    	    timeSub.setSubmissionStatus(sah.getSubmissionStatus().getValue().toUpperCase());
+		    	    timeSub.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus().getValue().toUpperCase());
 				    if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 				    	
 		           	timeSub.setTdSpanLength(tdSpanLength);
