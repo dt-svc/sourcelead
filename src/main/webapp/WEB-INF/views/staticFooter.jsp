@@ -46,10 +46,10 @@
 			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
           <h4>Go social</h4>
             <div class="socila">
-            	<a href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><img src="resources/css/static-web/images/in.png" alt=""/></a>
-                <a href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><img src="resources/css/static-web/images/fb.png" alt=""/></a>
-                <a href="https://twitter.com/SourceleadInc" target="_blank"><img src="resources/css/static-web/images/tw.png" alt=""/></a>
-                <a href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><img src="resources/css/static-web/images/gp.png" alt=""/></a>
+            	<a href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><img src="/resources/css/static-web/images/in.png" alt=""/></a>
+                <a href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><img src="/resources/css/static-web/images/fb.png" alt=""/></a>
+                <a href="https://twitter.com/SourceleadInc" target="_blank"><img src="/resources/css/static-web/images/tw.png" alt=""/></a>
+                <a href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><img src="/resources/css/static-web/images/gp.png" alt=""/></a>
             </div>
         </div>                        
     <div class="clear"></div>
@@ -116,10 +116,10 @@
   
 <!--   Free trial pop   -->
  
-<div class="clPop"><img src="resources/css/static-web/images/menu-close.png" alt=""/></div> 
+<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="requestDemo">
 	<div class="Rdemo">
-    	<img src="resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
     	<h3>Request a Demo</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -130,7 +130,7 @@ Please mail us at </p>
 <section class="freeTrialPop" id="freeTrial">
 
 	<div class="Rdemo">
-    	<img src="resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
     	<h3>Free Trial</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -142,15 +142,15 @@ Please mail us at </p>
  <!--   Free trial pop   -->     
 
 	  <section class="pageLoad"></section> 
-<div class="backtotop"><img src="resources/css/static-web/images/backtotop.png" alt="" /></div> 
+<div class="backtotop"><img src="/resources/css/static-web/images/backtotop.png" alt="" /></div> 
       	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script type="text/javascript" src="resources/js/modernizr.custom.86080.js"></script>
-	<script src="resources/js/static-web/jquery-1.12.4.min.js"></script>
-    <script src="resources/js/static-web/bootstrap.min.js"></script>
-    <script src="resources/js/static-web/jquery.sldr.js"></script>
-    <script src="resources/js/static-web/masonry.pkgd.min.js"></script>
-    <script src="resources/js/static-web/validation.js"></script>
+    <script type="text/javascript" src="/resources/js/modernizr.custom.86080.js"></script>
+	<script src="/resources/js/static-web/jquery-1.12.4.min.js"></script>
+    <script src="/resources/js/static-web/bootstrap.min.js"></script>
+    <script src="/resources/js/static-web/jquery.sldr.js"></script>
+    <script src="/resources/js/static-web/masonry.pkgd.min.js"></script>
+    <script src="/resources/js/static-web/validation.js"></script>
 	  <script>
 	  $(window).load(function() {
 			setTimeout(function() {

@@ -8,10 +8,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 <style>
@@ -150,7 +150,7 @@ function getCustomReports(){
 		document.getElementById("reportsEndDate").style.display="block";
 		$("#reportsEndDate").empty().append("End Date is Required") ; 
 	}else{
-		$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100; background-color:rgba(255,255,255,0.8); background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%;top:0px; left:0px; z-index:100; background-color:rgba(255,255,255,0.8); background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate,     
@@ -298,7 +298,7 @@ function usersList(){
 	$("#reportsEndDate").empty();
 	document.getElementById("reportsStartDate").style.display="none";
 	document.getElementById("reportsEndDate").style.display="none";
-	$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod,    

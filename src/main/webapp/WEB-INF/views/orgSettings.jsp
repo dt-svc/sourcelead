@@ -556,7 +556,7 @@ var validationSettings = {
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -688,7 +688,7 @@ function loadSignature(){
 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -1004,7 +1004,7 @@ var validationSettings = {
   			var con = JSON.stringify(frm);
   			con = con.replace(/[{}]/g, ""); 
   		    var jsonData = encodeURIComponent(con);
-  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		
   		     $.ajax({
   				type : "POST",
@@ -1040,7 +1040,7 @@ var validationSettings = {
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
         		    var jsonData = encodeURIComponent(con);
-        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           		
         		     $.ajax({
         				type : "POST",
@@ -1114,7 +1114,7 @@ function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
 			type : "POST",
@@ -1146,7 +1146,7 @@ function loadRegisteredOrgs(){
      
      
      var sourceleadUrl = '${sourceleadUrl}';
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      
      $.ajax({ 
 	    	type: "POST",
@@ -1233,7 +1233,7 @@ function getOrgLocationDetails(orgLocationId){
     document.getElementById("orgsList").style.display=""; 
     
     var sourceleadUrl = '${sourceleadUrl}';
-    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
      $.ajax({ 
     	type: "POST",
@@ -1456,7 +1456,7 @@ function getOrgLocationDetails(orgLocationId){
 			});
 			 
 	 	 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
@@ -1479,7 +1479,7 @@ function getOrgLocationDetails(orgLocationId){
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId,  
@@ -2218,7 +2218,7 @@ function validatePrimaryUserEmail(){
          var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
          
-         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
@@ -2275,7 +2275,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',

@@ -98,6 +98,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "APPRVER_HIERARCHY")
 	private String approverHierarchy;
 	
+	@Column(name = "URL")
+	private String url;
 	
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
@@ -1730,6 +1732,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
 	}
 
 	
