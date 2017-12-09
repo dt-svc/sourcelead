@@ -11,8 +11,8 @@
 
 <script>
 $(document).ready(function() {
- 	var campaignId = '${campaignId}';
-	campaignStatsGraph(campaignId);
+ 	var campaignName = '${campaignName}';
+	campaignStatsGraph(campaignName);
 
 });
 
@@ -87,10 +87,10 @@ $(document).ready(function() {
   
   
    <script>
-  function campaignStatsGraph(campaignId){
+  function campaignStatsGraph(campaignName){
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignId="+campaignId,       
+       url: sourceleadUrl+"/getCampaignStatsByCampaignId?"+tokenParamName+"="+tokenValue+"&campaignName="+campaignName,       
        success :function(json) {
     	  if(json !=null){
     		  $("#delivered").html(json.delivered)

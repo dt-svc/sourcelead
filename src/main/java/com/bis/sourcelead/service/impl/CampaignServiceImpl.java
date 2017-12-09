@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CampaignUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -40,6 +41,9 @@ public class CampaignServiceImpl implements CampaignService{
 	
 	@Autowired
 	CampaignDao campaignDao;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
@@ -350,15 +354,113 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
+	public ResponseList<CampaignStatsDTO> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
 	{
-		return campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
+		ResponseList<CampaignStatsDTO> campaignStatsResList = new ResponseList<>();
+		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
+		
+		ResponseList<CampaignStats>  campStats = campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
+		
+		if(campStats.getData() !=null && campStats.getData().size() >0) {
+			for (CampaignStats campaignStats : campStats.getData()) {
+				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
+				campaignStatsListDTO.setId(campaignStats.getId());
+				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
+				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
+				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
+				campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
+				campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
+				campaignStatsListDTO.setOpens(campaignStats.getOpens());
+				campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+				campaignStatsListDTO.setBlocks(campaignStats.getBlocks());
+				campaignStatsListDTO.setBounceDrops(campaignStats.getBounceDrops());
+				campaignStatsListDTO.setBounces(campaignStats.getBounces());
+				campaignStatsListDTO.setClicks(campaignStats.getClicks());
+				campaignStatsListDTO.setDeferred(campaignStats.getDeferred());
+				campaignStatsListDTO.setInvalidEmails(campaignStats.getInvalidEmails());
+				campaignStatsListDTO.setProcessed(campaignStats.getProcessed());
+				campaignStatsListDTO.setRequest(campaignStats.getRequest());
+				campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
+				campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
+				campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
+				campaignStatsList.add(campaignStatsListDTO);
+			}
+			campaignStatsResList.setData(campaignStatsList);
+			campaignStatsResList.setRecordsTotal(campStats.getRecordsTotal());
+			campaignStatsResList.setRecordsFiltered(campStats.getRecordsFiltered());
+		}else {
+			List<CampaignStatsDTO> statsList = getDailyCampaignStats();
+			campaignStatsResList.setData(statsList);
+			campaignStatsResList.setRecordsTotal(statsList.size());
+			campaignStatsResList.setRecordsFiltered(statsList.size());
+		}
+		
+		return campaignStatsResList;
 	}
 	@Override
-	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
+	public CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception
 	{
-		return campaignDao.getCampaignStatsByCampaignId(campaignId);
+		return campaignDao.getCampaignStatsByCampaignId(campaignName);
 
+	}
+	
+	
+	public List<CampaignStatsDTO> getDailyCampaignStats() throws Exception
+	{
+		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
+		List<Campaign> campaignList = campaignDao.getAllCampaigns();
+		for(Campaign campaign : campaignList) {
+			OrgLocations orgLocation = orgLocationService.getOrgLocations(campaign.getOrgLocation().getId());
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
+			if(StringUtils.isNotBlank(response)) {
+				JSONArray jsonArr = new JSONArray(response);
+				CampaignStatsDTO campaignStatsDto = new CampaignStatsDTO();
+					  for (int i = 0; i < jsonArr.length(); i++) {
+							JSONObject jsonObj = jsonArr.getJSONObject(i);
+							JSONArray statJsonArr = jsonObj.getJSONArray("stats");
+							for (int j = 0; j < statJsonArr.length(); j++) {
+								JSONObject statsObj = statJsonArr.getJSONObject(j);
+								JSONObject metricsObj = statsObj.getJSONObject("metrics");
+								campaignStatsDto.setCategoryName(statsObj.getString("name"));
+								campaignStatsDto.setCampaignId(campaign.getCampaignId());
+								campaignStatsDto.setBlocks(metricsObj.getString("blocks"));
+								campaignStatsDto.setBounceDrops(metricsObj.getString("bounce_drops"));
+								campaignStatsDto.setBounces(metricsObj.getString("bounces"));
+								campaignStatsDto.setClicks(metricsObj.getString("clicks"));
+								campaignStatsDto.setDeferred(metricsObj.getString("deferred"));
+								campaignStatsDto.setDelivered(metricsObj.getString("delivered"));
+								campaignStatsDto.setInvalidEmails(metricsObj.getString("invalid_emails"));
+								campaignStatsDto.setOpens(metricsObj.getString("opens"));
+								campaignStatsDto.setProcessed(metricsObj.getString("processed"));
+								campaignStatsDto.setRequest(metricsObj.getString("requests"));
+								campaignStatsDto.setSpamReportDrops(metricsObj.getString("spam_report_drops"));
+								campaignStatsDto.setSpamReports(metricsObj.getString("spam_reports"));
+								campaignStatsDto.setUniqueClicks(metricsObj.getString("unique_clicks"));
+								campaignStatsDto.setUniqueOpens(metricsObj.getString("unique_opens"));
+								campaignStatsDto.setUnsubscribeDrops(metricsObj.getString("unsubscribe_drops"));
+								campaignStatsDto.setUnsubscribes(metricsObj.getString("unsubscribes"));
+							}
+							
+					}
+//				}
+					  campaignStatsList.add(campaignStatsDto);
+				
+		}
+		}
+		return campaignStatsList;
+		
+	}
+
+	@Override
+	public boolean validateCampaignSubject(String subjectName, Long orgLocationId,int campaignType) throws Exception
+	{
+		boolean isValid = false;
+		Campaign campaign = campaignDao.validateCampaignSubject(subjectName,orgLocationId,campaignType);
+		if(campaign != null) {
+			isValid = true;
+		}
+		return isValid;
 	}
 
 }

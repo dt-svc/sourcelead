@@ -91,7 +91,7 @@ function campaignStatsPagination(url){
 	    	  	"data": "categoryName",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		  var result = "";
-	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignId='+report.campaignId+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
+	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignName='+report.categoryName+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
 		             return result;
 	    	  	}
 	      },{
@@ -145,8 +145,8 @@ function campaignStatsPagination(url){
 	    	           result = result +'    <i class="fa fa-ellipsis-h cursorPointer"></i>';
 	    	           result = result +'    <div class="action-inner">';
 	    	           result = result +'    <ul>';
-	    	           result = result +'          <li><div title="Edit"><i class="fa fa-pie-chart cursorPointer" onclick="campaignRecipient(this,'+report.id+');"></i></div></li>';       
-	    	           result = result +'          <li><div title="Delete"><i onclick= "deleteCampaignList(\''+report.id+'\');" class="fa fa-trash-o text-danger cursorPointer"></i></div></li>';  
+	    	           result = result +'          <li><div title="Edit"><i class="fa fa-pie-chart cursorPointer" onClick="getStatsGraph();"></i></div></li>';       
+	    	           result = result +'          <li><div title="Delete"><i class="fa fa-trash-o text-danger cursorPointer"></i></div></li>';  
 	    	           result = result +'    </ul>';
 	    	           result = result +'    </div>';
 	    	           result = result +'    </div>';                                                                                                              
@@ -173,6 +173,12 @@ function campaignStatsPagination(url){
     		   getCampaignStats();
     	   }
     	});
+}
+</script>
+
+<script>
+function getStatsGraph(){
+	alert("Hai");
 }
 </script>
 

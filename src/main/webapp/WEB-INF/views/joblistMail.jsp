@@ -121,8 +121,8 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
-          <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" data-placeholder="&nbsp;Enter Subject" class="form-control input-sm">
+          <div class="col-md-10"  id="subjectDiv">
+            <input type="text"  data-validation="required" field-name="Subject" id="campaignSubject" name="subject" data-placeholder="&nbsp;Enter Subject" class="form-control input-sm" onblur="checkUniqueSubject();">
           </div>
         </div>
         
@@ -201,7 +201,7 @@ display: none;
         <!-- Text Area Ends --> 
         
         <!-- Attachment button-->
-        <div class="col-md-12 clearfix mb10">
+      <!--   <div class="col-md-12 clearfix mb10">
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
@@ -210,14 +210,14 @@ display: none;
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- Attachment button --> 
         
         <!-- Attachment button-->
         <div class="col-md-12 clearfix mt">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
-              <button type="button" class="btn btn-sm btn-success" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
+              <button type="button" class="btn btn-sm btn-success" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
               <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
@@ -1443,5 +1443,24 @@ function getSenders(){
 }
 </script>
 
+<script>
+function checkUniqueSubject(){
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#campaignSubject").val();
+	if(name != null && name != '' && name != 'undefined'){
+			$.get(sourceleadUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=1", function(data) {
+	          	if(data == true){
+	          		$('#subjectDiv').find('p.jquery_form_error_message').remove();
+	          		$("#campaignSend").removeAttr("disabled");
+			        $("#campaignSend").attr("disabled", "disabled");
+					$("input#campaignSubject").after( "<p class='jquery_form_error_message'>" + name + " is already existed</span>");
+	                 }else{
+	                	$("#campaignSend").removeAttr("disabled");
+	                	$('#subjectDiv').find('p.jquery_form_error_message').remove();
+	                 }
+	            });
+		}
+}
+</script>
 
 <jsp:include page="masterFooter.jsp" />

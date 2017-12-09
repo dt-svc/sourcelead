@@ -2102,11 +2102,11 @@ public class EMailJobScheduler {
 	
 	/**
 	 * cron runs every day at 6:30 AM to get every day stats
-	 * @throws Exception
+	 * @throws Exception  
 	 */
-	@Scheduled(cron = "	0 30 18 1/1 * ?")
+	@Scheduled(cron = "0 30 18 1/1 * ?")
 	@Async
-	public void getDailCampaignStats() throws Exception
+	public void getDailyCampaignStats() throws Exception
 	{
 
 		List<Campaign> campaignList = campaignService.getAllCampaigns();
@@ -2116,13 +2116,12 @@ public class EMailJobScheduler {
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
 			logger.info("Camapaign stats start date is : "+currentDate);
 			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
-			System.out.println("response :: "+response);
 			if(StringUtils.isNotBlank(response)) {
 				CampaignStats campaignStats  = null;
 				JSONArray jsonArr = new JSONArray(response);
 //				String campaignName = "";
 				Date date = campaign.getCreatedDate();
-				campaignStats = campaignService.getCampaignStatsByCampaignId(campaign.getCampaignId());
+				campaignStats = campaignService.getCampaignStatsByCampaignId(campaign.getCampaignCategory());
 				if(campaignStats !=null) {
 					for (int i = 0; i < jsonArr.length(); i++) {
 						JSONObject jsonObj = jsonArr.getJSONObject(i);

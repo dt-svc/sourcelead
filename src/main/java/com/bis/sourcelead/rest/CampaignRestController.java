@@ -202,7 +202,6 @@ public class CampaignRestController {
 		if (cpnDtoList.getData() != null) {
 			campaignList = cpnDtoList.getData();
 		}
-		
 		return campaignList;
 	}
 	
@@ -273,39 +272,9 @@ public class CampaignRestController {
 	@RequestMapping(value = "/getCampaignStats")
 	public ResponseList<CampaignStatsDTO> getCampaignStats(CampaignStatsDTO campaignStatsDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
 	{
-		ResponseList<CampaignStatsDTO> campaignStatsResList = new ResponseList<>();
+		ResponseList<CampaignStatsDTO> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
+		return campStats;
 		
-		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
-		// SourceLeadSessionManager.getSessionAttribute(request,
-		// "orgLocations");
-		ResponseList<CampaignStats> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
-		for (CampaignStats campaignStats : campStats.getData()) {
-			CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
-			campaignStatsListDTO.setId(campaignStats.getId());
-			campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
-			campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
-			campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
-			campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
-			campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
-			campaignStatsListDTO.setOpens(campaignStats.getOpens());
-			campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
-			campaignStatsListDTO.setBlocks(campaignStats.getBlocks());
-			campaignStatsListDTO.setBounceDrops(campaignStats.getBounceDrops());
-			campaignStatsListDTO.setBounces(campaignStats.getBounces());
-			campaignStatsListDTO.setClicks(campaignStats.getClicks());
-			campaignStatsListDTO.setDeferred(campaignStats.getDeferred());
-			campaignStatsListDTO.setInvalidEmails(campaignStats.getInvalidEmails());
-			campaignStatsListDTO.setProcessed(campaignStats.getProcessed());
-			campaignStatsListDTO.setRequest(campaignStats.getRequest());
-			campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
-			campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
-			campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
-			campaignStatsList.add(campaignStatsListDTO);
-		}
-		campaignStatsResList.setData(campaignStatsList);
-		campaignStatsResList.setRecordsTotal(campStats.getRecordsTotal());
-		campaignStatsResList.setRecordsFiltered(campStats.getRecordsFiltered());
-		return campaignStatsResList;
 	}
 	
 	
@@ -318,56 +287,119 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCampaignStatsByCampaignId")
-	public CampaignStatsDTO getCampaignStatsByCampaignId(@RequestParam(value = "campaignId", required = false) String campaignId, HttpServletRequest request) throws Exception
+	public CampaignStatsDTO getCampaignStatsByCampaignId(@RequestParam(value = "campaignName", required = false) String campaignName, HttpServletRequest request) throws Exception
 	{
-		CampaignStats campaignStats = campaignService.getCampaignStatsByCampaignId(campaignId);
-		
-		Campaign campaign = new Campaign();
-		campaign.setCampaignCategory(campaignStats.getCategoryName());
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
-		String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
-		if(response !=null) {
-			CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
-			JSONArray jsonArr = new JSONArray(response);
-			for (int i = 0; i < jsonArr.length(); i++) {
-				JSONObject jsonObj = jsonArr.getJSONObject(i);
-				JSONArray statJsonArr = jsonObj.getJSONArray("stats");
-				for (int j = 0; j < statJsonArr.length(); j++) {
-					JSONObject statsObj = statJsonArr.getJSONObject(j);
-					JSONObject metricsObj = statsObj.getJSONObject("metrics");
-					campaignStatsListDTO.setId(campaignStats.getId());
-					campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
-					campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
-					campaignStatsListDTO.setDelivered(String.valueOf(Integer.parseInt(campaignStats.getDelivered())+Integer.parseInt(metricsObj.getString("delivered"))));
-					campaignStatsListDTO.setUniqueOpens(String.valueOf(Integer.parseInt(campaignStats.getUniqueOpens())+Integer.parseInt(metricsObj.getString("unique_opens"))));
-					campaignStatsListDTO.setUniqueClicks(String.valueOf(Integer.parseInt(campaignStats.getUniqueClicks())+Integer.parseInt(metricsObj.getString("unique_clicks"))));
-					campaignStatsListDTO.setUnsubscribes(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribes())+Integer.parseInt(metricsObj.getString("unsubscribes"))));
-					campaignStatsListDTO.setOpens(String.valueOf(Integer.parseInt(campaignStats.getOpens())+Integer.parseInt(metricsObj.getString("opens"))));
-					campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
-					campaignStatsListDTO.setBlocks(String.valueOf(Integer.parseInt(campaignStats.getBlocks())+Integer.parseInt(metricsObj.getString("blocks"))));
-					campaignStatsListDTO.setBounceDrops(String.valueOf(Integer.parseInt(campaignStats.getBounceDrops())+Integer.parseInt(metricsObj.getString("bounce_drops"))));
-					campaignStatsListDTO.setBounces(String.valueOf(Integer.parseInt(campaignStats.getBounces())+Integer.parseInt(metricsObj.getString("bounces"))));
-					campaignStatsListDTO.setClicks(String.valueOf(Integer.parseInt(campaignStats.getClicks())+Integer.parseInt(metricsObj.getString("clicks"))));
-					campaignStatsListDTO.setDeferred(String.valueOf(Integer.parseInt(campaignStats.getDeferred())+Integer.parseInt(metricsObj.getString("deferred"))));
-					campaignStatsListDTO.setInvalidEmails(String.valueOf(Integer.parseInt(campaignStats.getInvalidEmails())+Integer.parseInt(metricsObj.getString("invalid_emails"))));
-					campaignStatsListDTO.setProcessed(String.valueOf(Integer.parseInt(campaignStats.getProcessed())+Integer.parseInt(metricsObj.getString("processed"))));
-					campaignStatsListDTO.setRequest(String.valueOf(Integer.parseInt(campaignStats.getRequest())+Integer.parseInt(metricsObj.getString("requests"))));
-					campaignStatsListDTO.setSpamReportDrops(String.valueOf(Integer.parseInt(campaignStats.getSpamReportDrops())+Integer.parseInt(metricsObj.getString("spam_report_drops"))));
-					campaignStatsListDTO.setSpamReports(String.valueOf(Integer.parseInt(campaignStats.getSpamReports())+Integer.parseInt(metricsObj.getString("spam_reports"))));
-					campaignStatsListDTO.setUnsubscribeDrops(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribeDrops())+Integer.parseInt(metricsObj.getString("unsubscribe_drops"))));
-					SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
-					String campaignDate = newFormat.format(campaignStats.getCampaignDate());
-					campaignStatsListDTO.setCreatedDate(campaignDate);
+		CampaignStats campaignStats = campaignService.getCampaignStatsByCampaignId(campaignName);
+		if(campaignStats !=null) {
+			Campaign campaign = new Campaign();
+			campaign.setCampaignCategory(campaignStats.getCategoryName());
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
+			if(response !=null) {
+				CampaignStatsDTO campaignStatsDTO = new CampaignStatsDTO();
+				JSONArray jsonArr = new JSONArray(response);
+				for (int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonObj = jsonArr.getJSONObject(i);
+					JSONArray statJsonArr = jsonObj.getJSONArray("stats");
+					for (int j = 0; j < statJsonArr.length(); j++) {
+						JSONObject statsObj = statJsonArr.getJSONObject(j);
+						JSONObject metricsObj = statsObj.getJSONObject("metrics");
+						campaignStatsDTO.setId(campaignStats.getId());
+						campaignStatsDTO.setCampaignId(campaignStats.getCampaignId());
+						campaignStatsDTO.setCategoryName(campaignStats.getCategoryName());
+						campaignStatsDTO.setDelivered(String.valueOf(Integer.parseInt(campaignStats.getDelivered())+Integer.parseInt(metricsObj.getString("delivered"))));
+						campaignStatsDTO.setUniqueOpens(String.valueOf(Integer.parseInt(campaignStats.getUniqueOpens())+Integer.parseInt(metricsObj.getString("unique_opens"))));
+						campaignStatsDTO.setUniqueClicks(String.valueOf(Integer.parseInt(campaignStats.getUniqueClicks())+Integer.parseInt(metricsObj.getString("unique_clicks"))));
+						campaignStatsDTO.setUnsubscribes(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribes())+Integer.parseInt(metricsObj.getString("unsubscribes"))));
+						campaignStatsDTO.setOpens(String.valueOf(Integer.parseInt(campaignStats.getOpens())+Integer.parseInt(metricsObj.getString("opens"))));
+						campaignStatsDTO.setCampaignId(campaignStats.getCampaignId());
+						campaignStatsDTO.setBlocks(String.valueOf(Integer.parseInt(campaignStats.getBlocks())+Integer.parseInt(metricsObj.getString("blocks"))));
+						campaignStatsDTO.setBounceDrops(String.valueOf(Integer.parseInt(campaignStats.getBounceDrops())+Integer.parseInt(metricsObj.getString("bounce_drops"))));
+						campaignStatsDTO.setBounces(String.valueOf(Integer.parseInt(campaignStats.getBounces())+Integer.parseInt(metricsObj.getString("bounces"))));
+						campaignStatsDTO.setClicks(String.valueOf(Integer.parseInt(campaignStats.getClicks())+Integer.parseInt(metricsObj.getString("clicks"))));
+						campaignStatsDTO.setDeferred(String.valueOf(Integer.parseInt(campaignStats.getDeferred())+Integer.parseInt(metricsObj.getString("deferred"))));
+						campaignStatsDTO.setInvalidEmails(String.valueOf(Integer.parseInt(campaignStats.getInvalidEmails())+Integer.parseInt(metricsObj.getString("invalid_emails"))));
+						campaignStatsDTO.setProcessed(String.valueOf(Integer.parseInt(campaignStats.getProcessed())+Integer.parseInt(metricsObj.getString("processed"))));
+						campaignStatsDTO.setRequest(String.valueOf(Integer.parseInt(campaignStats.getRequest())+Integer.parseInt(metricsObj.getString("requests"))));
+						campaignStatsDTO.setSpamReportDrops(String.valueOf(Integer.parseInt(campaignStats.getSpamReportDrops())+Integer.parseInt(metricsObj.getString("spam_report_drops"))));
+						campaignStatsDTO.setSpamReports(String.valueOf(Integer.parseInt(campaignStats.getSpamReports())+Integer.parseInt(metricsObj.getString("spam_reports"))));
+						campaignStatsDTO.setUnsubscribeDrops(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribeDrops())+Integer.parseInt(metricsObj.getString("unsubscribe_drops"))));
+						SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+						String campaignDate = newFormat.format(campaignStats.getCampaignDate());
+						campaignStatsDTO.setCreatedDate(campaignDate);
+						
+					}
 					
-				}
-				
+			}
+				return campaignStatsDTO;
+			}
+		}else {
+			Campaign campaign = new Campaign();
+			campaign.setCampaignCategory(campaignName);
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
+			if(response !=null) {
+				CampaignStatsDTO campaignStatsDto = new CampaignStatsDTO();
+				JSONArray jsonArr = new JSONArray(response);
+				for (int i = 0; i < jsonArr.length(); i++) {
+					JSONObject jsonObj = jsonArr.getJSONObject(i);
+					JSONArray statJsonArr = jsonObj.getJSONArray("stats");
+					campaignStatsDto.setCreatedDate(jsonObj.getString("date"));
+					for (int j = 0; j < statJsonArr.length(); j++) {
+						JSONObject statsObj = statJsonArr.getJSONObject(j);
+						JSONObject metricsObj = statsObj.getJSONObject("metrics");
+//						campaignStatsListDTO.setId(campaignStats.getId());
+//						campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+						campaignStatsDto.setCategoryName(metricsObj.getString("delivered"));
+						campaignStatsDto.setDelivered(metricsObj.getString("delivered"));
+						campaignStatsDto.setUniqueOpens(metricsObj.getString("unique_opens"));
+						campaignStatsDto.setUniqueClicks(metricsObj.getString("unique_clicks"));
+						campaignStatsDto.setUnsubscribes(metricsObj.getString("unsubscribes"));
+						campaignStatsDto.setOpens(metricsObj.getString("opens"));
+//						campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
+						campaignStatsDto.setBlocks(metricsObj.getString("blocks"));
+						campaignStatsDto.setBounceDrops(metricsObj.getString("bounce_drops"));
+						campaignStatsDto.setBounces(metricsObj.getString("bounces"));
+						campaignStatsDto.setClicks(metricsObj.getString("clicks"));
+						campaignStatsDto.setDeferred(metricsObj.getString("deferred"));
+						campaignStatsDto.setInvalidEmails(metricsObj.getString("invalid_emails"));
+						campaignStatsDto.setProcessed(metricsObj.getString("processed"));
+						campaignStatsDto.setRequest(metricsObj.getString("requests"));
+						campaignStatsDto.setSpamReportDrops(metricsObj.getString("spam_report_drops"));
+						campaignStatsDto.setSpamReports(metricsObj.getString("spam_reports"));
+						campaignStatsDto.setUnsubscribeDrops(metricsObj.getString("unsubscribe_drops"));
+//						SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+//						String campaignDate = newFormat.format(campaignStats.getCampaignDate());
+						
+						
+					}
+					
+			}
+				return campaignStatsDto;
+			}
 		}
-			return campaignStatsListDTO;
-			
-		}
+		
 		return null;
 		
 	}
+	
+	/**
+	 * checking campaign duplicate or not
+	 * 
+	 * @param orgLocationId
+	 * @param request
+	 * @return List<CampaignStatsDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/validateCampaignSubject")
+	public boolean validateCampaignSubject(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "campaignName", required = false) String subjectName, @RequestParam(value = "campaignType", required = false) int campaignType, HttpServletRequest request) throws Exception
+	{
+		return campaignService.validateCampaignSubject(subjectName, orgLocationId,campaignType);
+	}
+	
+	
+	
 	
 }

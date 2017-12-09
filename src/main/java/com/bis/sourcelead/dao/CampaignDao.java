@@ -49,7 +49,9 @@ public interface CampaignDao {
 
 	ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
 
-	CampaignStats getCampaignStatsByCampaignId(String campaignId)throws Exception;
+	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
+
+	Campaign validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType) throws Exception;
 
 
 

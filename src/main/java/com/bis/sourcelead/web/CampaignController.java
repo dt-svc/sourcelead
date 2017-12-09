@@ -264,10 +264,10 @@ public class CampaignController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/campaignStatsGraph")
-	public ModelAndView campaignStatsGraph(@RequestParam(value="campaignId",required=false) String campaignId,HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView campaignStatsGraph(@RequestParam(value="campaignName",required=false) String campaignName,HttpServletRequest request,HttpServletResponse response) {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.addObject("campaignId", campaignId);
+		   model.addObject("campaignName", campaignName);
 		   model.setViewName("campaign/campaignStatsGraph");
 	       return model;
 	}

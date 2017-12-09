@@ -333,16 +333,29 @@ public class CampaignDaoImpl implements CampaignDao {
 
     @Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
+	public CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignStats campaignStats = null;
-		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.campaignId = :campaignId").setString("campaignId", campaignId).setCacheable(true).list();
+		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName").setString("campaignName", campaignName).setCacheable(true).list();
 		if (statsList != null && statsList.size() > 0) {
 			campaignStats = statsList.get(0);
 		}
 		return campaignStats;
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Campaign validateCampaignSubject(String subjectName, Long orgLocationId,int campaignType) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Campaign campaign = null;
+		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignSubject = :subjectName and cpn.orgLocation.id = :orglocationId and cpn.campaignType = :campaignType").setString("subjectName", subjectName).setLong("orglocationId", orgLocationId).setInteger("campaignType", campaignType).setCacheable(true).list();
+		if (cpnList != null && cpnList.size() > 0) {
+			campaign = cpnList.get(0);
+		}
+		return campaign;
 	}
 
 

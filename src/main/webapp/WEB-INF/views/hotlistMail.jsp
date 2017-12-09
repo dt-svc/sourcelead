@@ -113,8 +113,8 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-danger small">Subject</label>
-          <div class="col-md-10">
-            <input type="text" name="subject" data-validation="required" field-name="Subject" id="subject" class="form-control input-sm">
+          <div class="col-md-10" id="campaignSubjectDiv">
+            <input type="text" name="subject" data-validation="required" field-name="Subject" id="campaignSubject" class="form-control input-sm" onblur="checkUniqueSubject();">
           </div>
         </div>
         <div class="col-md-12 clearfix">
@@ -204,7 +204,7 @@ display: none;
         <!-- Text Area Ends --> 
         
         <!-- Attachment button-->
-        <div class="col-md-12 clearfix mb10">
+       <!--  <div class="col-md-12 clearfix mb10">
           <div class="col-md-12 attachment">
             <div class="input-group">
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
@@ -213,7 +213,7 @@ display: none;
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- Attachment button --> 
         
         <!-- Attachment button-->
@@ -1529,5 +1529,25 @@ function getRecipantsContacts(){
 }
 </script>
   <!-- End -->
+  
+  <script>
+function checkUniqueSubject(){
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var name = $("#campaignSubject").val();
+	if(name != null && name != '' && name != 'undefined'){
+			$.get(sourceleadUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=0", function(data) {
+	          	if(data == true){
+	          		$('#campaignSubjectDiv').find('p.jquery_form_error_message').remove();
+	          		$("#campaignSend").removeAttr("disabled");
+			        $("#campaignSend").attr("disabled", "disabled");
+					$("input#campaignSubject").after( "<p class='jquery_form_error_message'>" + name + " is already existed</span>");
+	                 }else{
+	                	$("#campaignSend").removeAttr("disabled");
+	                	$('#campaignSubjectDiv').find('p.jquery_form_error_message').remove();
+	                 }
+	            });
+		}
+}
+</script>
   
 <jsp:include page="masterFooter.jsp" />

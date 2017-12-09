@@ -50,9 +50,11 @@ public interface CampaignService {
 	List<Campaign> getAllCampaigns()  throws Exception;
 
 
-	ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
+	ResponseList<CampaignStatsDTO> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
 
-	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
+	CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception;
+
+	boolean validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType)throws Exception;
 
 
 

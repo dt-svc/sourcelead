@@ -49,6 +49,9 @@ public class Campaign {
 	@Column(name = "CAMPAIGN_ID")
 	private String campaignId;
 	
+	@Column(name = "CAMPAIGN_TYPE")
+	private int campaignType;
+	
 	@Column(name = "IP_POOL")
 	private String ipPool;
 	
@@ -262,6 +265,16 @@ public class Campaign {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public int getCampaignType()
+	{
+		return campaignType;
+	}
+
+	public void setCampaignType(int campaignType)
+	{
+		this.campaignType = campaignType;
 	}
 	
 	
