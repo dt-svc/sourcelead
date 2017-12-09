@@ -240,58 +240,123 @@ function addStatesTaxRow(){
 
 <script>
 function getStateTaxes(){
-	 var result = "";
-	 
-	 
-	    result = result +'<div class="clearfix mb10 mt5 requestdocmntTable companyOnboardStateTaxTable">';
-		result = result +'<input type="hidden" name="stateTaxMaxRowNumber"  id="stateTaxMaxRowNumber" value="1" />';
-		result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="statesTaxTable" border="0">';
-		result = result +'<tbody>';
-		result = result +'<tr id="requestedDocumentsTsRow0">';
-		result = result +'<div id="0requestedDocumentsFileGroup">';
-		
-		
-		result = result +'<td width="500px">';
-		result = result +'<div class="dropdown-select">';
-		
-		result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
-		result = result +'<option selected value="">-- Select State --</option>';
-			<c:forEach var="state" items="${statesList}">
-			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
-			</c:forEach>
-		result = result +'</select>';
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	 $.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getOrgLocationsStatesTaxList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(json) {
+	        	var result = "";
+	        	
+	        	if(json.length > 0){
+	        	 result = result +'<div class="requestdocmntTable companyOnboardStateTaxTable">';
+        		 result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="savedStatesTaxTable" border="0">';
+        		 result = result +'<tbody>';
+        		
+        		 for (var i = 0; i < json.length; i++) { 
+	        		 var opt = json[i]; 
+	        		 
+	        		 result = result +'<tr>';
+	        		 result = result +'<td width="500px">';
+	 	     		 result = result +'<div class="dropdown-select">';
+	 	     		
+	 	     		 result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State"  name="savedStateTaxesList['+i+'].stateName">';
+	 	     		 result = result +'<option selected value="">-- Select State --</option>';
+	 	     			<c:forEach var="state" items="${statesList}">
+	 	     			if('${state.stateName}' == opt.stateName){
+	 	     				 result = result +'<option value="${state.stateName}" selected>${state.stateName}</option>';
+	 	     			}else{
+	 	     				result = result +'<option value="${state.stateName}">${state.stateName}</option>';
+	 	     			}
+	 	     			 
+	 	     			</c:forEach>
+	 	     		 result = result +'</select>'; 
 
-		result = result +'</div>';
-		result = result +'</td>';
-		
-		result = result +'<td width="500px">';
-		result = result +'<div class="">';
-		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
-		result = result +'</div>';
-		result = result +'</td>';
-		
-		result = result +'<td width="500px">';
-		result = result +'<div class="">';
-		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
-		result = result +'</div>';
-		result = result +'</td>';
-		
-		result = result +'<td width="50px">';
-		result = result +'<div class="">';
-		
-		result = result +'<div class="pull-right">';
-		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addStatesTaxRow();"><i class="fa fa-plus text-primary"></i></button>';
-		result = result +'</div>';
-		result = result +'</div>';
-		result = result +'</td>';
-		result = result +'</div>';
-		result = result +'</tr>';
-		result = result +'</tbody>';
-		result = result +'</table>';
-		result = result +'</div>';
-		result = result +'</div>';
-		result = result +'</div>';
-	$("#stateTaxesList").append(result);
+	 	     		 result = result +'</div>';
+	 	     		 result = result +'</td>';
+	        		
+	 	     		result = result +"<input type='hidden' name='savedStateTaxesList["+i+"].uuid'  value='"+opt.uuid+"' />";
+	        		result = result +'<td width="500px">';
+	 	     		result = result +'<div class="">';
+	 	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" value="'+opt.stateUnemploymentTax+'" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="savedStateTaxesList['+i+'].stateUnemploymentTax" >';
+	 	     		result = result +'</div>';
+	 	     		result = result +'</td>';
+	 	     		
+	 	     		result = result +'<td width="500px">';
+		     		result = result +'<div class="">';
+		     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" value="'+opt.stateTaxAccountNumber+'" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="savedStateTaxesList['+i+'].stateTaxAccountNumber" >';
+		     		result = result +'</div>';
+		     		result = result +'</td>';
+		     		
+		     		result = result +'<td width="50px">';
+		     		result = result +'<div class="">';
+		     		result = result +'<div class="pull-right">';
+		     		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="deleteStatesTaxRow('+opt.UUID+');"><i class="fa fa-trash text-danger"></i></button>';
+		     		result = result +'</div>';
+		     		result = result +'</div>';
+		     		result = result +'</td>';
+		     		
+		     		result = result +'</tr>';
+	        		
+	        	 }
+        		
+        		 result = result +'</tbody>';
+    			 result = result +'</table>';
+	     		 result = result +'</div>';
+	        	}
+	        	
+	        	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable companyOnboardStateTaxTable">';
+	     		result = result +'<input type="hidden" name="stateTaxMaxRowNumber"  id="stateTaxMaxRowNumber" value="1" />';
+	     		result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="statesTaxTable" border="0">';
+	     		result = result +'<tbody>';
+	     		result = result +'<tr id="requestedDocumentsTsRow0">';
+	     		result = result +'<div id="0requestedDocumentsFileGroup">';
+	     		
+	     		
+	     		result = result +'<td width="500px">';
+	     		result = result +'<div class="dropdown-select">';
+	     		
+	     		result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
+	     		result = result +'<option selected value="">-- Select State --</option>';
+	     			<c:forEach var="state" items="${statesList}">
+	     			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
+	     			</c:forEach>
+	     		result = result +'</select>';
+
+	     		result = result +'</div>';
+	     		result = result +'</td>';
+	     		
+	     		result = result +'<td width="500px">';
+	     		result = result +'<div class="">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
+	     		result = result +'</div>';
+	     		result = result +'</td>';
+	     		
+	     		result = result +'<td width="500px">';
+	     		result = result +'<div class="">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
+	     		result = result +'</div>';
+	     		result = result +'</td>';
+	     		
+	     		result = result +'<td width="50px">';
+	     		result = result +'<div class="">';
+	     		
+	     		result = result +'<div class="pull-right">';
+	     		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addStatesTaxRow();"><i class="fa fa-plus text-primary"></i></button>';
+	     		result = result +'</div>';
+	     		result = result +'</div>';
+	     		result = result +'</td>';
+	     		result = result +'</div>';
+	     		result = result +'</tr>';
+	     		result = result +'</tbody>';
+	     		result = result +'</table>';
+	     		result = result +'</div>';
+	     		result = result +'</div>';
+	     		result = result +'</div>';
+	     	$("#stateTaxesList").append(result);
+	        },
+	    });
 }
 </script>
 

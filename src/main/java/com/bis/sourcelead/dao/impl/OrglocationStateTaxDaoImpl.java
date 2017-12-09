@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrglocationStateTaxDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -62,10 +63,25 @@ public class OrglocationStateTaxDaoImpl implements OrglocationStateTaxDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrglocationStateTax orglocationStateTax where orglocationStateTax.orgLocationId.id = :orgLocationId and orglocationStateTax.status = '1";
+		String query = "from OrglocationStateTax orglocationStateTax where orglocationStateTax.orgLocationId.id = :orgLocationId and orglocationStateTax.status = '1' ";
 		
 		List<OrglocationStateTax> orglocationStateTaxList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orglocationStateTaxList;
+	}
+
+	@Override
+	@Transactional
+	public OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationStateTax orglocationStateTax  where orglocationStateTax.uuid = :UUID and orglocationStateTax.status = '1' ";  
+		List<OrglocationStateTax> orglocationStateTaxList =  session.createQuery(query).setString("UUID", UUID).setCacheable(true).list();
+		OrglocationStateTax orglocationStateTax = null;
+		if (orglocationStateTaxList != null && orglocationStateTaxList.size() > 0) {
+			orglocationStateTax = (OrglocationStateTax) orglocationStateTaxList.iterator().next();
+		}
+		return orglocationStateTax;
 	}
 
 }

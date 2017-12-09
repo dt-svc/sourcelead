@@ -9,4 +9,6 @@ public interface OrglocationStateTaxDao {
 	OrglocationStateTax saveOrglocationStateTax(OrglocationStateTax orglocationStateTax) throws Exception;
 	
 	List<OrglocationStateTax> getOrglocationStateTaxListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception;
 }

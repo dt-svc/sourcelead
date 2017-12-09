@@ -37,6 +37,31 @@ public class OrglocationStateTaxServiceImpl implements OrglocationStateTaxServic
 			User user) throws Exception {
 		
 		String result = "";
+		
+		if(federalAndStateTaxDTO.getSavedStateTaxesList() != null && federalAndStateTaxDTO.getStateTaxesList().size() > 0) {
+			try {
+				for(StateTaxesList stateTaxesList : federalAndStateTaxDTO.getSavedStateTaxesList()) {
+					if(stateTaxesList.getStateName() != null && !stateTaxesList.getStateName().isEmpty()) {
+						OrglocationStateTax orglocationStateTax = orglocationStateTaxDao.getOrglocationStateTaxByUUID(stateTaxesList.getUuid());
+						if(orglocationStateTax != null) {
+							orglocationStateTax.setState(stateTaxesList.getStateName());
+							orglocationStateTax.setStateUnemploymentTax(stateTaxesList.getStateTaxAccountNumber());
+							orglocationStateTax.setStateTaxAccountNumber(stateTaxesList.getStateTaxAccountNumber());
+							orglocationStateTax.setCreatedBy(user);
+							orglocationStateTax.setUpdatedBy(user);
+							orglocationStateTax.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+							orglocationStateTax.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+							orglocationStateTaxDao.saveOrglocationStateTax(orglocationStateTax);
+						}
+					}
+					result = "success";
+				}
+			}catch (Exception e) {
+				 result = "failed";
+			}
+		}
+		
+		
 		if(federalAndStateTaxDTO.getStateTaxesList() != null && federalAndStateTaxDTO.getStateTaxesList().size() > 0) {
 			
 			try {
@@ -67,6 +92,11 @@ public class OrglocationStateTaxServiceImpl implements OrglocationStateTaxServic
 	@Override
 	public List<OrglocationStateTax> getOrglocationStateTaxListByOrgLocationId(Long orgLocationId) throws Exception {
 		return orglocationStateTaxDao.getOrglocationStateTaxListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception {
+		return orglocationStateTaxDao.getOrglocationStateTaxByUUID(UUID);
 	}
 	
 }

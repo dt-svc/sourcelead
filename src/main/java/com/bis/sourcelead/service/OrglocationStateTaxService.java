@@ -14,4 +14,6 @@ public interface OrglocationStateTaxService {
 	public String addOrglocationStateTax(FederalAndStateTaxDTO federalAndStateTaxDTO,OrgLocations orgLocations, User user) throws Exception;
 	
 	List<OrglocationStateTax> getOrglocationStateTaxListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception;
 }

@@ -14,6 +14,8 @@ public class FederalAndStateTaxDTO {
 	
 	private List<StateTaxesList> stateTaxesList;
 	
+	private List<StateTaxesList> savedStateTaxesList;
+	
 	
 
 	public String getFedralEIN() {
@@ -54,6 +56,14 @@ public class FederalAndStateTaxDTO {
 
 	public void setStateTaxesList(List<StateTaxesList> stateTaxesList) {
 		this.stateTaxesList = stateTaxesList;
+	}
+
+	public List<StateTaxesList> getSavedStateTaxesList() {
+		return savedStateTaxesList;
+	}
+
+	public void setSavedStateTaxesList(List<StateTaxesList> savedStateTaxesList) {
+		this.savedStateTaxesList = savedStateTaxesList;
 	}
 	
 	

@@ -61,7 +61,7 @@ public class CompanyOnboardRestController {
 				stateTaxesList.setStateName(stateTax.getState());
 				stateTaxesList.setStateTaxAccountNumber(stateTax.getStateTaxAccountNumber());
 				stateTaxesList.setStateUnemploymentTax(stateTax.getStateUnemploymentTax());
-				stateTaxesList.setUUID(stateTax.getUuid());
+				stateTaxesList.setUuid(stateTax.getUuid());
 				stateTaxesDTOList.add(stateTaxesList);
 			}
 			

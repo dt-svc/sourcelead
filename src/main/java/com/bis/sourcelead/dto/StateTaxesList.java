@@ -9,7 +9,7 @@ public class StateTaxesList {
 	
 	private String stateTaxAccountNumber;
 	
-	private String UUID;
+	private String uuid;
 	
 	
 
@@ -37,13 +37,15 @@ public class StateTaxesList {
 		this.stateTaxAccountNumber = stateTaxAccountNumber;
 	}
 
-	public String getUUID() {
-		return UUID;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setUUID(String uUID) {
-		UUID = uUID;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
+
+	
 	
 	
 }
