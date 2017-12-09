@@ -149,9 +149,15 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  clientName = "--";
 	        		  }
-	    	  		result = result +"<td><div title="+clientName+">"+clientName+"</div></td>";
-	    	  		/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard">'+clientName+'</a></div></td>'; */
-		            return  result;
+	    	  		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	    	  		  result = result +'<td><div title="+clientName+"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+clientName+'"> '+clientName+' </a></div></td>';
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	    	  		  result = result +'<td><div title="+clientName+">'+clientName+'</div></td>';
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		return  result;
 	    	  	}
 	      },{
 	    	  	"targets": colIndex++,

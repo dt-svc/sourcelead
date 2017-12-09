@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -46,6 +48,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -136,6 +139,12 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
+	
+	 @Autowired
+	 private ProjectsService projectsService;
+	 
+	 @Autowired
+	 private RequirementDao requirementDao; 
 	 
 	/**
 	 * @author prasad k
@@ -230,8 +239,19 @@ public class RequirementRestController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", reqTemplateSuccessMessage.append("Success!! ").append(requirementDTO.getJobTitle()).append(" template  saved").toString());
 		return "success";
 	}
-	
-	
+	@RequestMapping(value = "/deleteJobDoc", method = RequestMethod.POST)
+	public @ResponseBody String deleteJobDoc(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if(requirement != null){
+		requirement.setFileURL(null);
+		requirement.setFileName(null);
+		requirement.setFileContentType(null);
+		requirementDao.storeRequirement(requirement);
+		}
+		return "success";
+	}
 	/**
 	 * @author sarath kumaar
 	 * @since oct 18 2016
@@ -920,7 +940,20 @@ public class RequirementRestController {
 	    	requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
 	    	}
 			return commonUtil.toJSON(requirement);
-		}
+
+		} 
+	    
+	    
+		/*@RequestMapping(value = "/getAllProjectsByOrgRelationIdAndInProgress", method = RequestMethod.GET)
+	 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	//String resultJson;
+	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+	 	   // resultJson = commonUtil.toJSON(projectList);
+	 	    return projectList;
+	 	}*/
+
 	    
 	@RequestMapping(value = "/saveOrUpdateAssignToTeam", method = RequestMethod.POST)
 	public @ResponseBody String saveOrUpdateAssignToTeam(@RequestParam(value = "assignedIdVal", required = false) String assignedIdVal, @RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception

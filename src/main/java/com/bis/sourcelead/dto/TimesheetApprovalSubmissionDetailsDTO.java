@@ -32,6 +32,11 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String actualEndDate;
 	private int tdSpanLength;
 	
+	private String orgRelationUUID;
+	
+	private String dashboardInvoiceFrequency;
+	private String dashboardDateList;
+	
 	public Long getProjectMemberId() {
 		return projectMemberId;
 	}
@@ -175,6 +180,24 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	}
 	public void setMasterCandidateId(Long masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
+	}
+	public String getDashboardInvoiceFrequency() {
+		return dashboardInvoiceFrequency;
+	}
+	public void setDashboardInvoiceFrequency(String dashboardInvoiceFrequency) {
+		this.dashboardInvoiceFrequency = dashboardInvoiceFrequency;
+	}
+	public String getDashboardDateList() {
+		return dashboardDateList;
+	}
+	public void setDashboardDateList(String dashboardDateList) {
+		this.dashboardDateList = dashboardDateList;
+	}
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
 	}
 	
 	

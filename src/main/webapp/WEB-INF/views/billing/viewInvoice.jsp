@@ -187,8 +187,15 @@ function getViewInvoice(){
 					if(invoiceType == "Payables"){
 						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
-					result = result +'<div class="col-md-8">                                               ';
-					result = result +'<label><strong>'+report.clientName+'</strong></label>  ';
+					result = result +'<div class="col-md-8"> ';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
+					result = result +'<label><strong> <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					'</sec:authorize>';
+					
+					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
+					result = result +'<label><strong> '+report.clientName+'</strong></label>  ';
+					'</sec:authorize>';
+					
 					result = result +'</div>                                                               ';
 					result = result +'</div>                                                                 ';
 					result = result +'<div class="col-md-6">                                                 ';
