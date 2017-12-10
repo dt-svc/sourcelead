@@ -189,7 +189,7 @@ $("#reject"+projectMemberId+"panel").slideToggle(200);
 	
 }
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var rowHtmlContent =  $("#row"+projectMemberId).innerHTML;
+	 var rowHtmlContent =  $("#row"+projectMemberId).html();
 	 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
 	 if(locationName == '' || locationName == 'undefined' || locationName == null ){
 		 locationName = '';
@@ -318,7 +318,6 @@ function exportTimeSheetToPdfOrExcel(exportType){
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
-		 
 		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';

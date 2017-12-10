@@ -472,7 +472,7 @@ public class TimeApprovalRedefinedRestController {
 	        	TimesheetApprovalSubmissionDetailsDTO ts = 	getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, orgLocations, actualStartDate, actualEndDate, user, tdSpanLength);
 	        	subDetails.add(ts);
 	         }
-		   
+	         timesheetApprovalDTO.setTimesheetSubmission(subDetails);
 	       }
 	        return timesheetApprovalDTO;
 	   }
