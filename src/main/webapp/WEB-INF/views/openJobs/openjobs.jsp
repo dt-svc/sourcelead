@@ -1284,7 +1284,7 @@ function getOrgsList(alphabet,type){
 					var opt = json[i];
 					org = org +'	<li class="control-group">';
 					org = org +'		<label class="control control--checkbox"><span>'+opt.orgName+'</span>';
-					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
+					org = org +'		  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}
@@ -1296,7 +1296,7 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
@@ -1310,7 +1310,7 @@ function getOrgsList(alphabet,type){
 					var opt1 = json[i];
 					org = org +'	<li class="control-group">';
 					org = org +'		<label class="control control--checkbox" title="'+opt1.orgName+'" ><span>'+opt1.orgName+'</span>';
-					org = org +'		  <input type="checkbox" name="orgName" value="'+opt1.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
+					org = org +'		  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt1.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}
@@ -1319,6 +1319,18 @@ function getOrgsList(alphabet,type){
 				$("#remainingOrgs").empty();
 				$("#remainingOrgs").append(org);
 	    	}
+	    	var ids = "";
+	    	$("input[name='orgName']").each(function(){
+	    		var comp = "${companies}";
+	    		comp = comp.split("--");
+	    		for(var i=0;i<comp.length;i++){
+	    			ids += $(this).data("id");
+		    		if($(this).data("id")==comp[i]){
+		    			$(this).attr("checked", "checked");
+		    		}	
+	    		}
+	    	});
+	    	/* alert("companies: ${companies}\n"+"ids:"+ids); */
 	    }
 	 }); 
 }
