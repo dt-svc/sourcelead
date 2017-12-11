@@ -34,7 +34,12 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 	@Override
 	public WhiteListIPAddress addWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, OrgLocations orgLocations,User user) throws Exception
 	{
-		WhiteListIPAddress ipAdddress = new WhiteListIPAddress();
+		WhiteListIPAddress ipAdddress;
+		if(whiteListIPAddressDTO.getId() != 0){
+			ipAdddress = getWhiteListIpsById(whiteListIPAddressDTO.getId());
+		}else{
+			ipAdddress = new WhiteListIPAddress();
+		}
 		ipAdddress.setFromIpAddress(whiteListIPAddressDTO.getFromIpAddress());
 		ipAdddress.setToIpAddress(whiteListIPAddressDTO.getToIpAddress());
 		ipAdddress.setOrgLocation(orgLocations);

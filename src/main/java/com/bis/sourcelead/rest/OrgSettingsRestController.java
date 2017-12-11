@@ -553,7 +553,7 @@ public class OrgSettingsRestController {
 		return "Success";
 	}
 	
-	@RequestMapping(value = "/saveWhiteListIps",method = RequestMethod.GET)
+	@RequestMapping(value = "/app/saveWhiteListIps",method = RequestMethod.GET)
 	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO,HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -562,7 +562,7 @@ public class OrgSettingsRestController {
 		return "Success";
 	}
 	
-	@RequestMapping(value = "/getWhiteListIps", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/getWhiteListIps", method = RequestMethod.GET)
 	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -587,7 +587,7 @@ public class OrgSettingsRestController {
 		return str == null || "".equals(str.trim());
 	}
 	
-	@RequestMapping(value = "/deleteIP", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/deleteIP", method = RequestMethod.POST)
 	public Boolean deleteWhiteListIpById(HttpServletRequest request,@RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
 	{
 		boolean isDeleted = false;
@@ -598,5 +598,12 @@ public class OrgSettingsRestController {
 			 isDeleted = true;
 		 }
 		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/app/editWhiteListIp", method = RequestMethod.GET)
+	public WhiteListIPAddress editWhiteListIp(@RequestParam(value = "whiteListId", required = false) long whiteListId,HttpServletRequest request) throws Exception
+	{
+		WhiteListIPAddress whiteListIp = whiteListIpAddressService.getWhiteListIpsById(whiteListId);
+		return whiteListIp;
 	}
 }
