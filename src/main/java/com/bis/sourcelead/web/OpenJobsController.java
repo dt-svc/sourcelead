@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.core.internal.resources.MoveDeleteHook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -88,10 +89,19 @@ public class OpenJobsController {
 				: title;
 		ModelAndView modelAndView = new ModelAndView();
 		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementIdAndJobTitle(id, title);
- 		if(requirementDeatilsSummary != null && requirementDeatilsSummary.getRequirementUUID() != null){
-		String uuid = requirementDeatilsSummary.getRequirementUUID();
-		modelAndView.addObject("requirementUUID", uuid);
-	}
+		if (requirementDeatilsSummary != null
+				&& requirementDeatilsSummary.getRequirementUUID() != null) {
+			String uuid = requirementDeatilsSummary.getRequirementUUID();
+			modelAndView.addObject("requirementUUID", uuid);
+			if (requirementDeatilsSummary.getJobType() != null
+					&& requirementDeatilsSummary.getJobType() != "") {
+				modelAndView.addObject("employementType", requirementDeatilsSummary.getJobType().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
+			}
+		}
+		if (requirementDeatilsSummary.getIsRequirementRelesedToPublic() != null
+				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != "") {
+		modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
+		}
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
