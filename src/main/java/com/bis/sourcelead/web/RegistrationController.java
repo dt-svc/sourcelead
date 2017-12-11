@@ -459,7 +459,7 @@ public class RegistrationController {
 	 
 	 
 	 
-	  @RequestMapping(value = "/app/ws/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -473,7 +473,7 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/app/ws/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -501,7 +501,7 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/app/ws/validateCrowdSourcingUserName",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingUserName",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingUserName(@RequestParam(value="userName", required=false) String userName) throws Exception {
 		  
 		  User user = userService.getUserByUserName(userName);
@@ -512,7 +512,7 @@ public class RegistrationController {
 		  }
 	   }
 	  
-	  @RequestMapping(value = "/app/ws/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/validateCrowdSourcingResetUserName",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingResetUserName(@RequestParam(value="userName", required=false) String userName,
 			   @RequestParam(value="resetUserName", required=false) String resetUserName) throws Exception {
 		  
@@ -535,7 +535,7 @@ public class RegistrationController {
 		  }
 	   }
 	  
-	  @RequestMapping(value = "/app/verifyAccount",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/verifyAccount",  method = RequestMethod.GET)
 	   public ModelAndView verifyAccount(@RequestParam(value="requirementUUID", required=false) String requirementUUID,@RequestParam(value="referUUID", required=false) String referUUID) throws Exception {
 		  
 		  ModelAndView model = new ModelAndView();

@@ -1065,7 +1065,7 @@ public class RequirementController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/ws/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		
@@ -1095,7 +1095,7 @@ public class RequirementController {
 		}
 
 
-@RequestMapping(value = "/ws/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
+@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
 	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
 			@PathVariable("title") String title, HttpServletResponse response)
 			throws Exception {

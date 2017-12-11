@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -472,7 +472,7 @@ function getEmployeementType(designationType){
 		
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 				location.replace(sourceleadUrl+"/usersList");	

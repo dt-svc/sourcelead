@@ -361,7 +361,7 @@ function preventTabkey(e){
 		function logoutFormSubmit() {
 		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/ws/getActionHistoryList?&userSessionId="+userSessionId; */
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
 			document.getElementById("logoutForm").submit();
 		}
 </script>
@@ -748,19 +748,24 @@ function preventTabkey(e){
   </div>
   </div>
   
+  <!--  Alert message for Switching Locaction -->
+  <div class="location-alert alert alert-danger alert-dismissable">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> Your are not allowded to access this Location.
+  </div>
+ <!--  Alert message for Switching Locaction -->
+  
  <script type="text/javascript">
+ var hasLocationAccess = "";
  function checkAuth(locationId,roleId,orgSecurity){
-	 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-		 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
-	 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
-		 $(".authenticationMask").fadeIn();
-		 getUserDetailsbyroleId(roleId);
-	 }else{
-		 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
-	 }
+	 checkLocationAccess(locationId,roleId,orgSecurity);
+	 
  }
  $(".proj_close").click(function(){
 	 $(".authenticationMask").fadeOut();
+ })
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
  })
 
  function getUserDetailsbyroleId(roleId){
@@ -777,8 +782,31 @@ function preventTabkey(e){
 	       },						     
 	}); 
  }
- </script>
  
+ function checkLocationAccess(locationId,roleId,orgSecurity){
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+// 	    	   hasLocationAccess = result;
+	    	   
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
  
   
   <script>
@@ -1672,14 +1700,11 @@ $("#searchType").selectpicker('refresh');
 <script>
 function saveInviteCompany() {
 	if ($('#inviteCompany_form').validate(false, validationSettings)) {
-		
-			var formData = getFormData1("inviteCompany_form");
+			var formData = getFormData("inviteCompany_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 					  type : "POST",
 					  data: formData,
-	 		          processData: false,
-	 		          contentType:false, 
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
@@ -1875,4 +1900,5 @@ function zipcodeMask(country,zipCodeId){
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

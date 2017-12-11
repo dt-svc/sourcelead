@@ -229,6 +229,18 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
+			if (StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
+				String jobTitle = "";
+				jobTitle = requirementDTO.getJobTitle().replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
+				if (jobTitle.startsWith("-")){
+					jobTitle = jobTitle.substring(1);
+			    }
+				if (jobTitle.endsWith("-")){
+					jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
+			    }
+				requirement.setUrl(jobTitle);
+			}
 		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
@@ -3334,6 +3346,13 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByShortURL(String shortURL) throws Exception
 	{
 		return requirementDao.getRequirementByShortURL(shortURL);
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	{
+		Requirement requirement = requirementDao.getRequirementByRequirementIdAndJobTitle(requirementId,title);
+		return requirement;
 	}
 	
 }

@@ -1216,7 +1216,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1927,7 +1927,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 var submissionDetails = "";
@@ -1973,7 +1973,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 			        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -2611,7 +2611,7 @@ function saveProposeTime(submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/ws/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&submissionId"+submissionId,
+					url : sourceleadUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&submissionId"+submissionId,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},

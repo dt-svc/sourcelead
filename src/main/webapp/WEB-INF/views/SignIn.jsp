@@ -194,11 +194,11 @@
 
 <script>
 
-$(".sign_btn").click(function(){
+/* $(".sign_btn").click(function(){
 	$(".signWrap").addClass("orgOutWrap");
 	$(".SignSlide").hide();
 	$(".orgWrap").show();
-});
+}); */
 
 
 $(function () {
@@ -296,7 +296,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -311,7 +311,7 @@ function applyInputSlide() {
     			        		  location.replace(sourceleadUrl+"/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/ws/resetPassword"); 
+                    			  location.replace(sourceleadUrl+"/resetPassword"); 
     			        	}
 			        },  
                 });

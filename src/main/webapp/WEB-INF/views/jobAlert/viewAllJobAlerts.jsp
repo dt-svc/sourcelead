@@ -90,7 +90,7 @@ min-height: 50px;
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/ws/getAllJobsAlertList?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,
+	    	url: sourceleadUrl+"/getAllJobsAlertList?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,
 	        success: function(data) {
 		        $('#jobAlerts').html(data);
 	        },

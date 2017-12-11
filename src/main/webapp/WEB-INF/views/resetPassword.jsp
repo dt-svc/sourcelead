@@ -19,7 +19,7 @@
     </c:if>
    
     <title>::. Reset Password .::</title>
-    <link rel="icon" type="/resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="/resources/css/bootstrap.min.css" rel="stylesheet?staticTime=${staticTime}">
@@ -179,7 +179,7 @@ var validationSettings = {
               	      data:JSON.stringify(form),
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                    	  url: sourceleadUrl+"/ws/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
+                    	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
                       	success: function(json) {
                       		if(json.resetResponse == 'Invalid'){
   	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();

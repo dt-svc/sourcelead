@@ -237,7 +237,7 @@ $(document).ready(function(){
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">
 		          <div class="clearfix mb10"> 
-		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
+		              <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
 		          <strong class="clearfix">Client Based</strong></a>
 		          </div>
@@ -248,7 +248,7 @@ $(document).ready(function(){
 		          <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">
 		            <div class="clearfix mb10">
 		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		                <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		            </div>
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
@@ -258,7 +258,7 @@ $(document).ready(function(){
 		            <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
@@ -810,7 +810,7 @@ function invoicePagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#invoiceListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -1457,7 +1457,7 @@ function LinkInvoicePagination(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',

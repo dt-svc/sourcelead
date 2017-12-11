@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -1699,7 +1699,7 @@ function getCandidateDetails(){
    		var form = $('#candidate_form')[0];
      		var formData = new FormData(form); 
    		var sourceleadUrl = '${sourceleadUrl}';
-    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
    		   $.ajax({
    					type : "POST",
    	        	    data: formData,
