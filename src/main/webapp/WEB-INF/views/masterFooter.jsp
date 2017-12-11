@@ -92,8 +92,10 @@ $( this ).addClass( feedback.vertical )
 </c:if>
 <script src="resources/js/cropper.min.js"></script>
 <link rel="stylesheet" href="resources/css/cropper.min.css" type="text/css" />
-<div id='imagecrop' class='post_popup'>
-	
-</div>
+<div id='imagecrop' class='post_popup'></div>
+
+
+   
+
 </body>
 </html>

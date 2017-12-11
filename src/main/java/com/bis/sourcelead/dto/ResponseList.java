@@ -7,6 +7,7 @@ public class ResponseList<T> {
 	private int recordsTotal;
 	private int recordsFiltered;
 	private String error;
+	private String statusCode;
 
 	private List<T> data;
 
@@ -41,4 +42,15 @@ public class ResponseList<T> {
 	public void setData(List<T> data) {
 		this.data = data;
 	}
+
+	public String getStatusCode()
+	{
+		return statusCode;
+	}
+
+	public void setStatusCode(String statusCode)
+	{
+		this.statusCode = statusCode;
+	}
+	
 }
