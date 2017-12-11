@@ -35,15 +35,19 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -53,6 +57,7 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -87,6 +92,10 @@ public class OrgSettingsRestController {
 	UserRoleService userRoleService;
 	@Autowired
 	ModulesService modulesService;
+	@Autowired
+	WhiteListIpAddressService whiteListIpAddressService;
+	@Autowired
+	WhiteListIpAddressDao whiteListIpAddressDao;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
@@ -163,7 +172,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/app/ws/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = "/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -544,6 +553,24 @@ public class OrgSettingsRestController {
 		return "Success";
 	}
 	
+	@RequestMapping(value = "/saveWhiteListIps",method = RequestMethod.GET)
+	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO,orgLocations,user);
+		return "Success";
+	}
+	
+	@RequestMapping(value = "/getWhiteListIps", method = RequestMethod.GET)
+	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId());
+		return ipList;
+	}
+	
 	private String toJSON(Object obj)
 	{
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
@@ -558,5 +585,18 @@ public class OrgSettingsRestController {
 	protected boolean isNullOrEmpty(String str)
 	{
 		return str == null || "".equals(str.trim());
+	}
+	
+	@RequestMapping(value = "/deleteIP", method = RequestMethod.POST)
+	public Boolean deleteWhiteListIpById(HttpServletRequest request,@RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
+	{
+		boolean isDeleted = false;
+		WhiteListIPAddress deleteWhiteListIPAddress = whiteListIpAddressService.getWhiteListIpsById(whiteListIpId);
+		 if(deleteWhiteListIPAddress !=null) {
+			 deleteWhiteListIPAddress.setStatus(Constants.INACTIVE);
+			 whiteListIpAddressDao.addWhiteListIps(deleteWhiteListIPAddress);
+			 isDeleted = true;
+		 }
+		return isDeleted;
 	}
 }

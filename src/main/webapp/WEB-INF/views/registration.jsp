@@ -699,7 +699,7 @@ function validateEmail(type){
 			$("#register_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -767,7 +767,7 @@ function validateRecruiterEmail(type){
 			$("#recruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -834,7 +834,7 @@ function validatepopEmail(type){
 			$("#popregister_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: "/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -873,7 +873,7 @@ function validatepopRecruiterEmail(type){
 			$("#poprecruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url:"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url:"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -952,9 +952,9 @@ var validationSettings = {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
 			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
-									location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+									location.replace("/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/verifyAccount");  
+			        			location.replace("/verifyAccount");  
 			        		}
 			        		
 			        	}else if((result == 'login')){
@@ -1017,14 +1017,14 @@ var validationSettings = {
          	 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: "/ws/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
+                	  url: "/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID);  
+			        			location.replace("/verifyAccount?requirementUUID="+requirementUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/verifyAccount");  
+			        			location.replace("/verifyAccount");  
 			        		}
 			        	}else if((result == 'login')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
@@ -1084,7 +1084,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	  url: "/ws/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
+                	  url: "/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');
@@ -1143,7 +1143,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	url: "/ws/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	url: "/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');

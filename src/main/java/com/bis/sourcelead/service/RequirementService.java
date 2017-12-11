@@ -27,6 +27,8 @@ public interface RequirementService {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId,String title) throws Exception;
+	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
 	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;

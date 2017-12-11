@@ -629,7 +629,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
+		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
@@ -784,7 +784,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");

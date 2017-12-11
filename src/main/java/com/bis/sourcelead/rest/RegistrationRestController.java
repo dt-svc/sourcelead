@@ -36,6 +36,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -109,8 +112,12 @@ public class RegistrationRestController {
 	 @Autowired
 	 private RegistrationOptionalServicesService registrationOptionalServicesService;
 	 
+	 
+	 @Autowired
+	 WhiteListIpAddressService whiteListIpAddressService;
+	 
 	 @RequestMapping(value = "/app/getOrgsList")
-		public @ResponseBody String getUsersList(HttpServletRequest request,
+	 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
 				@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "userState", required = false) String userState) {
@@ -279,7 +286,7 @@ public class RegistrationRestController {
 	   }
 	
 	
-	 @RequestMapping(value = "/app/ws/registerAsProfessional" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
 	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
@@ -298,7 +305,7 @@ public class RegistrationRestController {
 		 return result;
 	   }
 	 
-	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
@@ -318,7 +325,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
 			 HttpServletRequest request) throws Exception {
 		 
@@ -331,7 +338,7 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
-	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 
 		 json = "{"+json+"}";
@@ -344,7 +351,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/resetCredentials" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
 	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
@@ -376,7 +383,7 @@ public class RegistrationRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/app/ws/getOptionalValueList" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/getOptionalValueList" , method = RequestMethod.POST)
 	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
 	 			String registerTypeTwo = "Would like to";
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
@@ -587,7 +594,7 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
+	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
 	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -628,7 +635,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/app/ws/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -844,7 +851,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/app/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/app/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -972,6 +979,47 @@ public class RegistrationRestController {
 		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("otpVerification");
 		return model;
+	}
+	
+	@RequestMapping(value = "/app/validateWhitelistIp", method = RequestMethod.GET)
+	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
+	{
+		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String[] currentIp = ipAddress.split("\\.");
+		boolean matched = false;
+		if(ipList.size() > 0){
+			for(WhiteListIPAddressDTO wlipDto : ipList){
+				String fromip = wlipDto.getFromIpAddress();
+				String toip = wlipDto.getToIpAddress();
+				
+				String[] fromipaddr = fromip.split("\\.");
+				String[] toipaddr = toip.split("\\.");
+				
+				if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
+					if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
+						if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
+							if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
+								matched = true;
+							}else{
+								matched = false;
+							}
+						}else{
+							matched = false;
+						}
+					}else{
+						matched = false;
+					}
+				}else{
+					matched = false;
+				}
+			}
+		}else{
+			matched = true;
+		}
+		
+		return matched;
 	}
 	
 	   protected boolean isNullOrEmpty(String str) {

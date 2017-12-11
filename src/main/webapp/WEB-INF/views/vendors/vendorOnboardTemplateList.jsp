@@ -3,10 +3,10 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 <section class="content-wraper">
@@ -55,7 +55,7 @@ $(document).ready(function(){
 
 <script>
 function onboardingTemplatesList(){  
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getVendorOnboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    
@@ -134,7 +134,7 @@ function onboardingTemplatesList(){
 
 <script>
 function deleteOnboadTemplate(templateUUID,id){
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  
 	  $.ajax({
           type : "POST",

@@ -235,5 +235,8 @@ position: absolute; top: 5px; right: 2px;
     width: auto;
 }
 
+.orgErrorMes p {
+	padding: 4px 10px; margin: 0px 0px; font-size: 13px; color: #e72929;
+}
 
 

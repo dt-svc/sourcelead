@@ -274,7 +274,7 @@ public class SubmissionsRestController {
 
 	}
 
-	@RequestMapping(value = "/app/ws/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
+	@RequestMapping(value = "/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
 	public String getInterviewFeedbackTemplate(@RequestParam(value = "templateId", required = false) Long templateId)
 			throws Exception {
 		SubmissionTemplate st = submissionTemplateService.getSubmissionTemplateById(templateId);

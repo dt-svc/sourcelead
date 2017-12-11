@@ -204,7 +204,7 @@ public class MailBoxRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/ws/sendRequestForResume", method = RequestMethod.POST)
+	@RequestMapping(value = "/sendRequestForResume", method = RequestMethod.POST)
 	public String sendRequestForResume(HotListEmailCampaignDTO hotListEmailCampaignDTO,	@RequestParam(value = "candidatesIds", required = false) String candidatesIds,
 			@RequestParam(value = "UUID", required = false) String UUID, HttpServletRequest request) throws Exception {
 		hotListEmailCampaignDTO.setStaticPath(staticPath);
@@ -380,7 +380,7 @@ public class MailBoxRestController {
 	
 	
 
-	@RequestMapping(value = "/app/ws/validateCampaignToEmail", method = RequestMethod.POST)
+	@RequestMapping(value = "/validateCampaignToEmail", method = RequestMethod.POST)
 	public String validateCampaignToEmail(@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "UUID", required = false) String UUID,HttpServletRequest request) throws Exception {
 		
@@ -433,7 +433,7 @@ public class MailBoxRestController {
 
 	 
 	 
-	 @RequestMapping(value = {"/app/ws/getRequestedCandidates", "/app/getRequestedCandidates"}, method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getRequestedCandidates", "/app/getRequestedCandidates"}, method = RequestMethod.POST)
 		public @ResponseBody String getRequestedCandidates(@RequestParam(value = "UUID", required = false) String UUID,
 				HttpServletRequest request) throws Exception {
 			String resultJson = null;

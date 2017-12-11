@@ -214,7 +214,7 @@
 												result = result
 														+ '         <td title='+opt.attachment+'><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'
 														+ sourceleadUrl
-														+ '/ws/downloadOfferAttachment?offerId='
+														+ '/downloadOfferAttachment?offerId='
 														+ opt.offerId
 														+ '\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''
 														+ opt.offerId

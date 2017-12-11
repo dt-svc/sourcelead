@@ -257,7 +257,7 @@ public class CandidateDocumentsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
+	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		

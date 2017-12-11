@@ -2,9 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="/resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="/resources/css/register-style.css" rel="stylesheet">
 
 <style>
 .clsDatePicker {
@@ -283,7 +283,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 function saveClientProject(){
 	 if ($('#project_form').validate(false, validationSettings)){ 
 		 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var formData = getFormData("project_form");
 		 

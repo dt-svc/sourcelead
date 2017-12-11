@@ -17,6 +17,7 @@
 		<a href="<c:url value='/logout'/>"><u class="fa fa-arrow-left OrBak"></u></a>
 	</div>	
 	<div class="orgInn">
+	<div id="whiteListerrDiv" class="orgErrorMes"></div>
 	<c:forEach var="userRole" items="${roleList}">
 	   <input type="hidden" id="isTwoStepEnabled${userRole.id}" name="isTwoStepEnabled${userRole.id}" value="${userRole.orgLocations.loginSecurity}"/>
 		<div class="orgCta clearfix">
@@ -45,11 +46,36 @@
 	</c:forEach>
 	</div>
 	<div class="orgCon">
-		<a href="javascript:validateTwoStepAuth();">Continue</a>
+		<a href="javascript:validateWhiteListIp();">Continue</a>
 	</div>
 </div>
 
 <script>
+function validateWhiteListIp(){
+	var userName = '${username}';
+	var password = '${password}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = '';
+	$(".with-font").each(function () {
+	    if ( $(this).prop("checked") ) {
+	    	userRoleId = $(this).val();
+	    }
+	});
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+userRoleId,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 $('#whiteListerrDiv').find('p.jquery_form_error_message').remove();
+	    		 validateTwoStepAuth();
+	    	 }else{
+	    		$('#whiteListerrDiv').find('p.jquery_form_error_message').remove();
+	 			$("#whiteListerrDiv").append( "<p class='jquery_form_error_message'>You are not accessed from this location</span>");
+	    	 }
+	      },
+	  }); 
+}
+
 function validateTwoStepAuth() {
 	var userName = '${username}';
 	var password = '${password}';
@@ -62,13 +88,14 @@ function validateTwoStepAuth() {
 	});
 	var userLoginSecurity = $("#userLoginSecurity").val();
 	var isTwoStepEnabled = $("#isTwoStepEnabled"+userRoleId).val();
-	if(isTwoStepEnabled != null && isTwoStepEnabled != '' && isTwoStepEnabled != 'undefined' && isTwoStepEnabled  == 'N' && userLoginSecurity == 'N'){
+	if((isTwoStepEnabled == null || isTwoStepEnabled == '' || isTwoStepEnabled == 'undefined' || isTwoStepEnabled  == 'N') && (userLoginSecurity == null || userLoginSecurity == '' || userLoginSecurity == 'undefined' || userLoginSecurity  == 'N')){
 		$.ajax({
 		      type : "POST",
 		       url: sourceleadUrl+"/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
-		    		 location.replace(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId);   
+// 		    		 redirectDaashboard(userRoleId);  
+		    		 location.replace(sourceleadUrl+"/dashboard");   
 		    	 }
 		      },
 		  }); 
@@ -90,6 +117,21 @@ function selectLoc(id){
  	$("#userRoleId"+id).prop('checked', true);
 }
 
+</script>
+
+<script>
+function redirectDaashboard(userRoleId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	alert(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId)
+	window.location.href = sourceleadUrl+"/dashboard?userRoleId="+userRoleId;
+	/* $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/dashboard?&userRoleId="+userRoleId,        
+	       success :function(result) {
+	    	 
+	      },
+	  }); */
+}
 </script>
 
 <!-- orgWrap  -->

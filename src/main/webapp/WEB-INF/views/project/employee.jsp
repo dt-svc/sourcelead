@@ -168,7 +168,7 @@ function filterStatus() {
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
 	 	 
-	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 
 	   var resourceRequestsCount = '${resourceRequestsCount}';
 	   var projectMembersCount = '${projectMembersCount}';
@@ -1515,7 +1515,7 @@ function getAssociates(){
 	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
 	result = result +'<li>';
 	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationProjects();"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
-	result = result +'<label class="radioAlign"><img src="resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'<label class="radioAlign"><img src="/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
 	result = result +'</li>';
 	result = result +'</c:forEach>';
 	result = result +'</ul>';
@@ -1566,7 +1566,7 @@ function getOrgLocationProjects(){
 	    });
 	
 	 var sourceleadUrl = '${sourceleadUrl}';
-	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations, 
@@ -1601,7 +1601,7 @@ function getProjectDetails(){
 	    });
 	
 	if(orgLocationProjects){
-		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
@@ -1790,7 +1790,7 @@ function transferToProject(){
 	 var projectId = document.getElementById("orgLocationProjects").value;
 	 if(projectMembers.length > 0){
 		 
-		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 var projectUUID = '${projectUUID}';
 		 var sourceleadUrl = '${sourceleadUrl}';
 		 var projectClientUUID = '${projectClientUUID}';

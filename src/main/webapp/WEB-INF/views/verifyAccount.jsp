@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
  <jsp:include page="staticHeader.jsp" /> 
 <html>
@@ -14,7 +15,7 @@
        <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
      </c:if>
     <title>::. Verify Your Account .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
 	<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css" >   

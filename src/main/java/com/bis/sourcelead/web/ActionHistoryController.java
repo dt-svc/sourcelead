@@ -25,7 +25,7 @@ public class ActionHistoryController {
 	ActionHistoryService actionHistoryService;
 	
 	
-	@RequestMapping(value = "/ws/getActionHistoryList/{actionUUID}" , method = RequestMethod.GET)
+	@RequestMapping(value = "/getActionHistoryList/{actionUUID}" , method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView getActionHistoryList(@PathVariable String actionUUID,HttpServletRequest request) throws Exception
 	{

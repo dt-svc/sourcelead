@@ -69,7 +69,7 @@ public class OpenJobsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 
-	@RequestMapping(value = { "/app/ws/getOpenJobsELK", "/app/getOpenJobsELK" })
+	@RequestMapping(value = { "/getOpenJobsELK", "/app/getOpenJobsELK" })
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
@@ -98,7 +98,7 @@ public class OpenJobsRestController {
 			BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 
 			BoolQueryBuilder openJobsRequirementQueryBuilder = QueryBuilders.boolQuery();
-			// openJobsRequirementQueryBuilder.must(QueryBuilders.matchQuery("jobTitle",openJobsRequirementTitle));
+			 openJobsRequirementQueryBuilder.must(QueryBuilders.matchQuery("jobTitle",openJobsRequirementTitle));
 
 			JSONObject jsonObj = new JSONObject();
 			JSONObject json = jsonObj.put("jobTitle", openJobsRequirementTitle);
@@ -150,11 +150,16 @@ public class OpenJobsRestController {
 					&& null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation) && null != openJobsExperience
 					&& !"".equalsIgnoreCase(openJobsExperience)) {
 				combinedQueryBuilder.must(openJobsRequirementQueryBuilder);
+				if(openJobsLocation != null){
 				combinedQueryBuilder.must(openJobsLocationQueryBuilder);
+				
+				}
 				// combinedQueryBuilder.must(openJobsExperienceQueryBuilder);
 			} else {
 				combinedQueryBuilder.should(openJobsRequirementQueryBuilder);
+				if(openJobsLocation != null){
 				combinedQueryBuilder.should(openJobsLocationQueryBuilder);
+				}
 				// combinedQueryBuilder.should(openJobsExperienceQueryBuilder);
 			}
 			boolQueryBuilder.must(combinedQueryBuilder);
@@ -287,7 +292,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = "/app/ws/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
+	@RequestMapping(value = "/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
 	public @ResponseBody String openJobsRequiremetsAdvancedSearch(
 			@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "offset", required = false) Integer offset, HttpServletRequest request,
@@ -587,7 +592,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = { "/app/ws/openRequirementsSummary", "/app/openRequirementsSummary" })
+	@RequestMapping(value = { "/openRequirementsSummary", "/app/openRequirementsSummary" })
 	public @ResponseBody String openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
 		Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
@@ -602,7 +607,7 @@ public class OpenJobsRestController {
 	}
 
 
-	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/ws/getOrgsListforOpenJobs" })
+	@RequestMapping(value = { "/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
 	public @ResponseBody String getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
 			@RequestParam(value = "country", required = false) String country) throws Exception {

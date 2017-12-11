@@ -21,7 +21,7 @@
  
 
     <title>::. Registration .::</title>
-    <link rel="icon" type="/resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
     <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -112,7 +112,7 @@ function getOptionalServiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 $.ajax({
       type: "POST",
-  	  url: sourceleadUrl+"/ws/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
+  	  url: sourceleadUrl+"/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
     	success: function(data) {
 		    var json = JSON.parse(data);
 		    var result = '';		
@@ -168,7 +168,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/ws/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	  url: sourceleadUrl+"/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
@@ -208,7 +208,7 @@ function validateUserName(){
 			$("#submit_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/validateCrowdSourcingUserName?${_csrf.parameterName}=${_csrf.token}&userName="+userName,
+		       url: sourceleadUrl+"/validateCrowdSourcingUserName?${_csrf.parameterName}=${_csrf.token}&userName="+userName,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Success'){
@@ -248,7 +248,7 @@ function validateResetUserName(){
 			$("#submit_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/validateCrowdSourcingResetUserName?${_csrf.parameterName}=${_csrf.token}&userName="+userName+"&resetUserName="+resetUserName,
+		       url: sourceleadUrl+"/validateCrowdSourcingResetUserName?${_csrf.parameterName}=${_csrf.token}&userName="+userName+"&resetUserName="+resetUserName,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Success'){
