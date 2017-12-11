@@ -1374,6 +1374,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	private Float getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(TimesheetEntries te,int dayofweek){
 		 Float weekTotalHours = 0f;
 		 for(int i = 8;i>= dayofweek;i--){
+			 if(i==1)
+				 break;
 			 weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, getDayHours(te,i));
 		 }
 		

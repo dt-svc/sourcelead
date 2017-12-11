@@ -1036,56 +1036,27 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(json) {  
-        	 if(json != null && json != 'undefined' && json != ""){
-							var result = '';
-							result = result +'     <div class="clearfix mt5 mb">'; 
-						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-						    result = result +'         <thead>';
-						    result = result +'         <tr>';
-						    result = result +'         <th>Name</th>';
-						    result = result +'         <th>Role</th>';
-						    result = result +'         <th>Team</th>';
-						    result = result +'         <th>No. of Applicants</th>';
-						    result = result +'         </tr>';
-						    result = result +'         </thead>';
-						    result = result +'         <tbody>';
-						    for (var i=0; i<json.length; i++)
-			   				{
-						    var report = json[i];
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>';
-						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
-						    	result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserRole+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						     
-						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
-						    	 result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.teamName+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.applicantCount+'</div></td>';
-						    result = result +'         </tr>';
-			   				}
-						     result = result +' </div> '; 
-						    
-						    $("#assignedMemberList").empty();
-						    $("#assignedMemberList").append(result);
-                 }else{
-						$("#assignedMemberList").removeAttr("style");
-       	    	          var result ="";
-      					 result = result+"   <div class='dataTables_empty'>"; 
-      					$("#assignedMemberList").empty();
-      				    $("#assignedMemberList").append(result); 
-                      }
-               },
-                 
-            }); 
+	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	
+		var result = '';
+		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		  /* result = result + " <div class='remove_search searchCustom'>";
+			result = result
+					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
+			result = result + "</div>"; */
+	    result = result +'         <table id="requirementAssignedToPagination" class="clearfix mb">';
+	    result = result +'         <thead>';
+	    result = result +'         <tr>';
+	    result = result +'         <th>Name</th>';
+	    result = result +'         <th>Role</th>';
+	    result = result +'         <th>Team</th>';
+	    result = result +'         <th>No. of Applicants</th>';
+	    result = result +'         </tr>';
+	    result = result +'         </thead>';
+	    result = result +'         <tbody>';
+	    $("#assignedMemberList").empty();
+		$("#assignedMemberList").append(result);
+		requirementAssignedMembersList(url, requirementId);
 }
 </script>
 
@@ -2872,97 +2843,17 @@ function customizeScore(requirementId){
 		 		    	   minMaxExperience();
 		 		       });
 		 		       
-		    			   //Adding Customized Skills to the list
-		    	        var select, chosen;
-		    		    select = $("#customizeSkills");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    		    chosen = select.data('chosen');
-		    		   
-		    		    chosen.search_field.on('keydown keyup', function(e)
-		    				    {
-		    				    	   var skillsArray = this.value.split(",");
-		    					    	 if(skillsArray.length > 1){
-		    				        		 for (var i=0; i < skillsArray.length; i++) {
-		    				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		    				        			 select.append(option);
-		    				 		             select.find(option).prop('selected', true);
-		    				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		    				 	        		 $("#customizeSkills").trigger("chosen:updated");
-		    				                 }
-		    					    	 }else{
-		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		    				                {
-		    				    				 preventTabkey(e);
-		    				    				 var isNewSkill = true;
-		    				                     $("#customizeSkills option:selected").each(function(){
-		    										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-		    												isNewSkill = false;
-		    												return false;
-		    										 }
-		    				                   });
-		    								   if(isNewSkill){
-		    										select.append(option);
-		    								   }
-		    				    				 
-		    				                   $("#customizeSkills").trigger("chosen:updated");
-		    				                }
-		    						       
-		    			    	         }
-		    		    	});
-		    		    
-		    		    //Adding Customized Skills to the list
-		    		    
-		    		    
+			          //Adding Customized Skills Keyword to the list 
+		 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
+			          
+		    		  //Adding Customized Educaton to the list 
+		 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
+
+		 		       
 		    		  //Adding Customized Any Of Keyword to the list 
-		    		     var selectone, chosenone;
-		    		     selectone = $("#anyKeyWord");
-		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keydown keyup', function(e5)
-		    		    {
-		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
-		    		        {
-		    		        	 preventTabkey(e5);
-		    		        	var par = this.parent;
-		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            selectone.append(option);
-		    		            selectone.find(option).prop('selected', true);
-		                        $("#anyKeyWord option").each(function(){
-		                              $(this).siblings("[value='"+ this.value+"']").remove();
-		                        });
-		    	        		$("#anyKeyWord").trigger("chosen:updated");
-		    	        		
-		    		        }
-		    		    }); 
-		    		    
-		    		    
-		    		    //Adding Customized Educations to the list 
-		    		    var selectTwo, chosenTwo;
-		    		    selectTwo = $("#education");
-		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    		    chosenTwo = selectTwo.data('chosen');
-		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
-		    		    {
-		    		    	var newEducation = this.value.replace("\'","");
-		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		    			        {
-		    		    		   preventTabkey(e1); 
-		    		    		   var par = this.parent;
-		    			            var option = $("<option>").val(newEducation).text(newEducation);
-		    			            selectTwo.append(option);
-		    			            selectTwo.find(option).prop('selected', true);
-		    			            
-		    			            $("#education option").each(function(){
-		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
-		    	                   });
-		    			            
-		    			            $("#education").trigger("chosen:updated");
-		    			           
-		    			        }
-		    		    
-		    		    });
+		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
+		    		     
+		    		   
 		    }
 	 });
 	
@@ -3453,7 +3344,5 @@ return result;
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
-
-
-
+<jsp:include page="requirementAssignedToList.jsp"></jsp:include>
 

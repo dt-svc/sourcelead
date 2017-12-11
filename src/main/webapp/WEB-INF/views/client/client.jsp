@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
  };
 </script>
  <script>
@@ -22,7 +22,9 @@ window.onload = function () {
 .ui-front {
     z-index: 9999999;
 }
-
+.margintop {
+margin-top: -50px;
+}
 </style>
 
 
@@ -62,59 +64,35 @@ window.onload = function () {
 						
 			
 			<div class="form-group" id="locationDiv" style="display: block;">
-	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
+	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
 	        </div>
 		
 		   <div class="form-group" id="orgLocationDiv" style="display: none;">
-	          <label class="col-md-3">Location</label>
+	          <label class="col-md-3">Address</label>
 	          <div class="col-md-9">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Location" readonly></input>
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Address" readonly></input>
 	          </div>
 	          </div>
 	        </div>
 		
-			<div class="form-group" id="countryDiv" style="display: block;">
-	          <label class="col-md-3">Country</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group" id="orgCountryDiv" style="display: none;">
-				<label class="col-md-3">Country</label>
+		  <div class="form-group ">
+				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
-	        
-	        
-	        <div class="form-group" id="stateDiv" style="display: block;">
-	          <label class="col-md-3">State</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	        	 
-			 <div class="form-group" id="orgStateDiv" style="display: none;">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-				</div>
-		 	</div>
-		
-		
-	        <div class="form-group" id="cityDiv" style="display: block;">
+			
+			<div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -125,11 +103,26 @@ window.onload = function () {
 				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
 				</div>
 		   </div>
-		 
-	        <div class="form-group" id="zipCodeDiv" style="display: block;">
+		   
+		   <div class="form-group" id="stateDiv" style="display: block;">
+	          <label class="col-md-3">State</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
+	          </div>
+	        </div>
+	        
+	        	 
+			 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+				</div>
+		 	</div>
+		 	
+		 	 <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        
@@ -139,6 +132,29 @@ window.onload = function () {
 	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
 	          </div>
 	  		  </div>	
+	  		  
+			<div class="form-group" id="countryDiv" style="display: block;">
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" data-validation="required" >
+	                   <option  ${loginCountryName  == 'Australia' ? 'selected' : ''}>Australia</option>
+	                   <option  ${loginCountryName  == 'France' ? 'selected' : ''}>France</option>
+	                   <option  ${loginCountryName  == 'India' ? 'selected' : ''}>India</option>
+	                   <option  ${loginCountryName  == 'Singapore' ? 'selected' : ''}>Singapore</option>
+	                   <option  ${loginCountryName  == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>
+	                   <option  ${loginCountryName  == 'United States' ? 'selected' : ''}>United States</option>
+                 </select>
+                  
+	          </div>
+	        </div>
+	        
+	        <div class="form-group" id="orgCountryDiv" style="display: none;">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				</div>
+			</div>
+	        
 			
 			<div class="form-group hidden">
 	          <label class="col-md-3">Lat</label>
@@ -155,7 +171,9 @@ window.onload = function () {
 	        </div> 
          
             <div class="form-group">
-              <label class="col-md-3">Tier</label>
+            
+            <div class="clearfix mb">
+              <label class="col-md-3">Tier <i class='fa fa-info-circle' title='Segregate the level of Organisation'></i></label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
                     <option value="Tier-1">Tier-1</option>
@@ -165,25 +183,9 @@ window.onload = function () {
                     <option selected="selected" value="Tier-5">Tier-5</option>
                   </select>
               </div>
-            </div>
-            
-            
-            <div class="form-group ">
-				<label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-			<div class="form-group ">
-				<label class="col-md-3">Billing Address</label>
-				<div class="col-md-9">
-				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-            <div class="clearfix mb"></div>
-             <div class="form-group">
+              </div>
+              
+              <div class="clearfix width100Percnt">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
@@ -197,6 +199,23 @@ window.onload = function () {
                   </select>
               </div>
             </div>
+              
+              
+              
+            </div>
+            
+            
+            
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             
             
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -259,7 +278,7 @@ window.onload = function () {
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span> <i class='fa fa-info-circle' title='Owner for the client contact.For single contact can have multiple owners'></i></label>
               <div class="col-md-9 candAdvsrch">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
@@ -815,23 +834,3 @@ function validateOrgName(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
- 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	        
-	       $("#owner").chosen();
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>

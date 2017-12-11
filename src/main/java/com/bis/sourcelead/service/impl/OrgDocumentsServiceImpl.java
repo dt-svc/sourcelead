@@ -124,10 +124,14 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
 			Date startDate = commonUtil.orgLocationDateFormat(clientDocumentsDTO.getDateFormat(),clientDocumentsDTO.getStartDate());
 			orgDocuments.setStartDate(startDate);
+		}else{
+			orgDocuments.setStartDate(null);
 		}
-		if(StringUtils.isNotBlank(clientDocumentsDTO.getStartDate())){
+		if(StringUtils.isNotBlank(clientDocumentsDTO.getEndDate())){
 			Date endDate = commonUtil.orgLocationDateFormat(clientDocumentsDTO.getDateFormat(),clientDocumentsDTO.getEndDate());
 			orgDocuments.setEndDate(endDate);
+		}else{
+			orgDocuments.setEndDate(null);	
 		}
 		
 		if(clientDocumentsDTO.getDescription() != null){

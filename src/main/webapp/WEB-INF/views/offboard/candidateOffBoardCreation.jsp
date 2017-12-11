@@ -113,7 +113,10 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Joined date</label>
                   <div class="col-md-6">
+                  <div class="input-group">
                     <input type="text" class="form-control input-sm calendar" id="dateOfJoin" name="dateOfJoin" readonly="readonly">
+                    <span class="input-group-addon" onClick="clearJoinedDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                    </div>
                   </div>
                 </div>
                 
@@ -156,10 +159,13 @@
                <div class="form-group" id="effectiveDateDiv">
                   <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
+                  <div class="input-group errorInptgroup">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
+                    <span class="input-group-addon" onClick="clearEffectiveDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>  
                   </div>
                 </div>
-                  
+                 </div>
+                 
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
@@ -177,7 +183,10 @@
                 <div class="form-group" id="endDateDiv">
                   <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
+                  <div class="input-group errorInptgroup">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
+                    <span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>  
+                    </div>
                   </div>
                 </div>
                 <div class="form-group" id="workInNotice" style="display: none;">
@@ -203,7 +212,7 @@
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOffBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -250,7 +259,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -1771,4 +1780,16 @@ function scrollToBottom(){
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+</script>
+
+<script>
+function clearJoinedDate(){
+	$("#dateOfJoin").val("");
+	};
+function clearEffectiveDate(){
+	$("#effectiveDate").val("");
+	};
+function clearEndDate(){
+	$("#endDate").val("");
+	};
 </script>

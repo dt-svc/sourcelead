@@ -162,6 +162,8 @@ public class ContractController {
 		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
 		
 		ModelAndView model = new ModelAndView();
+		
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
@@ -587,7 +589,7 @@ public class ContractController {
 		model.setViewName("contracts/viewContract");
 		return model;
 	}
-	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ContractRequestDocuments contractRequestDocuments =  contractRestController.getContractRequestDocumentsById(Long.parseLong(docId));
@@ -610,7 +612,7 @@ public class ContractController {
   	    }
           sos.flush();
           sos.close();
-	}
+	}*/
 	
 	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -636,4 +638,13 @@ public class ContractController {
           sos.close();
 	}
 
+	@RequestMapping(value = "/docusign")
+	public ModelAndView docusignRedirect(@RequestParam(value="contractUUID", required=false)String contractUUID) throws Exception {
+		ModelAndView model = new ModelAndView();
+		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
+		model.addObject("contract", contract);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("contracts/upload");
+		return model;
+	}
 }

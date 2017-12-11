@@ -79,7 +79,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Select the vendor with whom already relationship build,So added contacts will be added to that vendor'></i></label>
             <div class="col-md-9">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();">
                   <option value="">Select Vendor</option>
@@ -321,23 +321,6 @@ function getOrgDetails()
 </script>
 
 
-<!-- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script>  -->
-
  <script>
 	$(document).ready(function() {
 		document.getElementById("vendor_contact_form").reset();
@@ -409,22 +392,6 @@ function getOrgDetails()
  }
  </script>
  
-<!--  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script>  -->
 
 <script type="text/javascript">
         var validationSettings = {

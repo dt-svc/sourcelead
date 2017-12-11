@@ -119,7 +119,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Applicable to All Users</label>
+							<label class="col-md-3">Applicable to All Users ss<i class='fa fa-info-circle' title='Leave policies will be visible to users while applying the respective leave type'></i></label>
 							<div class="col-md-9">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.applicableToUsers}">
@@ -200,7 +200,7 @@
 
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Leaves Carryforward</label>
+							<label class="col-md-3">Leaves Carryforward <i class='fa fa-info-circle' title='Describes whethers leaves are carryforward to next year'></i></label>
 							<div class="col-md-9">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.leavesCarryforward}">
@@ -269,7 +269,7 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Color Picker<span
-								class="text-danger">&nbsp;*</span></label>
+								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Picked color will be repersent for this leave type throughout application'></i></label>
 							<div class="col-md-9">
 								<div id="cp"
 									class="input-group colorpicker-component errorInptgroup">
@@ -292,7 +292,7 @@
 	              </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
 									<input type="checkbox" name="leavePolicy" id="leavePolicy"
-										value="Y">Leave Policy
+										value="Y">Leave Policy <i class='fa fa-info-circle' title='Leave policy for particluar leave type'></i>
 	              </c:if>
 							</div>
 						</div>
@@ -493,4 +493,3 @@
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
-

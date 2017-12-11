@@ -286,6 +286,12 @@
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
 	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval"><span><i class="fa fa-calculator"></i></span><i class="subMenu">Expenses Approval</i></a></li>
 	                 </c:if>
+	                 
+	                 <c:if test="${userTabs.tabName == 'Asset Management'}">
+	                   <li class="${sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management"><span><i class="fa fa-cogs"></i></span><i class="subMenu">Asset Management</i></a></li>
+	                </c:if> 
+	                 
+            	   
 
           </c:forEach>
          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
@@ -295,6 +301,20 @@
           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_USER'}">
           <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
           	</c:if>	
+          	
+          	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+					<%-- <li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li> --%>
+				<li class="side-nav-active"> 
+				<a href="#" class="tree-view">
+					<span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i> </a>
+					<ul class="collapses">
+					<li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
+					<li><a href="<c:url value='/campaignSendersList'/>">Senders</a></li>
+				<li><a href="<c:url value='/recipientsList'/>">Recipients</a></li>
+			</ul>
+			</li> 
+			</sec:authorize>
+	
           	
         </ul>
       </div>

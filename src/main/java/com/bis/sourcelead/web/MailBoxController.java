@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -18,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,7 +31,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContactsGroup;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -37,6 +42,8 @@ import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContactsGroupService;
+import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TeamService;
@@ -75,6 +82,9 @@ public class MailBoxController {
 	UserRoleService userRoleService;
 	
 	@Autowired
+	EmailAccountSettingsService emailAccountSettingsService;
+	
+	@Autowired
 	UserMailBoxService userMailBoxService;
 	
 	@Autowired
@@ -83,14 +93,26 @@ public class MailBoxController {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	ContactsGroupService contactsGroupService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/mailBox")
- 	public ModelAndView mailBox(HttpServletRequest request) throws Exception {
+	
+	@RequestMapping(value = "/mailBox/{mailType}", method = RequestMethod.GET)
+	 public @ResponseBody void mailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/userMailBox?mailType=").append(mailType).toString());
+			
+	}
+	
+	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/userMailBox")
+ 	public ModelAndView userMailBox(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		   
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -102,20 +124,32 @@ public class MailBoxController {
 			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
 			SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 			
+			List<EmailAccountSettings> emailAccountSettingsServiceList = emailAccountSettingsService.emailAccountSettingsList(user.getId());
+			if(emailAccountSettingsServiceList != null){
+				model.addObject("emailAccountSettingsServiceList", emailAccountSettingsServiceList);
+			}
  			model.setViewName("mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
  			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
+ 			model.addObject("mailType", mailType);
  			return model;
  	}
-
+	
+	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/composeMail")
- 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
+ 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
+		    
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("composeMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+ 			 model.addObject("contactsGroupList", contactsGroupList);
+ 			 
  			if(!isNullOrEmpty(UUID)){
  				model.addObject("UUID", UUID);
  				UserMailBox mailBox = userMailBoxService.getUserMailBoxByUUID(UUID);
@@ -129,7 +163,13 @@ public class MailBoxController {
  			
  			return model;
  	}
-	
+	@RequestMapping(value = "/emailSettings")
+ 	public ModelAndView emailSettings(HttpServletRequest request) {
+		    ModelAndView model = new ModelAndView();
+ 			model.setViewName("emailSettings");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
@@ -157,10 +197,15 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/hotlistMail")
- 	public ModelAndView hotlistMail(HttpServletRequest request) {
+ 	public ModelAndView hotlistMail(HttpServletRequest request) throws Exception {
+		
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
+ 			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;
  	}
 	
@@ -224,6 +269,7 @@ public class MailBoxController {
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/getUserMailsFromELK")
 	public @ResponseBody String getUserMailsFromELK(@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "mailType", required = false) String mailType,
 			HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -244,6 +290,12 @@ public class MailBoxController {
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("mailStatus", type));
 		 }else{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
+		 }
+		 
+		 if(StringUtils.isNotBlank(mailType) &&  mailType.equalsIgnoreCase("mails")){
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("mailType", 1));
+		 }else{
+			 boolQueryBuilder.must(QueryBuilders.matchQuery("mailType", 2));
 		 }
 		 
 		
@@ -408,6 +460,14 @@ public class MailBoxController {
 
 		}
 
+	}
+	
+	@RequestMapping(value = "/campaignStats")
+	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStats");
+	       return model;
 	}
 	
 	

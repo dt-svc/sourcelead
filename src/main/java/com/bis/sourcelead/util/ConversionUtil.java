@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -96,6 +97,26 @@ public class ConversionUtil {
 		}
 		return 0;
 	}
+	
+	
+	public  float convert(String fromCurrencyCode, String toCurrencyCode, BigDecimal bigDecimal)
+	{
+		
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
+				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+			
+			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
+					+ fromCurrencyCode);
+			if (response != null) {
+				
+				String rate = response.getRates().get(toCurrencyCode);
+				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
+				return conversionRate * bigDecimal.floatValue();
+			}
+		}
+		return 0;
+	}
+	
 	
 	
 	// Method to get the response from API

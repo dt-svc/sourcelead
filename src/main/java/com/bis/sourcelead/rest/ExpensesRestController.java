@@ -172,10 +172,16 @@ public class ExpensesRestController {
                          }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
                              expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
                          }
+                        OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
+            			expenses.setOrgRelationUUID(orgRelations.getUUID());
                     }
                 }
                 
             }
+            /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
+    			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
+    			expenses.setOrgRelationUUID(orgRelations.getUUID());
+    		}*/
             expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
         }
         response.setData(expensesDTOList);
@@ -239,6 +245,9 @@ public class ExpensesRestController {
 					 }else if("Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
 						 projectDTO.setClient(pc.getOrgRelationId().getLocationId().getOrgLocationName());
 					 }
+			    	 
+			    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
+			    	 projectDTO.setOrgRelationUUID(orgRelations.getUUID());
 			    }
 				projectsList.add(projectDTO);
 			}
@@ -273,6 +282,9 @@ public class ExpensesRestController {
 						 }else if("Client".equalsIgnoreCase(pm.getProjectClientsId().getOrgRelationId().getInitiatorType())){
 							 pmDTO.setClientName(pm.getProjectClientsId().getOrgRelationId().getLocationId().getOrgLocationName());
 						 }
+				    	 
+				    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
+				    	 pmDTO.setOrgRelationUUID(orgRelations.getUUID());
 				    }
 					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId());
 					 if(dateMap != null && !dateMap.isEmpty()) {
@@ -285,6 +297,9 @@ public class ExpensesRestController {
 					 }
 					 pmDTO.setProjectId(pm.getProjects().getId());
 					pmDTOList.add(pmDTO);
+					
+					
+					
 				}
 				expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
 			}

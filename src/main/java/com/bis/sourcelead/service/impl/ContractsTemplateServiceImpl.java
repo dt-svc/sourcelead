@@ -779,6 +779,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(contracts.getContractsTemplate() != null){
 			venContractsDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
 			}
+			
+			
 			venContractsDto.setOwnerName(ownerName.toString());
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
@@ -801,6 +803,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						venContractsDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	venContractsDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -825,6 +829,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}*/
+			
+			if(contracts.getTemplateFileURL() != null){
+				venContractsDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
 			
 			if(contracts.getId() != null){
 				venContractsDto.setId(contracts.getId());
@@ -936,6 +944,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						clientConDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	clientConDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
@@ -959,6 +969,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				clientConDto.setEndDateStr(endDateInTimezone);
+			}
+			
+			if(contracts.getTemplateFileURL() != null){
+				clientConDto.setTemplateFileURL(contracts.getTemplateFileURL());
 			}
 			
 			if(contracts.getId() != null){
