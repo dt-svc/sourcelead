@@ -9,6 +9,7 @@ public class TimeReportsSubmissionDetailsDTO implements Serializable{
 	private Long projectMemberId;
 	private String fileUrl;
 	private String fullName;
+	private String email;
 	private String designationType;
 	private String employeeId;
 	private String projectName;
@@ -49,6 +50,12 @@ public class TimeReportsSubmissionDetailsDTO implements Serializable{
 	}
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public String getDesignationType() {
 		return designationType;

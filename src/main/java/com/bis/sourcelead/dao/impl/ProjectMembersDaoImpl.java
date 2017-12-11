@@ -602,6 +602,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		 searchQuery.append(" and (candidate.firstName like '%" + searchValue + "%' ")
 					.append("OR candidate.lastName like '%" + searchValue + "%' ")
+					.append("OR (concat(candidate.firstName,' ',candidate.lastName) like '%" + searchValue + "%')")
+					.append("OR candidate.email like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
 		 			.append("OR projects.invoiceFrequency like '%" + searchValue + "%' )");
@@ -612,6 +614,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		searchCountQuery.append(" and (pm.projectMemberCandidteId.firstName like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "%' ")
+						.append("OR (concat(pm.projectMemberCandidteId.firstName,' ',pm.projectMemberCandidteId.lastName) like '%" + searchValue.trim() + "%')")
+						.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 						.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
 			 			.append("OR pm.projects.invoiceFrequency like '%" + searchValue + "%' )");

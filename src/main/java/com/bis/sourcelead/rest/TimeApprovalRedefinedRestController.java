@@ -268,7 +268,7 @@ public class TimeApprovalRedefinedRestController {
 	    	        
 	 			    if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 	 			    	int  count = 1;
-	 			    	Map<String,String> dateFrequencyList = new HashMap<>();
+	 			    	LinkedHashMap<String,String> dateFrequencyList = new LinkedHashMap<>();
 	 			    	for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	 			    		 String  k = entry.getKey();
 	 			    		 String  v = entry.getValue();

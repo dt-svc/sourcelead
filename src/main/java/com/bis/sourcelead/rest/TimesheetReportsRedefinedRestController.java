@@ -256,6 +256,7 @@ public class TimesheetReportsRedefinedRestController {
 			 }
 			 	details.setProjectMemberId(projectMember.getId());
 			 	details.setFullName(projectMember.getProjectMemberCandidteId().getFullName());
+			 	details.setEmail(projectMember.getProjectMemberCandidteId().getEmail());
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
