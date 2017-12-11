@@ -95,7 +95,7 @@
           </div>
 
 
-          <div class="mail-box">
+          <div class="mail-box" id="dynamicEmailFolder" style="display:block">
             <div class="mail-box-header">
               <h3>Folders</h3>
             </div>
@@ -702,6 +702,13 @@ function activeEmail(id){
 		type : "POST",
 		url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
 		success : function(data) {
+			alert("hello")
+			$("#dynamicEmailFolder").hide();
+			 var json = JSON.parse(data);
+			 alert(json.length)
+			 for(var i=0; i<json.length; i++){
+				 
+			 }
 			if(data==true){
 			location.replace(sourceleadUrl+"/mailBox/mails");
 			}else{

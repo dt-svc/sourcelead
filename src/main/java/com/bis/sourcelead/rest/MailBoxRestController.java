@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
+import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -828,13 +830,15 @@ public class MailBoxRestController {
 			
 		}
 	 @RequestMapping(value = "/emailAccountRead" , method = RequestMethod.POST)
-		public boolean emailAccountRead(Long id, HttpServletRequest request)
+		public @ResponseBody String emailAccountRead(Long id, HttpServletRequest request)
 				throws Exception {
 		 
 		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  List<String> folders=new ArrayList<>();
 		  Long userId=user.getId();
-		 boolean successval= emailAccountSettingsService.emailAccountRead(id,userId);
-		  return successval;
+		  folders= emailAccountSettingsService.emailAccountRead(id,userId);
+		  String resultJson = toJSON(folders);
+			return resultJson;
 			
 		}
 }
