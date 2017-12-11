@@ -161,7 +161,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">WhiteList Ips</a></li>
         </c:if>
       </ul>
       <!-- Tab Pills navbar -->
@@ -463,9 +463,11 @@ function cancelOrgImg(){
                                 	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
                                 </div>
                              </div>
-                            </div>
-                            <div class="vendor_wrap_inn_table datatable_filter">
+                            
+                            <div class="tableStyles datatable_filter mt40">
                 				<div id="whiteListIpsDiv"></div>   
+                			</div>
+                			
                 			</div>         
             			</div>
             			
@@ -496,6 +498,7 @@ function cancelOrgImg(){
         </div>
         <div class="modal-body">
         <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+        <input type="hidden" name="id" id="whiteListId"/>
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
            <label class="col-md-3">From IP</label>
            <div class="col-md-9">
@@ -552,12 +555,13 @@ function switchLoginSecurity(){
 function saveWhiteListIps(){
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
+	var whiteListId = $("#whiteListId").val();
 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 			$.ajax({
 			      type : "GET",
-			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress,        
+			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
 			       success :function(data) {
 			       if(data == "Success"){
 			    	   $("#fromIpAddress").val("");
@@ -614,7 +618,7 @@ function getWhiteListIps(){
     		        	result = result + '</td>';	 
     		        	result = result + '<td>';
     		        	result = result +'     <div class="tblminwidth-50">                                                                                            ';
-    		        	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value=""/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    		        	result = result +'          <span title="Edit" class="paddingRight"><a onclick="editWhiteListIp('+report.id+');"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
     		        	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteWhiteListIp(\''+report.id+'\');"></i></span>              ';
     		        	result = result +'      </div> ';
     		        	result = result + '</td>';
@@ -644,6 +648,29 @@ function WhiteListIpTablePagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
+}
+</script>
+
+<script>
+function editWhiteListIp(id){
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
+        success: function(data) {
+        	$(".modal.addipPopup-modal").fadeIn();
+        	$(".comMask").fadeIn();
+        	if(data.id != null && data.id != '' && data.id != 'undefined'){
+        		$("#whiteListId").val(data.id);
+        	}
+        	if(data.fromIpAddress != null && data.fromIpAddress != '' && data.fromIpAddress != 'undefined'){
+        		$("#fromIpAddress").val(data.fromIpAddress);
+        	}
+			if(data.toIpAddress != null && data.toIpAddress != '' && data.toIpAddress != 'undefined'){
+				$("#toIpAddress").val(data.toIpAddress);
+        	}
+        	
+        }
+	});
 }
 </script>
 
@@ -2626,6 +2653,8 @@ function addOrgRefreshGoogleApiLocation(){
 
 <script>
 function addipPopup(){
+	$('#fromIpAddressDiv').val("");
+	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$(".modal.addipPopup-modal").fadeIn();

@@ -599,4 +599,11 @@ public class OrgSettingsRestController {
 		 }
 		return isDeleted;
 	}
+	
+	@RequestMapping(value = "/app/editWhiteListIp", method = RequestMethod.GET)
+	public WhiteListIPAddress editWhiteListIp(@RequestParam(value = "whiteListId", required = false) long whiteListId,HttpServletRequest request) throws Exception
+	{
+		WhiteListIPAddress whiteListIp = whiteListIpAddressService.getWhiteListIpsById(whiteListId);
+		return whiteListIp;
+	}
 }

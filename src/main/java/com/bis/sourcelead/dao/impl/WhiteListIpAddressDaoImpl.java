@@ -78,7 +78,7 @@ public class WhiteListIpAddressDaoImpl implements WhiteListIpAddressDao {
 	@Transactional
 	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from WhiteListIPAddress wlip where wlip.id = :whiteListIpId";
+		String query = "from WhiteListIPAddress wlip left join fetch wlip.orgLocation where wlip.id = :whiteListIpId";
 		List<WhiteListIPAddress> ipList = session.createQuery(query).setLong("whiteListIpId", whiteListIpId).setCacheable(false).list();
 		if(ipList != null && ipList.size() >0){
 			return ipList.get(0);
