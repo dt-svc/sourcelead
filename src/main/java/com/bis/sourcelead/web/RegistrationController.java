@@ -535,7 +535,7 @@ public class RegistrationController {
 		  }
 	   }
 	  
-	  @RequestMapping(value = "/app/verifyAccount",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/verifyAccount",  method = RequestMethod.GET)
 	   public ModelAndView verifyAccount(@RequestParam(value="requirementUUID", required=false) String requirementUUID,@RequestParam(value="referUUID", required=false) String referUUID) throws Exception {
 		  
 		  ModelAndView model = new ModelAndView();

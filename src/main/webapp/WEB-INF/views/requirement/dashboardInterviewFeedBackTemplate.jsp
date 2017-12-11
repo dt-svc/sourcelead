@@ -177,7 +177,7 @@ function saveFeedbackNo(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+			url :"/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 			success : function(data) {
 				$("#cancelFeedbackDiv").hide();
 				viewTemplateNo();

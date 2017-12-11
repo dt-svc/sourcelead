@@ -194,11 +194,11 @@
 
 <script>
 
-$(".sign_btn").click(function(){
+/* $(".sign_btn").click(function(){
 	$(".signWrap").addClass("orgOutWrap");
 	$(".SignSlide").hide();
 	$(".orgWrap").show();
-});
+}); */
 
 
 $(function () {

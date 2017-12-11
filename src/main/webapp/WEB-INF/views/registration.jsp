@@ -952,9 +952,9 @@ var validationSettings = {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
 			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
-									location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+									location.replace("/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/verifyAccount");  
+			        			location.replace("/verifyAccount");  
 			        		}
 			        		
 			        	}else if((result == 'login')){
@@ -1022,9 +1022,9 @@ var validationSettings = {
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace(sourceleadUrl+"/verifyAccount?requirementUUID="+requirementUUID);  
+			        			location.replace("/verifyAccount?requirementUUID="+requirementUUID);  
 			        		}else{
-			        			location.replace(sourceleadUrl+"/verifyAccount");  
+			        			location.replace("/verifyAccount");  
 			        		}
 			        	}else if((result == 'login')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
