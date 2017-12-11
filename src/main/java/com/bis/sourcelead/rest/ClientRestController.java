@@ -1422,9 +1422,10 @@ public class ClientRestController {
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
-		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
+				Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			/**
-			 * this fields for job campaigns
+			 * this fields for job campaigns and hotlist campaigns
 			 */
 			String[] tableColumns = {"ischeck", "responderOrgName",  "website", "responderCity", "createdBy", "noContacts"};
 			tableColumns1 = tableColumns;
@@ -1448,7 +1449,7 @@ public class ClientRestController {
 		 String responderType= "";
 		 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			 responderType = Constants.CLIENT;
-		 }else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+		 }else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType()) || Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			 responderType = Constants.VENDOR; 
 		 }
 		 
@@ -1739,7 +1740,8 @@ public class ClientRestController {
 			 */
 		 
 		    String[] tableColumns1 = null;
-			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
+					Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 				String[] tableColumns = {"", "orgName",  "spocName", "spocEmail", "spocStatus"};
 				tableColumns1 = tableColumns;
 			}else{
@@ -1749,6 +1751,10 @@ public class ClientRestController {
 			
 			if(clientVendorDTO.getResponderType().equalsIgnoreCase(Constants.JOB_CAMPAIGN_VENDOR)){
 				clientVendorDTO.setResponderType(Constants.VENDOR);
+			}
+			
+			if(clientVendorDTO.getResponderType().equalsIgnoreCase(Constants.HOT_LIST_CAMPAIGN_VENDOR)){
+				clientVendorDTO.setResponderType(Constants.CLIENT);
 			}
 			
 			

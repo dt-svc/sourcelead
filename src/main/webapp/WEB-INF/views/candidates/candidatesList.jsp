@@ -819,8 +819,7 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List</h2>
     </div>
-    
-    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
@@ -1263,7 +1262,9 @@ function cancel(candidateId){
 	}
 </script>
 
- 
+ <script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
 // Error pop

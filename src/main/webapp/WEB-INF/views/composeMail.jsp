@@ -483,6 +483,7 @@ function getUserList(teamType){
 
 <script>
 function getContactsList(){
+	
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
