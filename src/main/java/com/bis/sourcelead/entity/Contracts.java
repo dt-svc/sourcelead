@@ -208,6 +208,9 @@ public class Contracts {
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
+	@Column(name = "TEMPLATE_FILE_URL")
+	private String templateFileURL;
+	
 	@Transient
 	private String ownerName;
 	
@@ -1097,7 +1100,11 @@ public class Contracts {
 	{
 		this.spocUUID = spocUUID;
 	}
-	
-	
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
 
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
 }
