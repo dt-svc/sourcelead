@@ -230,6 +230,7 @@ public class UsersListRestController {
 				 userRoleType = null;
 			}
 			
+			
 			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset,viewType);
 	
 			if(null != rolesList && rolesList.size() >0){
