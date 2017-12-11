@@ -1324,7 +1324,7 @@ public class RequirementListRestController {
 	 * @throws Exception
 	 * @returns void
 	 */
-	@RequestMapping(value = "/downloadOfferAttachment")
+	@RequestMapping(value = "/ws/downloadOfferAttachment")
 	public void downloadOfferAttachment(@RequestParam(value = "offerId", required = false) Long offerId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);

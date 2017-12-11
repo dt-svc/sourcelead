@@ -39,7 +39,7 @@ public class SocialInviterService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-    @RequestMapping(value={"/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
+    @RequestMapping(value={"/ws/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
