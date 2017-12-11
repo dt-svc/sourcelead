@@ -98,7 +98,7 @@ public class OpenJobsRestController {
 			BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 
 			BoolQueryBuilder openJobsRequirementQueryBuilder = QueryBuilders.boolQuery();
-			// openJobsRequirementQueryBuilder.must(QueryBuilders.matchQuery("jobTitle",openJobsRequirementTitle));
+			 openJobsRequirementQueryBuilder.must(QueryBuilders.matchQuery("jobTitle",openJobsRequirementTitle));
 
 			JSONObject jsonObj = new JSONObject();
 			JSONObject json = jsonObj.put("jobTitle", openJobsRequirementTitle);
@@ -150,11 +150,16 @@ public class OpenJobsRestController {
 					&& null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation) && null != openJobsExperience
 					&& !"".equalsIgnoreCase(openJobsExperience)) {
 				combinedQueryBuilder.must(openJobsRequirementQueryBuilder);
+				if(openJobsLocation != null){
 				combinedQueryBuilder.must(openJobsLocationQueryBuilder);
+				
+				}
 				// combinedQueryBuilder.must(openJobsExperienceQueryBuilder);
 			} else {
 				combinedQueryBuilder.should(openJobsRequirementQueryBuilder);
+				if(openJobsLocation != null){
 				combinedQueryBuilder.should(openJobsLocationQueryBuilder);
+				}
 				// combinedQueryBuilder.should(openJobsExperienceQueryBuilder);
 			}
 			boolQueryBuilder.must(combinedQueryBuilder);

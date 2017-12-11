@@ -1700,14 +1700,11 @@ $("#searchType").selectpicker('refresh');
 <script>
 function saveInviteCompany() {
 	if ($('#inviteCompany_form').validate(false, validationSettings)) {
-		
-			var formData = getFormData1("inviteCompany_form");
+			var formData = getFormData("inviteCompany_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 					  type : "POST",
 					  data: formData,
-	 		          processData: false,
-	 		          contentType:false, 
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
@@ -1903,4 +1900,5 @@ function zipcodeMask(country,zipCodeId){
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

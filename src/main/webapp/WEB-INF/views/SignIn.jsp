@@ -88,15 +88,15 @@
 		<input type="submit" value="Submit" class="sign_btn" />
 		
 		<c:if test="${!empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${!empty requirementUUID && !empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
         </c:if>
         
         <c:if test="${empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='${appPath}/register'/>">Sign up</a></h5></div>
+         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
         </c:if>
 		
 		</form>

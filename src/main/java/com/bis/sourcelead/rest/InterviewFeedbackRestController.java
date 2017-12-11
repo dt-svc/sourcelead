@@ -45,7 +45,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class InterviewFeedbackRestController {
 	
 	@Autowired
@@ -85,7 +84,7 @@ public class InterviewFeedbackRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
+	@RequestMapping(value = "/app/getPublicInterviewFeedbackTemplate" , method = RequestMethod.GET)
 	   public String getPublicInterviewFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId,
 			   @RequestParam(value="requirementInterviewid", required=false) Long requirementInterviewid) throws Exception {
 		    String resultJson = null;
@@ -155,7 +154,7 @@ public class InterviewFeedbackRestController {
      */
     
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')")
-    @RequestMapping(value = "/saveInterviewFeedBackTemplate" , method = RequestMethod.POST)
+    @RequestMapping(value = "/app/saveInterviewFeedBackTemplate" , method = RequestMethod.POST)
 	   public String saveInterviewFeedBackTemplate(@RequestParam(value="jsonData", required=false) String json,
 			   @RequestParam(value="templateId", required=false) String templateId,
 			   @RequestParam(value="jsonStringData", required=false) String jsonStringData,HttpServletRequest request) throws Exception {
@@ -246,7 +245,7 @@ public class InterviewFeedbackRestController {
         * @throws Exception
         */
     
-    @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
  	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
  		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
  		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
@@ -256,7 +255,7 @@ public class InterviewFeedbackRestController {
     
     
     
-    @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
+    @RequestMapping(value = "/app/getInterviewrsFeedbackList" , method = RequestMethod.GET)
 	   public List<RequirementInterviewerDTO> getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,@RequestParam(value="locationId", required=false) Long locationId) throws Exception {
 						List<RequirementInterviewerDTO> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdFromDTO(interviewId);
 						OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
@@ -270,7 +269,7 @@ public class InterviewFeedbackRestController {
 			 return interviewers;
 	   }
     
-    @RequestMapping(value = "/loadInterviewFeedbackTemplate" , method = RequestMethod.GET)
+    @RequestMapping(value = "/app/loadInterviewFeedbackTemplate" , method = RequestMethod.GET)
 	   public String loadInterviewFeedbackTemplate() throws Exception {
 		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(1L,Constants.DEFAULT_INTERVIEW_FEEDBACK_TEMAPLATE);
 			return submissionTemplate.getJsonString();

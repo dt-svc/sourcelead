@@ -47,7 +47,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class MailBoxController {
 	
 
@@ -90,7 +89,7 @@ public class MailBoxController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/mailBox")
+	@RequestMapping(value = "/app/mailBox")
  	public ModelAndView mailBox(HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		   
@@ -112,7 +111,7 @@ public class MailBoxController {
 
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/composeMail")
+	@RequestMapping(value = "/app/composeMail")
  	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("composeMail");
@@ -134,7 +133,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/forwardEmail")
+	@RequestMapping(value = "/app/forwardEmail")
  	public ModelAndView forwardEmail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID,
  			@RequestParam(value="mailType", required=false) String mailType) {
 		    ModelAndView model = new ModelAndView();
@@ -157,7 +156,7 @@ public class MailBoxController {
  	}
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/hotlistMail")
+	@RequestMapping(value = "/app/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
@@ -167,7 +166,7 @@ public class MailBoxController {
 	
 	
 
-	@RequestMapping(value = "/ws/requestForCandidateResume")
+	@RequestMapping(value = "/requestForCandidateResume")
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
@@ -181,7 +180,7 @@ public class MailBoxController {
  	}
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/getClientContacts")
+	@RequestMapping(value = "/app/getClientContacts")
 	public @ResponseBody String getClientContacts(HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -223,7 +222,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/getUserMailsFromELK")
+	@RequestMapping(value = "/app/getUserMailsFromELK")
 	public @ResponseBody String getUserMailsFromELK(@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) throws Exception {
 
@@ -277,7 +276,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/getClientsListForHotlist")
+	@RequestMapping(value = "/app/getClientsListForHotlist")
 	public @ResponseBody String getClientsListForHotlist(HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -290,7 +289,7 @@ public class MailBoxController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/getCandidatesForCampaign")
+	@RequestMapping(value = "/app/getCandidatesForCampaign")
 	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
 			HttpServletRequest request) throws Exception {
 

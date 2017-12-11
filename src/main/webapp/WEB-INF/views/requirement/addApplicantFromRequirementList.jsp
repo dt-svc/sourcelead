@@ -1130,7 +1130,7 @@ function getAllSubmissionCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();

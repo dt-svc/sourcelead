@@ -508,7 +508,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/ws/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);
@@ -728,7 +728,7 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url: sourceleadUrl+"/ws/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
+			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},
@@ -744,7 +744,7 @@ function proposeNewRate(submissionId, candidateId) {
 	function acceptRejectRate(submissionId, status, candidateId) {
 		$("#rateActionDiv").empty();
 		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
@@ -938,7 +938,7 @@ $('body').on('submit', '#referToContacts', function(e){
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	
 	 	  $.ajax({
 		    	type: "POST",
@@ -971,7 +971,7 @@ $('body').on('submit', '#referToJob_form', function(e){
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var formData = getFormData1("referToJob_form");
     		
 		       $.ajax({
@@ -1060,7 +1060,7 @@ function cancelReferPopUp(){
 </script>
 <script>
 	function predefineOrgProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

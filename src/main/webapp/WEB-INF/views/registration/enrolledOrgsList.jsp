@@ -46,7 +46,7 @@ margin-right: 15px;
         <h2>Orgs List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="app/dashboard">Home</a> &raquo; Orgs List </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
     <input id="searchOrgElement" type="hidden"></input>
     </section>
      <input type="hidden" id="noOrgsList" name="noOrgsList"/>
@@ -86,7 +86,7 @@ margin-right: 15px;
   </section>
   
       <!-- Content Area Ends--> 
-	<div class="backtotop"><img src="resources/images/backtotop.png"></div>  
+	<div class="backtotop"><img src="/resources/images/backtotop.png"></div>  
       <jsp:include page="../masterFooter.jsp" />
       
       <script>
@@ -134,11 +134,11 @@ margin-right: 15px;
 	    /* $('#orgListBody').empty();
         $('#orgListEmptyBody').empty(); */
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
+	    	url: "/app/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
@@ -245,7 +245,7 @@ margin-right: 15px;
 function resendInvitation(userId,orgId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  

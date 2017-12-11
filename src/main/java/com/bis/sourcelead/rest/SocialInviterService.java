@@ -39,7 +39,7 @@ public class SocialInviterService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET )
+    @RequestMapping(value={"/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
@@ -206,7 +206,7 @@ public class SocialInviterService {
 	}
     
     
-    @RequestMapping(value = "/storeCsv", method = RequestMethod.POST)
+    @RequestMapping(value = {"/storeCsv", "/app/storeCsv"}, method = RequestMethod.POST)
 	public @ResponseBody String storeCsv(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;

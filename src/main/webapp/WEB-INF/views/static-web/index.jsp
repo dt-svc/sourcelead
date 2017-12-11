@@ -63,7 +63,6 @@
 <script type="text/javascript">
 function redirectPageStatic(){
 	var title = document.getElementById("openJobsRequirementTitleId").value;
-	alert("title"+title)
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("dropDownCountId").value;
 	window.location.href = sourceleadUrl+"app/openRequirementsRedirect?&title="+title+"&location="+location+"&experience="+experience;
@@ -86,7 +85,8 @@ function redirectPageStatic(){
 	}
 </script>
 <script type="text/javascript">
-	$(window).load(function() {requirementUUID != null} ){
+	$(window).load(function() {
+		if(requirementUUID != null){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
@@ -104,7 +104,7 @@ function getOpenJobsELKList(){
 	var offset = 0;
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
+	   	url:"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	     $("#openJobsRequirementsList").empty();
 	     var json = JSON.parse(data);

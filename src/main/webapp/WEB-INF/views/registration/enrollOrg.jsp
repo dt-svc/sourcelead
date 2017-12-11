@@ -22,7 +22,7 @@ function changeCountry(){
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="app/dashboard">Home</a> &raquo; <a href="path/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
@@ -273,7 +273,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',

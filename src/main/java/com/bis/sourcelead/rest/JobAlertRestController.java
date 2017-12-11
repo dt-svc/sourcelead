@@ -42,7 +42,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class JobAlertRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -70,7 +69,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	}
     
     
-    @RequestMapping(value = "/getJobAlertList")
+    @RequestMapping(value = "/app/getJobAlertList")
 	 public String getJobAlertList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -97,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/deleteJobAlert", method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/deleteJobAlert", method = RequestMethod.POST)
 	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -113,7 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = "/app/getJobDetailsForJobAlert", method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -311,7 +310,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 							 tempHTML = tempHTML+"<tr>";
 							 tempHTML = tempHTML+"<td style='width:100%;padding:0px 0px 10px 0px;text-align:left;border-bottom:1px solid #ddd; line-height: 18px;'>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:14px;Margin-bottom:2px;color:#1976d2;padding:0;text-decoration:none;''>";
-							 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"ws/jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
+							 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
 							 tempHTML = tempHTML+"</p>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;padding:0;'>"+requirementIndex.getPostedOrg()+" </p>";
 							 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;color:#757575;padding:0;'> "+location.toString()+" </p>";

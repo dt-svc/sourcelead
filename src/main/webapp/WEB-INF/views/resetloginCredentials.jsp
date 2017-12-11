@@ -21,7 +21,7 @@
  
 
     <title>::. Registration .::</title>
-    <link rel="icon" type="/resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
     <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">

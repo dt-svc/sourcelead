@@ -4,18 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
-	<link rel="icon" type="image/png" sizes="16x16" href="resources/css/static-web/images/favicon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/resources/css/static-web/images/favicon.png">
 	<link rel="manifest" href="/manifest.json">
     <title>::Welcome to SourceLead::</title>
 
     <!-- Bootstrap -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
-    <link href="resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="resources/css/static-web/reset.css">
-    <link href="resources/css/static-web/source-style.css" rel="stylesheet">
-    <link href="resources/css/static-web/source-responsive.css" rel="stylesheet">
-    <link href="resources/css/static-web/main-style.css" rel="stylesheet"> 
+    <link href="/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/resources/css/static-web/reset.css">
+    <link href="/resources/css/static-web/source-style.css" rel="stylesheet">
+    <link href="/resources/css/static-web/source-responsive.css" rel="stylesheet">
+    <link href="/resources/css/static-web/main-style.css" rel="stylesheet"> 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -41,7 +41,7 @@
 
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="home.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
