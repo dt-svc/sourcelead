@@ -898,8 +898,12 @@ a.alertBtn {
 
 <script>
 function clearcheck(){
-	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
+	/* $('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked'); */
+	$('input:checkbox[name=orgName]').each(function(){
+		$(this).removeAttr('checked');
+	});
 	$(".LettSelec a").removeClass("actL");
+	requirementsFilter();
 }
 
 function clearFilters(){
@@ -961,7 +965,9 @@ function requirementsFilter(type){
 	$('input:checkbox[name=orgName]:checked').each(function() 
     {
 // 		orgLocationIds.push($(this).val());
-		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
+		if(orgLocationIds.indexOf($(this).val())===-1){
+			orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
+		}
     });
 	
 	var offset = 0;
@@ -992,6 +998,9 @@ function requirementsFilter(type){
 	if(orgLocationIds!=undefined && orgLocationIds!=""){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"companies="+orgLocationIds.toString().toLowerCase().replace(/ /g ,"-");
+	}
+	if(url.indexOf("?")===url.length-1) {
+		url = url.substring(0,url.length-1)
 	}
 	window.location.href = url;
 	
@@ -1318,8 +1327,8 @@ function getOrgsList(alphabet,type){
 				for(var i=0; i<json.length; i++){
 					var opt1 = json[i];
 					org = org +'	<li class="control-group">';
-					org = org +'		<label class="control control--checkbox" title="'+opt1.orgName+'" ><span>'+opt1.orgName+'</span>';
-					org = org +'		  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt1.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
+					org = org +'		<label class="control control--checkbox" title="'+opt1.orgName+'" ><span>'+opt1.orgName+' '+opt1.id+'</span>';
+					org = org +'		  <input data-id="'+opt1.id+'" type="checkbox" name="orgName" value="'+opt1.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}
