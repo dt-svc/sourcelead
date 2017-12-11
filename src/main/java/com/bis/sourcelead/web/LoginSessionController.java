@@ -174,7 +174,7 @@ public class LoginSessionController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/app/dashboard" , method = RequestMethod.GET)
+	@RequestMapping(value = "/app/dashboard" , method = { RequestMethod.GET, RequestMethod.POST })
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response,
@@ -190,12 +190,22 @@ public class LoginSessionController {
 			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
 		}else{
-			if(userRoleId != null){
+			if(userRoleId == null){
+				userRoleId =  (Long) request.getSession().getAttribute("userRoleId");
+				if(userRoleId == null)
+					userRoleId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
+				if(userRoleId != null){
+					userRole = userRoleService.getUserRoleById(userRoleId);
+					user = userRole.getUser();
+					orgLocations = userRole.getOrgLocations();
+					request.getSession().removeAttribute("userRoleId");
+				}else{
+					userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				}
+			}else{
 				userRole = userRoleService.getUserRoleById(userRoleId);
 				user = userRole.getUser();
 				orgLocations = userRole.getOrgLocations();
-			}else{
-				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			}
 		}
 		

@@ -130,6 +130,7 @@ public class UserLoginHelper {
 				    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 				    request.getSession().setAttribute("userLoginSession", userLoginSession);
 			    }
+		      request.getSession().setAttribute("userRoleId", userRole.getId());
 		  }
 		  
 		  

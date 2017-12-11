@@ -989,18 +989,22 @@ public class RegistrationRestController {
 		String ipAddress = userLoginHelper.getClientIpAddr(request);
 		String[] currentIp = ipAddress.split("\\.");
 		boolean matched = false;
-		for(WhiteListIPAddressDTO wlipDto : ipList){
-			String fromip = wlipDto.getFromIpAddress();
-			String toip = wlipDto.getToIpAddress();
-			
-			String[] fromipaddr = fromip.split("\\.");
-			String[] toipaddr = toip.split("\\.");
-			
-			if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
-				if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
-					if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
-						if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
-							matched = true;
+		if(ipList.size() > 0){
+			for(WhiteListIPAddressDTO wlipDto : ipList){
+				String fromip = wlipDto.getFromIpAddress();
+				String toip = wlipDto.getToIpAddress();
+				
+				String[] fromipaddr = fromip.split("\\.");
+				String[] toipaddr = toip.split("\\.");
+				
+				if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
+					if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
+						if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
+							if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
+								matched = true;
+							}else{
+								matched = false;
+							}
 						}else{
 							matched = false;
 						}
@@ -1010,10 +1014,11 @@ public class RegistrationRestController {
 				}else{
 					matched = false;
 				}
-			}else{
-				matched = false;
 			}
+		}else{
+			matched = true;
 		}
+		
 		return matched;
 	}
 	

@@ -748,19 +748,24 @@ function preventTabkey(e){
   </div>
   </div>
   
+  <!--  Alert message for Switching Locaction -->
+  <div class="location-alert alert alert-danger alert-dismissable">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> Your are not allowded to access this Location.
+  </div>
+ <!--  Alert message for Switching Locaction -->
+  
  <script type="text/javascript">
+ var hasLocationAccess = "";
  function checkAuth(locationId,roleId,orgSecurity){
-	 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-		 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
-	 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
-		 $(".authenticationMask").fadeIn();
-		 getUserDetailsbyroleId(roleId);
-	 }else{
-		 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
-	 }
+	 checkLocationAccess(locationId,roleId,orgSecurity);
+	 
  }
  $(".proj_close").click(function(){
 	 $(".authenticationMask").fadeOut();
+ })
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
  })
 
  function getUserDetailsbyroleId(roleId){
@@ -777,8 +782,31 @@ function preventTabkey(e){
 	       },						     
 	}); 
  }
- </script>
  
+ function checkLocationAccess(locationId,roleId,orgSecurity){
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+// 	    	   hasLocationAccess = result;
+	    	   
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
  
   
   <script>

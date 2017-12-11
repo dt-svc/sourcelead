@@ -279,8 +279,10 @@ public class DashboardRestController {
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
 				
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			
 	}
 	
