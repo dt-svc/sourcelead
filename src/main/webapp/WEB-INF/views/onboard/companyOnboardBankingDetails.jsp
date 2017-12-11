@@ -37,6 +37,13 @@
 					  </ul>
 				  <div class="clearfix"></div>
 			  </div>
+			  
+			  
+			  <div class="comLogContent">
+			  <h2>Organization Banking Details</h2>
+			  </div>
+			  
+			  
 			</section>
 	</section>
 </div>

@@ -48,9 +48,9 @@ window.onload = function () {
 					  </ul>
 				  <div class="clearfix"></div>
 			  </div>
-			  
 	 	<form:form class="login-form clearfix"  id="fedralAndTax_form"  name="fedralAndTax_form" method="post" > 
 			  <div class="comLogContent">
+			  <div id="popUp" ></div>	
 			    <div id="loading"></div> 
       			  <h2>Federal & State Taxes</h2>
 			         <div class="row clearfix"> 
@@ -184,6 +184,23 @@ window.onload = function () {
  
  <script type="text/javascript">
 	function removeStatesTaxRow(rowId) {
+		
+		var maxRowNumber = parseInt($("input[name = 'maxRowNumber']").val());
+		$("input[name = 'maxRowNumber']").val(maxRowNumber - 1);
+		var maxRow = maxRowNumber-1;
+		if(maxRow == 0){
+			$("#0stateName").removeAttr("data-validation"); 
+			$("#0stateName").attr("data-validation-optional","true");
+			 
+			 $("#0stateUnemploymentTax").attr("data-validation-optional","true"); 
+			 $("#0stateUnemploymentTax").removeAttr("data-validation");
+			 $("#0stateUnemploymentTax").attr("data-validation","validate_space validate_length length9-9");
+			
+			 $("#0stateTaxAccountNumber").attr("data-validation-optional","true"); 
+			 $("#0stateTaxAccountNumber").removeAttr("data-validation");
+			 $("#0stateTaxAccountNumber").attr("data-validation","validate_space validate_length length9-9");
+		 }
+		
 		 document.getElementById("divStatesTaxRow"+rowId).style.display = 'none';
 		 document.getElementById("divStatesTaxRow"+rowId).value= '';
 		 var  rId = "divStatesTaxRow"+rowId;
@@ -203,6 +220,24 @@ function addStatesTaxRow(){
 	var tbl = document.getElementById("statesTaxTable");
 	var maxRowNum = parseInt($("input[name = 'stateTaxMaxRowNumber']").val());
 	$("input[name = 'stateTaxMaxRowNumber']").val(maxRowNum + 1);
+	
+	
+	var maxRowNumber = parseInt($("input[name = 'maxRowNumber']").val());
+	$("input[name = 'maxRowNumber']").val(maxRowNumber + 1);
+	
+	var maxRow = maxRowNumber+1;
+	 if(maxRow == 1){
+		 $("#0stateName").removeAttr("data-validation-optional");
+		 $("#0stateName").attr("data-validation","required");
+		 
+		 $("#0stateUnemploymentTax").removeAttr("data-validation-optional"); 
+		 $("#0stateUnemploymentTax").removeAttr("data-validation");
+		 $("#0stateUnemploymentTax").attr("data-validation","required validate_space validate_length length9-9");
+		
+		 $("#0stateTaxAccountNumber").removeAttr("data-validation-optional"); 
+		 $("#0stateTaxAccountNumber").removeAttr("data-validation");
+		 $("#0stateTaxAccountNumber").attr("data-validation","required validate_space validate_length length9-9");
+	 }
 	
 	
 	var row = tbl.insertRow(maxRowNum);
@@ -257,7 +292,7 @@ function getStateTaxes(){
         		 for (var i = 0; i < json.length; i++) { 
 	        		 var opt = json[i]; 
 	        		 
-	        		 result = result +'<tr>';
+	        		 result = result +'<tr id="stateTaxRow'+opt.uuid+'">';
 	        		 result = result +'<td width="500px">';
 	 	     		 result = result +'<div class="dropdown-select">';
 	 	     		
@@ -292,7 +327,8 @@ function getStateTaxes(){
 		     		result = result +'<td width="50px">';
 		     		result = result +'<div class="">';
 		     		result = result +'<div class="pull-right">';
-		     		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="deleteStatesTaxRow('+opt.UUID+');"><i class="fa fa-trash text-danger"></i></button>';
+		     		result = result +"<button type='button' class='btn btm-sm pull-right mt5' onClick='deleteStatesTaxRow(\""+opt.uuid+"\",\""+opt.stateName+"\");' ><i class='fa fa-trash text-danger'></i></button>";
+		     		
 		     		result = result +'</div>';
 		     		result = result +'</div>';
 		     		result = result +'</td>';
@@ -308,6 +344,7 @@ function getStateTaxes(){
 	        	
 	        	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable companyOnboardStateTaxTable">';
 	     		result = result +'<input type="hidden" name="stateTaxMaxRowNumber"  id="stateTaxMaxRowNumber" value="1" />';
+	     		result = result +'<input type="hidden" name="maxRowNumber"  id="maxRowNumber" value="0" />';
 	     		result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="statesTaxTable" border="0">';
 	     		result = result +'<tbody>';
 	     		result = result +'<tr id="requestedDocumentsTsRow0">';
@@ -317,7 +354,7 @@ function getStateTaxes(){
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="dropdown-select">';
 	     		
-	     		result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
+	     		result = result +'<select class="width100percnt form-control selectborder" data-validation-optional="true" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
 	     		result = result +'<option selected value="">-- Select State --</option>';
 	     			<c:forEach var="state" items="${statesList}">
 	     			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
@@ -329,13 +366,13 @@ function getStateTaxes(){
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
@@ -377,7 +414,6 @@ $('body').on('submit', '#fedralAndTax_form', function(e){
 	if ($('#fedralAndTax_form').validate(false, validationSettings)){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
-      alert(sourceleadUrl);
       var formData = getFormData("fedralAndTax_form");
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
@@ -404,9 +440,52 @@ $('body').on('submit', '#fedralAndTax_form', function(e){
 		$("#fedralAndTax_form").showHelpOnFocus();
 		$("#fedralAndTax_form").validateOnBlur(false, validationSettings);
 	});
-  </script> 
+  </script>
+  
 
+ 
+  
+<script type="text/javascript">
+function deleteStatesTaxRow(uuid,stateName){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are your sure to delete <strong>"+stateName+"</strong> state tax?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='deleteTaxRow(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script> 
+
+<script>
+function deleteTaxRow(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteOrgLocationStateTaxByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		document.getElementById("stateTaxRow"+uuid).remove();
+	        		$("#loading").removeAttr("style"); 
+	        		cancelPopUp();
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
+<script type="text/javascript">
+function cancelPopUp(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 

@@ -98,5 +98,10 @@ public class OrglocationStateTaxServiceImpl implements OrglocationStateTaxServic
 	public OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception {
 		return orglocationStateTaxDao.getOrglocationStateTaxByUUID(UUID);
 	}
+
+	@Override
+	public void deleteOrglocationStateTax(OrglocationStateTax orglocationStateTax) throws Exception {
+		orglocationStateTaxDao.deleteOrglocationStateTax(orglocationStateTax);		
+	}
 	
 }

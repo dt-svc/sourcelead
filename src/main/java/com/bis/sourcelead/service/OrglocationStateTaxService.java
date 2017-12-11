@@ -16,4 +16,6 @@ public interface OrglocationStateTaxService {
 	List<OrglocationStateTax> getOrglocationStateTaxListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	OrglocationStateTax getOrglocationStateTaxByUUID(String UUID) throws Exception;
+	
+	void deleteOrglocationStateTax(OrglocationStateTax orglocationStateTax) throws Exception;
 }

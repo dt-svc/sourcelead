@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -68,5 +70,23 @@ public class CompanyOnboardRestController {
 		}
 		return stateTaxesDTOList;
 	}
+	
+	
+	@RequestMapping(value = "/deleteOrgLocationStateTaxByDocumentUUID", method = RequestMethod.POST)
+	public @ResponseBody String deleteOrgLocationStateTaxByDocumentUUID(@RequestParam(value = "uuid", required = true) String uuid) throws Exception
+	{
+		
+		String result = "invalid";
+		
+		if(uuid != null && !uuid.isEmpty()) {
+			OrglocationStateTax stateTax = orglocationStateTaxService.getOrglocationStateTaxByUUID(uuid);
+			if(stateTax != null) {
+				orglocationStateTaxService.deleteOrglocationStateTax(stateTax);
+				result = "success";
+			}
+		}
+		return result;
+	}
+	
 	
 }

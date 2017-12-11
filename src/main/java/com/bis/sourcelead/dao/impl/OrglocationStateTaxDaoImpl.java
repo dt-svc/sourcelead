@@ -43,7 +43,7 @@ public class OrglocationStateTaxDaoImpl implements OrglocationStateTaxDao{
 	public OrglocationStateTax saveOrglocationStateTax(OrglocationStateTax orglocationStateTax) throws Exception {
 		
 		
-		logger.debug("Adding orgLocations");
+		logger.debug("Adding orglocationStateTax");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orglocationStateTax != null) {
@@ -82,6 +82,24 @@ public class OrglocationStateTaxDaoImpl implements OrglocationStateTaxDao{
 			orglocationStateTax = (OrglocationStateTax) orglocationStateTaxList.iterator().next();
 		}
 		return orglocationStateTax;
+	}
+
+	@Override
+	@Transactional
+	public void deleteOrglocationStateTax(OrglocationStateTax orglocationStateTax) throws Exception {
+		
+		logger.debug("Deleting orglocationStateTax");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (orglocationStateTax != null) {
+				session.delete(orglocationStateTax);
+			}
+			logger.debug("orglocationStateTax deleted Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORGLOCATION_STATE_TAX"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 	}
 
 }
