@@ -1930,7 +1930,7 @@ input:checked + .slider:before {
 .sendInv {
 	clear: both; display: inline-block;
 }
-.checkBox input[type="checkbox"], .checkBox .radio input[type="radio"] {
+.checkBox input[type="checkbox"], .radioIput input[type="radio"] {
 	position: relative; top: 2px; margin-right: 10px;
 }
 .collapseDiv_styles .input-groupAddon {
