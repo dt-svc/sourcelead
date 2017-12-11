@@ -160,7 +160,9 @@ function cancelOrgImg(){
         
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
-        <li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
+        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
+        </c:if>
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -421,27 +423,29 @@ function cancelOrgImg(){
                 			</div>         
             			</div> 
             			
-            			<div class="tab-content panel-body">
-                           <div class="clearfix mb">
-                               <div class="pull-left">
-                                   <h4>Login Security</h4>
-                               </div>
-                           </div>
-               			<div class="form-group">
-	               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
-	               			<div class="col-md-7 toggle-button">
-		                      <label class="switch">
-		                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
-		                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
-		                      </c:if>
-		                      <c:if test="${orgLocations.loginSecurity == 'N'}">
-		                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-		                      </c:if>
-		                      <div class="slider round"></div>
-		                      </label>
-                   			</div>
-               			</div>         
-           			</div> 
+            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	                           <div class="clearfix mb">
+	                               <div class="pull-left">
+	                                   <h4>Login Security</h4>
+	                               </div>
+	                           </div>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-7 toggle-button">
+			                      <label class="switch">
+			                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+			                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+			                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <div class="slider round"></div>
+			                      </label>
+	                   			</div>
+	               			</div>         
+	           			</div> 
+           			</c:if>
            			           			
         			</div>
     			</div>
