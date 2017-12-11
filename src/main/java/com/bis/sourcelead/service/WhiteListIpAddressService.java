@@ -13,4 +13,6 @@ public interface WhiteListIpAddressService {
 
 	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId);
 
+	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
+
 }
