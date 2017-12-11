@@ -194,7 +194,6 @@ function campaignStatsPagination(url){
  
  <script>
  function deleteStats(categoryName){
-			$("#deleteStatsDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
 				 $.ajax({
 					   	type: "GET",
 					    url: sourceleadUrl+"/deleteStats?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
