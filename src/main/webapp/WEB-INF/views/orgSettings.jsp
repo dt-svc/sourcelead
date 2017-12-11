@@ -147,7 +147,8 @@ function cancelOrgImg(){
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <div id="loading"></div> 
+      <div id="loading"></div>
+      <div id="popUp"></div>  
       <div id="signatureLoading"></div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
@@ -159,7 +160,9 @@ function cancelOrgImg(){
         
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
-        <li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
+        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ip</a></li>
+        </c:if>
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -420,27 +423,29 @@ function cancelOrgImg(){
                 			</div>         
             			</div> 
             			
-            			<div class="tab-content panel-body">
-                           <div class="clearfix mb">
-                               <div class="pull-left">
-                                   <h4>Login Security</h4>
-                               </div>
-                           </div>
-               			<div class="form-group">
-	               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
-	               			<div class="col-md-7 toggle-button">
-		                      <label class="switch">
-		                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
-		                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
-		                      </c:if>
-		                      <c:if test="${orgLocations.loginSecurity == 'N'}">
-		                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-		                      </c:if>
-		                      <div class="slider round"></div>
-		                      </label>
-                   			</div>
-               			</div>         
-           			</div> 
+            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	                           <div class="clearfix mb">
+	                               <div class="pull-left">
+	                                   <h4>Login Security</h4>
+	                               </div>
+	                           </div>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-7 toggle-button">
+			                      <label class="switch">
+			                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+			                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+			                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <div class="slider round"></div>
+			                      </label>
+	                   			</div>
+	               			</div>         
+	           			</div> 
+           			</c:if>
            			           			
         			</div>
     			</div>
@@ -494,13 +499,13 @@ function cancelOrgImg(){
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
            <label class="col-md-3">From IP</label>
            <div class="col-md-9">
-           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
            <label class="col-md-3">To IP</label>
            <div class="col-md-9">
-           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
            </div>
         
@@ -509,7 +514,7 @@ function cancelOrgImg(){
         </div>
         <div class="clearfix"></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="saveWhiteListIps();" >Save</button>
+          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
         </div>
       </div>
     </div>
@@ -545,19 +550,19 @@ function switchLoginSecurity(){
 
 <script>
 function saveWhiteListIps(){
-	var validationSettings = {
+	/* var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-	   }; 
+	   };  */
 	
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
-// 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
-// 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
-// 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
-		if ($(this).validate(false, validationSettings)){
+	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
+		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+// 		if ($(this).validate(false, validationSettings)){
 			$.ajax({
 			      type : "GET",
 			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress,        
@@ -571,9 +576,8 @@ function saveWhiteListIps(){
 			       	} 
 			      },
 			  }); 
-		}
 		
-	/* }else{
+	}else{
 		if(fromIpAddress == null || fromIpAddress == '' || fromIpAddress =='undefined'){
 			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 			$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>From IP Address is required</span>");
@@ -586,9 +590,11 @@ function saveWhiteListIps(){
 			document.getElementById("toIpAddress").setAttribute( 'record-exist', 'yes');
 			document.getElementById("toIpAddress").setAttribute( 'record-exist-errorMsg',"To IP Address is required");
 		}
-	} */
+	}
 }
+</script>
 
+<script>
 function getWhiteListIps(){
 	$.ajax({
       type : "GET",
@@ -615,7 +621,10 @@ function getWhiteListIps(){
     		           	result = result + '<div class="tblminwidth-75">'+report.toIpAddress+'</div>';
     		        	result = result + '</td>';	 
     		        	result = result + '<td>';
-    		           	result = result + '<div class="tblminwidth-75">---</div>';
+    		        	result = result +'     <div class="tblminwidth-50">                                                                                            ';
+    		        	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value=""/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    		        	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteWhiteListIp(\''+report.id+'\');"></i></span>              ';
+    		        	result = result +'      </div> ';
     		        	result = result + '</td>';
     			        result = result + '</tr>';
     			    }
@@ -630,9 +639,7 @@ function getWhiteListIps(){
       }); 
 }
 
-</script>
 
-<script>
 function WhiteListIpTablePagination(){
 	$('#WhiteListIpTable').DataTable({ 
 		"scrollCollapse": false,
@@ -2627,6 +2634,8 @@ function addOrgRefreshGoogleApiLocation(){
 
 <script>
 function addipPopup(){
+	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$(".modal.addipPopup-modal").fadeIn();
 	$(".comMask").fadeIn();
 }
@@ -2637,6 +2646,74 @@ $(".close").click(function(){
 });
 })
 </script>
+
+<script>
+function ValidateIPaddress()  
+	{
+		var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
+		var fromIpAdd = $("#fromIpAddress").val();
+		var toIpAdd = $("#toIpAddress").val();
+		if(fromIpAdd != '' && fromIpAdd != null && fromIpAdd != 'undefined'){
+			if(!fromIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				document.getElementById("saveWhiteListbtn").disabled = false;
+			}
+		}
+		
+		if(toIpAdd != '' && toIpAdd != null && toIpAdd != 'undefined'){
+			if(!toIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				document.getElementById("saveWhiteListbtn").disabled = false;
+
+				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			}
+		}
+		
+	}  
+</script>
+
+
+<script>
+function deleteWhiteListIp(whiteListIpId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function deleteIP(id){
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 getWhiteListIps()
+		   		    }
+			     });
+}
+
+</script>
+
 <jsp:include page="masterFooter.jsp" />
 
 </html>

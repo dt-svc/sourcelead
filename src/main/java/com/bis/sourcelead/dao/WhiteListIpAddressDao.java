@@ -10,4 +10,6 @@ public interface WhiteListIpAddressDao {
 
 	List<WhiteListIPAddress> getWhiteListIpsByLocationId(Long locationId);
 
+	WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
+
 }
