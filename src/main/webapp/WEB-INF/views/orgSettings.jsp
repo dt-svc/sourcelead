@@ -550,19 +550,11 @@ function switchLoginSecurity(){
 
 <script>
 function saveWhiteListIps(){
-	/* var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-	   };  */
-	
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
-// 		if ($(this).validate(false, validationSettings)){
 			$.ajax({
 			      type : "GET",
 			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress,        

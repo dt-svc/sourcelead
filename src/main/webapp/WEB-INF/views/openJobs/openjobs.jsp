@@ -79,12 +79,6 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	if('${requirementUUID}' == null && '${requirementUUID}' == '' && '${requirementUUID}' == 'undefined'){
-	$("#noResultsDiv").css("display", "block");
-	}
-	setTimeout(function() {
-		$(".pageLoad").fadeOut();
-	}, 1000);
 	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
 		 if('${requirementReleaseStatus}' == 'Y'){
 			getOpenJobsRequirementSummary('${requirementUUID}');
@@ -97,7 +91,6 @@ window.onload = function () {
 	}else{
 		getDropDownCount();
 		getOpenJobsELKList();
-		
 	}
  };
 </script>
@@ -1314,7 +1307,7 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} onclick="checkUncheck($(this),'+opt.id+');"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
@@ -1353,6 +1346,15 @@ function getOrgsList(alphabet,type){
 	 }); 
 }
 
+function checkUncheck(ele,id) {
+	if(ele.attr("checked")==="checked") {
+		ele.removeAttr("checked");
+		$("input[data-id="+id+"]").removeAttr("checked");
+	} else
+		ele.attr("checked","checked");
+	
+	requirementsFilter();
+}
 
 function openPopup(){
 	$(".filPop").fadeIn(100);
