@@ -101,6 +101,10 @@ public class TimesheetRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	 
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	public TimesheetEntriesService timesheetEntriesService;
 	
@@ -3413,7 +3417,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 			 //globalVarsMap.put("projectName", project.getProjectName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			 globalVarsMap.put("loginURL","<a href='"+sourceleadLoginUrl+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			 
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -3593,7 +3597,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 		}
 		
 		
-		@RequestMapping(value = "/acceptOrRejectReopenTimeSheetBySuperUser", method = RequestMethod.POST)
+		@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheetBySuperUser", method = RequestMethod.POST)
 		public @ResponseBody void acceptOrRejectReopenTimeSheetBySuperUser(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="reOpenedUserId", required=false) Long reopenedUserId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,

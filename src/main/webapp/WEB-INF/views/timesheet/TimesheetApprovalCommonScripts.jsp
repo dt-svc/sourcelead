@@ -1498,7 +1498,7 @@ function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequ
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
+		   	url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
 		    success: function(data) {
 		    	$("#reOpenRejectedPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -1528,7 +1528,7 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId,timeshe
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
+		url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
 		success : function(data) {
 			timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,"approver");
 		},
