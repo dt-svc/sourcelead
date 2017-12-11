@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.model.SignedImageInfo;
@@ -23,16 +24,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SignImageService {
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private DocuSignUtil docuSignUtil;
 
-	public void signImage(SignedImageInfo signedImageInfo, String contextPath, String userPath) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
+	public void signImage(SignedImageInfo signedImageInfo, String contextPath, String userPath1) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
 		String[] imageLocation =  docuSignUtil.getimageLocation();
 		String dirPath = null;
 		if(signedImageInfo.getUserId().contains("/unsigned.pdf")) {
 		 dirPath = signedImageInfo.getUserId().replace("/unsigned.pdf", "");
 		}
-		String filePath = userPath + dirPath+ "/signatures";
+		String result = staticPath.substring(0,staticPath.lastIndexOf("/"));
+		String filePath = result + dirPath+ "/signatures";
 		new File(filePath).mkdir();
 		for (int i = 0; i < imageLocation.length; i++) {
 			BufferedImage image = null;
@@ -83,7 +89,7 @@ public class SignImageService {
 			}
 		}
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(new File(userPath + dirPath+ "/signatureInfo.json"),
+		mapper.writeValue(new File(result + dirPath+ "/signatureInfo.json"),
 				signedImageInfo);
 	}
 }
