@@ -712,9 +712,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 			
+	//TODO commented by Rakshith
 			
 			//  if(null != vendorContactsUser && null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
-			 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
+		/*	 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 				  Contracts con = null;
 				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					  if (null != contractType && !"".equalsIgnoreCase(contractType)
@@ -745,7 +746,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
 		        	}
-			  }
+			  }*/
 		}
 		return savedContracts;
 		
