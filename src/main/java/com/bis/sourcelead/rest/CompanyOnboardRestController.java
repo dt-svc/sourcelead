@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
@@ -44,6 +46,9 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
@@ -136,6 +141,13 @@ public class CompanyOnboardRestController {
 		return result;
 	}
 	
+	
+	@RequestMapping(value = "/saveOrgLocationDocuments", method = RequestMethod.POST)
+	public @ResponseBody String saveOrgLocationDocuments(OrglocationOnboardDocumentsDTO documentsDTO, HttpServletRequest request) throws Exception
+	{
+		documentsDTO.setStaticPath(staticPath);
+		return null;
+	}
 	
 	
 }

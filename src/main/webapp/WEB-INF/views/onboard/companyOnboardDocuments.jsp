@@ -20,6 +20,11 @@
 <link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
 
 <div class="wraper"> 
 	<section class="comLogBg">
@@ -38,11 +43,100 @@
 					  </ul>
 				  <div class="clearfix"></div>
 			  </div>
+			  
+			   <form:form id="documents_form" name="documents_form"  enctype='multipart/form-data'  method="post">
+			    <div class="comLogContent">
+			      <div id="loading"></div> 
+			      <h2>Organization Documents</h2>
+			      <div class="row clearfix"> 
+				      <div class="col-md-6">
+				      	<div class="form-group clearfix">
+						<label class="col-md-4 noPad">Business License<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-8 padding_right">
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> 
+									<b class="btn btn-primary" onchange="getBusinessLicense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBusinessLicenseBtn" class="upload"> </b>
+									</label> 
+									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload Resume ..." field-name="Business License"
+										data-validation="required validatedoc">
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group clearfix">
+						<label class="col-md-4 noPad">Bank Cheque<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-8 padding_right">
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary" onchange="getBankCheque();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBankChequeBtn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload Resume ..." field-name="Bank Cheque"
+										data-validation="required validatedoc" >
+								</div>
+							</div>
+						</div>
+						
+						
+						<div class="form-group clearfix">
+						<label class="col-md-4 noPad">Registration or Incorporation of recording<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-8 padding_right">
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload Resume ..." field-name="Registration or Incorporation of recording"
+										data-validation="required validatedoc">
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group clearfix">
+						<label class="col-md-4 noPad">Annual Report Business License<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-8 padding_right">
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary" onchange="getAnnulBusinessLincense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadAnnualBusinessLicenseBtn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload Resume ..." field-name="Annual Report Business License"
+										data-validation="required validatedoc">
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group clearfix">
+						<label class="col-md-4 noPad">W-9,W-8 Ben-E<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-8 padding_right">
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> 
+									<span class="btn btn-primary" onchange="getW9Doc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadW9Btn" class="upload"> </span>
+									</label> 
+									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload Resume ..." field-name="W-9,W-8 Ben-E"
+										data-validation="required validatedoc">
+								</div>
+							</div>
+						</div>
+						
+						
+				      </div>
+			      </div>
+			    
+			        <div class="welBtns welBtnsA">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardFederalAndStateTaxes'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
+						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"></a>
+						<div class="clearfix"></div>
+					</div>
+			    </div>
+			   </form:form>
 		</section>
 	</section>
 </div>
 
-<script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
   <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
@@ -54,7 +148,86 @@
  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
  <script src="resources/js/formvalidator.js"></script>
  
+ <script>
+ document.getElementById("uploadBusinessLicenseBtn").onchange = function () {
+  	$('#orglocbusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  };
+  
+  document.getElementById("uploadBankChequeBtn").onchange = function () {
+	  	$('#orglocbankCheque').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  };
+  
+  document.getElementById("uploadRegistrationBtn").onchange = function () {
+	  	$('#orglocregistrationDocument').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  };
+  
+  document.getElementById("uploadAnnualBusinessLicenseBtn").onchange = function () {
+	  	$('#orglocannualBusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  };
+  
+  document.getElementById("uploadW9Btn").onchange = function () {
+	  	$('#orglocw9Document').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+  };
+	  
+ </script>
  
+ 
+ <script>
+ function getBusinessLicense(){
+	 fileUpload("uploadBusinessLicenseBtn", "CompanyOnboardDocs", "documents_form","businessLicense");
+ }
+ 
+ function getBankCheque(){
+	 fileUpload("uploadBankChequeBtn", "CompanyOnboardDocs", "documents_form","bankCheque");
+ }
+ 
+ function getRegistrationDoc(){
+	 fileUpload("uploadRegistrationBtn", "CompanyOnboardDocs", "documents_form","registrationDocument");
+ }
+ 
+ function getAnnulBusinessLincense(){
+	 fileUpload("uploadAnnualBusinessLicenseBtn", "CompanyOnboardDocs", "documents_form","annualBusinessLicense");
+ }
+ 
+ function getW9Doc(){
+	 fileUpload("uploadW9Btn", "CompanyOnboardDocs", "documents_form","w9Document");
+ }
+ </script>
+ 
+ 
+ <script type="text/javascript">
+	function saveDocuments(){
+			var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+			 if ($('#documents_form').validate(false, validationSettings)){
+	      	    var formData = getFormData("documents_form");
+	      		var sourceleadUrl = '${sourceleadUrl}';
+	      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	      		$.ajax({
+						type : "POST",
+						 data: formData,
+						 url: sourceleadUrl+"/saveOrgLocationDocuments",
+								success : function(result) {
+						
+						},
+					}); 
+					return true;
+			 }else{ 
+					return false;
+			 } 
+		}
+		$('body').on('blur', '#documents_form', function() {
+		$("#documents_form").showHelpOnFocus();
+		$("#documents_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+ 
+ 
+
 
 
 <script>
