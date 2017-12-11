@@ -16,10 +16,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -43,6 +45,9 @@ public class CompanyOnboardController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	OrglocationBankingDetailsService orglocationBankingDetailsService;
 	
 	
 	
@@ -103,10 +108,28 @@ public class CompanyOnboardController {
 		public ModelAndView companyOnboardBankingDetails(HttpServletRequest request) throws Exception  {
 			
 			ModelAndView model = new ModelAndView();  
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
+			if(bankingDetails != null) {
+				model.addObject("uuid", bankingDetails.getUuid());
+				SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("onboard/companyOnboardBankingDetails");
 			return model;
 		}
+		
+		
+		@RequestMapping(value = "/companyOnboardDocuments")
+		public ModelAndView companyOnboardDocuments(HttpServletRequest request) throws Exception  {
+			
+			ModelAndView model = new ModelAndView();  
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("onboard/companyOnboardDocuments");
+			return model;
+		}
+		
 		
 		
 }

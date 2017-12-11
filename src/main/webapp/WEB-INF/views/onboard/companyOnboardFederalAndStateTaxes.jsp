@@ -43,6 +43,7 @@ window.onload = function () {
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
 						  <li class="hoverLi">Federal & state taxes</li>
 						  <li>Banking details</li>
+						  <li>Documents</li>
 						  <li>Signatory</li>
 						  <div class="clearfix"></div>
 					  </ul>
@@ -60,7 +61,7 @@ window.onload = function () {
 					   		<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Federal EIN<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" value="${SourceLeadWeb_orgLocations.federalEin}" field-name="fedralEIN"  data-validation="required validate_length length9-9" maxlength="9">
+								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" value="${SourceLeadWeb_orgLocations.federalEin}" field-name="fedralEIN"  data-validation="required validate_space validate_length length9-9" maxlength="9">
 								</div>
 							</div>
 							

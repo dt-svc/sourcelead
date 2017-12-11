@@ -50,6 +50,7 @@ right: 15px;
 						  <li class="hoverLi">Locations</li>
 						  <li>Federal & state taxes</li>
 						  <li>Banking details</li>
+						  <li>Documents</li>
 						  <li>Signatory</li>
 						  <div class="clearfix"></div>
 					  </ul>

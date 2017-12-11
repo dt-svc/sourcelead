@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -32,6 +38,12 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
     OrglocationStateTaxService orglocationStateTaxService;
+	
+	@Autowired
+	OrglocationBankingDetailsService orglocationBankingDetailsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
@@ -87,6 +99,43 @@ public class CompanyOnboardRestController {
 		}
 		return result;
 	}
+	
+	
+	@RequestMapping(value = "/saveOrgLocationsBankingDetails", method = RequestMethod.POST)
+	public @ResponseBody String saveOrgLocationsBankingDetails(OrgLocationBankingDetailsDTO bankingDetailsDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrglocationBankingDetails bankingDetails = null;
+		String result = "invalid";
+		
+		try {
+			
+			if(bankingDetailsDTO.getUuid() != null && !bankingDetailsDTO.getUuid().isEmpty()) {
+				bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByUUID(bankingDetailsDTO.getUuid());
+			}else {
+				bankingDetails = new OrglocationBankingDetails();
+				bankingDetails.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			}
+			bankingDetails.setOrgLocationId(loginOrgLocation);
+			bankingDetails.setAccountType(bankingDetailsDTO.getAccountType());
+			bankingDetails.setAccountName(bankingDetailsDTO.getAccountName());
+			bankingDetails.setRoutingNumber(bankingDetailsDTO.getRoutingNumber());
+			bankingDetails.setAccountNumber(bankingDetailsDTO.getAccountNumber());
+			bankingDetails.setStatus(Constants.RECORD_ACTIVE);
+			bankingDetails.setCreatedBy(user);
+			bankingDetails.setUpdatedBy(user);
+			bankingDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			bankingDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			orglocationBankingDetailsService.saveOrglocationBankingDetails(bankingDetails);
+			result = "success";
+		} catch (Exception e) {
+			System.out.println(e.getStackTrace());
+		}
+	
+		return result;
+	}
+	
 	
 	
 }
