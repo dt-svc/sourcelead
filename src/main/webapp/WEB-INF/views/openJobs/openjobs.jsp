@@ -79,6 +79,12 @@
 
 <script type="text/javascript">
 window.onload = function () {
+	if('${requirementUUID}' == null && '${requirementUUID}' == '' && '${requirementUUID}' == 'undefined'){
+	$("#noResultsDiv").css("display", "block");
+	}
+	setTimeout(function() {
+		$(".pageLoad").fadeOut();
+	}, 1000);
 	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
 		 if('${requirementReleaseStatus}' == 'Y'){
 			getOpenJobsRequirementSummary('${requirementUUID}');
@@ -91,6 +97,7 @@ window.onload = function () {
 	}else{
 		getDropDownCount();
 		getOpenJobsELKList();
+		
 	}
  };
 </script>
