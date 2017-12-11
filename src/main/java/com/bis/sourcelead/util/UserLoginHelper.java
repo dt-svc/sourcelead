@@ -65,7 +65,7 @@ public class UserLoginHelper {
 	{
 		List<Long> modulesId = null;
 		User user = userRole.getUser();
-		OrgLocations orgLocations = null;
+		OrgLocations orgLocations = userRole.getOrgLocations();
 		  Org org = null;
 		  List<SourceleadActions> actionsList = null;
 		  List<GrantedAuthority> authorities = null;
