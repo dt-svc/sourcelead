@@ -12,11 +12,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.model.SignedImageInfo;
+import com.bis.sourcelead.rest.DocumentSignController;
 import com.bis.sourcelead.util.DocuSignUtil;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class SignImageService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SignImageService.class);
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -39,6 +44,7 @@ public class SignImageService {
 		}
 		String result = staticPath.substring(0,staticPath.lastIndexOf("/"));
 		String filePath = result + dirPath+ "/signatures";
+		logger.info("Signature folder path : "+filePath);
 		new File(filePath).mkdir();
 		for (int i = 0; i < imageLocation.length; i++) {
 			BufferedImage image = null;

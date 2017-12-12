@@ -1080,8 +1080,12 @@ public class EMailJobScheduler {
 	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
-	@Scheduled(cron = "0 0/1 * 1/1 * ?")
-	@Async
+
+
+
+	//TODO commented by Rakshith
+	//	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	//	@Async
 	public void runContractDocumentStatus() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				List<Contracts> conList =  contractsTemplateService.getListOfContractsEnvId();
