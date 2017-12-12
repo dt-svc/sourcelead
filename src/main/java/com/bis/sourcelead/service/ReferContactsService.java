@@ -26,4 +26,6 @@ public interface ReferContactsService {
 	
 	ReferContacts getReferContactsById(Long id) throws Exception;
 
+	ReferContacts findByEmail(String recipientMail)throws Exception;
+
 }

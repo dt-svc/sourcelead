@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 
@@ -114,5 +115,7 @@ public interface OrgSpocDao {
 	OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId,Long assignUserId) throws Exception;
 	
 	List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
+	
+	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
 	
 }

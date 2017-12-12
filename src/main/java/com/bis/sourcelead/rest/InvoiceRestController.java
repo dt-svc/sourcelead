@@ -433,6 +433,10 @@ public class InvoiceRestController {
 			if(null != invoice.getProjectID()){
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
 			}
+			
+			if(invoice.getOrgRelationID() != null){
+			billingDto.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){
 				if(invoice.getContactUser().getLastName() != null){
@@ -597,6 +601,10 @@ public class InvoiceRestController {
 						
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
+					}
+					
+					if(invoice.getOrgRelationID() != null){
+					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 					}
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){

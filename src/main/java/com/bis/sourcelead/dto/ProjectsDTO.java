@@ -161,6 +161,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String flatPercent; 
 	
+	private String orgRelationUUID;
+	
+	private String orgRelationId;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -762,6 +766,27 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setFlatPercent(String flatPercent) {
 		this.flatPercent = flatPercent;
 	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+	
 	
 	
 }

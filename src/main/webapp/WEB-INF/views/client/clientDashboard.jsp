@@ -114,7 +114,29 @@ z-index: 1;
                 	  </div>
 		                </div>
 		                
+		                <div class="col-md-4">
+		                  <label>Tier</label>
+		                  <div class="clearfix">
+		                   <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
+			                     <option value="Tier-1">Tier-1</option>
+			                     <option value="Tier-2">Tier-2</option>
+			                     <option value="Tier-3">Tier-3</option>
+			                     <option value="Tier-4">Tier-4</option>
+			                     <option value="Tier-5">Tier-5</option>
+                    		</select>
+		                  </div>
+		                </div>
+		                
+		                <div class="clearfix">
+		                <div class="col-md-4">
+		                  <label>Created By</label>
+		                  <div class="clearfix">
+		     	               <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
+		                  </div>
+		                </div>
 		              </div>
+	             
+	               </div>
 		              <div class="clearfix">
 		                
 		              </div>
@@ -150,30 +172,7 @@ z-index: 1;
 							  </div>
 						  </div>
             		  </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Tier</label>
-		                  <div class="clearfix">
-		                   <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
-			                     <option value="Tier-1">Tier-1</option>
-			                     <option value="Tier-2">Tier-2</option>
-			                     <option value="Tier-3">Tier-3</option>
-			                     <option value="Tier-4">Tier-4</option>
-			                     <option value="Tier-5">Tier-5</option>
-                    		</select>
-		                  </div>
-		                </div>
-		                
-		                <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Created By</label>
-		                  <div class="clearfix">
-		     	               <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
-		                  </div>
-		                </div>
-		              </div>
-	             
-	               </div>
+		              
 	                
 	                <div class="clearfix">
 	              
@@ -258,7 +257,8 @@ z-index: 1;
             </div>  
               
             </div>
-            <div class="row clearfix">
+          </div>
+          <div class="clearfix advancedsearch-footer">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
@@ -269,7 +269,6 @@ z-index: 1;
               	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
-          </div>
           </div>
           </div>
           </form:form>
@@ -386,6 +385,17 @@ z-index: 1;
 window.onload = function () {
 	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
 	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+			clientSideBar('${clientOrgLocationId}','${orgRelationId}','${clientName}');
+		}
+	
+
+	if('${spocId}' != null && '${spocId}' != '' && '${spocId}' != 'undefined'){
+		clientSpocSideBar("${spocId}","${ownerId}","${spocUserId}","","","","","${tempOwnerId}");
+		
+	}
+	
  };
 </script>
 
@@ -451,18 +461,60 @@ function clearSearch(){
 }
 </script>
 
+<script>
+  $(function() { 
+	       //Adding Customized Any Of Keyword to the list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		 //Adding Customized All Of Keyword to the list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		 
+		 //Adding Customized Exclude Keyword to the list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		 
+		 //This is for Client Name  the list this method is slead-common.js
+		   tagIt("orgNameAdvanced", 'Press Enter-Key Or Comma(,) To Add Client Name:', 'tagItBykeyForSkills','skills','Client Name');
+		 
+		   //This is for CreatedBy Name  the list this method is slead-common.js
+		   tagIt("createdByAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Created By');
+	   
+
+		   
+		   //client Contact Customized keywords
+		   
+		   //This is for Client Contact Name  the list this method is slead-common.js
+		   tagIt("contactNameAdvanced", 'Press Enter-Key Or Comma(,) To Add Contact Name:', 'tagItBykeyForSkills','skills','Contact Name');
+		   
+		   //Email
+		   tagIt("emailAdvanced", 'Press Enter-Key Or Comma(,) To Add Email:', 'tagItBykeyForSkills','skills','Email');
+
+		   //phoneNumber
+		   tagIt("phoneNumberAdvanced", 'Press Enter-Key Or Comma(,) To Add Phoe Number:', 'tagItBykeyForSkills','skills','Phone Number');
+		   
+		   //Owner Name
+		   tagIt("ownerAdvanced", 'Press Enter-Key Or Comma(,) To Add Owner:', 'tagItBykeyForSkills','skills','Owner');
+		   
+		   //Client Name
+		   tagIt("orgAdvanced", 'Press Enter-Key Or Comma(,) To Add Client:', 'tagItBykeyForSkills','skills','Client');
+		   
+		   
+
+	});
+  </script>
+  
 <script type="text/javascript">
-    	   var config = {
+    	/*    var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
-    	   
+    	    */
     	       
 				
-			//Adding Customized Any Of Keyword to the list 
+    		
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
@@ -483,7 +535,7 @@ function clearSearch(){
 	        		$("#anyOfKeyword").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); 
 		    
 		  //Adding Customized Any Of Keyword to the list
 		    var selectone, chosenone;
@@ -535,7 +587,7 @@ function clearSearch(){
 		    // These are choosen fields for vendor List Multiselect
 		    
 		    
-		    // This is for vendorName 
+		    // This is for Client Name 
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#orgNameAdvanced");
@@ -581,7 +633,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		    
+		   
 		    
 		    
 		    //  This is for contact Name
@@ -604,7 +656,7 @@ function clearSearch(){
 	        		$("#contactNameAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); 
 		    
 		    //  This is for Email
 		    var selectemailAdvanced, chosenemailAdvanced;
@@ -694,7 +746,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		  
+		    */
 
 		      $("#countrySearch").on('change', function (e) {
 		    	   getStates();
@@ -702,14 +754,14 @@ function clearSearch(){
 		       $("#stateSearch").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+			/* 	for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 
@@ -1538,7 +1590,6 @@ function updateSpocStatus(spocId){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-
 		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
 	}
 </script>
