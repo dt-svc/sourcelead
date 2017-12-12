@@ -276,7 +276,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload()">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="vendorDocFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file"  id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -705,11 +705,11 @@ function vendorDocFileSaving()
 }
 </script>
 <!-- script for dateformat in datepicker End -->
-<script>
+<!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->
 <script>
 function clearStartDt(){
 	$("#startDate").val("");

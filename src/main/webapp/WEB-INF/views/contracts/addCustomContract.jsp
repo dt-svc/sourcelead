@@ -90,7 +90,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 clearfix">
-							<div class="input-group positionRelative ratetype col-md-10 pull-left clearUpload" id="uploadFileGroup" title="Document Type: .pdf format only
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -1988,11 +1988,13 @@ function clearCustomEndDate(){
 	};
 </script>
 
-<script>
+<!-- <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");
+		$(".clearUpload").hide();
+		$("#newcontract_form input[data-id*=uploadBtn]").remove();
 	});
-</script>
+</script> -->
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

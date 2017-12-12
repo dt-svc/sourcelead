@@ -133,7 +133,7 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload()">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange = "uploadProfileResume();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;"   class="upload">';
 	result = result+'	                            </span> </label>';
@@ -497,8 +497,8 @@ function removeResumeNameDiv(){
 		};
 	})(jQuery);
 </script>
-<script>
+<!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->

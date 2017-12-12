@@ -100,7 +100,15 @@ function addOffer(requirementId){
 				$("body").css('overflow-y', 'hidden');
 				
 				addOfferRow();
-    
+				
+				
+				$(".clearUpload").click(function(){
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+					document.getElementById("OfferAttachmentuploadFile").value("");
+				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				});
+				
 	        },
 	    });
 	 
@@ -203,6 +211,7 @@ function selectOfferApplicants(){
           <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
+		<div class="clearUpload"></div>
      </div>                 
 </div>
 
@@ -713,5 +722,6 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 	 }
 });
 </script>
+
   
 <jsp:include page="../masterFooter.jsp" />

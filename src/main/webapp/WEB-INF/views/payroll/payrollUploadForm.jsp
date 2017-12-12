@@ -110,11 +110,12 @@ window.onload = function () {
                         <div class="form-group">
                         <label class="col-md-3">Upload Document<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9 positionRelative">
-                          <div class="input-group ratetype clearUpload" id="uploadFileGroup">
+                          <div class="input-group ratetype" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_importFile">
+
 	                        </div>
                           
                         </div>
@@ -588,9 +589,11 @@ function clearFromDate(){
 function clearToDate(){
 	$("#toDate").val("");
 	};	
-	$(".clearUpload").click(function(){
+	/* $(".clearUpload").click(function(){
 		$("#uploadFile").val("");
-	});
+		$("#upload_bulk_payroll_form input[data-id*=uploadBtn]").remove();
+
+	}); */
 </script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />

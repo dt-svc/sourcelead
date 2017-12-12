@@ -445,7 +445,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload()">';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
@@ -1087,8 +1087,9 @@ $(document).ready(function() {
 	
 </script>  
 
-<script>
+<!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");
 	}
 </script>
+ -->
