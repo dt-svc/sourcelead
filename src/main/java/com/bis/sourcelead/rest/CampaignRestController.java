@@ -88,7 +88,7 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/validateNickName", method = RequestMethod.GET)
-	public boolean validateNickName(@RequestParam(value = "nickName", required = false) String nickName, @RequestParam(value = "senderId", required = false) Long senderId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public boolean validateNickName(@RequestParam(value = "nickName", required = false) String nickName, @RequestParam(value = "senderId", required = false) String senderId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isSenderCreated = campaignService.validateNickName(nickName, orgLocation, senderId);
