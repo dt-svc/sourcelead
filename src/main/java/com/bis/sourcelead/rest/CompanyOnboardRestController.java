@@ -22,10 +22,12 @@ import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -43,6 +45,9 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
 	OrglocationBankingDetailsService orglocationBankingDetailsService;
+	
+	@Autowired
+	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -145,9 +150,29 @@ public class CompanyOnboardRestController {
 	@RequestMapping(value = "/saveOrgLocationDocuments", method = RequestMethod.POST)
 	public @ResponseBody String saveOrgLocationDocuments(OrglocationOnboardDocumentsDTO documentsDTO, HttpServletRequest request) throws Exception
 	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		documentsDTO.setStaticPath(staticPath);
-		return null;
+		String result = orglocationOnboardDocumentsService.addOrglocationOnboardDocuments(documentsDTO, loginOrgLocation, user);
+		return result;
 	}
+	
+	@RequestMapping(value = "/deleteOnboardDocument", method = RequestMethod.POST)
+	public @ResponseBody String deleteOnboardDocument(@RequestParam(value = "uuid", required = true) String uuid) throws Exception
+	{
+		String result = "invalid";
+		
+		if(uuid != null && !uuid.isEmpty()) {
+			OrglocationOnboardDocuments document = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentsByUUId(uuid);
+			if(document != null) {
+				orglocationOnboardDocumentsService.deleteOrglocationOnboardDocuments(document);
+				result = "success";
+			}
+		}
+		return result;
+	}
+	
+	
 	
 	
 }

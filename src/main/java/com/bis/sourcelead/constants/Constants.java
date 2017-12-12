@@ -93,6 +93,14 @@ public class Constants {
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
+	
+	
+	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
+	public static final String BANK_CHEQUE = "Bank Cheque";
+	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
+	public static final String ANNUAL_REPORT_BUSINESS_LICENSE = "Annual Report Business License";
+	public static final String W9_W8_BEN_E = "W-9,W-8 Ben-E";
+	
 	public static final String ONBOARDING_FORMS = "Forms";
 	public static final String ONBOARDING_POLICIES = "Policies";
 	public static final String ONBOARDING_CONTRACTS = "Contracts";

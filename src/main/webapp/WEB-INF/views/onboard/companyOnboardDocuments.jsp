@@ -46,6 +46,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 			  
 			   <form:form id="documents_form" name="documents_form"  enctype='multipart/form-data'  method="post">
 			    <div class="comLogContent">
+			      <div id="popUp" ></div>	
 			      <div id="loading"></div> 
 			      <h2>Organization Documents</h2>
 			      <div class="row clearfix"> 
@@ -53,6 +54,21 @@ var sourceleadUrl = '${sourceleadUrl}';
 				      	<div class="form-group clearfix">
 						<label class="col-md-4 noPad">Business License<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8 padding_right">
+							
+							<c:if test="${!empty businessLicenseDoc}">	
+								<div class="clearfix">
+									<div class="pull-left fileContainer" title="${businessLicenseDocName}">
+									${businessLicenseDocName}
+									</div>
+									<div class="pull-left mt5">
+										<a href="${businessLicenseDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a href="javascript:void(0)" onclick="viewFile('${businessLicenseDoc}','${businessLicenseDocName}','${businessLicenseDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
+										<a href="javascript:void(0)" onclick="deleteDocument('${businessLicenseDocfileUUID}','Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${empty businessLicenseDoc}">
 							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
@@ -61,12 +77,27 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload Resume ..." field-name="Business License"
 										data-validation="required validatedoc">
 								</div>
+							</c:if>
 							</div>
 						</div>
 						
 						<div class="form-group clearfix">
 						<label class="col-md-4 noPad">Bank Cheque<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-8 padding_right">
+						<div class="col-md-8 padding_right">
+						<c:if test="${!empty bankChequeDoc}">	
+								<div class="clearfix">
+									<div class="pull-left fileContainer" title="${bankChequeDocName}">
+									${bankChequeDocName}
+									</div>
+									<div class="pull-left mt5">
+										<a href="${bankChequeDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a href="javascript:void(0)" onclick="viewFile('${bankChequeDoc}','${bankChequeDocName}','${bankChequefileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
+										<a href="javascript:void(0)" onclick="deleteDocument('${bankChequefileUUID}','Bank Cheque')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
+									</div>
+								</div>
+						</c:if>
+						
+						<c:if test="${empty bankChequeDoc}">
 							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
@@ -75,14 +106,30 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload Resume ..." field-name="Bank Cheque"
 										data-validation="required validatedoc" >
 								</div>
-							</div>
+						</c:if>
+						</div>
 						</div>
 						
 						
 						<div class="form-group clearfix">
 						<label class="col-md-4 noPad">Registration or Incorporation of recording<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8 padding_right">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							
+							<c:if test="${!empty registrationDoc}">
+							<div class="clearfix">
+									<div class="pull-left fileContainer" title="${registrationDocName}">
+									${registrationDocName}
+									</div>
+									<div class="pull-left mt5">
+										<a href="${registrationDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a href="javascript:void(0)" onclick="viewFile('${registrationDoc}','${registrationDocName}','${registrationDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
+										<a href="javascript:void(0)" onclick="deleteDocument('${registrationDocUUID}','Registration')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${empty registrationDoc}">
+							     <div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
@@ -90,12 +137,33 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload Resume ..." field-name="Registration or Incorporation of recording"
 										data-validation="required validatedoc">
 								</div>
+							</c:if>
+							
+							
+							
+							
+							
 							</div>
 						</div>
 						
 						<div class="form-group clearfix">
 						<label class="col-md-4 noPad">Annual Report Business License<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8 padding_right">
+							
+							<c:if test="${!empty annulReportBusinessDoc}">
+								<div class="clearfix">
+									<div class="pull-left fileContainer" title="${annulReportBusinessDocName}">
+									${annulReportBusinessDocName}
+									</div>
+									<div class="pull-left mt5">
+										<a href="${annulReportBusinessDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a href="javascript:void(0)" onclick="viewFile('${annulReportBusinessDoc}','${annulReportBusinessDocName}','${annulReportBusinessDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
+										<a href="javascript:void(0)" onclick="deleteDocument('${annulReportBusinessDocUUID}','Annual Report Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${empty annulReportBusinessDoc}">
 							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
@@ -104,12 +172,29 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload Resume ..." field-name="Annual Report Business License"
 										data-validation="required validatedoc">
 								</div>
+							</c:if>
 							</div>
 						</div>
 						
 						<div class="form-group clearfix">
 						<label class="col-md-4 noPad">W-9,W-8 Ben-E<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-8 padding_right">
+							
+							
+							<c:if test="${!empty w9Doc}">
+								<div class="clearfix">
+									<div class="pull-left fileContainer" title="${w9DocName}">
+									${w9DocName}
+									</div>
+									<div class="pull-left mt5">
+										<a href="${w9Doc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a href="javascript:void(0)" onclick="viewFile('${w9Doc}','${w9DocName}','${w9DocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
+										<a href="javascript:void(0)" onclick="deleteDocument('${w9DocUUID}','W-9,W-8 Ben-E')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${empty w9Doc}">
 							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
@@ -118,6 +203,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload Resume ..." field-name="W-9,W-8 Ben-E"
 										data-validation="required validatedoc">
 								</div>
+							</c:if>	
+								
+								
 							</div>
 						</div>
 						
@@ -126,8 +214,8 @@ var sourceleadUrl = '${sourceleadUrl}';
 			      </div>
 			    
 			        <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardFederalAndStateTaxes'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
-						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"></a>
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardBankingDetails'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
+						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardSignatory'/>'"></a>
 						<div class="clearfix"></div>
 					</div>
 			    </div>
@@ -149,25 +237,37 @@ var sourceleadUrl = '${sourceleadUrl}';
  <script src="resources/js/formvalidator.js"></script>
  
  <script>
- document.getElementById("uploadBusinessLicenseBtn").onchange = function () {
-  	$('#orglocbusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  };
+
+if(document.getElementById("uploadBusinessLicenseBtn") != null){
+	document.getElementById("uploadBusinessLicenseBtn").onchange = function () {
+	  	$('#orglocbusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  };
+}
+ 
+ if(document.getElementById("uploadBankChequeBtn") != null){
+	 document.getElementById("uploadBankChequeBtn").onchange = function () {
+		  	$('#orglocbankCheque').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  };
+ }
   
-  document.getElementById("uploadBankChequeBtn").onchange = function () {
-	  	$('#orglocbankCheque').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  };
   
-  document.getElementById("uploadRegistrationBtn").onchange = function () {
-	  	$('#orglocregistrationDocument').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  };
+  if(document.getElementById("uploadRegistrationBtn") != null){
+	  document.getElementById("uploadRegistrationBtn").onchange = function () {
+		  	$('#orglocregistrationDocument').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  };  
+  }
   
-  document.getElementById("uploadAnnualBusinessLicenseBtn").onchange = function () {
-	  	$('#orglocannualBusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  };
+  if(document.getElementById("uploadAnnualBusinessLicenseBtn") != null){
+	  document.getElementById("uploadAnnualBusinessLicenseBtn").onchange = function () {
+		  	$('#orglocannualBusinessLicense').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  };
+  }
   
-  document.getElementById("uploadW9Btn").onchange = function () {
-	  	$('#orglocw9Document').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-  };
+  if(document.getElementById("uploadW9Btn") != null){
+	  document.getElementById("uploadW9Btn").onchange = function () {
+		  	$('#orglocw9Document').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  };
+  }
 	  
  </script>
  
@@ -212,6 +312,12 @@ var sourceleadUrl = '${sourceleadUrl}';
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
 								success : function(result) {
+									
+									if(result == 'success'){
+						        		location.replace(sourceleadUrl+"/companyOnboardSignatory"); 
+						        	}else{
+						        		$("#loading").removeAttr("style"); 
+						        	}
 						
 						},
 					}); 
@@ -225,8 +331,48 @@ var sourceleadUrl = '${sourceleadUrl}';
 		$("#documents_form").validateOnBlur(false, validationSettings);
 	});
 </script>
- 
- 
+
+
+<script>
+function deleteDocument(uuid,documentType){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are your sure to delete <strong>"+documentType+"</strong> document</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='deleteDoc(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+
+<script>
+function deleteDoc(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/deleteOnboardDocument?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		location.replace(sourceleadUrl+"/companyOnboardDocuments"); 
+	        	}
+	        },
+	    });
+	 
+}
+</script>
+
+<script type="text/javascript">
+function cancelPopUp(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 

@@ -6053,9 +6053,9 @@ width: 100% !important;
     margin: 0px; padding: 0px;
 }
 .comLogHead ul li {
-    float:left; list-style-type: none; text-align: center; width: 16.666%; z-index: 100; cursor: default;	
+    float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;	
     display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
-    padding:10px 10px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
+    padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
 	border-right: 1px solid #fff;
 }
 .comLogHead ul li.hoverLi {

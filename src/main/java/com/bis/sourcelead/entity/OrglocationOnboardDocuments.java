@@ -15,6 +15,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -30,9 +32,17 @@ public class OrglocationOnboardDocuments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
+	@JoinColumn(name = "ORGLOCATION_ID")
+    private OrgLocations orgLocationId;
 	
-	@Column(name = "DOCUMENT_NAME", columnDefinition = "TEXT default NULL")
+	@Column(name = "DOCUMENT_NAME")
 	private String documentName;
+	
+	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String fileName;
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -70,12 +80,28 @@ public class OrglocationOnboardDocuments implements Serializable{
 		this.id = id;
 	}
 
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
 	public String getDocumentName() {
 		return documentName;
 	}
 
 	public void setDocumentName(String documentName) {
 		this.documentName = documentName;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public String getFileContentType() {

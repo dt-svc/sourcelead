@@ -17,11 +17,13 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -48,6 +50,9 @@ public class CompanyOnboardController {
 	
 	@Autowired
 	OrglocationBankingDetailsService orglocationBankingDetailsService;
+	
+	@Autowired
+	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
 	
 	
 	
@@ -125,10 +130,63 @@ public class CompanyOnboardController {
 			
 			ModelAndView model = new ModelAndView();  
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			OrglocationOnboardDocuments businessLicense = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ONBOARD_DOCUMENT_BUSNIESS_LICENSE, orgLocations.getId());
+			if(businessLicense != null) {
+				model.addObject("businessLicenseDoc", businessLicense.getFileUrl());
+				model.addObject("businessLicenseDocName", businessLicense.getFileName());
+				model.addObject("businessLicenseDocfileContentType", businessLicense.getFileContentType());
+				model.addObject("businessLicenseDocfileUUID", businessLicense.getUuid());
+			}
+			
+			OrglocationOnboardDocuments bankCheque = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.BANK_CHEQUE, orgLocations.getId());
+			if(bankCheque != null) {
+				model.addObject("bankChequeDoc", bankCheque.getFileUrl());
+				model.addObject("bankChequeDocName", bankCheque.getFileName());
+				model.addObject("bankChequefileContentType", bankCheque.getFileContentType());
+				model.addObject("bankChequefileUUID", bankCheque.getUuid());
+			}
+			
+			OrglocationOnboardDocuments registrationDoc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.REGISTRATION_OR_INCORPORATION_OF_RECORDING, orgLocations.getId());
+			if(registrationDoc != null) {
+				model.addObject("registrationDoc", registrationDoc.getFileUrl());
+				model.addObject("registrationDocName", registrationDoc.getFileName());
+				model.addObject("registrationDocfileContentType", registrationDoc.getFileContentType());
+				model.addObject("registrationDocUUID", registrationDoc.getUuid());
+			}
+			
+			OrglocationOnboardDocuments annulReportBusiness  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ANNUAL_REPORT_BUSINESS_LICENSE, orgLocations.getId());
+			if(annulReportBusiness != null) {
+				model.addObject("annulReportBusinessDoc", annulReportBusiness.getFileUrl());
+				model.addObject("annulReportBusinessDocName", annulReportBusiness.getFileName());
+				model.addObject("annulReportBusinessDocfileContentType", annulReportBusiness.getFileContentType());
+				model.addObject("annulReportBusinessDocUUID", annulReportBusiness.getUuid());
+			}
+			
+			OrglocationOnboardDocuments w9Doc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.W9_W8_BEN_E, orgLocations.getId());
+			if(w9Doc != null) {
+				model.addObject("w9Doc", w9Doc.getFileUrl());
+				model.addObject("w9DocName", w9Doc.getFileName());
+				model.addObject("w9DocfileContentType", w9Doc.getFileContentType());
+				model.addObject("w9DocUUID", w9Doc.getUuid());
+			}
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("onboard/companyOnboardDocuments");
 			return model;
 		}
+		
+		@RequestMapping(value = "/companyOnboardSignatory")
+		public ModelAndView companyOnboardSignatory(HttpServletRequest request) throws Exception  {
+			
+			ModelAndView model = new ModelAndView();  
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("onboard/companyOnboardSignatory");
+			return model;
+		}
+		
+		
 		
 		
 		
