@@ -344,7 +344,7 @@ function jobListChange(type){
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
-	    allJobs = {};
+	    allJobs = [];
 	    jobsDataTableList(type);
 }
 </script>
