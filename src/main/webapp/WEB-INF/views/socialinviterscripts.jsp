@@ -1,5 +1,5 @@
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
-<script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
+<script type="text/javascript" id="apiscript" src="/resources/js/all.js?burst=1"></script>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
 <style type="text/css">
@@ -173,7 +173,7 @@
                  css: "resources/css/",
                  js: "resources/js/",
                  authpage : sourceleadUrl+"/resources/oauth.html",
-                 apiurl:sourceleadUrl+"/getAPIService"
+                 apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });
         /*  var shareObj = {

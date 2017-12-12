@@ -10,6 +10,8 @@ public interface UserLoginLogoutSessionService  {
 	
 	UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId);
 	
+	UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID);
+	
 	
 	
 }	

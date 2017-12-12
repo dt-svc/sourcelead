@@ -29,7 +29,7 @@ function prepareBisChecksList(url){
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='clearfix col-md-12 mb10'>";
- 	result = result +'<a href="/sourcelead/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
+ 	result = result +'<a href="/app/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
  	result = result +"</div>";
@@ -297,7 +297,7 @@ function checksPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#checksListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

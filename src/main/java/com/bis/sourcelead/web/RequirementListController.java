@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class RequirementListController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementListController.class);
@@ -60,7 +61,7 @@ public class RequirementListController {
 	@Autowired
 	StatesService statesService;
 	
-	@RequestMapping(value = "/requirementList")
+	@RequestMapping(value = "/jobs")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
 			,@RequestParam(value="searchValue", required=false)String searchValue) throws Exception {
 		
@@ -96,9 +97,6 @@ public class RequirementListController {
 		}
 		
 	    model.addObject("loginOrgLocId", orgLocations.getId());
-	    
-	    List<String> visaList = lookUpDataService.getAllVisaByCategory();
-	    model.addObject("visaList", visaList);
 	    
 	    List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);

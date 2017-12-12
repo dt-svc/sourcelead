@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class UserProfileRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileRestController.class);
@@ -218,6 +220,7 @@ public class UserProfileRestController {
 	public String deleteProfileImage(HttpServletRequest request) throws Exception {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		user.setDocFile(null);
 		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
@@ -227,7 +230,7 @@ public class UserProfileRestController {
 
 	}
 
-/*	@RequestMapping(value = "/displayUserImage/{userId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/displayUserImage/{userId}", method = RequestMethod.GET)
 	public void displayUserImage(@PathVariable Long userId, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) {
 
@@ -260,10 +263,10 @@ public class UserProfileRestController {
 			e1.printStackTrace();
 		}
 
-	}*/
+	}
 	
 	
-	  /* @RequestMapping(value = "/displayOnboardingUserImage/{userId}" , method = RequestMethod.GET)
+	   @RequestMapping(value = "/displayOnboardingUserImage/{userId}" , method = RequestMethod.GET)
 	     public void displayOnboardingUserImage(@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
 	    	 
 		   User user = null;
@@ -289,7 +292,23 @@ public class UserProfileRestController {
 				}
 				
 	  }
-*/
+	   
+	   
+	@RequestMapping(value = { "/updateUserLoginSecurity","/rest/updateUserLoginSecurity" }, method = RequestMethod.GET)
+	public String passwordSettings(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request) throws Exception
+	{
+		User user = null;
+		user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (Constants.YES.equalsIgnoreCase(addUserProfileDTO.getLoginSecurity())) {
+			user.setLoginSecurity(Constants.YES);
+			userService.addUser(user);
+		}else {
+			user.setLoginSecurity(Constants.NO);
+			userService.addUser(user);
+		}
+		return "Success";
+	}
+
 
 	private static BufferedImage colorImage(BufferedImage image) {
 		int width = image.getWidth();

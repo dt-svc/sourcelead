@@ -1930,7 +1930,7 @@ input:checked + .slider:before {
 .sendInv {
 	clear: both; display: inline-block;
 }
-.checkBox input[type="checkbox"], .checkBox .radio input[type="radio"] {
+.checkBox input[type="checkbox"], .radioIput input[type="radio"] {
 	position: relative; top: 2px; margin-right: 10px;
 }
 .collapseDiv_styles .input-groupAddon {
@@ -7397,12 +7397,16 @@ border: 1px solid #ccc !important;
 .minHeight40{
 min-height: 40px;
 }
+.minHeight80{
+min-height:80px;
+}
 .tableStyles {
 	position: relative; border: 1px solid #ddd;
 }
 .tableStyles table tbody{
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
 }
+
 tableStyles table tr th {
 font-weight: normal; color: #333; padding: 10px !important; border-bottom: 1px solid #BDBDBD;
 height: 40px; vertical-align: middle;
@@ -7451,6 +7455,11 @@ padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
 background-color: #fff;
 }*/
+.clearUploads:after {
+padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:#D32F2F;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
 .clearDate:after {
 padding: 0px; bottom: 75%; right:10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
@@ -7496,6 +7505,12 @@ margin-right: 0;
 }
 .bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
 width: 220px;
+}
+.assignTableScroll.assignTableScroll-mnh {
+min-height: 150px;
+}
+.modal.addipPopup-modal {
+    display: none;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -9485,3 +9500,19 @@ z-index: -800;
   animation-name: slideOutUp;
 }
 /* Animated Ends */
+
+.authenticationMask {
+position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
+z-index: 9999; display:none; background-image: "../images/cancel.png"; background-repeat: no-repeat; background-position: 10% 40px;
+}
+.authenticationMask .proj_close {
+    width: 60px; height: 60px; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
+    text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
+    background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
+}
+.modal.addipPopup-modal {
+    display: none;
+}
+.location-alert {
+    position:fixed; top:5%; left:35%; z-index: 9999; box-shadow: 1px 1px 2px #b88; display: none;
+}

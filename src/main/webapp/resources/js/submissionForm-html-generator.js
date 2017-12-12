@@ -7,11 +7,8 @@
 
 //generates the form HTML
 function generateForm(sourceleadUrl,templateId) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
@@ -184,7 +181,6 @@ function generateForm(sourceleadUrl,templateId) {
 // To Generate Org SubmissionForm
 
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
     
@@ -506,7 +502,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>ZipCode'+reqSymbol+'</label>' +
-                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" readonly />'+
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" />'+
                              '</div>';
                     		 
                     		 

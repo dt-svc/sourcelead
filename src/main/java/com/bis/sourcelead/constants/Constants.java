@@ -329,7 +329,9 @@ public class Constants {
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static final String ACTIVATE_EMAIL = "ActivateUserEmail";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	public static final String LOGIN_OTP_EMAIL = "LoginOTPEmail";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_Approver="UserNewActionAssignedAsaApprover";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER="UserNewActionAssignedAsaReportingManager";
@@ -459,6 +461,7 @@ public class Constants {
 	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
+	public static final String EXPERIENCELEVEL = "Experience Level";
 	
 	public static final String NOTES_JOBS = "Jobs";
     public static final String NOTES_CONTRACTS = "Contracts";
@@ -553,6 +556,7 @@ public class Constants {
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
+	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
 	public static final String ELK_PROJECT_TYPE = "project";
 	public static final String ELK_CANDIDATE_INDEX = "candidates";

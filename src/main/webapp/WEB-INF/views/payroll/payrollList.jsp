@@ -20,11 +20,11 @@
 		</div>
 
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Payroll
 		</div>
 		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='/uploadDocuments'/>" class="ml10 mt5"
+			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
 				id="uloadDocs" title="upload documents">Upload Files</a> 
 				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
 				id=generateReportId title="Generate Report">Generate Report</a> --%>
@@ -57,51 +57,36 @@
 
 				<div class="timesheet_head clearfix">
 
-					<div class="pull-left mr">
+					<div class="clearfix">
 
-						<a href="<c:url value='/userMapping'/>"
+						<a href="<c:url value='${appPath}/userMapping'/>"
 							class="btn btn-primary btn-sm ml10 mt5 hidden"
 							title="User Mapping" onClick="userMaping();">User Mapping </a>
 
 						<!--  Runpayroll div -->
 						<form:form id="run_payroll_cycle" name="run_payroll_cycle"
 							method="post">
-							<div class="col-md-4 mt" id="addPayrollDiv"
-								style='width: 600px; right: 0px; top: 0px; padding: 10px 0 display:none;'>
-								<div class="form-horizontal clearfix row">
-									<div class="col-md-6 dropdown-select paddingRight"
-										id="payrollCycleDiv">
-										<select class="chosen-select" id="payrollCycle"
-											name="payrollCycle" field-name="Payroll Cycle"
-											data-validation="required">
-											<option value="">---Select Payroll Cycle---</option>
-											<option value="2">Mar 1st - Mar 15th</option>
-											<option value="3_FIRST">Mar 15th - April 1st</option>
-											<option value="3">April 1st - April 15th</option>
-											<option value="4_FIRST">April 15th - May 1st</option>
-											<option value="4">May 1st - May 15th</option>
-											<option value="5_FIRST">May 15th - June 1st</option>
-											<option value="5">June 1st - June 15th</option>
-											<option value="6_FIRST">June 15th - July 1st</option>
-											<option value="6">July 1st - July 15th</option>
-											<option value="7_FIRST">July 15th - Aug 1st</option>
-											<option value="7">Aug 1st - Aug 15th</option>
-											<option value="8_FIRST">Aug 15th - Sep 1st</option>
-											<option value="8">Sep 1st - Sep 15th</option>
-											<option value="9_FIRST">Sep 15th - Oct 1st</option>
-											<option value="9">Oct 1st - Oct 15th</option>
-											<option value="10_FIRST">Oct 15th - Nov 1st</option>
-											<option value="10">Nov 1st - Nov 15th</option>
-											<option value="11_FIRST">Nov 15th - Dec 1st</option>
-											<option value="11">Dec 1st - Dec 15th</option>
-										</select>
-									</div>
-									<div class="col-md-2 paddingLeft">
-										<button type="button" class="btn btn-primary"
+							<div class="clearfix mt" id="addPayrollDiv">
+								<div class="clearfix">
+									<div id="payrollCycleDiv" class="col-md-7">
+										<div class="form-inline">
+										<span class="form-group">
+											 <input type="text" class="form-control calendar" value="" id="payrollStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+											 <p id="reportStartDate" class="ReError"></p>
+										 </span>
+										<span class="form-group">
+											<input type="text"  class="form-control calendar" value="" id="payrollEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+											<p id="reportEndDate" class="ReError"></p>
+										</span>
+									
+									<div class="form-group">
+										<button type="button" class="btn btn-primary btn-block"
 											id="runPayrollCycle" onclick="runPayrollCycles();">Run
 											Payroll</button>
 									</div>
-									<div id="payScale" class="col-md-4 mt5" style="display: none;">
+									</div>
+									</div>
+									<div id="payScale" class="col-md-3 mt5 paddingLeft" style="display: none;">
 										<span class="label label-info runpayRoll-txt"
 											id="payCycleName"></span>
 									</div>
@@ -136,15 +121,61 @@
 	<div id="popUp"></div>
 </section>
 
+<script>
+	$(function() {
+		
+		$('#payrollStartDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$("#payrollEndDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		});
+		
+		$('#payrollEndDate').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate() - 1);
+				$("#startDate").datepicker("option", "maxDate", dt);
+				addValidClass();
+			}
+		});
+		
+	});
+</script>
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("payrollStartDate").value;
+		 if(StartDate){
+			 $('#reportStartDate').empty() 
+		 }
+		 
+		 var EndDate = document.getElementById("payrollEndDate").value;
+		 if(EndDate){
+			 $('#reportEndDate').empty(); 
+		 }
+}
+</script>
 
 <script>
 	function runPayrollCycles(type) {
+		
 		var payrollValue = $('#payrollCycle').val();
+		var payrollStartDate = $('#payrollStartDate').val();
+		var payrollEndDate = $('#payrollEndDate').val();
 		if (type != "main"
 				|| (payrollValue != "" && payrollValue != 'undefined' && payrollValue != null)) {
 			if ($('#run_payroll_cycle').validate(false, validationSettings)) {
 				$('#addPayrollDiv').removeClass("show-div");
-				var payrollCycle = $('#payrollCycle :selected').text();
+				var payrollCycle =  payrollStartDate +" - "+payrollEndDate;
 				var frm = $('#run_payroll_cycle').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -154,7 +185,7 @@
 				$("#loading")
 						.attr(
 								'style',
-								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				var sourceleadUrl = '${sourceleadUrl}';
 				$
 						.ajax({
@@ -789,7 +820,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#employeePayrollTable").wrap(

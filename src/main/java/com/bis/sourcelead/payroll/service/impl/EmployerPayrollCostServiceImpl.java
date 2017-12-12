@@ -50,6 +50,7 @@ import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
@@ -63,6 +64,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -277,17 +281,26 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
 		
 		List<UserPayroll> userPayrollList = new ArrayList<>();
-		if(jsonObj.has("payrollCycle")){
-			Date[] dates = null;
-			String payrollCycle = jsonObj.getString("payrollCycle");
-			String[] cycle = payrollCycle.split("_");
-			if(cycle.length >1){
-				dates = get15thToEndDateOfMonth(Integer.parseInt(cycle[0]));
-			}else{
-				 dates = get1to15thDateOfMonth(Integer.parseInt(cycle[0]));
-			}
-			Date startDate = dates[0];
-			Date endDate = dates[1];
+		Date startDate = null, endDate = null;
+		if(jsonObj.has("StartDate")){
+			startDate = commonUtil.getDateFormat(jsonObj.getString("StartDate"));
+		}
+		if(jsonObj.has("EndDate")){
+			endDate = commonUtil.getDateFormat(jsonObj.getString("EndDate"));
+		}
+		
+		
+//		if(jsonObj.has("payrollCycle")){
+//			Date[] dates = null;
+//			String payrollCycle = jsonObj.getString("payrollCycle");
+//			String[] cycle = payrollCycle.split("_");
+//			if(cycle.length >1){
+//				dates = get15thToEndDateOfMonth(Integer.parseInt(cycle[0]));
+//			}else{
+//				 dates = get1to15thDateOfMonth(Integer.parseInt(cycle[0]));
+//			}
+//			Date startDate = dates[0];
+//			Date endDate = dates[1];
 			
 //			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
 //			if(userPayrollList.size() >= 0){
@@ -304,7 +317,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
 							userPayroll.setId(i);
 							if(pm.getProjectMemberCandidteId() !=null) {
-								userPayroll.setEmpId(pm.getProjectMemberCandidteId().getId().toString());	
+								String employeeId = wageTaxSummaryService.getWagesAndTaxEmployeeId(pm.getCandidateId());
+								userPayroll.setEmpId(employeeId);	
 								userPayroll.setUserId(pm.getProjectMemberCandidteId().getConsultantUser());
 							}
 							userPayroll.setOrgLocationId(orgLocation);
@@ -347,7 +361,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			}
 			
 			
-		}
+//		}
 		return userPayrollList;
 	}
 

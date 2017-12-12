@@ -30,6 +30,7 @@ public class JobListEmailCampaignDTO {
 	
 	private String campaignjobs;
 	
+	private String senderIdentity;
 	
 	public String getMailType()
 	{
@@ -138,6 +139,18 @@ public class JobListEmailCampaignDTO {
 	{
 		this.campaignjobs = campaignjobs;
 	}
+
+	public String getSenderIdentity()
+	{
+		return senderIdentity;
+	}
+
+	public void setSenderIdentity(String senderIdentity)
+	{
+		this.senderIdentity = senderIdentity;
+	}
+	
+	
 
 	
 }

@@ -157,8 +157,8 @@
 	  </span>
 	  
 	<div class="pull-right">
-	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger">
-	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save'); javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-primary ml10">
+	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger">
+	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save'); javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-primary ml10">
 	  <input type="button" value="Save & Finish" id="save_Finish_project" onclick="saveAdditionalDetails('Finish');" class="btn btn-success ml10">
 	</div>
   </div>
@@ -239,7 +239,7 @@ $('#projectExecuitionModel input').on('change', function() {
 function getAdditionalDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId != null && projectId != 'unedfined' && projectId != ''){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 			    	type: "GET",
@@ -507,7 +507,7 @@ function getAdditionalDetails(){
 			var formData = $($('#project_additional_form')[0]).serialize();
 	  		
 			var sourceleadUrl = '${sourceleadUrl}';
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 	        var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';

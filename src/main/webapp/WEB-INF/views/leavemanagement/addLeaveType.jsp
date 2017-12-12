@@ -3,17 +3,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 
-		<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-		<script src="resources/js/bootstrap-colorpicker.min.js"></script>
+		<link href="/resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+		<script src="/resources/js/bootstrap-colorpicker.min.js"></script>
 		   
 	
 	
@@ -50,9 +50,9 @@
 			<h2>Leave Type</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a>
-			&raquo;<a href="<c:url value='/viewLeaveTypes'/>">Leave type List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
+			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
 			&raquo; Add Leave Type
 		</div>
 	</section>
@@ -119,7 +119,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Applicable to All Users ss<i class='fa fa-info-circle' title='Leave policies will be visible to users while applying the respective leave type'></i></label>
+							<label class="col-md-3">Applicable to All Users</label>
 							<div class="col-md-9">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.applicableToUsers}">
@@ -200,7 +200,7 @@
 
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Leaves Carryforward <i class='fa fa-info-circle' title='Describes whethers leaves are carryforward to next year'></i></label>
+							<label class="col-md-3">Leaves Carryforward</label>
 							<div class="col-md-9">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.leavesCarryforward}">
@@ -269,7 +269,7 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Picked color will be repersent for this leave type throughout application'></i></label>
+								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<div id="cp"
 									class="input-group colorpicker-component errorInptgroup">
@@ -292,7 +292,7 @@
 	              </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
 									<input type="checkbox" name="leavePolicy" id="leavePolicy"
-										value="Y">Leave Policy <i class='fa fa-info-circle' title='Leave policy for particluar leave type'></i>
+										value="Y">Leave Policy
 	              </c:if>
 							</div>
 						</div>
@@ -394,7 +394,7 @@
 			$("#loading")
 					.attr(
 							'style',
-							'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+							'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl + "/saveNewLeaveType?" + tokenParamName + "="
 					+ tokenValue + "&orgLocationId=" + locationId
 					+ "&loginUserId=" + loginUserId, formData, function(data) {
@@ -493,4 +493,3 @@
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
-

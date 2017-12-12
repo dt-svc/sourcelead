@@ -1,10 +1,8 @@
 package com.bis.sourcelead.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1038,6 +1036,27 @@ public class CommonUtil {
 			requirementDTO.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementDTO.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getProjectClientID() != null){
+			requirementDTO.setProjectClientID(requirement.getProjectClientID().toString());
+			}
+			if(requirement.getMedicalClearence() !=null){
+			requirementDTO.setMedicalClearence(requirement.getMedicalClearence());
+		}
+			if(requirement.getSecurityClearance() !=null){
+			requirementDTO.setSecurityClearance(requirement.getSecurityClearance());
+		}
+			if(requirement.getOverTime() !=null){
+			requirementDTO.setOverTime(requirement.getOverTime());
+		}
+			if(requirement.getBackgroundCheck() !=null){
+			requirementDTO.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() !=null){
+			requirementDTO.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() !=null){
+			requirementDTO.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementDTO.setDescription(requirement.getDescription());
 			}
@@ -1248,34 +1267,6 @@ public class CommonUtil {
 			}
 			return bytesArray;
 		}
-		
-		private byte[] getByteArray(File file) throws IOException {
-		    ByteArrayOutputStream ous = null;
-		    InputStream ios = null;
-		    try {
-		        byte[] buffer = new byte[4096];
-		        ous = new ByteArrayOutputStream();
-		        ios = new FileInputStream(file);
-		        int read = 0;
-		        while ((read = ios.read(buffer)) != -1) {
-		            ous.write(buffer, 0, read);
-		        }
-		    }finally {
-		        try {
-		            if (ous != null)
-		                ous.close();
-		        } catch (IOException e) {
-		        }
-
-		        try {
-		            if (ios != null)
-		                ios.close();
-		        } catch (IOException e) {
-		        }
-		    }
-		    return ous.toByteArray();
-		
-	}
 		/**
 		 * Get Number of days Between two given dates
 		 * @param fromDate

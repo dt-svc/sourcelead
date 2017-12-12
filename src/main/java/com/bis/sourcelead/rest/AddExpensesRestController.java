@@ -62,6 +62,7 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class AddExpensesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
@@ -155,7 +156,7 @@ public class AddExpensesRestController {
 	}
 	
 	
-	@RequestMapping(value = "/acceptOrRejectReopenExpenseBySuperUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/acceptOrRejectReopenExpenseBySuperUser", method = RequestMethod.POST)
 	public @ResponseBody void acceptOrRejectReopenExpenseBySuperUser(@RequestParam(value="expenseId", required=false) Long expenseId,
 			@RequestParam(value="reOpenedUserId", required=false) Long reOpenedUserId,
 			@RequestParam(value="type", required=false) String type,
@@ -321,7 +322,7 @@ public class AddExpensesRestController {
 	}
 	 
 	 
-	/* @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
+	 @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
 	    public void downloadExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -348,7 +349,7 @@ public class AddExpensesRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}*/ 
+		} 
 	 
 	 
 	
@@ -445,8 +446,8 @@ public class AddExpensesRestController {
 //				 }
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
-			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();

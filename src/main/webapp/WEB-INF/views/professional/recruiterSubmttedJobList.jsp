@@ -48,7 +48,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Submitted By Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
@@ -194,7 +194,7 @@ function portletListFilter(requirementStatus){
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.candidateName+'">'+report.candidateName+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+candidateEmail+'">'+candidateEmail+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot-100" title="'+phoneNumber+'">'+phoneNumber+'</div></td>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><a href="<c:url value="/app/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-100">'+createdDateStr+'</div></td>';

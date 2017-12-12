@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class OrgDocumentsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrgDocumentsRestController.class);
@@ -219,7 +220,7 @@ public class OrgDocumentsRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	/*@PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_VENODR_DOCS','ROLE_DOWNLOAD_CLIENT_DOCS')")
+	@PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_VENODR_DOCS','ROLE_DOWNLOAD_CLIENT_DOCS')")
 	@RequestMapping(value = "/downloadOrgDocument", method = RequestMethod.GET)
     public void downloadResume(@RequestParam(value="docId", required=false) String docId ,HttpServletResponse response) throws Exception {
 		
@@ -246,7 +247,7 @@ public class OrgDocumentsRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
-		}*/
+		}
 		
 	/**To get Org spoc Documnet List by spoc userId
 	 * @author Prasanna Vadla
