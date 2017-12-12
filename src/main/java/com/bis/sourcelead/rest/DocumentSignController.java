@@ -9,6 +9,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class DocumentSignController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(DocumentSignController.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -56,13 +60,13 @@ public class DocumentSignController {
 	private SignDocumentService signDocumentService;
 	
 	@Autowired
-	ContractsTemplateService contractsTemplateService;
+	private ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
-	ContractsTemplateDao contractsTemplateDao;
+	private ContractsTemplateDao contractsTemplateDao;
 	
 	@Autowired
-	Html2PdfUtil html2PdfUtil;
+	private Html2PdfUtil html2PdfUtil;
 	
 
 	@RequestMapping(value = "/signer",method = RequestMethod.POST)
@@ -71,7 +75,6 @@ public class DocumentSignController {
 		UserInfo userInfo =  new UserInfo();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
-		
 		Contracts contract = contractsTemplateService.getContractById(contractId);
 		String fileName = null;
 		if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())) {
@@ -81,6 +84,7 @@ public class DocumentSignController {
 		}
 		
 		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(orgLocations.getId()),String.valueOf(org.getId()),true);
+		logger.info("folder creation path in our local system : "+userData);
 		userInfo.setFileName(fileName);
 		userInfo.setFileURL(userData);
 		//TODO : Null check for dirPath
