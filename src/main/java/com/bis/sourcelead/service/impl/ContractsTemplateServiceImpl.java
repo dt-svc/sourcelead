@@ -83,6 +83,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	
 	@Autowired
 	private UserService userService;
 	
@@ -712,9 +716,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 			
+	//TODO commented by Rakshith
 			
 			//  if(null != vendorContactsUser && null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
-			 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
+		/*	 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 				  Contracts con = null;
 				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					  if (null != contractType && !"".equalsIgnoreCase(contractType)
@@ -745,7 +750,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
 		        	}
-			  }
+			  }*/
 		}
 		return savedContracts;
 		
@@ -779,6 +784,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(contracts.getContractsTemplate() != null){
 			venContractsDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
 			}
+			
+			
 			venContractsDto.setOwnerName(ownerName.toString());
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
@@ -801,6 +808,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						venContractsDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	venContractsDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -825,6 +834,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}*/
+			
+			if(contracts.getTemplateFileURL() != null){
+				venContractsDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
 			
 			if(contracts.getId() != null){
 				venContractsDto.setId(contracts.getId());
@@ -936,6 +949,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						clientConDto.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
+			 	
+			 	clientConDto.setOrgRelationUUID(contracts.getOrgRelations().getUUID());
 			}
 			
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
@@ -959,6 +974,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				clientConDto.setEndDateStr(endDateInTimezone);
+			}
+			
+			if(contracts.getTemplateFileURL() != null){
+				clientConDto.setTemplateFileURL(contracts.getTemplateFileURL());
 			}
 			
 			if(contracts.getId() != null){
@@ -1418,7 +1437,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 			 }
 			 StringBuilder linkBuild = new StringBuilder();
-			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
 		//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
@@ -1547,7 +1566,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 		 }
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -1657,7 +1676,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			globalVarsMap.put("OwnerName","--");
 		}
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 	//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -2316,7 +2335,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
@@ -2765,7 +2784,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -2891,7 +2910,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and

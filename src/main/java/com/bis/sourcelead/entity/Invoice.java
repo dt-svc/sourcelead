@@ -331,6 +331,10 @@ public class Invoice {
 	@JsonProperty
 	private String expId;
 	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
 	
 	public Long getId()
 	{
@@ -1089,6 +1093,14 @@ public class Invoice {
 		this.fileUrl = fileUrl;
 	}
 
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
 	
 }

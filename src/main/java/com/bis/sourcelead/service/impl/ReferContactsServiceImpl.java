@@ -186,4 +186,15 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		  referContactsDao.saveAllReferContacts(referContactsList);
 	}
 
+	@Override
+	public Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception {
+		return referContactsDao.validateGoogleEamil(email, loginUserId);
+	}
+
+	@Override
+	public ReferContacts findByEmail(String recipientMail) throws Exception
+	{
+		return referContactsDao.findByEmail(recipientMail);
+	}
+
 }

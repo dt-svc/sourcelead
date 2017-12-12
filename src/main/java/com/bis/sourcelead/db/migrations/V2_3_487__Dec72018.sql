@@ -1,0 +1,2 @@
+DELETE FROM `sourcelead`.`LOOKUP_DATA` WHERE `ID`='1077';
+

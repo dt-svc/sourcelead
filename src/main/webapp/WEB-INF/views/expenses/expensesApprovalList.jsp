@@ -657,11 +657,19 @@ function expensesCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#filterEndDate").datepicker("option", "minDate", dt);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		
 		});
@@ -670,11 +678,19 @@ function expensesCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#filterStartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		});
 		

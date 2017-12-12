@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Entity for CONTRACTS_TEMPLATE
  * @author root
@@ -206,6 +208,9 @@ public class Contracts {
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
+	@Column(name = "TEMPLATE_FILE_URL")
+	private String templateFileURL;
+	
 	@Transient
 	private String ownerName;
 	
@@ -316,6 +321,14 @@ public class Contracts {
 	
 	@Transient
 	private Long ownerUser;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String spocUUID;
 	
 	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
@@ -1068,4 +1081,30 @@ public class Contracts {
 		this.fileURL = fileURL;
 	}
 
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
 }

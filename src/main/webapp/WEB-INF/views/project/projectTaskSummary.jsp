@@ -1166,7 +1166,7 @@ function addSubTasks(){
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Due Date</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <div class="col-md-8 clearDate" onClick="cleartprojectdueDate();">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
@@ -1359,6 +1359,13 @@ function uploadButton(id){
 	fileUpload("file"+id+"", "tasks", "projectTask_form");
 }
 </script>
+
+<script>
+function cleartprojectdueDate(){
+	$("#dueDate").val("");
+	};
+
+ </script>
 <script>
 function getOwnerList(){
 	

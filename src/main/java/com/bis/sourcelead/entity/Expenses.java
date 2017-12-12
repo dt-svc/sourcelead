@@ -184,6 +184,14 @@ private static final long serialVersionUID = 1L;
 	@JsonProperty
 	private String expenseLocationCode;
 	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -479,8 +487,28 @@ private static final long serialVersionUID = 1L;
 		this.expenseLocationCode = expenseLocationCode;
 	}
 
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
 
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	
+	
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {
 //		return expenseEntriesList;

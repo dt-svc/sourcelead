@@ -82,11 +82,14 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private String notificationUUID;
 	
+
+	private String orgSpocUUUID;
+	
+	private String checkbox;
 	
 	
-	
-	
-	public Long getOwnerUserId() {
+	public Long getOwnerUserId() { 
+
 		return ownerUserId;
 	}
 
@@ -389,5 +392,29 @@ public class ClientVendorContactsIndex implements Serializable {
 	public void setNotificationUUID(String notificationUUID) {
 		this.notificationUUID = notificationUUID;
 	}
+
+
+	public String getOrgSpocUUUID()
+	{
+		return orgSpocUUUID;
+	}
+
+	public void setOrgSpocUUUID(String orgSpocUUUID)
+	{
+		this.orgSpocUUUID = orgSpocUUUID;
+	}
+	
+	
+
+	public String getCheckbox()
+	{
+		return checkbox;
+	}
+
+	public void setCheckbox(String checkbox)
+	{
+		this.checkbox = checkbox;
+	}
+
 	
 }

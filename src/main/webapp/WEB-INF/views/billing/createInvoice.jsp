@@ -123,10 +123,13 @@ function errRemoveClientContact(){
 						</div>
 						<div class="form-group">
 							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="errDuedate">
+							<div class="col-md-9 " id="errDuedate">
+							<div class="input-group errorInptgroup">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
+								<span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -2155,5 +2158,12 @@ function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "invoice_form","fileInfo");
 }
  
+</script>
+<script>
+function clearDate(){
+	$("#dueDate").val("");
+	};
+	
+	
 </script>
 <jsp:include page="../masterFooter.jsp" />

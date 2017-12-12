@@ -57,6 +57,8 @@ public class CampaignIndex implements Serializable{
 	
 	private String calDays;
 	
+	private String mailType; 
+	
 	
 
 	public Long getMailBoxId() {
@@ -258,7 +260,15 @@ public class CampaignIndex implements Serializable{
 	public void setCalDays(String calDays) {
 		this.calDays = calDays;
 	}
-	
-	
+
+	public String getMailType()
+	{
+		return mailType;
+	}
+
+	public void setMailType(String mailType)
+	{
+		this.mailType = mailType;
+	}
 	
 }

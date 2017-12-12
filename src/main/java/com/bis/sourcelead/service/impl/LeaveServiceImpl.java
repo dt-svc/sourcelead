@@ -89,6 +89,10 @@ public class LeaveServiceImpl implements LeaveService{
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
     
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+    
     @Autowired
     EmailScenerioUtil emailScenerioUtil;
     
@@ -200,10 +204,16 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveType(leave.getLeaveType().getName());
 				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 				leaveDto.setStatus(leave.getStatus());
-				leaveDto.setNoOfDays(leave.getNumberOfDays());
 				int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				leaveDto.setFromHalfDay(leave.getFromHalfDay());
+				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+					leaveDto.setNoOfDays("1/2");
+				}else{
+					leaveDto.setNoOfDays(leave.getNumberOfDays());
+				}
+				
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}
@@ -817,7 +827,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 }
 			 
 				StringBuilder stringBuildforLink = new StringBuilder();
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 			 
 			 //setting the Recipient information

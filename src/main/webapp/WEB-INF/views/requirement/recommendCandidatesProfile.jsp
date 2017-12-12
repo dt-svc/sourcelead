@@ -1340,43 +1340,9 @@ function updateDesignationType(){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		  //Adding Customized Skills to the list
-		   var select, chosen;
-	        select = $("#skillName");
-	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    { 
-		    	 
-		    	 var enterSkillsArray = this.value.split(",");
-		    	 if(enterSkillsArray.length > 1){
-	        		 for (var i=0; i < enterSkillsArray.length; i++) {
-	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
-	        			 select.append(option);
-	        			 select.find(option).prop('selected', true);
-	 	        		 $("#skillName").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newSkill = this.value.replace(","," ");
-			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				        {
-		    				 preventTabkey(e);
-							var isNewSkill = true;
-		                     $("#skillName option:selected").each(function(){
-								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-										isNewSkill = false;
-										return false;
-								 }
-		                   });
-						   if(isNewSkill){
-								select.append(option);
-						   }
-		                   $("#skillName").trigger("chosen:updated");
-		                }
-		    	 }
-		    });
-	    
-	    //Adding Customized Skills to the list
+		//Adding Customized Skills to the list this method is slead-common.js
+		tagIt("skillName", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','');
+		
 	}
 
 	function saveSkill(candidateId){

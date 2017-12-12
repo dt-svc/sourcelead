@@ -173,7 +173,7 @@
                  css: "resources/css/",
                  js: "resources/js/",
                  authpage : sourceleadUrl+"/resources/oauth.html",
-                 apiurl:sourceleadUrl+"/getAPIService"
+                 apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });
         /*  var shareObj = {

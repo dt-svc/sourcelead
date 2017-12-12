@@ -115,7 +115,7 @@ function verifyOTP(){
 		       url: sourceleadUrl+"/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
 		    	 if(result == "true"){
-		    		 location.replace(sourceleadUrl+"/dashboard");     
+		    		 location.replace(sourceleadUrl+"/dashboard");  
 		    	 }
 		      },
 		  });
