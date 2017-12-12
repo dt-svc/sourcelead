@@ -114,7 +114,7 @@ z-index: 1040 !important;
 		<div class="popupFoot">
 		<p id="errorMessage" class=""></p>
             <input value="Save" class="btn btn-primary" type="button" id="addList">
-             <input value="reset" class="btn btn-primary" type="button" id="resetForm">
+             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
             <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
           </div>		
 		</form:form>
