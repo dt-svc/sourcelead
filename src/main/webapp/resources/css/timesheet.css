@@ -1253,10 +1253,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .timesheet_appr_table ul.table_details li + li + li {
     padding:15px 0px;
 }
-       
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#34c244; z-index:10000; padding:3px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
+    background-color:#34c244; z-index:10000; padding:3px 15px; width:400px; border-radius:4px; font-size:15px; font-weight:500;
     color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); word-wrap: break-word;
     }
 .success_pop i {

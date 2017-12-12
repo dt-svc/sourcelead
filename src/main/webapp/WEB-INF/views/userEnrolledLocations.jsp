@@ -94,7 +94,6 @@ function validateTwoStepAuth() {
 		       url: sourceleadUrl+"/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
-// 		    		 redirectDaashboard(userRoleId);  
 		    		 location.replace(sourceleadUrl+"/dashboard");   
 		    	 }
 		      },
