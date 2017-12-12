@@ -56,6 +56,8 @@ public interface CampaignService {
 
 	boolean validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType)throws Exception;
 
+	boolean deleteStats(String categoryName) throws Exception;
+
 
 
 

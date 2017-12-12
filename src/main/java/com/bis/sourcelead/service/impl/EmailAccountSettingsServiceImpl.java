@@ -1,19 +1,23 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmailAccountSettingsDao;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
+import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReadMail;
+import com.bis.sourcelead.util.ReadMailFolder;
 
 @Service
 public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsService{
@@ -82,17 +86,31 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	}
 
 	@Override
-	public boolean emailAccountRead(Long id, Long userId) {
+	public  List<String> emailAccountRead(Long id, Long userId) throws Exception {
 		
+		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
+		List<String> foldersList=new ArrayList<>();
+		String email=emailAccountSettings.getEmail();
+		String password=emailAccountSettings.getPassword();
+		String host = "imap.gmail.com";
+		String storeType = "imaps";
+		foldersList=ReadMail.readMail(host, storeType, email, password);
+		
+		
+		return foldersList;
+		
+	}
+
+	@Override
+	public List<ReadMailDTO> emailFolderRead(Long id,String folderName, Long userId) {
 		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
 		String email=emailAccountSettings.getEmail();
 		String password=emailAccountSettings.getPassword();
 		String host = "imap.gmail.com";
 		String storeType = "imaps";
-		@SuppressWarnings("unused")
-		boolean successval=ReadMail.readMail(host, storeType, email, password);
-		return successval;
-		
+		List<ReadMailDTO> mailsList=new ArrayList<>();
+		mailsList=ReadMailFolder.readMail(host, storeType, email, password,folderName);
+		return mailsList;
 	}
 
 }

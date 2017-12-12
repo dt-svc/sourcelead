@@ -705,21 +705,99 @@ function activeEmail(id){
 		url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
 		success : function(data) {
 			alert("hello")
-			$("#dynamicEmailFolder").hide();
-			 var json = JSON.parse(data);
-			 alert(json.length)
-			 for(var i=0; i<json.length; i++){
-				 
+			 var result = "";
+			// alert(data.length)
+			 for(var i=0; i<data.length; i++){
+				 var report = data[i];
+				 result = result + "<div>";
+				 result = result + "<ul class='nav nav-pills nav-stacked  inBox-list'>";
+				 result = result + "<li onClick='readFolder(\""+report+"\","+id+");'>"+report+"</li>";
+				 result = result + "</ul>";
+				 result = result + "</div>";
 			 }
-			if(data==true){
+			 $("#dynamicEmailFolder").empty();
+			 $("#dynamicEmailFolder").append(result);
+			/* if(data==true){
 			location.replace(sourceleadUrl+"/mailBox/mails");
 			}else{
 				location.replace(sourceleadUrl+"/mailBox/mails");
 				alert("Configured credentials were wrong,Please configure with right credentials")
-			}
+			} */
 		},
 	}); 
 }
+</script>
+<<script type="text/javascript">
+function readFolder(folderName,id){
+	alert("folderName "+folderName)
+	alert("id"+id)
+	$('#mailboxLabel').html(folderName);
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/emailFolderRead?${_csrf.parameterName}=${_csrf.token}&folderName="+folderName+"&id="+id,
+		success : function(data) {
+          			var result = '';
+          			//result = result +'<input  id="emailListType" value='+folderName+'>';
+          			result = result +'<table id="mails" class="table table-hover table-striped">';
+          			
+            		result = result +'<thead>';
+            		result = result +'<tr>';
+            		result = result +'<th></th>';
+            		result = result +'<th></th>';
+            		result = result +'<th></th>';
+            		result = result +'<th></th>';
+            		result = result +'</tr>';
+            		result = result +'</thead>';
+            		
+          			result = result +'<tbody>';
+					
+			 for(var i=0; i<data.length; i++){
+				 var opt = data[i];
+				 
+				 result = result +' <tr id="checkbox">';
+       			result = result +'<td style="width : 20px;">';
+       			result = result +'<div class="mrleft8">';
+       			result = result +'<input id="check" value=" " class="checkbox-custom"  name="mailIds[]" type="checkbox">';
+       			result = result +'<label for="check" class="checkbox-custom-label"></label>';
+       			result = result +'</div>';
+       			result = result +'</td>';
+       			
+                 
+       			
+       			result = result +'<td class="mailbox-subject" onclick = "anv();">'+opt.subject+'</td>';
+       			result = result +'<td class="mailbox-date">'+opt.sentDate+'</td>';
+       			result = result +'<div class="mailbox">';
+       			result = result +'<td class="mailbox-date hidden" id="aa123">'+opt.body+'</td>';
+       			result = result +'</div>';
+       			result = result +'</tr>';
+             
+             
+              
+				 
+				/*  result = result + "<div>";
+				 result = result + "<ul class='nav nav-pills nav-stacked'>";
+				 result = result + "<li>"+report.subject+"</li>";
+				 result = result + "</ul>";
+				 result = result + "</div>";
+				 
+				 $("#mailBoxList").empty();
+					$("#mailDetails").empty(); 
+				    $("#mailBoxList").append(result); 
+				    $("#mailLoading").removeAttr("style");  */
+			 }
+			 result = result +"</tbody>";
+             result = result +"</table>"; 
+             result = result +'</div>';
+             $("#mailBoxList").empty();
+				$("#mailDetails").empty(); 
+			    $("#mailBoxList").append(result); 
+			    $("#mailLoading").removeAttr("style");
+			 
+		},
+	}); 
+	
+}
+
 </script>
 
 <script>
@@ -735,8 +813,13 @@ $(document).ready(function(){
 });        
     
     </script>
+<script type="text/javascript">
+function anv(){
+	alert("kkk") 
+	document.getElementById("aa123").show();
 
-
+}
+</script>
 <script>
 function replayToMail(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';

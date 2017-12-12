@@ -835,15 +835,24 @@ public class MailBoxRestController {
 			
 		}
 	 @RequestMapping(value = "/emailAccountRead" , method = RequestMethod.POST)
-		public @ResponseBody String emailAccountRead(Long id, HttpServletRequest request)
+		public @ResponseBody List<String> emailAccountRead(Long id, HttpServletRequest request)
 				throws Exception {
 		 
 		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  List<String> folders=new ArrayList<>();
 		  Long userId=user.getId();
-		  folders= emailAccountSettingsService.emailAccountRead(id,userId);
-		  String resultJson = toJSON(folders);
-			return resultJson;
+		  List<String> folders= emailAccountSettingsService.emailAccountRead(id,userId);
+		  return folders;
+			
+		}
+	 @RequestMapping(value = "/emailFolderRead" , method = RequestMethod.POST)
+		public @ResponseBody List<ReadMailDTO> emailFolderRead(Long id,String  folderName, HttpServletRequest request)
+				throws Exception {
+		 
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Long userId=user.getId();
+		  List<ReadMailDTO> readMailList=new ArrayList<>();
+		   readMailList=  emailAccountSettingsService.emailFolderRead(id,folderName,userId);
+		  return readMailList;
 			
 		}
 	 

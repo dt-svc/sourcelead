@@ -3,6 +3,8 @@ package com.bis.sourcelead.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.AuthenticationFailedException;
@@ -21,15 +23,18 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.bis.sourcelead.dto.ReadMailDTO;
 
 public class ReadMail {
 	
 	//public static Reader rd = new Reader();
 	
-	public static boolean readMail(String host, String storeType, String user, String password) {
-		JSONArray ja = new JSONArray();
+	public static List<String> readMail(String host, String storeType, String user, String password) {
+		//JSONArray jasonArray = new JSONArray();
+		 List<ReadMailDTO> readMailDTOList=new ArrayList<>();
+		 List<String> folders=new ArrayList<>();
 		String saveDirectory = "c:/resumes/";
 		String saveTo = "C:/parsedFiles/";
 		try {
@@ -46,8 +51,17 @@ public class ReadMail {
 		      Store store = emailSession.getStore("imaps");
 
 		      store.connect(host, user, password);
-
-
+		      /*javax.mail.Folder[] folders = store.getDefaultFolder().list("*");
+		      for (javax.mail.Folder folder : folders) {
+		          if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
+		              System.out.println(folder.getFullName() + ": " + folder.getMessageCount());
+		          }*/
+		      Folder[] f = store.getDefaultFolder().list("*");
+		     
+		      for(Folder fd:f){
+		    	  folders.add(fd.getName());
+		      }
+		          //System.out.println(">> "+fd.getName());
 		      //create the folder object and open it
 		      Folder emailFolder = store.getFolder("Inbox");
 		      emailFolder.open(Folder.READ_WRITE);
@@ -55,15 +69,19 @@ public class ReadMail {
 		      // retrieve the messages from the folder in an array and print it
 		      Message[] messages = emailFolder.getMessages();
 		      
-
+		     
 		      for (int i = 0, n = messages.length; i < n; i++) {
-		    	  JSONObject mailObj = new JSONObject();
+		    	  ReadMailDTO readMailDTO=new ReadMailDTO();
+		    	  //JSONObject mailObj = new JSONObject();
 		    	  String bodyContent = "";
 		         Message message = messages[i];
 		         
-		         mailObj.put("from", messages[i].getFrom()[0].toString());
-		         mailObj.put("sentDate", messages[i].getSentDate());
-		         mailObj.put("subject", messages[i].getSubject());
+		         //mailObj.put("from", messages[i].getFrom()[0].toString());
+		         //mailObj.put("sentDate", messages[i].getSentDate());
+		         //mailObj.put("subject", messages[i].getSubject());
+		         readMailDTO.setFrom(messages[i].getFrom()[0].toString());
+		         readMailDTO.setSentDate( messages[i].getSentDate().toString());
+		         readMailDTO.setSubject(messages[i].getSubject());
 		         String contentType = message.getContentType();
 
 		        // store attachment file name, separated by comma
@@ -95,10 +113,12 @@ public class ReadMail {
 					}
 					
 		         } 
-		         
+		        //mailObj.put("body", bodyContent);
+		       // mailObj.put("attachments", attachments);
+		        //jasonArray.put(mailObj);
 		        //Delete mail
 	           // message.setFlag(Flags.Flag.DELETED, true);
-	            
+		        readMailDTOList.add(readMailDTO);
 	            
          	}
 		      
@@ -111,13 +131,13 @@ public class ReadMail {
 	         e.printStackTrace();
 	      }catch (AuthenticationFailedException e) {
 		         e.printStackTrace();
-		         return false;
+		         //return false;
 		      }catch (MessagingException e) {
 	         e.printStackTrace();
 	      } catch (Exception e) {
 	         e.printStackTrace();
 	      }
-		return true;
+		return folders;
 	}
 	
 	private static String getTextFromMimeMultipart(MimeMultipart mimeMultipart) throws IOException, MessagingException {
