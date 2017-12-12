@@ -445,6 +445,8 @@ public class UserServiceImpl implements UserService {
 			User reportingManager = new User();
 			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 			userRole.setReportingManager(reportingManager);
+		}else {
+			userRole.setReportingManager(user);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){

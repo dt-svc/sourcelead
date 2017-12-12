@@ -22,6 +22,12 @@
 <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
+<script type="text/javascript">
+window.onload = function () {
+	loadLeagelSignerForm();
+ };
+</script>
+
 <div class="wraper"> 
 	<section class="comLogBg">
 			<section class="comLogInn">
@@ -30,7 +36,7 @@
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
-						  <li class="actLi">Organization Details<i class="fa fa-check-circle"></i></li>
+						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>
@@ -44,16 +50,29 @@
 			  <form:form class="login-form clearfix"  id="signatory_form"  name="signatory_form" method="post" > 
 			  	 <div class="comLogContent">
 			  	 <div id="loading"></div> 
+			  	 <div class="side_mask"></div>
+			  	 <div id="popUp"></div> 
 			     <h2>Organization Signatory</h2>
 				     <div class="compSignatoryHelpMes">
 						Person who can sign legal binding documents on behalf of your organisation.
 					</div>
-			     <div class="row clearfix"> 
-			     
-			     </div>
+				     <div class="row clearfix"> 
+					     <div class="col-md-6">
+					     		<div class="form-group clearfix">
+									<div class="col-md-8 padding_right">
+				                <input id="legalSigner" name="legalSigner"  class="checkbox-custom"  value="Y" onclick="validateLegalSigner();"  type="checkbox">
+		              			<label for="legalSigner" class="checkbox-custom-label">&nbsp;Make me as legal signer</label>
+						            </div>
+								</div>
+					     </div>
+				     </div>
+				     
+				    <div class="clearfix mt10"></div>
+				  <div id="legalUserFormDiv"></div>
 			     
 			     <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
+						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage();"></a>
 						<div class="clearfix"></div>
 					</div>
 			  	 </div>
@@ -63,6 +82,7 @@
 	</section>
 </div>
 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
@@ -73,13 +93,339 @@
   <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
   <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
- <script src="resources/js/formvalidator.js"></script>
+
+ 
+ <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+
+});
+</script> 
+  <script src="resources/js/formvalidator.js"></script>
+  
+  
+  <script type="text/javascript">
+ function getUserByUserEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUserByUserEmail?&EmailId="+EmailId, 
+		        success: function(json) {
+		        		
+		        		if(json.firstName != null && json.firstName != ''){
+		        			$("#firstName").val(json.firstName);
+				        	$("#firstName").attr("readonly", "readonly");
+				        	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
+		        		}else{
+		        			 $("#firstName").removeAttr("readonly", "readonly");
+		        		}
+		        		
+		        		if(json.lastName != null && json.lastName != ''){
+		        			$("#lastName").attr("readonly", "readonly");
+		        			$("#lastName").val(json.lastName);
+		        		}else{
+		        			 $("#lastName").removeAttr("readonly", "readonly");
+		        		}
+		        		
+		        		if(json.mobilePhone != null && json.mobilePhone != ''){
+		        			$("#phone").val(json.mobilePhone);
+				        	$("#phone").attr("readonly", "readonly");
+		        		}else{
+		        			 $("#phone").removeAttr("readonly", "readonly");
+		        		}
+		        		
+		        },
+		    });
+	 }else{
+		 $("#firstName").attr("disabled", false);
+		 $("#firstName").val('');
+		 $("#firstName").removeAttr("readonly", "readonly");
+		 
+		 $("#lastName").attr("disabled", false);
+		 $("#lastName").val('');
+		 $("#lastName").removeAttr("readonly", "readonly");
+		 
+		 $("#phone").attr("disabled", false);
+		 $("#phone").val('');
+		 $("#phone").removeAttr("readonly", "readonly");
+	 }
+ }
+ </script>  
+ 
+ 
+ <script type="text/javascript">
+ function validateUserEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateUserEmail?&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+ 
+  
+  <script>
+  function validateLegalSigner(){
+	  if (document.getElementById('legalSigner').checked) {
+		  $("#legalUserFormDiv").empty();
+	  }else{
+		  loadLeagelSignerForm();
+	  }
+  }
+  </script>
  
  <script>
 		function logoutFormSubmit() {
 			document.getElementById("logoutForm").submit();
 		}
 </script>
+
+<script>
+function loadLeagelSignerForm(){
+	$("#legalUserFormDiv").empty();
+	
+	var result = "";
+	result = result +"<div class='row clearfix'>";
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
+	result = result +"<label class='col-md-4 noPad'>First Name<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='firstName' id='firstName' field-name='First Name'  pattern='[A-Za-z\s]*' maxlength='100' data-validation='required validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Last Name</label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='lastName' id='lastName' field-name='Last Name' data-validation-optional='true' pattern='[A-Za-z\s]*' maxlength='100' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	result = result +"<div class='col-md-6' id='EmailIdDiv'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Email<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='email' id='EmailId'  field-name='Email' data-validation='required validate_Space validate_length length2-100 validate_email'  onblur='getUserByUserEmail(); validateUserEmail();' onKeyUp='validateUserEmail();'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Phone Number</label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='phoneNumber' id='phone'  field-name='Phone Number' data-validation='validate_Space validate_phone validate_length length9-20' data-validation-optional='true'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>SSN<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='ssn' id='ssn' field-name='SSN'  maxlength='9' data-validation='required validate_Space validate_int validate_length length9-9'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Role<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<select class='chosen-select form-control' id='role' name='roleType' field-name='Role' data-validation='required'>";
+	result = result +"<option value=''>--Select Role--</option>";
+		<c:forEach var="option" items="${rolesList}">
+		 result = result +'<option value="${option.id}">${option.displayName}</option>';
+		</c:forEach>
+	result = result +"</select>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Designation</label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<select class='chosen-select form-control' id='designation' name='designationType' field-name='Designation' data-validation-optional='true' onchange='getDesignationType()'>";
+	result = result +"<option value=''>--Select Designation--</option>";
+	result = result +'<option value="CEO">CEO</option>';
+	result = result +'<option value="CFO">CFO</option>';
+	result = result +'<option value="COO">COO</option>';
+	result = result +'<option value="President">President</option>';
+	result = result +'<option value="Other">Other</option>';
+	result = result +"</select>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	
+	result = result +"<div class='col-md-6' id='designationOtherDiv'  style='display:none'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Designation Other Type<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='designationOtherType' id='designationOtherType' field-name='Designation Other Type' data-validation-optional='true'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	result = result +"</div>";
+	
+	$("#legalUserFormDiv").append(result);
+	
+	
+}
+</script>
+
+
+<script>
+function getDesignationType(){
+	var designation = document.getElementById("designation").value;
+	if(designation == 'Other'){
+		 document.getElementById("designationOtherDiv").style.display="";
+		 $("#designationOtherType").removeAttr("data-validation-optional");
+		 $("#designationOtherType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+	}else{
+		 document.getElementById("designationOtherDiv").style.display="none";
+		$("#designationOtherType").removeAttr("data-validation-optional");
+		 $("#designationOtherType").attr("data-validation-optional","true");
+		 $("#designationOtherType").removeAttr("data-validation");
+		 $("#designationOtherType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+	}
+}
+</script>
+
+
+<script type="text/javascript">
+$('body').on('submit', '#signatory_form', function(e){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	if ($('#signatory_form').validate(false, validationSettings)){
+      e.preventDefault();
+      var sourceleadUrl ='${sourceleadUrl}';
+      var formData = getFormData("signatory_form");
+      
+      if (document.getElementById('legalSigner').checked) {
+    	  saveOrgLocationSignatory();
+      }else{
+        var isMailSent = "Y";
+   	 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $.ajax({
+		    	type: "POST",
+		    	data : formData,
+		    	  url: sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}&isMailSent="+isMailSent,		
+		        success: function(result) {
+		        	
+		        	saveOrgLocationSignatory(formData);
+		        },
+		    });   
+		    
+        saveOrgLocationSignatory(formData);
+      }
+		    
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#signatory_form', function() {
+		$("#signatory_form").showHelpOnFocus();
+		$("#signatory_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+  
+  
+  <script>
+  function saveOrgLocationSignatory(formData){
+		var sourceleadUrl = '${sourceleadUrl}';
+		   $.ajax({
+		    	type: "POST",
+		    	data : formData,
+		    	 url: sourceleadUrl+"/saveOrgLocationSignatory?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        	if(data == 'success'){
+		        		$("#loading").removeAttr("style");
+		        		onboardMessage();
+		        	}
+		        },
+		    });
+  }
+  </script>
+  
+  <script>
+  function onboardMessage(){
+	  var result = '';
+	  result = result +'<div class="welPop">';
+	  result = result +'<p><b><i class="fa fa-smile-o"></i>Congrats!</b>'; 
+	  result = result +'You have effectively given all necessary information to onboarding and you formally acknowledged all archives</p>';
+	  result = result +'<span class="clearfix">';
+	  result = result +'<input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
+	  result = result +'</span>';
+	  result = result +'</div>';
+	  $("#popUp").append(result);
+	  $(".welPop").fadeIn(200);
+	  $(".side_mask").fadeIn(100);
+  }
+  </script>
+  
+  <script>
+function goToDashboard(){
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+}
+</script>
+
 
 
 <c:url var="logoutUrl" value="/logout"/>

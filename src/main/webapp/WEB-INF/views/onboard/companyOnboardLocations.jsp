@@ -46,7 +46,7 @@ right: 15px;
 					<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 					   <ul>
-						  <li class="actLi">Organization Details<i class="fa fa-check-circle"></i></li>
+						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="hoverLi">Locations</li>
 						  <li>Federal & state taxes</li>
 						  <li>Banking details</li>

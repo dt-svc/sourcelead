@@ -82,6 +82,10 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	@Column(name = "SSN")
+	private Integer ssn;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
@@ -762,5 +766,13 @@ public class User implements Serializable{
 
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
+	}
+
+	public Integer getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(Integer ssn) {
+		this.ssn = ssn;
 	}
 }

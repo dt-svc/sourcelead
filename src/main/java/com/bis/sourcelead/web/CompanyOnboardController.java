@@ -15,15 +15,18 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -53,6 +56,9 @@ public class CompanyOnboardController {
 	
 	@Autowired
 	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
+	
+	@Autowired
+	RolesService rolesService;
 	
 	
 	
@@ -180,7 +186,13 @@ public class CompanyOnboardController {
 		public ModelAndView companyOnboardSignatory(HttpServletRequest request) throws Exception  {
 			
 			ModelAndView model = new ModelAndView();  
+			Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		    model.addObject("rolesList", rolesList);
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("onboard/companyOnboardSignatory");
 			return model;

@@ -19,6 +19,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
+import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -48,6 +50,9 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
 	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
+	
+	@Autowired
+	OrglocationSignatoryService orglocationSignatoryService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -173,6 +178,14 @@ public class CompanyOnboardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/saveOrgLocationSignatory", method = RequestMethod.POST)
+	public @ResponseBody String saveOrgLocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String result = orglocationSignatoryService.addOrglocationSignatory(orglocationSignatoryDTO, user, loginOrgLocation);
+		return result;
+	}
 	
 	
 }
