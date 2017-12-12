@@ -1131,7 +1131,7 @@ function openPopup(){
 	$("#all").toggleClass("actL");
 };
 </script>
-
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script>
 function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#loadMoreReq").css("display", "none");
@@ -1282,8 +1282,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
 				}
 				
-				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				if(json.fileURL != null && json.fileURL != '' && json.fileURL !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href='+json.fileURL+'></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
