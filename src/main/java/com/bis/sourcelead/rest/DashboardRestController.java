@@ -303,9 +303,12 @@ public class DashboardRestController {
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
-				
+		     
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			
 	}
 	
@@ -327,8 +330,11 @@ public class DashboardRestController {
  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
  		      }
 				
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			
 			
 	}
@@ -352,8 +358,11 @@ public class DashboardRestController {
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
 				
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			
 	}
 	

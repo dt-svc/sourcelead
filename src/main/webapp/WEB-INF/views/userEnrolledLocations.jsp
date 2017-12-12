@@ -94,7 +94,6 @@ function validateTwoStepAuth() {
 		       url: sourceleadUrl+"/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
-// 		    		 redirectDaashboard(userRoleId);  
 		    		 location.replace(sourceleadUrl+"/dashboard");   
 		    	 }
 		      },
@@ -117,21 +116,6 @@ function selectLoc(id){
  	$("#userRoleId"+id).prop('checked', true);
 }
 
-</script>
-
-<script>
-function redirectDaashboard(userRoleId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	alert(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId)
-	window.location.href = sourceleadUrl+"/dashboard?userRoleId="+userRoleId;
-	/* $.ajax({
-	      type : "POST",
-	       url: sourceleadUrl+"/dashboard?&userRoleId="+userRoleId,        
-	       success :function(result) {
-	    	 
-	      },
-	  }); */
-}
 </script>
 
 <!-- orgWrap  -->

@@ -236,6 +236,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		try {
 			userService.addUser(user);
+			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+				sendActivationEmail(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -423,6 +425,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
