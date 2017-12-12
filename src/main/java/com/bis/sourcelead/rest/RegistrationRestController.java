@@ -851,7 +851,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/ws/app/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
