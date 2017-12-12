@@ -44,8 +44,9 @@ public class CampaignDaoImpl implements CampaignDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderIdentity) throws Exception
 	{
+		Long senderId = Long.parseLong(senderIdentity);
 		boolean isNickNameDuplicate = false;
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.nickName = :nickName and cSender.id <> :senderId and cSender.orgLocations.id = :orgLocationId").setString("nickName", nickName).setLong("senderId", senderId).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();

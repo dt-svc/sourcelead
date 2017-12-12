@@ -114,7 +114,7 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderId) throws Exception
 	{
 		return campaignDao.validateNickName(nickName, orgLocation,senderId);
 	}
