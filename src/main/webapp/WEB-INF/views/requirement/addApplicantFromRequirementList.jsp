@@ -1130,7 +1130,7 @@ function getAllSubmissionCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
+    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
@@ -1161,7 +1161,7 @@ function getCandidateStates(state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionState').empty();
@@ -1209,7 +1209,7 @@ function getSubmissionCandidateCities(city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
