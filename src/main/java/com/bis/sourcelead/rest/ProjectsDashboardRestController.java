@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +20,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -36,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -1008,7 +1005,10 @@ public class ProjectsDashboardRestController {
 			public @ResponseBody String projectDocumentMailSending(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
 			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   ProjectDocuments pd = projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO,user);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   if(StringUtils.isNotEmpty(projectsDocumentsDTO.getSendTo()) && user != null){
+				   projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO, user, loginOrgLocation);
+			   }
 			   return "success";
            }
 		   
@@ -1075,5 +1075,4 @@ public class ProjectsDashboardRestController {
 
 		        }
 		    }
-		   
 }
