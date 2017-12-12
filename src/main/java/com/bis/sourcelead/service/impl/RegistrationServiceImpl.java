@@ -511,7 +511,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		orgLocations.setIsCompanyOnboarded(Constants.NO);
 		
-	    if(registration.getDba() != null && registration.getDba().isEmpty()){
+	    if(StringUtils.isNotBlank(registration.getDba())){
         	orgLocations.setDba(registration.getDba());
         }
         

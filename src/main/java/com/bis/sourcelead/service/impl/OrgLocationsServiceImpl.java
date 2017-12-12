@@ -103,18 +103,18 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
         
-        if(orgSettings.getBusinessType() != null || orgSettings.getBusinessType().isEmpty()){
+        if(StringUtils.isNotBlank(orgSettings.getBusinessType())){
           LookUpData businessTypeLookUpData = new LookUpData();
           businessTypeLookUpData.setId(Long.valueOf(orgSettings.getBusinessType()));
           orgLocations.setBusinessType(businessTypeLookUpData);
         }
       
-        if(orgLocations.getDba() != null || orgLocations.getDba().isEmpty()){
+        if(StringUtils.isNotBlank(orgSettings.getDba())){
         	orgLocations.setDba(orgSettings.getDba());
         }
         
         
-        if(orgSettings.getGeneratedUserId() != null || orgSettings.getGeneratedUserId().isEmpty()){
+        if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
         	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId());
         }
         

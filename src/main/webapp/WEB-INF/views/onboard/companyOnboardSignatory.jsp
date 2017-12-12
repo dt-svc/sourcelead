@@ -72,7 +72,7 @@ window.onload = function () {
 			     
 			     <div class="welBtns welBtnsA">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
-						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage();"></a>
+						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>
 						<div class="clearfix"></div>
 					</div>
 			  	 </div>
@@ -403,13 +403,18 @@ $('body').on('submit', '#signatory_form', function(e){
   </script>
   
   <script>
-  function onboardMessage(){
+  function onboardMessage(value){
 	  var result = '';
 	  result = result +'<div class="welPop">';
 	  result = result +'<p><b><i class="fa fa-smile-o"></i>Congrats!</b>'; 
 	  result = result +'You have effectively given all necessary information to onboarding and you formally acknowledged all archives</p>';
 	  result = result +'<span class="clearfix">';
-	  result = result +'<input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
+	  if(value == 'Skip'){
+		  result = result +'<input type="button" value="Cancel" onclick="cancel();"/><input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
+	  }else{
+		  result = result +'<input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
+	  }
+	 
 	  result = result +'</span>';
 	  result = result +'</div>';
 	  $("#popUp").append(result);
@@ -423,6 +428,14 @@ function goToDashboard(){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl = '${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+}
+</script>
+
+<script>
+function cancel(){
+	$("#popUp").empty();
+	$(".welPop").fadeOut(200);
+	$(".side_mask").fadeOut(100);
 }
 </script>
 
