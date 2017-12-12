@@ -233,6 +233,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			requirement = new Requirement();
+			requirement.setGeneratedId(getRequirementId(orgLocations));
 			requirement.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setTotalApplicants(0);
 			requirement.setCreatedBy(user);
@@ -771,7 +772,7 @@ public class RequirementServiceImpl implements RequirementService {
 		/*
 		 * System Generated Id For Job
 		 */
-		requirement.setGeneratedId(getRequirementId(orgLocations));
+		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
 			List<Requirement> parentrequirement = getAllReleasedRequirementsByParentId(savedRequirement.getId());

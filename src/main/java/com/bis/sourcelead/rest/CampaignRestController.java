@@ -403,5 +403,18 @@ public class CampaignRestController {
 	
 	
 	
+	/**
+	 * Deleteing  campaign stats
+	 * 
+	 * @param orgLocationId
+	 * @param request
+	 * @return List<CampaignStatsDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteStats")
+	public boolean deleteStats(@RequestParam(value = "categoryName", required = false) String categoryName, HttpServletRequest request) throws Exception
+	{
+		return campaignService.deleteStats(categoryName);
+	}
 	
 }

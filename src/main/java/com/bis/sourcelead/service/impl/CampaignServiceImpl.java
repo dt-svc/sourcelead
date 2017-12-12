@@ -487,4 +487,19 @@ public class CampaignServiceImpl implements CampaignService{
 		return isValid;
 	}
 
+	@Override
+	public boolean deleteStats(String categoryName) throws Exception
+	{
+		boolean isValid = false;
+		CampaignStats campaignStats = campaignDao.getCampaignStatsByCampaignId(categoryName);
+		if(campaignStats != null) {
+			campaignStats.setStatus(0);
+			CampaignStats savedCampaignStats = campaignDao.saveCampaignStats(campaignStats);
+			if(savedCampaignStats !=null) {
+				isValid = true;
+			}
+		}
+		return isValid;
+	}
+
 }
