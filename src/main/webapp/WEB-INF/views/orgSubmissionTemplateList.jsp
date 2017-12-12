@@ -6,9 +6,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
- <script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
- <script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+ <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+ <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+ <script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
 //On document ready
@@ -463,7 +463,7 @@ function validateTemplateName(){
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -524,7 +524,7 @@ function scrollToBottom(){
 
 
 <jsp:include page="masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 
 

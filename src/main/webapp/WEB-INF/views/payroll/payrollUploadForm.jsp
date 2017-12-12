@@ -16,7 +16,7 @@ window.onload = function () {
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
 
@@ -33,7 +33,7 @@ window.onload = function () {
                   <!-- <ul class="popdiv_two"> -->
                   <li>
                   <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
-                  <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
+                  <a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
                   <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
@@ -149,7 +149,7 @@ function runPayrollCycles(type){
 		var jsonData = encodeURIComponent(con);
 		var form = $('#run_payroll_cycle')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "GET",
@@ -403,7 +403,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -445,7 +445,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({

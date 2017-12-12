@@ -11,10 +11,10 @@
     bottom: -26px;
 }
 </style>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 function getDayWiseReports(projectId){
@@ -1268,11 +1268,11 @@ function getTaskPercentge(data){
 					result = result + '                       <div class="text-center">';
 					
 					if(report.taskAssignedUsers.length == 0){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/qmrk-userImg.png" title="Not Assigned">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/qmrk-userImg.png" title="Not Assigned">';
 					}else if(report.taskAssignedUsers.length == 1){
 						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
 					}else {
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
 					}
 					 
 					result = result + '                        </div>';

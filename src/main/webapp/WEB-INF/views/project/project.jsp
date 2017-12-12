@@ -6,12 +6,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 <style>
@@ -115,8 +115,8 @@ function validateShortCode(){
 			<h2>Create Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
@@ -191,7 +191,7 @@ function validateShortCode(){
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
-								class="text-danger">* </span><i class='fa fa-info-circle' title='Select frequency of when timesheet by employees need to submit'></i></label>
+								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-frequency">
 								<select class="form-control chosen-select"
 									id="timeSheetFrequency" name="timeSheetFrequency"
@@ -488,7 +488,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -668,7 +668,7 @@ function getStatus(){
 		    	formData["estimatedHours"] = "0";
 		    } */
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -712,7 +712,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",

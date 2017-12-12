@@ -25,7 +25,7 @@
     <div class="pull-left">
       <h2>Add Profile</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Add Profile</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Add Profile</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -356,7 +356,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>

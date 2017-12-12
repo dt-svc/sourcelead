@@ -1,15 +1,34 @@
 package com.bis.sourcelead.web;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+import com.bis.sourcelead.dto.ProfileDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+@RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class UserProfileController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
@@ -17,13 +36,56 @@ public class UserProfileController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	UserRoleService userRoleService;
+	
 
     @RequestMapping(value = "/userProfile")
  	 public ModelAndView userProfile() {
  			ModelAndView model = new ModelAndView();
  			model.setViewName("userProfile");
  			model.addObject("sourceleadUrl", sourceleadUrl);
- 			return model;
+			return model;
  	 }
 
+    @RequestMapping(value = {"/getLoginUserProfile","rest/getLoginUserProfile"}, method = RequestMethod.GET)
+    public @ResponseBody ProfileDTO getLoginUserProfile(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	UserRole userRole = userRoleService.getUserByUserId(user.getId());
+    	ProfileDTO profileDTO = new ProfileDTO();
+    	if(user != null) {
+    		profileDTO.setFirstName(user.getFirstName());
+    		if(StringUtils.isNotBlank(user.getLastName())) {
+    			profileDTO.setLastName(user.getLastName());
+    		}
+    		profileDTO.setEmail(user.getEmail());
+    		if(StringUtils.isNotBlank(user.getMobilePhone())) {
+    			profileDTO.setMobileNumber(user.getMobilePhone());
+    		}
+    		if(StringUtils.isNotBlank(user.getLocation())) {
+    			profileDTO.setLocation(user.getLocation());
+    		}
+    		if(StringUtils.isNotBlank(userRole.getDesignation())) {
+    			profileDTO.setDesignation(userRole.getDesignation());
+    		}
+    		
+    		if(StringUtils.isNotBlank(user.getLinkedIn())) {
+    			profileDTO.setLinkedinURL(user.getLinkedIn());
+    		}
+    		if(StringUtils.isNotBlank(user.getFacebook())) {
+    			profileDTO.setFacebookURL(user.getFacebook());
+    		}
+    		if(StringUtils.isNotBlank(user.getTwitter())) {
+    			profileDTO.setTwitterURL(user.getTwitter());
+    		}
+    		if(StringUtils.isNotBlank(user.getGooglePlus())) {
+    			profileDTO.setGooglePlusURL(user.getGooglePlus());
+    		}
+    		if(StringUtils.isNotBlank(user.getFileUrl())) {
+    			profileDTO.setImageURL(user.getFileUrl());
+    		}
+    	}
+    	return profileDTO;
+    }
 }

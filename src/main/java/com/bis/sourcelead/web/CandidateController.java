@@ -51,6 +51,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 	@Value("${sourceleadUrl}")
@@ -403,7 +404,7 @@ public class CandidateController {
 		} 
 	 
 	 
-/*	 @RequestMapping(value = "/viewProfessionalCandidateDocument/{title}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewProfessionalCandidateDocument/{title}", method = RequestMethod.GET)
 	    public void viewProfessionalCandidateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
 	    		@PathVariable(value="title") String title,
 	    		HttpServletResponse response) throws Exception {
@@ -427,7 +428,7 @@ public class CandidateController {
 		          sos.flush();
 		          sos.close();
 
-		} */
+		} 
 	 
 	 
 	 @RequestMapping(value = "/candidateResumeDownload", method = RequestMethod.GET)

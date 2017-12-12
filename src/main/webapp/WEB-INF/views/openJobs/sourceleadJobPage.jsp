@@ -9,39 +9,39 @@
  
 <link href="https://fonts.googleapis.com/css?family=Arima+Madurai:400,500,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="resources/css/reset.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
-<link href="resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+<link href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 
 <script type="text/javascript">
@@ -74,7 +74,7 @@ function getPostValueDetails(){
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if(${requirementUUID != null} ){
+		if('${requirementUUID != null}'){
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
@@ -83,7 +83,7 @@ function getPostValueDetails(){
 	  }
 	});
 </script>
-
+ 
 <style>
 .footer-area {
 display: none;}
@@ -105,33 +105,33 @@ display: none;}
 </section>
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="${sourceleadUrl}/openRequirements" class="rcolor">Jobs</a></li>
+		<li><a href="index.html" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
-				<li><a href="../crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="../ats.html">ATS</a></li>
-                <li><a href="../vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="../timesheet.html">Time Management</a></li>
+				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
+            	<li><a href="ats.html">ATS</a></li>
+                <li><a href="vms.html">VMS</a></li>
+                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../demo.html">Product Videos</a></li>
+            	<li><a href="demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
                 <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="../about-us.html">About SourceLead</a></li>
-                <li><a href="../team.html">Our team</a></li>
+            	<li><a href="about-us.html">About SourceLead</a></li>
+                <li><a href="team.html">Our team</a></li>
                 <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="../contact.html">Contact</a></li>
+                <li><a style="border-bottom:none;" href="contact.html">Contact</a></li>
             </ul>        
         </li>
         <li><a href="blog4.html">Blogs</a></li>
@@ -156,8 +156,8 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/sourcelead/resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/sourcelead/resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg1.jpg);"></li>
+	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg3.jpg);"></li>
 	</ul> 
 <content>
 		<h1>
@@ -167,7 +167,7 @@ display: none;}
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
+			<span><i class="fa fa-briefcase"></i> <p id="dropDownCountId" value="${openJobsExperience}"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="redirectPage();"></span>
 			<!-- <h3><b id="ADS">Advanced Search</b></h3> -->
 			<div class="clear"></div>
@@ -374,27 +374,27 @@ display: none;}
     	<div class="footerInnCta resFoot">
         	<h3>What we do</h3>
             <ul>
-				<li><a href="../crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="../ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="../vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="../timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
+				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
             </ul>
         </div> 
     	<div class="footerInnCta">
 <div class="hBlogs">
-            	<a href="../blog4.html">
+            	<a href="blog4.html">
                 	<span>Loyal Relationships with Recruiters</span>
                     <b>FEB 20, 2017</b>
                 </a>            
-            	<a href="../blog3.html">
+            	<a href="blog3.html">
                 	<span>Recruiting Through Social Media Platform</span>
                     <b>FEB 15, 2017</b>
                 </a>            
-            	<a href="../blog.html">
+            	<a href="blog.html">
                 	<span>Existing Process without using any Tool</span>
                     <b>DEC 20, 2016</b>
                 </a>
-            	<a href="../blog4.html">Viwe all</a>                                                
+            	<a href="blog4.html">Viwe all</a>                                                
             </div>
         </div>  
     	<div class="footerInnCta">
@@ -405,10 +405,10 @@ display: none;}
 			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
           <h4>Go social</h4>
             <div class="socila">
-            	<a href="javascript:void(0)"><img src="resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="resources/css/jobs/images/gp.png" alt=""/></a>
+            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
+                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
             </div>
         </div>                        
     <div class="clear"></div>
@@ -418,8 +418,8 @@ display: none;}
     	<div class="copyright">
     	<b>© 2016 SourceLead. All rights reserved.</b>
         <span>
-        	<a href="../privacy.html">Privacy Policy</a>
-            <a href="../terms.html">Terms of Use</a>
+        	<a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Use</a>
         </span><div class="clear"></div>
         </div>
     </div>  
@@ -457,7 +457,7 @@ $(window).scroll(function (e) {
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled>Experience(Years)</option>")';
+				+ '("<option selected disabled></option>")';
 		for (var i = 1; i <= 25; i++) {
 			result = result + '("<option value='+i+'>' + i + '</option>")';
 		}
@@ -469,7 +469,7 @@ $(window).scroll(function (e) {
 
 
 
-<script>
+<!-- <script>
 function getOpenJobsELKList(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
@@ -618,12 +618,12 @@ function getOpenJobsELKList(){
 	    }
 	 }); 
  }
-</script>
+</script> -->
 
 
 
 
- <script>
+  <script>
 function getOpenJobsRequirementSummary(requirementsUUID){
 	 
 	 var locationCode ='${SourceLeadWeb_locationCode}'; 
@@ -749,7 +749,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	   	   	}
 		});  
 }
-</script>
+</script> 
 
 
 <script>
@@ -762,7 +762,7 @@ var validationSettings = {
 </script>
 
 
-<script>
+<!-- <script>
 function openJobSearchRequirement(){
  			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
 			
@@ -821,7 +821,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -867,7 +867,7 @@ function openJobSearchRequirement(){
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);
 			});
-</script>
+</script> -->
 
 
 
@@ -892,7 +892,7 @@ function openJobSearchRequirement(){
 	})(jQuery);
 </script>
 
-<script>
+<!-- <script>
 function getStates(){
 	var countryName = $("#country").val();
 	
@@ -926,10 +926,10 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>  -->
 
 
-<script>
+<!-- <script>
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
@@ -957,7 +957,7 @@ function getCities(){
     	$('#city').trigger("chosen:updated");
 	}
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
@@ -1073,7 +1073,7 @@ function getCities(){
 
 
 <!--  Forgot password -->
-<script>
+<!-- <script>
 	$("#forpass").hide();
 	$("#pass").click(function() {
 		$("#forpass").show();
@@ -1083,11 +1083,11 @@ function getCities(){
 		$("#forpass").hide();
 		$("#signin").show();
 	});
-</script>
+</script> -->
 
 
 <!--   Responsive Menu   -->
-<script>
+<!-- <script>
 	$("#menuIcon").click(function() {
 		$(".mask").fadeIn(200);
 		$(".resMenu").addClass("resMenuAct");
@@ -1111,7 +1111,7 @@ function getCities(){
 							".accordion-panel:visible").slideToggle();
 				})
 	});
-</script>
+</script> -->
 
 <!--  Blog Responsive  -->
 <script>
@@ -1121,7 +1121,7 @@ $(".blogWrapRight h2").click(function(){
 </script>    
 
 <!--   FreeTrial Pop   -->
-<script>
+<!-- <script>
 	$(document).ready(function() {
 		$(".freeTrail").click(function() {
 			$("#freeTrial").addClass("activePop");
@@ -1149,7 +1149,7 @@ $(".blogWrapRight h2").click(function(){
 			$(".clPop").removeClass("clPopA");
 		}
 	});
-</script>
+</script> -->
 
 
 
@@ -1176,7 +1176,7 @@ $(".blogWrapRight h2").click(function(){
 </script>  -->
 
 
-<script>
+<!-- <script>
 function loadOpenJobsChosenRequirementScripts(){
 	 $('#country').val('${loginCountryName}'); 
      $('#state').val(''); 
@@ -1195,16 +1195,15 @@ function loadOpenJobsChosenRequirementScripts(){
 	 $("#allReqKeyWord").empty();
 	 $("#excludeReqKeyWord").empty();
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
 function redirectPage(){
-	
-	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = document.getElementById("dropDownCountId").value;
-	window.location.href = sourceleadUrl+"/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
+	var title = document.getElementById("openJobsRequirementTitleId").value;
+	var location = document.getElementById("openJobsLocationId").value;
+	var experience = document.getElementById("openJobsExperienceId").value;
+	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
 }
 </script>
 

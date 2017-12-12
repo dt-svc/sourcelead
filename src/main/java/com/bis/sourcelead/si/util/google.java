@@ -1,8 +1,6 @@
 package com.bis.sourcelead.si.util;
 
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,11 +10,9 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +28,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 class google {
 	
-	@Autowired
-	HttpServletRequest request;
-	
 	@Configuration
 	static class googleServiceContextConfiguration {
 		@Bean
@@ -42,9 +35,6 @@ class google {
 			return new ReferContactsServiceImpl();
 		}
 	}
-	
-	@Autowired
-	ReferContactsService referContactsService;
 	
 	processor pr = new processor();
 	
@@ -164,7 +154,6 @@ class google {
 				 JSONObject thisObject = new JSONObject();
 				 thisObject = friendsary.getJSONObject(n);
 				 if(thisObject.has("gd$email")){
-					
 					 ReferContacts referContacts = new ReferContacts();
 					 referContacts.setContactSource(Contact_Source.GOOGLE);
 					 referContacts.setReferFromUser(loginUser);
@@ -178,9 +167,8 @@ class google {
 						//EMAIL
 						 int emailLen = emailAry.length();
 						 JSONArray emails = new JSONArray();
-						 JSONObject emailObj = null;
 						 for(int k=0;k<emailLen;k++){
-							  emailObj = (JSONObject)emailAry.get(k);
+							 JSONObject emailObj = (JSONObject)emailAry.get(k);
 							 emails.put(emailObj.get("address").toString());
 							 if(k==0){
 								 referContacts.setContactUserEmail(emailObj.get("address").toString()); 
@@ -191,9 +179,7 @@ class google {
 							  
 						 }
 						 friend.put("email",emails);
-						/* Boolean flag =  referContactsService.validateGoogleEamil(emailObj.get("address").toString(), loginUser.getId());
-						    if(flag.equals(true))
-							 continue;*/
+												 
 						 //NAME
 						 if(thisObject.has("gd$name")){
 							 JSONObject nameobj = thisObject.getJSONObject("gd$name");
@@ -235,30 +221,7 @@ class google {
 							 if(linkobj.has("gd$etag")){
 							 	imgid = linkobj.get("gd$etag").toString().replace("\"", "");
 							 	imageurl = (imgurl + imgid + "?access_token=" + token).replace(".?", "?");
-							    String staticPath =  (String) SourceLeadSessionManager.getSessionAttribute(request, "staticPath");
-							    String url = "";
-							 	if(StringUtils.isNotEmpty(imageurl) && StringUtils.isNotEmpty(staticPath)) {
-							 		String fileName = name.getString("first_name");
-								 	String extenstion = ".png";
-								 	long time = new Date().getTime();
-								 	
-									url = staticPath.substring(staticPath.lastIndexOf("/"))+"/usercontacts/"+loginUser.getId()+"/" + fileName + time + extenstion;
-									fileName = "/usercontacts/"+loginUser.getId()+"/" + fileName + time + extenstion;
-									File folderFile = new File(staticPath, "/usercontacts");
-									if (!folderFile.exists())
-										folderFile.mkdirs();
-									
-								    folderFile = new File(staticPath, "/usercontacts/"+loginUser.getId());
-									if (!folderFile.exists())
-										folderFile.mkdirs();
-									
-									File file = new File(staticPath, fileName);
-								 	FileOutputStream fos = new FileOutputStream(file);
-								 	fos.write(fetchRemoteFile(imageurl));
-								 	fos.close();
-								 	 
-							 	}
-							 	referContacts.setFileURL(url);
+							 	referContacts.setDocFile(fetchRemoteFile(imageurl));
 							 	referContacts.setFileContentType("image/png");
 							 }
 						 }
@@ -399,10 +362,10 @@ class google {
 			jsonresponse.put("responseStatus", msg);
 		}
 		catch(JSONException j){
-			System.out.println(j.getMessage());
+			
 		}
 		catch(Exception e){
-			System.out.println(e.getMessage());
+			
 		}
 		return jsonresponse;
 	}

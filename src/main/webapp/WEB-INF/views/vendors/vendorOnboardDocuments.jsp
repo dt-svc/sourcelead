@@ -22,7 +22,7 @@
 	<div class="form-footer clearfix miniFoot">
 	  <div class="col-lg-12">
 		<div class="pull-right">
-		  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"  class="btn btn-danger">
+		  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'"  class="btn btn-danger">
 		  <input type="button" value="Save & Continue" id="save_continue_doc_button" onClick="validateSavedDocuments();" class="btn btn-primary ml10">
 		  <!-- <input type="button" value="Save & Continue" id="save_continue_doc_button" onClick="validateSavedDocuments(); saveDocuments()" class="btn btn-primary ml10"> -->
 		</div>
@@ -163,7 +163,7 @@ function saveDocuments(){
 	   if ($('#vendorDocuments_form').validate(false, validationSettings)){ 
 	   $("#save_continue_doc_button").attr("disabled", "disabled");
 	   var formData = getFormData("vendorDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		      type : "POST",
     	      data: formData,

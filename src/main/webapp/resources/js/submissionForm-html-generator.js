@@ -7,11 +7,8 @@
 
 //generates the form HTML
 function generateForm(sourceleadUrl,templateId) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
@@ -184,7 +181,6 @@ function generateForm(sourceleadUrl,templateId) {
 // To Generate Org SubmissionForm
 
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
     

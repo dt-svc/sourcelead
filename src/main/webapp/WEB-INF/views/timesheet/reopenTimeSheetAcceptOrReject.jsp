@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="/resources/css/timesheet.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -17,13 +17,13 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script> 
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script> 
 </head>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <script src="resources/js/formvalidator.js"></script>
+ <script src="/resources/js/formvalidator.js"></script>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
@@ -56,7 +56,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a>
     </span>
@@ -130,7 +130,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
+						url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

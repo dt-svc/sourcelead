@@ -77,6 +77,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class DashboardRestController {
 
 	
@@ -256,7 +257,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/totalTimesheetList/{status}")
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
 		 StringBuilder redirectUrl = new StringBuilder();
-		 response.sendRedirect(redirectUrl.append("/sourcelead/timesheetlistByStatus?status=").append(status).toString());
+		 response.sendRedirect(redirectUrl.append("/app/timesheetlistByStatus?status=").append(status).toString());
 	}
 	
 	
@@ -278,8 +279,10 @@ public class DashboardRestController {
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
 				
+		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			
 	}
 	
@@ -302,7 +305,7 @@ public class DashboardRestController {
   		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 	}
 	
@@ -325,7 +328,7 @@ public class DashboardRestController {
  		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 			
 	}
@@ -350,7 +353,7 @@ public class DashboardRestController {
   		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard?userRoleId=").append(userRole.getId()).append("&switchUserType=").append(switchUserType).toString());
 			
 	}
 	
@@ -374,7 +377,7 @@ public class DashboardRestController {
  		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&loginOrgLocatonId=").append(loginOrgLocatonId).toString());
+		     response.sendRedirect(redirectUrl.append("/app/dashboard?orgLocationId=").append(orgLocationId).append("&loginOrgLocatonId=").append(loginOrgLocatonId).toString());
 			
 	}
 	

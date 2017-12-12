@@ -686,6 +686,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 										}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
 											projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 										}
+										
+										projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
 						    	  }
 						    	 
 					    	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();

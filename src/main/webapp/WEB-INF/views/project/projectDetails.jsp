@@ -7,8 +7,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- script for dateformat in datepicker End -->
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor1").Editor();
@@ -29,7 +29,7 @@
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
 	function projectDetails(projectId) {
-		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
@@ -197,7 +197,15 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
-						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						

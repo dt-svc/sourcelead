@@ -53,9 +53,9 @@ public class CandidateDocumentsHistory implements Serializable {
 	@Column(name = "DESCRIPTION ")
 	@Type(type = "text")
 	private String description;
-//	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
-//	@Lob
-//	private byte[] docFile;
+	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
+	@Lob
+	private byte[] docFile;
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
@@ -74,10 +74,6 @@ public class CandidateDocumentsHistory implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
-	
-	@Column(name = "FILE_URL")
-	private String fileURL;
-	
 	
 	public Long getId()
 	{
@@ -109,15 +105,15 @@ public class CandidateDocumentsHistory implements Serializable {
 		this.description = description;
 	}
 	
-//	public byte[] getDocFile()
-//	{
-//		return docFile;
-//	}
-//	
-//	public void setDocFile(byte[] docFile)
-//	{
-//		this.docFile = docFile;
-//	}
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+	
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
 	
 	public String getFileContentType()
 	{
@@ -258,16 +254,4 @@ public class CandidateDocumentsHistory implements Serializable {
 	{
 		this.createdUser = createdUser;
 	}
-
-	public String getFileURL()
-	{
-		return fileURL;
-	}
-
-	public void setFileURL(String fileURL)
-	{
-		this.fileURL = fileURL;
-	}
-	
-	
 }

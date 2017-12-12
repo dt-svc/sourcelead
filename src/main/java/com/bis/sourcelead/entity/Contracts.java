@@ -195,9 +195,9 @@ public class Contracts {
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
 	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
@@ -207,6 +207,9 @@ public class Contracts {
 	
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
+	
+	@Column(name = "TEMPLATE_FILE_URL")
+	private String templateFileURL;
 	
 	@Transient
 	private String ownerName;
@@ -424,13 +427,13 @@ public class Contracts {
 		this.fileName = fileName;
 	}
 
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
 
 	public String getFileType() {
 		return fileType;
@@ -1097,7 +1100,11 @@ public class Contracts {
 	{
 		this.spocUUID = spocUUID;
 	}
-	
-	
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
 
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
 }

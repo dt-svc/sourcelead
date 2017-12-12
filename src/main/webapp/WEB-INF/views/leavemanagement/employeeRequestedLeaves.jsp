@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Requested Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Requested Leaves</div>
     </section>
     <div id="popUp"></div>
     
@@ -173,7 +173,7 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
+            	      result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+' day(s)</div>';	 
             	    return result; 
               }
             }, {
@@ -230,7 +230,7 @@ function requestedEmployeesPagination(url){
     	    	"oLanguage": {
     	     		"sSearch": "",
     	     		 "sZeroRecords": "", "sEmptyTable": "", 
-    	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+    	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
     	     }
                 });
        $("#requestedleavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
@@ -279,7 +279,7 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 		 } 
 	 }    
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
-			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();

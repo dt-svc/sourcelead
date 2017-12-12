@@ -13,16 +13,15 @@
 	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
 	</c:if>
 	
-	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-	
+	<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		$(document).ready(function() {
+			//getProjectsList();
 			$("#txtEditor").Editor();
 		});
     </script> 
-
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
@@ -194,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -306,6 +305,27 @@ $(document).ready(function () {
             </div>
           </div>
           
+                 <div class="form-group">
+              <label class="col-md-3">Project</label>
+              <div class="col-md-9 select-field">
+                <select class="chosen-select form-control" id="projectId" name="projectClientID" field-name="Project Name">
+                <option value="">--Select Project--</option>
+                
+                <c:forEach var="projectClient" items="${projectList}">
+								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+								<c:if test="${! empty projectClient.clientName}">
+		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
+								 </c:if>
+								 <c:if test="${empty projectClient.clientName}">
+								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
+								 </c:if>
+				                    	
+				                 <%--    </c:if>   --%>
+							</c:forEach>
+                
+              </select>
+              </div>
+            </div>
             
               <div class="form-group">
               <label class="col-md-3">Education</label>
@@ -327,6 +347,19 @@ $(document).ready(function () {
               </div>
             </div>
             
+        <div class="form-group" >
+            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <div class="col-md-9 dropdown-select"> 
+            <select name="experienceLevel" id="experienceLevel">
+            	<option value="">--Select Level--</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+                   <option value="${level.uniqueKey}" ${requirement.experienceLevel.name  == level.name ? 'selected' : ''} >${level.name}</option>  
+            	</c:forEach>
+            </select>
+            
+            </div>
+          </div>
+        
          <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
@@ -438,24 +471,7 @@ $(document).ready(function () {
             </div>
           </div>
           
-		<div class="form-group">
-				<label class="col-md-3">Travel Allowance</label>
-				<div class="col-md-9">
-				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
-	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
-	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
-	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
-	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
-	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
-	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
-	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
-	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
-	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
-	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
-                 </select>
-                 
-				</div>
-		 </div>
+		
 		 
 		 <div class="form-group">
                       <label class="col-md-3">Closed Date</label>
@@ -467,7 +483,7 @@ $(document).ready(function () {
                         </div>
                   </div>
                   
-                  
+              <c:if test="${empty requirement.id}">
               <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
@@ -477,8 +493,10 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+            </c:if> 
+            <c:if test="${!empty requirement.id}">   
 		     <c:if test="${! empty requirement.closedDateStringFormat}">
-		     <div class="form-group"  style="display:block">
+		     <div class="form-group" id="receivingApplicantsDiv">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
                  <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
@@ -487,6 +505,18 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+		     </c:if>
+		      <c:if test="${empty requirement.closedDateStringFormat}">
+		     <div class="form-group" id="receivingApplicantsDiv" style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+            </c:if>
 		     </c:if>
           
           <div class="form-group">
@@ -565,14 +595,156 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
-            
+            <div class="form-group">
+				<label class="col-md-3">Travel Allowance</label>
+				<div class="col-md-9">
+				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
+	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
+	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
+	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
+	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
+	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
+	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
+	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
+	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
+	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
+	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
+                 </select>
+                 
+				</div>
+		 </div>
+		 
+		 
+	 <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group" id="addmedical" style="display:block">
+				<label class="col-md-3">Medical  Clearance </label>
+				<div class="col-md-9">
+				<c:if test="${requirement.medicalClearence == 'Y'}">
+				<span class="paddingRight"><input type="radio"  checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.medicalClearence == 'N'}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" checked  value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.medicalClearence}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 <div class="form-group" id="medicalTemplate" style="display:none">
+		 <div id="medicalClearenceDivId"></div>
+		 </div>
+		 
+		 
+		 <div class="form-group" id="addSecurityClearence" style="display:block">
+				<label class="col-md-3">Security Clearance</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.securityClearance == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.securityClearance == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				<c:if test="${empty requirement.securityClearance}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 <div class="form-group" id="securityClearenceTemplate" style="display:none">
+		 <div id="securityClearenceDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addOverTime" style="display:block">
+				<label class="col-md-3">OT</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.overTime == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.overTime == 'N'}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.overTime}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				</div>
+		 </div>
+		  <div class="form-group" id="overTimeTemplate" style="display:none">
+		 <div id="overTimeDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addBackgroundCheck" style="display:block">
+				<label class="col-md-3">Background Check</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.backgroundCheck == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.backgroundCheck == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.backgroundCheck}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div> 
+		  <div class="form-group" id="backgroundCheckTemplate" style="display:none">
+		 <div id="backgroundCheckDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addGender" style="display:block">
+				<label class="col-md-3">Gender</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.gender == 'Male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'All'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				
+				</div>
+		 </div> 
+		 <div class="form-group" id="genderTemplate" style="display:none">
+		 <div id="genderDivId"></div>
+		 </div>
+		 
+		 
+		 
+		 
+		 <!--  Radio Buttons -->
           <div class="form-group pras">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
-             <c:if test="${empty requirement.id}">
-              <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
+            <c:if test="${empty requirement.id}">
+          <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -581,26 +753,28 @@ $(document).ready(function () {
                 
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
-              </div>
+			   <div class="clearUpload"></div>
+              </div> 
               </c:if>
               <c:if test="${!empty requirement.id}">
               
                  <c:if test="${empty requirement.fileName}">
-                 <div class="input-group attachfile clearUpload" id= "uploadFileGroup">
+                 <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
-                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <span class="btn btn-primary" onchange="uploadButton();"><i class="fa fa-folder-open-o" ></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
                 
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
               </div> 
               </c:if>
               
               <c:if test="${!empty requirement.fileName}">
               
-              <div class="input-group attachfile clearUpload" id= "uploadFileGroup123" style="display: none;">
+              <div class="input-group attachfile" id= "uploadFileGroup123" style="display: none;">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -609,6 +783,7 @@ $(document).ready(function () {
                 
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
+              <div class="clearUpload"></div>
               </div>
               
               <div class="col-md-6" id="uploadDocNameDiv" >
@@ -722,7 +897,7 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -731,7 +906,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -813,7 +988,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Rate what client Proposed,this is only for internal reference. This rate will not visible publicly'></i></label>
+                <label class="col-md-3">Bill Rate / Salary</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -830,17 +1005,32 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                <div class="pull-left input_minmax">
+	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
+			                <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
 			                <option value="">Rate Per</option>
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 			 </c:when>
@@ -869,24 +1059,41 @@ $(document).ready(function () {
                 </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                    <div class="pull-left input_minmax">
+	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
-	                    
-			                <option value="">Rate Per</option>
+	                      <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+			               <!--  <option value="">Rate Per</option> -->
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : 'selected'}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <!-- <option value="">Rate Per</option> -->
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 				</c:otherwise>
 				</c:choose>
 	                
               </div>
+              </div>
+                 <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
               <div class="clearfix"></div>
               <div class="clearfix"></div>
@@ -1084,7 +1291,9 @@ $(document).ready(function () {
               <c:if test="${empty requirement.id}"> 
               	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
               </c:if>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
+                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  </span>
                   </div>
               </div>
               <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
@@ -1105,8 +1314,7 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>&nbsp;<i class='fa fa-info-circle' title='Job will be visible to all users in the organization,Users can submit the applicants for the job'></i>
-					
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1135,7 +1343,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -1284,7 +1492,6 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		 
 		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 		
 		checkTemplateforDouplicate();
@@ -1292,7 +1499,6 @@ function validate_fileupload(fileName)
 		$('#addClient').empty();
 		$('#addContact').empty();
 		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
-		
           if(saveType=='draft'){
 			
 			//For internal details in draft
@@ -1341,7 +1547,6 @@ function validate_fileupload(fileName)
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
- 		 
  		var maxRate = document.getElementById("maxRate").value; 
 		 if(maxRate != null && maxRate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
@@ -1351,14 +1556,17 @@ function validate_fileupload(fileName)
 			 $('#rateType').removeAttr('data-validation');
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
- 		 
+		 var existingValue = document.getElementById('isClientJob').value;
+		 if(existingValue == 'Y'){
  		 var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
  			 $('#clientRate').attr("data-validation","required"); 
+ 			 
  		 }else{
  			 $('#clientRate').removeAttr('data-validation');
- 			 $('#clientRate').attr("data-validation-optional","true"); 
+ 			 $('#clientRate').attr("data-validation-optional","true");
+ 			 
  		 }
  		 
  		 var clientRate = document.getElementById("clientRate").value; 
@@ -1369,14 +1577,11 @@ function validate_fileupload(fileName)
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
  		 }
-		
+		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
-			
-			
-      		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1384,7 +1589,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
+						location.replace(sourceleadUrl+"/jobs");
 
 					},
 				});
@@ -1541,11 +1746,15 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$("#experienceLevel").val(json.experienceLevel);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
+			    	
+			    	$("#projectId").val(json.projectId);
+			    	$("#projectId").trigger("chosen:updated");
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1554,7 +1763,112 @@ function setTemplateValues(){
 			    	$("#travelAllowance").val(json.travelAllowance);
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
+			    	if(json.medicalClearence !=  null && json.medicalClearence != '' && json.medicalClearence != 'undefined'){
+			    		 $("#medicalTemplate").css("display","block"); 
+			    		 $("#addmedical").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Medical  Clearance </label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.medicalClearence == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#medicalClearenceDivId").empty();
+			    		$("#medicalClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addmedical").css("display","block"); 
+			    		 $("#medicalTemplate").css("display","none"); 
+			    	}
 			    	
+			    	if(json.securityClearance !=  null && json.securityClearance != '' && json.securityClearance != 'undefined'){
+			    		 $("#securityClearenceTemplate").css("display","block"); 
+			    		 $("#addSecurityClearence").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Security Clearance</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.securityClearance == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#securityClearenceDivId").empty();
+			    		$("#securityClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addSecurityClearence").css("display","block"); 
+			    		 $("#securityClearenceTemplate").css("display","none"); 
+			    	}
+			    	
+			    	if(json.overTime !=  null && json.overTime != '' && json.overTime != 'undefined'){
+			    		 $("#overTimeTemplate").css("display","block"); 
+			    		 $("#addOverTime").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Overtime</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.overTime == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#overTimeDivId").empty();
+			    		$("#overTimeDivId").append(result);
+			    	}else{
+			    		 $("#addOverTime").css("display","block"); 
+			    		 $("#overTimeTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.backgroundCheck !=  null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+			    		 $("#backgroundCheckTemplate").css("display","block"); 
+			    		 $("#addBackgroundCheck").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Background Check</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.backgroundCheck == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#backgroundCheckDivId").empty();
+			    		$("#backgroundCheckDivId").append(result);
+			    	}else{
+			    		 $("#addBackgroundCheck").css("display","block"); 
+			    		 $("#backgroundCheckTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
+			    		 $("#genderTemplate").css("display","block"); 
+			    		 $("#addGender").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Gender</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.gender == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#genderDivId").empty();
+			    		$("#genderDivId").append(result);
+			    	}else{
+			    		 $("#addGender").css("display","block"); 
+			    		 $("#genderTemplate").css("display","none"); 
+			    	}
 			    	if(null != json.jobType && json.jobType != "" && json.jobType != "undefined" && json.jobType == 'Other'){
 						  $( ".jobTypeDiv" ).show();
 						  $("#jobOtherType").attr("data-validation-optional", "true");
@@ -1641,6 +1955,8 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#industryName").val('');
 			    	$("#industryName").trigger("chosen:updated");
+			    	$("#projectId").val('');
+			    	$("#projectId").trigger("chosen:updated");
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
 					$("#countryReq").val('');
@@ -1725,6 +2041,7 @@ $(document).ready(function() {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+    $(".clearUpload").hide();
 });
 
 // Show hide Approver script
@@ -1958,6 +2275,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
+		 $('#clientMaxRate').val('');
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
 		 $("#clientRateType").val("").trigger('change');
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
@@ -2126,7 +2444,26 @@ function minMaxRate(){
 }
 
 </script>
+<script>
+//Function to validate if maximum rate value is more the minimum rate value
+function clientMinMaxRate(){
+	var maxRate = ($('#clientMaxRate').val());
+    var minRate = ($('#clientRate').val());
+    
+    if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+		$('input#rateValidation').attr('class','error signin_fild');
+		$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#rateValidation').attr('record-exist','yes');
+		$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+    }  else{
+    	$('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateValidateId').find('p.jquery_form_error_message').remove();
+    }
+}
 
+</script>
 <script type="text/javascript">
 function checkTemplateforDouplicate(){
 	if(document.getElementById('isTemplate').checked) {
@@ -2252,6 +2589,34 @@ function getEditRequirementDetails(requirementId){
  }
  </script> 
 
+
+<script>
+function getProjectsList(projectName){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getAllProjectsByOrgRelationIdAndInProgress?"+tokenParamName+"="+tokenValue+"",
+	success :function(json) {
+	var output = "";
+	output = output + "<option value=''>--Select Project--</option>";
+	for (var i=0; i<json.length; i++){
+	var opt = json[i];
+	var selected = "";
+	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
+		selected = 'selected';
+	}
+	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.projectName+"</option>";
+	}
+	$("#projectId").empty();
+	$("#projectId").append(output);
+	$('#projectId').trigger("chosen:updated");
+	},
+	});
+
+}
+</script>
+
+
 <script type="text/javascript">
 $(document).ready(function(){
 	var requirementId  = "${requirementId}";
@@ -2261,10 +2626,10 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
+		$(".clearUpload").show();
 	});
  }); 
 </script>
@@ -2273,9 +2638,15 @@ $(function() {
 <script>
 function clearDate(){
 	$("#closedDate").val("");
+	document.getElementById("receivingApplicantsDiv").style.display="none";
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('N');
+	}
 	};
 	$(".clearUpload").click(function(){
-		$("#uploadFile").val("");
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#requirement_form input[data-id*=uploadBtn]").remove();
 	});
 	
 	</script>

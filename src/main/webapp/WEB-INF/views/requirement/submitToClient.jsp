@@ -10,11 +10,11 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
-<script src="resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
+<script src="/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
 <!-- newly added end -->
 
@@ -287,7 +287,7 @@ function clientSubmissions(requirementId){
 	 
 	 if(selectedShortlists.length > 0){
 		 if(selectedShortlists.length <= 50){
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
 			    	url: sourceleadUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
@@ -648,7 +648,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,

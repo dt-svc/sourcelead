@@ -53,9 +53,11 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
@@ -78,6 +80,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -156,6 +159,9 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private ProjectsDao projectsDao;
 	
+	@Autowired
+	private ProjectClientService projectClientService;
+	
 	@Override
 	 public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
@@ -227,12 +233,25 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			requirement = new Requirement();
+			requirement.setGeneratedId(getRequirementId(orgLocations));
 			requirement.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setTotalApplicants(0);
 			requirement.setCreatedBy(user);
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
+			if (StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
+				String jobTitle = "";
+				jobTitle = requirementDTO.getJobTitle().replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
+				if (jobTitle.startsWith("-")){
+					jobTitle = jobTitle.substring(1);
+			    }
+				if (jobTitle.endsWith("-")){
+					jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
+			    }
+				requirement.setUrl(jobTitle);
+			}
 		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
@@ -256,8 +275,14 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getJobId())) {
 			requirement.setJobId(requirementDTO.getJobId());
 		}
+		else{
+			requirement.setJobId(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getPositions())) {
 			requirement.setPositions(requirementDTO.getPositions());
+		}
+		else{
+			requirement.setPositions(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
 			requirement.setCountry(requirementDTO.getCountryReq());
@@ -290,11 +315,20 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getZipCode())) {
 			requirement.setZipCode(requirementDTO.getZipCode());
 		}
+		else{
+			requirement.setZipCode(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getMaxExp())) {
 			requirement.setMaxExp(requirementDTO.getMaxExp());
 		}
+		else{
+			requirement.setMaxExp(null);	
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getMinExp())) {
 			requirement.setMinExp(requirementDTO.getMinExp());
+		}
+		else{
+			requirement.setMinExp(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			requirement.setRate(requirementDTO.getRate());
@@ -307,11 +341,18 @@ public class RequirementServiceImpl implements RequirementService {
 			// "utf-8"));
 			requirement.setDescription(requirementDTO.getDescription());
 		}
+		else{
+			requirement.setDescription(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getCoolingOff())) {
 			requirement.setReqCoolingOffPeriod(requirementDTO.getCoolingOff());
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getIndustryName())) {
 			requirement.setIndustryName(requirementDTO.getIndustryName());
+		}
+		if(StringUtils.isNotBlank(requirementDTO.getProjectClientID())){
+			ProjectClients projects = projectClientService.getProjectClientsByProjectID(Long.parseLong(requirementDTO.getProjectClientID()));
+			requirement.setProjectClientID(projects);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			requirement.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
@@ -392,7 +433,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
 				String templateId = requirementDTO.getTemplateId();
 				Requirement templateRequirement = getRequirementByRequirementId(Long.parseLong(templateId));
-				requirement.setFileURL(templateRequirement.getFileURL());
+				requirement.setDocFile(templateRequirement.getDocFile());
 				requirement.setFileName(templateRequirement.getFileName());
 				requirement.setFileContentType(templateRequirement.getFileContentType());
 				requirement.setIsClientJob("N");
@@ -432,10 +473,20 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getClientRate())) {
 			requirement.setClientRate(requirementDTO.getClientRate());
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getClientMaxRate())) {
+			requirement.setClientMaxRate(requirementDTO.getClientMaxRate());
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getClientRateType())) {
 			requirement.setClientRateType(requirementDTO.getClientRateType());
 		}
-		
+		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
+		LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
+		requirement.setExperienceLevel(experienceLevel);
+		}
+		else{
+			
+			requirement.setExperienceLevel(null);
+		}
 		if (StringUtils.isNotBlank(requirementDTO.getIsClient())
 				&& StringUtils.isNotBlank(requirementDTO.getClientSubmissionForm())) {
 			if (requirementDTO.getIsClient().equalsIgnoreCase("Y")
@@ -461,6 +512,22 @@ public class RequirementServiceImpl implements RequirementService {
 				&& "Y".equalsIgnoreCase(requirementDTO.getReleaseToAllUsers())) {
 			requirement.setReleaseJobToAllUsers(requirementDTO.getReleaseToAllUsers());
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getMedicalClearence())) {
+			requirement.setMedicalClearence(requirementDTO.getMedicalClearence());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getSecurityClearance())) {
+			requirement.setSecurityClearance(requirementDTO.getSecurityClearance());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getOverTime())) {
+			requirement.setOverTime(requirementDTO.getOverTime());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getBackgroundCheck())) {
+			requirement.setBackgroundCheck(requirementDTO.getBackgroundCheck());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getGender())) {
+			requirement.setGender(requirementDTO.getGender());
+		}
+		
 		requirement.setStatus(Constants.TEAM_ACTIVE);
 		// requirement status
 		if (StringUtils.isNotBlank(requirementDTO.getSaveType())) {
@@ -717,7 +784,7 @@ public class RequirementServiceImpl implements RequirementService {
 		/*
 		 * System Generated Id For Job
 		 */
-		requirement.setGeneratedId(getRequirementId(orgLocations));
+		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
 			List<Requirement> parentrequirement = getAllReleasedRequirementsByParentId(savedRequirement.getId());
@@ -2961,6 +3028,29 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			reqTemplate.setEducation(null);
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getMedicalClearence())) {
+			reqTemplate.setMedicalClearence(requirementDTO.getMedicalClearence());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getSecurityClearance())) {
+			reqTemplate.setSecurityClearance(requirementDTO.getSecurityClearance());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getOverTime())) {
+			reqTemplate.setOverTime(requirementDTO.getOverTime());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getBackgroundCheck())) {
+			reqTemplate.setBackgroundCheck(requirementDTO.getBackgroundCheck());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getGender())) {
+			reqTemplate.setGender(requirementDTO.getGender());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getExperienceLevel())) {
+			LookUpData experienceLevel = lookUpDataService.getTasksTypeByUniqueKey(requirementDTO.getExperienceLevel());
+			reqTemplate.setExperienceLevel(experienceLevel);
+			}
+		else{
+			
+			reqTemplate.setExperienceLevel(null);
+		}
 		reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 		reqTemplate.setCreatedDate(commonUtil.currentDate());
 		reqTemplate.setCreatedBy(user);
@@ -3376,6 +3466,18 @@ public class RequirementServiceImpl implements RequirementService {
    }
 	
 	@Override
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception
+	{
+		return requirementDao.getRequirementByShortURL(shortURL);
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	{
+		Requirement requirement = requirementDao.getRequirementByRequirementIdAndJobTitle(requirementId,title);
+		return requirement;
+	}
+	
 	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId) throws Exception
 	{
 		return requirementDao.getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(orglocationId);
@@ -3397,6 +3499,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception
 	{
 		return requirementDao.getAllCampaignRequirementsByIdsList(requirementIds);
+
 	}
 	
 }

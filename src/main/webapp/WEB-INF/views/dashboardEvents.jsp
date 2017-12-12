@@ -88,7 +88,7 @@ window.onload = function() {
 					 result = result + '          </div>                       ';
 					 result = result + '              <div class="media-body paddingLeft">   ';
 					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+					 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
@@ -150,7 +150,7 @@ window.onload = function() {
 					 	 opt = opt + '         </div>                          ';
 					 	 opt = opt + '             <div class="media-body paddingLeft"> ';
 					 	 opt = opt + '                 <figure class="pull-left">       ';
-					 	 opt = opt + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
+					 	 opt = opt + '                 <img src="/resources/images/task-icon.png" class="img-responsive" width="40">    ';
 					 	 opt = opt + '                 </figure>                                                             ';
 					 	 opt = opt + '                     <div class="pull-left event_details">                             ';
 					 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
@@ -789,7 +789,7 @@ function cancelAddInterviewDiv(){
         if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,

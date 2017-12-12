@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +37,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class BillingPayableController {
 
 	private static final Logger logger = LoggerFactory.getLogger(BillingPayableController.class);

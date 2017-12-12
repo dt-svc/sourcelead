@@ -15,7 +15,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Leave Options</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Options</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Options</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -25,7 +25,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addOptions'/>" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
+              <a href="<c:url value='${appPath}/addOptions'/>" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
           </li>
         <div class="clearfix"></div>
       </ul>
@@ -50,7 +50,7 @@ $(document).ready(function(){
   function viewOptions(){
 	    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(sourceleadUrl+"/viewLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(data) {
          if(data !=null){
         	 var result = "";				        	
