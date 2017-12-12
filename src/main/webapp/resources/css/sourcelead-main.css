@@ -1930,7 +1930,7 @@ input:checked + .slider:before {
 .sendInv {
 	clear: both; display: inline-block;
 }
-.checkBox input[type="checkbox"], .checkBox .radio input[type="radio"] {
+.checkBox input[type="checkbox"], .radioIput input[type="radio"] {
 	position: relative; top: 2px; margin-right: 10px;
 }
 .collapseDiv_styles .input-groupAddon {
@@ -7397,6 +7397,9 @@ border: 1px solid #ccc !important;
 .minHeight40{
 min-height: 40px;
 }
+.minHeight80{
+min-height:80px;
+}
 .tableStyles {
 	position: relative; border: 1px solid #ddd;
 }
@@ -7451,6 +7454,11 @@ padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
 background-color: #fff;
 }*/
+.clearUploads:after {
+padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
+font-family:fontAwesome; color:#D32F2F;z-index: 999;cursor: pointer; font-size: 20px;
+background-color: #fff;
+}
 .clearDate:after {
 padding: 0px; bottom: 75%; right:10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
@@ -7496,6 +7504,12 @@ margin-right: 0;
 }
 .bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
 width: 220px;
+}
+.assignTableScroll.assignTableScroll-mnh {
+min-height: 150px;
+}
+.modal.addipPopup-modal {
+    display: none;
 }
 /* media 320px */
 @media (max-width: 320px) {
