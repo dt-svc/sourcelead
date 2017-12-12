@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CampaignListDTO;
+import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
@@ -41,6 +43,8 @@ import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CampaignRecipient;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.Org;
@@ -54,6 +58,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UserSignature;
+import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.EmailService;
@@ -131,6 +136,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	EmailAccountSettingsService emailAccountSettingsService;
+	
+	@Autowired
+	CampaignService campaignService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -213,23 +221,20 @@ public class MailBoxRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	
 	@RequestMapping(value = "/sendJobListCampaign", method = RequestMethod.POST)
-	public String sendJobListCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO,MultipartHttpServletRequest  request) throws Exception {
-		
+	public String sendJobListCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, MultipartHttpServletRequest request) throws Exception
+	{
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
+		if (itrator.hasNext()) {
+			multiFile = request.getFile(itrator.next());
 		}
-		
 		jobListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation,multiFile);
+		hotListEmailCampaignService.sendJobListEmailCampaign(jobListEmailCampaignDTO, user, orgLocation, multiFile);
 		return "success";
 	}
-	
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
@@ -837,4 +842,6 @@ public class MailBoxRestController {
 		  return successval;
 			
 		}
+	 
+	 
 }

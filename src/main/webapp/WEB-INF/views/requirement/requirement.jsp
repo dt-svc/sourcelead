@@ -484,7 +484,7 @@ $(document).ready(function () {
                         </div>
                   </div>
                   
-                  
+              <c:if test="${empty requirement.id}">
               <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
@@ -494,8 +494,10 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+            </c:if> 
+            <c:if test="${!empty requirement.id}">   
 		     <c:if test="${! empty requirement.closedDateStringFormat}">
-		     <div class="form-group"  style="display:block">
+		     <div class="form-group" id="receivingApplicantsDiv">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
                  <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
@@ -504,6 +506,18 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+		     </c:if>
+		      <c:if test="${empty requirement.closedDateStringFormat}">
+		     <div class="form-group" id="receivingApplicantsDiv" style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+            </c:if>
 		     </c:if>
           
           <div class="form-group">
@@ -730,7 +744,19 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
-          
+            <c:if test="${empty requirement.id}">
+          <div class="input-group attachfile" id= "uploadFileGroup">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
+              </div> 
+              </c:if>
               <c:if test="${!empty requirement.id}">
               
                  <c:if test="${empty requirement.fileName}">
@@ -2615,6 +2641,10 @@ $(function() {
 <script>
 function clearDate(){
 	$("#closedDate").val("");
+	document.getElementById("receivingApplicantsDiv").style.display="none";
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('N');
+	}
 	};
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val('');

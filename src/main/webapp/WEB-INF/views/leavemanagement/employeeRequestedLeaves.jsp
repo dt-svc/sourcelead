@@ -173,7 +173,7 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	  result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';	 
+            	      result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+' day(s)</div>';	 
             	    return result; 
               }
             }, {

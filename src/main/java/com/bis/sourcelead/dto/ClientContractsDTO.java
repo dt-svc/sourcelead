@@ -98,6 +98,7 @@ public class ClientContractsDTO {
 	private String templateId;
     private String orgRelationUUID;
 	private String spocUUID;
+	private String templateFileURL;
 	
 	public Long getId()
 	{
@@ -948,7 +949,13 @@ public class ClientContractsDTO {
 	{
 		this.spocUUID = spocUUID;
 	}
-	
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
 	
 	
 }

@@ -1131,7 +1131,7 @@ function openPopup(){
 	$("#all").toggleClass("actL");
 };
 </script>
-
+<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script>
 function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#loadMoreReq").css("display", "none");
@@ -1265,6 +1265,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>--</b>';	
 				}
+				
 				if(json.education != null && json.education != '' && json.education !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education:</label>'+json.education+'</b>';
 				}else{
@@ -1281,12 +1282,45 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
 				}
 				
-				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				if(json.fileURL != null && json.fileURL != '' && json.fileURL !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href='+json.fileURL+'></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
+				if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Experience Level:</label>'+json.experienceLevel.name+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Experience Level:</label>--</b>';	
+					}
+				if(json.medicalClearence != null && json.medicalClearence != '' && json.medicalClearence !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Medical Clearence:</label>'+json.medicalClearence+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Medical Clearence:</label>--</b>';	
+					}
 				
+				if(json.securityClearance != null && json.securityClearance != '' && json.securityClearance !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Security Clearence:</label>'+json.securityClearance+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Security Clearence:</label>--</b>';	
+					}
+				
+				if(json.overTime != null && json.overTime != '' && json.overTime !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Over Time:</label>'+json.overTime+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Over Time:</label>--</b>';	
+					}
+				
+				if(json.backgroundCheck != null && json.backgroundCheck != '' && json.backgroundCheck !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Background Check:</label>'+json.backgroundCheck+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Background Check:</label>--</b>';	
+					}
+				
+				if(json.gender != null && json.gender != '' && json.gender !='undefined'){
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Gender:</label>'+json.gender+'</b>';
+					}else{
+					result = result +'	<b><i class="fa fa-caret-right"></i><label>Gender:</label>--</b>';	
+					}
 				result = result +'	</div>';
 				result = result +'	<div class="jobShare">';
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
