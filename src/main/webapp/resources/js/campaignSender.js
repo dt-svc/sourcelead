@@ -55,7 +55,7 @@ function senderClose() {
 
 function validateNickName(senderId){
 	var nickName = document.getElementById("cpnNickName").value;
-	if(nickName != null){
+	if(nickName != null && senderId != null && senderId !='undefined'){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/validateNickName?"+tokenParamName+"="+tokenValue+"&nickName="+nickName+"&senderId="+senderId,
