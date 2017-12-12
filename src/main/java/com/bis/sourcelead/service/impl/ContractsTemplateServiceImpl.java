@@ -712,9 +712,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 			
+	//TODO commented by Rakshith
 			
 			//  if(null != vendorContactsUser && null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
-			 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
+		/*	 if(null == approverUser && !Constants.DRAFT.equalsIgnoreCase(saveType)){
 				  Contracts con = null;
 				  if (Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())){
 					  if (null != contractType && !"".equalsIgnoreCase(contractType)
@@ -745,7 +746,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
 		        	}
-			  }
+			  }*/
 		}
 		return savedContracts;
 		
@@ -829,6 +830,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 			}*/
+			
+			if(contracts.getTemplateFileURL() != null){
+				venContractsDto.setTemplateFileURL(contracts.getTemplateFileURL());
+			}
 			
 			if(contracts.getId() != null){
 				venContractsDto.setId(contracts.getId());
@@ -965,6 +970,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				clientConDto.setEndDateStr(endDateInTimezone);
+			}
+			
+			if(contracts.getTemplateFileURL() != null){
+				clientConDto.setTemplateFileURL(contracts.getTemplateFileURL());
 			}
 			
 			if(contracts.getId() != null){

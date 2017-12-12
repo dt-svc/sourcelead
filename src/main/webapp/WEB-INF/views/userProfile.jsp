@@ -31,6 +31,7 @@
 	$(document).ready(function() {
 		document.getElementById("profileSettings_form").reset();
 		document.getElementById("passwordSettings_form").reset();
+		getLoginUserProfile();
 	});
 </script>
 
@@ -612,6 +613,18 @@ function refreshLocation(){
 	$("#userLocation").val('');
 }
 </script>
+
+<script>
+function getLoginUserProfile(){
+		$.ajax({
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getLoginUserProfile?"+tokenParamName+"="+tokenValue,	    	   
+		    success: function(data) {
+		    }
+	   });
+}
+</script>
+
 
 
 </html>

@@ -304,5 +304,23 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		 }
 		 return flag;
 	}
+
+	@Override
+	@Transactional
+	public ReferContacts findByEmail(String recipientMail) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByEmails start");
+		referContacts = session
+				.createQuery("from ReferContacts contacts contacts.contactUserEmail = :recipientMail")
+				.setString("recipientMail", recipientMail).setCacheable(true).list();
+		logger.debug("getReferContactsByEmails end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
 	
 }
