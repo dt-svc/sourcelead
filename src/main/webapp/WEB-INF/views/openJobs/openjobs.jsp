@@ -1065,34 +1065,9 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
+	var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
 	openJobsRequirementTitle = search;
-	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience != null){
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
-	}
-	if(openJobsRequirementTitle != null && openJobsLocation != null  && openJobsExperience == null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation;
-	}
-	
-	if(openJobsRequirementTitle != null && openJobsLocation == null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsExperience;
-	}
-	
-	if(openJobsRequirementTitle == null && openJobsLocation != null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsLocation+"/"+openJobsExperience;
-		}
-	else if(openJobsRequirementTitle != null && openJobsExperience == null && openJobsLocation == null){
-		location.href = "/jobs/"+openJobsRequirementTitle;
-	}if(openJobsLocation != null && openJobsRequirementTitle ==null && openJobsExperience == null){
-		location.href = "/jobs/"+openJobsLocation;
-	}
-	
-	else if(openJobsExperience != null && openJobsLocation == null && openJobsRequirementTitle ==null){
-		location.href = "/jobs/"+openJobsExperience;
-	}
+	location.href = "/jobs/"+(openJobsRequirementTitle!=""?openJobsRequirementTitle:"all")+"/"+(openJobsLocation!=""?openJobsLocation:"all")+"/"+(openJobsExperience!=""?openJobsExperience:"all");
 }
 </script>
 
@@ -1384,7 +1359,8 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList('+opt.id+');"/><div class="control__indicator"></div>';
+// 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList();"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
