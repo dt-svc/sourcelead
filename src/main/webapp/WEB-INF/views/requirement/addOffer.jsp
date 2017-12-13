@@ -19,6 +19,7 @@
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
+	 $(".clearUpload").hide();
 	$('.action-pop').slideUp();
 	var clientSubmissions = '${clientSubmissions}';
 	
@@ -105,8 +106,10 @@ function addOffer(requirementId){
 				$(".clearUpload").click(function(){
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+					$(".clearUpload").hide();
 					document.getElementById("OfferAttachmentuploadFile").value("");
 				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				        
 				});
 				
 	        },
@@ -703,6 +706,7 @@ function otherJobType(id){
 
 <<script type="text/javascript">
 $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
+	 $(".clearUpload").show();
 	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
 	 $("#OfferAttachmentuploadFile").focus();
 	 if(validate_fileupload(this.value)){
