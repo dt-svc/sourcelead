@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -47,10 +48,9 @@ public class ReferContacts implements Serializable{
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
+	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
+	private String fileURL;
+	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 
@@ -99,12 +99,18 @@ public class ReferContacts implements Serializable{
 	@Column(name = "CONTACT_USER_EMAIL2")
 	private String contactUserEmail2;
 	
+	@Column(name = "GROUP_ID" , columnDefinition = "TEXT default NULL")
+	private String groupId;
+	
 	@Transient
 	private String contactUserName;
 	
 	@Transient
 	@JsonProperty
 	private String fullName;
+	
+	@ManyToMany(mappedBy="contactsList")
+	private List<ContactsGroup> groupList;
 	
 	
 	public Long getId() {
@@ -226,13 +232,12 @@ public class ReferContacts implements Serializable{
 	public void setContactSource(Contact_Source contactSource) {
 		this.contactSource = contactSource;
 	}
-	
-	public byte[] getDocFile() {
-		return docFile;
+	public String getFileURL() {
+		return fileURL;
 	}
 
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
 	}
 
 	public String getFileContentType() {
@@ -289,6 +294,28 @@ public class ReferContacts implements Serializable{
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
+	public String getGroupId()
+	{
+		return groupId;
+	}
+
+	public void setGroupId(String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+
+	public List<ContactsGroup> getGroupList()
+	{
+		return groupList;
+	}
+
+	public void setGroupList(List<ContactsGroup> groupList)
+	{
+		this.groupList = groupList;
+	}
+
 	
 
 }

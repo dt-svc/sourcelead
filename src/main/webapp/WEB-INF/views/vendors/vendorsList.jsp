@@ -96,7 +96,31 @@ border:none; background-color: none !important; padding:0 5px !important;
                   </div>
                 </div>
                 
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
+	                     <option value="Tier-1">Tier-1</option>
+	                     <option value="Tier-2">Tier-2</option>
+	                     <option value="Tier-3">Tier-3</option>
+	                     <option value="Tier-4">Tier-4</option>
+	                     <option value="Tier-5">Tier-5</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
+                  </div>
+                </div>
+                
               </div>
+             
+               </div>
+               
               <div class="clearfix">
                 
               </div>
@@ -132,31 +156,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 							  </div>
 						  </div>
               </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Tier</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
-	                     <option value="Tier-1">Tier-1</option>
-	                     <option value="Tier-2">Tier-2</option>
-	                     <option value="Tier-3">Tier-3</option>
-	                     <option value="Tier-4">Tier-4</option>
-	                     <option value="Tier-5">Tier-5</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Created By</label>
-                  <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
-                  </div>
-                </div>
-                
-              </div>
-             
-               </div>
+              
                 
                 <div class="clearfix">
                
@@ -245,7 +245,8 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>  
               
             </div>
-            <div class="row form-footer custom_formfooter">
+            </div>
+            <div class="advancedsearch-footer clearfix">
               <div class="pull-right mr"> 
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
@@ -258,7 +259,6 @@ border:none; background-color: none !important; padding:0 5px !important;
               	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
-            </div>
             </div>
             </div>
             </form:form>
@@ -523,8 +523,48 @@ function clearSearch(){
 </script> -->
 
 
+
+<script>
+  $(function() { 
+	       //Adding Customized Any KeyWord Title list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		 
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		 
+		 //Adding Customized Vendor Name list this method is slead-common.js
+		   tagIt("orgNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:', 'tagItBykeyForSkills','skills','Vendor Name');
+		 
+		 //Adding Customized createdBy Name list this method is slead-common.js
+		   tagIt("createdByAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Created By');
+		 
+		 
+		 //vendor contact customize details
+		 
+		  //Adding Customized vendor contact Name list this method is slead-common.js
+		   tagIt("contactNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Contact Name');
+		 
+		   //Email
+		   tagIt("emailAdvanced", 'Press Enter-Key Or Comma(,) To Add Email:', 'tagItBykeyForSkills','skills','Email');
+		   
+		   //Phone Number
+		   tagIt("phoneNumberAdvanced", 'Press Enter-Key Or Comma(,) To Add Phone Number:', 'tagItBykeyForSkills','skills','Phone Number');
+		   
+		 //Owner Name
+		   tagIt("ownerAdvanced", 'Press Enter-Key Or Comma(,) To Add Owner:', 'tagItBykeyForSkills','skills','Owner');
+		   
+		   //Owner Name
+		   tagIt("orgAdvanced", 'Press Enter-Key Or Comma(,) To Add Vendor:', 'tagItBykeyForSkills','skills','Vendor');
+		   
+  });
+  </script>
+  
+  	       
 <script type="text/javascript">
-    	   var config = {
+    	   /* var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -765,8 +805,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		    
-		    
+		     */
 		    
 		  
 		      $("#country").on('change', function (e) {
@@ -775,13 +814,13 @@ function clearSearch(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 
@@ -2334,6 +2373,12 @@ $(document).ready(function() {
 
 // project side bar tabs
 $(document).ready(function() {
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+		vendorSideBar('${vendorLocationId}','${orgRelationId}','${vendorName}');
+	}
+	
+	
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();

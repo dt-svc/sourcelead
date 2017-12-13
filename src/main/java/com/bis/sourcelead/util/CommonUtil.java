@@ -1036,6 +1036,27 @@ public class CommonUtil {
 			requirementDTO.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementDTO.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getProjectClientID() != null){
+			requirementDTO.setProjectClientID(requirement.getProjectClientID().toString());
+			}
+			if(requirement.getMedicalClearence() !=null){
+			requirementDTO.setMedicalClearence(requirement.getMedicalClearence());
+		}
+			if(requirement.getSecurityClearance() !=null){
+			requirementDTO.setSecurityClearance(requirement.getSecurityClearance());
+		}
+			if(requirement.getOverTime() !=null){
+			requirementDTO.setOverTime(requirement.getOverTime());
+		}
+			if(requirement.getBackgroundCheck() !=null){
+			requirementDTO.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() !=null){
+			requirementDTO.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() !=null){
+			requirementDTO.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementDTO.setDescription(requirement.getDescription());
 			}

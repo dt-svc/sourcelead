@@ -112,6 +112,8 @@ public class ProjectsDashboardController {
 					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
 				}
 			}
+			
+			
         }
         model.addObject("add_client", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
@@ -131,6 +133,7 @@ public class ProjectsDashboardController {
 			model.addObject("endDate",endDate);
 			model.addObject("status",status);
 		}
+        
 
         
        /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());

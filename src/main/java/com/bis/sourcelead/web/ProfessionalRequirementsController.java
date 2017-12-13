@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.rest.CrowdSourcingRequirementsRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -91,6 +92,10 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	private RegistrationOptionalServicesService registrationOptionalServicesService;
+	
+	
+	@Autowired
+	private ContactsGroupService contactsGroupService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
@@ -399,12 +404,20 @@ public class ProfessionalRequirementsController {
 		}
 	 
 		
+
 	 @RequestMapping(value = "/app/referRequirementList")
 	 public ModelAndView referRequirementList(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
+
+	 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("professional/referRequirementList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		 
+		 User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+		 model.addObject("contactsGroupList", contactsGroupList);
+		 model.addObject("contactsGroupListSize", contactsGroupList.size());
+		
 		return model;
 		}
 			 
@@ -435,8 +448,9 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
+
 	 @RequestMapping(value = "/app/validateContactEmail",  method = RequestMethod.GET)
-	   public @ResponseBody String validateContactEmail(@RequestParam(value="contactEmail", required=false) String contactEmail,
+	  public @ResponseBody String validateContactEmail(@RequestParam(value="contactEmail", required=false) String contactEmail,
 	   		HttpServletRequest request) throws Exception {
 		  
 		  User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -450,10 +464,8 @@ public class ProfessionalRequirementsController {
 		  
 	   }
 	 
-	 
-	 @RequestMapping(value = "/app/getProfessionalResumesCount",  method = RequestMethod.GET)
+	@RequestMapping(value = "/app/getProfessionalResumesCount",  method = RequestMethod.GET)
 	   public @ResponseBody Integer getProfessionalResumesCount(HttpServletRequest request) throws Exception {
-		  
 		  Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		  Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
 		  return resumesCount;

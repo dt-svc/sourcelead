@@ -254,12 +254,13 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 	 
 		 	 StringBuilder userNameSB = new StringBuilder();
-		 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= ""){
+		 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= "" && !loginUser.getLastName().isEmpty()){
 		 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 	 }
 		 	 else
 		 	 {
-		 		emailMessage.setFromName(loginUser.getFirstName());
+		 		emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").toString());
+		 		
 		 	 }
 		 	 
 		 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

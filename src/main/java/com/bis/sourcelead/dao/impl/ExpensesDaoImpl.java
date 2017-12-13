@@ -166,11 +166,14 @@ public class ExpensesDaoImpl implements ExpensesDao {
 				if(countQuery != null)
 				countQuery.setParameter(str, (Date) params.get(str));
 			}
+			if(length > 0){
+				query.setFirstResult(start).setMaxResults(length);
+			}
         }
 		
 		
 		
-		List<Expenses> tslist = query.setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		List<Expenses> tslist = query.setCacheable(true).list();
 		response.setData(tslist); 
 		
 		List<Long> countList  = null;
