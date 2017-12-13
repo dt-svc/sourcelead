@@ -113,7 +113,7 @@ public class OpenJobsController {
 		return "forward:/jobs/null/null/null";
 	}
 	
-	@RequestMapping(value = "/jobs/{title}")
+/*	@RequestMapping(value = "/jobs/{title}")
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/" + title + "/null/null";
@@ -129,7 +129,7 @@ public class OpenJobsController {
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/" + title + "/" + location + "/"+experience;
-	}
+	}*/
 	
 	@RequestMapping(value = "/requirementsSummary.html")
 	public String requirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception
