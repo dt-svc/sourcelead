@@ -293,6 +293,7 @@ public class ClientServiceImpl implements ClientService {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
 			clientOrgLocations.setIsPrimary(Constants.YES);
+			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
