@@ -286,7 +286,7 @@ function projectTaskPaginations(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -400,8 +400,8 @@ function editCancel(){
     <div id="addTaskPopupDivId"></div>
   </div>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 
  <script>
  function showtasktype(){
@@ -585,7 +585,7 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Assign To <i class="fa fa-info-circle" title="Select the project members who will handle this task,can assign multiple members"></i></label>';
+			result = result	+ '           <label class="col-md-4">Assign To</label>';
 			result = result	+ '           <div class="col-md-8">';
 			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';

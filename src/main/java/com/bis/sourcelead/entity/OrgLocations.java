@@ -161,6 +161,9 @@ public class OrgLocations implements Serializable{
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
+    
     
     @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
     @Type(type="text")
@@ -699,6 +702,16 @@ public class OrgLocations implements Serializable{
 
 	public void setVendorOnboardId(Long vendorOnboardId) {
 		this.vendorOnboardId = vendorOnboardId;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
 	}
 	
 }

@@ -4,10 +4,10 @@
     pageEncoding="UTF-8"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-            <spring:url value="resources/css/styles.css" var="cssmy"/>
+            <spring:url value="/resources/css/styles.css" var="cssmy"/>
             <link href="${cssmy}" rel="stylesheet">
-             <script src="resources/js/jquery-1.11.3.min.js"></script>
-             <script src="resources/js/signer.js" type="text/javascript"></script>
+             <script src="/resources/js/jquery-1.11.3.min.js"></script>
+             <script src="/resources/js/signer.js" type="text/javascript"></script>
 <script>
 	$(document).ready(function() {
 		Signer.uploadDoc();

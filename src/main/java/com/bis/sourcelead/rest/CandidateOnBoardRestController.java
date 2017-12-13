@@ -82,6 +82,7 @@ import com.drew.lang.StringUtil;
 import cucumber.deps.difflib.StringUtills;
 
 @RestController
+@RequestMapping("/app")
 public class CandidateOnBoardRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -258,7 +259,7 @@ public class CandidateOnBoardRestController {
 			
 	}
 	
-/*	@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
     public void downloadTemplateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
 		
 		
@@ -297,7 +298,7 @@ public class CandidateOnBoardRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 
-	}  */
+	} */ 
 	
 	
 	@RequestMapping(value = "/deleteTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)

@@ -69,7 +69,7 @@ public class RequirementInterviewController {
 	CommonUtil commonUtil;
 	
 	
-	@RequestMapping(value = "/acceptOrRejectInterview")
+	@RequestMapping(value = "/ws/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {

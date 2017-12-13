@@ -40,6 +40,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CampaignController {
 	
 
@@ -93,7 +94,7 @@ public class CampaignController {
 	 public @ResponseBody void CampaignMailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/hotListCampaigns?mailType=").append(mailType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/hotListCampaigns?mailType=").append(mailType).toString());
 			
 	}
 	

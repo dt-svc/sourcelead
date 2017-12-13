@@ -5748,7 +5748,9 @@ z-index: 99;
     right: 12px;
 }
 /* Crowdsourcing Styels */
-
+.minHeight40{
+min-height: 40px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 .hidden-xs {
