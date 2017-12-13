@@ -9,7 +9,7 @@
 		
 		<form:form class="login-form clearfix"  id="fedralAndTax_form"  name="fedralAndTax_form" method="post" > 
 		<div class="comLogContent">
-			  <div id="popUp" ></div>	
+			  <div id="taxPopUp" ></div>	
 			    <div id="loading"></div> 
 			         <div class="clearfix"> 
 		         			<div class="col-md-6">
@@ -95,8 +95,8 @@
  <script src="resources/js/formvalidator.js"></script> 
  
  <div id="divDocsTd1" style="display: none; float: left;">
-		  <div class="dropdown-select paddingRight">
-		              <select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="REPLACEROWIDstateName" name="stateTaxesList[REPLACEROWID].stateName">
+		  <div class="chosentext-left">
+		              <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="State" id="REPLACEROWIDstateName" name="stateTaxesList[REPLACEROWID].stateName">
 		                <option selected value="">-- Select State --</option>
 		                <c:forEach var="state" items="${statesList}">
 							<option value="${state.stateName}" >${state.stateName}</option>
@@ -190,6 +190,7 @@ function addStatesTaxRow(){
 	var cell0 = row.insertCell(0);
 	var divDocTypeTdStr = document.getElementById("divDocsTd1").innerHTML;
 	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	divDocTypeTdStr = divDocTypeTdStr.replace(/CHOOSEN-SELECT-CLASS/g, 'chosen-select');
 	cell0.innerHTML = divDocTypeTdStr;
 	
 	 var cell1 = row.insertCell(1);
@@ -206,6 +207,8 @@ function addStatesTaxRow(){
 	var divDocDescTdStr = document.getElementById("divDocsTd4").innerHTML;
 	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 	cell3.innerHTML = divDocDescTdStr; 
+	
+	prepareChosenScripts();
 }
 </script>
 
@@ -236,9 +239,9 @@ function getStateTaxes(){
 	        		 
 	        		 result = result +'<tr id="stateTaxRow'+opt.uuid+'">';
 	        		 result = result +'<td width="500px">';
-	 	     		 result = result +'<div class="dropdown-select">';
+	 	     		 result = result +'<div class="chosentext-left">';
 	 	     		
-	 	     		 result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State"  name="savedStateTaxesList['+i+'].stateName">';
+	 	     		 result = result +'<select class="form-control chosen-select" data-validation="required" field-name="State"  name="savedStateTaxesList['+i+'].stateName">';
 	 	     		 result = result +'<option selected value="">-- Select State --</option>';
 	 	     			<c:forEach var="state" items="${statesList}">
 	 	     			if('${state.stateName}' == opt.stateName){
@@ -294,9 +297,9 @@ function getStateTaxes(){
 	     		
 	     		
 	     		result = result +'<td width="500px">';
-	     		result = result +'<div class="dropdown-select">';
+	     		result = result +'<div class="chosentext-left">';
 	     		
-	     		result = result +'<select class="width100percnt form-control selectborder" data-validation-optional="true" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
+	     		result = result +'<select class="form-control chosen-select" data-validation-optional="true" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
 	     		result = result +'<option selected value="">-- Select State --</option>';
 	     			<c:forEach var="state" items="${statesList}">
 	     			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
@@ -335,11 +338,31 @@ function getStateTaxes(){
 	     		result = result +'</div>';
 	     	$("#stateTaxesList").empty();
 	     	$("#stateTaxesList").append(result);
+	     	prepareChosenScripts();
 	        },
 	    });
 }
 </script>
 
+
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+</script> 
 
 
 
@@ -396,9 +419,9 @@ function deleteStatesTaxRow(uuid,stateName){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are your sure to delete <strong>"+stateName+"</strong> state tax?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='deleteTaxRow(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='deleteTaxRow(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTaxPopUp();'></b>";
 	result = result +"	</div>";
-	$("#popUp").append(result);
+	$("#taxPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
@@ -416,7 +439,7 @@ function deleteTaxRow(uuid){
 	        	if(data == 'success'){
 	        		document.getElementById("stateTaxRow"+uuid).remove();
 	        		$("#loading").removeAttr("style"); 
-	        		cancelPopUp();
+	        		cancelTaxPopUp();
 	        	}
 	        },
 	    });
@@ -425,8 +448,8 @@ function deleteTaxRow(uuid){
 </script>
 
 <script type="text/javascript">
-function cancelPopUp(){
-	$("#popUp").empty();
+function cancelTaxPopUp(){
+	$("#taxPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>  

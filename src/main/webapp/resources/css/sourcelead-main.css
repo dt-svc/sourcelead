@@ -6980,6 +6980,9 @@ color:#333 !important;
 a.anchor-black:hover{
 	color:#398ddd !important;
 }
+.chosentext-left .chosen-container {
+	text-align: left;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

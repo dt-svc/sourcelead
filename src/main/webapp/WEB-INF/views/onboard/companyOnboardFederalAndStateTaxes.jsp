@@ -139,8 +139,8 @@ window.onload = function () {
 
 
 	<div id="divDocsTd1" style="display: none; float: left;">
-		  <div class="dropdown-select paddingRight">
-		              <select class="width100percnt form-control selectborder" data-validation="required" field-name="State" id="REPLACEROWIDstateName" name="stateTaxesList[REPLACEROWID].stateName">
+		  <div class="chosentext-left">
+		              <select class="form-control select-bg CHOOSEN-SELECT-CLASS" data-validation="required" field-name="State" id="REPLACEROWIDstateName" name="stateTaxesList[REPLACEROWID].stateName">
 		                <option selected value="">-- Select State --</option>
 		                <c:forEach var="state" items="${statesList}">
 							<option value="${state.stateName}" >${state.stateName}</option>
@@ -247,6 +247,7 @@ function addStatesTaxRow(){
 	
 	var cell0 = row.insertCell(0);
 	var divDocTypeTdStr = document.getElementById("divDocsTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/CHOOSEN-SELECT-CLASS/g, 'chosen-select');
 	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 	cell0.innerHTML = divDocTypeTdStr;
 	
@@ -264,6 +265,8 @@ function addStatesTaxRow(){
 	var divDocDescTdStr = document.getElementById("divDocsTd4").innerHTML;
 	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 	cell3.innerHTML = divDocDescTdStr; 
+	
+	prepareChosenScripts();
 }
 </script>
 
@@ -295,9 +298,9 @@ function getStateTaxes(){
 	        		 
 	        		 result = result +'<tr id="stateTaxRow'+opt.uuid+'">';
 	        		 result = result +'<td width="500px">';
-	 	     		 result = result +'<div class="dropdown-select">';
+	 	     		 result = result +'<div class="chosentext-left">';
 	 	     		
-	 	     		 result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="State"  name="savedStateTaxesList['+i+'].stateName">';
+	 	     		 result = result +'<select class="form-control chosen-select" data-validation="required" field-name="State"  name="savedStateTaxesList['+i+'].stateName">';
 	 	     		 result = result +'<option selected value="">-- Select State --</option>';
 	 	     			<c:forEach var="state" items="${statesList}">
 	 	     			if('${state.stateName}' == opt.stateName){
@@ -353,9 +356,9 @@ function getStateTaxes(){
 	     		
 	     		
 	     		result = result +'<td width="500px">';
-	     		result = result +'<div class="dropdown-select">';
+	     		result = result +'<div class="chosentext-left">';
 	     		
-	     		result = result +'<select class="width100percnt form-control selectborder" data-validation-optional="true" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
+	     		result = result +'<select class="form-control chosen-select" data-validation-optional="true" field-name="State" id="0stateName" name="stateTaxesList[0].stateName">';
 	     		result = result +'<option selected value="">-- Select State --</option>';
 	     			<c:forEach var="state" items="${statesList}">
 	     			result = result +'<option value="${state.stateName}">${state.stateName}</option>';
@@ -393,13 +396,33 @@ function getStateTaxes(){
 	     		result = result +'</div>';
 	     		result = result +'</div>';
 	     	$("#stateTaxesList").append(result);
+	     	
+	     	prepareChosenScripts();
+	     	
 	        },
 	    });
 }
 </script>
 
 
-
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+</script> 
 
 
 <script type="text/javascript">
