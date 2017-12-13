@@ -193,6 +193,7 @@ public class CompanyOnboardRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
+		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
 		return "success";
 	}
 	
