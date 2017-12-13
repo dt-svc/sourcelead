@@ -1084,6 +1084,8 @@ public class EMailJobScheduler {
 	 * @throws Exception 
 	 */
 
+
+
 	//TODO commented by Rakshith
 	//	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	//	@Async
