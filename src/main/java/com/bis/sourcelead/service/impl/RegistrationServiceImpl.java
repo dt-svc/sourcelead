@@ -428,6 +428,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
 		user.setRegistrationType("Newly Registered");
 		return user;
 	}
