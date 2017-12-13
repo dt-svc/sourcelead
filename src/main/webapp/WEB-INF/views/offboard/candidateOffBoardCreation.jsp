@@ -658,7 +658,6 @@ function validate_fileupload(fileName)
 			    url: sourceleadUrl+"/getOffboardUserDetailsById?${_csrf.parameterName}=${_csrf.token}&offboardUserId="+offboardUserId,	    	   
 			    success: function(data) {
 			    	 var json = JSON.parse(data);
-			    	 alert("hi");
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
 			    	 $("#mobileNumber").val(json['mobilePhone']);
