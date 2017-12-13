@@ -322,7 +322,7 @@ function getStateTaxes(){
 	     		result = result +'<div class="">';
 	     		
 	     		result = result +'<div class="pull-right">';
-	     		result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addStatesTaxRow();"><i class="fa fa-plus text-primary"></i></button>';
+	     		result = result +'<button type="button" class="btn btm-sm pull-right" onclick="addStatesTaxRow();"><i class="fa fa-plus text-primary"></i></button>';
 	     		result = result +'</div>';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
