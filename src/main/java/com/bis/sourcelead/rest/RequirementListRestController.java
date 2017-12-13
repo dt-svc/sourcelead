@@ -1,19 +1,15 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -51,7 +46,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -63,9 +57,10 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -88,6 +83,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -166,6 +163,12 @@ public class RequirementListRestController {
 	OrgLocationService orgLocationService;
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -733,19 +736,19 @@ public class RequirementListRestController {
 						}
 					}
 					String candidateName = "";
-					if (requirementSubmission.getCandidate() != null) {
-						if (!isNullOrEmpty(requirementSubmission.getCandidate().getLastName())) {
+					if (requirementSubmissionTemplateFields != null) {
+						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString();
+							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 						}
 						else {
-							candidateName = requirementSubmission.getCandidate().getFirstName();
+							candidateName = requirementSubmissionTemplateFields.getFirstName();
 						}
 						requirementSubmission.setCandidateName(candidateName);
 						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
 						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmission.getCandidate().getMobilePhone());
+						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 					}
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
@@ -835,17 +838,16 @@ public class RequirementListRestController {
 	}
 	
 	
-	
-	
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
 	String saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
@@ -866,12 +868,13 @@ public class RequirementListRestController {
 	
 	@RequestMapping(value = "/saveChangedStatusFromDraft", method = RequestMethod.POST)
 	@ResponseBody
-	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId) throws Exception
+	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
 	{
 		User loginUser = userService.getUserById(userId);
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
@@ -1857,6 +1860,18 @@ public class RequirementListRestController {
 	            	if(requirement !=null){
 	            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
 	            		requirement.setTotalApplicants(applicantsCount);
+	            		
+	            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
+	            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
+	            			requirement.setOrgRelationUUID(orgRelations.getUUID());
+	            		}
+	            		
+	            		if(requirement.getSpocId() != null){
+	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+	            			requirement.setSpocUUID(orgSpoc.getUUID());
+	            		}
+	            		
+	            		
 	            		reqList.add(requirement);
 	            	}
 	            }
@@ -1943,6 +1958,8 @@ public class RequirementListRestController {
       	requirement.setJobTitle(requirementIndex.getJobTitle());
       	requirement.setGeneratedId(requirementIndex.getGeneratedId());
       	String convertedStirng = requirementIndex.getCreatedDate();
+      	requirement.setOrgRelationId(requirementIndex.getOrgRelationId());
+      	
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
       	Date elkDate = elkFormat.parse(convertedStirng);

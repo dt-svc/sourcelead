@@ -258,7 +258,7 @@ public class UsersListRestController {
 						}
 						role.setReportingManagerName(reportingManagerName.toString());
 					}
-					Employees emp = employeesService.getEmployeeByUserId(role.getUser().getId());
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
 					if(emp !=null){
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
 							role.setEmployeMentType(emp.getUserEmploymentType());
@@ -1844,6 +1844,8 @@ public class UsersListRestController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}else{
+				employees.setHireDate(null);
 			}
 			employees.setUpdatedBy(loginUser.getUserCode());
 			employees.setUpdatedDate(commonUtil.currentDate());

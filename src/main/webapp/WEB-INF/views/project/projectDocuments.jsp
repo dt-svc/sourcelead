@@ -263,6 +263,7 @@
 		
 	}
 	
+ 
 	//Get all check box checked script started
 	function getAllCheckBoxes(){
 		var documentIds = [];
@@ -291,8 +292,7 @@
 	});
 	}
 	//Get all check box checked script ends
-	
-	
+ 	
 	function deleteAllDcouments(){
 		var documentIds = [];
 		 $("input[name='documentIds[]']:checked").each( function (i) {
@@ -1051,8 +1051,8 @@ $(document).ready(function() {
  
 
 
-
-
-
-
-
+<script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script>

@@ -126,6 +126,7 @@
 			 <div class="mail-box mail-content">
 			 <div class="mail-box-header">
               <h3 class="box-title" id="mailboxLabel"></h3>
+              
               <!-- <div class="box-tools pull-right">
                 <div class="has-feedback">
                   <input type="text" placeholder="Search Mail" class="form-control input-sm">
@@ -573,7 +574,9 @@ function getEmailDetails(uuid,type){
                 result = result +'</div>';
                 result = result +'</div>';
 			    result = result +'<div class="mailbox-read-info">';
-			    result = result +'<h3>'+opt.subject+'</h3>';
+			    result = result +'<h3 class="col-md-4 padding_left">'+opt.subject+'</h3>';
+// 			    result = result +' <a href="<c:url value='/campaignStats'/>" class="pull-left btn btn-sm btn-primary">Stats</a>';
+			    result = result +'<div class="clearfix"></div>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
 			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
@@ -600,7 +603,6 @@ function getEmailDetails(uuid,type){
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
 	   			}
-	   			
 	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
 	   			}

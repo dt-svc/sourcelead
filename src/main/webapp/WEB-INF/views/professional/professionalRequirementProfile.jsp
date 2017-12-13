@@ -202,7 +202,7 @@ function requirementProfile(requirementUUID){
 						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 					 }
 				 
-				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' - '+maxRate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
@@ -312,6 +312,48 @@ function requirementDetails(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 
+				 if(json.backgroundCheck != null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+					 if(json.backgroundCheck == "Y"){
+						 backgroundCheck = "Yes" 
+					 }else{
+						 backgroundCheck = "No" 
+					 }
+				 }else{
+					 backgroundCheck = "--";
+				 }
+				 
+				 if(json.overTime != null && json.overTime != '' && json.overTime != 'undefined') {
+					 if(json.overTime == "Y"){
+						 overTime = "Yes";
+					 }else{
+						 overTime = "No"
+					 }
+				}else{
+					overTime = "--";
+				}
+				 
+				 if(json.medicalClearence != null && json.medicalClearence != '' && json.medicalClearence != 'undefined') {
+					 if(json.medicalClearence == "Y"){
+						 medicalClearence = "Yes";
+					 }else{
+						 medicalClearence = "No";
+					 }
+				 }else{
+					 medicalClearence = "--";
+				 }
+				 
+				 if(json.securityClearance != null && json.securityClearance != '' && json.securityClearance != 'undefined') {
+					 if(json.securityClearance == "Y"){
+						 securityClearance = "Yes";
+					 }else{
+						 securityClearance = "No";
+					 }
+				}else{
+						securityClearance = "--";
+				}
+				 
+				
+				 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 		            	result = result +'                  <div class="clearfix"></div>';
@@ -333,7 +375,48 @@ function requirementDetails(requirementUUID){
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 				 }
+				  
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Medical Clearence:</b> <span title="'+medicalClearence+'">'+medicalClearence+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
 				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Security Clearance:</b> <span title="'+securityClearance+'">'+securityClearance+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Over Time:</b> <span title="'+overTime+'">'+overTime+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Background Check:</b> <span title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 if(json.gender != null && json.gender != '' && json.gender != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="'+json.gender+'">'+json.gender+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
+				 if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                  <div class="clearfix"></div>';
