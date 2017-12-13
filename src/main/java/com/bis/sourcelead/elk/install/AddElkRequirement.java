@@ -88,8 +88,8 @@ public class AddElkRequirement {
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
-				if(null != rs.getString("PROJECT_ClientID") && !"".equalsIgnoreCase(rs.getString("PROJECT_ClientID"))){
-				requirementIndex.setProjectClientID(rs.getString("PROJECT_ClientID"));
+				if(null != rs.getString("PROJECT_Client_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_Client_ID"))){
+				requirementIndex.setProjectClientID(rs.getString("PROJECT_Client_ID"));
 				
 				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
