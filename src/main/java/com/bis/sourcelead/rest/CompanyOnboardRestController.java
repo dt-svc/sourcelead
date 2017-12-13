@@ -187,5 +187,16 @@ public class CompanyOnboardRestController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/skipAndSaveOrglocationSignatory", method = RequestMethod.POST)
+	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
+		orgLocationService.updateOrgLocations(loginOrgLocation);
+		return "success";
+	}
+	
+	
+	
 	
 }

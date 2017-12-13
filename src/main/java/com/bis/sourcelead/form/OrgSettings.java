@@ -42,6 +42,8 @@ public class OrgSettings {
     
     private String businessType;
     
+    private String otherBusinessType;
+    
     private Integer averageWorkingHours;
 	
 
@@ -201,6 +203,14 @@ public class OrgSettings {
 
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public String getOtherBusinessType() {
+		return otherBusinessType;
+	}
+
+	public void setOtherBusinessType(String otherBusinessType) {
+		this.otherBusinessType = otherBusinessType;
 	}
 
 }

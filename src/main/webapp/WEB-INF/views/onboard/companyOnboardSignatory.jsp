@@ -410,7 +410,7 @@ $('body').on('submit', '#signatory_form', function(e){
 	  result = result +'You have effectively given all necessary information to onboarding and you formally acknowledged all archives</p>';
 	  result = result +'<span class="clearfix">';
 	  if(value == 'Skip'){
-		  result = result +'<input type="button" value="Cancel" onclick="cancel();"/><input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
+		  result = result +'<input type="button" value="Cancel" onclick="cancel();"/><input type="button" onclick="skipSignatory();" value="Goto Dashboard " class="Brig mb"/>';
 	  }else{
 		  result = result +'<input type="button" onclick="goToDashboard();" value="Goto Dashboard " class="Brig mb"/>';
 	  }
@@ -420,6 +420,23 @@ $('body').on('submit', '#signatory_form', function(e){
 	  $("#popUp").append(result);
 	  $(".welPop").fadeIn(200);
 	  $(".side_mask").fadeIn(100);
+  }
+  </script>
+  
+  <script>
+  function skipSignatory(){
+	  var sourceleadUrl = '${sourceleadUrl}';
+	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/skipAndSaveOrglocationSignatory?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	if(data == 'success'){
+	        		$("#loading").removeAttr("style");
+	        		goToDashboard()
+	        	}
+	        },
+	    });
   }
   </script>
   

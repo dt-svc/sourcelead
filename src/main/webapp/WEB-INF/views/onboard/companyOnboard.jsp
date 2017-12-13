@@ -25,6 +25,7 @@
 <script type="text/javascript">
 window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode','address');
+	getBusinessTypeValue();
  };
 </script>
 
@@ -133,25 +134,6 @@ right: 15px;
 			</div>
 		</div>
 		
-		<div class="col-md-6 clearfix mb">
-		<label class="col-md-3 noPad">Business type<span class="text-danger">&nbsp;*</span></label>
-			<div class="col-md-9 padding_right">
-			<select class="chosen-select" id="businessType" name="businessType" data-validation="required"  field-Name="Business Type">
-				<option value="">--Select Business type--</option>
-				<c:forEach var="bt" items="${bussinessTypesList}">
-			      <c:choose>
-	                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
-	                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
-	                      </c:when>
-	                      <c:otherwise>
-	                         <option value="${bt.id}">${bt.name}</option>
-	                      </c:otherwise>
-	              </c:choose>
-                </c:forEach>  
-				<option>Other</option>
-			  </select>
-			</div>
-		</div>	
 
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">ZipCode</label>
@@ -239,6 +221,37 @@ right: 15px;
 			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 			</div>
 		</div>
+		
+		<div class="col-md-6 clearfix mb">
+		<label class="col-md-3 noPad">Business type<span class="text-danger">&nbsp;*</span></label>
+			<div class="col-md-9 padding_right">
+			<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
+				<option value="">--Select Business type--</option>
+				<c:forEach var="bt" items="${bussinessTypesList}">
+			      <c:choose>
+	                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
+	                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
+	                      </c:when>
+	                      <c:otherwise>
+	                         <option value="${bt.id}">${bt.name}</option>
+	                      </c:otherwise>
+	              </c:choose>
+                </c:forEach>  
+                
+                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
+					<option value="Other" selected="selected">Other</option>
+				</c:if>
+			  </select>
+			</div>
+		</div>	
+		
+		
+		<div class="col-md-6 clearfix mb" id="otherBusinessTypeDiv" style="display: none;">
+			<label class="col-md-3 noPad">Other Business Type</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			</div>
+		</div>
 			
 	  <div class="col-md-12 comp-textarea clearfix mb mt">
 		  <label class="">About</label>
@@ -293,7 +306,22 @@ right: 15px;
  
 <script src="resources/js/formvalidator.js"></script>
 
-
+<script>
+function getBusinessTypeValue(){
+	var businessType = document.getElementById("businessType").value;
+	if(businessType && businessType == 'Other'){
+		 document.getElementById("otherBusinessTypeDiv").style.display="";
+		 $("#otherBusinessType").removeAttr("data-validation-optional");
+		 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+	}else{
+		    document.getElementById("otherBusinessTypeDiv").style.display="none";
+			$("#otherBusinessType").removeAttr("data-validation-optional");
+			 $("#otherBusinessType").attr("data-validation-optional","true");
+			 $("#otherBusinessType").removeAttr("data-validation");
+			 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+		}
+}
+</script>
 
 <script>
 function validateOrgShortCode(){

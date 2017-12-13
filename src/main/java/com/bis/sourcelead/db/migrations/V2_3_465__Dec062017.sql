@@ -5,6 +5,7 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','DBA','VARCHAR
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','BUSINESS_TYPE','BIGINT NULL');
 ALTER TABLE `sourcelead`.`ORG_LOCATIONS` ADD CONSTRAINT `FK_ORG_LOCATIONS_BUSINESS_TYPE`  FOREIGN KEY  (`BUSINESS_TYPE`)  REFERENCES  `sourcelead`.`LOOKUP_DATA` (`ID`);
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','OTHER_BUSINESS_TYPE','VARCHAR(100) NULL');
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','FEDERAL_EIN','VARCHAR(100) NULL');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','DEPOSIT_SCHEDULE ','VARCHAR(100) NULL');

@@ -135,6 +135,10 @@ public class OrgLocations implements Serializable{
 	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
 	private LookUpData businessType;
 	
+	
+	@Column(name = "OTHER_BUSINESS_TYPE")
+	private String otherBusinessType;
+	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -778,6 +782,14 @@ public class OrgLocations implements Serializable{
 
 	public void setFillingForm(String fillingForm) {
 		this.fillingForm = fillingForm;
+	}
+
+	public String getOtherBusinessType() {
+		return otherBusinessType;
+	}
+
+	public void setOtherBusinessType(String otherBusinessType) {
+		this.otherBusinessType = otherBusinessType;
 	}
 	
 }
