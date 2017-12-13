@@ -21,7 +21,7 @@ public interface CampaignService {
 
 	boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation)throws Exception;
 
-	boolean validateNickName(String nickName, OrgLocations orgLocation, Long senderId)throws Exception;
+	boolean validateNickName(String nickName, OrgLocations orgLocation, String senderId)throws Exception;
 
 	ResponseList<CreateSenderDTO> getSendersListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 

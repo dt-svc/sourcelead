@@ -565,6 +565,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	}
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getUserRoleById(Long id) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserByUserId By UserId start");
+		userRole = session
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles where userRole.id = :id  ")
+				.setLong("id", id).setCacheable(true).list();
+		logger.debug("getUserByUserId By UserId start");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -711,7 +729,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
-
+	
+	
 	@Override
 	@Transactional
 	public UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email, String userType) throws Exception
@@ -726,6 +745,21 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		if (userRole.size() > 0) {
 			return userRole.get(0);
 		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		userRole = session.createQuery("from UserRole userRole where userRole.verificationUUID = :uuid").setString("uuid", uuid).setCacheable(true).list();
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		}
+		else {
 			return null;
 		}
 	}

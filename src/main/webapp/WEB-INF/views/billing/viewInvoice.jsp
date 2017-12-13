@@ -40,9 +40,9 @@ $(document).ready(function(){
           <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
       </div>
       
-      <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
+      <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
       
-      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/payablesList'/>">Payable List</a> » Bill View</div>
+      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/payablesList'/>">Payable List</a> » Bill View</div>
       
     </section>
     <div class="content-area content-new clearfix">
@@ -660,7 +660,7 @@ function invoiceNotes(){
    	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
    	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';

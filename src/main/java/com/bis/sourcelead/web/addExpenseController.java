@@ -41,6 +41,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import aj.org.objectweb.asm.Type;
 
 @Controller
+@RequestMapping("/app")
 public class addExpenseController {
 	
 	@Value("${sourceleadUrl}")
@@ -79,7 +80,7 @@ public class addExpenseController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
-	@RequestMapping(value = "/acceptOrRejectReopenExpense",method= RequestMethod.GET)
+	@RequestMapping(value = "/ws/acceptOrRejectReopenExpense",method= RequestMethod.GET)
 	@ResponseBody  ModelAndView acceptOrRejectReopenExpense(
 			@RequestParam(value="type", required=false) String type,
 			@RequestParam(value="expenseId", required=false) String expenseId,
@@ -159,7 +160,7 @@ public class addExpenseController {
 		          sos.flush();
 		          sos.close();
 
-		} */
+		}*/ 
 	 
 	
 }

@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -139,6 +140,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
@@ -235,6 +239,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		try {
 			userService.addUser(user);
+			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+				sendActivationEmail(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -422,6 +428,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
@@ -512,6 +523,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
@@ -739,7 +751,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 StringBuilder loginURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1034,7 +1046,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -1099,15 +1111,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			
 			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			user.setUserType(Constants.PROFESSIONAL);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
+			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 			
 		}else{
 			user.setRegistrationType("Existed User");
@@ -1136,6 +1154,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}else{
 			userRole.setIsPrimary(0);
 		}
+		
+//		userRole.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+//		userRole.setUrlSentTime(new Date());
+//		userRole.setIsVerified(Constants.NO);
 		
 		userRole.setCreatedBy("sladmin");
 		userRole.setCreatedDate(new Date());
@@ -1213,12 +1235,61 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 		}
 		
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToProfessional(user);
 		
-		sendEmailToProfessional(user);
 		return result;
 	}
 	
 	
+	public void sendActivationEmail(User user) throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("registerName", professionalName);
+		 StringBuilder verifylink = new StringBuilder();
+		 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+	}
+
 	public void sendEmailToProfessional(User user) throws Exception {
 		
 		 
@@ -1244,11 +1315,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginUserName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		// }else{
+
+			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//		 }
 
 		 StringBuilder linkBuilder = new StringBuilder();
 				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
@@ -1316,15 +1389,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 					
 			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
 			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 		}else{
 			user.setRegistrationType("Existed User");
 			user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
@@ -1404,7 +1482,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
-		sendEmailToIndividualRecruiter(user);
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToIndividualRecruiter(user);
+		
 		return result;
 		
 	}
@@ -1460,11 +1542,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		 //}else{
+
 			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
+//		 }
 		 
 		  StringBuilder linkBuilder = new StringBuilder();
 			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
@@ -1897,6 +1981,55 @@ public class RegistrationServiceImpl implements RegistrationService{
 		masterCandidate.setUpdatedBy(user.getUserCode());
 		masterCandidate.setUpdatedDate(commonUtil.currentDate());
 		return masterCandidate;
+	}
+
+	@Override
+	public String sendOtpToUser(User user, String type) throws Exception
+	{
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String userName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 userName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 String token = RandomStringUtils.randomAlphanumeric(6);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("userName", userName);
+		 globalVarsMap.put("token", token);
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LOGIN_OTP_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+		 return token;
+				
 	}
 
 }

@@ -92,7 +92,7 @@ public class SubmissionsRateRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@RequestMapping(value = "/storeReject", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/storeReject", method = RequestMethod.POST)
 	public @ResponseBody String storeReject(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			@RequestParam(value = "rejectreason", required = false) String rejectreason,@RequestParam(value = "type", required = false) String type) throws Exception {
 		 
@@ -420,7 +420,7 @@ public class SubmissionsRateRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/proposeRate",  method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/proposeRate",  method = RequestMethod.POST)
 		public @ResponseBody  String proposeRate(@RequestParam(value="json", required=false) String json,
 				@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
@@ -517,7 +517,7 @@ public class SubmissionsRateRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/acceptRejectRate",  method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/acceptRejectRate",  method = RequestMethod.POST)
 		public @ResponseBody  String acceptRejectRate(@RequestParam(value="submissionId", required=false) Long submissionId,
 				@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -618,7 +618,7 @@ public class SubmissionsRateRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/storeApplicantRejectReason", method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/storeApplicantRejectReason", method = RequestMethod.POST)
 		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
 			 

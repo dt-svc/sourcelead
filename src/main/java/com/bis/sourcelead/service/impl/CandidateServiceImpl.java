@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateDocumentsService;
@@ -1684,6 +1685,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		canList.setData(candtoList);
 		return canList;
+	}
+	
+	@Override
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception
+	{
+		return candidateDao.getCandidateByShortURL(shortURL);
 	}
 
 }

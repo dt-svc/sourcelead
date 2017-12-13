@@ -17,7 +17,7 @@ public interface CampaignDao {
 
 	CreateSender createSender(CreateSender createSender)throws Exception;
 
-	boolean validateNickName(String nickName, OrgLocations orgLocation, Long senderId) throws Exception;
+	boolean validateNickName(String nickName, OrgLocations orgLocation, String senderId) throws Exception;
 
 	List<CreateSender> getSendersListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 

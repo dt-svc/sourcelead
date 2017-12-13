@@ -108,7 +108,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementAssignedToPagination").wrap(
