@@ -74,6 +74,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectDocumentPermissionService;
 import com.bis.sourcelead.service.ProjectDocumentsService;
@@ -200,6 +201,9 @@ public class ProjectsDashboardRestController {
 	
 	@Autowired
 	GenericDao<ProjectDocuments> genericDao;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -392,29 +396,32 @@ public class ProjectsDashboardRestController {
 			 @RequestParam(value="folderId", required=false) Long folderId,@RequestParam(value="documentId", required=false) Long documentId, HttpServletRequest request) throws Exception{ 
 		 ModelAndView model = new ModelAndView();
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 LinkedHashMap<Long,String> memberRolesList = new LinkedHashMap<>();
-		 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,null);
-		 if(projectMembersList != null && projectMembersList.size() > 0){ 
-				for(ProjectMembers pm : projectMembersList){
-					 StringBuilder membersListStringBuilder=new StringBuilder();
-					 if(pm.getProjectMemberCandidteId().getLastName() != null) {
-						 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
-					 }else {
-						 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
-					 }
-					 
-					 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
-						 UserRole userRole = userRoleService.getUserRoleWithoutAdminsByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
-						 if(userRole != null){
-							 memberRolesList.put(userRole.getRoles().getId(), userRole.getUserType());
-						 } 
-					 }else{
-						 pm.setUserRoleType("Candidate");
-					 }
-				}
+		 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		 if(projectClients != null) {
+			 LinkedHashMap<Long,String> memberRolesList = new LinkedHashMap<>();
+			 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientIdAndActiveStatusRecords(projectClients.getId());
+			 if(projectMembersList != null && projectMembersList.size() > 0){ 
+					for(ProjectMembers pm : projectMembersList){
+						 StringBuilder membersListStringBuilder=new StringBuilder();
+						 if(pm.getProjectMemberCandidteId().getLastName() != null) {
+							 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
+						 }else {
+							 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
+						 }
+						 
+						 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
+							 UserRole userRole = userRoleService.getUserRoleWithoutAdminsByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+							 if(userRole != null){
+								 memberRolesList.put(userRole.getRoles().getId(), userRole.getUserType());
+							 } 
+						 }else{
+							 pm.setUserRoleType("Candidate");
+						 }
+					}
+			 }
+			 model.addObject("memberRolesList",memberRolesList);
+			 model.addObject("projectMembersList",projectMembersList);
 		 }
-		 model.addObject("memberRolesList",memberRolesList);
-		 model.addObject("projectMembersList",projectMembersList);
 		 
 		 model.addObject("folderId",folderId);
 		 if(documentId != null) {
@@ -944,7 +951,7 @@ public class ProjectsDashboardRestController {
 			{
 			    UserRole userRole = userRoleService.getUserByUserId(userId);
 			    Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getId(),userRole.getRoles().getRoleName(),candidateId);
+				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getRoles().getId(),userRole.getRoles().getRoleName(),candidateId);
 				return projectDocumentFolderList;
 			}
 		   
@@ -961,7 +968,7 @@ public class ProjectsDashboardRestController {
 			   
 			   UserRole userRoel = userRoleService.getUserByUserId(userId);
 			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
+				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getRoles().getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
 				return projectDocumentsList;
 			}
 		   

@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -73,6 +74,8 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectDocumentFolderService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -180,7 +183,8 @@ public class ProjectsServiceImpl implements ProjectsService{
      @Autowired
      ProjectBudgetService projectBudgetService;
      
-	 
+	 @Autowired
+	 ProjectDocumentFolderService projectDocumentFolderService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -438,18 +442,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowBidding(null);
 		}
 		
+		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
 		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
-			List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
-			for(FileInfo fileInfo : projectDocumentsList){
-				ProjectDocuments documents = new ProjectDocuments();
-				documents.setFileName(fileInfo.getFileName());
-				documents.setFileType(fileInfo.getContentType());
-				documents.setFileUrl(fileInfo.getFileURL());
-				documents.setStatus(Constants.CANDIDATE_ACTIVE);
-				documents.setProjects(projects);
-				projDocDBList.add(documents);
+			
+			Set<ProjectDocumentFolder> projectDocumentFolder = storeDocumentFolder(projects,user);
+			projects.setProjectDocumentFolder(projectDocumentFolder);
+			
+			//save documents
+			for(ProjectDocumentFolder pdf : projectDocumentFolder) {
+				List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
+				for(FileInfo fileInfo : projectDocumentsList){
+					ProjectDocuments documents = new ProjectDocuments();
+					documents.setFileName(fileInfo.getFileName());
+					documents.setFileType(fileInfo.getContentType());
+					documents.setFileUrl(fileInfo.getFileURL());
+					documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					documents.setProjects(projects);
+					documents.setProjectFolderId(pdf);
+					documents.setCreatedBy(user);
+					documents.setCreatedByName(user.getFullName());
+					documents.setCreatedDate(commonUtil.currentDate());
+					projDocDBList.add(documents);
+				}
 			}
+			
 			projects.setProjectDocuments(projDocDBList);
 	        for(FileInfo fileInfo : projectsDTO.getUploadedFileInfo()){
 				FileUploadUtil.moveFile(projectsDTO.getStaticPath(), fileInfo, "projects");
@@ -504,6 +521,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	private Set<ProjectDocumentFolder> storeDocumentFolder(Projects projects, User user) throws Exception {
+		HashSet<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
+		ProjectDocumentFolder pdf  = null;
+		if(projects.getId() != null) {
+			pdf = projectDocumentFolderService.getProjectDocumentFolderByProjectId(projects.getId());
+		}else {
+			pdf = new ProjectDocumentFolder();
+		}
+		pdf.setProjectId(projects);
+		pdf.setFoderName("Default Folder");
+		pdf.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+		pdf.setCreatedBy(user);
+		pdf.setCreatedDate(commonUtil.currentDate());
+		projectDocumentFolderList.add(pdf);
+		return projectDocumentFolderList;
+	}
+
 	private Set<ProjectBudget> storeProjectBudget(ProjectsDTO projectsDTO ,User user,Projects projects) throws  Exception {
 		ProjectBudget projectBudget = null;
 		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 

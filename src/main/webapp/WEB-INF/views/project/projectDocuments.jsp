@@ -60,7 +60,7 @@
 								result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
 								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
 								result = result + '	 						<li><a href="#"  onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
-								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#folderPermission" onclick="permissionPopUp('+report.id+');"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
+								result = result + '	 						<li><a href="#" onclick="permissionPopUp('+report.id+');"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
 								result = result + '	 					</ul>                                                                  ';
 								result = result + '	 				</span>   ';
 							}
@@ -234,7 +234,7 @@
 						result = result + '	 												<i class="fa fa-trash"></i> <br>       Delete ';
 						result = result + '	 											</a> </li>          ';
 						
-						result = result + '	 										<li>  <a href="" data-toggle="modal" data-target="#folderPermission" onclick="permissionDocumentPopUp('+report.projectFolderId.id+','+report.id+')"> ';
+						result = result + '	 										<li>  <a href="#" onclick="permissionDocumentPopUp('+report.projectFolderId.id+','+report.id+')"> ';
 						result = result + '	 												<i class="fa fa-key"></i> <br> Permission  ';
 						result = result + '	 										</a>  </li>    ';
 						result = result + '	 									</ul>        ';
@@ -401,6 +401,7 @@ $('body').on('blur', '#reNameFolder_form', function() {
 });
 </script>
 
+<div class="advancedsearch-mask"></div>
 
   <div class="modal fade" id="reNameCreateFolder" role="dialog">
     <div class="modal-dialog fm-modaldialog">
@@ -411,7 +412,7 @@ $('body').on('blur', '#reNameFolder_form', function() {
   
  <!-- Create Folder Popup Modal-->
  
-  <div class="modal fade" id="folderPermission" role="dialog">
+  <div class="modal folderPermission" id="folderPermission" role="dialog">
     <div class="modal-dialog modal-lg">
       <div id="foderPermissionDivId">
          <%-- <jsp:include page="projectPermissions.jsp"></jsp:include> --%>
@@ -422,6 +423,8 @@ $('body').on('blur', '#reNameFolder_form', function() {
 <!-- Create Folder Popup ends -->
 <script>
 function permissionDocumentPopUp(folderId,documentId){
+	$("#folderPermission").fadeIn();
+	$(".advancedsearch-mask").fadeIn();
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
@@ -436,6 +439,8 @@ function permissionDocumentPopUp(folderId,documentId){
 	});	
 }
 function permissionPopUp(folderId){
+	$("#folderPermission").fadeIn();
+	$(".advancedsearch-mask").fadeIn();
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var documentId = "";
@@ -549,7 +554,8 @@ function permissionPopUp(folderId){
 	  		        contentType:false, 
 					url : sourceleadUrl+"/saveProjectNamePermissions?"+tokenParamName+"="+tokenValue+"&folderId="+folderId+"&documentId="+documentId,
 					success : function(result) {
-							$(".modal-backdrop, .modal").fadeOut();
+	                        $("#folderPermission").fadeOut();
+							$(".advancedsearch-mask").fadeOut();
 							projectDocuments(projectId);
 					},
 				}); 
@@ -836,9 +842,11 @@ $(".close, .cancel").click(function(){
 	$("#projectDocumentType_form").validate().resetForm();
 	$("#projectFolder_form").validate().resetForm();
 	
-	
-	
 });
+function permissionClose(){
+	$("#folderPermission").fadeOut();
+	$(".advancedsearch-mask").fadeOut();
+}
 </script>
  
 <script>

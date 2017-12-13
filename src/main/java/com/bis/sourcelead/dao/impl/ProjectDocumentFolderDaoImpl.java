@@ -114,27 +114,7 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 		}
 	
 	
-	/*public List<ProjectDocumentPermission> getProjectDocumentPermissionFolderByProjectId(Long projectId,Long roleId,Long candidateId) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectDocumentPermission pdp left join fetch pdp.projectDocumentId pdf where  pdf.projectId.id =:projectId and pdf.status = '1' and  (pdp.userRoleId.id = :roleId OR pdp.projectMemberId.id IS NOT NULL and pdp.projectMemberId.id IN(select pm.id from ProjectMembers pm where pm.projects.id = :projectId and pm.projectMemberCandidteId.id = :candidateId))"; 
-		List<ProjectDocumentPermission> projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
-		String query1 = "select docs.projectFolderId.id, count(id) from ProjectDocuments docs where docs.status = 1 and docs.projects.id = :projectId group by docs.projectFolderId.id";
-		List<Object[]> data = session.createQuery(query1).setLong("projectId", projectId).list();
-		if(data != null && !data.isEmpty()) {
-			Map<Long, Integer> counts = new HashMap<>();
-			for(Object[] o : data) {
-				if(o != null && o[0] != null)
-					counts.put(Long.parseLong(o[0].toString()), Integer.parseInt(o[1].toString()));
-			}
-			if(!counts.isEmpty()) {
-				for(ProjectDocumentPermission pdf : projectDocumentFolderList) {
-					pdf.setCount(counts.containsKey(pdf.getId()) ? counts.get(pdf.getId()) : 0);
-				}
-			}
-		}
-		
-		return projectDocumentFolderList;
-	}*/
+	 
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -178,5 +158,19 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 			   }
 		   }
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectDocumentFolder getProjectDocumentFolderByProjectId(Long projectId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentFolder pdf  where pdf.projectId.id =:folderId";
+		List<ProjectDocumentFolder> projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		ProjectDocumentFolder projectDocumentFolder = null;
+		if(projectDocumentFolderList != null){
+			projectDocumentFolder = projectDocumentFolderList.iterator().next();
+		}
+		return projectDocumentFolder;
 	}
 }

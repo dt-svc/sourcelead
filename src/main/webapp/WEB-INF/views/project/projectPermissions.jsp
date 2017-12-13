@@ -17,8 +17,15 @@
    <form role="form"  id="projectFolderPermission_form" name="projectFolderPermission_form">
 	<div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
-      <h4 class="modal-title">Permissions</h4>
+      <button type="button" class="close" onclick="permissionClose();">&times;</button>
+      <c:if test="${! empty folderId && empty documentId}">
+      <h4 class="modal-title">Folder Permissions</h4>
+      </c:if>
+      
+       <c:if test="${! empty documentId}">
+      <h4 class="modal-title">Document Permissions</h4>
+      </c:if>
+      
     </div>
     <div class="modal-body">
     <div class="row">
@@ -116,7 +123,7 @@
     </div>
     <div class="modal-footer">
      <button type="button" class="btn btn-primary mr10" onclick="saveFolderNamePermission(${folderId},${documentId});">Apply</button>
-      <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-default" onclick="permissionClose();">Cancel</button>
     </div>
   </div>
   </form>

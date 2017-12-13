@@ -23,4 +23,6 @@ public interface ProjectDocumentPermissionDao {
 	void deleteAllProjectDocumentPermissionByFoderIdAndRoleIdAndAccess(Long foderId,List<Long> roleIds,String access) throws Exception;
 	
 	void deleteAllProjectDocumentPermissionByFoderIdAndMemberAndAccess(Long foderId,List<Long> memberId,String access) throws Exception;
+	
+	ProjectDocumentPermission getDocumentPermissionByDocumentId(Long documentId)throws Exception;
 }

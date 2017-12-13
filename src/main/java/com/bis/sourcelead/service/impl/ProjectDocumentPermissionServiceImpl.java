@@ -16,6 +16,7 @@ import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocumentPermission;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ProjectDocumentPermissionService;
@@ -46,7 +47,7 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 		}else {
 			documentId = null;
 		}
-		 
+		
 		//readRoleId functionality
 		List<Long> dbReadRoleIds = projectDocumentPermissionDao.projectDocumentPermissionRoleIdListByFolderIdAndAccessStatus(Long.valueOf(projectsDocumentFolderDTO.getFolderId()),documentId, Constants.DOCUMENT_READ_ACCESS);
 		List<Long> freshReadRoleIds = new ArrayList<>();
@@ -55,8 +56,16 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 			for (String rr:readRoleId){ 
 				freshReadRoleIds.add(Long.valueOf(rr));
 				if(!dbReadRoleIds.contains(Long.valueOf(rr))) {
-					ProjectDocumentPermission pdp = new ProjectDocumentPermission();
-					UserRole role = new UserRole();
+					ProjectDocumentPermission pdp = null;
+					if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
+						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+						 if(pdp == null) {
+							 pdp = new ProjectDocumentPermission();
+						 }
+					}else {
+						 pdp = new ProjectDocumentPermission();
+					}
+					Roles role = new Roles();
 					role.setId(Long.valueOf(rr));
 					pdp.setUserRoleId(role);
 					pdp.setAccess("0");
@@ -89,8 +98,16 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 					for (String wr:writeRoleId){
 						freshWriteRoleIds.add(Long.valueOf(wr));
 						if(!dbWriteRoleIds.contains(Long.valueOf(wr))) {
-							ProjectDocumentPermission pdp = new ProjectDocumentPermission();
-							UserRole role = new UserRole();
+							ProjectDocumentPermission pdp = null;
+							if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
+								 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+								 if(pdp == null) {
+									 pdp = new ProjectDocumentPermission();
+								 }
+							}else {
+								 pdp = new ProjectDocumentPermission();
+							}
+							Roles role = new Roles();
 							role.setId(Long.valueOf(wr));
 							pdp.setUserRoleId(role);
 							pdp.setAccess("1");
@@ -123,7 +140,15 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 			for (String rom:otherMemberIds){
 				freshReadMemberIds.add(Long.valueOf(rom));
 				if(!dbReadMemberIds.contains(Long.valueOf(rom))) {
-					ProjectDocumentPermission pdp = new ProjectDocumentPermission();
+					ProjectDocumentPermission pdp = null;
+					if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
+						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+						 if(pdp == null) {
+							 pdp = new ProjectDocumentPermission();
+						 }
+					}else {
+						 pdp = new ProjectDocumentPermission();
+					}
 					ProjectMembers pm = new ProjectMembers();
 					pm.setId(Long.valueOf(rom));
 					pdp.setProjectMemberId(pm);
@@ -156,7 +181,15 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 				for (String wm:writeMemberIds){
 					freshWriteMemberIds.add(Long.valueOf(wm));
 					if(!dbWriteMemberIds.contains(Long.valueOf(wm))) {
-						ProjectDocumentPermission pdp = new ProjectDocumentPermission();
+						ProjectDocumentPermission pdp = null;
+						if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
+							 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+							 if(pdp == null) {
+								 pdp = new ProjectDocumentPermission();
+							 }
+						}else {
+							 pdp = new ProjectDocumentPermission();
+						}
 						ProjectMembers pm = new ProjectMembers();
 						pm.setId(Long.valueOf(wm));
 						pdp.setProjectMemberId(pm);

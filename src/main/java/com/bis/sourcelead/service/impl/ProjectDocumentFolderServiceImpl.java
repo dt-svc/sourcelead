@@ -70,6 +70,11 @@ public class ProjectDocumentFolderServiceImpl implements ProjectDocumentFolderSe
 	public void deleteProjectFolderByFolderId(Long folderId) throws Exception {
 		projectDocumentFloderDao.deleteProjectFolderByFolderId(folderId);
 	}
+
+	@Override
+	public ProjectDocumentFolder getProjectDocumentFolderByProjectId(Long projectId) throws Exception {
+		return projectDocumentFloderDao.getProjectDocumentFolderByProjectId(projectId);
+	}
 	
 	 
 	

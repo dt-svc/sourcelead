@@ -49,7 +49,7 @@ private static final long serialVersionUID = 1L;
 	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ROLE_ID", nullable = false)
-	private UserRole userRoleId;
+	private Roles userRoleId;
 	
     @Column(name = "ACCESS")
    	private String access;
@@ -86,7 +86,7 @@ private static final long serialVersionUID = 1L;
 		return projectMemberId;
 	}
 
-	public UserRole getUserRoleId() {
+	public Roles getUserRoleId() {
 		return userRoleId;
 	}
 
@@ -126,7 +126,7 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberId = projectMemberId;
 	}
 
-	public void setUserRoleId(UserRole userRoleId) {
+	public void setUserRoleId(Roles userRoleId) {
 		this.userRoleId = userRoleId;
 	}
 

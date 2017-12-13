@@ -7508,7 +7508,7 @@ width: 220px;
 .assignTableScroll.assignTableScroll-mnh {
 min-height: 150px;
 }
-.modal.addipPopup-modal {
+.modal.addipPopup-modal, .modal.folderPermission {
     display: none;
 }
 /* media 320px */

@@ -13,6 +13,8 @@ public interface ProjectDocumentFloderDao {
 	
 	ProjectDocumentFolder getProjectDocumentFolderByDocumentId(Long folderId)throws Exception;
 	
+	ProjectDocumentFolder getProjectDocumentFolderByProjectId(Long projectId)throws Exception;
+	
 	ProjectDocumentFolder validateProjectDocumentFolderByFolderIdAndFolderName(Long folder,String folderName) throws Exception;
 
 	void deleteProjectFolderByFolderId(Long folderId)throws Exception;
