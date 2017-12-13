@@ -429,9 +429,11 @@ public class DashboardRestController {
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 				}
 			}
 			

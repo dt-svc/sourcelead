@@ -174,13 +174,13 @@ function closeCertificatePopup(){
 		
 		result = result + '	               <div class="clearfix mb10 dates">';
 		
-		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result + '	                 <p>Start Date</p>';
+		result = result + '	                   <div class="col-md-6 clearDate" id="startYearDiv" onClick="clearStartDate();">';
+		result = result + '	                 <label>Start Date</label>';
 		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
 		result = result + '	                 </div>';
 
-		result = result + '	                  <div class="col-md-6 endDate" id="endDateDiv">';
-		result = result + '	                 <p>End Date</p>';
+		result = result + '	                  <div class="col-md-6 endDate clearDate" id="endDateDiv" onClick="clearEndDate();">';
+		result = result + '	                 <label>End Date</label>';
 		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
 		result = result + '	                 </div> ';
 
@@ -764,5 +764,12 @@ function validYearEdit(){
 		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
 	}
 }
-
+</script>
+<script>
+function clearStartDate(){
+	$("#startYear").val("");
+	};
+function clearEndDate(){
+	$("#endYear").val("");
+	};
 </script>

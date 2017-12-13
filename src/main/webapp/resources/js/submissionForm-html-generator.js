@@ -9,8 +9,6 @@
 function generateForm(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
@@ -371,6 +369,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             		 style = 'style="width:130px !important; padding-right:5px;"'; 
             		 
             		 ratePer = '&nbsp;<select style="width:115px !important; padding-right:5px;" onblur="validateCurrentCTCRatePer();"  id="currentCTCRatePer" name="currentCTCRatePer" field-name="Rate Per">'+
+            		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
             		 '<option value="Semi-Monthly">Semi-Monthly</option>'+
@@ -398,6 +397,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             		 onblur = 'onblur="validateExpectedCTC();"';
             		 
             		 ratePer = '&nbsp;<select  style="width:115px !important; padding-right:5px;" onblur="validateExpectedCTCRatePer();"  id="expectedCTCRatePer" name="expectedCTCRatePer" field-name="Rate Per">'+
+            		 '<option value="">Rate Per</option>'+
             		 '<option value="Yearly">Yearly</option>'+
             		 '<option value="Monthly">Monthly</option>'+
             		 '<option value="Semi-Monthly">Semi-Monthly</option>'+
@@ -529,7 +529,14 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             	 defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
-                 onSelect : function(selected) {
+                 showOn: 'focus',
+                 showButtonPanel: true,
+                 closeText: 'Clear',
+                 onClose : function(selected) {
+                	  var event = arguments.callee.caller.caller.arguments[0];
+                     if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                         $(this).val('');
+                     }
                 	 $('p.jquery_form_error_message').remove();
                  }
                  

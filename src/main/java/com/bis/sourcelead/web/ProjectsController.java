@@ -272,7 +272,7 @@ public class ProjectsController {
 					if(projects.getEndDate() != null){
 						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 					}
-					List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations);
+					List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"");
 					model.addObject("projectAssignMemberList", projectAssignMemberList);
 					model.addObject("projectStatus", projects.getProjectStatus());
 					
@@ -313,6 +313,12 @@ public class ProjectsController {
 					model.addObject("projectBudgetCount", projectBudgetList.size());
 				}else {
 					model.addObject("projectBudgetCount", 0);
+				}
+				
+				Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+				Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+				if(rolesList != null) {
+					model.addObject("rolesList", rolesList);
 				}
 				
 				model.addObject("projectUUID", projectUUID);

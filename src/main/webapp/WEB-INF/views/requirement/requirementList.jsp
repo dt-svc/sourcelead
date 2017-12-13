@@ -304,14 +304,14 @@ function statusvalidating(id){
 							</div>
 						</div>
 					</div>
-					<div class="clearfix">
-						<div class="pull-right">
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Clear" id="clear_search"
 								onclick="clearSearch();" class="btn btn-sm btn-primary" />
 						</div>
-					</div>
 					</div>
 				</div>
 			</form:form>
@@ -468,16 +468,23 @@ function changeStatusAuthorisation(requirementId){
 <script type="text/javascript">
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	$("tr").find("td.sorting_1").removeClass("sorting_1");
+	if(status == "FILLEDCLOSED" || status == "OPEN"){
+		$("#job_"+requirementId).addClass("row-success");
+	}else if(status == "CANCEL"){
+		$("#job_"+requirementId).addClass("row-danger");
+	}else{
+		$("#job_"+requirementId).addClass("row-warning");
+	}
+
 	 var userId ='${SourceLeadWeb_userId}';
-	 
-     if(requirementStatus == "DRAFT"){
+     if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  location.replace(sourceleadUrl+"/requirementList");
+	           	  //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }else{
@@ -486,7 +493,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 location.replace(sourceleadUrl+"/requirementList");
+	           	 //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }
@@ -500,8 +507,16 @@ function changeStatus(requirementId, requirementStatus){
 		 var table = $('#requirementPagination').DataTable();
 		 $('#Row_'+requirementId).remove();
 	 } */
-     
+	 setTM();
 	}
+	function setTM (){
+		  setTimeout(function() { 
+		  $("tr").removeClass("row-info");
+		  $("tr").removeClass("row-success");
+		  $("tr").removeClass("row-warning");
+		  $("tr").removeClass("row-danger");
+		}, 2000);
+	};
 </script>
 <script>
 $('#mypop').click(function(){
@@ -619,10 +634,26 @@ function getActions(){
 		};
 	</script>
 
+<script>
+  $(function() { 
+	       //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		   //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+		   
+		 //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+		 
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
+  });
+  </script>
+  
 
 <script type="text/javascript">
-			//Adding Customized Any Of Keyword to the list 
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
@@ -695,13 +726,13 @@ function getActions(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script>
 
 <script>
@@ -791,11 +822,9 @@ function clearSearch(){
 	$('#updatedOn').val('').trigger('chosen:updated');
 	$('#client').val('').trigger('chosen:updated');
 	$('#country').val('').trigger('chosen:updated');
-	$('#state').empty();
-	$('#state').append('<option value="">---select city---</option>');
+	$('#visaType').val('').trigger('chosen:updated');
+	$('#requirementSkills').val('').trigger('chosen:updated');
 	$('#state').val('').trigger('chosen:updated');
-	$('#city').empty();
-	$('#city').append('<option value="">---select city---</option>');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');

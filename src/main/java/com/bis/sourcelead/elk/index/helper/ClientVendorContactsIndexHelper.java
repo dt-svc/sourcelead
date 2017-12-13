@@ -75,6 +75,7 @@ public class ClientVendorContactsIndexHelper {
             clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
 			clientVendorContactsIndex.setVendorOrgName(orgSpoc.getVendorLocationId().getOrgLocationName());
 			clientVendorContactsIndex.setClientOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
+			clientVendorContactsIndex.setOrgSpocUUUID(orgSpoc.getUUID());
 		
 		}
 		return clientVendorContactsIndex;

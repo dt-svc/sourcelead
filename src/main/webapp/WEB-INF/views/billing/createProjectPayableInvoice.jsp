@@ -78,11 +78,14 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="errDuedate">
-                <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
-              </div>
-            </div>
+                         <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+                            <div class="col-md-9" id="errDuedate">
+                              <div class="input-group errorInptgroup">
+                                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+                                 <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                              </div>
+                           </div>
+                     </div>
               
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
@@ -1643,5 +1646,10 @@ function maskme(){
 function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
+</script>
+<script>
+function clearDate(){
+	$("#dueDate").val("");
+	};	
 </script>
  <jsp:include page="../masterFooter.jsp" />	

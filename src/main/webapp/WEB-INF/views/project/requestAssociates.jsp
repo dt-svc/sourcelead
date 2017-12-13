@@ -482,7 +482,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 	 
 	for(var i=0; i<resourceRequestList.length; i++){
 		 var opt = resourceRequestList[i];
-		    if(opt.resourceStatus == null || opt.resourceStatus == 'Rejected'){
+		    if(opt.resourceStatus == 'Draft' || opt.resourceStatus == 'Rejected'){
 			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
 				var tbl = document.getElementById("addRequestTbl");
 				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());

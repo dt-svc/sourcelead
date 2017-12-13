@@ -162,7 +162,48 @@ function jpagination(url,sourceleadUrl){
            { "data": "requirementSubmissionStatus" },
            { "data": "requirementUUID" }
        ],
-	       "columnDefs": [ {
+	       "columnDefs": [ 
+	    	   
+	    	   {
+		         "targets": colIndex++,
+		         "sortable": false,
+		         "data": "requirementUUID",
+		         "render": function ( data, type, opt, meta ) {
+		         		   var result = "";
+		         		  result = result +" <td><div class='widthIcon'>";
+		      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+		      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
+		      	        '</sec:authorize>';
+		      	        
+		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+		      						   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
+		      						   var userId = '${SourceLeadWeb_user.id}';
+		      						   var contains = false;
+		      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
+		      							   for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
+		      								  if(userId == opt.requirementReleasedUserIds[k]){
+		      									  var contains = true;
+		      								  }
+		      							   }
+		      						   }
+		      						   if((opt.isRequirementReleased != null && opt.isRequirementReleased != '' && opt.isRequirementReleased != 'undefined'  && opt.isRequirementReleased == 'Y') 
+		      								   && (contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN')){
+		      				    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+		      			
+		      						   	 }else{	
+		      								result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
+		      						   	 }
+		      			       }
+		      				   else{
+		      			          result = result +"<div>--</div>";
+		      				   } 
+		                   '</sec:authorize>';    
+		      		       result = result +"</div></td>";
+			              return result;
+		          }
+		 },{
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
 		  	"sortable": false,
@@ -224,8 +265,16 @@ function jpagination(url,sourceleadUrl){
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-           	      	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
-           	       }else{
+           			
+           			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+           	         '</sec:authorize>';
+           	         
+	           	      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	     	            result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
+	     	         '</sec:authorize>';
+           	         
+           		   }else{
            	      	 result = result +"<td><div>-----</div></td>";
            	       }
 		                return result;
@@ -517,6 +566,9 @@ function jpagination(url,sourceleadUrl){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"createdRow": function ( row, data, index ) {
+	    		row.setAttribute('id',"job_"+data.id);
+    	    },
 	    	"initComplete": function( settings, json ) {
 	    		 $('#dataTableSearch').removeAttr('disabled');
 	    	  },

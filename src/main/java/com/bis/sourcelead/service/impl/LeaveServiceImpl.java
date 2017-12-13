@@ -204,10 +204,16 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveType(leave.getLeaveType().getName());
 				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 				leaveDto.setStatus(leave.getStatus());
-				leaveDto.setNoOfDays(leave.getNumberOfDays());
 				int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				leaveDto.setFromHalfDay(leave.getFromHalfDay());
+				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+					leaveDto.setNoOfDays("1/2");
+				}else{
+					leaveDto.setNoOfDays(leave.getNumberOfDays());
+				}
+				
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}

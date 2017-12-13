@@ -249,11 +249,10 @@ function applicantQuickViewProfile(submissionId,candidateId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					success : function(json) {
+						if (json != null && json != 'undefined' && json != "" && json != '[]') {
 								$("#reqQvemployeeSubmission").empty();
 								var result = "";
-								var json = JSON.parse(data);
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
 
