@@ -3564,7 +3564,7 @@ public TimesheetEntryDetailsDTO getProjectMemberAndTimesheetFrequenciesList(Time
 
 		}  
 		
-		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
+		@RequestMapping(value = "/ws/notifyReopenTimeSheet", method = RequestMethod.POST)
 		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 				@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 				@RequestParam(value="reason", required=false) String reason,
