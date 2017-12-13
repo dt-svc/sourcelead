@@ -1053,7 +1053,10 @@ public class ProjectsDashboardRestController {
 			public @ResponseBody String projectDocumentMailSending(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
 			   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			   ProjectDocuments pd = projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO,user);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   if(StringUtils.isNotEmpty(projectsDocumentsDTO.getSendTo()) && user != null){
+				   projectDocumentsService.sendProjectDocumentEmail(projectsDocumentsDTO, user, loginOrgLocation);
+			   }
 			   return "success";
            }
 		   
@@ -1142,6 +1145,5 @@ public class ProjectsDashboardRestController {
 		    		   
 		    	   }
 				return flag;
-			   }
-		    
+			   } 
 }

@@ -150,6 +150,7 @@
 				result = result + '	 								<div class="col-md-95">                                                                           ';
 				result = result + '	 								<span class="pull-left"><i class="fa fa-folder-o tblminwidth-30 mr10"></i>'+folderName+' (<span id="allFolderCount"></span>)</span>                 ';
 				result = result + '	 								<ul class="pull-right list-unstyled list-inline extrafields" style="display:none" id="checkBoxCheckedId">                                     ';
+				result = result + '	 										<li><a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail" onclick="mailAllDocuments();"><i class="fa fa-envelope"></i></a></li>                  ';
 				result = result + '	 										<li><a href="javascript:void(0)" onclick="getAllDocumentDownload();"><i class="fa fa-download"></i></a></li>                  ';
 				result = result + '	 										<li><a href="javascript:void(0)" onclick="deleteAllDcouments();"><i class="fa fa-trash"></i></a></li>                     ';
 				result = result + '	 									</ul>                                                                                         ';
@@ -327,16 +328,13 @@
 	
 	function deleteEachDcouments(documentId){
 		var projectId = $("#projectId").val();
-		 if(documentId != null && documentId != '' &&  documentId != 'undefined'){
-			 $.ajax({
+ 			 $.ajax({
 					type : "POST",
 	 				url : sourceleadUrl+"/eachDeleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
 					success : function(data) {
 						projectDocuments(projectId);
 					}
 			 });
-		 } 
-		 
 	}
 	
 	
@@ -910,8 +908,9 @@ function uploadProjectDocument(){
  
  <script>
  function sendMailPopUp(documentId){
+	 var documentId = "'"+documentId+"'";
 	   var result = "";
-	     result = result  +'<form role="form"  id="sendEmail_form" name="sendEmail_form" method="post" >';
+	    result = result  +'<form role="form"  id="sendEmail_form" name="sendEmail_form" method="post" >';
 		result = result  +'	 <div class="modal-content">';
 		result = result  +'     <div class="modal-header">';
 		result = result  +'       <button type="button" class="close" data-dismiss="modal">&times;</button>';
@@ -945,8 +944,6 @@ function uploadProjectDocument(){
 		result = result  +'  </form>';
 		$("#sendEmailPopupDivId").empty();
 		$("#sendEmailPopupDivId").append(result);
-		
-		
  }
  </script>
  <script type="text/javascript">
@@ -956,6 +953,7 @@ function uploadProjectDocument(){
 				var sourceleadUrl = '${sourceleadUrl}';
 				//It will escape all the special characters
 		        var formData =  getFormData('sendEmail_form'); 
+				
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -975,6 +973,18 @@ function uploadProjectDocument(){
 		$("#sendEmail_form").validateOnBlur(false, validationSettings);
 	});
 		
+		function mailAllDocuments(){
+			var projectId = $("#projectId").val();
+			var documentId = [];
+			 $("input[name='documentIds[]']:checked").each( function (i) {
+				 documentId[i] = $(this).val();
+			});
+			 if(documentId != null && documentId != '' &&  documentId != 'undefined'){
+				 sendMailPopUp(documentId);
+			 }else{
+				 alert("please check the checkBox");
+			 }
+		}
 </script>
 
 <!-- Email Folder Popup ends -->

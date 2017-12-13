@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.model.ProjectDocumentBO;
@@ -35,4 +36,6 @@ public interface ProjectDocumentsService {
 	
 	Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId,String folderName) throws Exception;
 	
+	ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user, OrgLocations loginOrgLocation)throws Exception;
+
 }
