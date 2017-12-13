@@ -1403,7 +1403,7 @@ function preparedContractListWTS(json){
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' report.parentContractId)){
+		         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
 		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 		         }else{
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
