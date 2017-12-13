@@ -97,6 +97,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class CandidateListRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);
 	
@@ -1023,7 +1024,7 @@ public class CandidateListRestController {
 	 * 
 	 * @throws NullPointerException
 	 */
-	/*@RequestMapping(value = "/displayCandidateImage/{candidateId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/displayCandidateImage/{candidateId}", method = RequestMethod.GET)
 	public void displayUserImage(@PathVariable Long candidateId, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) {
 
@@ -1032,14 +1033,14 @@ public class CandidateListRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			candidate = candidateService.getCandidateByCandidateId(candidateId);
-			if (candidate != null && candidate.getDocFile() != null) {
+			/*if (candidate != null && candidate.getDocFile() != null) {
 				candidate.setFileContentType("image/jpeg");
 				InputStream in = new ByteArrayInputStream(candidate.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
 				ImageIO.write(bi, "jpg", out);
 				out.close();
-			}
+			}*/
 			} catch (IOException e) {
 					e.printStackTrace();
 				} 
@@ -1048,7 +1049,7 @@ public class CandidateListRestController {
 					e1.printStackTrace();
 				}
 		
-     }*/
+     }
 			 
 	
 	  /**

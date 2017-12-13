@@ -337,4 +337,17 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			return orgLocation;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = ("from UserRole userRole left join fetch userRole.orgLocations loc where userRole.user.id = :userId and loc.loginSecurity = 'Y'");
+		List<UserRole> userRole = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		if (userRole != null && userRole.size() > 0)
+			return true;
+		else
+			return false;
+	}
+
 }

@@ -12,7 +12,7 @@
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
 	 	$("#recommendationsLoading").removeAttr('style');
-		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -77,9 +77,9 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    result = result +'<div class="rec_head">';
 	    if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score <i class="fa fa-info-circle" title="Customise Score based on your requierement"></i></a>            ';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
 		    result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
-		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare <i class="fa fa-info-circle" title="Compare Recommended Resumes,Minimum 2 candidates should select to compare"></i></a>            ';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
 		    result = result +'		        </div>';
 	    }
 	    result = result +'                   <div id="customizeScoreDiv"></div>';

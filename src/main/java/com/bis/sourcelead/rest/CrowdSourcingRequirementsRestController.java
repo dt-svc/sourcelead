@@ -101,6 +101,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
 	
 	@Value("${sourceleadUrl}")
@@ -166,13 +167,13 @@ public class CrowdSourcingRequirementsRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/ws/getUserById/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserById/{id}", method = RequestMethod.GET)
 	public String getAllOrgs(@PathVariable Long id) throws Exception {
 		
 		
 		return commonUtil.toJSON(userService.getUserById(id));
 	}
-	@RequestMapping(value = "/ws/getAllUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllUsers", method = RequestMethod.GET)
 	public @ResponseBody String getAllUsers() throws Exception {
 		//userService.getUsers()
 		//getAllOrgLocations
@@ -2376,7 +2377,7 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 
 		 
-		 /*@RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
+		 @RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
 			public void displayContactUserImage(@PathVariable Long contactUserId, HttpServletRequest request, HttpServletResponse response,
 					HttpSession session) {
 
@@ -2384,14 +2385,14 @@ public class CrowdSourcingRequirementsRestController {
 				try {
 					referContacts = referContactsService.getReferContactsById(contactUserId);
 
-					if (referContacts != null && referContacts.getDocFile() != null) {
+					/*if (referContacts != null && referContacts.getDocFile() != null) {
 						InputStream in = new ByteArrayInputStream(referContacts.getDocFile());
 						BufferedImage bi = ImageIO.read(in);
 						OutputStream out = response.getOutputStream();
 						ImageIO.write(bi, "jpg", out);
 						out.close();
 					}
-
+*/
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -2400,7 +2401,7 @@ public class CrowdSourcingRequirementsRestController {
 					e1.printStackTrace();
 				}
 
-			}*/
+			}
 		 
 		 
 		 

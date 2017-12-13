@@ -18,7 +18,7 @@ $(document).ready(function(){
 </style>
 
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
 <!-- Content Area -->
@@ -27,7 +27,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -64,14 +64,16 @@ $(document).ready(function(){
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 clearfix">
 							
-							<div class="input-group positionRelative ratetype col-md-10 pull-left clearUpload" id="uploadFileGroup" title="Upload Documents">
+							<div class="input-group positionRelative ratetype col-md-10 pull-left" id="uploadFileGroup" title="Upload Documents">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" id="uploadBtn" style="display: none;"  class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
+		                         
 	                        </div>
 	                        <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
 	                        <span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
+	                        
               </div>
             </div>  			
 			</div>
@@ -1537,7 +1539,7 @@ function previewTemplatePDF(){
 					},
 					}); */ 
 			var formData = getFormData("newcontract_form");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           $.post( sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 	                      if(data == true){
 	                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
@@ -1976,11 +1978,13 @@ function clearExistedContractJoinDate(){
 	$("#joinDate").val("");
 	};
 </script>
-<script>
+<!-- <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");
+		$(".clearUpload").hide();
+		$("#newcontract_form input[data-id*=uploadBtn]").remove();
 	});
-</script>
+</script> -->
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

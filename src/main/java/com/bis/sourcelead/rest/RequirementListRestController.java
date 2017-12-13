@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -113,10 +117,15 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class RequirementListRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RequirementListRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	CommonUtil commonUtil;
 	@Autowired
@@ -1155,8 +1164,8 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}*/
-	
+	}
+	*/
 	/**
 	 * @author Sammeta David Raju
 	 * 
@@ -1322,7 +1331,7 @@ public class RequirementListRestController {
 	 * @throws Exception
 	 * @returns void
 	 */
-	/*@RequestMapping(value = "/downloadOfferAttachment")
+	@RequestMapping(value = "/ws/downloadOfferAttachment")
 	public void downloadOfferAttachment(@RequestParam(value = "offerId", required = false) Long offerId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
@@ -1342,7 +1351,7 @@ public class RequirementListRestController {
 		} catch (FileNotFoundException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-	}*/
+	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/getRequirementTemplateListByOrgLocationsId", method = RequestMethod.POST)
@@ -1568,7 +1577,6 @@ public class RequirementListRestController {
 	@RequestMapping(value = "/searchRequirement")
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1662,32 +1670,7 @@ public class RequirementListRestController {
 				boolQueryBuilder.must(edunBoolQueryBuilder);
 			} 
 		}
-		
-		//visa type
-		if(StringUtils.isNotEmpty(search.getVisaType())){
-			ArrayList<String> immigrationTypeArray = getSearchKeywordsFromChosenSelectField(search.getVisaType());
-			if(immigrationTypeArray != null && !immigrationTypeArray.isEmpty()){
-				BoolQueryBuilder immigrationTypeBoolQueryBuilder = new BoolQueryBuilder();
-				for(String keywd : immigrationTypeArray){
-					immigrationTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaTypes", keywd));
-				}
-				boolQueryBuilder.must(immigrationTypeBoolQueryBuilder);
-			} 
-		}
-		
-		//Skills
-		if(StringUtils.isNotEmpty(search.getRequirementSkills())){
-			ArrayList<String> skillsArray = getSearchKeywordsFromChosenSelectField(search.getRequirementSkills());
-			if(skillsArray != null && !skillsArray.isEmpty()){
-				BoolQueryBuilder skillsBoolQueryBuilder = new BoolQueryBuilder();
-				for(String keywd : skillsArray){
-					skillsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skills", keywd));
-				}
-				boolQueryBuilder.must(skillsBoolQueryBuilder);
-			} 
-		}
-		
-		
+			
 	    //requirementStatus
 		if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 			String status = "";
@@ -1711,53 +1694,6 @@ public class RequirementListRestController {
 			} 
 		}
 			
-		
-		  //requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
-					String priority = "";
-					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-						priority = search.getRequirementStatus();
-					}
-					else{
-						priority = search.getFilterPriority();
-					}
-					ArrayList<String> requirementPriorityArray = getSearchKeywordsFromChosenSelectField(priority);
-					if(requirementPriorityArray != null && !requirementPriorityArray.isEmpty()){
-						BoolQueryBuilder reqPriorityBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : requirementPriorityArray){
-							reqPriorityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("priority", keywd));
-						}
-						
-						boolQueryBuilder.must(reqPriorityBoolQueryBuilder);
-						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-							boolQueryBuilderForCount.must(reqPriorityBoolQueryBuilder);
-						}
-					} 
-				}
-				
-				//requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
-					String jobType = "";
-					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-						jobType = search.getRequirementStatus();
-					}
-					else{
-						jobType = search.getFilterJobType();
-					}
-					ArrayList<String> requirementJobTypeyArray = getSearchKeywordsFromChosenSelectField(jobType);
-					if(requirementJobTypeyArray != null && !requirementJobTypeyArray.isEmpty()){
-						BoolQueryBuilder reqJobTypeBoolQueryBuilder = new BoolQueryBuilder();
-						for(String keywd : requirementJobTypeyArray){
-							reqJobTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("jobType", keywd));
-						}
-						
-						boolQueryBuilder.must(reqJobTypeBoolQueryBuilder);
-						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
-						}
-					} 
-				}
-				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
 			String updatedOn = search.getUpdatedOn();
@@ -2101,7 +2037,7 @@ public class RequirementListRestController {
 				}
 				globalVarsMap.put("reqExp", reqExp);
 				StringBuilder linkBuild = new StringBuilder();
-				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				// getting the current EmailScenario by EmailScenario unique
 				// name and entity type

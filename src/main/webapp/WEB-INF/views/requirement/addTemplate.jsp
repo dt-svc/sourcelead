@@ -32,8 +32,8 @@ width: 100% !important;
 		
 	});
 </script>
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -47,7 +47,7 @@ width: 100% !important;
 		<div class="pull-left">
 			<h2>Job Template</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/template'/>">Job Template List </a> &raquo; Add Job Template
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/template'/>">Job Template List </a> &raquo; Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -333,7 +333,7 @@ width: 100% !important;
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/template'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -366,7 +366,7 @@ width: 100% !important;
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#store_RequirementTemplate").attr("disabled", "disabled");
 				$("#store_RequirementTemplate").addClass('button').val('Processing..');
-		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
