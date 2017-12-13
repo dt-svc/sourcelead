@@ -58,7 +58,7 @@ public class OpenJobsController {
 	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
 			"/app/jobs/{title}/{location}/{experience}" })
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
+	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies,@RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName, HttpServletRequest request) throws Exception
 	{
 		List<Countries> countriesList = countriesService.getAllCountries();
 		modelMap.addAttribute("countryList", countriesList);
@@ -78,6 +78,7 @@ public class OpenJobsController {
 		modelMap.addAttribute("locationType", locationType);
 		modelMap.addAttribute("employementType", employementType);
 		modelMap.addAttribute("companies", companies);
+		modelMap.addAttribute("postedOrgName", postedOrgName);
 		return "openJobs/openjobs";
 	}
 	
