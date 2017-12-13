@@ -3,10 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
+<link rel="stylesheet" href="/resources/css/chosen.min.css">
+<script src="/resources/js/chosen.jquery.min.js"></script> 
+<script src="/resources/js/jquery-fun.js"></script> 
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -46,7 +46,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
  
  <div class="content-area content-new clearfix">
@@ -55,13 +55,13 @@
           <div class="onboardcreateButtons"> 
 	          
 	           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-		          <a href="<c:url value='/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
+		          <a href="<c:url value='${appPath}/candidateOnBoardCreation'/>" class="btn btn-success btn-sm mr" title="Create onboard">
 		          	<i class="fa fa-plus paddingRight"></i>Create onboard
 		          </a> 
 	          </sec:authorize>
 	          
 	          <sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-		          <a href="<c:url value='/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
+		          <a href="<c:url value='${appPath}/candidateOffBoardCreation'/>" class="btn btn-primary btn-sm" title="Create offboard">
 		          	<i class="fa fa-plus paddingRight"></i>Create offboard
 		          </a>
 	          </sec:authorize>
@@ -107,7 +107,7 @@
  function getOnboardCandidatesList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -232,7 +232,7 @@
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}'
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -443,7 +443,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 

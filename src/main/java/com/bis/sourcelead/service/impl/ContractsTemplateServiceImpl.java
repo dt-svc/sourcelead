@@ -83,6 +83,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	
 	@Autowired
 	private UserService userService;
 	
@@ -1433,7 +1437,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 			 }
 			 StringBuilder linkBuild = new StringBuilder();
-			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
 		//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
@@ -1562,7 +1566,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
 		 }
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -1672,7 +1676,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			globalVarsMap.put("OwnerName","--");
 		}
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 	//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -2331,7 +2335,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
@@ -2780,7 +2784,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -2906,7 +2910,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and

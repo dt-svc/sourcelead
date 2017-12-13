@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 <style type="text/css">
 
 .timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
@@ -381,7 +381,7 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 						'</sec:authorize>';
 					}
 					
@@ -701,7 +701,7 @@ function vendorInvoicePagination(){
 				  result = result +'      <div class="small-widget bgGreen">';
 				  result = result +'          <a onClick="createVendorInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
 				  result = result +'        <div class="clearfix mb10"> ';
-				  result = result +'            <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+				  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 				  result = result +'        </div>';
 				  result = result +'        <strong class="clearfix">Custom</strong></a>';
 				  result = result +'        </div>';
@@ -711,7 +711,7 @@ function vendorInvoicePagination(){
 				  result = result +'        <a onClick="createVendorInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
 				  result = result +'          <div class="clearfix mb10">';
 				  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-				  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+				  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 				  result = result +'          </div>';
 				  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
 				  result = result +'      </div>';
@@ -720,7 +720,7 @@ function vendorInvoicePagination(){
 				  result = result +'        <a onClick="createVendorInvoice('+orgRelationId+',\'other\');" title="Create Other Bill">';
 				  result = result +'          <div class="clearfix mb10">';
 				  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-				  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+				  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 				  result = result +'          </div>';
 				  result = result +'          <strong class="clearfix">Other </strong> </a> </div>';
 				  result = result +'      </div>';

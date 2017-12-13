@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Request Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Planning</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Planning</a> &raquo; Request Associates</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -48,7 +48,7 @@
              <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
             
             <div class="form-group">
-              <label class="col-md-3">Approver <span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='Approver who need to approve the list of request resources'></i></label>
+              <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
                 </select>
@@ -88,7 +88,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Draft" class="btn btn-warning mr" onclick="requestAssociate('Draft');">
 			  <input type="button" value="Send" class="btn btn-primary" onclick="requestAssociate('Send');">
-			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'" class="btn btn-default ml">
+			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'" class="btn btn-default ml">
 			</div>
 		  </div>
 	</div>        
@@ -738,7 +738,7 @@ function getAssociates(){
 	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
 	result = result +'<li>';
 	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationRoles();"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
-	result = result +'<label class="radioAlign"><img src="resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'<label class="radioAlign"><img src="/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
 	result = result +'</li>';
 	result = result +'</c:forEach>';
 	result = result +'</ul>';
@@ -1075,9 +1075,8 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var result = "";
 	            	    var candidateResume = "";
 	            	    
-	            	    if(report.fileUrl != null && report.fileUrl != '' && report.fileUrl != 'undefined'){
-	            	    	candidateResume = '<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+report.fileUrl+'\" download title="Download"></a>';
-
+	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
+		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
@@ -1110,7 +1109,7 @@ function candidatesPagination(sourceleadUrl,url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     },
 	     "initComplete": function( settings, json ) {
 	    	 checkOrUncheckParent(json.data);
@@ -1218,7 +1217,7 @@ function requestAssociate(saveType){
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
       		var projectClientUUID = '${projectClientUUID}';
       		
-      		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+      		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
 					type : "POST",
 	  	    	    data: formData,
@@ -1478,7 +1477,7 @@ function getEstimatedHours(rowId){
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 

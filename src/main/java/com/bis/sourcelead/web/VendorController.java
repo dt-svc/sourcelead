@@ -52,6 +52,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class VendorController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VendorController.class);

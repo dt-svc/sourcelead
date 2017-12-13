@@ -42,7 +42,7 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Projects</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Projects</div>
         </section>
 
         
@@ -81,8 +81,8 @@ overflow-x: auto;
 							</a>
 							<div class="action-pop">
 								<span> 
-								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
+								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
+								<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
 								</span>
 							</div>
 						</sec:authorize></li>
@@ -420,7 +420,7 @@ function projectsPagination(url,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#projectsListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

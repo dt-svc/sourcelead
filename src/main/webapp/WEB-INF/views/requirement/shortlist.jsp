@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
 <style type="text/css">
 .require_wrap_table table tr td:first-child {
@@ -254,7 +254,7 @@ function shortlist(requirementId){
 	  if(selectedsubmissionslists.length > 0){
 		  
 		  if(selectedsubmissionslists.length <= 50){
-				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				 $.ajax({ 
 				    	type: "POST",
 				    	url: sourceleadUrl+"/candidateShortList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
