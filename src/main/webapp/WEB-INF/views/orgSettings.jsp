@@ -306,7 +306,7 @@ function cancelOrgImg(){
 				                </div>
 				                <div class="col-md-2 dbaCheck dbaCheck-cs">
 				                     
-				                   <div class="mrleft8 mr mt5">
+				                   <div class="ml10">
 						              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
 						              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
 				          			</div>
