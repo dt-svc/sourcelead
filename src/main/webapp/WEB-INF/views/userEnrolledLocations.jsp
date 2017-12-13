@@ -118,19 +118,4 @@ function selectLoc(id){
 
 </script>
 
-<script>
-function redirectDaashboard(userRoleId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	alert(sourceleadUrl+"/dashboard?&userRoleId="+userRoleId)
-	window.location.href = sourceleadUrl+"/dashboard?userRoleId="+userRoleId;
-	/* $.ajax({
-	      type : "POST",
-	       url: sourceleadUrl+"/dashboard?&userRoleId="+userRoleId,        
-	       success :function(result) {
-	    	 
-	      },
-	  }); */
-}
-</script>
-
 <!-- orgWrap  -->
