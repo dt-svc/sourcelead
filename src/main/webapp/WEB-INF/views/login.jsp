@@ -28,7 +28,7 @@ window.onload = function() {
 </script>
  
  
- <div id="slideit" class="bgImg" style="background-image: url(/resources/images/sign-inbg.jpg)"></div>
+ <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
  
  <div class="signWrap">
  <div id="loading"></div>
