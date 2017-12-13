@@ -27,10 +27,12 @@ public interface ProjectDocumentsService {
 	
 	ProjectDocuments storeProjectDocuments(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception;
 	
-    List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception;
+    List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long userRoleId,String userRoleType,Long folderId,Long candidateId) throws Exception;
      
     List<ProjectDocuments> getDeleteProjectDocumentsListByDocumentId(String documentid) throws Exception;
 
 	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user)throws Exception;
-    
+	
+	Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId,String folderName) throws Exception;
+	
 }

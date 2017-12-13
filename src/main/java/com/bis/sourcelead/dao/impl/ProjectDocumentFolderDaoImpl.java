@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectDocumentFloderDao;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
+import com.bis.sourcelead.entity.ProjectDocumentPermission;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -56,12 +57,67 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 		return projectDocumentFolder;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectDocumentFolder> getProjectDocumentFolderByProjectId(Long projectId) throws Exception {
+		public List<ProjectDocumentFolder> getProjectDocumentFolderByProjectId(Long projectId,Long roleId,String userRoleType,Long candidateId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<ProjectDocumentFolder> projectDocumentFolderList = null;
+			String query = null; 
+			
+			String subQuery = "and (pdf.id IN (select pdp.projectDocumentFolderId.id from ProjectDocumentPermission pdp where pdp.userRoleId =:roleId)"
+					+ "or pdf.id NOT IN (select pdp.projectDocumentFolderId.id from ProjectDocumentPermission pdp)"
+					+ "or pdf.id in (select pdp.projectDocumentFolderId.id from ProjectDocumentPermission pdp where pdp.projectMemberId.projectMemberCandidteId.id =:candidateId))";
+			
+			 
+			if(userRoleType.equalsIgnoreCase("ROLE_ADMIN") || userRoleType.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+				 query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1' "; 
+					 projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).list();
+			}else {
+				 query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1' "+subQuery+""; 
+					projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
+			}
+			String query1 = "select docs.projectFolderId.id, count(id) from ProjectDocuments docs where docs.status = 1 and docs.projects.id = :projectId group by docs.projectFolderId.id";
+			List<Object[]> data = session.createQuery(query1).setLong("projectId", projectId).list();
+			if(data != null && !data.isEmpty()) {
+				Map<Long, Integer> counts = new HashMap<>();
+				for(Object[] o : data) {
+					if(o != null && o[0] != null)
+						counts.put(Long.parseLong(o[0].toString()), Integer.parseInt(o[1].toString()));
+				}
+				if(!counts.isEmpty()) {
+					for(ProjectDocumentFolder pdf : projectDocumentFolderList) {
+						pdf.setPermissionAccess("1");
+						String query2 = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.projectMemberId.projectMemberCandidteId =:candidateId";
+						List<ProjectDocumentPermission>  projectDocumentPermissionList = session.createQuery(query2).setLong("folderId", pdf.getId()).setLong("candidateId", candidateId).list();
+						if(projectDocumentPermissionList.isEmpty()) {
+							String query3 = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.userRoleId =:roleId";
+							List<ProjectDocumentPermission>  projectDocumentPermissionList2 = session.createQuery(query3).setLong("folderId", pdf.getId()).setLong("roleId", roleId).list();
+							if(!projectDocumentPermissionList2.isEmpty()) {
+								for(ProjectDocumentPermission pdp:projectDocumentPermissionList2) {
+									pdf.setPermissionAccess(pdp.getAccess());
+									break;
+								}
+							}
+						} else {
+							for(ProjectDocumentPermission pdp:projectDocumentPermissionList) {
+								pdf.setPermissionAccess(pdp.getAccess());
+								break;
+							}
+						}
+						pdf.setCount(counts.containsKey(pdf.getId()) ? counts.get(pdf.getId()) : 0);
+					}
+				}
+			}
+			
+			return projectDocumentFolderList;
+		}
+	
+	
+	/*public List<ProjectDocumentPermission> getProjectDocumentPermissionFolderByProjectId(Long projectId,Long roleId,Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1'"; 
-		List<ProjectDocumentFolder> projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).list();
+		String query = "from ProjectDocumentPermission pdp left join fetch pdp.projectDocumentId pdf where  pdf.projectId.id =:projectId and pdf.status = '1' and  (pdp.userRoleId.id = :roleId OR pdp.projectMemberId.id IS NOT NULL and pdp.projectMemberId.id IN(select pm.id from ProjectMembers pm where pm.projects.id = :projectId and pm.projectMemberCandidteId.id = :candidateId))"; 
+		List<ProjectDocumentPermission> projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
 		String query1 = "select docs.projectFolderId.id, count(id) from ProjectDocuments docs where docs.status = 1 and docs.projects.id = :projectId group by docs.projectFolderId.id";
 		List<Object[]> data = session.createQuery(query1).setLong("projectId", projectId).list();
 		if(data != null && !data.isEmpty()) {
@@ -71,14 +127,14 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 					counts.put(Long.parseLong(o[0].toString()), Integer.parseInt(o[1].toString()));
 			}
 			if(!counts.isEmpty()) {
-				for(ProjectDocumentFolder pdf : projectDocumentFolderList) {
+				for(ProjectDocumentPermission pdf : projectDocumentFolderList) {
 					pdf.setCount(counts.containsKey(pdf.getId()) ? counts.get(pdf.getId()) : 0);
 				}
 			}
 		}
 		
 		return projectDocumentFolderList;
-	}
+	}*/
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -93,5 +149,34 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 		}
 		return projectDocumentFolder;
 	}
-	 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectDocumentFolder validateProjectDocumentFolderByFolderIdAndFolderName(Long folder, String folderName)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentFolder pdf  where pdf.id =:folder and pdf.foderName =:folderName ";
+		List<ProjectDocumentFolder> projectDocumentFolderList =session.createQuery(query) .setString("folderName", folderName).setLong("folder", folder).setCacheable(true).list();
+		ProjectDocumentFolder projectDocumentFolder = null;
+		if(projectDocumentFolderList != null && !projectDocumentFolderList.isEmpty())
+		{
+			projectDocumentFolder = (ProjectDocumentFolder) projectDocumentFolderList.iterator().next();
+		}
+		return projectDocumentFolder;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectFolderByFolderId(Long folderId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentFolder pdf  where pdf.id =:folderId";
+		List<ProjectDocumentFolder> projectDocumentFolderList =session.createQuery(query).setLong("folderId", folderId).setCacheable(true).list();
+		if(projectDocumentFolderList != null && !projectDocumentFolderList.isEmpty()) {
+			   for(ProjectDocumentFolder pdf :projectDocumentFolderList) {
+				   session.delete(pdf);
+			   }
+		   }
+		
+	}
 }

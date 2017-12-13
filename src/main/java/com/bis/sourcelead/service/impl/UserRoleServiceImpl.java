@@ -607,4 +607,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
 	}
 
+	@Override
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+		return userRoleDao.getUserRoleWithoutAdminsByUserIdAndLocationId(userId, locationId);
+	}
+
 }

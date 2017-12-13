@@ -2,7 +2,10 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,11 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -57,11 +63,20 @@ private static final long serialVersionUID = 1L;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY", nullable = false)
 	private User updatedBy;
+	
+	
+	@OneToMany(mappedBy="projectDocumentFolderId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ProjectDocumentPermission> projectDocumentPermissionList;
 
 	@Transient
     @JsonProperty
 	private int count;
     
+	@Transient
+    @JsonProperty
+	private String permissionAccess;
+	
 	
 	public Long getId() {
 		return id;
@@ -134,4 +149,21 @@ private static final long serialVersionUID = 1L;
 	public void setCount(int count) {
 		this.count = count;
 	}
+
+	public String getPermissionAccess() {
+		return permissionAccess;
+	}
+
+	public void setPermissionAccess(String permissionAccess) {
+		this.permissionAccess = permissionAccess;
+	}
+
+	public Set<ProjectDocumentPermission> getProjectDocumentPermissionList() {
+		return projectDocumentPermissionList;
+	}
+
+	public void setProjectDocumentPermissionList(Set<ProjectDocumentPermission> projectDocumentPermissionList) {
+		this.projectDocumentPermissionList = projectDocumentPermissionList;
+	}
+
 }

@@ -37,8 +37,8 @@ public class ProjectDocumentFolderServiceImpl implements ProjectDocumentFolderSe
 	}
 
 	@Override
-	public List<ProjectDocumentFolder> getProjectDocumentFolderByProjectId(Long peojectId) throws Exception {
-		return projectDocumentFloderDao.getProjectDocumentFolderByProjectId(peojectId);
+	public List<ProjectDocumentFolder> getProjectDocumentFolderByProjectId(Long peojectId,Long roleId,String userRoleType,Long candidateId) throws Exception {
+		return projectDocumentFloderDao.getProjectDocumentFolderByProjectId(peojectId,roleId,userRoleType,candidateId);
 	}
 
 	@Override
@@ -59,6 +59,16 @@ public class ProjectDocumentFolderServiceImpl implements ProjectDocumentFolderSe
 	@Override
 	public ProjectDocumentFolder getProjectDocumentFolderByDocumentId(Long folderId) throws Exception {
 		return projectDocumentFloderDao.getProjectDocumentFolderByDocumentId(folderId);
+	}
+
+	@Override
+	public ProjectDocumentFolder validateProjectDocumentFolderByFolderIdAndFolderName(Long folder, String folderName)throws Exception {
+		return projectDocumentFloderDao.validateProjectDocumentFolderByFolderIdAndFolderName(folder, folderName);
+	}
+
+	@Override
+	public void deleteProjectFolderByFolderId(Long folderId) throws Exception {
+		projectDocumentFloderDao.deleteProjectFolderByFolderId(folderId);
 	}
 	
 	 

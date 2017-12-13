@@ -14,14 +14,14 @@
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 	function projectDocuments(projectId, status) {
-		
+		var userId = '${SourceLeadWeb_userId}';
 		var result = "";
 		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId,
+					url : sourceleadUrl	+ "/getProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId+"&userId="+userId,
 					success : function(json) {
 						var result = "";
 						result = result + '<input type="hidden" id="projectId" name="projectId" value="'+projectId+'">';
@@ -30,7 +30,7 @@
 						result = result + '    	<div class="clearfix mb">                                                          ';
 						result = result + '    		<div class="pull-right">                                                       ';
 						result = result + '    			<button type="button" class="btn btn-primary btn-sm mr" data-toggle="modal" data-target="#uploadFile_fm">UPLOAD</button>    ';
-						result = result + '    			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createFolder">CREATE FOLDER</button> ';
+						result = result + '    			<button type="button" class="btn btn-primary btn-sm cancel" data-toggle="modal" data-target="#createFolder">CREATE FOLDER</button> ';
 						result = result + '    		</div>                                                                                    ';
 						result = result + '    	</div>                                                                                        ';
 						
@@ -50,16 +50,21 @@
 							result = result + '	 			<a href="#id-1" data-toggle="tab" onclick="getdocumentListById('+report.id+',\''+report.foderName+'\');">                                    ';
 							result = result + '	 				<i class="fa fa-folder-o mr"></i>'+report.foderName+'  (<span>'+report.count+'</span>)';
 							result = result + '	 		    </a>                                                                  ';
-							result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
-							result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
-							result = result + '	 					<i class="fa fa-gear text-muted cursorPointer"></i>           ';
-							result = result + '	 					</span>                                                       ';
-							result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
-							result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
-							result = result + '	 						<li><a href="#"  onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
-							result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#folderPermission"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
-							result = result + '	 					</ul>                                                                  ';
-							result = result + '	 				</span>                                                                    ';
+							if(report.permissionAccess == 0){
+							 
+							}else{
+								result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
+								result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
+								result = result + '	 					<i class="fa fa-gear text-muted cursorPointer"></i>           ';
+								result = result + '	 					</span>                                                       ';
+								result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
+								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
+								result = result + '	 						<li><a href="#"  onclick="deleteFolder('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
+								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#folderPermission" onclick="permissionPopUp('+report.id+');"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
+								result = result + '	 					</ul>                                                                  ';
+								result = result + '	 				</span>   ';
+							}
+							                                                                
 							result = result + '	 			</li>     ';
 							                                                                                                               
 		   				}
@@ -92,7 +97,6 @@
 						$("#tasksLoadingImg").empty();
 						$("#tab-3").append(result);
 						$("#tab-3").show();
-						
 						 getdocumentListById();
 						$(".project-tabs-menu a").click(
 								function(event) {
@@ -125,10 +129,10 @@
 		}else{
 			folderId = "";
 		}
-		
+		var userId = '${SourceLeadWeb_userId}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getEachProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&folderId="+folderId,
+			url : sourceleadUrl	+ "/getEachProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&folderId="+folderId+"&userId="+userId,
 			success : function(json) {
 				var result = "";
 				result = result + '	 		<div class="col-md-8">                                                                    ';
@@ -184,35 +188,57 @@
 					result = result + '	 										<label>'+report.fileName+'</label>                                                         ';
 					result = result + '	 										<p class="small text-muted mb5"><strong>Created by:</strong> '+report.createdByName+', '+report.createdDateStr+' </p>';
 					result = result + '	 								</div>                                                                                            ';
-					result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
-					result = result + '	 										<li>                                                                                       ';
-					result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
-					result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
-					result = result + '	 										Download                                                                                       ';
-					result = result + '	 										</a></li>                                                                                  ';
-					result = result + '	 										<li>                                                                                       ';
-					result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
-					result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
-					result = result + '	 										</a></li>                                                                                  ';
+					if(report.permissionAccess == 0){
+						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
+						result = result + '	 										<li>                                                                                       ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
+						result = result + '	 										Download                                                                                       ';
+						result = result + '	 										</a></li>                                                                                  ';
+						result = result + '	 										<li>                                                                                       ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
+						result = result + '	 										</a></li>                                                                                  ';
+						
+						result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail" onclick="sendMailPopUp('+report.id+');">               ';
+						result = result + '	 												<i class="fa fa-envelope-o"></i> <br> Email    ';
+						result = result + '	 											</a>  </li>       ';
+						
+						result = result + '	 										<li>     ';
+						 
+						result = result + '	 									</ul>        ';
+					}else{
+						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
+						result = result + '	 										<li>                                                                                       ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
+						result = result + '	 										Download                                                                                       ';
+						result = result + '	 										</a></li>                                                                                  ';
+						result = result + '	 										<li>                                                                                       ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
+						result = result + '	 										</a></li>                                                                                  ';
+						
+						result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail" onclick="sendMailPopUp('+report.id+');">               ';
+						result = result + '	 												<i class="fa fa-envelope-o"></i> <br> Email    ';
+						result = result + '	 											</a>  </li>       ';
+						
+						result = result + '	 										<li>     ';
+						result = result + '	 											<a href="javascript:void(0)" data-toggle="modal" data-target="#fmRename"  value="'+report.id+'" onclick="renameFilePop('+report.id+',\''+report.fileName+'\');">';
+						result = result + '	 												<i class="fa fa-pencil-square-o"></i> <br>  Rename                                                                   ';
+						result = result + '	 											</a> </li>                                                                            ';
+						
+						result = result + '	 										<li>                                                                             ';
+						result = result + '	 											<a href="javascript:void(0)" onclick="deleteEachDcouments('+report.id+');">                                                ';
+						result = result + '	 												<i class="fa fa-trash"></i> <br>       Delete ';
+						result = result + '	 											</a> </li>          ';
+						
+						result = result + '	 										<li>  <a href="" data-toggle="modal" data-target="#folderPermission" onclick="permissionDocumentPopUp('+report.projectFolderId.id+','+report.id+')"> ';
+						result = result + '	 												<i class="fa fa-key"></i> <br> Permission  ';
+						result = result + '	 										</a>  </li>    ';
+						result = result + '	 									</ul>        ';
+					}
 					
-					result = result + '	 										<li>  <a href="javascript:void(0)" data-toggle="modal" data-target="#fmEmail" onclick="sendMailPopUp('+report.id+');">               ';
-					result = result + '	 												<i class="fa fa-envelope-o"></i> <br> Email    ';
-					result = result + '	 											</a>  </li>       ';
-					
-					result = result + '	 										<li>     ';
-					result = result + '	 											<a href="javascript:void(0)" data-toggle="modal" data-target="#fmRename"  value="'+report.id+'" onclick="renameFilePop('+report.id+',\''+report.fileName+'\');">';
-					result = result + '	 												<i class="fa fa-pencil-square-o"></i> <br>  Rename                                                                   ';
-					result = result + '	 											</a> </li>                                                                            ';
-					
-					result = result + '	 										<li>                                                                             ';
-					result = result + '	 											<a href="javascript:void(0)" onclick="deleteEachDcouments();">                                                ';
-					result = result + '	 												<i class="fa fa-trash"></i> <br>       Delete ';
-					result = result + '	 											</a> </li>          ';
-					
-					result = result + '	 										<li>  <a href="javascript:void(0)"> ';
-					result = result + '	 												<i class="fa fa-key"></i> <br> Permission  ';
-					result = result + '	 										</a>  </li>    ';
-					result = result + '	 									</ul>        ';
 					result = result + '	 								</div>           ';
 					result = result + '	 								</div>           ';
 					result = result + '	 							</td>                ';
@@ -299,14 +325,8 @@
 		 });
 	}
 	
-	function deleteEachDcouments(){
+	function deleteEachDcouments(documentId){
 		var projectId = $("#projectId").val();
-		var documentId = [];
-		 $("input[name='documentIds[]']:checked").each( function (i) {
-			 documentId[i] = $(this).val();
-		});
-		 alert("hello")
-		 alert("documentId"+documentId)
 		 if(documentId != null && documentId != '' &&  documentId != 'undefined'){
 			 $.ajax({
 					type : "POST",
@@ -315,18 +335,17 @@
 						projectDocuments(projectId);
 					}
 			 });
-		 }else{
-			 alert("please check the checkBox");
-		 }
+		 } 
 		 
 	}
 	
 	
  	function deleteFolder(folderId){
 		var projectId = $("#projectId").val();
+		var userId = '${SourceLeadWeb_userId}';
 		 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteProjectDcoumentFolder?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&projectId="+projectId,
+				url : sourceleadUrl+"/deleteProjectDcoumentFolder?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&projectId="+projectId+"&userId="+userId,
 				success : function(data) {
 					projectDocuments(projectId);
 				}
@@ -343,14 +362,14 @@
 		result = result +'   <div class="modal-body mt mb">';
 		result = result +'     <div class="row">';
 		result = result +'     	<label class="col-md-3">ReName Folder</label>';
-		result = result +'     	<div class="col-md-9">';
-		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">';
+		result = result +'     	<div class="col-md-9" id="rmoveErrMsgEditCF">';
+		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');">';
 		result = result +'     	</div>';
 		result = result +'     </div>';
 		result = result +'   </div>';
 		result = result +'   <div class="modal-footer">';
-		result = result +'    <button type="button" class="btn btn-primary mr10" onclick="saveReNameFolder('+folderId+');">Save</button>';
-		result = result +'     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+		result = result +'    <button type="button" class="btn btn-primary mr10" id="save_reNmaeFolder" onclick="saveReNameFolder('+folderId+');">Save</button>';
+		result = result +'     <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>';
 		result = result +'   </div>';
 		result = result +' </div>';
 		result = result  +'</form>';
@@ -393,71 +412,225 @@ $('body').on('blur', '#reNameFolder_form', function() {
   
   
  <!-- Create Folder Popup Modal-->
- <form role="form"  id="projectFolderPermission_form" name="projectFolderPermission_form" method="post" >
+ 
   <div class="modal fade" id="folderPermission" role="dialog">
-    <div class="modal-dialog fm-modaldialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Permissions</h4>
-        </div>
-        <div class="modal-body">
-        <div class="row mb minHeight40">
-          	<label class="col-md-3">Permission</label>
-          	<div class="col-md-9 dropdown-select">
-          		<select class="form-control">
-          		<option>-- Select Permission --</option>
-          		<option>Permission-1</option>
-          		<option>Permission-2</option>
-          		<option>Permission-3</option>
-          		</select>
-          	</div>
-          </div>
-          <div class="panel panel-default">
-          <div class="panel-body">
-          <div class="row minHeight40">
-          	<label class="col-md-3">Roles</label>
-          	<div class="col-md-9 dropdown-select">
-          		<select class="form-control">
-	          		<option>-- Select Roles --</option>
-	          		<option>Roles-1</option>
-	          		<option>Roles-2</option>
-	          		<option>Roles-3</option>
-          		</select>
-          	</div>
-          </div>
-          <p class="text-muted mt10 mb10 clearfix text-center col-md-8 col-md-offset-3">------------------------------ OR ------------------------------</p>
-          <div class="row minHeight40">
-          	<label class="col-md-3">Others</label>
-          	<div class="col-md-9 dropdown-select">
-          		<select class="form-control">
-          		<option>-- Select Others --</option>
-	          		<option>Others-1</option>
-	          		<option>Others-2</option>
-	          		<option>Others-3</option>
-          		</select>
-          	</div>
-          </div>
-          </div>
-          </div>
-          
-        </div>
-        
-        <div class="modal-footer">
-         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName111111();">Apply</button>
-          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
-        </div>
+    <div class="modal-dialog modal-lg">
+      <div id="foderPermissionDivId">
+         <%-- <jsp:include page="projectPermissions.jsp"></jsp:include> --%>
       </div>
     </div>
   </div>
-  </form>
+ 
 <!-- Create Folder Popup ends -->
+<script>
+function permissionDocumentPopUp(folderId,documentId){
+	var projectId = $("#projectId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var values = "Active";
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
+        success: function(data) {
+        	$("#foderPermissionDivId").empty();
+        	$("#foderPermissionDivId").append(data);
+        	prepareChosenScripts();
+        }
+	});	
+}
+function permissionPopUp(folderId){
+	var projectId = $("#projectId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var documentId = "";
+	var values = "Active";
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
+        success: function(data) {
+        	$("#foderPermissionDivId").empty();
+        	$("#foderPermissionDivId").append(data);
+        	prepareChosenScripts();
+        }
+	});	
+	/* var result = "";
+	result = result  +'<form role="form"  id="projectFolderPermission_form" name="projectFolderPermission_form">';
+	result = result  +'	<div class="modal-content">';
+	result = result  +'    <div class="modal-header">';
+	result = result  +'      <button type="button" class="close" data-dismiss="modal">&times;</button>';
+	result = result  +'      <h4 class="modal-title">Permissions</h4>';
+	result = result  +'    </div>';
+	result = result  +'    <div class="modal-body">';
+	result = result  +'    <div class="row">';
+	result = result  +'        <div class="col-md-6">';
+	result = result  +'          <label><strong>Roles Based</strong></label>';
+	result = result  +'		          <div class="panel panel-default">';
+	result = result  +'			          <div class="panel-body">';
+	result = result  +'				          <div class="row minHeight40 mb">';
+	result = result  +'				          	<label class="col-md-3">View</label>';
+	result = result  +'				          	<div class="col-md-9 dropdown-select">';
+	result = result  +'				          		<select class="form-control chosen-select choose" multiple  id="readRoleIds" name="readRoleIds" data-placeholder="Select read Roles">';
+	result = result  +'						        </select>';
+	result = result  +'				          	</div>';
+	result = result  +'				          </div>';
+	result = result  +'				          <div class="row minHeight40 mb">';
+	result = result  +'				          	<label class="col-md-3">Owner</label>';
+	result = result  +'				          	<div class="col-md-9 dropdown-select">';
+	result = result  +'				               <select class="form-control chosen-select choose" multiple  id="writeRoleIds" name="writeRoleIds" data-placeholder="Select write Roles">';
+	result = result  +'						        </select>';
+	result = result  +'				          	</div>';
+	result = result  +'				          </div>';
+	result = result  +'			          </div>';
+	result = result  +'		          </div>';
+	result = result  +'           </div>';
+	result = result  +'		   <div class="col-md-6">';
+	result = result  +'			<label><strong>Member Based</strong></label>';
+	result = result  +'				<div class="panel panel-default">';
+	result = result  +'					<div class="panel-body">';
+	result = result  +'					<div class="row minHeight40 mb">';
+	result = result  +'						<label class="col-md-3">View</label>';
+	result = result  +'						<div class="col-md-9 dropdown-select">';
+	result = result  +'							<select class="form-control chosen-select choose" multiple  id="readOtherMemberIds" name="readOtherMemberIds" data-placeholder="Select Read Project Members" >';
+	result = result  +'					</select>';
+	result = result  +'						</div>';
+	result = result  +'					</div>';
+	result = result  +'					<div class="row minHeight40 mb">';
+	result = result  +'						<label class="col-md-3">Owner</label>';
+	result = result  +'						<div class="col-md-9 dropdown-select">';
+	result = result  +'					     <select class="form-control chosen-select choose" multiple  id="writeOtherMemberIds" name="writeOtherMemberIds" data-placeholder="Select Write Project Members" >';
+	result = result  +'					</select>';
+	result = result  +'						</div>';
+	result = result  +'					</div>';
+	result = result  +'					</div>';
+	result = result  +'				</div>';
+	result = result  +'		</div>';
+	result = result  +'      </div>';
+	result = result  +'    </div>';
+	result = result  +'    <div class="modal-footer">';
+	result = result  +'     <button type="button" class="btn btn-primary mr10" onclick="saveFolderNamePermission('+folderId+');">Apply</button>';
+	result = result  +'      <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>';
+	result = result  +'    </div>';
+	result = result  +'  </div>';
+	result = result  +'  </form>'; */
+	/* $("#foderPermissionDivId").empty();
+	$("#foderPermissionDivId").append(result);
+	
+	getUserRoleList();
+	getProjectMemberlist(); */
+}
+
+</script>
+<script type="text/javascript">
+         function prepareChosenScripts(){ 
+        	      var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+        			};
+        		   for (var selector in config) {
+        			  $(selector).chosen(config[selector]);
+        			};
+        			$('.chosen-select').each(function() {
+        			var $this = $(this);
+        			$this.next().css({'width': '100%'});
+        			})
+           };
+         
+</script>
+<script type="text/javascript">
+	function saveFolderNamePermission(folderId,documentId){
+		 if ($('#projectFolderPermission_form').validate(false, validationSettings)){
+			 var projectId = $("#projectId").val();
+			var sourceleadUrl = '${sourceleadUrl}';
+			//It will escape all the special characters
+	        var formData =  getFormData1('projectFolderPermission_form'); 
+			$.ajax({
+					type : "POST",
+	        	    data: formData,
+	  		        processData: false,
+	  		        contentType:false, 
+					url : sourceleadUrl+"/saveProjectNamePermissions?"+tokenParamName+"="+tokenValue+"&folderId="+folderId+"&documentId="+documentId,
+					success : function(result) {
+							$(".modal-backdrop, .modal").fadeOut();
+							projectDocuments(projectId);
+					},
+				}); 
+				return true;
+		 }else{ 
+				return false;
+		 } 
+		}
+		$('body').on('blur', '#projectFolderPermission_form', function() {
+		$("#projectFolderPermission_form").showHelpOnFocus();
+		$("#projectFolderPermission_form").validateOnBlur(false, validationSettings);
+	});
+		
+</script>
+ 
+<script>
+function getUserRoleList(){
+	var projectId = $("#projectId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var readRoleIds = $("#readRoleIds").val();
+	var values = "Active";
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        success: function(json) {
+        	var output = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		    var opt = json[i];
+	        		output = output + "<option value='"+opt.userRoleId+"'>"+opt.userRoleType+"</option>";
+			}
+        	$("#readRoleIds").chosen();
+        	$("#readRoleIds").empty();
+     		$("#readRoleIds").append(output);
+     	    $("#readRoleIds").trigger("chosen:updated");
+     	    
+     	    $("#writeRoleIds").chosen();
+       	    $("#writeRoleIds").empty();
+    		$("#writeRoleIds").append(output);
+    	    $("#writeRoleIds").trigger("chosen:updated");
+        }
+	});	
+}
+</script>
+<script>
+function getProjectMemberlist(){
+	var projectId = $("#projectId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var values = "Active";
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        success: function(json) {
+        	var output = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		    var opt = json[i];
+	        		output = output + "<option value='"+opt.id+"'>"+opt.empName+"</option>";
+			}
+        	$("#readOtherMemberIds").chosen();
+        	$("#readOtherMemberIds").empty();
+     		$("#readOtherMemberIds").append(output);
+     	    $("#readOtherMemberIds").trigger("chosen:updated");
+     	    
+        	$("#writeOtherMemberIds").chosen();
+        	$("#writeOtherMemberIds").empty();
+     		$("#writeOtherMemberIds").append(output);
+     	    $("#writeOtherMemberIds").trigger("chosen:updated");
+        }
+	});	
+}
+</script>
 
 <script type="text/javascript">
 	function saveFolderName(){
 		var projectId = $("#projectId").val();
 			 if ($('#projectFolder_form').validate(false, validationSettings)){
 				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_folder").attr("disabled", "disabled");
 				//It will escape all the special characters
 		        var formData =  getFormData('projectFolder_form'); 
 				$.ajax({
@@ -548,13 +721,13 @@ function renameFilePop(documentId,fileName){
 	result = result +'    <div class="row">';
 	result = result +'    	<label class="col-md-4">Enter a New Name</label>';
 	result = result +'    	<div class="col-md-8">';
-	result = result +'    		<input type="text" class="form-control input-sm" placeholder="Enter a New Name" id="reNamefile" name ="fileNmae" value="'+fileName+'">';
+	result = result +'    		<input type="text" class="form-control input-sm" placeholder="Enter a New Name" id="reNamefile" name ="fileNmae" value="'+fileName+'" field-name="File Name" data-validation="required validate_AlphaNumber">';
 	result = result +'    	</div>';
 	result = result +'    </div>';
 	result = result +'  </div>';
 	result = result +'  <div class="modal-footer">';
 	result = result +'   <button type="button" class="btn btn-primary mr10" onclick="saveRenameFile('+documentId+');">Save</button>';
-	result = result +'    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+	result = result +'    <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>';
 	result = result +'  </div>';
 	result = result +'</div>';
 	result = result  +'</form>';
@@ -589,7 +762,7 @@ $('body').on('blur', '#reNameFile_form', function() {
 </script>
 
 
-<form role="form"  id="projectDocumentPermission_form" name="projectDocumentPermission_form" method="post" >
+<form role="form"  id="projectFolder_form" name="projectFolder_form" method="post" >
   <div class="modal fade" id="createFolder" role="dialog">
     <div class="modal-dialog fm-modaldialog">
       <div class="modal-content">
@@ -598,31 +771,74 @@ $('body').on('blur', '#reNameFile_form', function() {
           <h4 class="modal-title">Create Folder</h4>
         </div>
         <div class="modal-body mt mb">
-          <div class="row">
+          <div class="row" >
           	<label class="col-md-3">Create Folder</label>
-          	<div class="col-md-9">
-          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100">
+          	<div class="col-md-9" id="rmoveErrMsgCF">
+          		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateFolderName()">
           	</div>
           </div>
         </div>
         <div class="modal-footer">
-         <button type="button" class="btn btn-primary mr10" onclick="saveFolderName();">Save</button>
+         <button type="button" class="btn btn-primary mr10"  id="save_folder" onclick="saveFolderName();">Save</button>
           <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
         </div>
       </div>
     </div>
   </div>
   </form>
-  
+ <script>
+ function validateFolderName(){
+	 var FolderName = document.getElementById("folderName").value.trim();
+	 var projectId = $("#projectId").val();
+	 $('#rmoveErrMsgCF').find('p.jquery_form_error_message').remove();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId,
+			success : function(data) {
+				 if (data == true) {
+					 $("#save_folder").attr("disabled", "disabled");
+					 $("input#folderName").after("<p class='jquery_form_error_message'>"+ FolderName+ " is Already Existed</span>");
+					document.getElementById("folderName").setAttribute('record-exist', 'yes');
+					document.getElementById("folderName").setAttribute('record-exist-errorMsg',FolderName+ ' is Already Existed');
+				} else {
+					$('input#folderName').removeAttr("record-exist record-exist-errormsg");
+					$("#save_folder").removeAttr("disabled");
+				} 
+			},
+		});
+ }
+ function validateRenameFolderName(folderId){
+	 var FolderName = document.getElementById("folderReName").value.trim();
+	 var projectId = $("#projectId").val();
+	 $('#rmoveErrMsgEditCF').find('p.jquery_form_error_message').remove();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId+"&folderId="+folderId,
+			success : function(data) {
+				 if (data == true) {
+					 $("#save_reNmaeFolder").attr("disabled", "disabled");
+					 $("input#folderReName").after("<p class='jquery_form_error_message'>"+ FolderName+ " is Already Existed</span>");
+					document.getElementById("folderReName").setAttribute('record-exist', 'yes');
+					document.getElementById("folderReName").setAttribute('record-exist-errorMsg',FolderName+ ' is Already Existed');
+				} else {
+					$('input#folderReName').removeAttr("record-exist record-exist-errormsg");
+					$("#save_reNmaeFolder").removeAttr("disabled");
+				} 
+			},
+		});
+ }
+ </script> 
 <script>
 $(".close, .cancel").click(function(){
+	$("#save_folder").removeAttr("disabled");
 	//Recet the form
 	$("#projectDocumentType_form")[0].reset();
 	$("#projectFolder_form")[0].reset();
 	
-	//Rescet the form validations 
-	$("projectDocumentType_form").validate().resetForm();
-	$("projectFolder_form").validate().resetForm();
+	$("#projectDocumentType_form").validate().resetForm();
+	$("#projectFolder_form").validate().resetForm();
+	
+	
 	
 });
 </script>
@@ -663,6 +879,8 @@ function uploadProjectDocument(){
 						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
 							$(".modal-backdrop, .modal").fadeOut();
+							$("#save_doc").removeAttr("disabled", "disabled");
+			         		$("#save_doc" ).removeClass('button').val('Upload');
 								projectDocuments(projectId);
 						},
 					}); 

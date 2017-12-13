@@ -1,29 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
@@ -34,7 +21,6 @@ import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserMailBox;
 import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -165,31 +151,31 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 	}
 
 	@Override
-	public List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId, Long folderId) throws Exception {
-			return genericDao.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, folderId);
+	public List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long userRoleId,String userRoleType,Long folderId,Long candidateId) throws Exception {
+			return genericDao.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoleId, userRoleType, folderId, candidateId);
 	}
 
 	@Override
 	public List<ProjectDocuments> getDeleteProjectDocumentsListByDocumentId(String documentid) throws Exception {
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(!isNullOrEmpty(documentid)){
 			String[] documentIds = documentid.split(",");
 			for(int i=0; i< documentIds.length; i++) {
-				ProjectDocuments projectDocuments =  genericDao.getDocumentById(Long.valueOf(documentIds[i]));
-				projectDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-				projectDocuments.setUpdatedBy(user);
-				projectDocuments.setUpdatedDate(commonUtil.currentDate());
-				projectDocuments.setUpdatedByName(user.getFullName());
-				genericDao.updateProjectDocuments(projectDocuments);
+				genericDao.delteEachDocumentById(Long.valueOf(documentIds[i]));
 			}
 		}
 		return null;
 	}
 
+	
+	
 	@Override
 	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId, String folderName) throws Exception {
+		return genericDao.validateProjectDocumentFolderNameByProjectIdIdAndFolderName(projectId, folderName);
+	}
 }

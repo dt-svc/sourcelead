@@ -727,7 +727,8 @@ public class Constants {
 	
 	public static final int WORKING_HOURS = 8;
 	
-	
+	public static final String DOCUMENT_READ_ACCESS = "0";
+	public static final String DOCUMENT_WRITE_ACCESS = "1";
 	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";

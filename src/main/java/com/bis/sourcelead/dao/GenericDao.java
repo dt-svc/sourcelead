@@ -32,5 +32,13 @@ public interface GenericDao<T extends Serializable> {
 	
 	ProjectDocuments updateProjectDocuments(ProjectDocuments projectDocuments) throws Exception;
 	
-	List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long folderId) throws Exception;
+	List<ProjectDocuments> getEachProjectDocumentsListByProjectIdIdAndFolderId(Long projectId,Long userRoleId,String userRoleType,Long folderId,Long candidateId) throws Exception;
+	
+	Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId,String folderName) throws Exception;
+	
+	void delteEachDocumentById(Long porjectDocumentId)throws Exception;
+	
+//	void delteAllDocumentById(List<Long> porjectDocumentId)throws Exception;
+
+
 }

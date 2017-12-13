@@ -1,0 +1,141 @@
+package com.bis.sourcelead.dao.impl;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dao.ProjectDocumentPermissionDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.ProjectDocumentPermission;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.util.CommonUtil;
+import com.healthmarketscience.jackcess.query.Query;
+
+@Repository
+public class ProjectDocumentPermissionDaoImpl implements ProjectDocumentPermissionDao{
+	
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectDocumentPermissionDaoImpl.class);
+
+	@Override
+	@Transactional
+	public ProjectDocumentPermission saveProjectDocumentPermission(ProjectDocumentPermission projectDocumentPermission) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (projectDocumentPermission != null) {
+				session.saveOrUpdate(projectDocumentPermission);
+			}
+			logger.debug("Saving ProjectDocumentPermission");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ProjectDocumentPermission"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return projectDocumentPermission;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectDocumentPermission> projectDocumentPermissionListByFolderIdAndAccessStatus(Long folderId, Long documentId,String accessStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query;
+		List<ProjectDocumentPermission> projectDocumentPermissionList = null;
+		if(documentId !=null) {
+			 query = "from ProjectDocumentPermission pdp  where pdp.projectDocumentId.id =:documentId and pdp.access =:accessStatus "; 
+			 projectDocumentPermissionList = session.createQuery(query).setLong("documentId", documentId).setString("accessStatus", accessStatus).setCacheable(true).list();
+		}else {
+			 query = "from ProjectDocumentPermission pdp  where pdp.projectDocumentFolderId.id =:folderId and  pdp.projectDocumentId.id IS NULL and pdp.access =:accessStatus "; 
+		     projectDocumentPermissionList = session.createQuery(query).setLong("folderId", folderId).setString("accessStatus", accessStatus).setCacheable(true).list();
+		}
+		return projectDocumentPermissionList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> projectDocumentPermissionRoleIdListByFolderIdAndAccessStatus(Long folderId,Long documentid, String accessStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> projectDocumentPermissionList = null;
+		if(documentid != null) {
+			String query = "Select pdp.userRoleId.id from ProjectDocumentPermission pdp  where pdp.projectDocumentId.id =:documentid and pdp.access =:accessStatus and pdp.userRoleId.id IS NOT NULL"; 
+			projectDocumentPermissionList = session.createQuery(query).setLong("documentid", documentid).setString("accessStatus", accessStatus).setCacheable(true).list();
+		}else {
+			String query = "Select pdp.userRoleId.id from ProjectDocumentPermission pdp  where pdp.projectDocumentFolderId.id =:folderId and pdp.access =:accessStatus and pdp.userRoleId.id IS NOT NULL"; 
+			projectDocumentPermissionList = session.createQuery(query).setLong("folderId", folderId).setString("accessStatus", accessStatus).setCacheable(true).list();
+		}
+		return projectDocumentPermissionList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Long> projectDocumentPermissionMemberIdListByFolderIdAndAccessStatus(Long folderId,Long documentid, String accessStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> projectDocumentPermissionList = null;
+		if(documentid != null) {
+			 String query = "Select pdp.projectMemberId.id from ProjectDocumentPermission pdp  where pdp.projectDocumentId.id =:documentid and pdp.access =:accessStatus and pdp.projectMemberId.id IS NOT NULL"; 
+			  projectDocumentPermissionList = session.createQuery(query).setLong("documentid", documentid).setString("accessStatus", accessStatus).setCacheable(true).list();
+			
+		}else {
+			String query = "Select pdp.projectMemberId.id from ProjectDocumentPermission pdp  where pdp.projectDocumentFolderId.id =:folderId and pdp.access =:accessStatus and pdp.projectMemberId.id IS NOT NULL"; 
+			  projectDocumentPermissionList = session.createQuery(query).setLong("folderId", folderId).setString("accessStatus", accessStatus).setCacheable(true).list();
+			
+		}
+		return projectDocumentPermissionList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentPermissionByFoderIdAndMemberAndAccess(Long foderId, List<Long> memberId, String access) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id =:foderId and pdp.projectMemberId.id IN(:memberId) and pdp.access =:access ";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("foderId", foderId).setParameterList("memberId", memberId).setString("access", access).setCacheable(true).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentPermissionByFoderIdAndRoleIdAndAccess(Long foderId, List<Long> roleIds, String access) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id =:foderId and pdp.userRoleId.id IN(:roleIds) and pdp.access =:access ";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("foderId", foderId).setParameterList("roleIds", roleIds).setString("access", access).setCacheable(true).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	
+	}
+
+ 
+}

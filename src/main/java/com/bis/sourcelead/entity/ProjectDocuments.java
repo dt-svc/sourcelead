@@ -95,6 +95,10 @@ public class ProjectDocuments implements Serializable {
     @JsonProperty
     private String createdDateStr;
 	
+	@Transient
+    @JsonProperty
+	private String permissionAccess;
+	
 	
 	public Long getId() {
 		return Id;
@@ -248,5 +252,13 @@ public class ProjectDocuments implements Serializable {
 			createdDateStr = dateFormat.format(createdDate);
 		}
 		return createdDateStr;
+	}
+
+	public String getPermissionAccess() {
+		return permissionAccess;
+	}
+
+	public void setPermissionAccess(String permissionAccess) {
+		this.permissionAccess = permissionAccess;
 	}
 }
