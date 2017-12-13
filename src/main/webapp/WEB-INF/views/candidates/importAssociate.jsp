@@ -34,8 +34,8 @@
         
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
-        <div class="well">
-          <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
+        <div class="well positionRelative">
+          <div class="input-group col-md-6 clearUpload" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file"  name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
@@ -524,29 +524,16 @@ function validate_fileupload(fileName)
 }
 </script>
 
-
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script>
+  $(function() { 
+		tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+
+	});
+ </script>
+
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-		   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
-	       
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	 var sourceleadUrl ='${sourceleadUrl}';
 		    	var allSkills = $(event.target).val();
@@ -562,118 +549,8 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-		    chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#candidateSkills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#candidateSkills").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		
-		    //Adding Customized Skills to the list
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keydown keyup', function(e1)
-	    		    {
-	    	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
-	    		    	var newEducation = this.value.replace(",","");
-	    		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-	    		        {
-	    		        	preventTabkey(e1);
-	    		        	var isNewEducation = true;
-	    					 $("#candidateEducation option:selected").each(function(){
-	    						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
-	    							 isNewEducation = false;
-	    							 return false;
-	    						 }
-	                       
-	                      });
-	    					 
-	    					 
-	    							if(focussedEducations.length > 0){
-	    								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
-	    								selectone.append(educationOption);
-	    								selectone.find(educationOption).prop('selected',true);
-	    								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
-	    								$("#candidateEducation").trigger("chosen:updated");
-	    						   }
-	    						   else{
-	    							   if(isNewEducation){
-	    								var option = $("<option>").val(newEducation).text(newEducation);
-	    								selectone.append(option);
-	    								selectone.find(option).prop('selected', true);
-	    							   }
-	    						   }
-	    						
-	    					 
-	    					 
-	    		        	
-	                        //end
-	    	        		$("#candidateEducation").trigger("chosen:updated");
-	    	        		
-	    		        }
-	    		    }); 
-		    //Adding Customized Educations to the list
-	       
-	      
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			$("#candidateSkills").val('').trigger("chosen:updated");
+		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
-				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
@@ -915,3 +792,9 @@ function  removeValiationVendorContact() {
 	 
 });
  </script>
+ 
+ <script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	});
+</script>

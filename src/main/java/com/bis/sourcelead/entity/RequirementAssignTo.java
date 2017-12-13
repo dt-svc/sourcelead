@@ -53,6 +53,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JoinColumn(name="ASSIGN_USER_ID", nullable=false )        
     private User assignUserId;
 	
+	@Column(name="STATUS")
+	private String status;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -132,6 +135,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setAssignUserId(User assignUserId) {
 		this.assignUserId = assignUserId;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
 	}
 
 	public Date getCreatedDate() {

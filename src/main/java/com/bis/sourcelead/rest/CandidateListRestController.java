@@ -789,6 +789,7 @@ public class CandidateListRestController {
 		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setStatus(can.getStatus().toString());
 		candidateDTO.setTerminateReason(can.getTerminateReason());
+		candidateDTO.setIsAssociate(can.getIsAssociate());
 		return candidateDTO;
 	}
 	 

@@ -623,7 +623,7 @@ function vendorContactPaginationUrl(url){
 	   	     				   continue;
 	   	     	    	   if(e === report.id+"") {
 	   	     	    		    if(!$("#contactscheckbox").is(":checked"))
-	   	     	    		 	//checkOrUncheckParent($('#vendorContactPagination').DataTable().data()); 
+	   	     	    		 	checkOrUncheckParent("vendorContactPagination",checkedVendorContacts, "contactscheckbox"); 
 	   	     	    	   	flag = true;
 	   	     	    	   	break;
 	   	     	    	   }
@@ -897,7 +897,7 @@ function vendorPaginationUrl(url){
 	   	     				   continue;
 	   	     	    	   if(e === report.orgRelationId+"") {
 	   	     	    		    if(!$("#checkbox1").is(":checked"))
-	   	     	    		 	//checkOrUncheckParent($('#vendorPagination').DataTable().data()); 
+	   	     	    		 	checkOrUncheckParent("vendorPagination",checkedVendors, "checkbox1"); 
 	   	     	    	   	flag = true;
 	   	     	    	   	break;
 	   	     	    	   }
@@ -1010,10 +1010,7 @@ function vendorPaginationUrl(url){
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-	     "initComplete": function( settings, json ) {
-	    	// checkOrUncheckParent(json.data);
-	     }
+	     } 
     } );
     $("#vendorPagination").wrap("<div class='overflow_Auto width100percnt'></div>"); 
     $("input[type=search]").hide();
@@ -1025,20 +1022,22 @@ function vendorPaginationUrl(url){
 }
 
 
-function checkOrUncheckParent(data) {
-	$("#checkbox1").removeProp("checked");
+function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
+	$("#"+checkboxId).removeProp("checked");
 	   var count = 0;
-	 for(var e in checkedvendors) {
-	   if(!e || !checkedvendors[e] || checkedvendors[e] === "")
+	   var data = $("#"+tableId).DataTable().data();
+	 for(var e in selectedItems) {
+	   if(!e || !selectedItems[e] || selectedItems[e] === "")
 		   continue;
+	   
 	   for(var f in data) {
    	   if(e === data[f].id+"") {
    		count ++;
    	   }
 		}
 	 }
-	 if(count == 10) {
-		$("#checkbox1").prop("checked", "checked");
+	 if(count == data.count()) {
+		$("#"+checkboxId).prop("checked", "checked");
 	 }
 }
 

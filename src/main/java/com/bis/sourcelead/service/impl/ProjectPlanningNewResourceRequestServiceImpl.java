@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectPlanningNewResourceRequestDao;
+import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -94,15 +97,15 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         if(projectPlanningRequest.getRejectedReason() != null){
         	   globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
         	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+              //notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         }else{
         	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+             //notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             
         }
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-        notificationScenario.setBody(notificationbody);
+        /*String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        notificationScenario.setBody(notificationbody);*/
         
         //covert subject,body and signature
         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -120,7 +123,7 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
+        //emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
 	}
 
 	@Override
@@ -326,6 +329,19 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
 		 tempHTML = tempHTML+"</table>";
 		 
 		 return tempHTML;
+	}
+
+	@Override
+	public ResponseList<ProjectPlanningNewResourceRequestDTO> getNewResourceRequestListByApproverIdAndOrgLocationId(
+			ProjectPlanningNewResourceRequestDTO resourceRequestDTO, Long approverUserId, Long orgLocationId,
+			String userRole) throws Exception {
+		return projectPlanningNewResourceRequestDao.getNewResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO, approverUserId, orgLocationId, userRole);
+	}
+
+	@Override
+	public List<ProjectPlanningNewResourceRequest> getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(
+			Long approverUserId, Long orgLocationId, String userRole) throws Exception {
+		return projectPlanningNewResourceRequestDao.getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(approverUserId, orgLocationId, userRole);
 	}
 
 }
