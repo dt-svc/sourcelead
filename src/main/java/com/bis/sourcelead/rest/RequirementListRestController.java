@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -1140,7 +1144,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1161,7 +1165,7 @@ public class RequirementListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
-	
+	*/
 	/**
 	 * @author Sammeta David Raju
 	 * 
@@ -1573,7 +1577,6 @@ public class RequirementListRestController {
 	@RequestMapping(value = "/searchRequirement")
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");

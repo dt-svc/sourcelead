@@ -2385,14 +2385,14 @@ public class CrowdSourcingRequirementsRestController {
 				try {
 					referContacts = referContactsService.getReferContactsById(contactUserId);
 
-					if (referContacts != null && referContacts.getDocFile() != null) {
+					/*if (referContacts != null && referContacts.getDocFile() != null) {
 						InputStream in = new ByteArrayInputStream(referContacts.getDocFile());
 						BufferedImage bi = ImageIO.read(in);
 						OutputStream out = response.getOutputStream();
 						ImageIO.write(bi, "jpg", out);
 						out.close();
 					}
-
+*/
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -406,7 +406,7 @@ public class ProfessionalRequirementsController {
 		
 
 	 @RequestMapping(value = "/app/referRequirementList")
-	 public ModelAndView referRequirementList(HttpServletRequest request) {
+	 public ModelAndView referRequirementList(HttpServletRequest request) throws Exception {
 
 	 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);

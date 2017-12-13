@@ -308,9 +308,9 @@
 				<a href="#" class="tree-view">
 					<span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i> </a>
 					<ul class="collapses">
-					<li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
-					<li><a href="<c:url value='/campaignSendersList'/>">Senders</a></li>
-				<li><a href="<c:url value='/recipientsList'/>">Recipients</a></li>
+					<li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
+					<li><a href="<c:url value='${appPath}/campaignSendersList'/>">Senders</a></li>
+				<li><a href="<c:url value='${appPath}/recipientsList'/>">Recipients</a></li>
 			</ul>
 			</li> 
 			</sec:authorize>

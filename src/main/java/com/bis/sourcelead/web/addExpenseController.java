@@ -135,7 +135,7 @@ public class addExpenseController {
 		return model;
 	}
 	
-	 @RequestMapping(value = "/viewExpensesEntryDocument/{title}", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/viewExpensesEntryDocument/{title}", method = RequestMethod.GET)
 	    public void viewExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId,
 	    		@RequestParam(value="title", required=false) String title
 	    		,HttpServletResponse response) throws Exception {
@@ -160,7 +160,7 @@ public class addExpenseController {
 		          sos.flush();
 		          sos.close();
 
-		} 
+		}*/ 
 	 
 	
 }

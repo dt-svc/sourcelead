@@ -365,7 +365,7 @@ public class InvoiceController {
 	
 	
 	
-	 @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
+	 /*@RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
 	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,
 	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
@@ -389,6 +389,6 @@ public class InvoiceController {
 		          sos.flush();
 		          sos.close();
 
-		} 
+		}*/ 
 	
 }
