@@ -32,8 +32,6 @@ public interface ProjectDocumentsService {
      
     List<ProjectDocuments> getDeleteProjectDocumentsListByDocumentId(String documentid) throws Exception;
 
-	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user)throws Exception;
-	
 	Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId,String folderName) throws Exception;
 	
 	ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user, OrgLocations loginOrgLocation)throws Exception;
