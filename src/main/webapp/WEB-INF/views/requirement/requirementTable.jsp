@@ -79,7 +79,7 @@ function prepareRequirementData(url,sourceleadUrl){
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
-   result = result +"    <th>Generated ID</th>"; 
+   result = result +"    <th>Action</th>"; 
    result = result +"    <th>ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>"; 
@@ -89,7 +89,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Owner</th>"; 
    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
    result = result +"    <th>Status</th>"; 
-   result = result +"<th>Actions</th>";
+//    result = result +"<th>Actions</th>";
    result = result +"  </tr>"; 
    result = result +"</thead>";
    result = result +"<tbody>"; 
@@ -150,8 +150,8 @@ function jpagination(url,sourceleadUrl){
            pages: 1
        }),
        "columns": [
+    	   { "data": "requirementUUID" },
     	   { "data": "generatedId"},
-           { "data": "jobId" },
            { "data": "jobTitle"},
            { "data": "clientName"},
            { "data": "jobType" },
@@ -159,8 +159,8 @@ function jpagination(url,sourceleadUrl){
            { "data": "totalApplicants" },
            { "data": "manager" },
            { "data": "createdDate"},
-           { "data": "requirementSubmissionStatus" },
-           { "data": "requirementUUID" }
+           { "data": "requirementSubmissionStatus" }
+          
        ],
 	       "columnDefs": [ 
 	    	   
@@ -219,43 +219,28 @@ function jpagination(url,sourceleadUrl){
 		  		 result = result +"</td>";
 	             return  result;
 		  	}
-	        },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "jobId",
-	    	  	"sortable": false,
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		 var result = "";
-	    	  		 result = result +"<td>";
-	    	  	  	 if(opt.jobId != '' && opt.jobId != null){
-	    	  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
-	    	  	    	}else{
-	    	  	  		 result = result +"<div>-----</div>";
-	    	  	  	 }
-	    	  		 result = result +"</td>";
-		             return  result;
-	    	  	}
-	      },{
+	        } ,{
            "targets": colIndex++,
            "data": "jobTitle",
            "render": function ( data, type, opt, meta ) {
         	   //for export pop-up
         	   $("#requirementEmptyListMessage").val(1);
            		var result = "";
-           		 if(opt.jobId != '' && opt.jobId != null){
-           		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-           		       	result = result +"<td><a href='<c:url value='/app/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-           		       '</sec:authorize>';
-           		       '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-           		       	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-           		       '</sec:authorize>';
-           		  	 }else{
-           		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-           		           	result = result +"<td><a href='<c:url value='/app/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-           		           '</sec:authorize>';
-           		           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-           		           	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-           		           '</sec:authorize>';
-           		  	 }
+           	 if(opt.jobId != '' && opt.jobId != null){
+       		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+       		       	result = result +"<td><a href='<c:url value='/app/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+       		       '</sec:authorize>';
+       		       '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+       		       	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+       		       '</sec:authorize>';
+       		  	 }else{
+       		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+       		           	result = result +"<td><a href='<c:url value='/app/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+       		           '</sec:authorize>';
+       		           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+       		           	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+       		           '</sec:authorize>';
+       		  	 }
 	                return result;
             }
            },
@@ -265,7 +250,7 @@ function jpagination(url,sourceleadUrl){
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-           			
+           	      		
            			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
            	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
            	         '</sec:authorize>';
@@ -274,8 +259,7 @@ function jpagination(url,sourceleadUrl){
 	     	            result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
 	     	         '</sec:authorize>';
            	         
-           		   }else{
-           	      	 result = result +"<td><div>-----</div></td>";
+           		   }else{           	      	 result = result +"<td><div>-----</div></td>";
            	       }
 		                return result;
 	             }
@@ -517,47 +501,8 @@ function jpagination(url,sourceleadUrl){
 			                    result = result +" </div></td>";
 				                return result;
 			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "sortable": false,
-			         "data": "requirementUUID",
-			         "render": function ( data, type, opt, meta ) {
-			         		   var result = "";
-			         		  result = result +" <td><div class='widthIcon'>";
-			      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-			      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
-			      	        '</sec:authorize>';
-			      	        
-			      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-			      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			      						   var userRoleName = '${SourceLeadWeb_loginUserRole}'; 
-			      						   var userId = '${SourceLeadWeb_user.id}';
-			      						   var contains = false;
-			      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
-			      							   for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
-			      								  if(userId == opt.requirementReleasedUserIds[k]){
-			      									  var contains = true;
-			      								  }
-			      							   }
-			      						   }
-			      						   if((opt.isRequirementReleased != null && opt.isRequirementReleased != '' && opt.isRequirementReleased != 'undefined'  && opt.isRequirementReleased == 'Y') 
-			      								   && (contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN')){
-			      				    		 	result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
-			      			
-			      						   	 }else{	
-			      								result = result +"<div><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
-			      						   	 }
-			      			       }
-			      				   else{
-			      			          result = result +"<div>--</div>";
-			      				   } 
-			                   '</sec:authorize>';    
-			      		       result = result +"</div></td>";
-				              return result;
-			          }
 			 }
+			 
 			 
            ],
 	    	"scrollCollapse": false,

@@ -499,11 +499,9 @@ a.alertBtn {
 		</div>
 
 		<div class="filterCta">
-			<h3 onclick="getOrgsList('none','main');">
-				Companies<i class="fa fa-caret-down"></i>
-			</h3>
-			<ul id="orgList"></ul>
-		</div>
+				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
+				<ul id="orgList"></ul>
+			</div>	
 
 		<!-- <div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
@@ -1386,7 +1384,7 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList('+opt.id+');"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
@@ -1653,6 +1651,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 }
 
 function backtoList(){
+	getOpenJobsELKList();
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	if(maxJobCount > 10){
