@@ -1642,10 +1642,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 					user.setUserName(jsonObj.getString("userName"));
 				}
-				if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+				/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 					user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 					user.setFileContentType("image/png");
-				}
+				}*/
 				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 				  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
 					String service = jsonObj.getString("service");
@@ -1810,10 +1810,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 				user.setUserName(jsonObj.getString("userName"));
 			}
-			if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 				user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 				user.setFileContentType("image/png");
-			}
+			}*/
 			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 			  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
 				String service = jsonObj.getString("service");

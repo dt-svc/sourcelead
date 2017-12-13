@@ -1201,7 +1201,7 @@ private ProjectClientService projectClientService;
 		}
 
 
-@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
+/*@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
 	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
 			@PathVariable("title") String title, HttpServletResponse response)
 			throws Exception {
@@ -1224,7 +1224,7 @@ private ProjectClientService projectClientService;
 		sos.flush();
 		sos.close();
 
-	}	
+	}*/	
 
 
 @RequestMapping(value = "/viewOfferDocumentDocView/{title}", method = RequestMethod.GET)

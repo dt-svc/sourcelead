@@ -412,12 +412,12 @@ public class CandidateController {
 		 CandidateDocuments candidateDocuments =  candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);	
 			    
 		 byte[] pdfBytes = null;
-			if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
+			/*if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
 				pdfBytes = candidateDocuments.getDocFile();
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateDocuments.getDocFile());
-			}
+			}*/
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
 		  	    ServletOutputStream sos = response.getOutputStream();

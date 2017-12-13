@@ -1144,7 +1144,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1165,7 +1165,7 @@ public class RequirementListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
-	
+	*/
 	/**
 	 * @author Sammeta David Raju
 	 * 

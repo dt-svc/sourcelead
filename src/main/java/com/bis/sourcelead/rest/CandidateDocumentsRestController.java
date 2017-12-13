@@ -174,7 +174,7 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
 	public void downloadDoc(@RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletResponse response) throws Exception
 	{
 		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);
@@ -196,7 +196,7 @@ public class CandidateDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * @author Prasad K
