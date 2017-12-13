@@ -22,14 +22,17 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -66,12 +69,18 @@ public class OrgSettingsController {
 	@Autowired
 	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
 	
+	@Autowired
+	OrglocationSignatoryService orglocationSignatoryService;
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
 	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
 	{
 		logger.debug("Org settings");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
@@ -121,6 +130,19 @@ public class OrgSettingsController {
 		if(w9Doc != null) {
 			model.addObject("w9Doc", w9Doc);
 		}
+		
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+	    model.addObject("rolesList", rolesList);
+		
+		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
+		if(signatory != null) {
+			model.addObject("signatoryUser", signatory.getUserId().getId());
+			if(!signatory.getUserId().getId().equals(user.getId())) {
+				model.addObject("signatory", signatory);
+				model.addObject("role",signatory.getUserRoleId().getRoles().getDisplayName());
+			}
+		}
+		
 		
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);

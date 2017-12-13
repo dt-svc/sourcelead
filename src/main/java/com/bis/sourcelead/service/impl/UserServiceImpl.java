@@ -209,6 +209,10 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
+		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+		  }
+		  
 		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
 		    }
@@ -426,6 +430,10 @@ public class UserServiceImpl implements UserService {
 			user.setEmail(null);
 			user.setUserName(null);
 		}
+		
+	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+	    }
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);

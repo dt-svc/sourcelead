@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,6 +50,37 @@ public class OrglocationSignatoryDaoImpl implements OrglocationSignatoryDao{
 		} catch (ConstraintViolationException exception) {
 			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORGLOCATION_SIGNATORY"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return orglocationSignatory;
+	}
+
+	@Override
+	@Transactional
+	public OrglocationSignatory getOrglocationSignatoryByOrglocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationSignatory signatory left join fetch signatory.userRoleId userRole left join fetch userRole.user left join fetch userRole.roles "
+				+ " where signatory.orgLocationId.id = :orgLocationId and signatory.status = '1' ";  
+		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		OrglocationSignatory orglocationSignatory = null;
+		if (orglocationSignatoryList != null && orglocationSignatoryList.size() > 0) {
+			orglocationSignatory = (OrglocationSignatory) orglocationSignatoryList.iterator().next();
+		}
+		return orglocationSignatory;
+	}
+
+	@Override
+	@Transactional
+	public OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationSignatory signatory left join fetch signatory.userRoleId userRole left join fetch userRole.user left join fetch userRole.roles "
+				+ " where signatory.uuid = :uuid and signatory.status = '1' ";  
+		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setString("uuid", uuid).setCacheable(true).list();
+		OrglocationSignatory orglocationSignatory = null;
+		if (orglocationSignatoryList != null && orglocationSignatoryList.size() > 0) {
+			orglocationSignatory = (OrglocationSignatory) orglocationSignatoryList.iterator().next();
 		}
 		return orglocationSignatory;
 	}

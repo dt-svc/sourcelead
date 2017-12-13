@@ -47,8 +47,16 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 		String result = "invalid";
 		
 		try {
+			OrglocationSignatory signatory = null;
 			
-			OrglocationSignatory signatory = new OrglocationSignatory();
+			if(StringUtils.isNotBlank(orglocationSignatoryDTO.getUuid())) {
+				signatory = orglocationSignatoryDao.getOrglocationSignatoryByUUID(orglocationSignatoryDTO.getUuid());
+			}else {
+				signatory = new OrglocationSignatory();
+				signatory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				signatory.setStatus(Constants.RECORD_ACTIVE);
+			}
+			 
 			if(StringUtils.isNotBlank(orglocationSignatoryDTO.getEmail())) {
 				signatory.setFirstName(orglocationSignatoryDTO.getFirstName());
 				signatory.setLastName(orglocationSignatoryDTO.getLastName());
@@ -82,8 +90,6 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 				
 			}
 			signatory.setOrgLocationId(orgLocations);
-			signatory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			signatory.setStatus(Constants.RECORD_ACTIVE);
 			signatory.setCreatedBy(loginUser);
 			signatory.setUpdatedBy(loginUser);
 			signatory.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
@@ -99,6 +105,16 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 		}
 		
 		return result;
+	}
+
+	@Override
+	public OrglocationSignatory getOrglocationSignatoryByOrglocationId(Long orgLocationId) throws Exception {
+		return orglocationSignatoryDao.getOrglocationSignatoryByOrglocationId(orgLocationId);
+	}
+
+	@Override
+	public OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception {
+		return orglocationSignatoryDao.getOrglocationSignatoryByUUID(uuid);
 	}
 
 }

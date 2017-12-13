@@ -159,6 +159,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
         
@@ -426,6 +427,7 @@ function cancelOrgImg(){
      		 <jsp:include page="federalAndStateTaxes.jsp" />
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
+     		 <jsp:include page="orglocationSignatory.jsp" />
   	</div>
   </div>
   

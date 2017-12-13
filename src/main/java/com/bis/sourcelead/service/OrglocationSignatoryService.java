@@ -10,4 +10,8 @@ public interface OrglocationSignatoryService {
 	OrglocationSignatory saveOrglocationSignatory(OrglocationSignatory orglocationSignatory) throws Exception;
 	
 	public String addOrglocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,User loginUser,OrgLocations orgLocations) throws Exception;
+	
+	OrglocationSignatory getOrglocationSignatoryByOrglocationId(Long orgLocationId) throws Exception;
+	
+	OrglocationSignatory getOrglocationSignatoryByUUID(String uuid) throws Exception;
 }

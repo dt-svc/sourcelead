@@ -17,6 +17,8 @@ public class OrglocationSignatoryDTO {
 	private String designationType;
 	
 	private String designationOtherType;
+	
+	private String uuid;
 
 	public String getFirstName() {
 		return firstName;
@@ -80,6 +82,14 @@ public class OrglocationSignatoryDTO {
 
 	public void setDesignationOtherType(String designationOtherType) {
 		this.designationOtherType = designationOtherType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	
