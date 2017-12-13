@@ -819,7 +819,6 @@ public class CandidateListRestController {
 		StringBuffer activitySummary = new StringBuffer();
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
-		candidate.setDocFile(null);
 		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
@@ -1034,14 +1033,14 @@ public class CandidateListRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			candidate = candidateService.getCandidateByCandidateId(candidateId);
-			if (candidate != null && candidate.getDocFile() != null) {
+			/*if (candidate != null && candidate.getDocFile() != null) {
 				candidate.setFileContentType("image/jpeg");
 				InputStream in = new ByteArrayInputStream(candidate.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
 				ImageIO.write(bi, "jpg", out);
 				out.close();
-			}
+			}*/
 			} catch (IOException e) {
 					e.printStackTrace();
 				} 

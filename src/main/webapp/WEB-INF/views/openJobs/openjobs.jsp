@@ -498,12 +498,10 @@ a.alertBtn {
 			</ul>
 		</div>
 
-		<div class="filterCta">
-			<h3 onclick="getOrgsList('none','main');">
-				Companies<i class="fa fa-caret-down"></i>
-			</h3>
-			<ul id="orgList"></ul>
-		</div>
+		<div id="companiesListDiv" class="filterCta">
+				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
+				<ul id="orgList"></ul>
+			</div>	
 
 		<!-- <div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
@@ -643,48 +641,39 @@ a.alertBtn {
 				onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i
 				class="fa fa-close"></i></a>
 			<div class="row">
-				<div class="col-md-4">
-					<label>Any of Keyword <i class="fa fa-info-circle"
-						title="Any of Keyword"></i></label>
-
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<label>All Keywords <i class="fa fa-info-circle"
-						title="All Keywords"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="All KeyWord" id="allReqKeyWord"
-							name="allKeyWord"></select>
-					</div>
-
-				</div>
-				<div class="col-md-4">
-					<label>Exclude Keyword <i class="fa fa-info-circle"
-						title="Exclude Keyword"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Exclude KeyWord" id="excludeReqKeyWord"
-							name="excludeKeyWord"></select>
-					</div>
-
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<h4>Details:</h4>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Job Title</label>
+				<div class="col-md-8">
+					<label>Keyword</label>
 						<div class="clearfix">
 							<input type="text" id="requirementTitle" name="requirementTitle"
-								class="form-control input-sm" placeholder="Job Title">
+								class="form-control input-sm" placeholder="Keyword">
+						</div>
+				</div>
+				<div class="col-md-4">
+						<label>Experience</label>
+						<div class="clearfix row">
+							<div class="col-md-6">
+								<select class="chosen-select" id="minExp" name="minExp"
+									data-placeholder="Min Years">
+									<option value="" selected>Min Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<select class="chosen-select" id="maxExp" name="maxExp"
+									data-placeholder="Max Years">
+									<option value="" selected>Max Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 					</div>
+			</div>
+			<div class="row">
+				<div class="clearfix">
 					<div class="col-md-8">
 						<div class="row">
 							<div class="col-md-6">
@@ -726,31 +715,6 @@ a.alertBtn {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Experience</label>
-						<div class="clearfix row">
-							<div class="col-md-6">
-								<select class="chosen-select" id="minExp" name="minExp"
-									data-placeholder="Min Years">
-									<option value="" selected>Min Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<select class="chosen-select" id="maxExp" name="maxExp"
-									data-placeholder="Max Years">
-									<option value="" selected>Max Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
-					</div>
 					<div class="col-md-4">
 						<label>Notice Period</label>
 						<div class="clearfix">
@@ -764,7 +728,8 @@ a.alertBtn {
 							</select>
 						</div>
 					</div>
-
+				</div>
+				<div class="clearfix">
 				</div>
 				<div class="clearfix">
 					<div class="col-md-4">
@@ -1013,7 +978,6 @@ function requirementsFilter(type){
 // 		orgLocationIds.push($(this).val());
 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
-	
 	var offset = 0;
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
@@ -1027,10 +991,10 @@ function requirementsFilter(type){
 	 $("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
 	
 	var url = "?";
-	if(dates!=undefined && dates!=""){
+	 if(dates!=undefined && dates!=""){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"postedOn="+dates.toString().toLowerCase().replace(/ /g ,"-");
-	}
+	} 
 	if(country!=undefined && country!=""){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"locationType="+country.toString().toLowerCase().replace(/ /g ,"-");
@@ -1043,6 +1007,11 @@ function requirementsFilter(type){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"companies="+orgLocationIds.toString().toLowerCase().replace(/ /g ,"-");
 	}
+	
+	if(postedOrgName!=undefined && postedOrgName!=""){
+		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"postedOrgName="+postedOrgName.toString().toLowerCase().replace(/ /g ,"-");
+	}
 	window.location.href = url;
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1052,6 +1021,7 @@ function requirementsFilter(type){
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
+	
 	window.location.href = sourceleadUrl+"/jobs"+url;
 }
 </script>
@@ -1063,15 +1033,31 @@ function getOpenJobsELKListJOBS(){
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
 var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
-	
 	openJobsRequirementTitle = search;
-	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience){
+	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience != null){
 		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
-	}else if(openJobsRequirementTitle != null){
+	}
+	if(openJobsRequirementTitle != null && openJobsLocation != null  && openJobsExperience == null){
+		
+		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation;
+	}
+	
+	if(openJobsRequirementTitle != null && openJobsLocation == null  && openJobsExperience != null){
+		
+		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsExperience;
+	}
+	
+	if(openJobsRequirementTitle == null && openJobsLocation != null  && openJobsExperience != null){
+		
+		location.href = "/jobs/"+openJobsLocation+"/"+openJobsExperience;
+		}
+	else if(openJobsRequirementTitle != null && openJobsExperience == null && openJobsLocation == null){
 		location.href = "/jobs/"+openJobsRequirementTitle;
-	}else if(openJobsLocation != null){
+	}if(openJobsLocation != null && openJobsRequirementTitle ==null && openJobsExperience == null){
 		location.href = "/jobs/"+openJobsLocation;
-	}else if(openJobsExperience != null){
+	}
+	
+	else if(openJobsExperience != null && openJobsLocation == null && openJobsRequirementTitle ==null){
 		location.href = "/jobs/"+openJobsExperience;
 	}
 }
@@ -1082,7 +1068,6 @@ function getOpenJobsELKList(orgLocationId){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
 	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
-	
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
     var dates = $('input:radio[name=dateFilter]:checked').val();
@@ -1104,7 +1089,7 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
-		 document.getElementById("jobResultHeadId").style.display="block";
+// 		 document.getElementById("jobResultHeadId").style.display="block";
 
 	}
 	var offset = 0;
@@ -1318,22 +1303,25 @@ function prepareOpenJobsElkList(data,offset){
 
 <script>
 function getPostedOrgJobs(id){
+	var locationId ="";
 	if(id !=null && id !='undefined' && id>=0){
-		var locationId = $("#"+id+"locationId").val();
+		locationId = $("#"+id+"locationId").val();
 		 $("#postedOrg").val(locationId);
-		 getOpenJobsELKList(locationId);
+		 
 	}else{
-		var locationId = $("#locationId").val();
+		locationId = $("#locationId").val();
 		 $("#postedOrg").val(locationId);
 		 
 	}
+	$("#companiesListDiv").hide();
+	getOpenJobsELKList(locationId);
 // 	requirementsFilter("postedOrg");
 }
 </script>
 
 <script>
 function getOrgsList(alphabet,type){
-	
+
 	var country = "";
 	$('input:radio[name=countryFilter]:checked').each(function() 
     {
@@ -1364,11 +1352,7 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
-
-				    	result = result +'  <input data-id="'+opt.id+'" type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} onclick="checkUncheck($(this),'+opt.id+');"/><div class="control__indicator"></div>';
-
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList('+opt.id+');"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
@@ -1395,15 +1379,6 @@ function getOrgsList(alphabet,type){
 	 }); 
 }
 
-function checkUncheck(ele,id) {
-	if(ele.attr("checked")==="checked") {
-		ele.removeAttr("checked");
-		$("input[data-id="+id+"]").removeAttr("checked");
-	} else
-		ele.attr("checked","checked");
-	
-	requirementsFilter();
-}
 
 function openPopup(){
 	$(".filPop").fadeIn(100);
@@ -1644,6 +1619,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 }
 
 function backtoList(){
+	getOpenJobsELKList();
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	if(maxJobCount > 10){
@@ -1813,7 +1789,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1851,7 +1827,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2709,7 +2685,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2766,7 +2742,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();

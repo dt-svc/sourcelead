@@ -596,12 +596,12 @@ public class ContractController {
 		ContractRequestDocuments contractRequestDocuments =  contractRestController.getContractRequestDocumentsById(Long.parseLong(docId));
 		
 		byte[] pdfBytes = null ;
-		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
+		/*if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
 			pdfBytes = contractRequestDocuments.getDocFile();
 		}
 		else{
 			 pdfBytes = pdfConversionUtil.convertDocToPdf(contractRequestDocuments.getDocFile());
-		}
+		}*/
 		
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");

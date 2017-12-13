@@ -239,6 +239,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		try {
 			userService.addUser(user);
+			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+				sendActivationEmail(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -426,6 +428,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
@@ -1642,10 +1649,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 					user.setUserName(jsonObj.getString("userName"));
 				}
-				if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+				/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 					user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 					user.setFileContentType("image/png");
-				}
+				}*/
 				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 				  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
 					String service = jsonObj.getString("service");
@@ -1810,10 +1817,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 				user.setUserName(jsonObj.getString("userName"));
 			}
-			if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 				user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 				user.setFileContentType("image/png");
-			}
+			}*/
 			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 			  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
 				String service = jsonObj.getString("service");

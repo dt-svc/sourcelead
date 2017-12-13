@@ -119,11 +119,6 @@ public class UserMailBox implements Serializable{
 	@Transient
 	private Integer totalUnReadMailsCount;
 	
-	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -384,14 +379,6 @@ public class UserMailBox implements Serializable{
 
 	public void setCandidatesList(List<Candidate> candidatesList) {
 		this.candidatesList = candidatesList;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {

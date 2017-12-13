@@ -1,7 +1,6 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,11 +44,17 @@ function resetPassword(){
     $('#currentPwdDiv').find('p.jquery_form_error_message').remove();
     $('#newPwdDiv').find('p.jquery_form_error_message').remove();
     $('#confirmPwdDiv').find('p.jquery_form_error_message').remove();
-   
+    $('#profile').show();
+    $('#updatepassword').hide();
+    $('#configure').hide();
     $("#save_button").removeAttr("disabled");
+    
 }
 
 function resetProfile(){
+	$('#profile').hide();
+    $('#updatepassword').show();
+    $('#configure').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -62,11 +67,12 @@ function resetProfile(){
 	$('#twitterDiv').find('p.jquery_form_error_message').remove();
 	$('#fbDiv').find('p.jquery_form_error_message').remove();
 	$('#gplusDiv').find('p.jquery_form_error_message').remove();
-	$('#configure').hide();
 	
 }
 function getConfiguredList(){
-	$('#configure').show();
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').show();
 }
 </script>
 
@@ -101,7 +107,7 @@ function getConfiguredList(){
 		  <div class="accountsettings-tab">
 		  <ul class="nav nav-tabs">
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
-			<li onclick="resetProfile();"><a data-toggle="tab" href="#password">Password</a></li>
+			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 		  </ul>
 
@@ -237,7 +243,7 @@ function getConfiguredList(){
 	
 	
 			</div>
-			<div id="password" class="tab-pane fade">
+			<div id="updatepassword" class="tab-pane fade">
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <div class="password-icon mt mb text-center">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
@@ -295,16 +301,16 @@ function getConfiguredList(){
 					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
 					<div class="col-md-7 toggle-button">
 						<label class="switch">
-						 <c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
-								<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
-						 </c:if>
-						 <c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
-								<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						 </c:if>
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+						<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>		
 							<div class="slider round"></div>
 						</label>
 					</div>
-				</div>
+					
 			</div>
 			</div>
 			</div>

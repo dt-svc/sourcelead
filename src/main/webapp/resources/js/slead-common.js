@@ -320,6 +320,7 @@ function uploadResumeOnSelect(formId) {
      	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
      	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
+ 		    $(".clearUpload").show();
 
 	});
 }

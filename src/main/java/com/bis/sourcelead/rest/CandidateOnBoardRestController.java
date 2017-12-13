@@ -259,7 +259,7 @@ public class CandidateOnBoardRestController {
 			
 	}
 	
-	@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
     public void downloadTemplateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
 		
 		
@@ -298,7 +298,7 @@ public class CandidateOnBoardRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 
-	}  
+	} */ 
 	
 	
 	@RequestMapping(value = "/deleteTemplateDocumentByDocumentUUID" , method = RequestMethod.POST)
@@ -1723,7 +1723,6 @@ public class CandidateOnBoardRestController {
 			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
 			 
 			 if(null != document){
-				 document.setUploadedDocFile(null);
 				 document.setUploadedDocFileName(null);
 				 document.setUploadedFileContentType(null);
 				 document.setUploadFileURL(null);

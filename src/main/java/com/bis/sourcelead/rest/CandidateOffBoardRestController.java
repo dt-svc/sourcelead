@@ -612,7 +612,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
+		 /*@RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
 		    public void downloadOffboardDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
 				
 				
@@ -639,7 +639,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					} 
 
-			}  
+			}*/  
 			
 			
 			@RequestMapping(value = "/deleteOffBoardingDocumentByDocumentUUID" , method = RequestMethod.POST)
