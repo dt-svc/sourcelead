@@ -1748,10 +1748,10 @@ $('body').on('blur', '#inviteCompany_form', function() {
 </script>
 
 <%-- <c:if test='${viewPage == "campaignSender"}'> --%>
-<script src="resources/js/campaignSender.js"></script>
+<script src="/resources/js/campaignSender.js"></script>
 <div id='campaignSender' class='popUpOut'></div> 
 
-<script src="resources/js/campaignRecipient.js"></script>
+<script src="/resources/js/campaignRecipient.js"></script>
 <div id='campaignRecipient' class='popUpReci'></div> 
 <%-- </c:if> --%>
 
