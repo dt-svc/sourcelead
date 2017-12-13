@@ -455,7 +455,6 @@ var Signer = (function() {
     let validateSignCount = function() {
         let signedCount = $('.insertSignImg').length;
         let totalSignatureCount = $('.signature').length;
-        $('#signCountStatus').html(signedCount + ' of ' + totalSignatureCount + ' Signed');
         $('#btnSignDoc').addClass('disabled');
         if (signedCount === totalSignatureCount) {
             $('#btnSignNext').hide();
@@ -560,18 +559,32 @@ var Signer = (function() {
               dataType: "json",
     	       url: sourceleadUrl+"/signDocument?&contractId="+contractId,       
     	       success: function(data) {
-                   console.log(data);
-                   alert('Document successfully signed.');
-                   location.replace(sourceleadUrl+"/contractListbyStatus");
+                console.log(data);
+               	var result = "";
+            	result = result +"	<div class='project_inn_mask'></div>"; 
+            	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+            	result = result +"		<p >Document successfully signed..</p>";
+            	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="successHidePopuop();"  style="background-color: #5cb85c; width : 100%"></b>';
+            	result = result +"	</div>";
+            	$("#popup").append(result);
+            	$("#remove_user_pop").slideDown(200);
+            	$(".project_inn_mask").fadeIn(200);
                },
                error: function(data) {
-                   console.log(data);
-                   alert('Error occured.');
+                console.log(data);
+                result = result +"	<div class='project_inn_mask'></div>"; 
+               	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+               	result = result +"		<p>Error occured..</p>";
+               	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="errorHidePopuop();" style="width : 100%"></b>';
+               	result = result +"	</div>";
+               	$("#popup").append(result);
+               	$("#remove_user_pop").slideDown(200);
+               	$(".project_inn_mask").fadeIn(200);
                }
     	  });
         
     }
-
+    
 
     //Get query string
     let getQueryString = function(name, target) {
@@ -716,3 +729,16 @@ var Signer = (function() {
         setSigningType: setSigningType,
     }
 })();
+
+function successHidePopuop(){
+	 $("#popUp").empty();
+  	 $(".project_inn_mask").fadeOut(200);
+  	 $("#remove_user_pop").hide();
+  	 location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
+function errorHidePopuop(){
+	 $("#popUp").empty();
+	 $("#remove_user_pop").hide();
+ 	 $(".project_inn_mask").fadeOut(200);
+}
