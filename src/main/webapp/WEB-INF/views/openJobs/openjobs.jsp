@@ -498,7 +498,7 @@ a.alertBtn {
 			</ul>
 		</div>
 
-		<div class="filterCta">
+		<div id="companiesListDiv" class="filterCta">
 				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
 				<ul id="orgList"></ul>
 			</div>	
@@ -641,48 +641,39 @@ a.alertBtn {
 				onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i
 				class="fa fa-close"></i></a>
 			<div class="row">
-				<div class="col-md-4">
-					<label>Any of Keyword <i class="fa fa-info-circle"
-						title="Any of Keyword"></i></label>
-
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<label>All Keywords <i class="fa fa-info-circle"
-						title="All Keywords"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="All KeyWord" id="allReqKeyWord"
-							name="allKeyWord"></select>
-					</div>
-
-				</div>
-				<div class="col-md-4">
-					<label>Exclude Keyword <i class="fa fa-info-circle"
-						title="Exclude Keyword"></i></label>
-					<div class="clearfix">
-						<select class="chosen-select form-control input-sm" multiple
-							data-placeholder="Exclude KeyWord" id="excludeReqKeyWord"
-							name="excludeKeyWord"></select>
-					</div>
-
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<h4>Details:</h4>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Job Title</label>
+				<div class="col-md-8">
+					<label>Keyword</label>
 						<div class="clearfix">
 							<input type="text" id="requirementTitle" name="requirementTitle"
-								class="form-control input-sm" placeholder="Job Title">
+								class="form-control input-sm" placeholder="Keyword">
+						</div>
+				</div>
+				<div class="col-md-4">
+						<label>Experience</label>
+						<div class="clearfix row">
+							<div class="col-md-6">
+								<select class="chosen-select" id="minExp" name="minExp"
+									data-placeholder="Min Years">
+									<option value="" selected>Min Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<select class="chosen-select" id="maxExp" name="maxExp"
+									data-placeholder="Max Years">
+									<option value="" selected>Max Years</option>
+									<c:forEach begin="0" end="24" varStatus="loop">
+										<option value="${loop.index}">${loop.index}Years</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 					</div>
+			</div>
+			<div class="row">
+				<div class="clearfix">
 					<div class="col-md-8">
 						<div class="row">
 							<div class="col-md-6">
@@ -724,31 +715,6 @@ a.alertBtn {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="clearfix">
-					<div class="col-md-4">
-						<label>Experience</label>
-						<div class="clearfix row">
-							<div class="col-md-6">
-								<select class="chosen-select" id="minExp" name="minExp"
-									data-placeholder="Min Years">
-									<option value="" selected>Min Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<select class="chosen-select" id="maxExp" name="maxExp"
-									data-placeholder="Max Years">
-									<option value="" selected>Max Years</option>
-									<c:forEach begin="0" end="24" varStatus="loop">
-										<option value="${loop.index}">${loop.index}Years</option>
-									</c:forEach>
-								</select>
-							</div>
-						</div>
-					</div>
 					<div class="col-md-4">
 						<label>Notice Period</label>
 						<div class="clearfix">
@@ -762,7 +728,8 @@ a.alertBtn {
 							</select>
 						</div>
 					</div>
-
+				</div>
+				<div class="clearfix">
 				</div>
 				<div class="clearfix">
 					<div class="col-md-4">
@@ -1065,34 +1032,9 @@ function getOpenJobsELKListJOBS(){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
+	var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
 	openJobsRequirementTitle = search;
-	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience != null){
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
-	}
-	if(openJobsRequirementTitle != null && openJobsLocation != null  && openJobsExperience == null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation;
-	}
-	
-	if(openJobsRequirementTitle != null && openJobsLocation == null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsExperience;
-	}
-	
-	if(openJobsRequirementTitle == null && openJobsLocation != null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsLocation+"/"+openJobsExperience;
-		}
-	else if(openJobsRequirementTitle != null && openJobsExperience == null && openJobsLocation == null){
-		location.href = "/jobs/"+openJobsRequirementTitle;
-	}if(openJobsLocation != null && openJobsRequirementTitle ==null && openJobsExperience == null){
-		location.href = "/jobs/"+openJobsLocation;
-	}
-	
-	else if(openJobsExperience != null && openJobsLocation == null && openJobsRequirementTitle ==null){
-		location.href = "/jobs/"+openJobsExperience;
-	}
+	location.href = "/jobs/"+(openJobsRequirementTitle!=""?openJobsRequirementTitle:"all")+"/"+(openJobsLocation!=""?openJobsLocation:"all")+"/"+(openJobsExperience!=""?openJobsExperience:"all");
 }
 </script>
 
@@ -1346,6 +1288,7 @@ function getPostedOrgJobs(id){
 		 $("#postedOrg").val(locationId);
 		 
 	}
+	$("#companiesListDiv").hide();
 	getOpenJobsELKList(locationId);
 // 	requirementsFilter("postedOrg");
 }
@@ -1384,7 +1327,8 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList('+opt.id+');"/><div class="control__indicator"></div>';
+// 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList();"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}
