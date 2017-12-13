@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.model.SignedImageInfo;
-import com.bis.sourcelead.rest.DocumentSignController;
 import com.bis.sourcelead.util.DocuSignUtil;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -36,7 +35,7 @@ public class SignImageService {
 	@Autowired
 	private DocuSignUtil docuSignUtil;
 
-	public void signImage(SignedImageInfo signedImageInfo, String contextPath, String userPath1) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
+	public void signImage(SignedImageInfo signedImageInfo, String contextPath) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
 		String[] imageLocation =  docuSignUtil.getimageLocation();
 		String dirPath = null;
 		if(signedImageInfo.getUserId().contains("/unsigned.pdf")) {
@@ -52,6 +51,7 @@ public class SignImageService {
 			Font font = null;
 			try {
 				String imageType = imageLocation[i];
+				
 				image = ImageIO.read(new File(contextPath + imageType));
 
 				font = Font.createFont(Font.TRUETYPE_FONT,

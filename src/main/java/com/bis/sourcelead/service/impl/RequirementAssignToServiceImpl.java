@@ -5,11 +5,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -29,8 +37,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -38,7 +48,8 @@ import com.google.common.collect.Iterables;
 @Service
 public class RequirementAssignToServiceImpl implements RequirementAssignToService{
 	
-
+	@Autowired
+	SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -60,6 +71,9 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	 
 	 @Autowired
 	 UserRoleService userRoleService;
+	 
+	 @Autowired
+	 TeamService teamService;
 
 	@Override
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
@@ -215,6 +229,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 	@Override
 	public List<RequirementAssignTo> updateRequirementAssignToListByRequirementId(String assignedIdVal, String requirementId, OrgLocations orgLocations, User user) throws Exception
 	{
+		String assignedIdValCopy = assignedIdVal;
 		List<RequirementAssignTo> requirementAssignToList = null;
 		List<RequirementAssignTo> newlyUpdatedRequirementAssignToList = null;
 		List<RequirementAssignTo> requirementAssignToListCopy = new ArrayList<RequirementAssignTo>();
@@ -269,6 +284,34 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 					requirementAssignToListCopy.add(requirementAssignTo);
 				}
 			}
+			
+			/*save updated assignTo list in ELK*/
+			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+			boolQueryBuilder.must(QueryBuilders.matchQuery("requirementId", requirementId));
+			SearchHits searchHits = sourceleadELKBaseIndexer.searchDocument(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE, boolQueryBuilder);
+			ObjectMapper mapper = new ObjectMapper();
+	    	for (SearchHit hit : searchHits) {
+	    		String json = hit.getSourceAsString();
+	    		RequirementIndex requirementIndex = mapper.readValue(json, RequirementIndex.class);
+	    		
+	    		HashSet<String> teamOwnerUserId = new HashSet<>();
+				HashSet<String> teamAssignUserId = new HashSet<>();
+	    		for (Iterable<String> iterable : Iterables.partition(Splitter.on(",").split(assignedIdValCopy), 2)) {
+					if(!iterable.toString().equalsIgnoreCase("[]")){
+						String userId = Joiner.on(",").join(iterable).split(",")[0];
+						teamAssignUserId.add(userId);
+						String teamId = Joiner.on(",").join(iterable).split(",")[1];
+						if(null != requirementId && "" != requirementId && !teamId.equalsIgnoreCase("undefined")){
+							Team team = teamService.getTeamByTeamId(Long.parseLong(teamId));
+							if(team.getOwnerUserId() != null && team.getOwnerUserId().getId() != null)
+							teamOwnerUserId.add(team.getOwnerUserId().getId().toString());
+						}
+					}
+	    		}
+	    		requirementIndex.setTeamOwnerUserId(teamOwnerUserId.toArray(new String[teamOwnerUserId.size()]));
+				requirementIndex.setTeamAssignUserId(teamAssignUserId.toArray(new String[teamAssignUserId.size()]));
+				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE, requirementId);
+	    	}
 		}
 		if(requirementAssignToListCopy.size() > 0){
 			newlyUpdatedRequirementAssignToList = requirementAssignToDao.updateRequirementAssignToListByRequirementId(requirementAssignToListCopy);
