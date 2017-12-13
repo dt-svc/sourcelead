@@ -259,6 +259,20 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		response.setData(wagesAndTaxlist);
 		return response;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public WageTaxSummary getEmployeeIdByUserId(User user) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		WageTaxSummary wageTaxSummary = null;
+		String query = "from WageTaxSummary wts  where wts.userId.id =:userId GROUP BY wts.employeeId";
+		List<WageTaxSummary> wageTaxSummaryLis = session.createQuery(query).setLong("userId", user.getId()).setCacheable(true).list();
+		if(wageTaxSummaryLis != null && wageTaxSummaryLis.size() >0){
+			wageTaxSummary = wageTaxSummaryLis.get(0);
+		}
+		return wageTaxSummary;
+	}
 	
 
 }

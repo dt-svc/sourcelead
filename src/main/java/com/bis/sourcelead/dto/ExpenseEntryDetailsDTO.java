@@ -3,8 +3,6 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.bis.sourcelead.enums.PaymentModes;
-
 public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

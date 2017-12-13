@@ -493,4 +493,3 @@
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
-

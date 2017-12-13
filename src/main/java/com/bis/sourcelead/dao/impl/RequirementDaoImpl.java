@@ -28,9 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ReferContactsDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -1629,6 +1633,176 @@ public class RequirementDaoImpl implements RequirementDao {
 		}else{
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' ";
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!requirement.isEmpty()){
+			return requirement;
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId, Long userId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id = :orglocationId "
+				+ "and requirement.id IN (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId)";
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+		if(!requirement.isEmpty()){
+			return requirement;
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO, Long orglocationId, Long userId,String dateFormat) throws Exception
+	{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Requirement> requirementList = null;
+		
+		Query queryObj = null;
+		Integer filterCount = 0;
+		StringBuilder query1 = new StringBuilder("");
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		List<Long> countlist = null;
+		
+		
+		if(requirementDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+			 query1.append(" requirement.jobId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobType like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.rate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.rate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.postedOrgName like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.priority like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR requirement.location like '%" + requirementDTO.getSearchValue() + "%' ");
+						
+			}
+		
+		if(requirementDTO.getJobCampaignType().equalsIgnoreCase("openJobs")){
+			String query = "from Requirement requirement  where requirement.orgLocationId.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' ";
+			 
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+				}else{
+					 queryObj = session.createQuery(query + query1.toString());
+				}
+			 
+			    queryObj.setFirstResult(requirementDTO.getStart());
+				queryObj.setMaxResults(requirementDTO.getLength());
+				
+				queryObj.setLong("orglocationId",orglocationId).setCacheable(true).list();
+				requirementList = queryObj.list();
+				
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					filterCount = requirementList.size();
+				}
+				
+		
+		}else{
+			 
+			String query = "from Requirement requirement where requirement.orgLocationId.id = :orglocationId "
+					+ "and requirement.id IN (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId)";
+			List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString());
+			}
+		 
+		    queryObj.setFirstResult(requirementDTO.getStart());
+			queryObj.setMaxResults(requirementDTO.getLength());
+			
+			queryObj.setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			requirementList = queryObj.list();
+			
+			countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				filterCount = requirementList.size();
+			}
+			
+		}
+		
+		  int totalCount = 0;
+			
+			if (requirementDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+		
+			
+		    for(Requirement req : requirementList){
+		    	
+		    	RequirementDTO reqDTO = new RequirementDTO();
+		    	reqDTO.setRequirementId(req.getId().toString());
+		    	reqDTO.setJobId(req.getJobId());
+		    	reqDTO.setJobTitle(req.getJobTitle());
+		    	reqDTO.setJobType(req.getJobType());
+		    	reqDTO.setRate(req.getRate());
+		    	reqDTO.setLocation(req.getLocation());
+		    	reqDTO.setPriority(req.getPriority());
+		    	if(StringUtils.isNotBlank(dateFormat)){
+		    		reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, req.getCreatedDate()));
+		    	}else{
+		    		reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", req.getCreatedDate()));
+		    	}
+		    	
+		    	requirementDTOList.add(reqDTO);
+		    }
+		
+		    response.setData(requirementDTOList);
+			return response;
+	}
+
+	@Override
+	@Transactional
+	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception
+	{
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement where requirement.id IN (:requirementIds) )";
+		List<Requirement> requirementList  =  session.createQuery(query).setParameterList("requirementIds",requirementIds).setCacheable(true).list();
+		
+		if(requirementList != null && requirementList.size() > 0){
+			for(Requirement requirement : requirementList){
+				RequirementDTO requirementDTO = new RequirementDTO();
+				requirementDTO.setJobTitle(requirement.getJobTitle());
+				requirementDTO.setLocation(requirement.getLocation());
+				requirementDTO.setJobType(requirement.getJobType());
+				requirementDTO.setSkills(requirement.getSkills());
+				requirementDTO.setRequirementUUID(requirement.getRequirementUUID());
+				requirementDTOList.add(requirementDTO);
+			}
+		}
+		
+		return requirementDTOList;
 	}
 
 	
