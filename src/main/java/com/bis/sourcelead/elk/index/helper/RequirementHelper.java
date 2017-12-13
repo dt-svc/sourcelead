@@ -159,6 +159,7 @@ public class RequirementHelper {
 				requirementIndex.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
 				requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			}
+		}
 			HashSet<String> teamOwnerUserId = new HashSet<>();
 			HashSet<String> teamAssignUserId = new HashSet<>();
 			if(requirement.getRequirementAssignTo() != null &&  !requirement.getRequirementAssignTo().isEmpty()){
@@ -179,7 +180,7 @@ public class RequirementHelper {
 			requirementIndex.setTeamOwnerUserId(teamOwnerUserId.toArray(new String[teamOwnerUserId.size()]));
 			requirementIndex.setTeamAssignUserId(teamAssignUserId.toArray(new String[teamAssignUserId.size()]));
 		     }
-		   }
+		   
 			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
 			requirementIndex.setIsTemplate(requirement.getIsTemplate());
 			// education
