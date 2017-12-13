@@ -227,7 +227,7 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	@RequestMapping(value = "/downloadInvoiceAttachment")
+	/*@RequestMapping(value = "/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
 		
 		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);
@@ -251,7 +251,7 @@ public class InvoiceRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
- }
+ }*/
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
@@ -723,7 +723,7 @@ public class InvoiceRestController {
 	     	
 	 	}
     
-	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	 /* @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
 	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
 		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
 			    response.setContentType("application/octet-stream");
@@ -748,7 +748,7 @@ public class InvoiceRestController {
 				} 
 
 		}  
-
+*/
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {

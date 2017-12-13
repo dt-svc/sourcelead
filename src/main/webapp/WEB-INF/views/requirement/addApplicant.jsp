@@ -62,7 +62,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="col-md-5 pull-right">';
 	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
-	result = result + '<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearImpCanUpload()">';
+	result = result + '<div class="input-group" id="uploadFileGroup">';
 	result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 	result = result + '</span> </label>';
@@ -170,7 +170,7 @@ function getAddApplicant(requirementId){
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
 	result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 	result = result + '		<div class="col-md-8">';
-	result = result + '			    <div class="input-group col-md-12 attachfile-error clearUpload" id="uploadFileGroup1" style="margin:0 auto" onClick="clearUpload()">';
+	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
 	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;"  id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
@@ -2711,12 +2711,12 @@ function validate_fileupload(fileName)
  }
  </script>
  
- <script>
-	function clearUpload(){
+ <!-- <script>
+	 function clearUpload(){
 		$("#newUploadFile").val("");
-	}
+	} 
 	function clearImpCanUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->
  

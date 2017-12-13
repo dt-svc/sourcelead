@@ -234,7 +234,8 @@ public class LoginSessionController {
 			}
 		}*/
 		
-		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		//commented By Pavan jampana -- switchuserType value will be available in the session no-need to set again.
+//		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		List<SourceleadActions> actionsList = null;
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){

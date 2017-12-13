@@ -102,7 +102,7 @@ function addProjectDocument(projectId) {
 // 	result = result + '<div class="col-md-6 mb10 clearfix"><lable class="paddingRight">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload();">';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadProjectDocument();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
@@ -394,8 +394,8 @@ function taskPagination(){
 </script>
 
 
-<script>
+<!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->

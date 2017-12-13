@@ -425,7 +425,7 @@ public class MailBoxRestController {
 		
 		 UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
 		    
-		    response.setContentType("application/octet-stream");
+		    /*response.setContentType("application/octet-stream");
 		    StringBuilder fileName = new StringBuilder();
 	        response.setHeader("Content-Disposition",  fileName.append("attachment; filename=\"").append(userMailbox.getFileName()).append("\"").toString());
 		    
@@ -445,7 +445,7 @@ public class MailBoxRestController {
 
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
+			} */
  }
 	
 	

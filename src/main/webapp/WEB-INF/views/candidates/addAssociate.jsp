@@ -15,6 +15,7 @@
 	 
 	 <script>
 		$(document).ready(function() {
+			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
@@ -362,13 +363,15 @@
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
 							<div class="col-md-9 positionRelative">
-								<div class="input-group col-md-12 clearUpload" id="uploadFileGroup"
+								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 									</label> 
+									
 									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
+										<div class="clearUpload"></div>
 								</div>
 							</div>
 						</div>
@@ -920,6 +923,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
  $(function() {
 		$("#uploadBtn").change(function() {
 			fileUpload("uploadBtn", "resumes", "addcandidate_form");
+			$(".clearUpload").show();
 		});
 	 });
  </script>
@@ -927,5 +931,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
  <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");
+		 $(".clearUpload").hide();
+	        $("#addcandidate_form input[data-id*=uploadBtn]").remove();
 	});
 </script>

@@ -25,6 +25,7 @@ display: none;
 
 <script>
  $(document).ready(function(){
+	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
 		 
@@ -211,6 +212,7 @@ display: none;
                 <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <div class="clearUpload"></div>
             </div>
           </div>
         </div> -->
@@ -279,6 +281,7 @@ $(function(){
 $(function() {
 	$("#attachfileBtn").change(function() {
 		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "hotlistCampaign_form");
+		$(".clearUpload").show();
 	});
  });
  
@@ -1550,4 +1553,12 @@ function checkUniqueSubject(){
 }
 </script>
   
+  <script>
+	$(".clearUpload").click(function(){
+		$("#attachfile-mail").val("");
+		$("#attachfileBtn").val("");
+	        $("#hotlistCampaign_form input[data-id*=attachfileBtn]").remove();
+	        $(".clearUpload").hide();
+	});
+</script>
 <jsp:include page="masterFooter.jsp" />

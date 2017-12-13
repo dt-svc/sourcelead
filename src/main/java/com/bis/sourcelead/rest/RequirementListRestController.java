@@ -745,19 +745,19 @@ public class RequirementListRestController {
 						}
 					}
 					String candidateName = "";
-					if (requirementSubmission.getCandidate() != null) {
-						if (!isNullOrEmpty(requirementSubmission.getCandidate().getLastName())) {
+					if (requirementSubmissionTemplateFields != null) {
+						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString();
+							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 						}
 						else {
-							candidateName = requirementSubmission.getCandidate().getFirstName();
+							candidateName = requirementSubmissionTemplateFields.getFirstName();
 						}
 						requirementSubmission.setCandidateName(candidateName);
 						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
 						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmission.getCandidate().getMobilePhone());
+						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 					}
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
@@ -1144,7 +1144,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1165,7 +1165,7 @@ public class RequirementListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
-	
+	*/
 	/**
 	 * @author Sammeta David Raju
 	 * 

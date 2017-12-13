@@ -12,6 +12,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.rest.CampaignRestController;
 import com.google.gson.JsonObject;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -31,7 +34,7 @@ import com.sendgrid.SendGrid;
 
 @Component
 public class CampaignUtil {
-	
+	private static final Logger logger = LoggerFactory.getLogger(CampaignUtil.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -50,6 +53,7 @@ public class CampaignUtil {
 	 */
 	public String createSender(CreateSenderDTO createSenderDTO, OrgLocations orgLocation) throws IOException
 	{
+		logger.info("====Sendgrid key "+sendgridKey);
 		String isSenderCreated = null;
 		String city = "";
 		String country = "";
@@ -153,6 +157,7 @@ public class CampaignUtil {
 	 */
 	public String createList(CampaignListDTO campaignListDTO) throws IOException
 	{
+		logger.info("====Sendgrid key "+sendgridKey);
 		String isListCreated = null;
 		try {
 			SendGrid sg = new SendGrid(sendgridKey);

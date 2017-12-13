@@ -90,7 +90,6 @@ public class AddElkRequirement {
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
 				if(null != rs.getString("PROJECT_CLIENT_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_CLIENT_ID"))){
 				requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
-				
 				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
 					requirementIndex.setDescription(rs.getString("DESCRIPTION"));

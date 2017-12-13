@@ -2303,19 +2303,25 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 emailAttachment.setUUID(UUID);
 		 EmailAttachment attachmentZip = zipFiles(docusList);
 		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
-		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
-		 for(InvoiceDocument doc:documenetSet){
-			 EmailAttachment docAttachment = new EmailAttachment();
-			 docAttachment.setDocFile(doc.getDocFile());
-			 docAttachment.setName(doc.getFileName());
-			 documentList.add(docAttachment);
-		 }
-		 
-		 }
-		 emailAttachment.setDocFile(invoice.getDocFile());
-		 emailAttachment.setName(invoice.getFileName());
-		 attachmentList.add(emailAttachment);
-
+             Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+             for(InvoiceDocument doc:documenetSet){
+                    EmailAttachment docAttachment = new EmailAttachment();
+                    String fileUrl = doc.getFileUrl();
+                    if(StringUtils.isNotBlank(fileUrl)){
+                          docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+                          docAttachment.setName(doc.getFileName());
+                          documentList.add(docAttachment);
+                    }
+                   
+             }
+            
+              }
+             String invoiceFileUrl = invoice.getFileUrl();
+             if(StringUtils.isNotBlank(invoiceFileUrl)){
+                    emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+                    emailAttachment.setName(invoice.getFileName());
+                    attachmentList.add(emailAttachment);
+             }
 		 if(attachmentZip !=null){
 			 attachmentList.add(attachmentZip);
 		 }
@@ -2550,17 +2556,24 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
 
-		// store attached Documents (after)
-		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
-				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
-		invoice.setFileName(file.getName());
-		byte[] bytesArray = getByteArray(file);
-		invoice.setDocFile(bytesArray);
-		// invoiceDao.saveInvoce(invoice);
-		if (null != file) {
-			file.delete();
-		}
-
+		 // store attached Documents (after)
+        File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
+                     invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+        invoice.setFileName(file.getName());
+        if (file.exists() && !file.isDirectory()) {
+               invoice.setFileName(file.getName());
+               invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+        }
+        if (null != file) {
+               file.delete();
+        }
+       
+//      byte[] bytesArray = getByteArray(file);
+//      invoice.setDocFile(bytesArray);
+        // invoiceDao.saveInvoce(invoice);
+        if (null != file) {
+               file.delete();
+        }
 		if (invoice.getSubmissionApproverHierarchyIds() != null
 				&& invoice.getSubmissionApproverHierarchyIds().size() > 0) {
 			String submissionIds = invoice.getSubmissionApproverHierarchyIds().stream().map(Object::toString)

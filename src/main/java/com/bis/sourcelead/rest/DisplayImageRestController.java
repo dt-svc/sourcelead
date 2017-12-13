@@ -42,7 +42,7 @@ public class DisplayImageRestController {
 	public @ResponseBody  void addTimesheetEntries(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
     	User user = userService.findByUserName("SourceLeadAdmin");
-		if(user.getDocFile() !=null)
+		/*if(user.getDocFile() !=null)
 		{
 			response.setContentType("image/jpeg");
 			try {
@@ -56,7 +56,7 @@ public class DisplayImageRestController {
 			} catch (IOException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
-		}
+		}*/
 	}
    
     
