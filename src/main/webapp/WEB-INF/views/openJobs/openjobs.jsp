@@ -1103,7 +1103,6 @@ function getOpenJobsELKList(orgLocationId){
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
 	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
-	
 	var openJobsLocation = document.getElementById("openJobsLocationId").value;
 	var openJobsExperience = $("#openJobsExperienceId").val();
     var dates = $('input:radio[name=dateFilter]:checked').val();
