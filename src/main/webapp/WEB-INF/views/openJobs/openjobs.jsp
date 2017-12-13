@@ -498,7 +498,7 @@ a.alertBtn {
 			</ul>
 		</div>
 
-		<div class="filterCta">
+		<div id="companiesListDiv" class="filterCta">
 				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
 				<ul id="orgList"></ul>
 			</div>	
@@ -1313,6 +1313,7 @@ function getPostedOrgJobs(id){
 		 $("#postedOrg").val(locationId);
 		 
 	}
+	$("#companiesListDiv").hide();
 	getOpenJobsELKList(locationId);
 // 	requirementsFilter("postedOrg");
 }
