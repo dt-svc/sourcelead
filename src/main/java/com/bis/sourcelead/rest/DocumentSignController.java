@@ -128,7 +128,8 @@ public class DocumentSignController {
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
-			String dirPath = docuSignUtil.getUserPath(req) + coordinatesInfo.getUserId();
+			String result = staticPath.substring(0,staticPath.lastIndexOf("/"));
+			String dirPath = result + coordinatesInfo.getUserId();
 			if(dirPath.contains("/unsigned.pdf")) {
 				dirPath = dirPath.replace("/unsigned.pdf", "");
 			}
@@ -147,7 +148,7 @@ public class DocumentSignController {
 	@ResponseBody
 	public String signUploadedImage(@RequestBody SignedImageInfo signedImageInfo,  HttpServletRequest req) throws FontFormatException {
 		try {
-			signImageService.signImage(signedImageInfo , docuSignUtil.getRealPath(req),docuSignUtil.getUserPath(req));
+			signImageService.signImage(signedImageInfo , docuSignUtil.getRealPath(req));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -161,8 +162,8 @@ public class DocumentSignController {
 	public String signUploadedDocument(@RequestBody CoordinatesInfo coordinatesInfo, HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		
 		Contracts contracts =null;
-		String userPath = docuSignUtil.getUserPath(req);
-		String url = signDocumentService.addSignaturetoPdf(coordinatesInfo, userPath);
+		String result = staticPath.substring(0,staticPath.lastIndexOf("/"));
+		String url = signDocumentService.addSignaturetoPdf(coordinatesInfo, result);
 		if(contractId != null) {
 			contracts  = contractsTemplateService.getContractById(contractId);
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
@@ -172,8 +173,8 @@ public class DocumentSignController {
 //				childContarct.setId(childContarct.getId());
 				childContarct.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
 //				contracts.setId(contracts.getId());
-				if(url.contains(userPath)) {
-					url = url.replace(userPath, "");
+				if(url.contains(result)) {
+					url = url.replace(result, "");
 				}
 				contracts.setTemplateFileURL(url);
 				childContarct.setTemplateFileURL(url);
