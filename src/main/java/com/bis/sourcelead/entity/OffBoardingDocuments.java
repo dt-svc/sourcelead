@@ -52,10 +52,6 @@ private static final long serialVersionUID = 1L;
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
-   /* @Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	

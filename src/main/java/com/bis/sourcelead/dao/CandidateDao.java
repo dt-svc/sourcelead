@@ -112,4 +112,6 @@ public interface CandidateDao {
 	public void storeCandidateImportLog(CandidateImportLog candidateImportLog);
 	
 	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
+	
+	public Candidate getCandidateByShortURL(String shortURL);
 }

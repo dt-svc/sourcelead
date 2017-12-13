@@ -526,7 +526,7 @@ function validateClientName(){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+				url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 				success : function(data) {
 					var result = data;
 					if (result == true) {

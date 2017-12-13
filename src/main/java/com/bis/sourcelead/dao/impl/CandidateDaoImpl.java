@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1321,5 +1322,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return importLog;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByShortURL(String shortURL) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select Candidate from Candidate r where r.Candidate =:shortURL";
+	    List<Candidate> Candidate = session.createQuery(query).setString("shortURL",shortURL).setCacheable(true).list();
+		if(!Candidate.isEmpty()){
+			return Candidate.get(0);
+		}else{
+			return null;
+		}
+	}
+
 }
 

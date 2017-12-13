@@ -50,6 +50,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class RequirementReleaseRestController {
 	
 	@Value("${sourceleadUrl}")

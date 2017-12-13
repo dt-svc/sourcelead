@@ -61,6 +61,7 @@ import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @Controller
+@RequestMapping("/app")
 public class ContractController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractController.class);
@@ -589,18 +590,18 @@ public class ContractController {
 		model.setViewName("contracts/viewContract");
 		return model;
 	}
-/*	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
+	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ContractRequestDocuments contractRequestDocuments =  contractRestController.getContractRequestDocumentsById(Long.parseLong(docId));
 		
 		byte[] pdfBytes = null ;
-		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
+		/*if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
 			pdfBytes = contractRequestDocuments.getDocFile();
 		}
 		else{
 			 pdfBytes = pdfConversionUtil.convertDocToPdf(contractRequestDocuments.getDocFile());
-		}
+		}*/
 		
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
@@ -612,7 +613,7 @@ public class ContractController {
   	    }
           sos.flush();
           sos.close();
-	}*/
+	}
 	
 	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
