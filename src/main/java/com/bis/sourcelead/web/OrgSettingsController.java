@@ -20,14 +20,20 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -51,6 +57,15 @@ public class OrgSettingsController {
 	@Autowired
 	ModulesService modulesService;
 	
+	@Autowired
+	StatesService statesService;
+	
+	@Autowired
+	OrglocationBankingDetailsService orglocationBankingDetailsService;
+	
+	@Autowired
+	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
 	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
@@ -70,6 +85,43 @@ public class OrgSettingsController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
+		model.addObject("statesList", states);
+		
+		
+		OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
+		if(bankingDetails != null) {
+			model.addObject("uuid", bankingDetails.getUuid());
+			SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+		}
+		
+		
+		OrglocationOnboardDocuments businessLicense = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ONBOARD_DOCUMENT_BUSNIESS_LICENSE, orgLocations.getId());
+		if(businessLicense != null) {
+			model.addObject("businessLicenseDoc", businessLicense);
+		}
+		
+		OrglocationOnboardDocuments bankCheque = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.BANK_CHEQUE, orgLocations.getId());
+		if(bankCheque != null) {
+			model.addObject("bankChequeDoc", bankCheque);
+		}
+		
+		OrglocationOnboardDocuments registrationDoc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.REGISTRATION_OR_INCORPORATION_OF_RECORDING, orgLocations.getId());
+		if(registrationDoc != null) {
+			model.addObject("registrationDoc", registrationDoc);
+		}
+		
+		OrglocationOnboardDocuments annulReportBusiness  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ANNUAL_REPORT_BUSINESS_LICENSE, orgLocations.getId());
+		if(annulReportBusiness != null) {
+			model.addObject("annulReportBusinessDoc", annulReportBusiness);
+		}
+		
+		OrglocationOnboardDocuments w9Doc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.W9_W8_BEN_E, orgLocations.getId());
+		if(w9Doc != null) {
+			model.addObject("w9Doc", w9Doc);
+		}
+		
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
 		model.setViewName("orgSettings");

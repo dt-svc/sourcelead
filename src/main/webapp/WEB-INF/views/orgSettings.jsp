@@ -156,9 +156,12 @@ function cancelOrgImg(){
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
-        
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
+        <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+        
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -420,9 +423,13 @@ function cancelOrgImg(){
             			</div>            			
         			</div>
     			</div>
-    
+     		 <jsp:include page="federalAndStateTaxes.jsp" />
+     		 <jsp:include page="orglocationBankingDetails.jsp" />
+     		 <jsp:include page="orglocationDocuments.jsp" />
   	</div>
   </div>
+  
+
 		</div>
 		
 		
