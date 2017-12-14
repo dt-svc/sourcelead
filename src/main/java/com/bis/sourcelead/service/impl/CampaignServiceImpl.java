@@ -505,10 +505,10 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean validateFromMail(String email, String toWhom) throws Exception
+	public boolean validateFromMail(String email, String toWhom,String id) throws Exception
 	{
 		boolean isDuplicate = false;
-		CreateSender createSender = campaignDao.validateFromMail(email,toWhom);
+		CreateSender createSender = campaignDao.validateFromMail(email,toWhom,id);
 		if(createSender !=null) {
 			isDuplicate = true;
 		}

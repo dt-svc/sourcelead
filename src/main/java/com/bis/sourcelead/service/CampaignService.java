@@ -58,7 +58,7 @@ public interface CampaignService {
 
 	boolean deleteStats(String categoryName) throws Exception;
 
-	boolean validateFromMail(String email, String toWhom) throws Exception;
+	boolean validateFromMail(String email, String toWhom, String id) throws Exception;
 
 
 

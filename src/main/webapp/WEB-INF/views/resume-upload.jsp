@@ -13,7 +13,7 @@
 	href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
-	href="resources/css/bootstrap.min.css"
+	href="/resources/css/bootstrap.min.css"
 	rel="stylesheet">
 </head>
 <style>
@@ -277,7 +277,7 @@ padding: 2px
 	</div>
 </body>
 
-<script src="resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';

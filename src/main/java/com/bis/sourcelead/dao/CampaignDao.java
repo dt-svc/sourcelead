@@ -56,7 +56,7 @@ public interface CampaignDao {
 
 	Map<String,Integer> getCampaignListName(String campaignId) throws Exception;
 
-	CreateSender validateFromMail(String email, String toWhom) throws Exception;
+	CreateSender validateFromMail(String email, String toWhom, String id) throws Exception;
 
 
 

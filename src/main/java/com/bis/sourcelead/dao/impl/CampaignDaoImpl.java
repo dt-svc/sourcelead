@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -48,7 +49,11 @@ public class CampaignDaoImpl implements CampaignDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderIdentity) throws Exception
 	{
-		Long senderId = Long.parseLong(senderIdentity);
+		Long senderId = 0l;
+		if(StringUtils.isNotBlank(senderIdentity) && !"undefined".equalsIgnoreCase(senderIdentity)) {
+			senderId = Long.parseLong(senderIdentity);
+		}
+			
 		boolean isNickNameDuplicate = false;
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.nickName = :nickName and cSender.id <> :senderId and cSender.orgLocations.id = :orgLocationId").setString("nickName", nickName).setLong("senderId", senderId).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
@@ -398,17 +403,21 @@ public class CampaignDaoImpl implements CampaignDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CreateSender validateFromMail(String email, String toWhom) throws Exception
+	public CreateSender validateFromMail(String email, String toWhom,String id) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CreateSender createSender = null;
+		Long senderId = 0l;
+		if(StringUtils.isNotBlank(id) && !"undefined".equalsIgnoreCase(id)) {
+			senderId = Long.parseLong(id);
+		}
 		String query = "";
 		if(!"from".equalsIgnoreCase(toWhom)) {
-			 query = "from CreateSender sender where sender.replyTo = :email and sender.status = 1";
+			 query = "from CreateSender sender where sender.replyTo = :email and sender.status = 1 and sender.id <> :senderId ";
 		}else {
-			 query = "from CreateSender sender where sender.fromMail = :email and sender.status = 1";
+			 query = "from CreateSender sender where sender.fromMail = :email and sender.status = 1 and sender.id <> :senderId ";
 		}
-		List<CreateSender> senderList = session.createQuery(query).setString("email", email).setCacheable(true).list();
+		List<CreateSender> senderList = session.createQuery(query).setString("email", email).setLong("senderId", senderId).setCacheable(true).list();
 		
 		if(senderList !=null && senderList.size() >0) {
 			createSender = senderList.get(0);

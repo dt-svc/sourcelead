@@ -55,7 +55,7 @@ function senderClose() {
 
 function validateNickName(senderId){
 	var nickName = document.getElementById("cpnNickName").value;
-	if(nickName != null && senderId != null && senderId !='undefined'){
+	if(nickName != null && nickName != ''){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/validateNickName?"+tokenParamName+"="+tokenValue+"&nickName="+nickName+"&senderId="+senderId,
@@ -83,12 +83,11 @@ function validateNickName(senderId){
 
 
 function validateFromMail(toWhom,id){
-	alert(toWhom);
 	var email = document.getElementById("cpnSenderFromMail").value;
 	if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom,
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
 			success : function(data) {
 				var result = data;
 				if(result == true) {
@@ -101,6 +100,33 @@ function validateFromMail(toWhom,id){
 					$('input#cpnSenderFromMail').removeAttr("class record-exist record-exist-errormsg");
 					$('input#cpnSenderFromMail').attr('class','valid form-control');
 					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
+}
+
+
+function validateReplyMail(toWhom,id){ 
+	var email = document.getElementById("cpnReplyMail").value;
+	if(email != null && email != null && email !='undefined' ){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id"+id,
+			success : function(data) {
+				var result = data;
+				if(result == true) {
+					$('#replyMailDiv').find('p.jquery_form_error_message').remove();
+					$("input#cpnReplyMail").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same email.</span>");
+					document.getElementById("cpnReplyMail").setAttribute( 'record-exist', 'yes');
+					document.getElementById("cpnReplyMail").setAttribute( 'record-exist-errorMsg',"You already have a sender identity with the same email.");
+					
+				}else if(result == false) {
+					$('input#cpnReplyMail').removeAttr("class record-exist record-exist-errormsg");
+					$('input#cpnReplyMail').attr('class','valid form-control');
+					$('#replyMailDiv').find('p.jquery_form_error_message').remove();
 					
 				}
 			},
