@@ -36,7 +36,7 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
@@ -173,7 +173,7 @@ margin-top: -50px;
             <div class="form-group">
             
             <div class="clearfix mb">
-              <label class="col-md-3">Tier <i class='fa fa-info-circle' title='Segregate the level of Organisation'></i></label>
+              <label class="col-md-3">Tier</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
                     <option value="Tier-1">Tier-1</option>
@@ -278,7 +278,7 @@ margin-top: -50px;
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span> <i class='fa fa-info-circle' title='Owner for the client contact.For single contact can have multiple owners'></i></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 candAdvsrch">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
@@ -325,7 +325,7 @@ margin-top: -50px;
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
-			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
       </div>
@@ -482,7 +482,7 @@ function getRolesList(){
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	
 	if(orgName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
@@ -538,7 +538,7 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
 				location.replace(sourceleadUrl+ "/clientDashboard");
 			});
@@ -660,10 +660,10 @@ function validateClientName(){
 	if(client.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (client != null && client != '') {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -720,7 +720,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
+			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -794,7 +794,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -834,3 +834,22 @@ function validateOrgName(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
+ 
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	        
+	       $("#owner").chosen();
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>

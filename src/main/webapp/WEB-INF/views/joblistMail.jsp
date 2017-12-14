@@ -25,6 +25,7 @@ display: none;
 
 <script>
  $(document).ready(function(){
+	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
 		 
@@ -42,7 +43,7 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/campaigns/hotcampaigns'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
    
@@ -208,6 +209,7 @@ display: none;
                 <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <div class="clearUpload"></div>
             </div>
           </div>
         </div> -->
@@ -218,7 +220,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
@@ -307,6 +309,7 @@ $(function(){
 $(function() {
 	$("#attachfileBtn").change(function() {
 		fileUpload("attachfileBtn", "Joblist Campaign Documents", "joblistCampaign_form");
+		$(".clearUpload").show();
 	});
  });
  
@@ -1418,6 +1421,16 @@ function getContactEmails(){
      }); 
 	 
 }
+</script>
+
+
+ <script>
+	$(".clearUpload").click(function(){
+		$("#attachfile-mail").val("");
+		$("#attachfileBtn").val("");
+	        $("#joblistCampaign_form input[data-id*=attachfileBtn]").remove();
+	        $(".clearUpload").hide();
+	});
 </script>
 
 <script>

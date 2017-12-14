@@ -58,10 +58,6 @@ public class OrgDocuments implements Serializable{
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
-/*	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	

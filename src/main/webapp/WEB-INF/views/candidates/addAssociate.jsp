@@ -15,6 +15,7 @@
 	 
 	 <script>
 		$(document).ready(function() {
+			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
@@ -26,7 +27,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -362,13 +363,15 @@
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
 							<div class="col-md-9 positionRelative">
-								<div class="input-group col-md-12 clearUpload" id="uploadFileGroup"
+								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 									</label> 
+									
 									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
+										<div class="clearUpload"></div>
 								</div>
 							</div>
 						</div>
@@ -457,7 +460,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/associatesList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/associatesList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -920,6 +923,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
  $(function() {
 		$("#uploadBtn").change(function() {
 			fileUpload("uploadBtn", "resumes", "addcandidate_form");
+			$(".clearUpload").show();
 		});
 	 });
  </script>
@@ -927,5 +931,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
  <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");
+		 $(".clearUpload").hide();
+	        $("#addcandidate_form input[data-id*=uploadBtn]").remove();
 	});
 </script>

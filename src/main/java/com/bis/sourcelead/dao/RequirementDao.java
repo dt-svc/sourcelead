@@ -25,6 +25,8 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception;
+	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
 	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
@@ -156,6 +158,8 @@ public interface RequirementDao {
 	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId)throws Exception;
 	
 	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId,Long userId)throws Exception;
+
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
 
 	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO,Long orglocationId,Long userId,String dateFormat)throws Exception;
 	
