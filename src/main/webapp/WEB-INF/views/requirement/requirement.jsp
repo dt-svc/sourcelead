@@ -193,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -1343,7 +1343,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
