@@ -551,7 +551,6 @@ function deleteCandidate(candidateId,candidateType){
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
 	  reason = reason.replace(/\s/g, "") 
-	 alert("candidateType="+candidateType);
 	  if(reason.length == 0){
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
     	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
@@ -680,33 +679,33 @@ function candidateProfile(candidateId,candidateType){
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
 							result = result+'<div id="loading" ></div>  ';
-							if(json.status == '0'){
-								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
-								'</sec:authorize>';
-							}else{
+							/* if(json.status == '0'){ */
+								/* '<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';  */
+								/* result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>'; */
+								/* '</sec:authorize>'; */
+						/* 	}else{ */
 								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
 								   
 								   if(candidateType == "Candidates"){
-									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+									   /* '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; */
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-									   '</sec:authorize>'; 
+									  /*  '</sec:authorize>'; */ 
 									   
-									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
-									   '</sec:authorize>';
+									  /*  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; */
+									   /* result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; */ 
+									  /*  '</sec:authorize>'; */
 								   }else{
-									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
+									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'; */
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-									   '</sec:authorize>'; 
+									  /*  '</sec:authorize>'; */ 
 									   
-									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
-									   '</sec:authorize>';
+									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">'; */
+									  /*  result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; */ 
+									   /* '</sec:authorize>'; */
 								   }
 								   
 								   result = result + '</div>';
-							}
+							/* } */
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
