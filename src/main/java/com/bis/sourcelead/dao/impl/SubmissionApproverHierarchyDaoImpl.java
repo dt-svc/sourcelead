@@ -28,6 +28,7 @@ import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -942,7 +943,114 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	}
 		return count;
 	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(
+		Long userId, Long orgLocationId, String submissionStatus,String searchValue,int start,int length) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		ResponseList<SubmissionApproverHierarchy> response = new ResponseList<>();
+		
+		
+		StringBuilder searchCountQuery = new StringBuilder();
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+			searchCountQuery.append(" and (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%" + searchValue + "%' ")
+					.append("OR sah.submissionId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "%' ")
+					.append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%" + searchValue + "%' ")
+					.append("OR sah.submissionId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
+		 			.append("OR sah.submissionId.projectMembers.projects.invoiceFrequency like '%" + searchValue + "%')");
+		}
+		
+		
+		StringBuilder searchQuery = new StringBuilder();
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+			searchQuery.append(" and( can.firstName like '%" + searchValue + "%' ")
+						.append("OR can.lastName like '%" + searchValue + "%' ")
+						.append("OR can.email like '%" + searchValue + "%' ")
+						.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
+			 			.append("OR pm.projects.invoiceFrequency like '%" + searchValue + "%')");
+			}
+		
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.projects left join fetch pm.employee emp left join fetch ts.projects project left join fetch ts.masterCandidateId mc "
+				+ " where  pclient.orgLocationsId.id = :orgLocationId and "
+				+ " ( "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  ("
+				+ "    hierarchy.approverUserId.id = :userId and "
+				+ "      ("
+				+ "        ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = pclient.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
+				+ "        OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = pclient.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "     ) "
+				+ "   ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = pclient.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForTs+") "
+				+ "   ) "
+				
+				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'" ;
+		
+		
+		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
+				+ " ( "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  ("
+				+ "    sah.hierarchyId.approverUserId.id = :userId and "
+				+ "      ("
+				+ "        ( sah.hierarchyId.level = '2' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
+				+ "        OR (sah.hierarchyId.level = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "     ) "
+				+ "   ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id ) and (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0'))) "
+				+ "   ) "
+				
+				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'" ;
+		
+		String soringQuery = "GROUP BY CONCAT(pm.id,sah.frequencyStartDate,sah.frequencyEndDate)order by pm.projects.id ASC)";
+		String sortingCount = " GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate))";
+		
+		
+		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+soringQuery);
+		//Query query1 = session.createQuery(query+" "+searchQuery.toString());
 
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> tslist =query1.setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).setFirstResult(start).setMaxResults(length).list(); 
+		response.setData(tslist);
+		
+		
+		Query countQ = session.createQuery(queryCount+" "+searchCountQuery.toString()+" "+sortingCount);
+		//Query countQ = session.createQuery(queryCount+" "+searchCountQuery.toString());
+		 countQ.setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true);
+		
+		List<Long> countList  = null;
+		if(countQ != null) {
+			countList  = countQ.list();
+		}
+		int recordsTotal=0;
+		if(countList != null && !countList.isEmpty()) {
+			recordsTotal  =  countList.size();
+		}
+		response.setRecordsTotal(recordsTotal);
+		
+		int recordsFiltered = 0;
+		if(tslist != null && !tslist.isEmpty()) {
+			recordsFiltered = tslist.size();
+		}
+		if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
+			response.setRecordsFiltered(recordsFiltered);
+		}
+		else {
+			response.setRecordsFiltered(recordsTotal);
+		}
+		return response;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -974,10 +1082,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return tslist;
 	}
 	
+	
+	
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus) {
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();		
+
 		
 		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
 				+ " ( "

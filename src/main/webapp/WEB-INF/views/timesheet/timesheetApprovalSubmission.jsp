@@ -14,8 +14,21 @@ $(document).ready(function() {
 	});	
 });
 </script>
-
-
+<div class="time_appr_side_wrap">
+	<div class="time_appr_side_wrap_inn">
+	 	 <form id="timesheet_form" name="timesheet_form"> 
+		 	<input type="hidden" id="projectMemberId" name="projectMemberId" value="${timesheetEntryDetailsDTO.projectMemberId}"/>
+	        <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
+	        <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
+	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
+            <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
+            <div id="timesheetDivByFrequency">
+	 	         <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
+	 	    </div>
+	 	  </form>
+	 	
+	</div>
+</div>	
 <div id="loadTime"></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
@@ -75,8 +88,20 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
 </script> 
 <script>
-function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,from){
+function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,from){
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 $("#projectMemberId").val('');
+	 $("#projectMemberId").val(projectMemberId);
+	 
+	 $("#currentTimeFrequency").val('');
+	 $("#currentTimeFrequency").val(currentTimeFrequency);
+	 
+	 $("#projectId").val('');
+	 $("#projectId").val(projectId);
+	 
+	 $("#masterCandidateId").val('');
+	 $("#masterCandidateId").val(masterCandidateId);
+	  
      //var subFrParam = '';
     /*  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
   	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
@@ -84,19 +109,21 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
     // $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
      $.ajax({
 	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+timesheetFrequency+"&timeSheetsFor="+from,		
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+from,		
 		      success :function(data) {
-		    	  $("#timesheetPopUp").empty();
+		    	  $("#timesheetDivByFrequency").empty();
 	 	    	     var closeElement = $('.proj_close');
 	 	    	     closeElement.removeAttr('onclick');
-	 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
-				     $("#timesheetPopUp").append(data);
+	 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+currentTimeFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
+				     $("#timesheetDivByFrequency").append(data);
+				     if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+				 		$("#timesheet_form input[data-id*=docFile]").remove();
+				 		}
+				 	 setTotals();
 				     maskme();
 				     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
 				     $(".side_mask").fadeIn(200); 
 				     $("body").css('overflow-y', 'hidden');
-				     
-				     
 				     $("html").trigger('click');
 		    	  	 $("#tab-1").show();
 			    	 $(".project-tabs-menu a").click(function(event) {
@@ -112,9 +139,7 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 } 
 </script>
 
-
-
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMemberId,from){ 
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
@@ -146,9 +171,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	         
 }
 </script>
-
-
-
+ -->
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
     $("#rejectReasonDiv").empty();
@@ -166,7 +189,7 @@ $("#reject"+projectMemberId+"panel").slideToggle(200);
 	
 }
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var rowHtmlContent =  $("#row"+projectMemberId).innerHTML;
+	 var rowHtmlContent =  $("#row"+projectMemberId).html();
 	 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
 	 if(locationName == '' || locationName == 'undefined' || locationName == null ){
 		 locationName = '';
@@ -295,7 +318,6 @@ function exportTimeSheetToPdfOrExcel(exportType){
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
-		 
 		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';
