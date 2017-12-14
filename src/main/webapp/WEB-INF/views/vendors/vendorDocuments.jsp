@@ -1,7 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -276,7 +276,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload()">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="vendorDocFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file"  id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -705,11 +705,11 @@ function vendorDocFileSaving()
 }
 </script>
 <!-- script for dateformat in datepicker End -->
-<script>
+<!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->
 <script>
 function clearStartDt(){
 	$("#startDate").val("");

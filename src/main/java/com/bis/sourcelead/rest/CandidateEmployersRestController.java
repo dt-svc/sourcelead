@@ -46,6 +46,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class CandidateEmployersRestController {
 
 

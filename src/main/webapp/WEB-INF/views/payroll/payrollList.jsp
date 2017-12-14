@@ -20,11 +20,11 @@
 		</div>
 
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Payroll
 		</div>
 		<div class="pull-left ml generateButtons">
-			<a href="<c:url value='/uploadDocuments'/>" class="ml10 mt5"
+			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
 				id="uloadDocs" title="upload documents">Upload Files</a> 
 				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
 				id=generateReportId title="Generate Report">Generate Report</a> --%>
@@ -59,7 +59,7 @@
 
 					<div class="clearfix">
 
-						<a href="<c:url value='/userMapping'/>"
+						<a href="<c:url value='${appPath}/userMapping'/>"
 							class="btn btn-primary btn-sm ml10 mt5 hidden"
 							title="User Mapping" onClick="userMaping();">User Mapping </a>
 
@@ -185,7 +185,7 @@
 				$("#loading")
 						.attr(
 								'style',
-								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				var sourceleadUrl = '${sourceleadUrl}';
 				$
 						.ajax({
@@ -820,7 +820,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#employeePayrollTable").wrap(

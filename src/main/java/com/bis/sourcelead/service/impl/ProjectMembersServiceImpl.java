@@ -76,6 +76,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
@@ -654,7 +658,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 //globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
-		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

@@ -331,7 +331,9 @@ public class Constants {
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static final String ACTIVATE_EMAIL = "ActivateUserEmail";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	public static final String LOGIN_OTP_EMAIL = "LoginOTPEmail";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_Approver="UserNewActionAssignedAsaApprover";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER="UserNewActionAssignedAsaReportingManager";

@@ -28,7 +28,7 @@ window.onload = function () {
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -143,11 +143,12 @@ function cancelOrgImg(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <div id="loading"></div> 
+      <div id="loading"></div>
+      <div id="popUp"></div>  
       <div id="signatureLoading"></div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
@@ -159,6 +160,9 @@ function cancelOrgImg(){
         
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">WhiteList Ips</a></li>
+        </c:if>
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -317,7 +321,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
 					</div>
 					</div>
 					</div>
@@ -372,7 +376,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="SignatureHeading">Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i></h4>
+                                    <h4 id="SignatureHeading">Create Default Signature</h4>
                                     <div id="signLoading"></div>
                                     <div id="restorePopUp"></div>
                                 </div>
@@ -417,7 +421,56 @@ function cancelOrgImg(){
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
                 			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
-            			</div>            			
+            			</div> 
+            			
+            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	                           <div class="clearfix mb">
+	                               <div class="pull-left">
+	                                   <h4>Login Security</h4>
+	                               </div>
+	                           </div>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-7 toggle-button">
+			                      <label class="switch">
+			                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+			                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+			                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <div class="slider round"></div>
+			                      </label>
+	                   			</div>
+	               			</div>         
+	           			</div> 
+           			</c:if>
+           			           			
+        			</div>
+    			</div>
+    			
+    			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                        <div id="whiteListLoading"></div>
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="whiteListHeading">WhiteList Ips</h4>
+                                </div>
+                                <div class="pull-right">
+                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
+                                </div>
+                             </div>
+                            
+                            <div class="tableStyles datatable_filter mt40">
+                				<div id="whiteListIpsDiv"></div>   
+                			</div>
+                			
+                			</div>         
+            			</div>
+            			
         			</div>
     			</div>
     
@@ -432,11 +485,193 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+<<div class="comMask"></div>
+<!-- Add IP Modal -->
+  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add IP</h4>
+        </div>
+        <div class="modal-body">
+        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+        <input type="hidden" name="id" id="whiteListId"/>
+         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
+           <label class="col-md-3">From IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           </div>
+           </div>
+           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
+           <label class="col-md-3">To IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           </div>
+           </div>
+        
+        </form:form>
+          
+        </div>
+        <div class="clearfix"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add IP Modal -->
 
 <script>
 $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
+</script>
+
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateLoginSecurity?security="+security+"&locationId="+locationId,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+	
+}
+</script>
+
+<script>
+function saveWhiteListIps(){
+	var fromIpAddress = $("#fromIpAddress").val();
+	var toIpAddress = $("#toIpAddress").val();
+	var whiteListId = $("#whiteListId").val();
+	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
+		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$.ajax({
+			      type : "GET",
+			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
+			       success :function(data) {
+			       if(data == "Success"){
+			    	   $("#fromIpAddress").val("");
+			    	   $("#toIpAddress").val("");
+			    	   $(".modal.addipPopup-modal").fadeOut();
+			    	   $(".comMask").fadeOut();
+			    	   getWhiteListIps();
+			       	} 
+			      },
+			  }); 
+		
+	}else{
+		if(fromIpAddress == null || fromIpAddress == '' || fromIpAddress =='undefined'){
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>From IP Address is required</span>");
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist-errorMsg',"From IP Address is required");
+		}
+		if(toIpAddress == null || toIpAddress == '' || toIpAddress =='undefined'){
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#toIpAddress").after( "<p class='jquery_form_error_message'>To IP Address is required</span>");
+			document.getElementById("toIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("toIpAddress").setAttribute( 'record-exist-errorMsg',"To IP Address is required");
+		}
+	}
+}
+</script>
+
+<script>
+function getWhiteListIps(){
+	$.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getWhiteListIps",        
+       success :function(data) {
+    	   var result = '';
+    		 	result = result +  '<table id="WhiteListIpTable" class="display" cellspacing="0" width="100%" >';
+    			result = result + '	<thead>';
+    			result = result + '   <tr>';
+    			result = result + '    <th>From Ip</th>';
+    			result = result + '    <th>To Ip</th>';
+    			result = result + '    <th>Action</th>';
+    			result = result + '   </tr>';
+    			result = result + '	</thead>';
+    			result = result + '	<tbody>';
+    		if(data.length > 0){
+    			    for (var i = 0; i < data.length; i++) {
+    			    	var report= data[i];
+    			    	result = result + '<tr>';
+    			    	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.fromIpAddress+'</div>';
+    		        	result = result + '</td>';
+    		        	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.toIpAddress+'</div>';
+    		        	result = result + '</td>';	 
+    		        	result = result + '<td>';
+    		        	result = result +'     <div class="tblminwidth-50">                                                                                            ';
+    		        	result = result +'          <span title="Edit" class="paddingRight"><a onclick="editWhiteListIp('+report.id+');"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    		        	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteWhiteListIp(\''+report.id+'\');"></i></span>              ';
+    		        	result = result +'      </div> ';
+    		        	result = result + '</td>';
+    			        result = result + '</tr>';
+    			    }
+    				
+    		}
+    		result = result + '	</tbody>';
+    		result = result + '</table>';
+    		$("#whiteListIpsDiv").empty();
+    		$("#whiteListIpsDiv").append(result);
+    		WhiteListIpTablePagination();
+       	} 
+      }); 
+}
+
+
+function WhiteListIpTablePagination(){
+	$('#WhiteListIpTable').DataTable({ 
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+}
+</script>
+
+<script>
+function editWhiteListIp(id){
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
+        success: function(data) {
+        	$(".modal.addipPopup-modal").fadeIn();
+        	$(".comMask").fadeIn();
+        	if(data.id != null && data.id != '' && data.id != 'undefined'){
+        		$("#whiteListId").val(data.id);
+        	}
+        	if(data.fromIpAddress != null && data.fromIpAddress != '' && data.fromIpAddress != 'undefined'){
+        		$("#fromIpAddress").val(data.fromIpAddress);
+        	}
+			if(data.toIpAddress != null && data.toIpAddress != '' && data.toIpAddress != 'undefined'){
+				$("#toIpAddress").val(data.toIpAddress);
+        	}
+        	
+        }
+	});
+}
 </script>
 
 <script type="text/javascript">
@@ -512,7 +747,7 @@ var validationSettings = {
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -638,13 +873,13 @@ function configCoolingOff(){
 function loadSignature(){
 	
 	$("#campaignSignatrue").empty(); 
-	$("#SignatureHeading").html("Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i>");
+	$("#SignatureHeading").html("Create Default Signature");
 	document.getElementById("reset").style.display="";
 	document.getElementById("settings").style.display="none";
 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -960,7 +1195,7 @@ var validationSettings = {
   			var con = JSON.stringify(frm);
   			con = con.replace(/[{}]/g, ""); 
   		    var jsonData = encodeURIComponent(con);
-  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		
   		     $.ajax({
   				type : "POST",
@@ -996,7 +1231,7 @@ var validationSettings = {
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
         		    var jsonData = encodeURIComponent(con);
-        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           		
         		     $.ajax({
         				type : "POST",
@@ -1070,7 +1305,7 @@ function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
 			type : "POST",
@@ -1102,7 +1337,7 @@ function loadRegisteredOrgs(){
      
      
      var sourceleadUrl = '${sourceleadUrl}';
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      
      $.ajax({ 
 	    	type: "POST",
@@ -1189,7 +1424,7 @@ function getOrgLocationDetails(orgLocationId){
     document.getElementById("orgsList").style.display=""; 
     
     var sourceleadUrl = '${sourceleadUrl}';
-    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
      $.ajax({ 
     	type: "POST",
@@ -1412,7 +1647,7 @@ function getOrgLocationDetails(orgLocationId){
 			});
 			 
 	 	 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
@@ -1435,7 +1670,7 @@ function getOrgLocationDetails(orgLocationId){
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId,  
@@ -1712,7 +1947,7 @@ function getLocationStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationState').empty();
@@ -1748,7 +1983,7 @@ function getLocationCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationCity').empty();
@@ -1876,7 +2111,7 @@ function validateOrgLocationWebsite (){
 		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1923,7 +2158,7 @@ function validateWebsite (){
 		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1965,7 +2200,7 @@ function validateCompanyEmail(){
 		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       url: sourceleadUrl+"/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid Email'){
@@ -2174,7 +2409,7 @@ function validatePrimaryUserEmail(){
          var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
          
-         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
@@ -2231,7 +2466,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -2415,7 +2650,93 @@ function addOrgRefreshGoogleApiLocation(){
 	$("#orgSetZipCode").val('');
 }
 </script>
+
+<script>
+function addipPopup(){
+	$('#fromIpAddressDiv').val("");
+	$('#toIpAddressDiv').val("");
+	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+	$(".modal.addipPopup-modal").fadeIn();
+	$(".comMask").fadeIn();
+}
+$(function(){
+$(".close").click(function(){
+	$(".modal.addipPopup-modal").fadeOut();
+	$(".comMask").fadeOut();
+});
+})
+</script>
+
+<script>
+function ValidateIPaddress()  
+	{
+		var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
+		var fromIpAdd = $("#fromIpAddress").val();
+		var toIpAdd = $("#toIpAddress").val();
+		if(fromIpAdd != '' && fromIpAdd != null && fromIpAdd != 'undefined'){
+			if(!fromIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				document.getElementById("saveWhiteListbtn").disabled = false;
+			}
+		}
+		
+		if(toIpAdd != '' && toIpAdd != null && toIpAdd != 'undefined'){
+			if(!toIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				document.getElementById("saveWhiteListbtn").disabled = false;
+
+				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			}
+		}
+		
+	}  
+</script>
+
+
+<script>
+function deleteWhiteListIp(whiteListIpId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function deleteIP(id){
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 getWhiteListIps()
+		   		    }
+			     });
+}
+
+</script>
+
 <jsp:include page="masterFooter.jsp" />
+
 </html>
 
 

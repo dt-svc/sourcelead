@@ -187,7 +187,7 @@ public class RequirementIndex {
 	private String referUUID;
 	
 	private String[] visaTypes;
-	
+	private String url;
 	private String generatedId;
 	
 	public String getManagerUserId() {
@@ -869,6 +869,15 @@ public class RequirementIndex {
 		this.generatedId = generatedId;
 	}
 
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
 
 	public String getMedicalClearence()
 	{
@@ -940,8 +949,6 @@ public class RequirementIndex {
 		this.projectClientID = projectClientID;
 	}
 
-
-
 	public String getOrgRelationId()
 	{
 		return orgRelationId;
@@ -961,6 +968,5 @@ public class RequirementIndex {
 	{
 		this.spocId = spocId;
 	}
-	
 	
 }

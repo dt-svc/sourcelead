@@ -16,8 +16,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -1807,5 +1805,36 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirementDTOList;
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByShortURL(String shortURL) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select r from Requirement r where r.requirementUUID =:shortURL";
+	    List<Requirement> requirements = session.createQuery(query).setString("shortURL",shortURL).setCacheable(true).list();
+		if(!requirements.isEmpty()){
+			return requirements.get(0);
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	{
+Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId and requirement.jobTitle =:title";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("title", title).setCacheable(true).list();
+		
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	}
 	
 }

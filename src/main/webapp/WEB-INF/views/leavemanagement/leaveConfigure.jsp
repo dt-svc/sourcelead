@@ -11,7 +11,7 @@
       <div class="pull-left">
         <h2>Leave Configuration</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Leave Configuration</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Leave Configuration</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
@@ -24,8 +24,8 @@
                       <h4 class="text-info">Leave Type</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addLeaveType'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewLeaveTypes'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='${appPath}/addLeaveType'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='${appPath}/viewLeaveTypes'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -37,8 +37,8 @@
                       <h4 class="text-muted">Holidays</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addHoliday'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewHoliday'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='${appPath}/addHoliday'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='${appPath}/viewHoliday'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -50,8 +50,8 @@
                       <h4 class="text-primary">Shifts</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addShift'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewShift'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='${appPath}/addShift'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='${appPath}/viewShift'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -64,8 +64,8 @@
                       <h4 class="text-danger">Restricted Day</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addRestrictDay'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewRestrictDay'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='${appPath}/addRestrictDay'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='${appPath}/viewRestrictDay'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                       </div>
@@ -77,8 +77,8 @@
                       <h4 class="text-warning">Leave Options</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="<c:url value='/addOptions'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="<c:url value='/viewOptions'/>" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="<c:url value='${appPath}/addOptions'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="<c:url value='${appPath}/viewOptions'/>" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                       </div>

@@ -102,7 +102,7 @@
 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
-			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
+			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
 			            <c:if test="${(isAdmin == 'true' && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED' )  || (isManager != 'true' && !empty requirement.requirementApproverHierarchyStatus && requirement.requirementSubmissionStatus  !='DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementApproverHierarchyStatus !='APPROVED' &&  requirement.requirementApproverHierarchyStatus != 'REJECTED'  &&  requirement.requirementApproverHierarchyStatus != 'OPEN')}">
@@ -240,18 +240,48 @@
 			      <c:if test="${requirement.isClientJob == 'Y'}">
 		                <h2>Client Details :</h2> 
 		                <div class="require_one"> 
-		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${!empty requirement.spocName ? requirement.spocName : ' -- '}</a></div>
+		            	<div class="require_wrap_details_cta"> <b>Client Contact:</b>
+		            		<span class="tbldata-dotdot-big">
+		            			<c:choose>
+								    <c:when test="${!empty requirement.spocName}">
+					                	<a href="<c:url value="${appPath}/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${requirement.spocName}</a>
+						          	</c:when>
+								    <c:otherwise>
+								    	' -- '
+								    </c:otherwise>
+							    </c:choose>
+		            		</span>
 			            	<div class="clearfix"></div> 
 		                </div>
 		              
 		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
-			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big"><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${!empty requirement.clientName ? requirement.clientName : ' -- '}</a></div>
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b>
+				                <span class="tbldata-dotdot-big">
+				                <c:choose>
+								    <c:when test="${!empty requirement.clientName}">
+					                	<a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${requirement.clientName}</a>
+						          	</c:when>
+								    <c:otherwise>
+								    	' -- '
+								    </c:otherwise>
+							    </c:choose>
+				                </span>
 				            	<div class="clearfix"></div> 
 				            </div>  
 			            </sec:authorize>
 			            
 			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
-			                <div class="require_wrap_details_cta"> <b>Client Name:</b><div class="tbldata-dotdot-big">${!empty requirement.clientName ? requirement.clientName : ' -- '}</div>
+			                <div class="require_wrap_details_cta"> <b>Client Name:</b>
+			                	<span class="tbldata-dotdot-big">
+			                		<c:choose>
+									    <c:when test="${!empty requirement.clientName}">
+						                	${requirement.clientName}
+							          	</c:when>
+									    <c:otherwise>
+									    	' -- '
+									    </c:otherwise>
+								    </c:choose>
+			                	</span>
 				            	<div class="clearfix"></div> 
 				            </div>  
 			            </sec:authorize>

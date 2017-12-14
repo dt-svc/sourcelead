@@ -13,9 +13,8 @@
 	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
 	</c:if>
 	
-	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-	
+	<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		$(document).ready(function() {
@@ -194,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -762,7 +761,7 @@ $(document).ready(function () {
                  <c:if test="${empty requirement.fileName}">
                  <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
-                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <span class="btn btn-primary" onchange="uploadButton();"><i class="fa fa-folder-open-o" ></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
@@ -898,7 +897,7 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -907,7 +906,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -989,7 +988,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Rate what client Proposed,this is only for internal reference. This rate will not visible publicly'></i></label>
+                <label class="col-md-3">Bill Rate / Salary</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1315,8 +1314,7 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>&nbsp;<i class='fa fa-info-circle' title='Job will be visible to all users in the organization,Users can submit the applicants for the job'></i>
-					
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1345,7 +1343,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -1583,7 +1581,7 @@ function validate_fileupload(fileName)
 		   if ($('#requirement_form').validate(false, validationSettings)){   
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1591,7 +1589,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
+						location.replace(sourceleadUrl+"/jobs");
 
 					},
 				});
@@ -2628,7 +2626,6 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");

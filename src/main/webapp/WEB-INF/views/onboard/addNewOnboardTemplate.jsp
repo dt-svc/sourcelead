@@ -3,10 +3,10 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 <style>
 .timesheet_week_comm strong input.dele  {
@@ -20,7 +20,7 @@ width : 6% !important;
           <div class="pull-left">
             <h2>Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -56,7 +56,7 @@ width : 6% !important;
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/onboardingTemplatesList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/onboardingTemplatesList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -129,7 +129,7 @@ width : 6% !important;
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/onboardingTemplatesList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/onboardingTemplatesList'">
                     <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -657,7 +657,7 @@ function createTemplate(saveType){
 	    	$("#save_button").attr("disabled", "disabled");
     		$("#save_continue_button").attr("disabled", "disabled");
     		var formData = getFormData("onboardTemplate_form");
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
@@ -708,7 +708,7 @@ function createTemplateDocs(saveType){
 		   $("#save_doc_button").attr("disabled", "disabled");
 		   $("#save_continue_doc_button").attr("disabled", "disabled");
 		   var formData = getFormData("templateDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		      type : "POST",
     	      data: formData,
@@ -767,7 +767,7 @@ function saveOnboardTask(){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        var formData = getFormData1("addonboardTask_form");
 	        
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
@@ -1109,7 +1109,7 @@ function getOnboardingTasksList(){
 	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
@@ -1216,7 +1216,7 @@ function saveAndFinishOnboardTemplate(templateId){
 	
 	
 	$("#finish_task").attr("disabled", "disabled");
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   

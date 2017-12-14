@@ -258,14 +258,6 @@ public class Asset implements Serializable{
 		this.shiftAEmployee = shiftAEmployee;
 	}
 
-//	public byte[] getShiftADocFile() {
-//		return shiftADocFile;
-//	}
-//
-//	public void setShiftADocFile(byte[] shiftADocFile) {
-//		this.shiftADocFile = shiftADocFile;
-//	}
-
 	public String getShiftAFileContentType() {
 		return shiftAFileContentType;
 	}
@@ -289,14 +281,6 @@ public class Asset implements Serializable{
 	public void setShiftBEmployee(Employees shiftBEmployee) {
 		this.shiftBEmployee = shiftBEmployee;
 	}
-
-//	public byte[] getShiftBDocFile() {
-//		return shiftBDocFile;
-//	}
-//
-//	public void setShiftBDocFile(byte[] shiftBDocFile) {
-//		this.shiftBDocFile = shiftBDocFile;
-//	}
 
 	public String getShiftBFileContentType() {
 		return shiftBFileContentType;
@@ -386,7 +370,6 @@ public class Asset implements Serializable{
 		this.shiftBEmpName = shiftBEmpName;
 	}
 
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -472,7 +455,5 @@ public class Asset implements Serializable{
 	public void setShiftBFileUrl(String shiftBFileUrl) {
 		this.shiftBFileUrl = shiftBFileUrl;
 	}
-	
-	
-	
+
 }

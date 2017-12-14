@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <style>
 .user_summary_edit_cta p{
@@ -32,7 +32,7 @@ max-height: inherit !important;
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -40,7 +40,7 @@ max-height: inherit !important;
 
 		<script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -257,7 +257,7 @@ $(document).ready(function(){
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
 					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
 				}else{
-					result = result +                  "<img data-id= 'userProfileImage'  src='resources/images/userprofile-img.png' alt='image'>";
+					result = result +                  "<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
 				}
 				
 				result = result + ' 		  </div>';
@@ -1194,7 +1194,7 @@ function getChangeRole(userId,userRoleId){
          //It will escape all the special characters
          var jsonData = encodeURIComponent(con); */
          var formData = getFormData("deleteUser_form");
-         $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          $.post(sourceleadUrl+"/terminateUser?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
         	 location.replace(sourceleadUrl+"/usersList");
 		});
@@ -1246,7 +1246,7 @@ function getChangeRole(userId,userRoleId){
          var jsonData = encodeURIComponent(con); */
          var formData = getFormData("editRole_form");
          
-        $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         $.post(sourceleadUrl+"/editUserRole?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
         	 location.replace(sourceleadUrl+"/usersList");
 		});
@@ -1748,7 +1748,7 @@ function removeUser(userId){
 	$("#removeUserList").empty(); 
 	
 	
-	$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({
 	    	type: "POST",
