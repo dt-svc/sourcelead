@@ -36,7 +36,7 @@
 				          <div class="row minHeight40 mb">
 				          	<label class="col-md-3">View</label>
 				          	<div class="col-md-9 dropdown-select">
-				          		<select class="form-control chosen-select choose" multiple  id="readRoleIds" name="readRoleIds" data-placeholder="Select read Roles">
+				          		<select class="form-control chosen-select choose" multiple  id="readRoleIds" name="readRoleIds" data-placeholder="Select read Roles" onchange="writeRoles();">
 				          		 <c:forEach var="roles" items="${memberRolesList}">
 				          		      <c:set var = "NUM" value = "${0}"/>
 						          		 <c:forEach var="existedRole" items="${readList}">
@@ -127,3 +127,9 @@
     </div>
   </div>
   </form>
+  
+  <script>
+  function writeRoles(){
+alert("hello")	  
+  }
+  </script>
