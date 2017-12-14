@@ -27,6 +27,44 @@
 		if (applicable == 'N') {
 			noUsers();
 		}
+		var leaveEffective = '${leaveType.leaveEffective}';
+		if (leaveEffective == 'AllEmployees') {
+			hideExperienced();
+		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
+			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
+			$('#newJoinee').removeAttr('data-validation');
+			$('#newJoinee').attr('data-validation-optional', "true");
+			$('#experiencedType').removeAttr('data-validation');
+			$('#experiencedType').attr('data-validation-optional', "true");
+			$('#experiencedDuration').removeAttr('data-validation');
+			$('#experiencedDuration').attr('data-validation-optional', "true");
+			$('#experiencedApplicableDays').removeAttr('data-validation');
+			$('#experiencedApplicableDays').attr('data-validation-optional', "true");
+			$("#experiencedGroup").hide();
+			$("#noOfDaysDiv").show();
+			$('#noOfDays').removeAttr('data-validation-optional');
+			$('#noOfDays').attr('data-validation', "required");
+ */		}else{
+			showExperienced();
+		}
+		var priorLeave = '${leaveType.priorLeaveApplying}';
+		if (priorLeave == 'Y') {
+			$("#priorDaysdiv").show();
+			$('#priorDays').removeAttr('data-validation-optional');
+			$('#priorDays').attr('data-validation', "required validate_length length1-250");
+			$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
+			
+		}
+		var leaveDur = '${leaveType.leaveDuration}';
+		if (leaveDur == 'Y') {
+			$("#minMaxDaysdiv").show();
+			$('#minDays').removeAttr('data-validation-optional');
+			$('#minDays').attr('data-validation', "required validate_length length1-250");
+			$('#maxDays').removeAttr('data-validation-optional');
+			$('#maxDays').attr('data-validation', "required validate_length length1-250");
+			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
+			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
+		}
 	});
 </script>
     
@@ -62,18 +100,18 @@
 			<div id="loading"></div>
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+					<div class="col-xs-12 col-sm-12 col-md-7 col-md-offset-3">
 						<div class="form-group">
-							<label class="col-md-3">Name<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="leaveTypeDiv">
+							<label class="col-md-4">Name<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-6" id="leaveTypeDiv">
 								<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}" />
 								 <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" onblur="validateName();" field-name="Name"
 									data-validation="required validate_Space validate_length length1-250">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Duration<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9 dropdown-select">
+							<label class="col-md-4">Duration<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-6 dropdown-select">
 								<select class="form-control" name="duration"
 									field-name="Duration" data-validation="required">
 									<option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
@@ -83,8 +121,8 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3">Type</label>
-							<div class="col-md-9">
+							<label class="col-md-4">Type</label>
+							<div class="col-md-6">
 								<div class="clearfix mb">
 									<label class="paddingLeft paddingRight"> <c:if
 											test="${!empty leaveType.leaveType}">
@@ -115,12 +153,11 @@
 
 									</label>
 								</div>
-
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Applicable to All Users ss<i class='fa fa-info-circle' title='Leave policies will be visible to users while applying the respective leave type'></i></label>
-							<div class="col-md-9">
+							<label class="col-md-4">Applicable to All Users<i class='fa fa-info-circle text-muted paddingLeft' title='Leave policies will be visible to users while applying the respective leave type'></i></label>
+							<div class="col-md-6">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.applicableToUsers}">
 										<c:if test="${leaveType.applicableToUsers == 'Y'}">
@@ -162,8 +199,8 @@
 						<div class="clearfix" id="noUsersDiv" style="display: none;">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
-								<label class="col-md-3">Select Department<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9 dropdown-select">
+								<label class="col-md-4">Select Department<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-6 dropdown-select">
 									<select class="chosen-select form-control" name="department" onchange="removeErrMsg();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
@@ -176,9 +213,9 @@
 								</div>
 							</div>
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-3">Select Roles<span
+								<label class="col-md-4">Select Roles<span
 								class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9 dropdown-select" id="roleErrMsg">
+								<div class="col-md-6 dropdown-select" id="roleErrMsg">
 									<select multiple data-placeholder="Select Roles"
 										class="chosen-select form-control" id="roles" name="roles"
 										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg();">
@@ -200,8 +237,8 @@
 
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Leaves Carryforward <i class='fa fa-info-circle' title='Describes whethers leaves are carryforward to next year'></i></label>
-							<div class="col-md-9">
+							<label class="col-md-4">Leaves Carryforward <i class='fa fa-info-circle text-muted' title='Describes whethers leaves are carryforward to next year'></i></label>
+							<div class="col-md-6">
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.leavesCarryforward}">
 										<c:if test="${leaveType.leavesCarryforward == 'Y'}">
@@ -234,43 +271,101 @@
 
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Number of Leaves per year<span
-								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" name="noOfLeavesPerYear"
-									value="${leaveType.numbefrOfLeavesPeryear}"
-									placeholder="Number of Leaves Per Year"
-									field-name="Leaves per year"
-									data-validation="required validate_Space validate_int validate_length length1-3">
+							<label class="col-md-4">Period<span
+								class="text-danger paddingLeft">*</span></label>
+							<div class="col-md-6 dropdown-select">
+								<select class="form-control" name="period" onchange="getPeriod();">
+								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
+								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
+								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
+								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option>
+								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option>
+								</select>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3">Number of Leaves per Month</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control"
-									name="noOfLeavesPerMonth"
-									value="${leaveType.numbefrOfLeavesPerMonth}"
-									placeholder="Number of Leaves Per Month"
-									field-name="Leaves per month"
-									data-validation="validate_Space validate_int validate_length length1-2"
-									data-validation-optional="true">
+						 <label class="col-md-4">Leave Effective<span
+								class="text-danger paddingLeft">*</span></label>
+							<div class="col-md-6">
+							
+							
+							<c:if test="${!empty leaveType.leaveEffective}">
+										<c:if test="${leaveType.leaveEffective == 'AllEmployees'}">
+											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
+												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+											</label>
+											<label class="paddingLeft" onClick="showExperienced();">
+											 <input type="radio" value="Experienced" name="leaveEffective">
+												<span class="paddingLeft">Experienced</span></label>
+										</c:if>
+
+										<c:if test="${leaveType.leaveEffective == 'Experienced'}">
+											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
+												<input type="radio" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+											</label>
+											<label class="paddingLeft" onClick="showExperienced();">
+											 <input type="radio" value="Experienced" checked="true" name="leaveEffective">
+												<span class="paddingLeft">Experienced</span></label>
+										</c:if>
+									</c:if>
+
+									<c:if test="${empty leaveType.leaveEffective}">
+										<label class="paddingLeft paddingRight" onClick="hideExperienced();">
+												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+											</label>
+											<label class="paddingLeft" onClick="showExperienced();">
+											 <input type="radio" value="Experienced" name="leaveEffective">
+												<span class="paddingLeft">Experienced</span></label>
+									</c:if>
 							</div>
 						</div>
-
-						<div class="form-group">
-							<label class="col-md-3">Description</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" name="description"
-									data-validation="validate_length length1-500"
-									data-validation-optional="true">${leaveType.description}</textarea>
+						
+						<div class="form-group" id="noOfDaysDiv">
+							<label class="col-md-4">No Of Days<span class="text-danger paddingLeft" >*</span></label>
+							<div class="col-md-3">
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" class="form-control" value="${leaveType.noOfDays}">
 							</div>
 						</div>
+				
+				<!-- experiencedGroup -->
+					<div id="experiencedGroup" style="display:none">
+						<div class="form-group" id="newJoineeDiv">
+							<label class="col-md-4">New Joinee<span class="text-danger paddingLeft" >*</span></label>
+							<div class="col-md-3">
+								<input type="text" id="newJoinee" name="newJoinee" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
+							</div>
+						</div>
+						
+						<div class="form-group" id="experiencedDiv">
+							<label class="col-md-4">Experienced<span class="text-danger paddingLeft" >*</span></label>
+							<div class="col-md-6">
+								<div class="row">
+								<div class="col-md-3 padding_right">
+									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="experiencedDuration" value="${leaveType.experiencedDuration}">
+								</div>
+								<div class="col-md-5 dropdown-select padding_left">
+									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
+									<option ${leaveType.experiencedType == 'Year' ? 'selected' : ''}>Year</option>
+									<option ${leaveType.experiencedType == 'Month' ? 'selected' : ''}>Month</option>
+									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="experiencedApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								</div>
+								
+							</div>
+						</div>
+						</div>
+					</div>
+<!-- experiencedGroup -->
 
 						<div class="form-group">
-							<label class="col-md-3">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Picked color will be repersent for this leave type throughout application'></i></label>
-							<div class="col-md-9">
+							<label class="col-md-4">Color Picker<span
+								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Picked color will be repersent for this leave type throughout application'></i></label>
+							<div class="col-md-6">
 								<div id="cp"
 									class="input-group colorpicker-component errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
@@ -282,7 +377,163 @@
 								</div>
 							</div>
 						</div>
+										<div class="form-group">
+											<label class="col-md-4">Description</label>
+											<div class="col-md-6">
+												<textarea class="form-control" rows="2" name="description"
+													data-validation="validate_length length1-500"
+													data-validation-optional="true">${leaveType.description}</textarea>
+											</div>
+										</div>
+										
+										
+										<div class="form-group">
+											<div class="col-md-12">
+											<div class="row clearfix">
+											<span class="checkBox col-md-4">
+											<c:if test="${leaveType.reasonRequired == 'Y'}">
+												<input type="checkbox" checked="true" name="reasonRequired" id="reasonRequired" 
+												value="Y"> Reason Required
+											</c:if>
+											     <c:if test="${leaveType.reasonRequired == 'N'}">
+											      <input type="checkbox" name="reasonRequired" id="reasonRequired"
+												   value="Y"> Reason Required 
+			                                </c:if>
+			                                <c:if test="${empty leaveType.reasonRequired}">
+											      <input type="checkbox" name="reasonRequired" id="reasonRequired"
+												   value="Y"> Reason Required 
+			                                </c:if>
+<!-- 												<input type="checkbox" checked="true" name="reasonRequired" value="Y"> Reason Required -->
+											</span>
+											<span class="checkBox col-md-4 padding_left padding_right"> 
+											<c:if test="${leaveType.attachmentRequired == 'Y'}">
+												<input type="checkbox" checked="true" name="attachmentRequired" id="attachmentRequired" 
+												value="Y"> Attachment Required
+											</c:if>
+											     <c:if test="${leaveType.attachmentRequired == 'N'}">
+											      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
+												   value="Y"> Attachment Required 
+			                                </c:if>
+			                                <c:if test="${empty leaveType.attachmentRequired}">
+											      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
+												   value="Y"> Attachment Required 
+			                                </c:if>
+<!-- 												<input type="checkbox" checked="true" name="attachmentRequired" value="Y"> Attachment Required -->
+											</span>
+											<span class="checkBox col-md-4">
+											<c:if test="${leaveType.overdrawLeaves == 'Y'}">
+												<input type="checkbox" checked="true" name="overdrawLeaves" id="overdrawLeaves" 
+												value="Y"> Overdraw Leaves
+											</c:if>
+											     <c:if test="${leaveType.overdrawLeaves == 'N'}">
+											      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
+												   value="Y"> Overdraw Leaves 
+			                                </c:if>
+			                                <c:if test="${empty leaveType.overdrawLeaves}">
+											      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
+												   value="Y"> Overdraw Leaves 
+			                                </c:if>
+<!-- 												<input type="checkbox" checked="true" name="overdrawLeaves" value="Y"> Overdraw Leaves -->
+											</span>
+											<div class="clearfix mb"></div>
+											<span class="checkBox col-md-4">
+											<c:if test="${leaveType.donateLeave == 'Y'}">
+												<input type="checkbox" checked="true" name="donateLeave" id="donateLeave"
+												 value="Y"> Donate Leave
+											</c:if>
+											     <c:if test="${leaveType.donateLeave == 'N'}">
+											      <input type="checkbox" name="donateLeave" id="donateLeave"
+												   value="Y"> Donate Leave 
+			                                </c:if>
+			                                <c:if test="${empty leaveType.donateLeave}">
+											      <input type="checkbox" name="donateLeave" id="donateLeave"
+												   value="Y"> Donate Leave 
+			                                </c:if>
+												</span>
+											
+											<span class="checkBox col-md-4 padding_left padding_right">
+											
+											<div class="checkBox" onClick="showPriorDaysDiv();">
+										<c:if test="${leaveType.priorLeaveApplying == 'Y'}">
+											<input type="checkbox" checked="true" name="priorLeaveApplying"
+												id="priorLeaveApplying" value="Y">Prior Leave Applying
+			                        </c:if>
+										<c:if test="${leaveType.priorLeaveApplying == 'N'}">
+											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
+												value="Y">Prior Leave Applying 
+			                        </c:if>
+			                        <c:if test="${empty leaveType.priorLeaveApplying}">
+											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
+												value="Y">Prior Leave Applying 
+			                        </c:if>
+									</div>
+											</span>
+											
+											
+											<span class="checkBox col-md-4">
+											<div class="checkBox" onClick="showLeaveDurationDiv();">
+										<c:if test="${leaveType.leaveDuration == 'Y'}">
+											<input type="checkbox" checked="true" name="leaveDuration"
+												id="leaveDuration" value="Y">Leave Duration
+			                            </c:if>
+										<c:if test="${leaveType.leaveDuration == 'N'}">
+											<input type="checkbox" name="leaveDuration" id="leaveDuration"
+												value="Y">Leave Duration 
+			                            </c:if>
+			                            <c:if test="${empty leaveType.leaveDuration}">
+											<input type="checkbox" name="leaveDuration" id="leaveDuration"
+												value="Y">Leave Duration 
+			                            </c:if>
+									  </div>
 
+									</span>
+								</div>
+							</div>
+						</div>
+										
+				<div class="form-group">
+				
+					<div class="col-md-4 paddingRight" id="priorDaysdiv" style="display:none">
+					     <div class="form-group">
+								<label class="col-md-6 paddingRight text-right mt5">Prior Days<span
+									class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-6" id=priorLeaveDaysDiv>
+									<input type="text" class="form-control" name="priorDays"
+										id="priorDays" value="${leaveType.priorDays}"
+										field-name="Prior Days" data-validation-optional="true">
+								</div>
+							</div>
+					</div>
+					
+					<div class="col-md-8 paddingLeft" id="minMaxDaysdiv" style="display:none">
+						<div class="row">
+							<div class="col-md-6 paddingRight">
+							
+								<label class="col-md-6  paddingRight text-right mt5">Min.Days<span
+									class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-6" id=minimumDaysDiv>
+									<input type="text" class="form-control" name="minDays"
+										id="minDays" value="${leaveType.minDays}"
+										field-name="Min Days" data-validation-optional="true">
+								</div>
+							</div>
+							<div class="col-md-6 paddingLeft">
+							
+							<div class="form-group">
+								<label class="col-md-6  paddingRight text-right mt5">Max. Days<span
+									class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-6" id=maximumDaysDiv>
+									<input type="text" class="form-control" name="maxDays"
+										id="maxDays" value="${leaveType.maxDays}"
+										field-name="Max Days" data-validation-optional="true">
+								</div>
+						 </div>
+					 </div>
+				 </div>
+			 </div>
+						</div>
+										
+										
 						<div class="clearfix"></div>
 						<div class="form-group mt10">
 							<div class="col-md-12 checkBox" onClick="leavePolicy();">
@@ -292,7 +543,7 @@
 	              </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
 									<input type="checkbox" name="leavePolicy" id="leavePolicy"
-										value="Y">Leave Policy <i class='fa fa-info-circle' title='Leave policy for particluar leave type'></i>
+										value="Y">Leave Policy <i class='fa fa-info-circle text-muted' title='Leave policy for particluar leave type'></i>
 	              </c:if>
 							</div>
 						</div>
@@ -301,17 +552,17 @@
 							style="display: none;">
 							<h3>Leave Policy</h3>
 							<div class="form-group">
-								<label class="col-md-3">Policy Name<span
+								<label class="col-md-4">Policy Name<span
 									class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9" id=policyNameDiv>
+								<div class="col-md-6" id=policyNameDiv>
 									<input type="text" class="form-control" name="policyName"
 										id="policyName" value="${leaveType.policyName}"
 										field-name="Policy Name" data-validation-optional="true">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-md-3"></label>
-								<div class="col-md-9 checkBox">
+								<label class="col-md-4"></label>
+								<div class="col-md-6 checkBox">
 									<c:if test="${!empty leaveType.visibilityToAllUsers}">
 										<input type="checkbox" checked="true"
 											name="visibilityToAllUsers" value="Y">Visiblity
@@ -324,13 +575,13 @@
 								</div>
 							</div>
 							
-							
+					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
 						<textarea id="txtEditor" name="leavePolicyDescription"   
 						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
-
+</div>
 						</div>
 
 					</div>
@@ -458,6 +709,47 @@
 	 			}, 100);
 		
 	}
+	
+	function showPriorDaysDiv() {
+			var ckbox = $('#priorLeaveApplying');
+			if (ckbox.is(':checked')) {
+				$("#priorDaysdiv").show();
+				$('#priorDays').removeAttr('data-validation-optional');
+				$('#priorDays').attr('data-validation', "required validate_length length1-250");
+				$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
+			} else {
+				$("#priorDaysdiv").hide();
+				$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
+				$('#priorDays').removeAttr('data-validation');
+				$('#priorDays').attr('data-validation-optional', "true");
+				$("#priorDays").val("");
+			} 
+	}
+	
+	function showLeaveDurationDiv(){
+		var ckbox = $('#leaveDuration');
+		if (ckbox.is(':checked')) {
+			$("#minMaxDaysdiv").show();
+			$('#minDays').removeAttr('data-validation-optional');
+			$('#minDays').attr('data-validation', "required validate_length length1-250");
+			$('#maxDays').removeAttr('data-validation-optional');
+			$('#maxDays').attr('data-validation', "required validate_length length1-250");
+			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
+			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
+			
+		} else {
+			$("#minMaxDaysdiv").hide();
+			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
+			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
+			$('#minDays').removeAttr('data-validation');
+			$('#minDays').attr('data-validation-optional', "true");
+			$('#maxDays').removeAttr('data-validation');
+			$('#maxDays').attr('data-validation-optional', "true");
+			$("#minDays").val("");
+			$("#maxDays").val("");
+		} 
+		
+	}
 
 	//Select All Users
 	function yesUsers() {
@@ -469,13 +761,49 @@
 		$('#roles').attr('data-validation-optional', "true");
 		$("#noUsersDiv").hide();
 	}
-
 	function noUsers() {
 		$('#department').removeAttr('data-validation-optional');
 		$('#department').attr('data-validation', "required");
 		$('#roles').removeAttr('data-validation-optional');
 		$('#roles').attr('data-validation', "required");
 		$("#noUsersDiv").show();
+	}
+	
+	//Select All Employees And Experienced
+	function hideExperienced() {
+		
+		$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
+		$('#experiencedDiv').find('p.jquery_form_error_message').remove();
+		$('#newJoinee').removeAttr('data-validation');
+		$('#newJoinee').attr('data-validation-optional', "true");
+		$('#experiencedType').removeAttr('data-validation');
+		$('#experiencedType').attr('data-validation-optional', "true");
+		$('#experiencedDuration').removeAttr('data-validation');
+		$('#experiencedDuration').attr('data-validation-optional', "true");
+		$('#experiencedApplicableDays').removeAttr('data-validation');
+		$('#experiencedApplicableDays').attr('data-validation-optional', "true");
+		$("#experiencedGroup").hide();
+		$("#noOfDaysDiv").show();
+		$('#noOfDays').removeAttr('data-validation-optional');
+		$('#noOfDays').attr('data-validation', "required");
+		$("#experiencedDuration").val("");
+		$("#experiencedApplicableDays").val("");
+		$("#newJoinee").val("");
+	}
+	function showExperienced() {
+		$('#newJoinee').removeAttr('data-validation-optional');
+		$('#newJoinee').attr('data-validation', "required");
+		$('#experiencedType').removeAttr('data-validation-optional');
+		$('#experiencedType').attr('data-validation', "required");
+		$('#experiencedDuration').removeAttr('data-validation-optional');
+		$('#experiencedDuration').attr('data-validation', "required");
+		$('#experiencedApplicableDays').removeAttr('data-validation-optional');
+		$('#experiencedApplicableDays').attr('data-validation', "required");
+		$("#experiencedGroup").show();
+		$("#noOfDays").val("");
+		$("#noOfDaysDiv").hide();
+		$('#noOfDays').removeAttr('data-validation');
+		$('#noOfDays').attr('data-validation-optional', "true");
 	}
 </script>
 <script>
@@ -492,4 +820,10 @@
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
+ </script>
+ 
+ <script>
+ function getPeriod(){
+	 
+ }
  </script>
