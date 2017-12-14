@@ -20,6 +20,7 @@ right: 15px;
 <script type="text/javascript">
 window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
+	getBusinessTypeValue();
 	getAllCountries();
 	colourpicker();
 	orgShortCode();
@@ -157,12 +158,17 @@ function cancelOrgImg(){
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
-        
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
+        <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">WhiteList Ips</a></li>
         </c:if>
+
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -208,6 +214,7 @@ function cancelOrgImg(){
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
+							
 							 
 							<div class="form-group">
 								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
@@ -264,7 +271,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group">
+						<div class="form-group">
 							<label class="col-md-3">Date Format</label>
 							<div class="col-md-9">
 							
@@ -277,11 +284,42 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group mt">
+							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+							</div>
+						</div>
+						
+						<div class="form-group mt">
+							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							</div>
+						</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
 					<div class="col-md-5">
+							
 						<div class="form-group">
+							<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+								 <div class="col-md-10 noPad">
+				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
+				                </div>
+				                <div class="col-md-2 dbaCheck dbaCheck-cs">
+				                     
+				                   <div class="ml10">
+						              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
+						              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
+				          			</div>
+				                </div>
+							</div>
+						</div>
+							
+							<div class="form-group">
 							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="websiteDiv">
 							<c:if test="${SourceLeadWeb_website == null}">
@@ -294,6 +332,7 @@ function cancelOrgImg(){
 							
 							</div>
 							</div>
+							
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
@@ -307,7 +346,43 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						<div class="form-group comp-textarea">
+						
+						<div class="form-group mt">
+							<label class="col-md-3">Business type<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+									<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
+									<option value="">--Select Business type--</option>
+									<c:forEach var="bt" items="${bussinessTypesList}">
+								      <c:choose>
+						                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
+						                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
+						                      </c:when>
+						                      <c:otherwise>
+						                         <option value="${bt.id}">${bt.name}</option>
+						                      </c:otherwise>
+						              </c:choose>
+					                </c:forEach>  
+					                
+					                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
+										<option value="Other" selected="selected">Other</option>
+									</c:if>
+									
+								  <c:if test="${empty SourceLeadWeb_orgLocations.otherBusinessType}">
+										<option value="Other">Other</option>
+									</c:if>
+									
+								  </select>
+							</div>
+						</div>
+						
+						<div class="form-group mt" id="otherBusinessTypeDiv" style="display: none;">
+							<label class="col-md-3">Other Business type<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							</div>
+						</div>
+						
+						<div class="form-group comp-textarea mt">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
@@ -472,11 +547,18 @@ function cancelOrgImg(){
             			</div>
             			
         			</div>
+        			
+   			 <jsp:include page="federalAndStateTaxes.jsp" />
+     		 <jsp:include page="orglocationBankingDetails.jsp" />
+     		 <jsp:include page="orglocationDocuments.jsp" />
+     		 <jsp:include page="orglocationSignatory.jsp" />
+     		 
     			</div>
-    
+     		
   	</div>
   </div>
-		</div>
+  
+
 		
 		
 			<!-- Tab for Profile setting-area ends -->
@@ -2509,6 +2591,81 @@ function cancelBtn(){
 	  location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
 }
 
+</script>
+
+
+<script>
+function validateOrgShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgShortId = $("#generatedUserId").val();
+	$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+$(function(){
+	$("#generatedUserId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+$(function() {
+	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+$(function(){
+    $("#averageWorkingHours").keyup(function(event){
+        var ew = $("#averageWorkingHours").val();
+        $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+        if(ew > 24){
+        	$("#averageWorkingHours").val('');
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        }
+    });
+});
+
+</script>
+
+
+<script>
+function getDBAName(){
+	 if (document.getElementById('dbaCheckbox').checked) {
+		 var companyName = document.getElementById("orgLocationCompanyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dba").val(companyName); 
+		 }
+     }else{
+    	 $("#dba").val('');
+     } 
+}
+</script>
+
+<script>
+function getBusinessTypeValue(){
+ 	var businessType = document.getElementById("businessType").value;
+	
+	if(businessType && businessType == 'Other'){
+		 document.getElementById("otherBusinessTypeDiv").style.display="";
+		 $("#otherBusinessType").removeAttr("data-validation-optional");
+		 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+	}else{
+		    document.getElementById("otherBusinessTypeDiv").style.display="none";
+			$("#otherBusinessType").removeAttr("data-validation-optional");
+			 $("#otherBusinessType").attr("data-validation-optional","true");
+			 $("#otherBusinessType").removeAttr("data-validation");
+			 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+		} 
+}
 </script>
 
 

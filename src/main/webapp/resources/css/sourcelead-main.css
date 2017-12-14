@@ -7452,11 +7452,11 @@ min-width: 60px;
 .hasDatepicker.form-control[readonly], #uploadFile.form-control {
 background-color: #fff;
 }
-/*.clearUpload:after {
+.clearUpload:after {
 padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
 background-color: #fff;
-}*/
+}
 .clearUploads:after {
 padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:#D32F2F;z-index: 999;cursor: pointer; font-size: 20px;
@@ -7542,6 +7542,9 @@ color:#398ddd !important;
 }
 .immigration-head {
 	background-color: #f5f5f5; padding:5px 15px;
+}
+.chosentext-left .chosen-container {
+text-align: left;
 }
 /* media 320px */
 @media (max-width: 320px) {
