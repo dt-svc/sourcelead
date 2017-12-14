@@ -2928,5 +2928,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, contracts.getOrgLocationId().getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	}
+
+	@Override
+	public List<Contracts> getContractByLocationId(Long orgLocationId) {
+		return contractsTemplateDao.getContractByLocationId(orgLocationId);
+	}
 	
 }
