@@ -364,6 +364,8 @@ function releaseTo(){
 			 if(!e || !checkedVendorContacts[e] || checkedVendorContacts[e] === "")
 				   continue;
 			 contactsIds.push(checkedVendorContacts[e]);
+			 $("#releaseToClientIconDiv"+checkedVendorContacts[e]).empty();
+			 $("#releaseToClientIconDiv"+checkedVendorContacts[e]).prepend('<i class="fa fa-cog fa-spin"></i>');
 		 }
 		 
 		var requirementUUID = '${requirementUUID}';
@@ -372,6 +374,8 @@ function releaseTo(){
 			 if(!e || !checkedVendors[e] || checkedVendors[e] === "")
 				   continue;
 			 vendorIds.push(checkedVendors[e]);
+			 $("#releaseToVendorIconDiv"+checkedVendors[e]).empty();
+			 $("#releaseToVendorIconDiv"+checkedVendors[e]).prepend('<i class="fa fa-cog fa-spin"></i>');
 		 }
 	    
 	    var isPublic = $("#isPublicId").val();
