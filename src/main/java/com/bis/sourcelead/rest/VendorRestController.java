@@ -95,6 +95,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class VendorRestController {
 	
 	@Value("${sourceleadUrl}")

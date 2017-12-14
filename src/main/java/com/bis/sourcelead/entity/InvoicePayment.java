@@ -65,10 +65,6 @@ public class InvoicePayment {
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
-//	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
-	
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
@@ -172,14 +168,6 @@ public class InvoicePayment {
 	public void setFileContentType(String fileContentType) {
 		this.fileContentType = fileContentType;
 	}
-
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
 
 	public String getFileName() {
 		return fileName;

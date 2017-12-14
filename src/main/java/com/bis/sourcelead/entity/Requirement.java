@@ -35,6 +35,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -98,6 +99,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "APPRVER_HIERARCHY")
 	private String approverHierarchy;
 	
+	@Column(name = "URL")
+	private String url;
 	
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
@@ -123,10 +126,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
 	private String noticePeriod;
 	
-	/*@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -166,6 +165,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "CLIENT_RATE")
 	private String clientRate;
+	
+	@Column(name = "CLIENT_MAX_RATE")
+	private String clientMaxRate;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
@@ -290,6 +292,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
 	private String releaseJobToAllUsers;
 	
+	@Column(name = "MEDICAL_CLEARENCE")
+	private String medicalClearence;
+	
+	@Column(name = "SECURITY_CLEARANCE")
+	private String securityClearance;
+	
+
+	@Column(name = "OVER_TIME")
+	private String overTime;
+	
+	@Column(name = "BACKGROUNG_CHECK")
+	private String backgroundCheck;
+	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
+	private ProjectClients projectClientID;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="EXPERIENCE_LEVEL", nullable=true) 
+	private LookUpData experienceLevel;
+	
+	 
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -304,6 +336,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String isJobApplied;
+	
+	@Transient
+	private String projectName;
 	
 	@Transient
 	private String msg;
@@ -768,7 +803,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getFileContentType() {
 		return fileContentType;
@@ -1739,6 +1773,98 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.fileURL = fileURL;
 	}
 
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+	
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	
+
+	public ProjectClients getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(ProjectClients projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName()
+	{
+		return projectName;
+	}
+
+	public void setProjectName(String projectName)
+	{
+		this.projectName = projectName;
+	}
+
 	public String getOrgRelationUUID()
 	{
 		return orgRelationUUID;
@@ -1767,6 +1893,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setSpocUUID(String spocUUID)
 	{
 		this.spocUUID = spocUUID;
+	}
+
+	public LookUpData getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(LookUpData experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
 	}
 
 	

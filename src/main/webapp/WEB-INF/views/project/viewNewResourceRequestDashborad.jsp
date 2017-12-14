@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a>  <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>"></a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a>  <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>"></a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
@@ -34,7 +34,7 @@
    <div id="rejectedReasonDiv"></div>
     <div id="newRequestOnHoldReasonDiv"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/dashboard'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -330,7 +330,7 @@ function saveRejectAssociate(requestUUID){
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,
@@ -370,7 +370,7 @@ function acceptNewResourceRequest(requestUUID){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
-	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
 	    	url: sourceleadUrl+"/acceptNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
@@ -439,7 +439,7 @@ if ($('#newRequestOnHold_form').validate(false, validationSettings)){
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         
         $("#submit_onHold").attr("disabled", "disabled");
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,

@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -53,6 +54,8 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -75,6 +78,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
 
 @Controller
+@RequestMapping("/app")
 public class RequirementController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
@@ -148,10 +152,18 @@ public class RequirementController {
 	private RequirementInterviewerService requirementInterviewerService;
 	
 	@Autowired
+
+	private ProjectsService projectsService;
+	
+	@Autowired
+private ProjectClientService projectClientService;
+	
+
 	TeamService teamService;
 	
 	@Autowired
 	RolesService roleService;
+
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -241,8 +253,18 @@ public class RequirementController {
 			   }
 				model.addObject("clientContactList", clientContactList);
 			}
-		    
-		    
+	     	
+			List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+			for(ProjectClients projectClients : projectList){
+				if(projectClients.getOrgRelationId() != null){
+				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+				}
+			}
+			}
+			model.addObject("projectList", projectList);
 		    //for requirement approvaers
 			List<RequirementApproverHierarchy> requirementApproverHierarchyList =	requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			String approverMode = "noApprovers";
@@ -289,6 +311,10 @@ public class RequirementController {
 		}else{
 			requirement = new Requirement();
 		}
+		
+		List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
+		 model.addObject("experienceLevelList", experienceLevelList);
+		 
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
@@ -328,7 +354,18 @@ public class RequirementController {
 			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
-		
+		List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+		for(ProjectClients projectClients : projectList){
+			if(projectClients.getOrgRelationId() != null){
+				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+				}
+			}
+		}
+
+		model.addObject("projectList", projectList);
 		
 		if(requirement != null && requirement.getId() != null){
 
@@ -514,8 +551,8 @@ public class RequirementController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
-	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+	@RequestMapping(value = "/job/{jobTitle}")
+	public ModelAndView requirementSummary(HttpServletRequest request,@PathVariable String title,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 
@@ -537,6 +574,10 @@ public class RequirementController {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
+		//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
+		if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
+		requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
+		}
 		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
 		for (RequirementAssignTo assing : requirementAssignToList) {
 			RequirementAssignTo ra = new RequirementAssignTo();
@@ -622,11 +663,13 @@ public class RequirementController {
 		}else {
 			requirement.setIsLoginUserAsInitiator("false");
 		}
+
 		
 		if(requirement.getClientId() != null){
 		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 		}
 		
+
 		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
 		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 		
@@ -905,6 +948,9 @@ public class RequirementController {
 			/*List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);*/
 			
+			List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
+			 model.addObject("experienceLevelList", experienceLevelList);
+			
 			if(requirement != null && requirement.getId() != null){
 
 				List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
@@ -945,7 +991,7 @@ public class RequirementController {
 
 	}
 	
-	@RequestMapping(value = "/acceptOrRejectRequirementOffer")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirementOffer")
 	public ModelAndView acceptOrRejectRequirementOffer(HttpServletRequest request,@RequestParam(value="offerStatus", required=false)String offerStatus,@RequestParam(value="offerId", required=false)Long offerId) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
@@ -1122,7 +1168,7 @@ public class RequirementController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		

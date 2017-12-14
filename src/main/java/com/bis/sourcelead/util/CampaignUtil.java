@@ -12,6 +12,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.rest.CampaignRestController;
 import com.google.gson.JsonObject;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -31,7 +34,7 @@ import com.sendgrid.SendGrid;
 
 @Component
 public class CampaignUtil {
-	
+	private static final Logger logger = LoggerFactory.getLogger(CampaignUtil.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -50,6 +53,7 @@ public class CampaignUtil {
 	 */
 	public String createSender(CreateSenderDTO createSenderDTO, OrgLocations orgLocation) throws IOException
 	{
+		logger.info("====Sendgrid key "+sendgridKey);
 		String isSenderCreated = null;
 		String city = "";
 		String country = "";
@@ -101,7 +105,7 @@ public class CampaignUtil {
 	 * @return String
 	 * @throws IOException
 	 */
-	public String updateSender(CreateSender createSender, OrgLocations orgLocation) throws IOException
+	public String updateSender(CreateSenderDTO createSenderDto, OrgLocations orgLocation) throws IOException
 	{
 		String isSenderCreated = null;
 		String city = "";
@@ -127,14 +131,14 @@ public class CampaignUtil {
 			SendGrid sg = new SendGrid(sendgridKey);
 			Request request = new Request();
 			request.setMethod(Method.PATCH);
-			request.setEndpoint("senders/" + createSender.getSenderId() + "");
+			request.setEndpoint("senders/" + createSenderDto.getSenderId() + "");
 			request.setBody("{\"city\":\"" + city + "\"," + "\"from\":{\"email\":\""
-					+ createSender.getFromMail() + "\"," + "\"name\":\""
-					+ createSender.getFromName() + "\"}," + "\"zip\":\"" + zipcode + "\","
+					+ createSenderDto.getCpnSenderFromMail() + "\"," + "\"name\":\""
+					+ createSenderDto.getCpnSenderName() + "\"}," + "\"zip\":\"" + zipcode + "\","
 					+ "\"country\":\"" + country + "\"," + "\"state\":\"" + state + "\","
 					+ "\"address_2\":\"\"," + "\"address\":\"" + address + "\","
-					+ "\"reply_to\":{\"email\":\"" + createSender.getReplyTo() + "\","
-					+ "\"name\":\"\"}," + "\"nickname\":\"" + createSender.getNickName() + "\"}");
+					+ "\"reply_to\":{\"email\":\"" + createSenderDto.getCpnReplyMail() + "\","
+					+ "\"name\":\"\"}," + "\"nickname\":\"" + createSenderDto.getCpnNickName() + "\"}");
 			Response response = sg.api(request);
 			if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
 				isSenderCreated = response.getBody();
@@ -153,6 +157,7 @@ public class CampaignUtil {
 	 */
 	public String createList(CampaignListDTO campaignListDTO) throws IOException
 	{
+		logger.info("====Sendgrid key "+sendgridKey);
 		String isListCreated = null;
 		try {
 			SendGrid sg = new SendGrid(sendgridKey);

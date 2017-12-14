@@ -15,7 +15,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Cancelled Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -27,10 +27,10 @@ $(document).ready(function(){
           <li class="dropdown">
            <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
-                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves" selected>Cancelled Leaves</option>
+                        <option value="${appPath}/employeeRequestedLeaves">Requested Leaves</option>
+                        <option  value="${appPath}/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="${appPath}/employeeRejectedLeaves">Rejected Leaves</option>
+                        <option value="${appPath}/employeeCancelLeaves" selected>Cancelled Leaves</option>
                     </select>
             </div>
         </li>

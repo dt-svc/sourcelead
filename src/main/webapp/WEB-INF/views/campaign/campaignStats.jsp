@@ -22,8 +22,9 @@
           <div id="campaignStatsDev" class="datatable_filter"></div>
         </div>
       </div>
+      <div id="popUp"></div>   
   </section>
-          
+       
 <script type="text/javascript">
 function getCampaignStats(){
 		var searchValue = $("#campaignStatsTableSearch").val();
@@ -50,10 +51,10 @@ function prepareCampaignStatsList(url){
 		result = result +' <th>Category Name</th>';
 	    result = result +' <th>Opens</th>';
 	    result = result +' <th>Delivered</th>';
-	    result = result +' <th>Unique Opens</th>';
-	    result = result +' <th>Unique Clicks</th>';
+	    result = result +' <th>CLicks</th>';
+	    result = result +' <th>Bounces</th>';
 	    result = result +' <th>Unsubscribes</th>';
-	    result = result +' <th>Actions</th>';
+	    result = result +' <th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -91,7 +92,7 @@ function campaignStatsPagination(url){
 	    	  	"data": "categoryName",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		  var result = "";
-	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignId='+report.campaignId+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
+	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignName='+report.categoryName+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
 		             return result;
 	    	  	}
 	      },{
@@ -116,7 +117,7 @@ function campaignStatsPagination(url){
               "data": "uniqueOpens",
               "render": function ( data, type, report, meta ) {
             	var result = "";
-            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueOpens+'">'+report.uniqueOpens+'</div>';
+            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.clicks+'">'+report.clicks+'</div>';
             	 return result;
               }
             }, {
@@ -124,7 +125,7 @@ function campaignStatsPagination(url){
                 "data": "uniqueClicks",
                 "render": function ( data, type, report, meta ) {
                 	var result = "";
-                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueClicks+'">'+report.uniqueClicks+'</div>';
+                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.bounces+'">'+report.bounces+'</div>';
     	              return result;
                 }
           },{
@@ -145,8 +146,7 @@ function campaignStatsPagination(url){
 	    	           result = result +'    <i class="fa fa-ellipsis-h cursorPointer"></i>';
 	    	           result = result +'    <div class="action-inner">';
 	    	           result = result +'    <ul>';
-	    	           result = result +'          <li><div title="Edit"><i class="fa fa-pie-chart cursorPointer" onclick="campaignRecipient(this,'+report.id+');"></i></div></li>';       
-	    	           result = result +'          <li><div title="Delete"><i onclick= "deleteCampaignList(\''+report.id+'\');" class="fa fa-trash-o text-danger cursorPointer"></i></div></li>';  
+	    	           result = result +'          <li><div title="Delete"><i class="fa fa-trash-o text-danger cursorPointer" onclick="deleteCampaignStas(\''+report.categoryName+'\');"></i></div></li>';  
 	    	           result = result +'    </ul>';
 	    	           result = result +'    </div>';
 	    	           result = result +'    </div>';                                                                                                              
@@ -163,7 +163,7 @@ function campaignStatsPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#campaignStatsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -176,5 +176,44 @@ function campaignStatsPagination(url){
 }
 </script>
 
+ <script>
+ function deleteCampaignStas(categoryName){
+	 var result = "";
+		result = result +"	<div class='project_inn_mask'></div>"; 
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Are you sure you want to delete this campaign?</p>";
+		 /* result = result +"		<textarea  id='deleteStats' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";  */
+		result = result + ' <div id="deleteStatsDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteStats(\''+categoryName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+ }
+ </script>
+ 
+ <script>
+ function deleteStats(categoryName){
+				 $.ajax({
+					   	type: "GET",
+					    url: sourceleadUrl+"/deleteStats?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
+			   		    success: function(data) {
+			   		    	if(data == true){
+			   		    		$("#popUp").empty();
+				   			 	$(".project_inn_mask").fadeOut(200);
+				   			 	location.replace(sourceleadUrl+"/campaignStats");	
+			   		    	}
+			   		    }
+				     });
+		
+ }
+ </script>
+ 
+ <script>
+ function cancelTermination(){
+		$("#popUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+	}
+ </script>
   
   <jsp:include page="../masterFooter.jsp" />

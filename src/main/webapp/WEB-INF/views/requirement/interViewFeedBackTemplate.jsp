@@ -11,9 +11,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
 <script type="text/javascript">
 //On document ready
@@ -496,7 +496,7 @@ function validateTemplateName(){
     <div class="pull-left">
       <h2>Interview Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
     
   </section>
   <div class="timesheet_out">
@@ -553,7 +553,7 @@ function scrollToBottom(){
 </body>
 
 
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 <%-- <jsp:include page="masterFooter.jsp" /> --%>
 

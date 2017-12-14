@@ -180,7 +180,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 	    	 List<String> otherRecipientList = campaignUtil.createOtherRecipients(othEmail);
 	    	 if(otherRecipientList !=null && otherRecipientList.size() >0) {
 	    		 CampaignListDTO campaignListDTO = new CampaignListDTO();
-	    		 campaignListDTO.setCpnListName(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+	    		 String otherReciListName = SourceLeadRandomCodeHelper.generateRandomVerificationCode();
+	    		 campaignListDTO.setCpnListName(otherReciListName);
+	    		 logger.info("Other Recipient List Name : "+otherReciListName);
 	    		 String listResponse = campaignUtil.createList(campaignListDTO);
 	    		 JSONObject jObject  = new JSONObject(listResponse); 
 	    		 otherRecilistId = jObject.getString("id");
@@ -236,9 +238,9 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				String campaignId = jObject.getString("id");
 				 String scheduleCampaignRes = campaignUtil.sendCampaign(campaignId);
 				if(scheduleCampaignRes !=null) {
-				 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user);
+				 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user,0);
 				 if(campaign !=null) {
-					 logger.info("Campaign saved into campaig his table");
+					 logger.info("Campaign saved into campaig history table");
 				 }
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -283,13 +285,13 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				 ArrayList<EmailAttachment> fileAttachmentList = null;
 				 EmailAttachment attachment = new EmailAttachment();
 				 
-				 if(multiFile.getSize() > 0){
-					 fileAttachmentList =  new ArrayList<EmailAttachment>();
-					 attachment.setName(multiFile.getOriginalFilename());
-					 attachment.setDocFile(multiFile.getBytes());
-					 attachment.setType(multiFile.getContentType());
-					 fileAttachmentList.add(attachment);
-				 }
+//				 if(multiFile.getSize() > 0){
+//					 fileAttachmentList =  new ArrayList<EmailAttachment>();
+//					 attachment.setName(multiFile.getOriginalFilename());
+//					 attachment.setDocFile(multiFile.getBytes());
+//					 attachment.setType(multiFile.getContentType());
+//					 fileAttachmentList.add(attachment);
+//				 }
 				 
 						
 				//calling the sendEmail method of emailScenerioUtil
@@ -365,38 +367,41 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature) throws Exception{
 		
 		String tempHTML = "";
+		
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
-		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
+		
+		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;  margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
-		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";
-		tempHTML = tempHTML + "<tr>";
-		tempHTML = tempHTML + "<td><table width='600' align='center'>";
-		tempHTML = tempHTML +  "<tr>";
-		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='"+imageUrl+"' width='200' height='45'> </span></td>";
-		tempHTML = tempHTML +  "</tr>";
-		tempHTML = tempHTML +  "</table></td>";
-		tempHTML = tempHTML + "</tr>";
-		tempHTML = tempHTML + "</table>";
-		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px;'>";
-		tempHTML = tempHTML +  "<tbody>";
-		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +   "<td align='left'>"+hotListEmailCampaignDTO.getSaluation()+",<br>";
-		tempHTML = tempHTML +     " <br></td>";
-		tempHTML = tempHTML +   " </tr>";
-		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'><p>"+hotListEmailCampaignDTO.getBodytext()+"/p></td>";
-		tempHTML = tempHTML +   "  </tr>";
-		tempHTML = tempHTML +    "</tbody>";
-		tempHTML = tempHTML + "</table>";
-		      //Table Design
-		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
-		 tempHTML = tempHTML+"<tr align='center'>";
+		tempHTML = tempHTML + " <td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;  margin:0px;'>";
+		tempHTML = tempHTML + "   <tr>";
+		tempHTML = tempHTML + "  <td><table width='600' align='center' style='margin:0px;'>";
+		tempHTML = tempHTML + "     <tr>";
+		tempHTML = tempHTML + "      <td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src="+imageUrl+" width='200' height='45'> </span></td>";
+		tempHTML = tempHTML + "     </tr>";
+		tempHTML = tempHTML + "   </table></td>";
+		tempHTML = tempHTML + " </tr>";
+		tempHTML = tempHTML + " </table>";
+		tempHTML = tempHTML + "  <table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px;'>";
+		tempHTML = tempHTML + "    <tbody>";
+		tempHTML = tempHTML + "     <tr>";
+		tempHTML = tempHTML + "   <td align='left'>"+hotListEmailCampaignDTO.getSaluation()+", <br>";
+		tempHTML = tempHTML + "    <br></td>";
+		tempHTML = tempHTML + "   </tr>";
+		tempHTML = tempHTML + "  <tr>";
+		tempHTML = tempHTML + "<td align='left'><p>"+hotListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML + "    </tr>";
+		tempHTML = tempHTML + "   </tbody>";
+		tempHTML = tempHTML + "  </table>";
+		      // table start
+		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;  margin:0px;'>";
+		 tempHTML = tempHTML + "<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Name<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Experience<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Rate<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='50%' bgcolor='#5bace8'><span>Skills<span></th>";
-		 tempHTML = tempHTML+"</tr>";
-		 
+		 tempHTML = tempHTML + " </tr>";
+		 tempHTML = tempHTML + " <tbody>";
+		 tempHTML = tempHTML + " <tr align='center'>";
 		 Set<String> candidateEmailsList = new HashSet<String>();
 		 
 		 for(int i=0 ; i < hotlistedCandidates.length; i++){
@@ -417,17 +422,17 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			
 			 Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(email));
 			 
-			 if("firstname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+			 if(hotListEmailCampaignDTO.getNamefield().equalsIgnoreCase("firstname")){
 				 candidateName = nameBuilder.append(candidate.getFirstName());
 			 }
-		 	 else if("firstnameandlastName".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 	 else if(hotListEmailCampaignDTO.getNamefield().equalsIgnoreCase("firstnameandlastName")){
 				 if(!isNullOrEmpty(candidate.getLastName())){
 					 candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 			   	 }else{
 			   		candidateName = nameBuilder.append(candidate.getFirstName());
 			   	 }
 			 }
-		 	 else if("firstname1stletterlastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 	 else if(hotListEmailCampaignDTO.getNamefield().equalsIgnoreCase("firstname1stletterlastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
 		 			candidateName = nameBuilder.append(candidate.getFirstName()).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 		 		 }else{
@@ -435,7 +440,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		 		 }
 		 		
 		 	 }
-		 	 else if("1letterfirstnamelastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 	 else if(hotListEmailCampaignDTO.getNamefield().equalsIgnoreCase("1letterfirstnamelastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
 		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(candidate.getLastName());
 		 		 }else{
@@ -443,7 +448,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		 		 }
 		 		
 		 	 }
-		 	else if("1letterfirstname1letterlastname".equalsIgnoreCase(hotListEmailCampaignDTO.getNamefield())){
+		 	else if(hotListEmailCampaignDTO.getNamefield().equalsIgnoreCase("1letterfirstname1letterlastname")){
 		 		 if(!isNullOrEmpty(candidate.getLastName())){
 		 			candidateName = nameBuilder.append(String.valueOf(candidate.getFirstName().charAt(0))).append(" ").append(String.valueOf(candidate.getLastName().charAt(0)));
 		 		 }else{
@@ -486,30 +491,34 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 tempHTML = tempHTML+"</tr>";
 			 
 		 }
-		 tempHTML = tempHTML+"</table>";
-			  // Table Design
-			 tempHTML = tempHTML + signature;
-		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
-		tempHTML = tempHTML +" <tr>";
-		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px;'>";
-		tempHTML = tempHTML + "<tr>";
-		tempHTML = tempHTML +"<td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
-		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";
-		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>3535 Victory Group Way, Building 4 Frisco, TX 75034, USA, Phone : (214) 295-5535, FAX : (972) 559-3641</p></td>";
-		tempHTML = tempHTML +"</tr>";
-		tempHTML = tempHTML +"<tr>";
-		tempHTML = tempHTML +"<td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p></td>";
-		tempHTML = tempHTML +" </tr>";
-		tempHTML = tempHTML + "</table></td>";
-		tempHTML = tempHTML +" </tr>";
-		tempHTML = tempHTML + " </table></td>";
-		tempHTML = tempHTML +"</tr>";
-		tempHTML = tempHTML +"</table>";
-        tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";
 		
+		            
+		            
+		tempHTML = tempHTML + "</tr>";
+		tempHTML = tempHTML + "</tbody>";
+		tempHTML = tempHTML + " </table>";
+		      // table end
+		      tempHTML = tempHTML + " <table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
+		      tempHTML = tempHTML + " <tr>";
+		      tempHTML = tempHTML + "   <td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px;'>";
+		      tempHTML = tempHTML + "     <tr>";
+		      tempHTML = tempHTML + "     <td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
+		      tempHTML = tempHTML + "       <p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";
+		      tempHTML = tempHTML + "       <p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>3535 Victory Group Way, Building 4 Frisco, TX 75034, USA, Phone : (214) 295-5535, FAX : (972) 559-3641</p></td>";
+		      tempHTML = tempHTML + "    </tr>";
+		      tempHTML = tempHTML + "   <tr>";
+		      tempHTML = tempHTML + "   <td><p style='text-align:center; padding:2px 0px; margin:0px 0px; font-size:11px; font-weight:400; border-top:1px solid #BDBDBD;'><a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p></td>";
+		      tempHTML = tempHTML + "   </tr>";
+		      tempHTML = tempHTML + "    </table></td>";
+		      tempHTML = tempHTML + "  </tr>";
+		      tempHTML = tempHTML + "   </table></td>";
+		      tempHTML = tempHTML + " </tr>";
+              tempHTML = tempHTML + "</table>";
+              tempHTML = tempHTML + "<a href='[unsubscribe]'>Click Here to Unsubscribe</a>";
 		
 		/* String tempHTML = null;
 		 
+		 Actual Code
 		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
@@ -734,7 +743,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					String campaignId = jObject.getString("id");
 					 String scheduleCampaignRes = campaignUtil.sendCampaign(campaignId);
 					if(scheduleCampaignRes !=null) {
-					 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user);
+					 Campaign campaign= saveScheduledCampaignHistory(createCampaignRes,scheduleCampaignRes,orgLocation,user,1);
 					 if(campaign !=null) {
 						 logger.info("Campaign saved into campaig his table");
 					 }
@@ -778,13 +787,13 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					 ArrayList<EmailAttachment> fileAttachmentList = null;
 					 EmailAttachment attachment = new EmailAttachment();
 					 
-					 if(multiFile.getSize() > 0){
-						 fileAttachmentList =  new ArrayList<EmailAttachment>();
-						 attachment.setName(multiFile.getOriginalFilename());
-						 attachment.setDocFile(multiFile.getBytes());
-						 attachment.setType(multiFile.getContentType());
-						 fileAttachmentList.add(attachment);
-					 }
+//					 if(multiFile.getSize() > 0){
+//						 fileAttachmentList =  new ArrayList<EmailAttachment>();
+//						 attachment.setName(multiFile.getOriginalFilename());
+//						 attachment.setDocFile(multiFile.getBytes());
+//						 attachment.setType(multiFile.getContentType());
+//						 fileAttachmentList.add(attachment);
+//					 }
 					 
 					//calling the sendEmail method of emailScenerioUtil
 //					 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,fileAttachmentList);
@@ -807,14 +816,16 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	 * @param scheduleCampaignRes
 	 * @param orgLocation
 	 * @param user
+	 * @param campaignType 
 	 * @return Campaign
 	 * @throws Exception
 	 */
-	private Campaign saveScheduledCampaignHistory(String createCampaignRes, String scheduleCampaignRes, OrgLocations orgLocation, User user) throws Exception
+	private Campaign saveScheduledCampaignHistory(String createCampaignRes, String scheduleCampaignRes, OrgLocations orgLocation, User user, int campaignType) throws Exception
 	{
 		Campaign campaign = new Campaign();
 		JSONObject createCpnRes = new JSONObject(createCampaignRes); // json
 		campaign.setCampaignId(createCpnRes.getString("id"));
+		campaign.setCampaignType(campaignType);
 		campaign.setCampaignSubject(createCpnRes.getString("subject"));
 		campaign.setCampaignTitle(createCpnRes.getString("title"));
 		if (StringUtils.isNotBlank(createCpnRes.getString("ip_pool"))) {
@@ -861,30 +872,30 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	{
 		String tempHTML = "";
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
-		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial;'>";
+		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial; margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
-		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0;'>";
+		tempHTML = tempHTML + "<td><table width='650' align='center' cellpadding='0' cellspacing='0' style='padding:5px 0px; background-color:#fff; border:1px solid #E0E0E0; margin:0px;'>";
 		tempHTML = tempHTML + "<tr>";
-		tempHTML = tempHTML + "<td><table width='600' align='center'>";
+		tempHTML = tempHTML + "<td><table width='600' align='center' style='margin:0px;'>";
 		tempHTML = tempHTML +  "<tr>";
 		tempHTML = tempHTML +   "<td><span style='width: 200px; height: 45px; margin: 0 auto; display: block;'> <img src='"+imageUrl+"' width='200' height='45'> </span></td>";
 		tempHTML = tempHTML +  "</tr>";
 		tempHTML = tempHTML +  "</table></td>";
 		tempHTML = tempHTML + "</tr>";
 		tempHTML = tempHTML + "</table>";
-		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px;'>";
+		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px; margin:0px;'>";
 		tempHTML = tempHTML +  "<tbody>";
 		tempHTML = tempHTML +   "<tr>";
 		tempHTML = tempHTML +   "<td align='left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
 		tempHTML = tempHTML +     " <br></td>";
 		tempHTML = tempHTML +   " </tr>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'><p>"+jobListEmailCampaignDTO.getBodytext()+"/p></td>";
+		tempHTML = tempHTML +    " <td align='left'><p>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
 		tempHTML = tempHTML +   "  </tr>";
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";
 		      //Table Design
-		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle'>";
+		 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; margin:0px;'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Job Title<span></th>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='15%' bgcolor='#5bace8'><span>Location<span></th>";
@@ -957,7 +968,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 tempHTML = tempHTML+"</tr>";;
 			 tempHTML = tempHTML+"<tr style='background-color:#ffffff;min-height:32px;'>";
 			 tempHTML = tempHTML+"<td style='padding-top:15px;padding-bottom:15px;padding-right:10px;padding-left:10px;'>";
-			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff;'>";
+			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff; margin:0px;'>";
 			 tempHTML = tempHTML+"<tbody>";
 			 tempHTML = tempHTML+"<tr>";
 			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
@@ -977,9 +988,9 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 tempHTML = tempHTML+"<br><br>";
 			  // Table Design
 			 tempHTML = tempHTML + signature;
-		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
+		tempHTML = tempHTML + "<table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='15px 0 15px 0; background-color:#ededed; padding:0px; margin:0px'>";
 		tempHTML = tempHTML +" <tr>";
-		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px;'>";
+		tempHTML = tempHTML +"<td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px'>";
 		tempHTML = tempHTML + "<tr>";
 		tempHTML = tempHTML +"<td><p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:13px; font-weight:600; text-align:center'>get started!</p>";
 		tempHTML = tempHTML +"<p style='padding:0px 0px 2px 0px; margin:0px 0px; font-weight:400; font-size:11px; text-align:center'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#0D47A1; display:inline-block; padding:0; border-radius:0; margin:0; font-size:14px'>sourcelead.com</a></p>";

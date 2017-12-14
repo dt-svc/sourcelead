@@ -41,7 +41,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Contacts List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -218,7 +218,7 @@ function addContactsGroup(){
 
 </script>
 <jsp:include page="../masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div> 
 
 
 <script>
@@ -401,7 +401,7 @@ function contactsPagination(url,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#example").wrap("<div class='project_tabs_inn_table vendor_wrap_inn_table' style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -420,7 +420,7 @@ function contactsPagination(url,sourceleadUrl){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 
@@ -490,7 +490,7 @@ function validateContactEmail(){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contact").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData1("addcontact_form");
 	        		$.ajax({
 	        					type : "POST",
@@ -630,7 +630,7 @@ $("#contactsFilter").click(function(){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contactgroup").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData1("contactgroup_form");
 	        		$.ajax({
 	        					type : "POST",

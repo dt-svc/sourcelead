@@ -7,7 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <script>
 // project side bar tabs
@@ -42,7 +42,7 @@ $(document).ready(function() {
 	        	   client = '';
 	           
                $("#timesheetApprovalDiv").empty();
-               $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+               $("#timesheetApprovalDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	   $.ajax({
 	      	          type : "POST",
 	          	      dataType : 'json',
@@ -85,7 +85,7 @@ $(document).ready(function() {
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheet approval</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheet approval</div>
            <div class="clearfix"></div>
         </section>
 		<div id="timesheetApprovalDiv" class="datatable_filter"></div>

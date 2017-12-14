@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 
 <style>
@@ -136,7 +136,7 @@ display: none;
 			
 		    var formData = getFormData("email_settings_form");
 			$("#email_settings_form").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#email_settings_form" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/addEmailAccount?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 				location.replace(sourceleadUrl+"/mailBox/mails");

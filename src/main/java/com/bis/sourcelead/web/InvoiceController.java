@@ -39,6 +39,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.log.SysoCounter;
 
 @Controller
+@RequestMapping("/app")
 public class InvoiceController {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
 	@Value("${sourceleadUrl}")
@@ -364,7 +365,7 @@ public class InvoiceController {
 	
 	
 	
-	/* @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
+	 /*@RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
 	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,
 	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
@@ -388,6 +389,6 @@ public class InvoiceController {
 		          sos.flush();
 		          sos.close();
 
-		} */
+		}*/ 
 	
 }

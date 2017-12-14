@@ -81,7 +81,7 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
@@ -118,7 +118,7 @@ margin-top: 3px;
 	                </li>
                 </sec:authorize>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
+		   			<li><a href="<c:url value='${appPath}/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
 					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
@@ -333,7 +333,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			 }
 			 $("#row"+expenseId).empty();
 			 $("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
-		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
 		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
@@ -424,7 +424,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 }
 		$("#row"+expenseId).empty();
 		$("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
-	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
+	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason = '' ;
 	     $.ajax({
 	    type: "POST",

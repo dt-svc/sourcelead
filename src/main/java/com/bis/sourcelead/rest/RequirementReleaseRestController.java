@@ -50,6 +50,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class RequirementReleaseRestController {
 	
 	@Value("${sourceleadUrl}")
@@ -492,6 +493,24 @@ public class RequirementReleaseRestController {
 		requirement.setDescription(parentRequirement.getDescription());
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
+		if(parentRequirement.getMedicalClearence() != null){
+		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
+		}
+		if(parentRequirement.getSecurityClearance() != null){
+		requirement.setSecurityClearance(parentRequirement.getSecurityClearance());
+		}
+		if(parentRequirement.getOverTime() !=null){
+		requirement.setOverTime(parentRequirement.getOverTime());
+		}
+		if(parentRequirement.getBackgroundCheck() != null){
+		requirement.setBackgroundCheck(parentRequirement.getBackgroundCheck());
+		}
+		if(parentRequirement.getGender() != null){
+		requirement.setGender(parentRequirement.getGender());
+		}
+		if(parentRequirement.getExperienceLevel() != null){
+		requirement.setExperienceLevel(parentRequirement.getExperienceLevel());
+		}
 		requirement.setFileName(parentRequirement.getFileName());
 		requirement.setFileURL(parentRequirement.getFileURL());
 		if(parentRequirement.getVisaType() != null){
@@ -505,7 +524,8 @@ public class RequirementReleaseRestController {
 		//requirement.setClientRate(parentRequirement.getClientRate());
 		//requirement.setClientRateType(parentRequirement.getClientRateType());
 		requirement.setClientCurrencyCode(parentRequirement.getCurrencyCode());
-		requirement.setClientRate(parentRequirement.getRate());
+		requirement.setClientRate(parentRequirement.getClientRate());
+		requirement.setClientMaxRate(parentRequirement.getClientMaxRate());
 		requirement.setClientRateType(parentRequirement.getRateType());
 		requirement.setTotalApplicants(0);
 		requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());

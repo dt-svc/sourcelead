@@ -63,13 +63,13 @@ $(document).ready(function(){
 <script type="text/javascript">
 function getSendersList(){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.get( sourceleadUrl+ "/getSendersByLocationId?&orgLocationId="+locationId, function(json) {
 	    	 var result = "";
 	    	 result += '<table id="sendersListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
 	         result += '  <tr>';
-	         result += '    <th>Default Mail <br> Sender</th>';
+	         /* result += '    <th>Default Mail <br> Sender</th>'; */
 	         result += '    <th>Name</th>';
 	         result += '    <th>Nikname</th>';
 	         result += '    <th>From mail</th>';
@@ -84,7 +84,7 @@ function getSendersList(){
 	        	 for(i=0;i < data.length;i++){
 		    		 var report = data[i];
 		    		 result += '<tr>';
-		    		 result += '    <td><div class="tblminwidth-30"><input type="radio" onchange="selectMailSender('+report.id+');" name="mails"></div></td>';
+		    		/*  result += '    <td><div class="tblminwidth-30"><input type="radio" onchange="selectMailSender('+report.id+');" name="mails"></div></td>'; */
 			         result += '    <td>';
 			         if(report.cpnSenderName != null && report.cpnSenderName != '' && report.cpnSenderName != 'undefined'){
 			        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.cpnSenderName+'">'+report.cpnSenderName+'</div>';
