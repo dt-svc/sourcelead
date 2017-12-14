@@ -7,10 +7,10 @@
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Vendor On-board</h2>
+			<h2>Onboarding</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
 		</div>
 	</section>
 	
@@ -19,7 +19,7 @@
 		<div class="newPrTabs">
 		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
-				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
+				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
 				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
 				<div class="clearfix mb"></div>
@@ -95,7 +95,7 @@
 					<div class="clearfix form-horizontal inner-content req-dtls myForm">
 						<div class="row">
 							<div class="col-lg-12">
-					          <h3>Vendor Details</h3>
+					          <h3>Company Details</h3>
 					        </div>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 								
@@ -132,7 +132,7 @@
 			 		<div class="clearfix form-horizontal inner-content req-dtls myForm">
 						<div class="row">
 							<div class="col-lg-12">
-					          <h3>Company Details</h3>
+					          <h3>Additional Details</h3>
 					        </div>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 									<div class="form-group">
@@ -381,7 +381,7 @@
 function getVendorOnboardDetails(){
 	
 	var onboardSubmittedStatus = '${onboardSubmittedStatus}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	if(onboardSubmittedStatus == 'N'){
 		var vendorOnboardId = '${vendorOnboardId}';
 		var notificationUUID = '${notificationUUID}';
@@ -389,35 +389,40 @@ function getVendorOnboardDetails(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 		        success: function(json) {
-		        	$("#clientName").html(json.clientName);
-		        	if(json.clientWebsite != null){
-		        		$("#website").html(json.clientWebsite);
+		        	$("#clientName").html("<p title='"+json.clientName+"'>"+json.clientName+"</p>");
+		        	if(json.clientWebsite != null && json.clientWebsite != 'undefined' && json.clientWebsite != ''){
+		        		$("#website").html("<p title='"+json.clientWebsite+"'>"+json.clientWebsite+"</p>");
 		        	}else{
 		        		$("#website").html("-------");
 		        	}
 		        	
-		        	$("#location").html(json.clientLocation);
+		        	if(json.clientLocation != null && json.clientLocation != 'undefined' && json.clientLocation != ''){
+		        		$("#location").html("<p title='"+json.clientLocation+"'>"+json.clientLocation+"</p>");
+		        	}else{
+		        		$("#location").html("-------");
+		        	}
+		        
 		        	
-		        	if(json.clientAddress != null){
-		        		$("#address").html(json.clientAddress);
+		        	if(json.clientAddress != null && json.clientAddress != 'undefined' && json.clientAddress != ''){
+		        		$("#address").html("<p title='"+json.clientAddress+"'>"+json.clientAddress+"</p>");
 		        	}else{
 		        		$("#address").html("-------");
 		        	}
 		        	
-		        	$("#vendorName").html(json.vendorName);
+		        	$("#vendorName").html("<p title='"+json.vendorName+"'>"+json.vendorName+"</p>");
 		        	if(json.vendorWebsite != null){
-		        		$("#vendorWebsite").html(json.vendorWebsite);
+		        		$("#vendorWebsite").html("<p title='"+json.vendorWebsite+"'>"+json.vendorWebsite+"</p>");
 		        	}else{
 		        		$("#vendorWebsite").html("-------");
 		        	}
 		        	
-		        	$("#vendorLocation").html(json.vendorLocation);
+		        	$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>"+json.vendorLocation+"</p>");
 		        	
 
-		        	$("#clientContactName").html(json.clientContactName);
-		        	$("#clientContactEmail").html(json.clientContactEmail);
+		        	$("#clientContactName").html("<p title='"+json.clientContactName+"'>"+json.clientContactName+"</p>");
+		        	$("#clientContactEmail").html("<p title='"+json.clientContactEmail+"'>"+json.clientContactEmail+"</p>");
 		        	if(json.clientContactPhone != null){
-		        		$("#clientContactPhone").html(json.clientContactPhone);
+		        		$("#clientContactPhone").html("<p title='"+json.clientContactPhone+"'>"+json.clientContactPhone+"</p>");
 		        	}else{
 		        		$("#clientContactPhone").html("-------");
 		        	}
@@ -509,7 +514,7 @@ function saveVendorOnboard(){
 	if ($('#vendor_onboard_form').validate(false, validationSettings)) {
 		var vendorOnboardId = '${vendorOnboardId}';
 	  	var formData = $($('#vendor_onboard_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/acceptAndSaveVendorOnboard?"+tokenParamName+"="+tokenValue+"&vendorOnboardId="+vendorOnboardId, formData, function(data) {
 					 $("#loading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");

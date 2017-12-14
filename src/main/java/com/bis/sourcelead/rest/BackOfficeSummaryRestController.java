@@ -41,6 +41,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class BackOfficeSummaryRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BackOfficeSummaryRestController.class);

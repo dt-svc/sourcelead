@@ -16,7 +16,7 @@ window.onload = function () {
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
 
@@ -33,7 +33,7 @@ window.onload = function () {
                   <!-- <ul class="popdiv_two"> -->
                   <li>
                   <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
-                  <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
+                  <a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
                   <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
@@ -68,48 +68,54 @@ window.onload = function () {
                         <div class="form-group" id="fromDateDiv">
                         	<label class="col-md-3">From Date<span class="text-danger paddingLeft">*</span></label>
                         	<div class="col-md-9">
+                        	<div class="input-group errorInptgroup">
                         	<input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required">
+                        	<span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                        	</div>
                         	</div>
                         </div>
                         
                         <div class="form-group" id="toDateDiv">
 	                        <label class="col-md-3">To Date<span class="text-danger paddingLeft">*</span></label>
 	                        <div class="col-md-9">
+	                        <div class="input-group errorInptgroup">
 	                        <input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required">
+	                        <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+	                        </div>
 	                        </div>
                         </div>
                      
                         <div class="form-group" id="batchNumberDiv">
-                          <label class="col-md-3">Batch Number</label>
+                          <label class="col-md-3">Batch Number<span class="text-danger paddingLeft">*</label>
                           	<div class="col-md-9">
                           		<input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         	</div>
                         </div>
 
                       <div class="form-group">
-                      <label class="col-md-3">Document Type</label>
+                      <label class="col-md-3">Document Type<span class="text-danger paddingLeft">*</label>
                         <div class="col-md-9 chosenSelect_li" id="payrollTypeDiv">
                           <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
                             <option value="">Select Type</option>
-                            <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
+                            <option value="EMPLOYEE_PAYROLL">Employer Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
-                             <option value="BIS_USERS">Master Data</option>
-                             <option value="BIS_CHECKS">Checks</option>
+                             <option value="BIS_CHECKS">Payments</option>
                               <option value="INVOICE">Invoice Data</option>
                           </select>
                         </div>
                         </div>
                         
                         <div class="form-group">
-                        <label class="col-md-3">Document Type</label>
-                        <div class="col-md-9">
+                        <label class="col-md-3">Upload Document<span class="text-danger paddingLeft">*</label>
+                        <div class="col-md-9 positionRelative">
                           <div class="input-group ratetype" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_importFile">
+
 	                        </div>
                           
                         </div>
@@ -144,7 +150,7 @@ function runPayrollCycles(type){
 		var jsonData = encodeURIComponent(con);
 		var form = $('#run_payroll_cycle')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "GET",
@@ -398,7 +404,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -440,7 +446,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -576,7 +582,19 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+<script>
+function clearFromDate(){
+	$("#fromDate").val("");
+	};	
+function clearToDate(){
+	$("#toDate").val("");
+	};	
+	/* $(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+		$("#upload_bulk_payroll_form input[data-id*=uploadBtn]").remove();
 
+	}); */
+</script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />

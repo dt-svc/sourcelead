@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
@@ -107,6 +108,8 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue,
 				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
+				@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
 				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
 		 
@@ -193,6 +196,32 @@ public class ClientController {
 				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "clientImport");
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientImport");
+			}
+			
+			if(orgRelationUUID != null){
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					model.addObject("clientOrgLocationId", orgRelations.getResponderLocationId().getId());
+					model.addObject("clientName", orgRelations.getResponderLocationId().getOrgLocationName());
+				}else{
+					model.addObject("clientOrgLocationId", orgRelations.getLocationId().getId());
+					model.addObject("clientName", orgRelations.getLocationId().getOrgLocationName());
+				}
+				
+				model.addObject("orgRelationId", orgRelations.getId());
+				model.addObject("orgRelationUUID", orgRelationUUID);
+			}
+			
+			if(orgSpocUUID != null){
+			
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+				
+			if(orgSpoc != null){
+				model.addObject("spocId", orgSpoc.getId());
+				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
+				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
+			 }
 			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);

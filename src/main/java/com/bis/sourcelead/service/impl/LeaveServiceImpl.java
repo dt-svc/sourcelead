@@ -89,6 +89,10 @@ public class LeaveServiceImpl implements LeaveService{
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
     
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+    
     @Autowired
     EmailScenerioUtil emailScenerioUtil;
     
@@ -200,10 +204,16 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveType(leave.getLeaveType().getName());
 				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 				leaveDto.setStatus(leave.getStatus());
-				leaveDto.setNoOfDays(leave.getNumberOfDays());
 				int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				leaveDto.setFromHalfDay(leave.getFromHalfDay());
+				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+					leaveDto.setNoOfDays("1/2");
+				}else{
+					leaveDto.setNoOfDays(leave.getNumberOfDays());
+				}
+				
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}
@@ -817,7 +827,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 }
 			 
 				StringBuilder stringBuildforLink = new StringBuilder();
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 			 
 			 //setting the Recipient information
@@ -1034,11 +1044,11 @@ public class LeaveServiceImpl implements LeaveService{
 
 	}
 
-	/*@Override
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
+	@Override
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
-		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id,fromDate,toDate);
-	}*/
+		return leaveDao.validateNameByOrgLocationIdandFromTable(name,orgLocationId,fromTable,id);
+	}
 
 	@Override
 	public boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId)
@@ -1052,6 +1062,7 @@ public class LeaveServiceImpl implements LeaveService{
 		if(object instanceof Holiday){
 			Holiday holiday = (Holiday) object;
 			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
+			deleteAllHolidayOrRestrictDayById(holiday.getId(),"Holiday");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setHoliday(holiday);
@@ -1061,11 +1072,13 @@ public class LeaveServiceImpl implements LeaveService{
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
 				day.setUpdatedDate(new Date());
+				day.setStatus(Constants.RECORD_ACTIVE.toString());
 				leaveDao.storeHolidayAndRestrictDays(day);
 			}
 		}else{
 			RestrictDay restrict = (RestrictDay) object;
 			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(restrict.getStartDate(), restrict.getEndDate(), orgLocations.getDateFormat());
+			deleteAllHolidayOrRestrictDayById(restrict.getId(),"RestrictDay");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
 				day.setRestrictDay(restrict);
@@ -1075,9 +1088,16 @@ public class LeaveServiceImpl implements LeaveService{
 				day.setCreatedDate(new Date());
 				day.setUpdatedBy(user.getUserCode());
 				day.setUpdatedDate(new Date());
+				day.setStatus(Constants.RECORD_ACTIVE.toString());
 				leaveDao.storeHolidayAndRestrictDays(day);
 			}
 		}
+	}
+
+	public void deleteAllHolidayOrRestrictDayById(String id, String type)
+	{
+		leaveDao.deleteAllHolidayOrRestrictDayById(id, type);
+		
 	}
 
 	@Override
@@ -1090,6 +1110,18 @@ public class LeaveServiceImpl implements LeaveService{
 	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
 	{
 		return leaveDao.getApproversListBasedonHierarchyExceptLoginUser(loginUserId, roleId, locationId);
+	}
+
+	@Override
+	public List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type)
+	{
+		return leaveDao.getHolidayOrRestrictDaysListById(id, type);
+	}
+
+	@Override
+	public List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId) throws Exception
+	{
+		return leaveDao.getLeaveRolesByRestrictDayId(restrictDayId);
 	}
 
 }

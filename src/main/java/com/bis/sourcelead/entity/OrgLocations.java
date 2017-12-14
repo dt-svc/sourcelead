@@ -75,19 +75,19 @@ public class OrgLocations implements Serializable{
 	@Column(name = "AVERAGE_WORKING_HOURS")
 	private Integer averageWorkingHours;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
 	@Column(name = "ZIP_CODE")
 	private String zipCode;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "LATITUDE")
@@ -183,6 +183,9 @@ public class OrgLocations implements Serializable{
     
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
     
     
     @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
@@ -728,6 +731,7 @@ public class OrgLocations implements Serializable{
 		this.vendorOnboardId = vendorOnboardId;
 	}
 
+
 	public String getIsCompanyOnboarded() {
 		return isCompanyOnboarded;
 	}
@@ -790,6 +794,16 @@ public class OrgLocations implements Serializable{
 
 	public void setOtherBusinessType(String otherBusinessType) {
 		this.otherBusinessType = otherBusinessType;
+	}
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+
 	}
 	
 }

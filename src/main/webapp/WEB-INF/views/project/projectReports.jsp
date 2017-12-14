@@ -11,10 +11,10 @@
     bottom: -26px;
 }
 </style>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 function getDayWiseReports(projectId){
@@ -146,7 +146,7 @@ function submitBtn(projectId){
 			
 			/* =======================  Tasks Progress Chart ======================= */
 			result = result + '	 <div class="clearfix mt">';
-			result = result + '        	<div class="col-md-6">';
+			result = result + '        	<div class="col-md-6 mb">';
 			result = result + '	                <div class="projectDashboad-widget">';
 			result = result + '			            <div class="clearfix projectDashboad-header">';
 			result = result + '			              <h4>Tasks Progress</h4>';
@@ -1230,7 +1230,7 @@ function getTaskPercentge(data){
 	 var projectClientUUID = '${projectClientUUID}';
 	 $.post(sourceleadUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
 		var result = "";
-	    result = result + '  <div class="col-md-6">';
+	    result = result + '  <div class="col-md-6 mb">';
 		result = result + '      <!-- Overdue Work Items -->';
 		result = result + '     <div class="projectDashboad-widget">';
 		result = result + '      <div class="clearfix projectDashboad-header">';
@@ -1268,11 +1268,11 @@ function getTaskPercentge(data){
 					result = result + '                       <div class="text-center">';
 					
 					if(report.taskAssignedUsers.length == 0){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/qmrk-userImg.png" title="Not Assigned">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/qmrk-userImg.png" title="Not Assigned">';
 					}else if(report.taskAssignedUsers.length == 1){
 						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
 					}else {
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
 					}
 					 
 					result = result + '                        </div>';

@@ -3,15 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}"
+<link href="/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}"
+<link href="/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}"
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}"
 	rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}"
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}"
 	type="text/css" rel="stylesheet" />
 
 <!-- Content Area -->
@@ -21,8 +21,8 @@
 			<h2>Add Contract Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/orgContractTemplate'/>"> Contract
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
 	</section>
@@ -102,9 +102,7 @@
 				<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea id="txtEditor" name="templateContent" value=""
-								class="form-control newContrtextarea"
-								data-validation-optional="true"></textarea>
+							<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required" ></textarea>
 						</div>
 
 
@@ -382,7 +380,7 @@
 							<input type="button" value="Save" id="save_template"
 								onclick="saveTemplate(); " class="btn btn-primary"> <input
 								type="button" value="Cancel"
-								onClick="javascript:window.location.href = '<c:url value='/orgContractTemplate'/>'"
+								onClick="javascript:window.location.href = '<c:url value='${appPath}/orgContractTemplate'/>'"
 								class="btn btn-default ml10">
 							<!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
@@ -592,7 +590,7 @@
 		con = con.replace(/[{}]/g, "");
 		//It will escape all the special characters
 		var jsonData = encodeURIComponent(con);
-		window.open('http://localhost:8080/sourcelead/testController/' + id
+		window.open('http://localhost:8080/app/testController/' + id
 				+ '', '_newtab');
 
 	}

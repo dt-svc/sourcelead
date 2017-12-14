@@ -18,7 +18,7 @@
 			<h2>Cancelled</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">
 				Home</a> &raquo; Cancelled Leaves
 		</div>
 	</section>
@@ -69,7 +69,7 @@
 		$("#loading")
 				.attr(
 						'style',
-						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 		$
 				.get(
@@ -389,7 +389,7 @@
 								if (data.fileUrl != null
 										&& data.fileUrl != 'undefined'
 										&& data.fileUrl != '') {
-									result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+									result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
 									result = result
 											+ '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''
 											+ data.fileUrl + '\', \''

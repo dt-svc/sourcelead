@@ -52,6 +52,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class VendorController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
@@ -98,8 +99,10 @@ public class VendorController {
 			@RequestParam(value="searchType", required=false)String searchType,
 			@RequestParam(value="responderLocationId", required=false)String responderLocationId,
 			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
+			@RequestParam(value="orgRelationUUID", required=false)String orgRelationUUID,
 			@RequestParam(value="orgName", required=false)String orgName,
 			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
+		
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -176,6 +179,20 @@ public class VendorController {
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "vendorImport");
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
+		}
+		
+		if(orgRelationUUID != null){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+			if(orgRelations.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
+				model.addObject("vendorLocationId", orgRelations.getResponderLocationId().getId());
+				model.addObject("vendorName", orgRelations.getResponderLocationId().getOrgLocationName());
+			}else{
+				model.addObject("vendorLocationId", orgRelations.getLocationId().getId());
+				model.addObject("vendorName", orgRelations.getLocationId().getOrgLocationName());
+			}
+			
+			model.addObject("orgRelationId", orgRelations.getId());
+			model.addObject("orgRelationUUID", orgRelationUUID);
 		}
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -268,6 +285,10 @@ public class VendorController {
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
 			model.addObject("vendorList", vandorsListByOrgLocationId);
+			
+			/*List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);*/
+			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

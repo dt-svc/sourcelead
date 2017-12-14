@@ -69,8 +69,15 @@ public class Checks implements Serializable {
 	@Column(name = "VENDOR_PAYMENTS")
 	private double vendorPayments;
 	
+	
 	@Column(name = "ELECTRONIC_WITHDRAWALS")
 	private String electronicWithdrawals;
+	
+	@Column(name = "HEALTH_INSURANCE")
+	private String healthInsurance;
+	
+	@Column(name = "IMMIGRATION")
+	private String immigration;
 	
 	@Column(name = "PAYROLL_CHECKS")
 	private double payrollChecks;
@@ -357,5 +364,23 @@ public class Checks implements Serializable {
 	{
 		this.version = version;
 	}
+
+	public String getHealthInsurance() {
+		return healthInsurance;
+	}
+
+	public void setHealthInsurance(String healthInsurance) {
+		this.healthInsurance = healthInsurance;
+	}
+
+	public String getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(String immigration) {
+		this.immigration = immigration;
+	}
+	
+	
 	
 }

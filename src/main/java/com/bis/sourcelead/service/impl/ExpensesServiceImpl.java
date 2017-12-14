@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -108,7 +109,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate) throws Exception {
+	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 			Date endDateUTC = null;
 			Date startDateUTC = null;
 			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
@@ -130,7 +131,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 				endDateUTC = TZ_DF_TS.parse(endDateString);
 			}
 			//orgLoc.getId(),loginUser.getId()
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC);
+		ResponseList<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC,searchValue,start,length,orgLoc);
 
 		return expensesList;
 
@@ -341,7 +342,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
 			            	orderedList.add(new ListItem(client.append("Client :").append(pm.getProjectClientsId().getOrgRelationId().getClientName()).toString()));	
 			            }else{
-			            	client.append("--").toString();
+			            	orderedList.add(new ListItem(client.append("Client :").append("--").toString()));
 			            }
 				        if(null != expenses.getStartDate()){
 				        	String StartDate = dateFormatter.format(expenses.getStartDate());

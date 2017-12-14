@@ -129,6 +129,7 @@ public class Constants {
 	public static final String OFFER_REJECTED = "Offer Rejected";
 	public static final String OFFER_REJECTED_NOTIFICATION = "Offer Rejected Notification";
 	public static final String HOT_LIST_CAMPAIGN = "HotListCampaign";
+	public static final String JOB_LIST_CAMPAIGN = "JobListCampaign";
 	public static final String EMAIL_TO_USERS = "EmailToUsers";
 	public static final String EMAIL_CAMPAIGN = "EmailCampaign";
 	public static final String CLIENTORVENDORMAIL = "ClientOrVendorMail";
@@ -188,7 +189,7 @@ public class Constants {
 	public static final long SOURCELEAD_ADMIN_USERID = 1;
 	public static final TimeZone TIMEZONE_CENTRAL = TimeZone.getDefault();
 	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id)";
-	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pm.projectClientsId.id and pah.status != '0'))";
+	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
 	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
 	/** projectMember constants **/
@@ -241,6 +242,8 @@ public class Constants {
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
+	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
+		
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
 	
@@ -334,7 +337,9 @@ public class Constants {
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static final String ACTIVATE_EMAIL = "ActivateUserEmail";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	public static final String LOGIN_OTP_EMAIL = "LoginOTPEmail";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_Approver="UserNewActionAssignedAsaApprover";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER="UserNewActionAssignedAsaReportingManager";
@@ -465,6 +470,7 @@ public class Constants {
 	public static final String COMPANY_ONBOARD_BUSINESS_TYPE = "Company Onboard Business type";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
+	public static final String EXPERIENCELEVEL = "Experience Level";
 	
 	public static final String NOTES_JOBS = "Jobs";
     public static final String NOTES_CONTRACTS = "Contracts";
@@ -558,6 +564,8 @@ public class Constants {
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
+	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
 	public static final String ELK_PROJECT_TYPE = "project";
 	public static final String ELK_CANDIDATE_INDEX = "candidates";
@@ -572,6 +580,7 @@ public class Constants {
 	public static final String ELK_CLIENTVENDOR_CONTACT_INDEX = "clientvendorcontacts";
 	public static final String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 	public static final String ELK_CAMPAIGN_INDEX = "campaigns";
+	public static final String Campaigns = "Campaigns";
 	public static final String ELK_CAMPAIGN_TYPE = "campaign";
 	public static final String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
 	public static final String CANDIDATE = "Candidate";

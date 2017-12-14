@@ -12,7 +12,7 @@
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
 	 	$("#recommendationsLoading").removeAttr('style');
-		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -236,7 +236,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    	  	 	var result = "";
 		    	  		if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 
-		    			  	 result = result +'<td class="text-center"><div><span title="Download"><a class="glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\"></a>';
+		    			  	 result = result +'<td class="text-center"><div><span title="Download"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\"></a>';
 		    			  	 result = result +'<a class="fa fa-eye ml10" onclick="viewFile(\''+report.fileUrl+'\',\''+report.resumeName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
 
 		    				  }else{
@@ -407,7 +407,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		     }
 		
 	    } );
-	    //$("#recommendationTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("#recommendationTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
 	    $("#recommendationTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {

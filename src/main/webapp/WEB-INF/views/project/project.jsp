@@ -6,12 +6,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 <style>
@@ -115,8 +115,8 @@ function validateShortCode(){
 			<h2>Create Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
@@ -160,14 +160,16 @@ function validateShortCode(){
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
-											class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+									<div class="input-group errorInptgroup">
+										<input type="text" class="form-control calendar" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > 
+										<span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
-										<input type="text" class="form-control" value="" id="endDate"
-											name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
-										<span class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+									<div class="input-group">
+										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+										<span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -486,7 +488,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -648,13 +650,25 @@ function getStatus(){
 // 		    var formData = new FormData(form); 
 		    
 		    var formData = getFormData1("project_form");
+		    var estimatedBudget = document.getElementById("estimatedBudget").value;
+		    var estimatedHours = document.getElementById("estimatedHours").value;
+		    
+		    
 		    if(formData.get("estimatedBudget") === "") {
 		    	formData.set("estimatedBudget","0");
 		    }
 		    if(formData.get("estimatedHours") === "") {
 		    	formData.set("estimatedHours","0");
 		    }
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    
+		   /*  if(estimatedBudget === "") {
+		    	formData["estimatedBudget"] = "0";
+		    }
+		    if(estimatedHours === "") {
+		    	formData["estimatedHours"] = "0";
+		    } */
+		    
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -698,7 +712,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -1172,3 +1186,12 @@ function getBudgetApprover(approverUserId){
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
+ <script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+	
+</script>

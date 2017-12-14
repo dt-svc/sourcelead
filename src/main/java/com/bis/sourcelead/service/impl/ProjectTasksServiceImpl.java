@@ -162,12 +162,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
  
 	
 	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
-		String projectNmae = projects.getProjectName();
-		String companyShortCode = null;
+//		String projectNmae = projects.getProjectName();
+//		String companyShortCode = null;
 		Integer generatedIdcount = 0;
 		Long number = 1L;
 		String requirementId = null;
-		String[] splitName = projects.getProjectName().split(" ");
+		/*String[] splitName = projects.getProjectName().split(" ");
 		int count = 0;
 		StringBuilder sb = new StringBuilder();
 		String splitProjectName ="";
@@ -199,13 +199,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				 splitProjectName = sb.toString().substring(0, 2).toUpperCase();
 		        break;
 		}
+		*/
 		
-		
-		if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
+		/*if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
 			companyShortCode = projects.getOrgLocationsId().getGeneratedUserId();
-		}
+		}else {
+			companyShortCode = "";
+		}*/
 		StringBuilder sbuilder = new StringBuilder();
-		sbuilder.append(companyShortCode).append(splitProjectName);
+//		sbuilder.append(companyShortCode).append(splitProjectName);
+		sbuilder.append(projects.getProjectShortCode());
 		String generatedUsreId = sbuilder.toString();
 		for (int i = 0; i < generatedUsreId.length(); i++) {
 			char ch = generatedUsreId.charAt(i);

@@ -155,7 +155,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
@@ -285,7 +285,7 @@ function getOrgDetails()
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -298,23 +298,6 @@ function getOrgDetails()
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
-
 
 <script type="text/javascript">
 	function saveClientContact() {
@@ -330,7 +313,7 @@ function getOrgDetails()
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
 					location.replace(sourceleadUrl+ "/clientDashboard");
 				});
@@ -350,13 +333,13 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-	 getOwners();
 	var email = document.getElementById("email").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	if(email != null){
+	var vendorName = document.getElementById("vendorName").value;
+	var orgRelationId = vendorName.split(",")[0];
+	if(email != null  && email != '' && orgRelationId != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -364,6 +347,12 @@ function validateEmail(){
 					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
 					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
+					
+				}else if(result == 'Invalid Spoc') {
+// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as client contact</span>");
+// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as client contact");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -457,7 +446,7 @@ function validateClientName(){
 	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -599,7 +588,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(vendorName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
@@ -703,10 +692,20 @@ function getRolesList(){
 					{
 			        		 var opt = json[i];
 		        		if(opt.id == SourceLeadWeb_userId){
-		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.fullName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 		        		else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"</option>";
+		        			if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";		        				
+		        			}
+		        			else{
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";		        				
+		        			}
 		        		}
 					}
 		        	$("#owner").empty();
@@ -725,19 +724,4 @@ function getRolesList(){
  }
 </script>
 
- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
+ 

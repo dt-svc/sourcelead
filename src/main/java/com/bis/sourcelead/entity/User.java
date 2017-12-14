@@ -174,10 +174,6 @@ public class User implements Serializable{
 		this.candidateSet = candidateSet;
 	}
 
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -193,6 +189,18 @@ public class User implements Serializable{
 	
 	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
 	private String registerOptionalServiceId;
+	
+	@Column(name = "VERIFICATION_UUID")
+	private String verificationUUID;
+    
+    @Column(name = "IS_VERIFIED")
+	private String isVerified;
+    
+    @Column(name = "URL_SENTTIME")
+	private Date urlSentTime;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 	
 	@Transient
 	private String isPrimaryAdmin;
@@ -377,15 +385,6 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -768,6 +767,7 @@ public class User implements Serializable{
 		this.isMailSent = isMailSent;
 	}
 
+
 	public Integer getSsn() {
 		return ssn;
 	}
@@ -775,4 +775,46 @@ public class User implements Serializable{
 	public void setSsn(Integer ssn) {
 		this.ssn = ssn;
 	}
+
+	public String getVerificationUUID()
+	{
+		return verificationUUID;
+	}
+
+	public void setVerificationUUID(String verificationUUID)
+	{
+		this.verificationUUID = verificationUUID;
+	}
+
+	public String getIsVerified()
+	{
+		return isVerified;
+	}
+
+	public void setIsVerified(String isVerified)
+	{
+		this.isVerified = isVerified;
+	}
+
+	public Date getUrlSentTime()
+	{
+		return urlSentTime;
+	}
+
+	public void setUrlSentTime(Date urlSentTime)
+	{
+		this.urlSentTime = urlSentTime;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+	
+
 }

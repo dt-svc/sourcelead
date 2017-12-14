@@ -341,7 +341,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			startDateStr = dateFormat.format(startDate);;	
 		}else{
-			startDateStr = "-------";
+			startDateStr = "";
 		}
 		return startDateStr;
 	}
@@ -355,7 +355,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			endDateStr = dateFormat.format(endDate);	
 		}else{
-			endDateStr = "-------";
+			endDateStr = "";
 		}
 		return endDateStr;
 	}

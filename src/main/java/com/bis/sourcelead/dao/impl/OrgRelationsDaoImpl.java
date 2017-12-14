@@ -17,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
@@ -672,15 +676,15 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 					}
 					
 					if (isadmin) {
-			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 			            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 			            finalList.addAll(spocsList);
 					}else if(ids != null && !ids.isEmpty()){
-			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 			            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 			            finalList.addAll(spocsList);
 					}else{
-			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 			            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 			            finalList.addAll(spocsList);
 					}
@@ -694,15 +698,15 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			}
 			
 			if (isadmin) {
-	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 	            finalList.addAll(spocsList);
 			}else if(ids != null && !ids.isEmpty()){
-	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 	            finalList.addAll(spocsList);
 			}else{
-	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+" "+spocInvitationStatus+" (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
 	            finalList.addAll(spocsList);
 			}
@@ -842,6 +846,257 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			orgRelation = orgRelations.iterator().next();
 		}
 		return orgRelation;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO,Long orgLocationId, String status, String vendorsRelationId) throws Exception {
+    Session session = this.sessionFactory.getCurrentSession();
+    ResponseList<OrgRelations> response = new ResponseList<>();
+		String[] level = null;
+		if(status != null){
+			level = status.split(",");	
+		}
+		
+		String subQuery2 = "";
+		String subQuery3  ="";
+		Query vendorsListQuery = null;
+		Query vendorsCountQuery = null;
+		if(level != null){
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-1' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-1")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-1' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-2' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-2")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-2' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-3' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-3")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-3' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-4' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-4")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-4' or ";
+			}
+			
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery2 = subQuery2 + "orgrelation.initiatorLevel = 'Tier-5' or ";
+			}
+			if (Arrays.asList(level).contains("Tier-5")) {
+				subQuery3 = subQuery3 + "orgrelation.responderLevel = 'Tier-5' or ";
+			}
+			if(!subQuery2.equalsIgnoreCase("")){
+			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+			
+			}
+			if(!subQuery3.equalsIgnoreCase("")){
+				subQuery3 = " (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
+			}
+		}
+		
+		List<Long> vendorsRelationIdList = new ArrayList<Long>();
+		String[] vendorsRelationIdArr = null;
+	    if(vendorsRelationId != ""){
+	    	vendorsRelationIdArr = vendorsRelationId.split(",");
+	    	for(String VRID : vendorsRelationIdArr){
+	    		vendorsRelationIdList.add(Long.parseLong(VRID));
+	    	}
+	    }
+		
+		String subQuery4 = "";
+		
+			
+		//orgrelation.id IN (:vendorsRelationIdList)
+		if(vendorsRelationIdList.size() > 0){
+			subQuery4 = " and orgrelation.id IN (:vendorsRelationIdList) ";
+		}
+		StringBuilder query1 = new StringBuilder("");
+		if(orgRelationDTO.getSearchValue() !=null && !"".equalsIgnoreCase(orgRelationDTO.getSearchValue())) {
+		 query1.append("and (orgrelation.responderLocationId.orgLocationName like '%" + orgRelationDTO.getSearchValue() + "%' ")
+		       .append("OR orgrelation.responderLocationId.country like '%" + orgRelationDTO.getSearchValue() + "%' ")
+			   .append("OR orgrelation.responderLocationId.state like '%" + orgRelationDTO.getSearchValue() + "%' ")
+			   .append("OR orgrelation.initiatorLevel like '%" + orgRelationDTO.getSearchValue() + "%' )");
+					
+		}
+		List<OrgRelations> vandorsList = null;
+		List<Long> countlist = null;
+		if(level == null || Arrays.asList(level).contains("")){
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )) "+subQuery4+" "+query1+"");
+				  vendorsCountQuery= session.createQuery("Select Count(*) from OrgRelations orgrelation  where ( (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )) "+subQuery4+" "+query1+"");
+			}else {
+				  vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )) "+subQuery4+" ");
+				  vendorsCountQuery= session.createQuery("Select Count(*) from OrgRelations orgrelation  where ( (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )) "+subQuery4+"");
+			}
+			if(vendorsRelationIdList.size() > 0){
+				vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setParameterList("vendorsRelationIdList", vendorsRelationIdList).setFirstResult(orgRelationDTO.getStart()).setMaxResults(orgRelationDTO.getLength()).setCacheable(true).list();
+				countlist = vendorsCountQuery.setLong("orgLocationId", orgLocationId).setParameterList("vendorsRelationIdList", vendorsRelationIdList).setCacheable(true).list();
+			
+			}else{
+		   	   vandorsList = vendorsListQuery .setLong("orgLocationId", orgLocationId).setFirstResult(orgRelationDTO.getStart()).setMaxResults(orgRelationDTO.getLength()) .setCacheable(true).list();
+		       countlist = vendorsCountQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			}
+			
+		}else{
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' ) ) "+subQuery4+" "+query1+"");
+				 vendorsCountQuery=session.createQuery("Select Count(*) from OrgRelations orgrelation  where ( ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' ) ) "+subQuery4+" "+query1+"");
+			}else {
+				 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.locationId left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where ( ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' ) ) "+subQuery4+" ");
+				 vendorsCountQuery=session.createQuery("Select Count(*) from OrgRelations orgrelation  where ( ("+subQuery2+" and orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or ("+subQuery3+" and orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' ) ) "+subQuery4+"");
+			}
+			if(vendorsRelationIdList.size() > 0){
+				vandorsList = vendorsListQuery .setLong("orgLocationId", orgLocationId).setParameterList("vendorsRelationIdList", vendorsRelationIdList).setFirstResult(orgRelationDTO.getStart()).setMaxResults(orgRelationDTO.getLength()).setCacheable(true).list();
+				countlist = vendorsCountQuery.setLong("orgLocationId", orgLocationId).setParameterList("vendorsRelationIdList", vendorsRelationIdList).setCacheable(true).list();
+			}else{
+			   vandorsList = vendorsListQuery .setLong("orgLocationId", orgLocationId) .setFirstResult(orgRelationDTO.getStart()).setMaxResults(orgRelationDTO.getLength()).setCacheable(true).list();
+			   countlist = vendorsCountQuery.setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
+			}
+		}
+		
+		int totalCount = 0;
+		if (orgRelationDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount =countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty() && vandorsList != null && !vandorsList.isEmpty()){
+			response.setRecordsFiltered(vandorsList.size());
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		response.setData(vandorsList);
+		return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, List<Long> ids, Long orgLocationId, String relationType,String status, Long tabId, List<Long> vendorOrgLocationsIds) {
+     Session session = this.sessionFactory.getCurrentSession();
+		String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id IN (:vendorOrgLocationsIds)";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setCacheable(true).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     Query query  = null;
+	     Query queryCount = null;
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }
+	        	 
+	        	 roleActionsList.retainAll(tabActionsIds);
+	        	 if(roleActionsList.size() > 0){
+	        		 ownerRolesList.add(roles.getId());
+	        	 }
+	    	 }
+	    	 
+	     }
+		
+		String[] tokens = status.split(",");
+		
+		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
+		
+			ResponseList<OrgSpoc> response = new ResponseList<>();
+			List<OrgSpoc> spocsList = null;
+			List<Long> spocsListCount = null;
+			String spocStatus = "";
+			
+		    //spoc status	
+			if (Arrays.asList(tokens).contains("Active")) {
+				spocStatus = spocStatus + "spoc.spocStatus = 'Active' or ";
+			}
+			
+			if (Arrays.asList(tokens).contains("New")) {
+				spocStatus = spocStatus + "spoc.spocStatus = 'New' or ";
+			}
+		 
+			if (Arrays.asList(tokens).contains("Contracted")) {
+				spocStatus = spocStatus + "spoc.spocStatus = 'Contracted' or ";
+			}
+			if(!spocStatus.equalsIgnoreCase("")){
+			   spocStatus = " and (" + spocStatus.substring(0, spocStatus.length() - 4) + ")";
+			}
+		 
+			if(!spocStatus.equalsIgnoreCase("")){
+				spocStatus = spocStatus +" and "; 
+			}
+			
+			StringBuilder query1 = new StringBuilder("");
+			if(orgSpocDTO.getSearchValue() !=null && !"".equalsIgnoreCase(orgSpocDTO.getSearchValue())) {
+			 query1.append("and (spoc.vendorUser.email like '%" + orgSpocDTO.getSearchValue() + "%' ")
+			       .append("OR (spoc.vendorUser.firstName like '" + orgSpocDTO.getSearchValue() + "%' OR spoc.vendorUser.lastName like '%" + orgSpocDTO.getSearchValue() + "')")
+				   .append("OR spoc.vendorUser.mobilePhone like '%" + orgSpocDTO.getSearchValue() + "%' ")
+			       .append("OR (spoc.clientUser.firstName like '" + orgSpocDTO.getSearchValue() + "%' OR spoc.clientUser.lastName like '%" + orgSpocDTO.getSearchValue() + "')")
+				   .append("OR spoc.vendorLocationId.orgLocationName like '%" + orgSpocDTO.getSearchValue() + "%' )");
+			}
+			
+			 
+			if (isadmin) {
+				  //list query
+	              query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"   ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' "+query1+"");
+	              spocsList = query.setLong("orgLocationId", orgLocationId).setFirstResult(orgSpocDTO.getStart()).setMaxResults(orgSpocDTO.getLength()).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+
+	              //count query
+	              queryCount = session.createQuery("Select Count(*) from OrgSpoc spoc   where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"   ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' "+query1+"");
+	              spocsListCount = queryCount.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+			}else if(ids != null && !ids.isEmpty()){
+				//List Query
+	              query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"  ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	              spocsList = query.setLong("orgLocationId", orgLocationId).setFirstResult(orgSpocDTO.getStart()).setMaxResults(orgSpocDTO.getLength()).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+			
+	              //Count Query
+	              queryCount= session.createQuery("Select Count(*) from OrgSpoc spoc where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"  ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	              spocsListCount = queryCount.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+			
+	              
+			} else{
+				  //List Qury
+	              query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"   (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	              spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+			   
+	              // Count Qury
+	              queryCount= session.createQuery("Select Count(*) from OrgSpoc spoc   where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) "+spocStatus+"   (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((spoc.orgRelations.locationId = :orgLocationId and spoc.orgRelations.initiatorType = :relationType ) or (spoc.orgRelations.responderLocationId = :orgLocationId and spoc.orgRelations.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+	              spocsListCount = queryCount.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+			   
+			}
+			int totalCount = 0;
+			if (orgSpocDTO != null) {
+				if(spocsListCount != null && !spocsListCount.isEmpty()) {
+					totalCount =spocsListCount.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty() && spocsList != null && !spocsList.isEmpty()){
+				response.setRecordsFiltered(spocsList.size());
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			response.setData(spocsList);
+			
+		return response;	
 	}
 	
 }

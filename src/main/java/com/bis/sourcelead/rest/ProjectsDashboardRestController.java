@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -90,8 +91,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @RestController
+@RequestMapping("/app")
 public class ProjectsDashboardRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -349,9 +354,9 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
-			 HttpServletRequest request) throws Exception{ 
+			 @RequestParam(value="roleIds", required=false) String roleIds, HttpServletRequest request) throws Exception{ 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
 		 return employeeList;
 	  }
 	 
@@ -815,17 +820,11 @@ public class ProjectsDashboardRestController {
 		  * @throws Exception
 		  */
 		 @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
-			public @ResponseBody String saveProjectDocument(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "documentId", required = false) Long documentId,  MultipartHttpServletRequest request) throws Exception
+			public @ResponseBody String saveProjectDocument(ProjectsDocumentsDTO projectsDocumentsDTO) throws Exception
 			{
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				MultipartFile multiFile = null;
-				Iterator<String> itrator = request.getFileNames();
-				if (itrator.hasNext()) {
-					multiFile = request.getFile(itrator.next());
-				}
-				if (null != projectId) {
-					projectDocumentsService.storeProjectDocuments(jsonObj, projectId,multiFile,documentId);
+			 projectsDocumentsDTO.setStaticPath(staticPath);
+				if (null != projectsDocumentsDTO.getProjectId()) {
+					projectDocumentsService.storeProjectDocuments(projectsDocumentsDTO);
 					return "success";
 				}
 				else {

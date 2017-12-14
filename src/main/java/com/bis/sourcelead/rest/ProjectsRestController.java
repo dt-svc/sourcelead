@@ -62,6 +62,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ProjectsRestController {
 	
 	@Value("${static.path}")
@@ -173,13 +174,13 @@ public class ProjectsRestController {
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
 		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
-			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
+			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		    projectAdditionalDetailsDTO.setSaveType(saveType);
 		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		   
+		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
 		    return "success";
 	    }
        
@@ -204,7 +205,7 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations);
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"");
 		   return projectMembersList;
 	    }
        
@@ -366,7 +367,7 @@ public class ProjectsRestController {
 		}
 		
 	// Validate for Cilent Website
-	@RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	@RequestMapping(value = "/validateClientWebsite", method = RequestMethod.GET)
 	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
 			@RequestParam(value = "sourceleadBLockedwebsites", required = false) String sourceleadBLockedwebsites) {
 		String status = "success";

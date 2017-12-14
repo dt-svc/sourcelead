@@ -54,6 +54,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @Controller
+@RequestMapping("/app")
 public class TimesheetSubmissionListController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionListController.class);
@@ -170,7 +171,7 @@ public class TimesheetSubmissionListController {
 							 fileUrl = pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 						 }
 							 
-						 ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(pmWithUser.getMasterCandidateId().getId(), pmWithUser.getProjects().getId(),loginOrgLocations.getId());
+						 ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
 						 sb.append("<tr id='row").append(projectMember.getId()).append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)).append("To").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");

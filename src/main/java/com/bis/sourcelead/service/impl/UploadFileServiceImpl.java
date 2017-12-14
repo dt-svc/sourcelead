@@ -510,9 +510,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userRole.setUserState(Status.NOT_LOGGEDIN);
 			}
 			userRole.setUser(userExisted);
+			userRole.setIsMailSent(userImport.getIsMailChecked());
 			userRoleService.addUserRole(userRole);
 			employee.setUser(userExisted);
 			employeesService.addEmployee(employee);
+			
 			if(isMailChecked !=null){
 				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
 			}
@@ -987,7 +989,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		Row excelHeader = sheet.createRow(0);
 		StringBuilder format = new StringBuilder();
-		String dateFormate = format.append("( ").append(orglocation.getDateFormat()).append(" )").toString();
+//		String dateFormate = format.append("( ").append(orglocation.getDateFormat()).append(" )").toString();
 		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
 		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
 		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
@@ -996,7 +998,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(5).setCellValue(Constants.EXTENSION_NUMBER);
 		excelHeader.createCell(6).setCellValue(Constants.RATE);
 		excelHeader.createCell(7).setCellValue(Constants.RATEPER);
-		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN+dateFormate);
+		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN);
 		excelHeader.createCell(9).setCellValue(Constants.ROLE);
 		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
 		return sheet;
@@ -1255,11 +1257,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		// Create Cell and set value as new Date()
 //		Cell dateCell = dateRow.createCell((short) 7);
 //		dateCell.setCellValue(new Date());
-		CellStyle style1 = wb.createCellStyle();
-		String dtaeForm = orglocation.getDateFormat();
-		style1.setDataFormat(creationHelper.createDataFormat().getFormat(dtaeForm));
+//		CellStyle style1 = wb.createCellStyle();
+//		String dtaeForm = orglocation.getDateFormat();
+//		style1.setDataFormat(creationHelper.createDataFormat().getFormat(dtaeForm));
 //		dateCell.setCellStyle(style1);
-		sheet.setDefaultColumnStyle(8, style1);
+//		sheet.setDefaultColumnStyle(8, style1);
 		
 		
 		

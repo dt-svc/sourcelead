@@ -227,7 +227,9 @@ overflow-x: auto;
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-					   <jsp:include page="resourceRequest.jsp"></jsp:include>  
+					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
+					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
@@ -378,7 +380,7 @@ $('#dasboardTaskDatpicker').datepicker({
 function checkForOldrecords(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var orglocationId ='${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/checkForOldrecords?${_csrf.parameterName}=${_csrf.token}&orglocationId="+orglocationId,
@@ -458,7 +460,7 @@ function storeOrgShortCode(){
 		var sourceleadUrl = '${sourceleadUrl}';
 	 	var locationCode ='${SourceLeadWeb_locationCode}';
 		$("#saveOrgConfiguration" ).addClass('button').val('Processing..');
-   		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+   		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         $.ajax({
        	      type: "POST",
        	      data: formData,

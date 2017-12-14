@@ -27,7 +27,7 @@
 			</div>
 		</div>
     </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Offboard Templates List</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Offboard Templates List</div>
  <div class="clearfix"></div>
     </section>
     
@@ -36,7 +36,7 @@
 			<div class="timesheet_head">
 			<ul>
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
-			<li><a href="<c:url value='/addNewOffboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
+			<li><a href="<c:url value='${appPath}/addNewOffboardTemplate'/>"><i class="fa fa-plus"></i>Add Template</a></li>
 			</sec:authorize>
 			</ul>
 			     

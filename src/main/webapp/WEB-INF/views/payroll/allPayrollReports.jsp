@@ -24,7 +24,7 @@ $(document).ready(function(){
 
 <div class="timesheet_out">
   <div class="timesheet_head clearfix seaHeight">
-  		<div class='remove_search'><input type='text' placeholder='search' id='dataTableSearch'/></div> 
+  		<div class='remove_search'><input type='text' placeholder='Search' id='dataTableSearch'/></div> 
   </div>
     <div class="clients_wrap_table datatable_filter">
     		<div

@@ -21,6 +21,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
+@RequestMapping("/app")
 public class TimesheetApprovalController {
 
 
@@ -48,7 +49,8 @@ public class TimesheetApprovalController {
 			request.getSession().setAttribute("sessionData",sessionData);
 
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/TimesheetApproval"); 
+			//model.setViewName("timesheet/TimesheetApprovalRedefined");
+			model.setViewName("timesheet/TimesheetApproval");
 	        return model;
 	}
 	

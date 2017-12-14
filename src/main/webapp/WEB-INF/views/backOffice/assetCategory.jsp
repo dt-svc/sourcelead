@@ -24,7 +24,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/assetManagement'/>">Asset Management</a> &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/assetManagement'/>">Asset Management</a> &raquo; Category</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -41,8 +41,9 @@ $(document).ready(function(){
       </ul>
       <div class="clearfix"></div>
     </div>
-    <div class="require_wrap_table table-wrap">
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
     <div id="popUp"></div>
+     <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
      
     </div>
@@ -56,7 +57,8 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		  $.ajax({
+		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
@@ -113,7 +115,9 @@ $(document).ready(function(){
 	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetCategoryList").empty();  
-	   	    	    $("#assetCategoryList").append(result)
+	   	    	    $("#assetCategoryList").append(result);
+	   	    	 	$("#assetCategoryLoderDiv").empty();
+	   	      		$("#assetCategoryLoderDiv").removeAttr('style');
 	   	    	    pagination();
 	   	    	 $(".addcon-pop1").click(function(){
 	   	    		 $(".collapse-div-adduser").toggleClass("show-div");
@@ -131,9 +135,9 @@ function pagination(){
     $('#assetCategoryList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -247,13 +251,13 @@ function editCategory(catLocationId,categoryId){
     			 $("#update_button").show(); 
     			 $("#save_button").hide();
     			 
-    			 
     			 if(json.categoryName != null && json.categoryName != "undefined" && json.categoryName != ""){
     				 document.getElementById("categoryName").value = json.categoryName;
     			 }  			 
     			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				  $("textarea[name=description]").val(json['description']);
+    				 
     			 }
     			 
     			 $("#update_button").attr("onclick", "addCategory("+catLocationId+","+categoryId+");");
