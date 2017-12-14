@@ -78,6 +78,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "orgLocationIds", required = false, defaultValue = "") String orgLocationIds,
 			@RequestParam(value = "dates", required = false, defaultValue = "") String dates,
 			@RequestParam(value = "country", required = false, defaultValue = "") String country,
+			@RequestParam(value = "companies", required = false, defaultValue = "") String companies,
 			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") Long postedOrgName,
 			HttpServletRequest request) throws Exception {
 
@@ -207,8 +208,8 @@ public class OpenJobsRestController {
 
 			// for org specific job filter
 			String[] Locations = null;
-			if (null != orgLocationIds && !"".equals(orgLocationIds)) {
-				Locations = orgLocationIds.split("--");
+			if (null != companies && !"".equals(companies)) {
+				Locations = companies.split("--");
 			}
 
 			if (null != Locations) {
