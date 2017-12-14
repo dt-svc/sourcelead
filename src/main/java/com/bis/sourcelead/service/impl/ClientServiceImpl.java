@@ -240,12 +240,12 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCountry(clientDTO.getCountry());
 			}else
 			{
-				clientOrgLocations.setCountry("--");
+				clientOrgLocations.setCountry("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
 			} else {
-				clientOrgLocations.setState("--");
+				clientOrgLocations.setState("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
@@ -253,7 +253,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCity(clientDTO.getCity());
 			}else
 			{
-				clientOrgLocations.setCity("--");
+				clientOrgLocations.setCity("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
@@ -262,7 +262,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setZipCode(clientDTO.getZipcode());
 			}else
 			{
-				clientOrgLocations.setZipCode("--");
+				clientOrgLocations.setZipCode("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
@@ -270,20 +270,20 @@ public class ClientServiceImpl implements ClientService {
 			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getLocation());
 			}else{
-				clientOrgLocations.setLocation("--");
+				clientOrgLocations.setLocation("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
 				clientOrgLocations.setLatitude(clientDTO.getLatitude());
 			}else
 			{
-				clientOrgLocations.setLatitude("--");
+				clientOrgLocations.setLatitude("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
 				clientOrgLocations.setLongitude(clientDTO.getLongitude());
 			}else{
-				clientOrgLocations.setLongitude("--");
+				clientOrgLocations.setLongitude("");
 			}
 
 		}
@@ -300,7 +300,7 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
 			}else{
-				clientOrgLocations.setOrgLocationName("--");
+				clientOrgLocations.setOrgLocationName("");
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
@@ -352,17 +352,17 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 				org.setClientAddress(clientDTO.getAddress());
 			}else{
-				org.setClientAddress("--");
+				org.setClientAddress("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				org.setClientBillingAddress(clientDTO.getBillingAddress());
 			}else{
-				org.setClientBillingAddress("--");
+				org.setClientBillingAddress("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
-				org.setPaymentTerm("--");
+				org.setPaymentTerm("");
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
