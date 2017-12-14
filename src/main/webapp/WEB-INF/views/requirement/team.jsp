@@ -14,7 +14,7 @@
 	width:100% !important;
 	padding: 0 10px !important;
 	border: 1px solid #ccc;
-	background:url("resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
+	background:url("/resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
 	}
 	.vendor_wrap_inn_table table tr:hover .proj_show i {
 	    visibility:visible; opacity:1;color:#333;
@@ -810,7 +810,7 @@ function deleteSelectedTeam(teamId){
 		 $(".project_inn_mask").fadeOut(200);
 			
 		 $("#deleteTeam"+teamId).html("<td colspan='5'  id='loading"+teamId+"'></td>");
-		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 		 $.ajax({
 		   	type: "POST",
@@ -1154,7 +1154,7 @@ function cpagination(){
 function removeFromTeam(id){
 	if(id){
 		 $("#removeCandidate"+id).html("<td colspan='8'  id='loading"+id+"'></td>");
-		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 			 $.ajax({ 
 		    	type: "POST",

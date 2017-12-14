@@ -76,6 +76,8 @@ public interface ContractsTemplateService {
 
 	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation) throws Exception;
 
+	List<Contracts> getContractByLocationId(Long orgLocationId);
+
 
 	
 }

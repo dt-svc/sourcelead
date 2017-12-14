@@ -31,7 +31,7 @@
       
       <!-- inner Media -->
       <div class="media">
-        <div class="media-left"> <img src="resources/css/static-web/images/24.jpg" class="media-object writerimages" style="width:35px"> </div>
+        <div class="media-left"> <img src="/resources/css/static-web/images/24.jpg" class="media-object writerimages" style="width:35px"> </div>
         <div class="media-body">
           <div class="writers-text">
             <p><span class="text-muted">Written</span> by Heather S</p>

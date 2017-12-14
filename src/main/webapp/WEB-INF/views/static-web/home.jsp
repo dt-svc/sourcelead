@@ -6,7 +6,7 @@
       <ul class="wrp animate">
         <li class="elmnt-four">
           <div class="skew">
-            <div class="wrap" style="background-image:url(resources/css/static-web/images/crowd-bg.jpg)">
+            <div class="wrap" style="background-image:url(/resources/css/static-web/images/crowd-bg.jpg)">
             	<div class="wrapText">
                 	<i class="fa fa-users"></i>
                     <h3>Crowdsourcing</h3>
@@ -18,9 +18,9 @@
         </li>		  
         <li class="elmnt-one">
           <div class="skew">
-            <div class="wrap" style="background-image:url(resources/css/static-web/images/ats-bg.jpg)">
+            <div class="wrap" style="background-image:url(/resources/css/static-web/images/ats-bg.jpg)">
             	<div class="wrapText">
-                	<img src="resources/css/static-web/images/ats-icon.png" alt=""/>
+                	<img src="/resources/css/static-web/images/ats-icon.png" alt=""/>
 <h3>Applicant Tracking System</h3>
                     <p>SourceLead powerful, easy-to-use applicant tracking system lets you manage the entire recruitment process from a single Platform. From Requirement Posting to Resource placement, the SourceLead Applicant Tracking System reduce time on manual data entry, streamlining the end-to-end recruiting process and enabling your team to move faster and work smarter.</p>
                     <a href="ats.html">View more.</a>
@@ -30,7 +30,7 @@
         </li>
         <li class="elmnt-two">
           <div class="skew">
-            <div class="wrap" style="background-image:url(resources/css/static-web/images/vms-bg.jpg)">
+            <div class="wrap" style="background-image:url(/resources/css/static-web/images/vms-bg.jpg)">
             	<div class="wrapText">
                 	<i class="fa fa-handshake-o"></i>
                     <h3>Vendor Management System</h3>
@@ -42,7 +42,7 @@
         </li>
         <li class="elmnt-three">
           <div class="skew">
-            <div class="wrap" style="background-image:url(resources/css/static-web/images/time-bg.jpg)">
+            <div class="wrap" style="background-image:url(/resources/css/static-web/images/time-bg.jpg)">
             	<div class="wrapText">
                 	<i class="fa fa-hourglass-half"></i>
                     <h3>Timesheet</h3>
@@ -64,7 +64,7 @@
 <section class="HomeAbout">
   <div class="HomeAboutInn">
     	<h3>About SourceLead</h3>
-        <div class="HomeAboutRight"><img src="resources/css/static-web/images/about.png" alt=""/></div>
+        <div class="HomeAboutRight"><img src="/resources/css/static-web/images/about.png" alt=""/></div>
         <div class="HomeAboutLeft">
         	<h4>SourceLead is a Software as a Service talent acquisition platform that helps you attract, source, onboard and manage talent. Our platform provides the business insight needed to track the processes with in talent ecosystem.</h4>
         	
@@ -97,7 +97,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
             <p>VMS</p>
         </div> 
         <div class="featureInnCta black">
-			<img src="resources/css/static-web/images/emm-icon.png" alt=""/>
+			<img src="/resources/css/static-web/images/emm-icon.png" alt=""/>
             <p>Employees Management</p>
         </div> 			
         <div class="featureInnCta black">
@@ -117,7 +117,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
             <p>Customized Reports</p>
         </div>
         <div class="featureInnCta black">
-			<img src="resources/css/static-web/images/ats-icon.png" alt=""/>
+			<img src="/resources/css/static-web/images/ats-icon.png" alt=""/>
             <p>ATS</p>
         </div>                                        
         <div class="clear"></div>
@@ -164,7 +164,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
 		<li>
 			<p>“The decision to become a SourceLead partner has been brilliant move. We now have all the features we need  & confidence to move forward to grow our business”</p>
 			<div class="cd-author">
-				<img src="resources/css/static-web/images/user-m.png" alt="Author image">
+				<img src="/resources/css/static-web/images/user-m.png" alt="Author image">
 				<ul class="cd-author-info">
 					<li>Ravi</li>
 					<li>CEO</li>
@@ -175,7 +175,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
 		<li>
 			<p>“SourceLead is a outstanding for assessing client and employee. Before, SourceLead we used to go excels to record employee entry & approvals. Timesheets are easy to entry & well organized through SourceLead”.</p>
 			<div class="cd-author">
-				<img src="resources/css/static-web/images/user-m.png" alt="Author image">
+				<img src="/resources/css/static-web/images/user-m.png" alt="Author image">
 				<ul class="cd-author-info">
 					<li>Biswajit Singh</li>
 					<li>CEO</li>
@@ -186,7 +186,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
 		<li>
 			<p>“SourceLead is saving my hours of effort through customised reports generation & helped our business to reach next level”</p>
 			<div class="cd-author">
-				<img src="resources/css/static-web/images/user-f.png" alt="Author image">
+				<img src="/resources/css/static-web/images/user-f.png" alt="Author image">
 				<ul class="cd-author-info">
 					<li>Charitha</li>
 					<li>Analyst</li>
@@ -197,7 +197,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
 		<li>
 			<p>“It is a pleasure to be with SourceLead. SourceLead is a User-friendly or Independent platform which makes our work more intuitive and easy”</p>
 			<div class="cd-author">
-				<img src="resources/css/static-web/images/user-m.png" alt="Author image">
+				<img src="/resources/css/static-web/images/user-m.png" alt="Author image">
 				<ul class="cd-author-info">
 					<li>Harsha</li>
 					<li>Analyst</li>
@@ -208,7 +208,7 @@ In addition,Sourcelead offers a full range of Vendor Management and staff augmen
 		<li>
 			<p>“SourceLead is very easy & User-friendly applicant tracking system that helping our recruitment process effective to track Requirements, Best Resources.”</p>
 			<div class="cd-author">
-				<img src="resources/css/static-web/images/user-m.png" alt="Author image">
+				<img src="/resources/css/static-web/images/user-m.png" alt="Author image">
 				<ul class="cd-author-info">
 					<li>Moses Paul</li>
 					<li>Recruitement manager</li>
