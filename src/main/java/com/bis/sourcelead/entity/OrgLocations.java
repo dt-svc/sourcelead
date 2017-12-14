@@ -115,6 +115,30 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
+	@Column(name = "DBA")
+	private String dba;
+	
+	@Column(name = "FEDERAL_EIN")
+	private String federalEin;
+	
+	@Column(name = "DEPOSIT_SCHEDULE")
+	private String depositSchedule;
+	
+	@Column(name = "UNEMPLOYMENT_TAX")
+	private String unemploymentTax;
+	
+	@Column(name = "FILLING_FORM")
+	private String fillingForm;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
+	private LookUpData businessType;
+	
+	
+	@Column(name = "OTHER_BUSINESS_TYPE")
+	private String otherBusinessType;
+	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -157,7 +181,6 @@ public class OrgLocations implements Serializable{
     @Column(name = "GENERATED_USER_ID")
 	private String generatedUserId;
     
-    
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
@@ -168,6 +191,10 @@ public class OrgLocations implements Serializable{
     @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
     @Type(type="text")
 	private String billingAddress;
+    
+    
+    @Column(name = "IS_COMPANY_ONBOARDED")
+	private String isCompanyOnboarded;
     
     @Transient
     private String orgName;
@@ -704,6 +731,70 @@ public class OrgLocations implements Serializable{
 		this.vendorOnboardId = vendorOnboardId;
 	}
 
+
+	public String getIsCompanyOnboarded() {
+		return isCompanyOnboarded;
+	}
+
+	public void setIsCompanyOnboarded(String isCompanyOnboarded) {
+		this.isCompanyOnboarded = isCompanyOnboarded;
+	}
+
+	public String getDba() {
+		return dba;
+	}
+
+	public void setDba(String dba) {
+		this.dba = dba;
+	}
+
+	public LookUpData getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(LookUpData businessType) {
+		this.businessType = businessType;
+	}
+
+	public String getFederalEin() {
+		return federalEin;
+	}
+
+	public void setFederalEin(String federalEin) {
+		this.federalEin = federalEin;
+	}
+
+	public String getDepositSchedule() {
+		return depositSchedule;
+	}
+
+	public void setDepositSchedule(String depositSchedule) {
+		this.depositSchedule = depositSchedule;
+	}
+
+	public String getUnemploymentTax() {
+		return unemploymentTax;
+	}
+
+	public void setUnemploymentTax(String unemploymentTax) {
+		this.unemploymentTax = unemploymentTax;
+	}
+
+	public String getFillingForm() {
+		return fillingForm;
+	}
+
+	public void setFillingForm(String fillingForm) {
+		this.fillingForm = fillingForm;
+	}
+
+	public String getOtherBusinessType() {
+		return otherBusinessType;
+	}
+
+	public void setOtherBusinessType(String otherBusinessType) {
+		this.otherBusinessType = otherBusinessType;
+	}
 	public String getLoginSecurity()
 	{
 		return loginSecurity;
@@ -712,6 +803,7 @@ public class OrgLocations implements Serializable{
 	public void setLoginSecurity(String loginSecurity)
 	{
 		this.loginSecurity = loginSecurity;
+
 	}
 	
 }

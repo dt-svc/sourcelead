@@ -170,7 +170,7 @@
 	                 
 	                                 
 	                 
-                     <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
+                     <%-- <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
 	                   <li class="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}">
 														  
 							  <a href="#" class="associatesLi" title="Associates">
@@ -199,10 +199,10 @@
 	                 
 	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'Associates List'}">
 	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/associatesList'/>" title="Associates List"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">Associates List</i></a></li>
-	                 </c:if>
+	                 </c:if> --%>
 	                 
-	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'On & Off Boarding'}">
-	                 <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">On / Off Boarding</i></a></li>
+	                 <c:if test="${userTabs.tabName == 'On & Off Boarding'}">
+	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">On / Off Board</i></a></li>
 	                 </c:if>
 	                 
 	                 
@@ -288,7 +288,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">
-	                   <li class="${sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management"><span><i class="fa fa-cogs"></i></span><i class="subMenu">Asset Management</i></a></li>
+	                   <li class="${sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><span><i class="fa fa-cogs"></i></span><i class="subMenu">Asset Management</i></a></li>
 	                </c:if> 
 	                 
             	   

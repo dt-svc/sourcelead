@@ -287,6 +287,7 @@ function applyInputSlide() {
         $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
+        	    alert("pradeep")
         		var form = $('#forgetPassword_form').serializeFormJSON();
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -296,7 +297,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: "/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -308,10 +309,10 @@ function applyInputSlide() {
 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
-    			        		  location.replace(sourceleadUrl+"/login"); 
+    			        		  location.replace("/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+                    			  location.replace("/resetPassword"); 
     			        	}
 			        },  
                 });

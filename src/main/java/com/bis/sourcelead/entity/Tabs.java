@@ -47,6 +47,10 @@ public class Tabs implements Serializable{
    	private Long tabOrder;
     
     
+    @Column(name = "STATUS", nullable = false)
+   	private Integer status;
+    
+    
 
 	public Long getId() {
 		return id;
@@ -86,6 +90,14 @@ public class Tabs implements Serializable{
 
 	public void setTabOrder(Long tabOrder) {
 		this.tabOrder = tabOrder;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
     
     
