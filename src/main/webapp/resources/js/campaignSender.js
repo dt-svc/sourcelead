@@ -79,3 +79,32 @@ function validateNickName(senderId){
 	}
 }
 
+
+
+
+function validateFromMail(toWhom,id){
+	alert(toWhom);
+	var email = document.getElementById("cpnSenderFromMail").value;
+	if(email != null && email != null && email !='undefined' ){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom,
+			success : function(data) {
+				var result = data;
+				if(result == true) {
+					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
+					$("input#cpnSenderFromMail").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same email.</span>");
+					document.getElementById("cpnSenderFromMail").setAttribute( 'record-exist', 'yes');
+					document.getElementById("cpnSenderFromMail").setAttribute( 'record-exist-errorMsg',"You already have a sender identity with the same email.");
+					
+				}else if(result == false) {
+					$('input#cpnSenderFromMail').removeAttr("class record-exist record-exist-errormsg");
+					$('input#cpnSenderFromMail').attr('class','valid form-control');
+					$('#fromMailDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
+}

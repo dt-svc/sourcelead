@@ -412,4 +412,21 @@ public class CampaignRestController {
 		return campaignService.deleteStats(categoryName);
 	}
 	
+	
+	/**
+	 * Check the From/Reply Mail is duplicate or not
+	 * 
+	 * @param nickName
+	 * @param request
+	 * @param response
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/validateFromMail", method = RequestMethod.GET)
+	public boolean validateFromMail(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "toWhom", required = false) String toWhom, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		boolean isDuplicate = campaignService.validateFromMail(email,  toWhom);
+		return isDuplicate;
+	}
 }

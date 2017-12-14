@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CampaignStatsDTO;
@@ -52,6 +53,10 @@ public interface CampaignDao {
 	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
 
 	Campaign validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType) throws Exception;
+
+	Map<String,Integer> getCampaignListName(String campaignId) throws Exception;
+
+	CreateSender validateFromMail(String email, String toWhom) throws Exception;
 
 
 
