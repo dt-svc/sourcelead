@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -161,6 +163,10 @@ public class CommonUtil {
 
 	@Autowired
 	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -1549,6 +1555,30 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			usersDTOList.add(userDTO);
 		}
 		return usersDTOList;
+	}
+	
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole) {
+		boolean flag = false;
+		try {
+			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+			if(projectClients != null) {
+				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
+						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						if(approverHierarchy != null) {
+							flag = true;
+						}
+					}else {
+						flag = true;
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return flag;
 	}
 		
 }
