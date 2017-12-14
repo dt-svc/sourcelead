@@ -581,6 +581,8 @@ public class Constants {
 	public static final String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 	public static final String ELK_CAMPAIGN_INDEX = "campaigns";
 	public static final String Campaigns = "Campaigns";
+	public static final String CampaignSender = "CampaignSender";
+	public static final String CampaignRecipient = "CampaignRecipient";
 	public static final String ELK_CAMPAIGN_TYPE = "campaign";
 	public static final String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
 	public static final String CANDIDATE = "Candidate";
