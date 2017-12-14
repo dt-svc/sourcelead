@@ -223,7 +223,7 @@ function getEmployeeTotalCounts(){
 // 	      				$('#empReq').removeAttr("href");
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/sourcelead/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
