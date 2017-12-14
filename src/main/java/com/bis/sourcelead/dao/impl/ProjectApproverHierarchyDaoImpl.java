@@ -361,4 +361,23 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		}
 		return ph;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId,
+			Long projectClientId) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId method");
+		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc  "
+				+ " left join fetch projectHirachy.approverUserId approverUser where approverUser.id = :approverUserId and pc.id = :projectClientId and projectHirachy.status = '1' ";
+		Collection<ProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("projectClientId", projectClientId).setCacheable(true).list();
+
+		ProjectApproverHierarchy ph = null;
+		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+			ph = (		ProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
+		}
+		return ph;
+	}
 }

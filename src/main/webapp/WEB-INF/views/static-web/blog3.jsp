@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Existing Process without using any Tool</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>20 DEC 2016 at 11:05 AM</span></h3>
-            <div class="blogImg"><img src="resources/css/static-web/images/bl1.jpg"  alt=""/></div>
+            <div class="blogImg"><img src="/resources/css/static-web/images/bl1.jpg"  alt=""/></div>
             <p>
             	1. Superior create the excel format timesheet for each employee in the organization.<br>
             	2. Superior forwards the mail to each individual employee checking the project.<br>

@@ -2,8 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<script src="resources/js/jquery.twbsPagination.js"></script>
-<script src="resources/js/tableHeadFixer.js"></script>
+<script src="/resources/js/jquery.twbsPagination.js"></script>
+<script src="/resources/js/tableHeadFixer.js"></script>
 
 
 <div id="reportTableData"></div>
@@ -63,7 +63,7 @@ $(document).ready(function() {
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
-		  $("#reportTableData").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  $("#reportTableData").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var frequencyYear = $("#frequencyYear").val();
           var pageSize = $("#pageSize").val();

@@ -48,7 +48,7 @@
 			</span>		
 		</div>			
 		<div class="jobDetailsLogo">
-			<span><img src="resources/css/static-web/images/compLogo.jpg" alt=""/></span>
+			<span><img src="/resources/css/static-web/images/compLogo.jpg" alt=""/></span>
 			<a href="http://localhost:8080/app/">Apply</a>
 			<a href="http://localhost:8080/app/" class="btn2">Refer</a>
 			<div class="clear"></div>
