@@ -11,7 +11,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->

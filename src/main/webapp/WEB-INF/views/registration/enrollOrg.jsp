@@ -50,7 +50,7 @@ function changeCountry(){
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	              <input type="text" name="email" id="companyEmail"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
 	            <span class="hidden">Email</span>
 	            </div>
             </div>
@@ -403,7 +403,7 @@ function validateWebsite (){
 
 <script type="text/javascript">
 function getUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("companyEmail").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(email){
 		$.ajax({
@@ -459,7 +459,7 @@ function getUserDetails(){
 <script type="text/javascript">
 function validateCompanyEmail(){
     var websiteValue = document.getElementById("companyWebsite").value;
-    var emailValue = document.getElementById("email").value;
+    var emailValue = document.getElementById("companyEmail").value;
     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
     var sourceleadUrl ='${sourceleadUrl}';
 		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
@@ -471,20 +471,20 @@ function validateCompanyEmail(){
 					     if(data == 'Invalid Email'){
 					    	    //Invalid Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
 					    	   //Existed Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
@@ -492,9 +492,9 @@ function validateCompanyEmail(){
 				       	else{
 				       		//Valid Email
 				       		$("#register_button").removeAttr("disabled");
-				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#companyEmail').removeAttr( "class record-exist record-exist-errormsg");
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
-							$('input#email').attr('class','valid form-control');
+							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
 							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {

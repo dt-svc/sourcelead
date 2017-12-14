@@ -2,7 +2,7 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
+<!-- <link href="/resources/css/jquery-ui.css" rel="stylesheet"> -->
 
 
 

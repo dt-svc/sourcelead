@@ -92,7 +92,7 @@
 		</div>
 	</div>
  </div>
- <script src="resources/js/formvalidator.js"></script> 
+ <script src="/resources/js/formvalidator.js"></script> 
  
  <div id="divDocsTd1" style="display: none; float: left;">
 		  <div class="chosentext-left">
@@ -380,7 +380,7 @@ $('body').on('submit', '#fedralAndTax_form', function(e){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
       var formData = getFormData("fedralAndTax_form");
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
 		    	data : formData,
@@ -430,7 +430,7 @@ function deleteStatesTaxRow(uuid,stateName){
 <script>
 function deleteTaxRow(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOrgLocationStateTaxByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
