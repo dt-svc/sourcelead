@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/jquery.multi-select.js"></script>
+<script src="/resources/js/jquery.multi-select.js"></script>
 
 <!-- Content Area -->
   <section class="content-wraper">

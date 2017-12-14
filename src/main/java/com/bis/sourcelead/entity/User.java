@@ -82,6 +82,10 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	@Column(name = "SSN")
+	private Integer ssn;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
@@ -763,6 +767,15 @@ public class User implements Serializable{
 		this.isMailSent = isMailSent;
 	}
 
+
+	public Integer getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(Integer ssn) {
+		this.ssn = ssn;
+	}
+
 	public String getVerificationUUID()
 	{
 		return verificationUUID;
@@ -803,4 +816,5 @@ public class User implements Serializable{
 		this.loginSecurity = loginSecurity;
 	}
 	
+
 }

@@ -44,19 +44,19 @@
                value: "java",
                label: "Java",
                desc: "write once run anywhere",
-               img : "resources/images/at.png",
+               img : "/resources/images/at.png",
             },
             {
                value: "jquery-ui",
                label: "jQuery UI",
                desc: "the official user interface library for jQuery",
-	       img : "resources/images/in.png"	
+	       img : "/resources/images/in.png"	
             },
             {
                value: "Bootstrap",
                label: "Twitter Bootstrap",
                desc: "popular front end frameworks ",
-               img : "resources/images/tr.png",
+               img : "/resources/images/tr.png",
             }
          ];
          $( "#project" ).autocomplete({

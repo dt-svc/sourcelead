@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Recruiting Through Social Media Platform</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>15 FEB 2017 at 12:05 AM</span></h3>
-            <div class="blogImg"><img src="resources/css/static-web/images/bl4.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/css/static-web/images/bl4.jpg" alt=""/></div>
             <p>We know that many organizations recruiting are a time-honored process and difficult to find out the right talented even more manual efficiency. Due to that organization's recruiting are moving towards Digital Marketing [ Social Media - Linkedin, Facebook, Twitter, Pinterest].One of the major challenges for recruiting firms is attracting the talent resources and making hires through Social Media. It's about engaging with resources and using social media tools to source and recruit talent.
             </p>
             <p>LinkedIn, Facebook, and Twitter has over 600 million combined users. That equals a lot of potential talent for your organization. But how do you find the right talent for the requirement you have available using social media? Here's how to get started.</p>
