@@ -183,6 +183,13 @@ public class LoginSessionController {
 			   @RequestParam(value = "switchUserType", required = false) String switchUserType,
 			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 		
+		
+		ModelAndView model = new ModelAndView();
+		if(authentication == null) {
+			model.setViewName("login");
+			return model;
+		}
+		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
@@ -209,7 +216,7 @@ public class LoginSessionController {
 			}
 		}
 		
-		ModelAndView model = new ModelAndView();
+		
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
