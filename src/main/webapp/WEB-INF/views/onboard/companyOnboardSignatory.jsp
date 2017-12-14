@@ -10,17 +10,17 @@
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 
 
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 <script type="text/javascript">
 window.onload = function () {
@@ -71,7 +71,7 @@ window.onload = function () {
 				  <div id="legalUserFormDiv"></div>
 			     
 			     <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
 						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>
 						<div class="clearfix"></div>
 					</div>
@@ -83,16 +83,16 @@ window.onload = function () {
 </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
- <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
+ <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
-  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/moment.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
- <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+ <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
 
  
  <script type="text/javascript">
@@ -112,7 +112,7 @@ window.onload = function () {
 
 });
 </script> 
-  <script src="resources/js/formvalidator.js"></script>
+  <script src="/resources/js/formvalidator.js"></script>
   
   
   <script type="text/javascript">
@@ -340,7 +340,6 @@ function getDesignationType(){
 
 <script type="text/javascript">
 $('body').on('submit', '#signatory_form', function(e){
-	
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -352,9 +351,9 @@ $('body').on('submit', '#signatory_form', function(e){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
       var formData = getFormData("signatory_form");
-      
+     
       if (document.getElementById('legalSigner').checked) {
-    	  saveOrgLocationSignatory();
+    	 saveOrgLocationSignatory(formData);
       }else{
         var isMailSent = "Y";
    	 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');

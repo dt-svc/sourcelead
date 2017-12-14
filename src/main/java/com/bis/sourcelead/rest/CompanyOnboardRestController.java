@@ -36,6 +36,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 @PropertySource("${propertyLocation:app.properties}")
 public class CompanyOnboardRestController {
 

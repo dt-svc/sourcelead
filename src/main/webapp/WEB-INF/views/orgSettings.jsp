@@ -366,6 +366,11 @@ function cancelOrgImg(){
 					                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
 										<option value="Other" selected="selected">Other</option>
 									</c:if>
+									
+								  <c:if test="${empty SourceLeadWeb_orgLocations.otherBusinessType}">
+										<option value="Other">Other</option>
+									</c:if>
+									
 								  </select>
 							</div>
 						</div>
@@ -542,16 +547,18 @@ function cancelOrgImg(){
             			</div>
             			
         			</div>
-    			</div>
-     		 <jsp:include page="federalAndStateTaxes.jsp" />
+        			
+   			 <jsp:include page="federalAndStateTaxes.jsp" />
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 
+    			</div>
+     		
   	</div>
   </div>
   
 
-		</div>
 		
 		
 			<!-- Tab for Profile setting-area ends -->

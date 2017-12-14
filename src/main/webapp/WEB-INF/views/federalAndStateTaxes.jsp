@@ -222,7 +222,6 @@ function addStatesTaxRow(){
 <script>
 function getStateTaxes(){
 	var sourceleadUrl = '${sourceleadUrl}';
-	
 	 $.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getOrgLocationsStatesTaxList?${_csrf.parameterName}=${_csrf.token}", 

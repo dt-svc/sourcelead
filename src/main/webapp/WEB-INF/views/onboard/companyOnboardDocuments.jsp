@@ -10,17 +10,17 @@
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 
 
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
@@ -214,8 +214,8 @@ var sourceleadUrl = '${sourceleadUrl}';
 			      </div>
 			    
 			        <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/companyOnboardBankingDetails'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
-						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/companyOnboardSignatory'/>'"></a>
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
+						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardSignatory'/>'"></a>
 						<div class="clearfix"></div>
 					</div>
 			    </div>
@@ -224,17 +224,17 @@ var sourceleadUrl = '${sourceleadUrl}';
 	</section>
 </div>
 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
- <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
+ <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
-  <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/moment.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
- <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
- <script src="resources/js/formvalidator.js"></script>
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+ <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+ <script src="/resources/js/formvalidator.js"></script>
  
  <script>
 
