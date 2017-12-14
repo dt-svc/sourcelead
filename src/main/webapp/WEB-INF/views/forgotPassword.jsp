@@ -101,10 +101,10 @@ function applyInputSlide() {
 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
-    			        		  location.replace(sourceleadUrl+"/login"); 
+    			        		  location.replace("/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+                    			  location.replace("/resetPassword"); 
     			        	}
 			        },  
                 });

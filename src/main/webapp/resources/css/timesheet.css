@@ -6028,6 +6028,9 @@ width: 100% !important;
 .popupMid {
 	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed; min-height: 150px; overflow-y: auto;
 }
+.popupMidOver {
+	overflow: inherit;
+}
 .popupMidPad {
 	padding: 5px 0px 0px 0px;
 }

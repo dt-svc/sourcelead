@@ -10,7 +10,7 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/requirementList"/>"> Jobs &nbsp;&nbsp;</a> </h4>
+          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/requirementList"/>"> Jobs &nbsp;&nbsp;</a> </h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Current</a></li>
@@ -143,9 +143,9 @@ function requirementSubmissionsCount(daterange){
 		  });
 		 
 		 if(daterange == "today"){
-			 $("#jobsLink").attr("href", "<c:url value='/requirementList'/>");
+			 $("#jobsLink").attr("href", "<c:url value='/app/requirementList'/>");
 		 }else{
-			 $("#jobsLink").attr("href", "<c:url value='/requirementList'/>");
+			 $("#jobsLink").attr("href", "<c:url value='/app/requirementList'/>");
 		 }
 		 
 	}
