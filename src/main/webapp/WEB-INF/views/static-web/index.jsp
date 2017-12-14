@@ -39,9 +39,9 @@
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(resources/css/static-web/images/bg1.jpg)"></li>
-	  <li class="para" style="background-image:url(resources/css/static-web/images/bg2.jpg)"></li>
-	  <li class="para" style="background-image:url(resources/css/static-web/images/bg3.jpg)"></li>
+	  <li class="para" style="background-image:url(/resources/css/static-web/images/bg1.jpg)"></li>
+	  <li class="para" style="background-image:url(/resources/css/static-web/images/bg2.jpg)"></li>
+	  <li class="para" style="background-image:url(/resources/css/static-web/images/bg3.jpg)"></li>
 	</ul> 
 <content>
 		<h1>

@@ -98,7 +98,7 @@ function statusvalidating(id){
 }
 </script>
 <jsp:include page="requirementTable.jsp" />
-<!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
+<!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
