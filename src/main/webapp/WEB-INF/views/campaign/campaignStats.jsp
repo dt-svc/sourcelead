@@ -51,8 +51,8 @@ function prepareCampaignStatsList(url){
 		result = result +' <th>Category Name</th>';
 	    result = result +' <th>Opens</th>';
 	    result = result +' <th>Delivered</th>';
-	    result = result +' <th>Unique Opens</th>';
-	    result = result +' <th>Unique Clicks</th>';
+	    result = result +' <th>CLicks</th>';
+	    result = result +' <th>Bounces</th>';
 	    result = result +' <th>Unsubscribes</th>';
 	    result = result +' <th>Action</th>';
 		result = result + '</tr>';
@@ -117,7 +117,7 @@ function campaignStatsPagination(url){
               "data": "uniqueOpens",
               "render": function ( data, type, report, meta ) {
             	var result = "";
-            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueOpens+'">'+report.uniqueOpens+'</div>';
+            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.clicks+'">'+report.clicks+'</div>';
             	 return result;
               }
             }, {
@@ -125,7 +125,7 @@ function campaignStatsPagination(url){
                 "data": "uniqueClicks",
                 "render": function ( data, type, report, meta ) {
                 	var result = "";
-                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueClicks+'">'+report.uniqueClicks+'</div>';
+                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.bounces+'">'+report.bounces+'</div>';
     	              return result;
                 }
           },{
