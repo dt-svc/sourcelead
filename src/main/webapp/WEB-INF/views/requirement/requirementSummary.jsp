@@ -167,7 +167,7 @@ function backoutCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
   <div class="timesheet_out">
     
