@@ -9,7 +9,7 @@
             <div class="content-area mt clearfix">
               <div class="blank-pages-tech">
                 <p class="text-center text-danger permissondenied mb">
-                    <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">
+                    <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">
                 </p>
                 <p class="big-txt mt">PERMISSION DENIED</p>
                 <p class="text-muted">You don't have permission to access this page.</p>
