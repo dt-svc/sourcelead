@@ -117,6 +117,8 @@ public class OrgSettingsRestController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+			SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}

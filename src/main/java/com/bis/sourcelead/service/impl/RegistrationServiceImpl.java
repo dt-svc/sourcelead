@@ -441,8 +441,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 			 	
 	    	Projects projects = new Projects();
 	    	StringBuilder defaultProjectName = new  StringBuilder();
-	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
+	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
 	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+
+	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
+	    	projects.setStartDate(new Date());
+
 	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
 	    	
 	    	
@@ -452,6 +456,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
 	    	
 	    	projects.setStartDate(projStartDate);
+
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
@@ -523,13 +528,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+
 		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
-		orgLocations.setOrgLocationName(registration.getCompanyName());
+		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
+		orgLocations.setIsCompanyOnboarded(Constants.NO);
+		
+	    if(StringUtils.isNotBlank(registration.getDba())){
+        	orgLocations.setDba(registration.getDba());
+        }
+        
+        if(registration.getGeneratedUserId() != null &&  registration.getGeneratedUserId().isEmpty()){
+        	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
+        }
+        
+        if(registration.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(registration.getAverageWorkingHours());
+        }
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);

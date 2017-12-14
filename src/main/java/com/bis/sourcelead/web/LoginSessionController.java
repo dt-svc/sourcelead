@@ -13,8 +13,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,9 +247,9 @@ public class LoginSessionController {
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
 					
-					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
+					/*if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
 						associatesTabsCount = associatesTabsCount+1;
-					}
+					}*/
 					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
@@ -389,6 +389,19 @@ public class LoginSessionController {
 					}else{
 						model.setViewName("dashboard");
 					}
+				}else{
+					model.setViewName("dashboard");
+				}
+			}
+			
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded())) {
+				if(orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+					List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+					model.addObject("bussinessTypesList", bussinessTypesList);
+					List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+					model.addObject("timezoneList", timezoneList);
+					model.setViewName("onboard/companyOnboard");
 				}else{
 					model.setViewName("dashboard");
 				}
@@ -1045,6 +1058,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+		  if(orgLocations.getDba() == null || orgLocations.getDba().isEmpty()){
+			  SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+		  }
+		
 	}
 	
 	

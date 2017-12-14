@@ -217,6 +217,10 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
+		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+		  }
+		  
 		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
 		    }
@@ -444,6 +448,10 @@ public class UserServiceImpl implements UserService {
 			user.setUserName(null);
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+	    }
+		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
 		user.setCreatedDate(commonUtil.currentDate());
@@ -462,6 +470,8 @@ public class UserServiceImpl implements UserService {
 			User reportingManager = new User();
 			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 			userRole.setReportingManager(reportingManager);
+		}else {
+			userRole.setReportingManager(user);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
