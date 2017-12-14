@@ -212,6 +212,9 @@ public class CampaignController {
 	public ModelAndView campaignSendersListJsp(HttpServletRequest request, HttpServletResponse response)
 	{
 		ModelAndView model = new ModelAndView();
+		
+		 commonUtil.highLightMenu(Constants.CampaignSender, request);
+		 
 		model.setViewName("campaign/campaignSenderList");
 		commonUtil.highLightMenu(Constants.Campaigns, request);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -233,7 +236,7 @@ public class CampaignController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		commonUtil.highLightMenu(Constants.Campaigns, request);
 		model.setViewName("campaign/campaignRecipientList");
-		 
+		commonUtil.highLightMenu(Constants.CampaignRecipient, request);
 		return model;
 	}
 	

@@ -199,8 +199,12 @@
 						result = result + '<strong>Client:</strong>';
 						
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
-						 result = result + '<span title="'+clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span><div class="clearfix"></div>';
-						'</sec:authorize>';
+						 if (json.client != null && json.client != '' && json.client != 'undefined') {
+							 result = result + '<span><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
+						 }else{
+							 result = result + '<span>'+clientName+'</span>';
+						 }
+						 '</sec:authorize>';
 						
 						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
