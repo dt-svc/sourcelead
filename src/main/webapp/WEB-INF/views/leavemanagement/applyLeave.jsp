@@ -523,12 +523,9 @@ function validatePriorDays(priorDays){
     var convertedCurrentDate = parseInt(currentDate.getDate());
     var convertedFromDate = parseInt(fromDate);
     var dayDiff= (convertedFromDate - convertedCurrentDate);
-    alert(dayDiff)
-    alert(priorDays+"     dd  "+(priorDays >= dayDiff))
     if(priorDays >= dayDiff){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
-    alert(errorMessage)
 }
 
 </script>
