@@ -217,9 +217,9 @@ function getOpenJobsELKList(){
 					result = result +'  </div>'
 					result = result +'	<div class="clear"></div>';
 					result = result +'	</div>';
-					result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
+					result = result +'	<div class="jobApply"><a href="/login">Apply</a>';
 					if(requirements.isCrowdSourcingJob == 'Y'){
-					result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
+					result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 					}
 /* 					result = result +'	<div class="filLoad">';
 					result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
