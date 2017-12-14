@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
 <script src="//socialinviter.com/assets/js/libraries/jquery.js"></script>
-<script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
+<script type="text/javascript" id="apiscript" src="/resources/js/all.js?burst=1"></script>
 <style type="text/css">
 		body{
 			font-family: 'Lato', sans-serif;
@@ -326,8 +326,8 @@ var shareObj = {
              },
              
              path: {
-                 css: "resources/css/",
-                 js: "resources/js/",
+                 css: "/resources/css/",
+                 js: "/resources/js/",
                  authpage : "http://localhost:8080/app/resources/oauth.html",
                  apiurl:"http://localhost:8080/app/ws/getAPIService"
              }

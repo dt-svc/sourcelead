@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Problems of Existing Recruiting process without Tools.</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>12 DEC 2016 at 11:05 AM</span></h3>
-            <div class="blogImg"><img src="resources/css/static-web/images/bl3.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/css/static-web/images/bl3.jpg" alt=""/></div>
             <p>As the current business process is not automated the company needs to cope up with the following set of problems.
             </p>
             <b>Performance: </b>

@@ -3,14 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 
 
 
 
 <!-- <div class="pull-left timeAppUse">
-	<span><img id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofile-img.png"> </span>
+	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
 	<p>
 		<input class="timeUsName" type="text" readonly="readonly" value="ramya">
 		<input type="text" readonly="readonly" value="ramyavishnu15@gmail.com">
@@ -702,7 +702,7 @@ function withdrawMyTimesheet(){
 	 var projectMemberId = $("#projectMemberId").val();
 	 var timesheetFrequency  = $("#timesheetFrequency").val();
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
-	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
      	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
@@ -1318,7 +1318,7 @@ function timesheetEntriesExport(exportType){
 function newSaveTimesheet(status,savingType){ 
 	
 	 $(".time_btn").attr("disabled", "disabled");
-	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
@@ -1400,4 +1400,4 @@ function newSaveTimesheet(status,savingType){
 	    });
  }
 </script>
-<script type="text/javascript"	src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

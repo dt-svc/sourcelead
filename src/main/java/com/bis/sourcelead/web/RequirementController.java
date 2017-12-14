@@ -551,8 +551,8 @@ private ProjectClientService projectClientService;
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')")
-	@RequestMapping(value = "/job/{jobTitle}")
-	public ModelAndView requirementSummary(HttpServletRequest request,@PathVariable String title,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+	@RequestMapping(value = "/requirementSummary")
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 

@@ -3,7 +3,7 @@
   <jsp:include page="../staticHeader.jsp" />
 <section class="atsOutWrap">
  	<h2>Applicant Tracking System</h2>
- 	<img src="resources/css/static-web/images/ats.png" alt=""/>  
+ 	<img src="/resources/css/static-web/images/ats.png" alt=""/>  
 </section>
 
 <section class="atsText">
