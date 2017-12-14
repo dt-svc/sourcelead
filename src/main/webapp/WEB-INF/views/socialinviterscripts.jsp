@@ -170,8 +170,8 @@
              },
              
              path: {
-                 css: "resources/css/",
-                 js: "resources/js/",
+                 css: "/resources/css/",
+                 js: "/resources/js/",
                  authpage : sourceleadUrl+"/resources/oauth.html",
                  apiurl:sourceleadUrl+"/ws/getAPIService"
              }

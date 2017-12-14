@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Applicant Tracking System</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>17 DEC 2016 at 11:05 AM</span></h3>
-            <div class="blogImg"><img src="resources/css/static-web/images/bl2.jpg"  alt=""/></div>
+            <div class="blogImg"><img src="/resources/css/static-web/images/bl2.jpg"  alt=""/></div>
             <p>Applicant Tracking System mostly useful for recruiters and HR Professionals. Many requirement applicants and profiles must filter with ATS,for effective filtering. There are disputes about their effectiveness because they target keywords rather than applicant skill. Even though most applicants don’t like their experience when a company uses an ATS, it greatly helps recruiters minimize the size of the talent pool without wasting precious time and energy… not to mention money. So where does your company stand? ATS has saved 20 percent of companies precious time during the hiring process. 
             </p>
             <b>Do Recruiters need ATS?</b>

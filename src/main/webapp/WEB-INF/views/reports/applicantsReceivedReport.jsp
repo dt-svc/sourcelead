@@ -676,7 +676,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 
 
 <!-- <script src="resources/reports/highcharts.js"></script>
-<script src="resources/reports/exporting.js"></script>  -->
+<script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
 	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){

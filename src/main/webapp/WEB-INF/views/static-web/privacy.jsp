@@ -2,7 +2,7 @@
 <jsp:include page="../staticHeader.jsp" />  
 <section class="staticBan">
 	<div class="staticBanInn">
-    	<img src="resources/css/static-web/images/inner-icon.png" alt=""/><h3>Privacy Policy</h3><div class="clear"></div>
+    	<img src="/resources/css/static-web/images/inner-icon.png" alt=""/><h3>Privacy Policy</h3><div class="clear"></div>
     </div>
 </section>  
 
