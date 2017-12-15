@@ -67,7 +67,7 @@ $(document).ready(function(){
 </script>
 		
 		<div id="projectSideDiv"></div>
-		<div id="candidateSideDiv"></div>
+		<div id="candidateSideDiv"></div> 
 		
 		
 		 
@@ -82,61 +82,41 @@ $(document).ready(function(){
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
 	 
 	 
-	 result = result + ' <div class="user_summ_wrap">';
-	 result = result + '<div class="project_side_wrap_inn_tabs">';
-	 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
-	 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
-	 result  = result + '</div>';
-	 result = result + '    <ul class="project-tabs-menu">';
-	 
-	 result = result + '       <li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
-	 result = result + '       <li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
-	 result = result + '       <li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
-	
-	 result = result + '        <div class="clearfix"></div>';
-	 result = result + '   </ul>';
-	 
-	 
-	 result = result + '<div class="project_tabs">';
-	 result = result + ' <div id="tab-18" class="project_tabs_inn">';
-	 result = result + '</div>';
+		 result = result + ' <div class="user_summ_wrap">';
+		 result = result + '<div class="project_side_wrap_inn_tabs">';
+		 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
+		 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
+		 result  = result + '</div>';
+		 result = result + '<ul class="project-tabs-menu">';
+		 
+		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
+		 result = result + '<li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
+		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
+		
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '   </ul>';
+		 
+		 
+		 result = result + '<div class="project_tabs">';
+		 result = result + ' <div id="tab-18" class="project_tabs_inn">';
+		 result = result + '</div>';
+		  	
+		 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
+		 result = result + '<div id="candidateSideDiv">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+	  	 result = result + '</div>';
+	  	 result = result + '</div>';
+	  	 result = result + '</div>'; 
+	  	 $("#projectSideDiv").empty(); 
+	     $("#projectSideDiv").append(result); 
+	     $("#candidateSideDiv").empty();
+	     $("#candidateSideDiv").append(result);
+	    
 	  	
-	 result = result + '<div id="tab-19" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
-	 result = result + '</div>';
-	 
-	 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
-	 result = result + '</div>';
-	  	
-	  	/*  result = result + '<div class="timesheet_head">';
-	     result = result + '  	<ul>';
-	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
-		   result = result + '         	<div class="approved_pop" id="radioFilter">';
-	     result = result + '            	<ul>';
-	     result = result + '                	<li><input type="radio" value="All" id="c5" name="status" checked onClick="userStatusFilter(); filter(); checkk" ><label for="c5">All</label></li>';
-	     result = result + ' 					<li><input type="radio" value="Active" id="c5" name="status" onClick="userStatusFilter(); filter();" ><label for="c5">Active</label></li>';
-	     result = result + ' 					<li><input type="radio" value="In-Active" id="c5" name="status" onClick="userStatusFilter(); filter();" ><label for="c5">In-Active</label></li>';
-	     result = result + '                 </ul>';
-	     result = result + '                    </div>                	';
-	     result = result + '                </li>';
-	     
-	     result = result + '<li id="assign_project_id"><a href="javascript:void(0)" data-target="#assignProject" onClick="flushProject();getUnAssignedProjects('+userId+');" data-toggle="modal"><i class="fa fa-plus"></i>Assign Project</a></li>';
-	     		
-	     result = result + '              <div class="clearfix"></div>';
-	     result = result + '            </ul>';
-	     result = result + '          <div class="clearfix"></div>';
-	     result = result +'<div id="projectList_User"></div>'; 
-	     result = result + '     </div>';
-	  	
-	  	result = result + '</div>'; */
-	  	
-	  	
-	  	result = result + '</div>';
-	  	result = result + '</div>';
-	  	result = result + '</div>'; 
-	  	$("#projectSideDiv").empty();
-	    $("#projectSideDiv").append(result); 
-	    $("#candidateSideDiv").empty();
-	    $("#candidateSideDiv").append(result);
 	  	userDetails(userId);
  }
 </script>
@@ -419,8 +399,6 @@ $(document).ready(function(){
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
-				
-				
 				$("#candidateSideDiv").empty();
 				$("#tab-19").empty();
 				$("#tab-17").empty();
@@ -3042,7 +3020,7 @@ function profileDetails(candidateId){
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
-			             '</sec:authorize>';
+			             '</sec:authorize>'; 
 			            }
 			 		    /* New comments div creation Nov 8th, 2016 */
 			             
@@ -3053,11 +3031,11 @@ function profileDetails(candidateId){
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
-			              /* if(json.isAssociate == "Y"){  */
+			            	 
 			              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Detailed View</a></li>';
-			             '</sec:authorize>'; 
-			              
+			              '</sec:authorize>'; 
+			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_RESUMES\',\'ROLE_VIEW_ASSOCIATE_RESUMES\',\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\',\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
 			              '</sec:authorize>'; 
@@ -3068,7 +3046,7 @@ function profileDetails(candidateId){
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             '</sec:authorize>'; 
+			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
@@ -3081,17 +3059,15 @@ function profileDetails(candidateId){
 			             
 			             
 			             result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
-			            
+			              
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
-			            '</sec:authorize>'; 
+			               '</sec:authorize>'; 
 			              
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
 			              '</sec:authorize>';
-			            /*  } */
-			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
 			             result = result+'     <div class="project_tabs">';
@@ -3200,7 +3176,7 @@ function deleteProfileImage(candidateId){
 	        	 
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
+	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
 	        	 
 	        	 //refreshImageBlock(candidateId);
 	        	 //candidateQuickViewProfile(candidateId);
@@ -3550,6 +3526,6 @@ function savedCommentAndCount(candidateId){
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include> 
-<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> 
+<%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
-</sec:authorize> 
+ <%-- </sec:authorize>  --%>
