@@ -28,7 +28,7 @@ display: none;
       <div class="pull-left">
         <h2>Mail account setting</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox/mails'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
 			&raquo; Mail account settings</div>
     </section>
     <div class="content-area content-new clearfix">

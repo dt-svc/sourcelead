@@ -392,8 +392,10 @@ public class CampaignDaoImpl implements CampaignDao {
 			}
 		System.out.println(sb.toString());	
 		String listName = sb.toString();
-		listName = listName.substring(0, listName.length() - 1);
-		System.out.println(numberOfRecipients);	
+		if(!"".equalsIgnoreCase(listName)) {
+			listName = listName.substring(0, listName.length() - 1);
+		}
+//		System.out.println(numberOfRecipients);	
 		map.put(listName, numberOfRecipients);
 			
 			

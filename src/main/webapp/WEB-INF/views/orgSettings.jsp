@@ -166,7 +166,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">WhiteList Ips</a></li>
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
         </c:if>
 
       </ul>
@@ -532,7 +532,7 @@ function cancelOrgImg(){
                         <div id="whiteListLoading"></div>
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="whiteListHeading">WhiteList Ips</h4>
+                                    <h4 id="whiteListHeading">Whitelist Ips</h4>
                                 </div>
                                 <div class="pull-right">
                                 	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
