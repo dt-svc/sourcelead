@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -44,8 +47,13 @@ public class CampaignDaoImpl implements CampaignDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderIdentity) throws Exception
 	{
+		Long senderId = 0l;
+		if(StringUtils.isNotBlank(senderIdentity) && !"undefined".equalsIgnoreCase(senderIdentity)) {
+			senderId = Long.parseLong(senderIdentity);
+		}
+			
 		boolean isNickNameDuplicate = false;
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.nickName = :nickName and cSender.id <> :senderId and cSender.orgLocations.id = :orgLocationId").setString("nickName", nickName).setLong("senderId", senderId).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
@@ -273,7 +281,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
 //				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 //		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
-		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
+		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
 		
 //			List<InvoiceData> invoiceDetailsList = null;
 //			ResponseList<InvoiceData> response = new ResponseList<>();
@@ -333,16 +341,90 @@ public class CampaignDaoImpl implements CampaignDao {
 
     @Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
+	public CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignStats campaignStats = null;
-		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.campaignId = :campaignId").setString("campaignId", campaignId).setCacheable(true).list();
+		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName and cmpStats.status = 1").setString("campaignName", campaignName).setCacheable(true).list();
 		if (statsList != null && statsList.size() > 0) {
 			campaignStats = statsList.get(0);
 		}
 		return campaignStats;
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Campaign validateCampaignSubject(String subjectName, Long orgLocationId,int campaignType) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Campaign campaign = null;
+		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignSubject = :subjectName and cpn.orgLocation.id = :orglocationId and cpn.campaignType = :campaignType").setString("subjectName", subjectName).setLong("orglocationId", orgLocationId).setInteger("campaignType", campaignType).setCacheable(true).list();
+		if (cpnList != null && cpnList.size() > 0) {
+			campaign = cpnList.get(0);
+		}
+		return campaign;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Map<String,Integer> getCampaignListName(String campaignId) throws Exception
+	{
+		Map<String,Integer> map = new HashMap();
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignId = :campaignId").setString("campaignId", campaignId).setCacheable(true).list();
+		if (cpnList != null && cpnList.size() > 0) {
+			Campaign campaign = cpnList.get(0);
+			StringBuilder sb = new StringBuilder();
+			int numberOfRecipients = 0;
+			if(campaign.getListIds() !=null) {
+				String[] listIds = campaign.getListIds().split(",");
+				for(String listId : listIds) {
+					List<CampaignList> campaignList = session.createQuery("from CampaignList cpnlist where cpnlist.listId = :listId").setString("listId", listId).setCacheable(true).list();
+				   if(campaignList !=null && campaignList.size() >0) {
+					   CampaignList cpmList = campaignList.get(0);
+					   sb.append(cpmList.getListName()).append(",");
+					   numberOfRecipients = numberOfRecipients + cpmList.getCampaignRecipient().size();
+				   }
+				}
+				
+				
+			}
+		System.out.println(sb.toString());	
+		String listName = sb.toString();
+		if(!"".equalsIgnoreCase(listName)) {
+			listName = listName.substring(0, listName.length() - 1);
+		}
+//		System.out.println(numberOfRecipients);	
+		map.put(listName, numberOfRecipients);
+			
+			
+		}
+		return map;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CreateSender validateFromMail(String email, String toWhom,String id) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		CreateSender createSender = null;
+		Long senderId = 0l;
+		if(StringUtils.isNotBlank(id) && !"undefined".equalsIgnoreCase(id)) {
+			senderId = Long.parseLong(id);
+		}
+		String query = "";
+		if(!"from".equalsIgnoreCase(toWhom)) {
+			 query = "from CreateSender sender where sender.replyTo = :email and sender.status = 1 and sender.id <> :senderId ";
+		}else {
+			 query = "from CreateSender sender where sender.fromMail = :email and sender.status = 1 and sender.id <> :senderId ";
+		}
+		List<CreateSender> senderList = session.createQuery(query).setString("email", email).setLong("senderId", senderId).setCacheable(true).list();
+		
+		if(senderList !=null && senderList.size() >0) {
+			createSender = senderList.get(0);
+		}
+		return createSender;
 	}
 
 
