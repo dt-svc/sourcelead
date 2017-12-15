@@ -107,7 +107,82 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		}else {
 			leaveType.setStatus(Constants.RECORD_ACTIVE.toString());
 		}
-		
+		if(leaveTypeDTO.getPeriod() != null){
+			leaveType.setPeriod(leaveTypeDTO.getPeriod());
+		}if(leaveTypeDTO.getLeaveEffective() != null){
+			leaveType.setLeaveEffective(leaveTypeDTO.getLeaveEffective());
+		}
+		if(leaveTypeDTO.getExperiencedType() != null ){
+			leaveType.setExperiencedType(leaveTypeDTO.getExperiencedType());
+			if(leaveTypeDTO.getExperiencedDuration() != null && !"".equalsIgnoreCase(leaveTypeDTO.getExperiencedDuration())){
+			    leaveType.setExperiencedDuration(Integer.parseInt(leaveTypeDTO.getExperiencedDuration()));
+			}else{
+				leaveType.setExperiencedDuration(0);
+			}
+			if(leaveTypeDTO.getExperiencedApplicableDays() != null && !"".equalsIgnoreCase(leaveTypeDTO.getExperiencedApplicableDays())){
+			    leaveType.setExperiencedApplicableDays(Integer.parseInt(leaveTypeDTO.getExperiencedApplicableDays()));
+			}else{
+				leaveType.setExperiencedApplicableDays(0);
+			}
+		}
+		if(leaveTypeDTO.getReasonRequired() != null){
+			leaveType.setReasonRequired(leaveTypeDTO.getReasonRequired());
+		}else{
+			leaveType.setReasonRequired(Constants.NO);
+		}
+		if(leaveTypeDTO.getAttachmentRequired() != null){
+			leaveType.setAttachmentRequired(leaveTypeDTO.getAttachmentRequired());
+		}else{
+			leaveType.setAttachmentRequired(Constants.NO);
+		}
+		if(leaveTypeDTO.getOverdrawLeaves() != null){
+			leaveType.setOverdrawLeaves(leaveTypeDTO.getOverdrawLeaves());
+		}else{
+			leaveType.setOverdrawLeaves(Constants.NO);
+		}
+		if(leaveTypeDTO.getDonateLeave() != null){
+			leaveType.setDonateLeave(leaveTypeDTO.getDonateLeave());
+		}else{
+			leaveType.setDonateLeave(Constants.NO);
+		}
+		if(leaveTypeDTO.getPriorLeaveApplying() != null){
+			leaveType.setPriorLeaveApplying(leaveTypeDTO.getPriorLeaveApplying());
+		}else{
+			leaveType.setPriorLeaveApplying(Constants.NO);
+		}
+		if(leaveTypeDTO.getPriorDays() != null && !"".equalsIgnoreCase(leaveTypeDTO.getPriorDays())){
+			leaveType.setPriorDays(Integer.parseInt(leaveTypeDTO.getPriorDays()));
+		}else{
+			leaveType.setPriorDays(0);
+		}
+		if(leaveTypeDTO.getLeaveDuration() != null){
+			leaveType.setLeaveDuration(leaveTypeDTO.getLeaveDuration());
+		}else{
+			leaveType.setLeaveDuration(Constants.NO);
+		}
+		if(leaveTypeDTO.getNoOfDays() != null && !"".equalsIgnoreCase(leaveTypeDTO.getNoOfDays())){
+			leaveType.setNoOfDays(Integer.parseInt(leaveTypeDTO.getNoOfDays()));
+		}else{
+			leaveType.setNoOfDays(0);
+		}
+		if(leaveTypeDTO.getNewJoinee() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getNewJoinee())){
+			 leaveType.setNewJoinee(Integer.parseInt(leaveTypeDTO.getNewJoinee()));
+		}else{
+			leaveType.setNewJoinee(0);
+		}
+		   if(leaveTypeDTO.getMaxDays() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getMaxDays())){
+			   leaveType.setMaxDays(Integer.parseInt(leaveTypeDTO.getMaxDays()));
+		   }else{
+				leaveType.setMaxDays(0);
+			}
+		   if(leaveTypeDTO.getMinDays() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getMinDays())){
+			   leaveType.setMinDays(Integer.parseInt(leaveTypeDTO.getMinDays())); 
+		   }else{
+				leaveType.setMinDays(0);
+			}
+//		    
+			
+         
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		return leaveType;
