@@ -228,7 +228,7 @@ input.signin_fild:-webkit-autofill {
 	color: #e32f2f !important;
 }
 .flag-image {
-position: absolute; top: 5px; right: 2px;
+position: absolute; top: 0px; right: 2px;
 }
 .flag-image a img {
     max-height: 18px;
