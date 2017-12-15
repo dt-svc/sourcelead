@@ -2,8 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.twbsPagination.js"></script>
-
+<script src="resources/js/jquery.simplePagination.js"></script>
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
@@ -20,8 +19,9 @@ $(document).ready(function() {
 		 	<input type="hidden" id="projectMemberId" name="projectMemberId" value="${timesheetEntryDetailsDTO.projectMemberId}"/>
 	        <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
 	        <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
-	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
+	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.currentTimeFrequency}"/>
             <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
+            <input type="hidden" name="totalHours" id="totalHours" >
             <div id="timesheetDivByFrequency">
 	 	         <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
 	 	    </div>
@@ -35,6 +35,7 @@ $(document).ready(function() {
 <div id='reOpenRejectedPopup'></div>
 <div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
+<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
@@ -56,6 +57,10 @@ $(document).ready(function() {
    </tbody>
   </table>
 </div>
+</c:if>
+<c:if test="${empty timesheetApprovalDTO.timesheetSubmission}">
+    <div class="dataTables_empty">   </div>
+</c:if>
 <div id= "paginationDiv" class="clearfix">
 	<div class="col-md-6">
 		<div class="pull-left mt5">
@@ -68,7 +73,7 @@ $(document).ready(function() {
 						<option value="20" >20</option>
 					</select>
 				</div> <span class="pull-left mt10">entries</span> </label>
-				 <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
+				 <span class="pull-left mt10 ml" id="pageMsg"></span>
 		</div>
 	</div>
 	<div id="paginationholder" class="col-md-6 pagiPad">
@@ -88,7 +93,7 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
 </script> 
 <script>
-function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,from){
+function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from){
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 $("#projectMemberId").val('');
 	 $("#projectMemberId").val(projectMemberId);
@@ -101,6 +106,10 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	 
 	 $("#masterCandidateId").val('');
 	 $("#masterCandidateId").val(masterCandidateId);
+	 
+	 $("#totalHours").val('');
+	 $("#totalHours").val(totalHours);
+	 
 	  
      //var subFrParam = '';
     /*  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
@@ -314,7 +323,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 
  <script>
       function getTableDataByPageSize(){
-    	  $('#pagination-demo').twbsPagination('destroy'); 
+    	//  $('#pagination-demo').twbsPagination('destroy'); 
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
@@ -360,16 +369,16 @@ function exportTimeSheetToPdfOrExcel(exportType){
 				  endingRecord = totalRows;
 			  }
 			  var options = {
-			              currentPage : pageNo,
-			              totalPages: pageCount,
-			              prev:'',
-			              next:'',
-			              initiateStartPageClick: false,
-			              onPageClick: function (event, page) {
-			              getTableData(""+page+"");
+					      currentPage:pageNo,
+					      items: totalRows,
+			              itemsOnPage: pageSize,
+			              ellipsePageSet :false,
+			              cssStyle: 'light-theme',
+			               onPageClick: function (pageNumber, event) {
+			                 getTableData(""+pageNumber+"");
 			              }
 		      };
-		      $("#pagination-demo").twbsPagination(options);
+		      $("#pagination-demo").pagination(options);
 		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
 		  }
 		  else{

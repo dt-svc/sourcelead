@@ -19,15 +19,38 @@
 	<div class="clearfix"></div>
 </div>
 
-<div id="timesheetSubmissionStatusDiv" class="timeNewSe pull-right clearfix">
+<div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
 					<b class="proj_closed pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
 					<i class="glyphicon glyphicon-comment rejectedHover"> 
 					<div class="app_error_mes" id="rejectedMessage">${timesheetSubmissionDTO.rejectedReason}</div> </i>
 				</c:if>
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-					<b class="proj_active pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				    <c:if test="${!empty timesheetSubmissionDTO.reopenRejectedReason}">
+					    <i class='glyphicon glyphicon-comment rejectedHover'>
+					       <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenRejectedReason}</div>
+					    </i>
+					 </c:if>
+			 	     <c:if test="${timesheetSubmissionDTO.reopenButtonVisible}">
+					     <b class="proj_withdraw pull-right" style="width:40%"  onClick='reOpenMyTimesheet();'>Re-Open</b> 
+					</c:if>
+					<c:if test="${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
+					    <i class="pull-right glyphicon glyphicon-comment rejectedHover">
+					    <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div>
+					    </i><p class="pull-right ml" >Re-Open<br>Request sent</p> 
+					</c:if>
+					<c:if test="${timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
+						<i class="pull-right  glyphicon glyphicon-comment rejectedHover">
+						<div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div></i>
+						<div class="pull-right  sm text-center reopen"> 
+						    <label class="clearfix reopen-label">RE-OPEN</label>
+						    <i class="reopen-text-success fa fa-check" title="Accept" alt="Accept" onclick="acceptReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>|<i class="reopen-text-danger fa fa-times" title="Reject" alt="Reject" onclick="rejectReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>
+						</div>
+					</c:if>
+					<b class="proj_active pull-right mr" style="width:40%">${timesheetSubmissionDTO.timesheetStatus}</b>
 				</c:if>
+				
+				
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW'}">
 					<b class="proj_new pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
 				</c:if>
@@ -75,7 +98,7 @@
 		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
 			   <li class="${tsf.key ==  timesheetSubmissionDTO.timeSubFrequency ? 'current' : ''} ${fn:contains(timesheetEntryDetailsDTO.filledTimeSubFrequencies, tsf.key) ? 'subColor' : ''}">
-					<a href="javascript:timesheetDivByFrequency('${tsf.key}');" >${tsf.value}</a>
+					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
 			<div class="export dropdown">
@@ -501,11 +524,11 @@
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
-	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
-		$("#timesheet_form input[data-id*=docFile]").remove();
-		}
 	setTotals();
 	maskme();
+	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+		$("#timesheet_form input[data-id*=docFile]").remove();
+	}
 });
 		
 function setTotals(){ 
@@ -1259,7 +1282,7 @@ function validateUploadFile(id)
 </script>
 <script type="text/javascript">
    function alertMessage(message,status,savingType){
-   $("#timesheetEntriesDiv").append("<div id='choicepopUp'></div>");
+   $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1360,6 +1383,7 @@ function newSaveTimesheet(status){
 			
 		 }	
      });
+	
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1373,6 +1397,7 @@ function newSaveTimesheet(status){
 	        	   return true;
 		     }
 		     else{
+		    	 $("#loadTime").removeAttr("style"); 
 		    	 var message = "<b>Are you sure to submit the timesheets, the following frequencies haven't updated<b>";
 		    	 for(var i=0;i<unfilledDates.length;i++){
 		    		 message = message+"<br/>"+unfilledDates[i];
@@ -1393,7 +1418,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
-     		 $("body").css('overflow-y', 'scrool');
+     		 $("body").css('overflow-y', 'scroll');
 	    	 var table = $('#example').DataTable();
 			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false );
 		 }
@@ -1406,7 +1431,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 					    success: function(data) {
 						    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 		     		    		 $(".side_mask").fadeOut(200); 
-		     	        		 $("body").css('overflow-y', 'scrool');
+		     	        		 $("body").css('overflow-y', 'scroll');
 		     	        		 $("#dynamic").removeAttr('style');
 		     	        		 if(from == 'approverClose' || from == 'approver' ){
 		     	        			 $("#row"+projectMembersId).empty();
@@ -1433,6 +1458,8 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
     	 var currentTimeSubFrequency = $("#currentTimeSubFrequency").val();
     	 var projectMemberId = $("#projectMemberId").val();
     	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    	 $("#loadTime").removeAttr('style');
+    	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 		    type : "POST",
    	        data: formData,
@@ -1451,6 +1478,8 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 			    	  else{
 			    		  $("#timesheetDivByFrequency").empty();
 				    	  $("#timesheetDivByFrequency").append(data);
+				    	  setTotals();
+        		    	  maskme();
 				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 				    		  $("#currentTimeSubFrequency").val('');
 				    		  $("#timeSubFrequency").val('');
@@ -1462,6 +1491,8 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		    	  }else{
 		    		  $("#timesheetDivByFrequency").empty();
 			    	  $("#timesheetDivByFrequency").append(data);
+			    	  setTotals();
+    		    	  maskme();
 			    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 			    		  $("#currentTimeSubFrequency").val('');
 			    		  $("#timeSubFrequency").val('');
@@ -1478,4 +1509,175 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    });
  }
 </script>
+<!-- Re-Open Timesheet Scripts Start -->
+<script type="text/javascript">
+function reOpenMyTimesheet(){
+	var projectMemberId = $("#projectMemberId").val();
+	var timesheetFrequency= $("#currentTimeFrequency").val();
+	var totalHours = $("#totalHours").val();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"	</div>";
+	$("#reOpenPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
+    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	var reason = document.getElementById("reOpenReason").value;
+	if(reason !== ""){
+		$("#reOpenReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
+		    success: function(data) {
+		    	 cancelReOpen();
+   			    timesheetDivAfterSaving();
+		    }
+	   });
+	}else{
+		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
+<script>
+function timesheetDivAfterSaving(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	var projectMemberId = $("#projectMemberId").val();
+	var currentTimeFrequency= $("#currentTimeFrequency").val();
+	var currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
+	var timeSheetsFor = $("#timesheetFor").val();
+    if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+ 	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
+    }
+    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+    $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+		      success :function(data) {
+		    	  $("#timesheetDivByFrequency").empty();
+		    	  $("#timesheetDivByFrequency").append(data);
+		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+		    	  }
+		    	  $("#loadTime").removeAttr('style');
+		      }
+	    }); 
+}
+</script>
+<script>
+function cancelReOpen(){
+$("#reOpenPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
+	var timesheetFrequency = $("#currentTimeFrequency").val(); 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"	</div>";
+	$("#reOpenRejectedPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var superUserId = '${SourceLeadWeb_superUserId}';
+	var reason = document.getElementById("reOpenRejectedReason").value;
+	if(reason != ""){
+		$("#reOpenRejectedReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		   	url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
+		    success: function(data) {
+		    	$("#reOpenRejectedPopup").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			    timesheetDivAfterSaving();
+	    	    $("html").trigger('click');
+	    	    maskme();
+		    }
+	   });
+	}else{
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+
+</script>
+
+<script>
+function cancelReOpenRejected(){
+$("#reOpenRejectedPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var timesheetFrequency = $("#currentTimeFrequency").val(); 
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
+		success : function(data) {
+			timesheetDivAfterSaving();
+		},
+	});
+}
+</script>
+<!-- Re-Open Timesheet Script End -->
+<!-- Tab Switching -->
+ <script>
+	function timesheetDivByFrequency(currentTimeSubFrequency){ 
+	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	               var projectMemberId = $("#projectMemberId").val();
+	               var currentTimeFrequency = $("#currentTimeFrequency").val();
+	               if(currentTimeFrequency ==  null || currentTimeFrequency == '' || currentTimeFrequency == 'undefined'){
+	            	   currentTimeFrequency = $("#timesheetFrequency").val();
+	               }
+	               var timeSheetsFor = $("#timesheetFor").val();
+	               var subFrParam = '';
+	               if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+	            	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
+	               }
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               $.ajax({
+		      	          type : "POST",
+	        	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+	        		      success :function(data) {
+	        		    	  $("#timesheetDivByFrequency").empty();
+	        		    	  $("#timesheetDivByFrequency").append(data);
+	        		    	  setTotals();
+	        		    	  maskme();
+	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+	        		    	  }
+	        		    	  $("#loadTime").removeAttr('style');
+	        		      }
+	        	    }); 
+	}
+</script> 
+<!-- Tab Switching -->
 <script type="text/javascript"	src='resources/js/slead-common.js?staticTime=${staticTime}'></script>

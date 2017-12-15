@@ -1,10 +1,8 @@
-<!-- this is for mask -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<script src="resources/js/jquery.twbsPagination.js"></script>
-<script src="resources/js/tableHeadFixer.js"></script>
 
+<script src="resources/js/jquery.simplePagination.js"></script>
 
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
@@ -42,12 +40,12 @@
   </div>
   <span class="pull-left mt10">entries</span>
   </label> 
-  <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
+  <span class="pull-left mt10 ml" id="pageMsg"></span>
   </div>
   </div>
   <div id="paginationholder" class="col-md-6 pagiPad">
-  <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
-  </div>
+		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
+	</div>
 </div>
 
 
@@ -59,7 +57,7 @@ $(document).ready(function() {
 
  <script>
       function getTableDataByPageSize(){
-    	  $('#pagination-demo').twbsPagination('destroy'); 
+    	//  $('#pagination-demo').twbsPagination('destroy'); 
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
@@ -99,16 +97,15 @@ $(document).ready(function() {
 			  endingRecord = totalRows;
 		  }
 		  var options = {
-		              currentPage : '${timesheetReportsDTO.pageNo}',
-		              totalPages: pageCount,
-		              prev:'',
-		              next:'',
-		              initiateStartPageClick: false,
-		              onPageClick: function (event, page) {
-		              getTableData(""+page+"");
-		              }
+			      currentPage:pageNo,
+			      items: totalRows,
+	              itemsOnPage: pageSize,
+	              ellipsePageSet :false,
+	               onPageClick: function (pageNumber, event) {
+	                 getTableData(""+pageNumber+"");
+	              }
 	      };
-	      $("#pagination-demo").twbsPagination(options);
+	      $("#pagination-demo").pagination(options);
 	      var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
 	  }else{
 		  $("#fixTable").empty();

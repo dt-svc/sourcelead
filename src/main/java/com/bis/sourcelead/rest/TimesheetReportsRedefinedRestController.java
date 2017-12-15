@@ -247,6 +247,8 @@ public class TimesheetReportsRedefinedRestController {
 			 }
 		}
         for (ProjectMembers projectMember : projectMembers)	{	
+        	if(projectMember == null)
+        		continue;
         TimeReportsSubmissionDetailsDTO details = new TimeReportsSubmissionDetailsDTO();
 		/* ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());*/
 		  User consultantUser = null;
@@ -260,10 +262,10 @@ public class TimesheetReportsRedefinedRestController {
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
-             if(projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
+             if(null != projectMember && projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
             	  details.setEmployeeId(projectMember.getEmployee().getEmployeeId());
              }
-		     if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
+		     if(null != projectMember && null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 		    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 		    	 details.setProjectName(projectMember.getProjects().getProjectName());
 		    	 details.setVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
@@ -275,7 +277,7 @@ public class TimesheetReportsRedefinedRestController {
 		     }else{
 		    	 details.setFrequrncy("--"); 
 		     }
-		     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
+		     if(projectMember.getEmployee() != null && null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
 		    	 StringBuilder rate = new StringBuilder();
 		    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
 		    		 details.setRate(rate.append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString()); 

@@ -63,6 +63,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	private boolean attachmentRequired;
 	
 	private String responseStatus;
+	
+	private String reopenUserId;
 
 	public Long getId() {
 		return id;
@@ -270,6 +272,14 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setResponseStatus(String responseStatus) {
 		this.responseStatus = responseStatus;
+	}
+
+	public String getReopenUserId() {
+		return reopenUserId;
+	}
+
+	public void setReopenUserId(String reopenUserId) {
+		this.reopenUserId = reopenUserId;
 	}
 
 

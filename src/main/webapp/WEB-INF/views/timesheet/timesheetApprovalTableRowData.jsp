@@ -28,9 +28,8 @@
 			</c:if>
 	</c:forEach>	
 	<td>
-	<input type="hidden" name="totalHours" id="totalHours" value="${timesheetSubmission.totalHours}">
 		<div class="sm">
-			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
 		</div>
 	</td>
 	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
@@ -56,7 +55,7 @@
 	<td>
 		<div class="sm text-center">
 			<h3 class="reje_color">${timesheetSubmission.submissionStatus}</h3>
-			<i class="glyphicon glyphicon-comment" id="928"	onclick="rejectedMessage();">
+			<i class="glyphicon glyphicon-comment" id="${timesheetSubmission.projectMemberId}"	onclick="rejectedMessage();">
 				<div class="app_error_mes errorOverightDiv"	id="rejectedMessage${timesheetSubmission.projectMemberId}">${timesheetSubmission.rejectedReason}</div>
 			</i> 
 			<b class="Rname" title="${timesheetSubmission.actionPerformedBy}">By : ${timesheetSubmission.actionPerformedBy}</b>

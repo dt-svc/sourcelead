@@ -2229,6 +2229,7 @@ margin-bottom:15px !important;
 .timeNewSe.timeNewSe_a {
     width:240px;
 }
+
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
 }
@@ -6596,6 +6597,12 @@ text-shadow: 0 1px 0 #fff;
 	position: fixed; width: 600px; background-color: #fff; top: 5%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
-
-
-
+.timeNewStatus {
+	float: right; width: 240px;
+}
+.timeNewStatus b {
+	width: 45%;
+}
+.timesheetApproved-status {
+    float: right; width: 320px !important;
+}
