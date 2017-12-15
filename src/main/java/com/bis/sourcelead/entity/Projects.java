@@ -217,6 +217,13 @@ public class Projects implements Serializable{
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
+    @NotFound(action=NotFoundAction.IGNORE)
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectDocumentFolder> ProjectDocumentFolder;
+    
+    
     @Column(name="CURRENCY")
     private String currency;
     
@@ -333,6 +340,7 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
+    
     @Column(name = "GENERATED_ID")
 	private String generatedId;
     
@@ -403,7 +411,8 @@ public class Projects implements Serializable{
 		this.timesheetFrequency = timesheetFrequency;
 	}
 	
-	
+
+
 	@JsonIgnore
 	public User getSuperiorUser() {
 		return superiorUser;
@@ -999,5 +1008,13 @@ public class Projects implements Serializable{
 
 	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
 		this.projectbudgetCurrency = projectbudgetCurrency;
+	}
+
+	public Set<ProjectDocumentFolder> getProjectDocumentFolder() {
+		return ProjectDocumentFolder;
+	}
+
+	public void setProjectDocumentFolder(Set<ProjectDocumentFolder> projectDocumentFolder) {
+		ProjectDocumentFolder = projectDocumentFolder;
 	}
 }

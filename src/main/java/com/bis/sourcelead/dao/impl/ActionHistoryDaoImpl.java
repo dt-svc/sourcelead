@@ -65,11 +65,31 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	
 	@Override
 	@Transactional
+	public List<ActionHistory> getAllActionHistoryListByActionUUID(String actionUUID, Long orgLocation) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId where ac.userLoginLogoutSessionId.actionUUID = :actionUUID and ac.orgLocations.id =:orgLocation";
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).setLong("orgLocation", orgLocation).setCacheable(true).list();
+		return actionHistoryList;
+	}
+	
+	@Override
+	@Transactional
 	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId left join fetch ac.orgLocations where ac.userLoginLogoutSessionId.id = :userSessionId GROUP BY ac.orgLocations ";
 		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).setCacheable(true).list();
+		return actionHistoryList;
+	}
+	
+	@Override
+	@Transactional
+	public List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId left join fetch ac.orgLocations where ac.userLoginLogoutSessionId.actionUUID = :actionUUID GROUP BY ac.orgLocations ";
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).setCacheable(true).list();
 		return actionHistoryList;
 	}
 

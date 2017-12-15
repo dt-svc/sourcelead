@@ -11,7 +11,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="resources/js/formvalidator.js"></script>
+ <script src="/resources/js/formvalidator.js"></script>
  
  <style type="text/css">
  .fa.pull-right {

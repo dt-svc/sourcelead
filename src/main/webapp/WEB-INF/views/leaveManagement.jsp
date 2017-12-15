@@ -26,7 +26,7 @@ $(document).ready(function(){
   <div class="clearfix mb">
     <div class="col-md-6">
       <div class="dashboard-widget">
-          <h4 class="pull-left"><a href="<c:url value='/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
+          <h4 class="pull-left"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
         <div class="clearfix">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
@@ -83,19 +83,19 @@ $(document).ready(function(){
                 <ul class="list-unstyled  clearfix hidden">
                     <%-- <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
-                        <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
+                        <a href="<c:url value='${appPath}/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
+                        <a href="<c:url value='${appPath}/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
                     </li> --%>
                       <!-- <li class="clearfix">
                         <label class="pull-left">Balance Leaves</label>
@@ -163,19 +163,19 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -223,7 +223,7 @@ function getEmployeeTotalCounts(){
 // 	      				$('#empReq').removeAttr("href");
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/sourcelead/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
@@ -232,7 +232,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empApp').removeAttr("href");
     	   				$('#empApp').html("Approved");
     	   			   }else{
-    	   				$('#empApp').html("<a href='/sourcelead/employeeApprovedLeaves'>Approved</a>"); 
+    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
@@ -241,7 +241,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empRej').removeAttr("href");
     	   				$('#empRej').html("Rejected");
     	   			   }else{
-    	   				$('#empRej').html("<a href='/sourcelead/employeeRejectedLeaves'>Rejected</a>");
+    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
@@ -250,7 +250,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empCanc').removeAttr("href");
     				    $('#empCanc').html("Cancelled");
     	   			   }else{
-    	   				$('#empCanc').html("<a href='/sourcelead/employeeCancelLeaves'>Cancelled</a>");
+    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
@@ -326,7 +326,7 @@ function getSelfTotalCounts(){
 //    				$('#selfapp').removeAttr("href");
    				$("#selfpend").html("Pending"); 
    			   }else{
-   				$("#selfpend").html("<a href='/sourcelead/pendingLeaves'>Pending</a>"); 
+   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
@@ -335,7 +335,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfapp").html("Approved"); 
    			   }else{
-   				$("#selfapp").html("<a href='/sourcelead/approvedLeaves'>Approved</a>");
+   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
@@ -344,7 +344,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfrej").html("Rejected"); 
    			   }else{
-   				$("#selfrej").html("<a href='/sourcelead/rejectedLeaves'>Rejected</a>");
+   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
@@ -354,7 +354,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/sourcelead/rejectedLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/app/rejectedLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

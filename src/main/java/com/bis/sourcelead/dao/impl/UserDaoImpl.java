@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -1180,5 +1181,20 @@ public class UserDaoImpl implements UserDao {
 	       roleAccessUserList.addAll(userList);
 	       
 	       return roleAccessUserList;
+	}
+
+	@Override
+	@Transactional
+	public User getUserByVerficationUUID(String token)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> user = new ArrayList<User>();
+		user = session.createQuery("from User user where user.verificationUUID = :uuid").setString("uuid", token).setCacheable(true).list();
+		if (user.size() > 0) {
+			return user.get(0);
+		}
+		else {
+			return null;
+		}
 	}
 }

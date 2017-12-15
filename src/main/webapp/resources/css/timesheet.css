@@ -4,10 +4,9 @@ body {
     }
 :focus, a:focus {
     outline:none;
-    }      
+    }    
 a { cursor:pointer;}
   
-
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative;
     }
@@ -1259,7 +1258,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
        
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#34c244; z-index:10000; padding:3px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
+    background-color:#34c244; z-index:10000; padding:3px 15px; width:400px; border-radius:4px; font-size:15px; font-weight:500;
     color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); word-wrap: break-word;
     }
 .success_pop i {
@@ -5583,7 +5582,6 @@ border-left:none !important; border-right:none !important; vertical-align: middl
 .timesheetRepTab.timesheetRep-table tr td {
 padding:2px 10px 5px 10px;
 }
-
 .clossIconPosi {
   right: -17px; top: -15px;
 }
@@ -5593,7 +5591,6 @@ padding:2px 10px 5px 10px;
 .dbaCheck {
 	height: 34px; background-color: #f1f1f1; padding: 0px; text-align: center; line-height: 34px;
 }
-
 .welSiO.onboard-logoutbtn {
 	position: absolute; top: 0; right: 0;
 }
@@ -5603,16 +5600,23 @@ padding:2px 10px 5px 10px;
 .dbaCheck.dbaCheck-cs {
 	background-color: #337ab7; border-radius: 0 5px 5px 0;
 }
-
 .companyOnboardStateTaxTable{
 max-height: inherit !important; overflow: inherit !important;
 }
-
 .timeNewStatus {
 float: right; width: 240px;
 }
 .timeNewStatus b {
 width: 45%;
+}
+.cusFieldHeadFixed {
+position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box; padding: 15px 20px 15px 210px !important;
+}
+.cusFieldHeadFixedAct {
+padding: 15px 20px 15px 70px !important;
+}
+.immigraTabsWrapFixed {
+margin: 50px 0px 0px 0px !important;
 }
 
 /*    Responsive CSS    */
@@ -6027,7 +6031,10 @@ width: 100% !important;
 	color: #DB5151;
 }
 .popupMid {
-	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed;
+	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed; min-height: 150px; overflow-y: auto;
+}
+.popupMidOver {
+	overflow: inherit;
 }
 .popupMidPad {
 	padding: 5px 0px 0px 0px;
@@ -6068,10 +6075,10 @@ width: 100% !important;
     margin: 0px; padding: 0px;
 }
 .comLogHead ul li {
-    float:left; list-style-type: none; text-align: center; width: 16.666%; z-index: 100; cursor: default;	
-    display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
-    padding:10px 10px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
-	border-right: 1px solid #fff;
+	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
+	display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
+	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
+	border-right: 1px solid #fff;	
 }
 .comLogHead ul li.hoverLi {
     background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
@@ -6332,7 +6339,7 @@ text-shadow: 0 1px 0 #fff;
 }
 .immigraTabsHead a {
 	display: inline-block; margin: 0px 0px 0px 15px; color: #454545; font-size: 14px; font-weight: 500;
-	padding: 0px 5px;
+	padding: 0px 5px; position: relative;
 }
 .immigraTabsHead a i {
 	display: inline-block; padding: 0px 5px 0px 0px;
@@ -6612,7 +6619,13 @@ text-shadow: 0 1px 0 #fff;
 	position: absolute; left: 25px; top: -10px; opacity: 0; visibility: hidden; width: auto;
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
 }
-.cusFielTable table tr:hover .cusFieldView{
+.cusViewImg {
+	position: relative;
+}
+.cusViewImg i {
+	cursor: pointer;
+}
+.cusViewImg:hover .cusFieldView{
 	opacity: 1; visibility: visible;
 }
 .cusFieldView span {
@@ -6679,4 +6692,54 @@ text-shadow: 0 1px 0 #fff;
 }
 .noRecordFound p {
 	margin: 0px 0px; padding: 8px 0px 0px 0px; font-size: 16px; font-weight: 400; color: #999;
+}
+.immMenuClick {
+}
+.immMenuClick i {
+	padding: 0px 0px 0px 6px !important;
+}
+.immiSubMenu {
+	position: absolute;  right: -15px; top: 29px; display: none;
+}
+.immiSubMenu ul {
+	margin: 0px 0px; padding: 5px 0px; position: relative; text-align: left;
+	background-color: #fff; box-shadow: 0px 0px 6px rgba(0,0,0,0.2); width: 160px;
+}
+.immiSubMenu ul:after {
+	bottom: 100%; right: 18px; border: solid transparent; content: " "; height: 0; width: 0;
+	position: absolute; border-color: rgba(136, 183, 213, 0); border-bottom-color: #999; border-width: 8px; margin-left: -8px;
+}
+.immiSubMenu ul li {
+	list-style-type: none; padding: 8px 12px; cursor: pointer; border-top: 1px solid #f1f1f1; font-weight: 400;
+}
+.immiSubMenu ul li:first-child {
+	border:none;
+}
+.immiSubMenu ul li:hover {
+	background-color:#f1f1f1;
+}
+.immiSubMenu ul li i {
+	padding: 0px 5px 0px 0px !important;
+}
+
+
+
+
+.immiTemp {
+	padding: 0px 0px 10px 0px; min-height: 200px;
+}
+.inlineBlock {
+	display: inline-block;
+}
+
+.offOrgCompanyOnboard {
+	position: absolute;
+    right: 50px;
+    top: 2px;
+}
+.offOrgCompanyOnboard a {
+	font-size: 25px;
+}
+.offOrgCompanyOnboard .spoclinks-area ul li {
+	width: 100%; float: none; text-align: left;
 }

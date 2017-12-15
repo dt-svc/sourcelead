@@ -322,5 +322,5 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 			return null;
 		}
 	}
-	
+
 }

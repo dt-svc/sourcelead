@@ -180,6 +180,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserByUserId(Long userId) throws Exception {
 		return userRoleDao.getUserByUserId(userId);
 	}
+	
 	@Override
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
 		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
@@ -589,6 +590,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllActiveUsersListByOrgLocationId(orgLocationId);
 	}
+	
+	@Override
+	public UserRole getUserRoleById(Long userRoleId) throws Exception {
+		return userRoleDao.getUserRoleById(userRoleId);
+	}
 
 	@Override
 	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId) {
@@ -605,6 +611,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email, String userType) throws Exception
 	{
 		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
+	}
+
+	@Override
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+		return userRoleDao.getUserRoleWithoutAdminsByUserIdAndLocationId(userId, locationId);
+	}
+	
+	@Override
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		return userRoleDao.getUserRoleByVerficationUUID(uuid);
 	}
 
 }
