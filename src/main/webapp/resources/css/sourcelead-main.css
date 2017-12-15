@@ -1304,7 +1304,7 @@ padding: 0 30px 5px; text-align: center; border-radius: 3px; margin-bottom: 20px
 	color: #FF7043; text-shadow: 1px 1px 1px #333;
 }
 .move-btn .fa-home {
-	padding: 6px 10px;
+	padding: 7px 10px;
 }
 .move-btn .fa-angle-double-right {
 	-webkit-transition: all 0.3s ease-in-out;
@@ -7452,11 +7452,11 @@ min-width: 60px;
 .hasDatepicker.form-control[readonly], #uploadFile.form-control {
 background-color: #fff;
 }
-/*.clearUpload:after {
+.clearUpload:after {
 padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:red;z-index: 999;cursor: pointer; font-size: 20px;
 background-color: #fff;
-}*/
+}
 .clearUploads:after {
 padding: 2px; bottom: 50%; right:-10px; position: absolute; content:"\f057";
 font-family:fontAwesome; color:#D32F2F;z-index: 999;cursor: pointer; font-size: 20px;
@@ -7520,8 +7520,8 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal {
-    display: none;
+.modal.addipPopup-modal, .modal.folderPermission {
+	display: none;
 }
 .location-alert {
     position:fixed; top:5%; left:35%; z-index: 9999; box-shadow: 1px 1px 2px #b88; display: none;
@@ -7546,6 +7546,23 @@ color:#398ddd !important;
 .modal.deleteModal  {
 	display: none;
 }
+.chosentext-left .chosen-container {
+text-align: left;
+}
+
+.viewUserDiv .project_details_cta {
+float: left; width:50%;
+}
+.project_details.projectDetails_new {
+min-height:150px; padding:20px;
+}
+.user_details_cta.user_detailsCta-new {
+width:75%; padding-left:20px !important; min-height:150px;
+}
+.errorInptgroup.errorInptgroup-bottom p.jquery_form_error_message {
+bottom: 0px !important;
+}
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

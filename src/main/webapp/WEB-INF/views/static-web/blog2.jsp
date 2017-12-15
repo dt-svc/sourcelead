@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Loyal Relationships with Recruiters</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>20 FEB 2017 at 12:05 AM</span></h3>
-            <div class="blogImg"><img src="resources/css/static-web/images/bl5.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/css/static-web/images/bl5.jpg" alt=""/></div>
 			<b>What is Loyalty?</b>
             <p>Measure of commitment based on obligation or, in consumer preference,degree of satisfaction.</p>
             <p>When you are searching for a job change, previous relationships with recruiter plays critical role. When engaging recruiters in your job search, realize that they are leading to successful relationship.Recruiters don’t work for the candidate; recruiters represent the employer. The best way to get connected to a recruiter is when they reach out to you.</p>

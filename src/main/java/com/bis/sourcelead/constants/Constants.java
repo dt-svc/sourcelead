@@ -93,6 +93,14 @@ public class Constants {
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
+	
+	
+	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
+	public static final String BANK_CHEQUE = "Bank Cheque";
+	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
+	public static final String ANNUAL_REPORT_BUSINESS_LICENSE = "Annual Report Business License";
+	public static final String W9_W8_BEN_E = "W-9,W-8 Ben-E";
+	
 	public static final String ONBOARDING_FORMS = "Forms";
 	public static final String ONBOARDING_POLICIES = "Policies";
 	public static final String ONBOARDING_CONTRACTS = "Contracts";
@@ -461,6 +469,7 @@ public class Constants {
 	public static final String TASKSEVERITY = "TaskSeverity";
 	public static final String TASKPRIORITY = "TaskPriority";
 	public static final String TASKSTATUS = "TaskStatus";
+	public static final String COMPANY_ONBOARD_BUSINESS_TYPE = "Company Onboard Business type";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	public static final String EXPERIENCELEVEL = "Experience Level";
@@ -574,6 +583,8 @@ public class Constants {
 	public static final String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 	public static final String ELK_CAMPAIGN_INDEX = "campaigns";
 	public static final String Campaigns = "Campaigns";
+	public static final String CampaignSender = "CampaignSender";
+	public static final String CampaignRecipient = "CampaignRecipient";
 	public static final String ELK_CAMPAIGN_TYPE = "campaign";
 	public static final String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
 	public static final String CANDIDATE = "Candidate";
