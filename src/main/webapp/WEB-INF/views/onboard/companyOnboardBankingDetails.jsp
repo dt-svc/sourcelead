@@ -22,10 +22,86 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  </script>
+
+ <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','/resources/images/office-image.jpg');
+	}
+</script>
+
+<script type="text/javascript">
+$(function(){
+  $('.crsl-items').carousel({
+    visible: 3,
+    itemMinWidth: 180,
+    itemEqualHeight: 370,
+    itemMargin: 9,
+  });
+  
+  $("a[href=#]").on('click', function(e) {
+    e.preventDefault();
+  });
+  
+});
+</script>
+
+<style type="text/css">
+.selectChosen .chosen-container {
+width: 100% !important;
+}
+.icon1 {
+right: 15px;
+}
+</style>
+
 <div class="wraper"> 
 	<section class="comLogBg">
 			<section class="comLogInn">
 				<div class="comLogHead">
+				
+				<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+		<div class="offOrg offOrgCompanyOnboard ">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left mt5">
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	            </div>
+          </c:if>
+          
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
@@ -152,6 +228,18 @@ $('body').on('submit', '#bankingDetails_form', function(e){
 		$("#bankingDetails_form").validateOnBlur(false, validationSettings);
 	});
   </script>
+  
+<script>
+  $(document).ready(function(){
+  	  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  });
+</script>
 
 <script>
 		function logoutFormSubmit() {
