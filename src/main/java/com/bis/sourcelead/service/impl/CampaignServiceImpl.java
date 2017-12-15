@@ -391,6 +391,13 @@ public class CampaignServiceImpl implements CampaignService{
 				Map<String,Integer> map = campaignDao.getCampaignListName(campaignStats.getCampaignId());
 				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
 				campaignStatsListDTO.setId(campaignStats.getId());
+				for (Map.Entry<String, Integer> entry : map.entrySet()) {
+					campaignStatsListDTO.setListName(entry.getKey());
+					campaignStatsListDTO.setNumberOfRecipients(entry.getValue());
+					String key = entry.getKey();
+				    Object value = entry.getValue();
+				    // you code here
+				}
 				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
 				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
 				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
