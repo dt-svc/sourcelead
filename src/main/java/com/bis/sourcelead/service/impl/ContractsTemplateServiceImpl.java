@@ -2983,11 +2983,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					 globalVarsMap.put("receiverUser",receiver.getFirstName());
 				 }
 		
-		/* if(contracts.getapplicant() != null){
-			 globalVarsMap.put("Applicant", contracts.getapplicant());
+		 if(contracts.getCandidate() != null){
+			 if(contracts.getCandidate().getLastName() != null && !"".equalsIgnoreCase(contracts.getCandidate().getLastName())) {
+				 StringBuilder applicant = new StringBuilder();
+				 globalVarsMap.put("Applicant", applicant.append(contracts.getCandidate().getFirstName()).append(" ").append(contracts.getCandidate().getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("Applicant","--");
-			 }*/
+				 globalVarsMap.put("Applicant",contracts.getCandidate().getFirstName());
+			}
+		 }
 		 
 		 if(contracts.getContractType() != null){
 			 globalVarsMap.put("contractType", contracts.getContractType());
@@ -3018,9 +3021,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
+		 StringBuilder signatureBuild = new StringBuilder();
+		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/docusign?contractUUID=").append(contracts.getContractUUID()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Sign Here</div></a>").toString());
 		 
+		 EmailScenario  emailScenario = null;
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 if(Constants.Client_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType())) {
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_SOW_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 }else {
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+		 }
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);

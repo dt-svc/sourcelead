@@ -1,5 +1,3 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -8,6 +6,18 @@
             <link href="${cssmy}" rel="stylesheet">
              <script src="/resources/js/jquery-1.11.3.min.js"></script>
              <script src="/resources/js/signer.js" type="text/javascript"></script>
+             
+             
+<c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+</c:if>
+
+ <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+ <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+ <script src="/resources/js/bootstrap.min.js"></script> 
+ </c:if>
+
 <script>
 	$(document).ready(function() {
 		Signer.uploadDoc();
@@ -71,7 +81,9 @@ width: 125px !important; height: 35px; line-height: 35px;
     <div class="pull-left">
       <h2>Create Signature</h2>
     </div>
+    <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts List</a>&raquo;Create Signature</div>
+  </c:if>
   </section>
 
            
@@ -155,7 +167,7 @@ width: 125px !important; height: 35px; line-height: 35px;
                             </div>
                         </div>
                         <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
-                        <input id="txtEmail" value="${contract.contactUser.email}" type="hidden">
+                        <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>
                     <div class="sign-container">
@@ -181,6 +193,7 @@ width: 125px !important; height: 35px; line-height: 35px;
                 </div>
             </div>
             </section>
-<!-- Footer Area -->
-<jsp:include page="../masterFooter.jsp" />
-<!-- Footer Area -->
+            
+ <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+ <jsp:include page="../masterFooter.jsp" />
+ </c:if>
