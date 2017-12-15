@@ -43,7 +43,7 @@
 						</div>
 						
 						<div class="form-group clearfix">
-						<label class="col-md-4 noPad">Bank Cheque<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-4 noPad">Bank Void Cheque<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-8 padding_right">
 						<c:if test="${!empty bankChequeDoc.fileUrl}">	
 								<div class="clearfix">

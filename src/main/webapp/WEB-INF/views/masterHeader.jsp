@@ -799,7 +799,7 @@ function preventTabkey(e){
 // 	    	   hasLocationAccess = result;
 	    	   
 	    	   if(result == true){
-	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y') || ('${SourceLeadWeb_isAuthenticated}' == 'N')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
@@ -1519,7 +1519,7 @@ function universalSearch(){
 		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
 	 else if(searchType == "Requirement") {
-		 window.location.href = sourceleadUrl + "/requirementList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;

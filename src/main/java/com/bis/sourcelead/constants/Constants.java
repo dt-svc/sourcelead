@@ -163,6 +163,8 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
 	
+	public static final String MAIL_SEND_PROJECT_DOCUMENTS = "SendProjectDocuments";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -744,7 +746,8 @@ public class Constants {
 	
 	public static final int WORKING_HOURS = 8;
 	
-	
+	public static final String DOCUMENT_READ_ACCESS = "0";
+	public static final String DOCUMENT_WRITE_ACCESS = "1";
 	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
