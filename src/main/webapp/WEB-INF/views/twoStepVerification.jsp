@@ -64,6 +64,9 @@ function goToLocations(){
     $("#enrolledLocDiv").attr("style","display : block");
 	$("#twoStepAuthDiv").removeAttr("style");
     $("#twoStepAuthDiv").attr("style","display : none");
-    $(".signWrap").removeClass("orgOutWrap");
+    $("#loading").removeAttr("style");
+    $(".signWrap").addClass("orgOutWrap");
+    $("div.raBtnActive").children().removeAttr("checked");
+ 	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');
 }
 </script>

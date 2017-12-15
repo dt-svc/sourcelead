@@ -18,8 +18,6 @@ public interface CampaignDao {
 
 	CreateSender createSender(CreateSender createSender)throws Exception;
 
-	boolean validateNickName(String nickName, OrgLocations orgLocation, String senderId) throws Exception;
-
 	List<CreateSender> getSendersListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 
 	CreateSender findSenderIdentityById(Long senderId) throws Exception;
@@ -51,14 +49,14 @@ public interface CampaignDao {
 	ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception;
 
 	CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception;
+	
+	CreateSender validateFromMail(String email, String toWhom,String id) throws Exception;
 
-	Campaign validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType) throws Exception;
-
+	boolean validateNickName(String nickName, OrgLocations orgLocation,String senderIdentity) throws Exception;
+	
+	Campaign validateCampaignSubject(String subjectName, Long orgLocationId,int campaignType) throws Exception;
+	
 	Map<String,Integer> getCampaignListName(String campaignId) throws Exception;
-
-	CreateSender validateFromMail(String email, String toWhom, String id) throws Exception;
-
-
 
 
 
