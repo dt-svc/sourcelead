@@ -235,7 +235,7 @@ function submitBtn(projectId){
 			result = result + '                 <div class="media">';
 			result = result + '                     <div class="media-left">';
 			result = result + '                     <a href="#">';
-			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png">';
+			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/resources/images/userprofile-img.png">';
 			result = result + '                     </a>';
 			result = result + '                     </div>';
 			result = result + '                     <div class="media-body">';
@@ -262,7 +262,7 @@ function submitBtn(projectId){
 			result = result + '	    <div class="OverdueWorkItems" style="height: 225px; width: 100%;">';
 			result = result + '	      <div class="column-data clearfix mt scroll-pane">';
 			result = result + '	        <div class="media">';
-			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png"> </a> </div>';
+			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/esources/images/userprofile-img.png"> </a> </div>';
 			result = result + '	          <div class="media-body">';
 			result = result + '	            <div class="taskminators-txt">';
 			result = result + '	              <p title="Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.  "> Cras sit amet nibh libero. </p>';
