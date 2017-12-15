@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <link rel="manifest" href="/manifest.json">
 <title>::SourceLead::</title>
 <link
 	href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
-	href="resources/css/bootstrap.min.css"
+	href="/resources/css/bootstrap.min.css"
 	rel="stylesheet">
 </head>
 <style>
@@ -277,7 +277,7 @@ padding: 2px
 	</div>
 </body>
 
-<script src="resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';

@@ -12,7 +12,7 @@ SourceLead provides decades of experience in building and delivering workforce s
 <section class="backBg">  
 <div class="ats1">
 	<div class="atsInnWrap">
-    	<div class="atsInnRight"><img src="resources/css/static-web/images/ats1.png" alt=""/></div>
+    	<div class="atsInnRight"><img src="/resources/css/static-web/images/ats1.png" alt=""/></div>
         <div class="atsInnLeft">
             <p>SourceLead is a Software as a Service talent acquisition platform that helps you attract, source, onboard and manage talent. Our platform provides the business insight needed to track the processes with in talent ecosystem.
             	<span>Services<br>

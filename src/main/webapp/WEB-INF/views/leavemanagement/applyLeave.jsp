@@ -458,9 +458,10 @@ function validateMaxLeave(data){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data == true){
+				$('.jquery_form_error_message').remove();
 				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 			}else{
-				$('.jquery_form_error_message cOranges').hide();
+				$('.jquery_form_error_message').hide();
 			}
 		}); 
 	}
