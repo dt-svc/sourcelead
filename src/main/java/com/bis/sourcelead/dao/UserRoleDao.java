@@ -48,6 +48,9 @@ public interface UserRoleDao {
 	 * @return
 	 * @throws Exception
 	 */
+	
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
 	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
 	public boolean isUserActive(Long userId) throws Exception;
