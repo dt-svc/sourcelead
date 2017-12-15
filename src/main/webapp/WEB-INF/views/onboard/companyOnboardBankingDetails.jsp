@@ -149,7 +149,7 @@ $('body').on('submit', '#bankingDetails_form', function(e){
 
 	$('body').on('blur', '#bankingDetails_form', function() {
 		$("#bankingDetails_form").showHelpOnFocus();
-		$("#fedralAndTax_form").validateOnBlur(false, validationSettings);
+		$("#bankingDetails_form").validateOnBlur(false, validationSettings);
 	});
   </script>
 
