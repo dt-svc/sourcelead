@@ -33,7 +33,7 @@
 
 
 <div class="signin_wrap SignSlide">
-	<img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
+	<a href="/index.html"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
@@ -83,20 +83,20 @@
         <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
-		<div class="for-pas-text"><a onclick="forgotPassword();"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
+		<div class="for-pas-text"><strong id="FgPas" onclick="forgotPassword();">Forgot Password</strong><i class="fa fa-question"></i></div>
 <!-- 		<input type="button" value="Login" class="sign_btn" id="OrgVi" /> -->
 		<input type="submit" value="Submit" class="sign_btn" />
 		
 		<c:if test="${!empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></div>
         </c:if>
         
         <c:if test="${!empty requirementUUID && !empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></div>
         </c:if>
         
         <c:if test="${empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></div>
         </c:if>
 		
 		</form>

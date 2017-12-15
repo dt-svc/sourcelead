@@ -35,7 +35,7 @@
 									<label class="input-group-btn"> 
 									<b class="btn btn-primary" onchange="getBusinessLicense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBusinessLicenseBtn" class="upload"> </b>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload Resume ..." field-name="Business License"
+									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload File ..." field-name="Business License"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -43,7 +43,7 @@
 						</div>
 						
 						<div class="form-group clearfix">
-						<label class="col-md-4 noPad">Bank Cheque<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-4 noPad">Bank Void Cheque<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-8 padding_right">
 						<c:if test="${!empty bankChequeDoc.fileUrl}">	
 								<div class="clearfix">
@@ -64,7 +64,7 @@
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getBankCheque();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBankChequeBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload Resume ..." field-name="Bank Cheque"
+									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload File ..." field-name="Bank Cheque"
 										data-validation="required validatedoc" >
 								</div>
 						</c:if>
@@ -95,7 +95,7 @@
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload Resume ..." field-name="Registration or Incorporation of recording"
+									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload File ..." field-name="Registration or Incorporation of recording"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -130,7 +130,7 @@
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getAnnulBusinessLincense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadAnnualBusinessLicenseBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload Resume ..." field-name="Annual Report Business License"
+									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload File ..." field-name="Annual Report Business License"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -161,7 +161,7 @@
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getW9Doc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadW9Btn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload Resume ..." field-name="W-9,W-8 Ben-E"
+									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload File ..." field-name="W-9,W-8 Ben-E"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>	
