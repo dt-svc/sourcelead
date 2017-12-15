@@ -63,6 +63,9 @@ public class OrglocationFormFields implements Serializable{
 	@Column(name = "IS_FIELD_REQUIRED")
 	private int isFieldRequired;
 	
+	@Column(name = "PLACEHOLDER")
+	private String placeHolder;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SL_DEPENDANT_FIELD", nullable=false )        
@@ -71,7 +74,7 @@ public class OrglocationFormFields implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CUSTOM_DEPENDANT_FIELD", nullable=false )        
-    private SourceleadFormFields customDependantField;
+    private OrglocationFormFields customDependantField;
 	
 	@Column(name = "MIN_LENGTH")
 	private int minLength;
@@ -198,11 +201,11 @@ public class OrglocationFormFields implements Serializable{
 		this.sourceLeadDependantField = sourceLeadDependantField;
 	}
 
-	public SourceleadFormFields getCustomDependantField() {
+	public OrglocationFormFields getCustomDependantField() {
 		return customDependantField;
 	}
 
-	public void setCustomDependantField(SourceleadFormFields customDependantField) {
+	public void setCustomDependantField(OrglocationFormFields customDependantField) {
 		this.customDependantField = customDependantField;
 	}
 
@@ -292,6 +295,14 @@ public class OrglocationFormFields implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getPlaceHolder() {
+		return placeHolder;
+	}
+
+	public void setPlaceHolder(String placeHolder) {
+		this.placeHolder = placeHolder;
 	}
 	
 	

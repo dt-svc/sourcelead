@@ -22,7 +22,7 @@
 											</div>
 										</td>
 										<td>
-											<div><a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>"> ${submission.clientName} </a></div>
+											<div><a href="<c:url value="/clientDashboard?orgRelationUUID=${submission.orgRelationUUID}"/>"> ${submission.clientName} </a></div>
 										</td>
 										<td>
 											<div>${submission.dashboardInvoiceFrequency}</div>

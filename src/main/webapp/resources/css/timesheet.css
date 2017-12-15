@@ -6029,6 +6029,7 @@ width: 100% !important;
 }
 .popupMid {
 	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed;
+	min-height: 150px; max-height: 450px;  overflow-y: auto;
 }
 .popupMidPad {
 	padding: 5px 0px 0px 0px;
@@ -6596,6 +6597,16 @@ text-shadow: 0 1px 0 #fff;
 	position: fixed; width: 600px; background-color: #fff; top: 5%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
+.cusFieldHeadFixed {
+	position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box; padding: 15px 20px 15px 210px !important;
+}
+.cusFieldHeadFixedAct {
+	padding: 15px 20px 15px 70px !important;
+}
+.immigraTabsWrapFixed {
+	margin: 50px 0px 0px 0px !important;
+}
+
 
 
 
