@@ -7513,6 +7513,9 @@ min-height: 150px;
 .modal.addipPopup-modal {
     display: none;
 }
+.mailbox-table .table tr td {
+	text-align: left !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

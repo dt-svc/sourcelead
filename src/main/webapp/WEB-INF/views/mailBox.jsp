@@ -16,10 +16,11 @@
 		});
 	</script>
 
-
+ <div id="loading"></div>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
+       <div id="loading"></div>
         <h2>Mailbox</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
@@ -71,7 +72,7 @@
 					</c:if>
 			  </div> 
 
-		<div class="mail-box">
+		<div class="mail-box" id="loading">
             <div class="box-body no-padding newMailSet">
               <ul class="nav nav-pills nav-stacked">
               <c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
@@ -86,10 +87,6 @@
              </c:if>
              
               </c:forEach>
-               <!--  <li class="aa"><a href="#" class="Active"><i class="fa fa-google cGmail"></i> vannam@gmail.com <span></span></a></li>
-                <li class="aa"><a href="#"><i class="fa fa-yahoo cYahoo"></i> mahesh@yahoo.com <span></span></a></li>
-                <li class="aa"><a href="#" class="Active"><i class="fa fa-envelope-o cOut"></i> snigi@outlook.com <span></span></a></li>
-                <li id="one"><a href="#"><i class="fa fa-cog"></i> Settings</a></li> -->
               </ul>
             </div>
           </div>
@@ -124,6 +121,7 @@
 			<div class="col-md-9" id="inbox">
 			<div id="mailLoading"></div>
 			 <div class="mail-box mail-content">
+			
 			 <div class="mail-box-header">
               <h3 class="box-title" id="mailboxLabel"></h3>
               
@@ -158,7 +156,7 @@
 			  <!-- /.box-tools -->
 			
 	<!-- mail box table -->
-			<div class="mailbox-messages">
+			<div class="mailbox-messages datatable_filter mt25 mailbox-table">
                  <div id="mailBoxList"></div>
               </div>
 	<!-- mail box table ends -->   
@@ -167,13 +165,16 @@
 			</div>
 			
 			<div class="col-md-9" id="details">
-			 <div class="mail-box mail-content">
+			 <div class="mail-box mail-content clearfix">
 			 <div id="mailContentLoading"></div>
 			 <div class="mail-widget">
               <div id="mailDetails"></div>
               </div>
               </div>
               </div>
+              
+             <div id="body-details" style="display: none;">
+             </div>
               
 
 		<!-- Mail view area -->
@@ -699,14 +700,14 @@ function deleteReadMail(uuid,nextMailUUID,type){
 function activeEmail(id){
 	$("#activeClass"+id).removeClass("Active");
 	$("#activeClass"+id).addClass("Active");
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
 		success : function(data) {
-			alert("hello")
+			if(data != null && data != 'undefined' && data != "" && data != '[]'){
 			 var result = "";
-			// alert(data.length)
 			 for(var i=0; i<data.length; i++){
 				 var report = data[i];
 				 result = result + "<div>";
@@ -715,87 +716,120 @@ function activeEmail(id){
 				 result = result + "</ul>";
 				 result = result + "</div>";
 			 }
+			 $("#loading").removeAttr("style"); 
 			 $("#dynamicEmailFolder").empty();
 			 $("#dynamicEmailFolder").append(result);
-			/* if(data==true){
-			location.replace(sourceleadUrl+"/mailBox/mails");
 			}else{
 				location.replace(sourceleadUrl+"/mailBox/mails");
 				alert("Configured credentials were wrong,Please configure with right credentials")
-			} */
+			}
 		},
 	}); 
 }
 </script>
-<<script type="text/javascript">
+<script type="text/javascript">
 function readFolder(folderName,id){
-	alert("folderName "+folderName)
-	alert("id"+id)
 	$('#mailboxLabel').html(folderName);
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/emailFolderRead?${_csrf.parameterName}=${_csrf.token}&folderName="+folderName+"&id="+id,
 		success : function(data) {
-          			var result = '';
-          			//result = result +'<input  id="emailListType" value='+folderName+'>';
-          			result = result +'<table id="mails" class="table table-hover table-striped">';
-          			
-            		result = result +'<thead>';
-            		result = result +'<tr>';
-            		result = result +'<th></th>';
-            		result = result +'<th></th>';
-            		result = result +'<th></th>';
-            		result = result +'<th></th>';
-            		result = result +'</tr>';
-            		result = result +'</thead>';
-            		
-          			result = result +'<tbody>';
-					
-			 for(var i=0; i<data.length; i++){
-				 var opt = data[i];
-				 
-				 result = result +' <tr id="checkbox">';
-       			result = result +'<td style="width : 20px;">';
-       			result = result +'<div class="mrleft8">';
-       			result = result +'<input id="check" value=" " class="checkbox-custom"  name="mailIds[]" type="checkbox">';
-       			result = result +'<label for="check" class="checkbox-custom-label"></label>';
-       			result = result +'</div>';
-       			result = result +'</td>';
-       			
-                 
-       			
-       			result = result +'<td class="mailbox-subject" onclick = "anv();">'+opt.subject+'</td>';
-       			result = result +'<td class="mailbox-date">'+opt.sentDate+'</td>';
-       			result = result +'<div class="mailbox">';
-       			result = result +'<td class="mailbox-date hidden" id="aa123">'+opt.body+'</td>';
-       			result = result +'</div>';
-       			result = result +'</tr>';
-             
-             
-              
-				 
-				/*  result = result + "<div>";
-				 result = result + "<ul class='nav nav-pills nav-stacked'>";
-				 result = result + "<li>"+report.subject+"</li>";
-				 result = result + "</ul>";
-				 result = result + "</div>";
-				 
-				 $("#mailBoxList").empty();
-					$("#mailDetails").empty(); 
+			
+					var result = '';
+		  			result = result +'<table id="emailMailDetailsPagination" class="table table-hover table-striped">';
+		    		result = result +'<thead>';
+		    		result = result +'<tr>';
+		    		result = result +'<th></th>';
+		    		result = result +'<th></th>';
+		    		result = result +'<th></th>';
+		    		result = result +'</tr>';
+		    		result = result +'</thead>';
+		    		result = result +'<tbody>';
+		    		for(var i=0; i<data.length; i++){
+						 var opt = data[i];
+						 result = result +' <tr id="checkbox'+opt.messageId+'">';
+						 
+			       			result = result +'<td style="width : 20px;">';
+			       			result = result +'<div class="mrleft8">';
+			       			result = result +'<input id="check" value=" " class="checkbox-custom"  name="mailIds[]" type="checkbox">';
+			       			result = result +'<label for="check" class="checkbox-custom-label"></label>';
+			       			result = result +'</div>';
+			       			result = result +'</td>';
+			       			
+			       			result = result +'<td class="mailbox-subject" onclick="getEmailBody('+opt.messageId+')" data-id="'+i+'">'+opt.subject+'</td>';
+			       			
+			       			result = result +'<td class="mailbox-date" data-id="'+i+'">'+opt.sentDate+'</td>';
+			       			
+			       			result = result +'</tr>';
+			       			
+			       			var body ="";
+		       				
+			       			body+="<div class='mailbox-read-info' id='mailBody"+opt.messageId+"'>";
+			       			body+="<h4 class='clearfix' style='border-bottom:1px solid #ddd; padding-bottom:10px;'>"+opt.subject+"</h4>";
+			       			
+			       			body+="<div class='row'>";
+			       			body+="<p class='clearfix mb10 col-md-8'><i class='text-muted fa fa-user paddingRight'></i>"+opt.from+"</p>";
+			       			body+="<p class='clearfix mb10 col-md-4 text-right'>"+opt.sentDate+"</p>";
+			       			body+="</div>";
+			       			
+			   				body+="<p class='col-md-12 clearfix'>"+opt.body+"</p>";
+			   				body+="<p class='col-md-10 '>"+opt.filesList+"</p>";
+			   				body+="<button type='button' class='btn btn-sm btn-default pull-right' onClick='backFun();'>Back</button>";
+			       			body+="</div>";
+			             $("#body-details").append(body);
+			             
+		    		}
+		    		
+		    		result = result +'</tbody>';
+		    		result = result +"</table>";
+		    		$("#mailBoxList").empty();
+		    		$("#mailDetails").empty(); 
 				    $("#mailBoxList").append(result); 
-				    $("#mailLoading").removeAttr("style");  */
-			 }
-			 result = result +"</tbody>";
-             result = result +"</table>"; 
-             result = result +'</div>';
-             $("#mailBoxList").empty();
-				$("#mailDetails").empty(); 
-			    $("#mailBoxList").append(result); 
-			    $("#mailLoading").removeAttr("style");
-			 
+				    emailMailDetailsPagination(); 
+				    $("#loading").removeAttr("style"); 
+    		
+    		
 		},
 	}); 
 	
+}
+
+</script>
+<!-- <script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script> -->
+
+<script>
+function emailMailDetailsPagination(){ 
+    $('#emailMailDetailsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+<script>
+function backFun(){
+	$("#inbox").show();
+    $("#details").hide();
+}
+
+</script>
+
+<script type="text/javascript">
+
+function getEmailBody(id,filesList){
+	
+	    $("#mailDetails").html($("#mailBody"+id).html());
+	    $("#inbox").hide();
+	    $("#details").show();
+	     
 }
 
 </script>
@@ -813,13 +847,7 @@ $(document).ready(function(){
 });        
     
     </script>
-<script type="text/javascript">
-function anv(){
-	alert("kkk") 
-	document.getElementById("aa123").show();
 
-}
-</script>
 <script>
 function replayToMail(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
