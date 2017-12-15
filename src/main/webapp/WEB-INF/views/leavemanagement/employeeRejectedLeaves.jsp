@@ -6,6 +6,8 @@
 <script>
 $(document).ready(function(){
    getRejectedEmployeesList();
+   var abc = "${appPath}";
+   alert("Hai");
 });
 </script>
 

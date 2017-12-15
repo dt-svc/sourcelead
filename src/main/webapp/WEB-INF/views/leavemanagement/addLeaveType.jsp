@@ -358,7 +358,7 @@
 									<option ${leaveType.experiencedType == 'Days' ? 'selected' : ''}>Days</option>
 									</select>
 								</div>
-								<div class="col-md-4">
+								<div class="col-md-4" id="experiencedApplicableDaysDiv">
 								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="experiencedApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 								
@@ -728,7 +728,7 @@
 			if (ckbox.is(':checked')) {
 				$("#priorDaysdiv").show();
 				$('#priorDays').removeAttr('data-validation-optional');
-				$('#priorDays').attr('data-validation', "required validate_length length1-250");
+				$('#priorDays').attr('data-validation', "required validate_length length1-250 validate_int");
 				$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
 			} else {
 				$("#priorDaysdiv").hide();
@@ -744,9 +744,9 @@
 		if (ckbox.is(':checked')) {
 			$("#minMaxDaysdiv").show();
 			$('#minDays').removeAttr('data-validation-optional');
-			$('#minDays').attr('data-validation', "required validate_length length1-250");
+			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_int");
 			$('#maxDays').removeAttr('data-validation-optional');
-			$('#maxDays').attr('data-validation', "required validate_length length1-250");
+			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_int");
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
 			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
 			
@@ -798,20 +798,20 @@
 		$("#experiencedGroup").hide();
 		$("#noOfDaysDiv").show();
 		$('#noOfDays').removeAttr('data-validation-optional');
-		$('#noOfDays').attr('data-validation', "required");
+		$('#noOfDays').attr('data-validation', "required validate_int");
 		$("#experiencedDuration").val("");
 		$("#experiencedApplicableDays").val("");
 		$("#newJoinee").val("");
 	}
 	function showExperienced() {
 		$('#newJoinee').removeAttr('data-validation-optional');
-		$('#newJoinee').attr('data-validation', "required");
+		$('#newJoinee').attr('data-validation', "required validate_int");
 		$('#experiencedType').removeAttr('data-validation-optional');
 		$('#experiencedType').attr('data-validation', "required");
 		$('#experiencedDuration').removeAttr('data-validation-optional');
-		$('#experiencedDuration').attr('data-validation', "required");
+		$('#experiencedDuration').attr('data-validation', "required validate_int");
 		$('#experiencedApplicableDays').removeAttr('data-validation-optional');
-		$('#experiencedApplicableDays').attr('data-validation', "required");
+		$('#experiencedApplicableDays').attr('data-validation', "required validate_int");
 		$("#experiencedGroup").show();
 		$("#noOfDays").val("");
 		$("#noOfDaysDiv").hide();
@@ -833,10 +833,4 @@
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
- </script>
- 
- <script>
- function getPeriod(){
-	 
- }
  </script>

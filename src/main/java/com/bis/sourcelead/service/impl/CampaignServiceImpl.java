@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,12 +24,8 @@ import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CampaignService;
-import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.ReferContactsService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CampaignUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -44,16 +39,7 @@ public class CampaignServiceImpl implements CampaignService{
 	CommonUtil commonUtil;
 	
 	@Autowired
-	CampaignDao campaignDao; 
-	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	OrgLocationService orgLocationService;
-	
-	@Autowired
-	ReferContactsService referContactsService;
+	CampaignDao campaignDao;
 	
 	@Override
 	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
@@ -63,8 +49,7 @@ public class CampaignServiceImpl implements CampaignService{
 		CreateSender createSender = null;
 		if(StringUtils.isNotBlank(createSenderDTO.getSenderId())) {
 			 createSender  = campaignDao.findSenderIdentityById(Long.parseLong(createSenderDTO.getSenderId()));
-			 createSenderDTO.setSenderId(createSender.getSenderId());
-			 senderCreated = campaignUtil.updateSender(createSenderDTO, orgLocation);
+			 senderCreated = campaignUtil.updateSender(createSender, orgLocation);
 		}else {
 			 senderCreated = campaignUtil.createSender(createSenderDTO, orgLocation);
 			 createSender = new CreateSender();
@@ -115,7 +100,7 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderId) throws Exception
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
 	{
 		return campaignDao.validateNickName(nickName, orgLocation,senderId);
 	}
@@ -134,7 +119,7 @@ public class CampaignServiceImpl implements CampaignService{
 				senderDTO.setCpnReplyMail(sender.getReplyTo());
 				senderDTO.setIsSenderEmailVerified(sender.getIsSenderEmaiklVerified());
 				senderDTO.setCpnSenderFromMail(sender.getFromMail());
-				senderDTO.setId(String.valueOf(sender.getId()));
+				senderDTO.setId(sender.getId());
 				createSenderDTOList.add(senderDTO);
 			}
 			if (createSenderDTOList != null && createSenderDTOList.size() > 0) {
@@ -267,21 +252,6 @@ public class CampaignServiceImpl implements CampaignService{
 			campaignRecipient.setUpdatedDate(date);
 			campaignRecipient.setEmail(recipientMail);
 			campaignRecipient.setRecipientId(recipientId);
-			User usr = userService.findByEmail(recipientMail);
-			if(usr != null) {
-				campaignRecipient.setFirstName(usr.getFirstName());
-				if(usr.getLastName() != null) {
-					campaignRecipient.setLastName(usr.getLastName());
-				}
-			}else {
-				ReferContacts referContacts = referContactsService.findByEmail(recipientMail);
-				if(referContacts !=null) {
-					campaignRecipient.setFirstName(referContacts.getFirstName());
-					if(referContacts.getLastName() != null) {
-						campaignRecipient.setLastName(referContacts.getLastName());
-					}
-				}
-			}
 			recipientSet.add(campaignRecipient);
 		}
 		return recipientSet;
@@ -294,7 +264,7 @@ public class CampaignServiceImpl implements CampaignService{
 		List<CreateSenderDTO> list = new ArrayList<>();
 		for (CreateSender sender : senderList) {
 			CreateSenderDTO createSenderDTO = new CreateSenderDTO();
-			createSenderDTO.setId(String.valueOf(sender.getId()));
+			createSenderDTO.setId(sender.getId());
 			createSenderDTO.setCpnNickName(sender.getNickName());
 			createSenderDTO.setCpnSenderName(sender.getFromName());
 			createSenderDTO.setCpnSenderFromMail(sender.getFromMail());
@@ -313,11 +283,11 @@ public class CampaignServiceImpl implements CampaignService{
 		List<CampaignListDTO>  campaignListDtoList = new ArrayList<>();
 		for(CampaignList  campaignList : cpnList) {
 			CampaignListDTO campaignListdto = new CampaignListDTO();
-			campaignListdto.setId(String.valueOf(campaignList.getId()));
+			campaignListdto.setId(campaignList.getId());
 			campaignListdto.setListId(campaignList.getListId());
 			campaignListdto.setListName(campaignList.getListName());
 			if(campaignList.getCampaignRecipient() !=null) {
-				campaignListdto.setListCount(String.valueOf(campaignList.getCampaignRecipient().size()));
+				campaignListdto.setListCount(campaignList.getCampaignRecipient().size());
 				
 				List<String> emailList = new ArrayList<>();
 				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0){
@@ -379,140 +349,15 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public ResponseList<CampaignStatsDTO> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
+	public ResponseList<CampaignStats> getCampaignStatsListByOrgLocationId(Long orgLocationId, CampaignStatsDTO campaignStatsDTO) throws Exception
 	{
-		ResponseList<CampaignStatsDTO> campaignStatsResList = new ResponseList<>();
-		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
-		
-		ResponseList<CampaignStats>  campStats = campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
-		
-		if(campStats.getData() !=null && campStats.getData().size() >0) {
-			for (CampaignStats campaignStats : campStats.getData()) {
-				Map<String,Integer> map = campaignDao.getCampaignListName(campaignStats.getCampaignId());
-				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
-				campaignStatsListDTO.setId(campaignStats.getId());
-				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
-				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
-				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
-				campaignStatsListDTO.setUniqueClicks(campaignStats.getUniqueClicks());
-				campaignStatsListDTO.setUnsubscribes(campaignStats.getUnsubscribes());
-				campaignStatsListDTO.setOpens(campaignStats.getOpens());
-				campaignStatsListDTO.setCampaignId(campaignStats.getCampaignId());
-				campaignStatsListDTO.setBlocks(campaignStats.getBlocks());
-				campaignStatsListDTO.setBounceDrops(campaignStats.getBounceDrops());
-				campaignStatsListDTO.setBounces(campaignStats.getBounces());
-				campaignStatsListDTO.setClicks(campaignStats.getClicks());
-				campaignStatsListDTO.setDeferred(campaignStats.getDeferred());
-				campaignStatsListDTO.setInvalidEmails(campaignStats.getInvalidEmails());
-				campaignStatsListDTO.setProcessed(campaignStats.getProcessed());
-				campaignStatsListDTO.setRequest(campaignStats.getRequest());
-				campaignStatsListDTO.setSpamReportDrops(campaignStats.getSpamReportDrops());
-				campaignStatsListDTO.setSpamReports(campaignStats.getSpamReports());
-				campaignStatsListDTO.setUnsubscribeDrops(campaignStats.getUnsubscribeDrops());
-				campaignStatsList.add(campaignStatsListDTO);
-			}
-			campaignStatsResList.setData(campaignStatsList);
-			campaignStatsResList.setRecordsTotal(campStats.getRecordsTotal());
-			campaignStatsResList.setRecordsFiltered(campStats.getRecordsFiltered());
-		}else {
-			List<CampaignStatsDTO> statsList = getDailyCampaignStats();
-			campaignStatsResList.setData(statsList);
-			campaignStatsResList.setRecordsTotal(statsList.size());
-			campaignStatsResList.setRecordsFiltered(statsList.size());
-		}
-		
-		return campaignStatsResList;
+		return campaignDao.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
 	}
 	@Override
-	public CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception
+	public CampaignStats getCampaignStatsByCampaignId(String campaignId) throws Exception
 	{
-		return campaignDao.getCampaignStatsByCampaignId(campaignName);
+		return campaignDao.getCampaignStatsByCampaignId(campaignId);
 
-	}
-	
-	
-	public List<CampaignStatsDTO> getDailyCampaignStats() throws Exception
-	{
-		List<CampaignStatsDTO> campaignStatsList = new ArrayList<>();
-		List<Campaign> campaignList = campaignDao.getAllCampaigns();
-		for(Campaign campaign : campaignList) {
-			OrgLocations orgLocation = orgLocationService.getOrgLocations(campaign.getOrgLocation().getId());
-			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
-			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
-			if(StringUtils.isNotBlank(response)) {
-				JSONArray jsonArr = new JSONArray(response);
-				CampaignStatsDTO campaignStatsDto = new CampaignStatsDTO();
-					  for (int i = 0; i < jsonArr.length(); i++) {
-							JSONObject jsonObj = jsonArr.getJSONObject(i);
-							JSONArray statJsonArr = jsonObj.getJSONArray("stats");
-							for (int j = 0; j < statJsonArr.length(); j++) {
-								JSONObject statsObj = statJsonArr.getJSONObject(j);
-								JSONObject metricsObj = statsObj.getJSONObject("metrics");
-								campaignStatsDto.setCategoryName(statsObj.getString("name"));
-								campaignStatsDto.setCampaignId(campaign.getCampaignId());
-								campaignStatsDto.setBlocks(metricsObj.getString("blocks"));
-								campaignStatsDto.setBounceDrops(metricsObj.getString("bounce_drops"));
-								campaignStatsDto.setBounces(metricsObj.getString("bounces"));
-								campaignStatsDto.setClicks(metricsObj.getString("clicks"));
-								campaignStatsDto.setDeferred(metricsObj.getString("deferred"));
-								campaignStatsDto.setDelivered(metricsObj.getString("delivered"));
-								campaignStatsDto.setInvalidEmails(metricsObj.getString("invalid_emails"));
-								campaignStatsDto.setOpens(metricsObj.getString("opens"));
-								campaignStatsDto.setProcessed(metricsObj.getString("processed"));
-								campaignStatsDto.setRequest(metricsObj.getString("requests"));
-								campaignStatsDto.setSpamReportDrops(metricsObj.getString("spam_report_drops"));
-								campaignStatsDto.setSpamReports(metricsObj.getString("spam_reports"));
-								campaignStatsDto.setUniqueClicks(metricsObj.getString("unique_clicks"));
-								campaignStatsDto.setUniqueOpens(metricsObj.getString("unique_opens"));
-								campaignStatsDto.setUnsubscribeDrops(metricsObj.getString("unsubscribe_drops"));
-								campaignStatsDto.setUnsubscribes(metricsObj.getString("unsubscribes"));
-							}
-							
-					}
-//				}
-					  campaignStatsList.add(campaignStatsDto);
-				
-		}
-		}
-		return campaignStatsList;
-		
-	}
-
-	@Override
-	public boolean validateCampaignSubject(String subjectName, Long orgLocationId,int campaignType) throws Exception
-	{
-		boolean isValid = false;
-		Campaign campaign = campaignDao.validateCampaignSubject(subjectName,orgLocationId,campaignType);
-		if(campaign != null) {
-			isValid = true;
-		}
-		return isValid;
-	}
-
-	@Override
-	public boolean deleteStats(String categoryName) throws Exception
-	{
-		boolean isValid = false;
-		CampaignStats campaignStats = campaignDao.getCampaignStatsByCampaignId(categoryName);
-		if(campaignStats != null) {
-			campaignStats.setStatus(0);
-			CampaignStats savedCampaignStats = campaignDao.saveCampaignStats(campaignStats);
-			if(savedCampaignStats !=null) {
-				isValid = true;
-			}
-		}
-		return isValid;
-	}
-
-	@Override
-	public boolean validateFromMail(String email, String toWhom,String id) throws Exception
-	{
-		boolean isDuplicate = false;
-		CreateSender createSender = campaignDao.validateFromMail(email,toWhom,id);
-		if(createSender !=null) {
-			isDuplicate = true;
-		}
-		return isDuplicate;
 	}
 
 }
