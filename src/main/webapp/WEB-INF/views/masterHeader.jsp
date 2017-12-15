@@ -748,7 +748,6 @@ function preventTabkey(e){
   </header>
   
   <div class="authenticationMask" >
-  <div class="proj_close"></div>
   <div class="signWrapOtp">
   	<div id="twoStepAuthDiv">
   		<jsp:include page="otpVerification.jsp"></jsp:include>
@@ -769,9 +768,9 @@ function preventTabkey(e){
 	 checkLocationAccess(locationId,roleId,orgSecurity);
 	 
  }
- $(".proj_close").click(function(){
-	 $(".authenticationMask").fadeOut();
- })
+ function otpClose(){
+	 $(".authenticationMask").fadeOut(); 
+ }
  $(".loc-alertclose").click(function(){
 	 $(".location-alert").fadeOut();
  })
@@ -784,6 +783,8 @@ function preventTabkey(e){
 	    	   if(data != null){
 	    		   $("#twoStepAuthDiv").empty();
 	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#gobackBtn").hide();
+	    		   $(".otpBackNew").show();
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -799,7 +800,7 @@ function preventTabkey(e){
 // 	    	   hasLocationAccess = result;
 	    	   
 	    	   if(result == true){
-	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y') || ('${SourceLeadWeb_isAuthenticated}' == 'N')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
@@ -1519,7 +1520,7 @@ function universalSearch(){
 		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
 	 else if(searchType == "Requirement") {
-		 window.location.href = sourceleadUrl + "/requirementList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;

@@ -12,7 +12,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
  <script> 
 	$(document).ready(function(){
@@ -264,7 +264,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#requestAssociates").wrap("<div class='clearfix require_wrap_table'></div>"); 
@@ -284,7 +284,7 @@ function acceptAssociate(requestUUID,requestType){
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
 	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
@@ -370,7 +370,7 @@ function saveRejectAssociate(requestUUID){
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,
@@ -438,7 +438,7 @@ function acceptAssociateRequest(requestUUID){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
-	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
 	    	url: sourceleadUrl+"/acceptAssociateRequest?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
@@ -506,7 +506,7 @@ if ($('#onHold_form').validate(false, validationSettings)){
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         
         $("#submit_onHold").attr("disabled", "disabled");
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,
@@ -604,7 +604,7 @@ function saveRejectAssociateRequest(requestUUID){
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,
