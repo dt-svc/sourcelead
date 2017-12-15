@@ -24,7 +24,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/assetManagement'/>">Asset Management</a> &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Asset Management</a> &raquo; Category</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -57,7 +57,7 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
@@ -368,7 +368,7 @@ function deleteCategory(categoryId){
 function terminateCategory(categoryId){
 	if (categoryId != null && categoryId != '') {
 		$("#category"+categoryId).html("<td colspan='5'  id='loading"+categoryId+"'></td>");
-		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,

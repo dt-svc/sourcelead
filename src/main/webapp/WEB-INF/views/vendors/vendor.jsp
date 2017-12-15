@@ -100,7 +100,7 @@ function getVendorDetails(){
 	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
 	var orgRelationId = document.getElementById("orgRelationId").value;
 	if(orgRelationId){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			
 	        $.ajax({
 		    	type: "GET",
@@ -240,8 +240,8 @@ function getVendorDetails(){
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Create
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a> &raquo; Create
 			Vendor
 		</div>
 	</section>
@@ -539,8 +539,7 @@ function getVendorDetails(){
 
 						<div class="form-group">
 							<label class="col-md-3">Owner Name<span
-								class="text-danger">&nbsp;*</span>
-								<i class='fa fa-info-circle' title='Owner for the vendor contact.For single contact can have multiple owners'></i></label>
+								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
@@ -590,7 +589,7 @@ function getVendorDetails(){
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
 						
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -839,7 +838,7 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
@@ -872,7 +871,7 @@ function updateVendor(){
 	if ($('#client_form').validate(false, validationSettings)) {
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
 					 $("#loading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
@@ -985,11 +984,11 @@ function validateClientName(){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (vendor != null && vendor != '') {
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -1047,7 +1046,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -1090,7 +1089,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1171,7 +1170,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1216,7 +1215,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

@@ -159,9 +159,11 @@ function prepareAssignedProjectsData(data){
    }
     result = result +"</tbody>";
     result = result +"</table>";
-    $("#tab-1").empty(); 
-    $("#tab-2").empty(); 
-    $("#tab-2").append(result);  
+    $("#candidateSideDiv").empty();
+    $("#tab-18").empty(); 
+    $("#tab-17").empty(); 
+    $("#tab-19").empty(); 
+    $("#tab-19").append(result);  
     pagination(); 
 
     

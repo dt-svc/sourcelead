@@ -142,6 +142,9 @@ public class EMailJobScheduler {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
 	
@@ -1278,6 +1281,52 @@ public class EMailJobScheduler {
 		        }
 	}
 	
+	/**
+	 * cron to move expired contract to EXPIRED stage
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void runExpiredContract() throws Exception{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLoc : orgLocationsList) {
+			List<Contracts> contractList = contractsTemplateService.getContractByLocationId(orgLoc.getId());
+			if(contractList != null && contractList.size() > 0) {
+				for(Contracts contracts : contractList) {
+				   	if(contracts.getEndDate()!=null){
+			    		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			    		Date date = new Date();
+			    		String currentTimeStr = TZ_DF_TS.format(date);
+						Date curDate = TZ_DF_TS.parse(currentTimeStr);
+			    		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			    			contracts.setId(contracts.getId());
+							contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+							String fromStage = contracts.getTemplateSubmissionStatus();
+			    			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			    			if(null != childContarct && null != childContarct.getParentContractId()){
+			    				fromStage = childContarct.getTemplateSubmissionStatus();
+			    				childContarct.setId(childContarct.getId());
+			    				childContarct.setTemplateSubmissionStatus(Constants.EXPIRED);
+			    				contractsTemplateService.saveNewContract(childContarct);
+			    				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+			        				if(!(Constants.EXPIRED).equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+				        				ContractsHistory childContractsHistory = new ContractsHistory();
+				            			childContractsHistory.setFromStage(fromStage);
+				        				childContractsHistory.setContractsId(childContarct);
+				        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+				        				childContractsHistory.setCreatedDate(new Date());
+				        				childContractsHistory.setUpdatedDate(new Date());
+				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			        				}
+			    				}
+			    		}
+			    	 }
+			    	}
+				}
+			}
+		}
+	}
+	
 	
 	private void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
@@ -1522,7 +1571,7 @@ public class EMailJobScheduler {
 			}
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
 			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
@@ -1978,7 +2027,7 @@ public class EMailJobScheduler {
 	         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
 	        
 	         StringBuilder linkBuild = new StringBuilder();
-	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	        
 	                
 	        

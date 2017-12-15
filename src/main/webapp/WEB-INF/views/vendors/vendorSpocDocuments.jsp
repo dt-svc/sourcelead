@@ -223,7 +223,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearVendorSpocDocumentUpload()">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn" onChange="vendorSpocDocumentFileSaving();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
@@ -629,11 +629,11 @@ function vendorSpocDocumentFileSaving()
 }
 </script>
 
-<script>
+<!-- <script>
 	function clearVendorSpocDocumentUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->
 
 <script>
 function cleartVendorSpocDocumentStartDate(){

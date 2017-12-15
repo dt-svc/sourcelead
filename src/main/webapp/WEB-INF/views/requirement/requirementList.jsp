@@ -13,38 +13,6 @@
      
 --%>
 <script>
-function clearList(){
-	location.reload();
-}
-
-function selectAllPriority(){
-	$("ul#priority > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
-}
-function clearAllPriority(){
-	$("ul#priority > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
-}
-function selectAllJobType(){
-	$("ul#jobType > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
-}
-function clearAlljobType(){
-	$("ul#jobType > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
-}
-function selectAllStatus(){
-	$("ul#status > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
-}
-function clearAllStatus(){
-	$("ul#status > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
-}
-
-</script>
-
-<script>
 $(document).ready(function() {
 	 $("#filter1ApprovePop").click(function(){
 			$("#filter1ApprovedPop").slideToggle(200);
@@ -59,7 +27,7 @@ $(document).ready(function() {
 	    
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop").slideUp(200);
+		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -67,30 +35,6 @@ $(document).ready(function() {
     $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    
-    $("#filter3ApprovePop").click(function(){
-		$("#filter3ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter4ApprovedPop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter3ApprovedPop").slideUp(200);
-    });
-    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    $("#filter4ApprovePop").click(function(){
-		$("#filter4ApprovedPop").slideToggle(200);
-		$(".export_pop, .action-pop, #exportPop, #filter1ApprovedPop, #filter2ApprovedPop, #filter3ApprovedPop ").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter4ApprovedPop").slideUp(200);
-    });
-    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    
 }); 
 
 </script>
@@ -154,7 +98,7 @@ function statusvalidating(id){
 }
 </script>
 <jsp:include page="requirementTable.jsp" />
-<!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
+<!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
@@ -168,19 +112,16 @@ function statusvalidating(id){
 		<div class="pull-left">
 			<h2 class="pull-left paddingRight">Jobs List</h2>
 			<span class="paddingLeft pull-left">|<a class="paddingLeft"
-				href="<c:url value='/professionalRequirements'/>">Crowdsourcing
+				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
 					Jobs</a></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
 		<div class="pull-left cand-advsrch advsrch_chosen">
-			<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="clearList();" title="Refresh">
-			    <span class="fa fa-refresh"></span>
-			</button>
 			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
 				title="Advanced Search"
 				onClick="openPop();loadChosenRequirementScripts();"> Advanced
@@ -362,31 +303,6 @@ function statusvalidating(id){
 								</select>
 							</div>
 						</div>
-						
-						
-						<div class="col-md-4">
-							<label>Skills</label>
-							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
-								<c:forEach var="skill" items="${skillList}">
-								<option value="${skill.name}">${skill.name}</option>
-								</c:forEach>
-								</select>
-							 </div>
-						</div>
-						
-						
-						<div class="col-md-4">
-							<label>Immigration Status</label>
-							<div class="clearfix">
-				                <select multiple class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true">
-								<c:forEach var="visaList" items="${visaList}">
-								<option value="${visaList}">${visaList}</option>
-								</c:forEach>
-								</select>
-							 </div>
-						</div>
-						
 					</div>
 					</div>
 					<div class="clearfix advancedsearch-footer">
@@ -402,7 +318,7 @@ function statusvalidating(id){
 	</div>
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
-			<div class="timesheet_head timesheetHead_Custom timesheetHead_filters topfilters">
+			<div class="timesheet_head timesheetHead_Custom topfilters">
 				<ul>
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
@@ -427,40 +343,10 @@ function statusvalidating(id){
 								</ul>
 						 </div>
 						<!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
-						
-						<li><b id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Priority</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter3ApprovedPop" class="approved_pop">
-								<ul id="priority">
-								    <li class="dropdown-header text-center row"><div class="text-primary col-xs-6"  onclick="selectAllPriority();">Select All</div><div class="text-danger col-xs-6"  onclick="clearAllPriority();">Clear All</div></li>
-									<li><input id="c1" type="checkbox" name="requirementPriority" value="Medium" onclick="requirementList('list','${sourceleadUrl}');"><label for="c1">Medium </label></li>
-									<li><input id="c2" type="checkbox" name="requirementPriority" value="Low" onclick="requirementList('list','${sourceleadUrl}');"><label for="c2">Low </label></li>
-									<li><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" onclick="requirementList('list','${sourceleadUrl}');"><label for="c3">Urgent </label></li>
-									<li><input id="c4" type="checkbox" name="requirementPriority" value="High" onclick="requirementList('list','${sourceleadUrl}');"><label for="c4">High </label></li>
-								</ul>
-							</div></li>
-							
-							<li><b id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Job Type</span><i
-								class="glyphicon glyphicon-play"></i></b>
-							<div id="filter4ApprovedPop" class="approved_pop">
-								<ul id="jobType">
-								<li class="dropdown-header text-center row"><div class="text-primary col-xs-6" onclick="selectAllJobType();">Select All</div><div class="text-danger col-xs-6" onclick="clearAlljobType();">Clear All</div></li>
-									<li><input id="c11" type="checkbox" name="requirementType" value="C2C" onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">C2C </label></li>
-									<li><input id="c12" type="checkbox" name="requirementType" value="W-2" onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">W-2 </label></li>
-									<li><input id="c13" type="checkbox" name="requirementType" value="C2H" onclick="requirementList('list','${sourceleadUrl}');"><label for="c13">C2H </label></li>
-									<li><input id="c14" type="checkbox" name="requirementType" value="Contract" onclick="requirementList('list','${sourceleadUrl}');"><label for="c14">Contract </label></li>
-									<li><input id="c15" type="checkbox" name="requirementType" value="Part Time" onclick="requirementList('list','${sourceleadUrl}');"><label for="c15">Part Time </label></li>
-									<li><input id="c16" type="checkbox" name="requirementType" value="Full Time" onclick="requirementList('list','${sourceleadUrl}');"><label for="c16">Full Time </label></li>
-									<li><input id="c17" type="checkbox" name="requirementType" value="Other" onclick="requirementList('list','${sourceleadUrl}');"><label for="c17">Other </label></li>
-								</ul>
-							</div></li>
-							
-							
 						<li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
 								class="glyphicon glyphicon-play"></i></b>
 							<div id="filter2ApprovedPop" class="approved_pop">
-								<ul id="status">
-								<li class="dropdown-header text-center row"><div class="text-primary col-xs-6" onclick="selectAllStatus();">Select All</div><div class="text-danger col-xs-6" onclick="clearAllStatus();">Clear All</div></li>
+								<ul>
 									<li><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"
 										onclick="requirementList('list','${sourceleadUrl}');"><label for="c6">New<span
@@ -510,13 +396,12 @@ function statusvalidating(id){
 							</div></li>
 					</sec:authorize>
 
-							
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='/requirement'/>"><i
+						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-						<li><a href="<c:url value='/team'/>"><i
+						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
 
@@ -636,7 +521,7 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 $('#mypop').click(function(){
 		$("#exportPop").toggle();
-		$(".export_pop, #filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
  });
  $("html").click(function(){
 	$("#exportPop").hide(200);
@@ -722,7 +607,7 @@ function cancel(){
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter3ApprovedPop, #filter4ApprovedPop, #filter1ApprovedPop, #exportPop").slideUp(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop").slideUp(200);
 	
 	$("html").click(function(){
 		$(".action-pop").slideUp(200);
@@ -835,41 +720,6 @@ function getActions(){
 		        }
 		    });
 		    
-		    
-		    
-		    //Adding Customized Skills to the list
-	        var selectnine, chosennine;
-	        selectnine = $("#requirementSkills");
-	        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
-		    chosennine = selectnine.data('chosen');
-		    chosennine.search_field.bind(('keydown keyup'), function(e9)
-		    { 
-		    	 
-		    	 var enterSkillsArray = this.value.split(",");
-		    	 if(enterSkillsArray.length > 1){
-	        		 for (var i=0; i < enterSkillsArray.length; i++) {
-	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
-	        			 selectnine.append(option);
-	        			 selectnine.find(option).prop('selected', true);
-	 	        		 $("#requirementSkills").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newSkill = this.value.replace(","," ");
-			    	 
-			        if (tagItBykeyForSkills(e9) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			        {
-			        	preventTabkey(e9); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-			        		 selectnine.append(option);
-			        		 selectnine.find(option).prop('selected', true);
-				        		$("#requirementSkills").trigger("chosen:updated");
-				        		
-				        		
-			        }
-		    	 }
-		    }); */
-		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       }); 
@@ -909,7 +759,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -944,7 +794,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

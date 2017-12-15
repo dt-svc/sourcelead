@@ -20,7 +20,7 @@
 			<h2>Job Template Details</h2> 
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="<c:url value='/template'/>">Job Template List </a>»
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="<c:url value='${appPath}/template'/>">Job Template List </a>»
 			View Job Template
 		</div>
 	</section>
@@ -99,7 +99,7 @@
 			    result = result + ' <div class="useredit">';
 			    result = result + ' <div class="pull-right mt">';
 			    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\')">';
-			        result = result + ' <a id="edit-user" href="<c:url value="/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+			        result = result + ' <a id="edit-user" href="<c:url value="/app/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 			    '</sec:authorize>';
 			   /*   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">';    
 			        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';

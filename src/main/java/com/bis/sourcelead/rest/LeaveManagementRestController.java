@@ -78,10 +78,12 @@ import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
+@RequestMapping("/app")
 public class LeaveManagementRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
@@ -155,6 +157,9 @@ public class LeaveManagementRestController {
 
 	@Autowired
 	private OrgService orgService;
+	
+	@Autowired
+	LeaveManagementUtil leaveManagementUtil;
 	
 	/**
 	 * returns Pending leaves jsp
@@ -293,6 +298,7 @@ public class LeaveManagementRestController {
 		   User loginUser = userService.getUserById(userId);
 		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
 
+		   Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
 		   int balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
 		   int takenLeaveCounts = 0;
@@ -311,7 +317,10 @@ public class LeaveManagementRestController {
 			   }
 			   
 				for(LeaveType type : roleLeaveType) {
-				int totalLeaves = Integer.valueOf(type.getNumbefrOfLeavesPeryear());
+				int totalLeaves = 0;
+				
+				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
+				
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
@@ -323,6 +332,7 @@ public class LeaveManagementRestController {
 						takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 					}
 				}
+				
 				balanceLeaveCounts += totalLeaves;
 				type.setBalanceLeaveCounts(balanceLeaveCounts);
 				type.setPendingLeaveCounts(pendingLeaveCounts);
@@ -1054,7 +1064,7 @@ public class LeaveManagementRestController {
 	       return model;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
+//	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/leaveTypeSummary", "/rest/leaveTypeSummary"}, method = RequestMethod.POST)
 	@ResponseBody
 	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
@@ -1236,13 +1246,15 @@ public class LeaveManagementRestController {
 					e.printStackTrace();
 				}
 			}
+			Employees emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
-			int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+			int balLeaves = totalLeavesperYear - nuberOfLeavestaken;
 			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
@@ -1530,6 +1542,7 @@ public class LeaveManagementRestController {
 			HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);   
 		User user = userService.getUserById(userId);
+		Employees emp = employeesService.getEmployeeByUserId(userId);
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocations.getId()));
 		
 		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
@@ -1542,6 +1555,7 @@ public class LeaveManagementRestController {
 					int noOfDays = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
 					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
+					int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
 					if(totalleavesTaken != null && totalleavesTaken.size() > 0) {
 						for (Leave leave : totalleavesTaken) {
 							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
@@ -1551,8 +1565,8 @@ public class LeaveManagementRestController {
 								approvedCounts = approvedCounts + 1;
 								
 								noOfDays = noOfDays + Integer.valueOf(leave.getNumberOfDays());
-								if(noOfDays > Integer.valueOf(type.getNumbefrOfLeavesPeryear())) {
-									int totalLeaves =  Integer.valueOf(type.getNumbefrOfLeavesPeryear()) - noOfDays;
+								if(noOfDays > totalLeavesperYear) {
+									int totalLeaves =  totalLeavesperYear - noOfDays;
 									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
 								}else {
 									leaveTypeDto.setNumberOfDaysCount(String.valueOf(noOfDays));
@@ -1570,7 +1584,7 @@ public class LeaveManagementRestController {
 						
 						leaveTypeDto.setName(type.getName());
 						leaveTypeDto.setLeaveTypeId(type.getId());
-						leaveTypeDto.setNoOfLeavesPerYear(type.getNumbefrOfLeavesPeryear());
+						leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(totalLeavesperYear));
 						leaveTypeDto.setApprovedCount(approvedCounts);
 					    leaveTypeDto.setRejectedCount(rejectedCounts);
 					    leaveTypeDto.setPendingCount(pendingCounts);

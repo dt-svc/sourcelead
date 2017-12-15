@@ -4,13 +4,21 @@
     pageEncoding="UTF-8"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-            <spring:url value="resources/css/styles.css" var="cssmy"/>
+            <spring:url value="/resources/css/styles.css" var="cssmy"/>
             <link href="${cssmy}" rel="stylesheet">
-             <script src="resources/js/jquery-1.11.3.min.js"></script>
-             <script src="resources/js/signer.js" type="text/javascript"></script>
+             <script src="/resources/js/jquery-1.11.3.min.js"></script>
+             <script src="/resources/js/signer.js" type="text/javascript"></script>
 <script>
 	$(document).ready(function() {
 		Signer.uploadDoc();
+		var firstName = '${SourceLeadWeb_user.firstName}';
+		var lastName = '${SourceLeadWeb_user.lastName}';
+		$("#txtsignname").val(firstName);
+		if(lastName !=null && lastName != '' && lastName != 'undefined'){
+			$("#txtinitialname").val(lastName);
+		}else{
+			$("#txtinitialname").val('');
+		}
 });
 </script> 
 
@@ -57,6 +65,7 @@ width: 125px !important; height: 35px; line-height: 35px;
 }
 </style>
  <div id="backShadow"></div>
+  <div id="popup"></div>
 <section class="content-wraper">
 <section class="content-header clearfix">
     <div class="pull-left">
@@ -87,13 +96,13 @@ width: 125px !important; height: 35px; line-height: 35px;
                     <div class="form-group row">
                         <label for="txtsignname"  class="col-xs-3 text-right">Signatory Name</label>
                         <div class="col-xs-7" id="signatoryNameDiv">
-                            <input class="form-control" id="txtsignname" field-name="Signatory Name" type="text" value="${contract.contactUser.firstName}">
+                            <input class="form-control" id="txtsignname" field-name="Signatory Name" type="text" value="">
                         </div>
                     </div>
                     <div class="form-group row">
                          <label class="col-xs-3 text-right" for="txtinitialname">Initial</label>
                         <div class="col-xs-7">
-                            <input class="form-control" id="txtinitialname" type="text" value="${contract.contactUser.lastName}">
+                            <input class="form-control" id="txtinitialname" type="text" value="">
                         </div>
                     </div>
                 </div>
@@ -140,7 +149,6 @@ width: 125px !important; height: 35px; line-height: 35px;
 
                     <div class="sign-header">
                         <div id="signStatus">
-                            <div class="div-left" id="signCountStatus"></div>
                             <div class="div-right">
 <!--                                 <button value="Sign This Document" id="btnSignNext" class="btn btn-success">Sign Next</button> -->
                                 <button value="Sign This Document" id="btnComplete" class="btn btn-success">Complete</button>
@@ -154,10 +162,10 @@ width: 125px !important; height: 35px; line-height: 35px;
                         <div class="sign-button-holder signActions">
                             <div class="sign-buttons">
                                 <ul>
-                                    <li id="btnAddSignature" title="Add new signature" onclick="Signer.addSignaturePlaceholder()">
+                                    <li id="btnAddSignature" title="Customize signature" onclick="Signer.addSignaturePlaceholder()">
                                         <!-- <img id="btnAddSignature" title="Add new signature" alt="Add new signature" src="../navinleon@gmail.com/addsign.png" onclick="Signer.addSignaturePlaceholder()"> -->
                                     </li>
-                                    <li id="btnAddInitial" title="Add new initial" onclick="Signer.addInitialPlaceholder()">
+                                    <li id="btnAddInitial" title="Customize initial" onclick="Signer.addInitialPlaceholder()">
                                         <!-- <img id="btnAddInitial" title="Add new initial" alt="Add new initial" src="../navinleon@gmail.com/addinitial.png" onclick="Signer.addInitialPlaceholder()"> -->
                                     </li>
                                     <li id="btnPreviewSignature" title="Preview signature" onclick="Signer.previewSignature()">
