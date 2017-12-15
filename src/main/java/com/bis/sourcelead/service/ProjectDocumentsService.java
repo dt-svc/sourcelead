@@ -34,6 +34,8 @@ public interface ProjectDocumentsService {
 
 	Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId,String folderName) throws Exception;
 	
+	Boolean validateProjectDocumentNameByProjectIdIdAndDocumentName(Long projectId,String documentName) throws Exception;
+	
 	ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user, OrgLocations loginOrgLocation)throws Exception;
 
 }

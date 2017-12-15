@@ -38,7 +38,7 @@ public interface GenericDao<T extends Serializable> {
 	
 	void delteEachDocumentById(Long porjectDocumentId)throws Exception;
 	
-//	void delteAllDocumentById(List<Long> porjectDocumentId)throws Exception;
+	Boolean validateProjectDocumentNameByProjectIdIdAndDocumentName(Long projectId,String documentName) throws Exception;
 
 
 }

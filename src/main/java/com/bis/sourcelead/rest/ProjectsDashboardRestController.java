@@ -420,6 +420,8 @@ public class ProjectsDashboardRestController {
 						 }
 					}
 			 }
+			 
+			 
 			 model.addObject("memberRolesList",memberRolesList);
 			 model.addObject("projectMembersList",projectMembersList);
 		 }
@@ -1154,4 +1156,12 @@ public class ProjectsDashboardRestController {
 		    	   }
 				return flag;
 			   } 
+		    
+		    
+		    @RequestMapping(value = "/validateDocumentName" , method = RequestMethod.GET)
+			 public @ResponseBody  Boolean validateDocumentName(@RequestParam(value="documentName", required=false) String documentName, @RequestParam(value="projectId", required=false) Long projectId) throws Exception {
+		    	  Boolean flag = projectDocumentsService.validateProjectDocumentNameByProjectIdIdAndDocumentName(projectId, documentName);
+		    	return flag;
+			   } 
+		    
 }

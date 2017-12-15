@@ -223,18 +223,18 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		   }
 	   }
 	}
- 
-	/*@Override
+	 
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void delteAllDocumentById(List<String> porjectDocumentId) throws Exception {
+	public Boolean validateProjectDocumentNameByProjectIdIdAndDocumentName(Long projectId,String documentName) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectDocuments pd where pd.id IN(:porjectDocumentId)";
-		List<ProjectDocuments> projectDocumentList = session.createQuery(query).setParameterList("porjectDocumentId", porjectDocumentId).setCacheable(true).list();
-	   if(projectDocumentList != null && !projectDocumentList.isEmpty()) {
-		   for(ProjectDocuments pd :projectDocumentList) {
-			   session.delete(pd);
-		   }
-	   }
-	}*/
+		 boolean flag = false;
+			 String query = "from ProjectDocuments pd  where pd.projects.id =:projectId and pd.fileName =:documentName ";
+				Collection<ProjectDocuments> projectDocumentsList = session.createQuery(query) .setString("documentName", documentName).setLong("projectId", projectId).setCacheable(true).list();
+				if (projectDocumentsList != null && projectDocumentsList.size() > 0) {
+					flag = true;
+				}
+		return flag;
+	}
 	
 }

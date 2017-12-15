@@ -88,10 +88,10 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 				if(!counts.isEmpty()) {
 					for(ProjectDocumentFolder pdf : projectDocumentFolderList) {
 						pdf.setPermissionAccess("1");
-						String query2 = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.projectMemberId.projectMemberCandidteId =:candidateId";
+						String query2 = "from ProjectDocumentPermission pdp where  pdp.access IN( select max(access) from ProjectDocumentPermission p where p.projectDocumentId.id IS NULL) and pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.projectMemberId.projectMemberCandidteId =:candidateId";
 						List<ProjectDocumentPermission>  projectDocumentPermissionList = session.createQuery(query2).setLong("folderId", pdf.getId()).setLong("candidateId", candidateId).list();
 						if(projectDocumentPermissionList.isEmpty()) {
-							String query3 = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.userRoleId =:roleId";
+							String query3 = "from ProjectDocumentPermission pdp  where pdp.access IN( select max(access) from ProjectDocumentPermission p where p.projectDocumentId.id IS NULL) and pdp.projectDocumentFolderId.id = :folderId and pdp.projectDocumentId.id IS NULL and  pdp.userRoleId =:roleId";
 							List<ProjectDocumentPermission>  projectDocumentPermissionList2 = session.createQuery(query3).setLong("folderId", pdf.getId()).setLong("roleId", roleId).list();
 							if(!projectDocumentPermissionList2.isEmpty()) {
 								for(ProjectDocumentPermission pdp:projectDocumentPermissionList2) {

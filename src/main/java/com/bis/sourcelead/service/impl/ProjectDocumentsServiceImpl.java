@@ -315,4 +315,9 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 	public Boolean validateProjectDocumentFolderNameByProjectIdIdAndFolderName(Long projectId, String folderName) throws Exception {
 		return genericDao.validateProjectDocumentFolderNameByProjectIdIdAndFolderName(projectId, folderName);
 	}
+
+	@Override
+	public Boolean validateProjectDocumentNameByProjectIdIdAndDocumentName(Long projectId, String documentName) throws Exception {
+		return genericDao.validateProjectDocumentNameByProjectIdIdAndDocumentName(projectId, documentName);
+	}
 }
