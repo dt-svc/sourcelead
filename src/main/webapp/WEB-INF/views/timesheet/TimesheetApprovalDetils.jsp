@@ -1,7 +1,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<style>
+.timeNewSe_week_date .chosen-drop{
+   width : 225px !important;
+} 
+.timeNewSe_client .chosen-drop{
+   width: 190px !important;
+}
 
+</style>
 <div class="timesheetNewHead" id ="timeApprovaldiv">
 <div class="timeNewSe timeNewSe_month addicon">
 	<select id="frequencyMonth" name="frequencyMonth" class="form-control chosen-select" onchange="timesheetApprovalDetils('month');">
@@ -46,6 +54,7 @@
 		</c:forEach>
 	</select>
 </div>
+<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div class="export dropexport" onclick="dropDown();" id="exportHideId">
 	<p data-toggle="tooltip" title="Export">
 		<i class="glyphicon glyphicon-export"></i>
@@ -57,6 +66,7 @@
 			<i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
 	</ul>
 </div>
+</c:if>
 
 <div class="remove_search">
        		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">

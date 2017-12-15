@@ -16,33 +16,4 @@
  <div id="timesheetDivByFrequency">
     <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
  </div>
- <script>
-	function timesheetDivByFrequency(currentTimeSubFrequency){ 
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	               var projectMemberId = $("#projectMemberId").val();
-	               var currentTimeFrequency = $("#timesheetFrequency").val();
-	               var subFrParam = '';
-	               if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-	            	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
-	               }
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	               $.ajax({
-		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor=user"+subFrParam,		
-	        		      success :function(data) {
-	        		    	  $("#timesheetDivByFrequency").empty();
-	        		    	  $("#timesheetDivByFrequency").append(data);
-	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
-	        		    	  }
-	        		    	  $("#loadTime").removeAttr('style');
-	        		      }
-	        	    }); 
-	}
-</script> 
- 
- 
- 
- 
 <script type="text/javascript"	src='resources/js/slead-common.js?staticTime=${staticTime}'></script>

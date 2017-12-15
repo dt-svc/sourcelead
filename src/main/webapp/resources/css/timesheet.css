@@ -2229,6 +2229,7 @@ margin-bottom:15px !important;
 .timeNewSe.timeNewSe_a {
     width:240px;
 }
+
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
 }
@@ -6607,6 +6608,12 @@ text-shadow: 0 1px 0 #fff;
 	margin: 50px 0px 0px 0px !important;
 }
 
-
-
-
+.timeNewStatus {
+	float: right; width: 240px;
+}
+.timeNewStatus b {
+	width: 45%;
+}
+.timesheetApproved-status {
+    float: right; width: 320px !important;
+}

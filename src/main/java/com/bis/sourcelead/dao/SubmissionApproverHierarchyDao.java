@@ -15,6 +15,10 @@ public interface SubmissionApproverHierarchyDao {
 	public void saveAllSubmissionApproverHierarchy(List<SubmissionApproverHierarchy> submissionApproverHierarchyList)throws Exception;
    
 	public SubmissionApproverHierarchy updateSubmissionApproverHierarchy(SubmissionApproverHierarchy submissionApproverHierarchy)throws Exception;
+	
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectApproverHierarchyId(Long projectApproverHierarchyId);
+	
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(Long projectApproverHierarchyId,Long submissionId);
    
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id)throws Exception;
    

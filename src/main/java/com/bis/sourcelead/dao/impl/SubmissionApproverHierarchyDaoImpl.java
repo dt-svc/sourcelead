@@ -855,6 +855,32 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 		return 	tslist;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectApproverHierarchyId(Long projectApproverHierarchyId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where hierarchy.id = :projectApproverHierarchyId)" ;
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("projectApproverHierarchyId", projectApproverHierarchyId).setCacheable(true).list(); 
+		return 	tslist;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(Long projectApproverHierarchyId,Long submissionId){
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp where hierarchy.id = :projectApproverHierarchyId)" ;
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("projectApproverHierarchyId", projectApproverHierarchyId).setCacheable(true).list(); 
+		SubmissionApproverHierarchy sah = null;
+		if(tslist != null && !tslist.isEmpty()){
+			sah = tslist.iterator().next();
+		}
+		return sah;
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
