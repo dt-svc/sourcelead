@@ -1027,13 +1027,47 @@ function requirementsFilter(type){
 
 <script>
 function getOpenJobsELKListJOBS(){
-	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-	var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
-	openJobsRequirementTitle = search;
-	location.href = "/jobs/"+(openJobsRequirementTitle!=""?openJobsRequirementTitle:"all")+"/"+(openJobsLocation!=""?openJobsLocation:"all")+"/"+(openJobsExperience!=""?openJobsExperience:"all");
-}
+		var sourceleadUrl = '${sourceleadUrl}';
+		var str = sourceleadUrl;
+		var sourceleadUrl1 = str.replace("app", "");
+		var url = "";
+		var openJobsRequirementTitle = document
+				.getElementById("openJobsRequirementTitleId").value;
+		if (openJobsRequirementTitle != null && openJobsRequirementTitle != ''
+				&& openJobsRequirementTitle != 'undefined') {
+			url += "/" + openJobsRequirementTitle;
+		} else {
+			url += "/all";
+		}
+		var openJobsLocation = document.getElementById("openJobsLocationId").value;
+		if (openJobsLocation != null && openJobsLocation != ''
+				&& openJobsLocation != 'undefined') {
+			url += "/" + openJobsLocation;
+		} else {
+			url += "/all";
+		}
+		var openJobsExperience = document
+				.getElementById("openJobsExperienceId").value;
+		if (openJobsExperience != null && openJobsExperience != ''
+				&& openJobsExperience != 'undefined') {
+			url += "/" + openJobsExperience;
+		}
+
+		if ((openJobsRequirementTitle == null || openJobsRequirementTitle == '' || openJobsRequirementTitle == 'undefined')
+				&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+				&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+			location.replace(sourceleadUrl1 + "jobs");
+		} else if ((openJobsRequirementTitle != null
+				&& openJobsRequirementTitle != '' && openJobsRequirementTitle != 'undefined')
+				&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+				&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+			location.replace(sourceleadUrl1 + "jobs/"
+					+ openJobsRequirementTitle);
+		} else {
+			location.replace(sourceleadUrl1 + "jobs" + url);
+		}
+
+	}
 </script>
 
 <script>

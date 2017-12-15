@@ -90,6 +90,14 @@ public class OpenJobsRestController {
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
+	if("all".equalsIgnoreCase(openJobsRequirementTitle) || "all".equalsIgnoreCase(openJobsLocation)){
+		
+		openJobsRequirementTitle=openJobsRequirementTitle.replace("all","");
+		
+		openJobsLocation=openJobsLocation.replace("all","");
+		
+	}
+	
 		if ((null != openJobsRequirementTitle && !"".equalsIgnoreCase(openJobsRequirementTitle))
 				|| (null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation))
 				|| (null != openJobsExperience && !"".equalsIgnoreCase(openJobsExperience)
@@ -120,6 +128,50 @@ public class OpenJobsRestController {
 					boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
 			}
+			
+			JSONObject jsonObj1 = new JSONObject();
+			JSONObject json1 = jsonObj1.put("location", openJobsLocation);
+			if (jsonObj1.has("location") && !"".equalsIgnoreCase(jsonObj1.getString("location"))) {
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(json1, "location");
+				if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : anyKeyWordArray) {
+						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
+							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					boolQueryBuilder.must(anyBoolQueryBuilder);
+				}
+			}
+			
+			
+			JSONObject jsonObj2 = new JSONObject();
+			JSONObject json2 = jsonObj2.put("experience", openJobsExperience);
+			if (jsonObj2.has("experience") && !"".equalsIgnoreCase(jsonObj2.getString("experience"))) {
+				ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(json2, "experience");
+				if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
+					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+					for (String keywd : anyKeyWordArray) {
+						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+						ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+						matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+						matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
+							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
+								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							}
+							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+						}
+					}
+					boolQueryBuilder.must(anyBoolQueryBuilder);
+				}
+			}
+			
 
 			BoolQueryBuilder openJobsLocationQueryBuilder = QueryBuilders.boolQuery();
 			BoolQueryBuilder openJobscombinedQueryBuilder = QueryBuilders.boolQuery();
@@ -134,37 +186,8 @@ public class OpenJobsRestController {
 			boolQueryBuilder.must(combinedQueryBuilder);
 			boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
 
-			/*
-			 * BoolQueryBuilder openJobsExperienceQueryBuilder =
-			 * QueryBuilders.boolQuery(); BoolQueryBuilder
-			 * combinedExperienceQueryBuilder = QueryBuilders.boolQuery();
-			 * boolQueryBuilder.must(QueryBuilders.rangeQuery("minExperience").
-			 * gte(new
-			 * Integer(openJobsExperience)).lte(combinedExperienceQueryBuilder))
-			 * ; combinedExperienceQueryBuilder.should(QueryBuilders.rangeQuery(
-			 * "maxExperience").lt(openJobsExperience));
-			 * openJobsExperienceQueryBuilder.must(
-			 * combinedExperienceQueryBuilder);
-			 */
-
-			if (null != openJobsRequirementTitle && !"".equalsIgnoreCase(openJobsRequirementTitle)
-					&& null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation) && null != openJobsExperience
-					&& !"".equalsIgnoreCase(openJobsExperience)) {
-				combinedQueryBuilder.must(openJobsRequirementQueryBuilder);
-				if(openJobsLocation != null){
-				combinedQueryBuilder.must(openJobsLocationQueryBuilder);
-				
-				}
-				// combinedQueryBuilder.must(openJobsExperienceQueryBuilder);
-			} else {
-				combinedQueryBuilder.should(openJobsRequirementQueryBuilder);
-				if(openJobsLocation != null){
-				combinedQueryBuilder.should(openJobsLocationQueryBuilder);
-				}
-				// combinedQueryBuilder.should(openJobsExperienceQueryBuilder);
-			}
-			boolQueryBuilder.must(combinedQueryBuilder);
-		} else {
+		}
+		else {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 			boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
 
@@ -558,10 +581,10 @@ public class OpenJobsRestController {
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
-			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+//			Float expYears = Float.valueOf(matcher.group());
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 		}
 
 		return matchQueryBuilderList;
