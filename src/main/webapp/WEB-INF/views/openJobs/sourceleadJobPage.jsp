@@ -74,13 +74,13 @@ function getPostValueDetails(){
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if('${requirementUUID != null}'){
-			getOpenJobsRequirementSummary('${requirementUUID}');
-			getDropDownCount();
-		}else{
-		getOpenJobsELKList();
+// 		if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
+// 			getOpenJobsRequirementSummary('${requirementUUID}');
+// 			getDropDownCount();
+// 		}else{
+// 		getOpenJobsELKList();
 		getDropDownCount();
-	  }
+// 	  }
 	});
 </script>
  
