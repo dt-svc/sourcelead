@@ -109,7 +109,7 @@
 			  
 			  <div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
-					  <div class="col-md-6"><input name="isRequired"  value="${customFormPopDetails.isRequired}" id="isRequired" class="toggle-required" type="checkbox"></div>
+					  <div class="col-md-6"><input name="isRequired" value="${customFormPopDetails.isRequired}" id="isRequired" class="toggle-required" type="checkbox"></div>
 				</div>
 			  
 				<div class="clearfix"></div>
@@ -337,8 +337,18 @@ function getSelectedFieldDetails(){
 </script>
  
  <script>
+ $('#isRequired').click(function() {
+	        var value = $(this).val();	
+	        if( $( this ).attr( 'type' ) === 'checkbox' ) {
+	            value = +$(this).is( ':checked' );
+	            $('#isRequired').attr("value",value);
+	        }
+});	
+ </script>
+ 
+ <script>
  function saveAddFormField(){
-	 if ($('#saveAddForm_form').validate(false, validationSettings)){   
+	 if ($('#saveAddForm_form').validate(false, validationSettings)){
 	    var formData = getFormData1("saveAddForm_form");
 	    var selectedSectionID = $("#addFieldSection").val();
 		 $.ajax({

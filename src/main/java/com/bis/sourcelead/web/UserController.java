@@ -21,12 +21,14 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -66,6 +68,8 @@ public class UserController {
 	@Autowired
     CountriesService countriesService;
 	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
 	
 	/**
 	 * To forward user creation jsp page
@@ -94,8 +98,9 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
-		    
-		    model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
+		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+		     model.addObject("actionId",action.getId());
+		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    

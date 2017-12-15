@@ -53,7 +53,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			orgLocFormFields.setLabelName(orgLocFormFieldsDTO.getLabelName());
 		}
 		orgLocFormFields.setLabelInfo(orgLocFormFieldsDTO.getLabelinfo());
-		orgLocFormFields.setFieldName(orgLocFormFieldsDTO.getFieldName());
+		orgLocFormFields.setFieldName(orgLocFormFieldsDTO.getLabelName().toLowerCase().replaceAll("\\s",""));
 		orgLocFormFields.setFieldType(orgLocFormFieldsDTO.getFieldType());
 		orgLocFormFields.setFieldDesc(orgLocFormFieldsDTO.getFieldDescription());
 		orgLocFormFields.setPlaceHolder(orgLocFormFieldsDTO.getPlaceHolder());

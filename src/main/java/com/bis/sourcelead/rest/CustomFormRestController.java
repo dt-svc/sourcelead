@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -42,12 +43,16 @@ public class CustomFormRestController {
 	private OrglocationFormFieldsService orglocationFormFieldsService;
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
-    public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
+    public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,@RequestParam(value = "requestFrom", required=false) String requestFrom, HttpServletRequest request) throws Exception {
     	ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
     	model.addObject("SourceleadForm_Sections",sections);
-    	model.setViewName("customForms/customFormSections");
+    	if(requestFrom != null && StringUtils.isNotBlank(requestFrom) && StringUtils.isNotEmpty(requestFrom) && requestFrom.equalsIgnoreCase("genericCustomPage") ) {
+    		model.setViewName("users/genericCustomFormFields");
+    	}else {
+    		model.setViewName("customForms/customFormSections");
+    	}
     	return model;
     }
 	 
@@ -63,5 +68,9 @@ public class CustomFormRestController {
 		List<OrglocationFormFields> orglocationFormField  = orglocationFormFieldsService.getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId,orgLocation.getId());
 		return orglocationFormField;
     }
+    
+    
+    
+    
     
 }
