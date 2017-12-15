@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -422,7 +423,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			 
-			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser left join fetch spoc.clientUser where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
 			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;
@@ -659,6 +660,21 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where orgrelation.id = :orgRelationId and spoc.vendorUser.id = :vendorUserId and spoc.status = '1' "); 
 			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("vendorUserId", vendorUserId).setCacheable(true).list();
 			return spocsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public OrgSpoc getOrgSpocByUUID(String UUID) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+		   	 String query = ("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch spoc.clientUser left join fetch spoc.vendorUser where spoc.UUID = :UUID ");
+		      List<OrgSpoc> orgSpocs = session.createQuery(query.toString()).setString("UUID", UUID).setCacheable(true).list();
+		      OrgSpoc orgSpoc = null;
+				if(orgSpocs != null && !orgSpocs.isEmpty())
+				{
+					orgSpoc = orgSpocs.iterator().next();
+				}
+				return orgSpoc;
 		}
 
 }

@@ -93,6 +93,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ContractRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractRestController.class);
@@ -220,6 +221,9 @@ public class ContractRestController {
 			}
 			
 		}
+		
+		
+		
 		/*if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
 		if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
@@ -705,6 +709,8 @@ public class ContractRestController {
 		 	
 		 	}
 		 	
+		 	contract.setOrgRelationUUID(contract.getOrgRelations().getUUID());
+		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();
 		 		if(null != contract.getApproverUser().getLastName() && "" != contract.getApproverUser().getLastName()){
@@ -934,7 +940,7 @@ public class ContractRestController {
 		}
 	 
 
-	 @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
 	 public void downloadContractDocument(@RequestParam(value="contractUUID", required=false) String contractUUID, HttpServletResponse response) throws Exception {
 			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsByContractUUID(contractUUID);
 			if(null != contractRequestDocuments){
@@ -961,7 +967,7 @@ public class ContractRestController {
 				} 
 			}
 
-	 }
+	 }*/
 	 
 	 @RequestMapping(value = "/updateContractEndDate", method = RequestMethod.POST)
 	 public @ResponseBody String updateContractEndDate(@RequestParam(value = "contractId", required = false) String contractId,@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception {

@@ -64,6 +64,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String recruiterRegisterCountry;
 		
+		private String ssn;
+		
 		private Set<UserRole> userRole = new HashSet<UserRole>(0);
 		
 		private Set<Employees> employee = new HashSet<Employees>(0);
@@ -150,6 +152,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String registeredOrgLocationId;
 		
 		private String registredOrgId;
+		
+		private String userId;
 
 		public String getFirstName() {
 			return firstName;
@@ -681,7 +685,22 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setRegistredOrgId(String registredOrgId) {
 			this.registredOrgId = registredOrgId;
 		}
-		
-		
+
+		public String getSsn() {
+			return ssn;
+		}
+
+		public void setSsn(String ssn) {
+			this.ssn = ssn;
+		}
+		public String getUserId(){
+			return userId;
+		}
+
+		public void setUserId(String userId){
+			this.userId = userId;
+
+		}
+			
 		
 }

@@ -6,17 +6,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
 	 }
-		 
 });	
 </script>
 <script>
@@ -169,7 +167,7 @@ function backoutCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
   <div class="timesheet_out">
     
@@ -525,7 +523,7 @@ function activeTabs(){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -600,6 +598,8 @@ function cancelAlert12(){
 	$("#rejectRequirementAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".remove_user_pop").hide();
+	$('#approverbut').show();
+	$('#rejectedbut').show();
 	
 }
 </script>
@@ -612,7 +612,7 @@ function cancelAlert12(){
 <script type="text/javascript">
 function rejectRequirementAlertMessage(status){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+/* 	result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
@@ -838,7 +838,7 @@ function viewOfferDocument(offerID,title){
 </script>
 
 
-<div class='project_inn_mask projectMask-zindex'></div>
+<!-- <div class='project_inn_mask projectMask-zindex'></div> -->
 <div id="popUp"></div>
 <div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
@@ -1036,58 +1036,27 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
-							var result = '';
-							result = result +'     <div class="clearfix mt5 mb">'; 
-						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-						    result = result +'         <thead>';
-						    result = result +'         <tr>';
-						    result = result +'         <th>Name</th>';
-						    result = result +'         <th>Role</th>';
-						    result = result +'         <th>Team</th>';
-						    result = result +'         <th>No. of Applicants</th>';
-						    result = result +'         </tr>';
-						    result = result +'         </thead>';
-						    result = result +'         <tbody>';
-						    for (var i=0; i<json.length; i++)
-			   				{
-						    var report = json[i];
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>';
-						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
-						    	result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserRole+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						     
-						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
-						    	 result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.teamName+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.applicantCount+'</div></td>';
-						    result = result +'         </tr>';
-			   				}
-						     result = result +' </div> '; 
-						    
-						    $("#assignedMemberList").empty();
-						    $("#assignedMemberList").append(result);
-                 }else{
-						$("#assignedMemberList").removeAttr("style");
-       	    	          var result ="";
-      					 result = result+"   <div class='dataTables_empty'>"; 
-      					$("#assignedMemberList").empty();
-      				    $("#assignedMemberList").append(result); 
-                      }
-               },
-                 
-            }); 
+	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	
+		var result = '';
+		result = result +'     <div class="clearfix mt5 mb require_wrap_table datatable_filter">';
+		  /* result = result + " <div class='remove_search searchCustom'>";
+			result = result
+					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
+			result = result + "</div>"; */
+	    result = result +'         <table id="requirementAssignedToPagination" class="clearfix mb">';
+	    result = result +'         <thead>';
+	    result = result +'         <tr>';
+	    result = result +'         <th>Name</th>';
+	    result = result +'         <th>Role</th>';
+	    result = result +'         <th>Team</th>';
+	    result = result +'         <th>No. of Applicants</th>';
+	    result = result +'         </tr>';
+	    result = result +'         </thead>';
+	    result = result +'         <tbody>';
+	    $("#assignedMemberList").empty();
+		$("#assignedMemberList").append(result);
+		requirementAssignedMembersList(url, requirementId);
 }
 </script>
 
@@ -1208,7 +1177,7 @@ function reqNotes(requirementId){
    	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
    	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
@@ -1433,7 +1402,7 @@ function requirementRecommendations(requirementId){
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 			 var file =  report.currentResumeName;
 			  var fileName = file.substr(0,5);
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
+		  	   result = result +'<td class="text-center"><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
 			  }else{
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
@@ -1749,7 +1718,7 @@ function clientSideBar(candidateId,recScore){
 			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 			               }else{
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	   
 			               }
 						if(recScore != null && recScore != '' && recScore != 'undefined'){
@@ -2333,7 +2302,7 @@ function getRateListDiv(submissionId, candidateId){
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
@@ -2383,7 +2352,6 @@ function exportPipelineToExcel(requirementId,submissionType){
           window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2409,7 +2377,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
+			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2875,97 +2843,17 @@ function customizeScore(requirementId){
 		 		    	   minMaxExperience();
 		 		       });
 		 		       
-		    			   //Adding Customized Skills to the list
-		    	        var select, chosen;
-		    		    select = $("#customizeSkills");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    		    chosen = select.data('chosen');
-		    		   
-		    		    chosen.search_field.on('keydown keyup', function(e)
-		    				    {
-		    				    	   var skillsArray = this.value.split(",");
-		    					    	 if(skillsArray.length > 1){
-		    				        		 for (var i=0; i < skillsArray.length; i++) {
-		    				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		    				        			 select.append(option);
-		    				 		             select.find(option).prop('selected', true);
-		    				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		    				 	        		 $("#customizeSkills").trigger("chosen:updated");
-		    				                 }
-		    					    	 }else{
-		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		    				                {
-		    				    				 preventTabkey(e);
-		    				    				 var isNewSkill = true;
-		    				                     $("#customizeSkills option:selected").each(function(){
-		    										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-		    												isNewSkill = false;
-		    												return false;
-		    										 }
-		    				                   });
-		    								   if(isNewSkill){
-		    										select.append(option);
-		    								   }
-		    				    				 
-		    				                   $("#customizeSkills").trigger("chosen:updated");
-		    				                }
-		    						       
-		    			    	         }
-		    		    	});
-		    		    
-		    		    //Adding Customized Skills to the list
-		    		    
-		    		    
+			          //Adding Customized Skills Keyword to the list 
+		 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
+			          
+		    		  //Adding Customized Educaton to the list 
+		 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
+
+		 		       
 		    		  //Adding Customized Any Of Keyword to the list 
-		    		     var selectone, chosenone;
-		    		     selectone = $("#anyKeyWord");
-		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keydown keyup', function(e5)
-		    		    {
-		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
-		    		        {
-		    		        	 preventTabkey(e5);
-		    		        	var par = this.parent;
-		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            selectone.append(option);
-		    		            selectone.find(option).prop('selected', true);
-		                        $("#anyKeyWord option").each(function(){
-		                              $(this).siblings("[value='"+ this.value+"']").remove();
-		                        });
-		    	        		$("#anyKeyWord").trigger("chosen:updated");
-		    	        		
-		    		        }
-		    		    }); 
-		    		    
-		    		    
-		    		    //Adding Customized Educations to the list 
-		    		    var selectTwo, chosenTwo;
-		    		    selectTwo = $("#education");
-		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    		    chosenTwo = selectTwo.data('chosen');
-		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
-		    		    {
-		    		    	var newEducation = this.value.replace("\'","");
-		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		    			        {
-		    		    		   preventTabkey(e1); 
-		    		    		   var par = this.parent;
-		    			            var option = $("<option>").val(newEducation).text(newEducation);
-		    			            selectTwo.append(option);
-		    			            selectTwo.find(option).prop('selected', true);
-		    			            
-		    			            $("#education option").each(function(){
-		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
-		    	                   });
-		    			            
-		    			            $("#education").trigger("chosen:updated");
-		    			           
-		    			        }
-		    		    
-		    		    });
+		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
+		    		     
+		    		   
 		    }
 	 });
 	
@@ -3041,7 +2929,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -3088,7 +2976,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -3223,7 +3111,7 @@ function loadFile(event,candidateId){
 <script type="text/javascript">
 function recommendationAlertMessage(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3253,7 +3141,7 @@ function refreshImageBlock(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 						 }else{
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	 
 						 }
 						 result = result+'  <div class="btn-group uploadfile">';
@@ -3297,9 +3185,9 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
+	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
@@ -3331,7 +3219,7 @@ function deleteProfileImage(candidateId){
 <script type="text/javascript">
 function saveOrCancel(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3377,7 +3265,7 @@ function saveCandidateImage(candidateId){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -3456,7 +3344,5 @@ return result;
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
-
-
-
+<jsp:include page="requirementAssignedToList.jsp"></jsp:include>
 

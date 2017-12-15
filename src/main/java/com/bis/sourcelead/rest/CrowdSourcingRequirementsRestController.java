@@ -51,6 +51,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ContactsGroupDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
@@ -72,9 +74,11 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SavedJobs;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
@@ -97,6 +101,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
 	
 	@Value("${sourceleadUrl}")
@@ -155,17 +160,20 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	ContactsGroupService contactsGroupService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/ws/getUserById/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserById/{id}", method = RequestMethod.GET)
 	public String getAllOrgs(@PathVariable Long id) throws Exception {
 		
 		
 		return commonUtil.toJSON(userService.getUserById(id));
 	}
-	@RequestMapping(value = "/ws/getAllUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllUsers", method = RequestMethod.GET)
 	public @ResponseBody String getAllUsers() throws Exception {
 		//userService.getUsers()
 		//getAllOrgLocations
@@ -1376,7 +1384,7 @@ public class CrowdSourcingRequirementsRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
       		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
       		
-      		String[] tableColumns = {"contactName", "email", "phone", "source"};
+      		String[] tableColumns = {"contactName", "groups", "email", "phone", "source"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "desc"; //by default referContactsDTO order
 			if(referContactsDTO.getOrder() != null && !referContactsDTO.getOrder().isEmpty()) {
@@ -1392,8 +1400,28 @@ public class CrowdSourcingRequirementsRestController {
 
 		}
 		
+		@RequestMapping(value = "/refercontactListToGroup", method = RequestMethod.POST)
+		public @ResponseBody String assignHotListCandiddatesToTeam(
+				@RequestParam(value = "groupId", required = false) Long groupId,
+				@RequestParam(value = "contactsList", required = false) String contactsList, HttpServletRequest request)
+				throws Exception {
+
+			contactsGroupService.saveContactsReferContactGroup(groupId, contactsList);
+
+			return "success";
+		}
 		
 		
+		@RequestMapping(value = "/getGroups", method = RequestMethod.POST)
+		public @ResponseBody String getGroups(HttpServletRequest request) throws Exception
+		{
+			String resultJson = null;
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
+			resultJson = toJSON(contactsGroupList);
+			return resultJson;
+					
+		}
 		
 		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/getJobSummaryDoNutChart", method = RequestMethod.GET)
@@ -2195,7 +2223,7 @@ public class CrowdSourcingRequirementsRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			RequirementRefer refer = new RequirementRefer();
-			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
 			
@@ -2217,9 +2245,9 @@ public class CrowdSourcingRequirementsRestController {
 	    	    int lastDate = c.getActualMaximum(Calendar.DATE);
 	    	    c.set(Calendar.DATE, lastDate);	
 	    	    endDate = df.format(c.getTime());
-	    	    
-	    	    jobPortletsStartDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),startDate);
-	    	    jobPortletsEndDate =  commonUtil.orgLocationDateFormat(orglo.getDateFormat(),endDate);
+	    	   
+	    	    jobPortletsStartDate =  sdf.parse(startDate);
+				jobPortletsEndDate =  sdf.parse(endDate);
 			}
 			
     		
@@ -2357,14 +2385,14 @@ public class CrowdSourcingRequirementsRestController {
 				try {
 					referContacts = referContactsService.getReferContactsById(contactUserId);
 
-					if (referContacts != null && referContacts.getDocFile() != null) {
+					/*if (referContacts != null && referContacts.getDocFile() != null) {
 						InputStream in = new ByteArrayInputStream(referContacts.getDocFile());
 						BufferedImage bi = ImageIO.read(in);
 						OutputStream out = response.getOutputStream();
 						ImageIO.write(bi, "jpg", out);
 						out.close();
 					}
-
+*/
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -2425,6 +2453,81 @@ public class CrowdSourcingRequirementsRestController {
 		 }
 		 
 		 
+		@RequestMapping(value = "/addContactsGroup", method = RequestMethod.POST)
+		public String addContactsGroup(ContactsGroupDTO contactsGroupDTO,
+					HttpServletRequest request,HttpServletResponse response)
+					throws Exception {
+
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				contactsGroupService.addContactsGroup(contactsGroupDTO, user);
+							
+				return "success";
+
+			}
+		
+		   @RequestMapping(value = "/validateGroupName",  method = RequestMethod.GET)
+		   public @ResponseBody String validateGroupName(@RequestParam(value="groupName", required=false) String groupName,
+				   @RequestParam(value="groupId", required=false) Long groupId,HttpServletRequest request) throws Exception {
+			  
+			    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    String result = "valid";
+			    ContactsGroup contactsGroup = null;
+			    
+				if(groupId != null){
+					contactsGroup  = contactsGroupService.getContactsGroupByGroupId(groupId);
+					if(contactsGroup.getGroupName().equalsIgnoreCase(groupName)){
+						result = "valid";
+					}else{
+						contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
+						if(null != contactsGroup){
+							result = "invalid";
+						}else{
+							result = "valid";
+						}
+					}
+				}
+				
+				else{
+					contactsGroup = contactsGroupService.findByContactsGroupAndUserId(groupName, user.getId());
+					if(null != contactsGroup){
+						result = "Invalid";
+					}else{
+						result = "valid";
+					}
+				}
+			   
+				return result;
+		   }
+			
+		@RequestMapping(value = "/getContactsGroupList", method = RequestMethod.POST)
+		public List<ContactsGroup> getContactsGroupList(ContactsGroupDTO contactsGroupDTO,
+					HttpServletRequest request,HttpServletResponse response)
+					throws Exception {
+
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				List<ContactsGroup> contactsGroupList =	contactsGroupService.getContactsGroupListByUserId(user.getId());
+							
+				return contactsGroupList;
+
+			}
+		
+		@RequestMapping(value = "/getContactsGroupByGroupID", method = RequestMethod.POST, headers = "Accept=application/json")
+		public @ResponseBody String getContactsGroupByGroupID(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request) throws Exception
+		{
+			String resultJson = null;
+			ContactsGroup contactsGroup = contactsGroupService.getContactsGroupByGroupId(groupId);
+			if (contactsGroup != null) {
+				resultJson = commonUtil.toJSON(contactsGroup);
+			}
+			return resultJson;
+		}
+		
+		@RequestMapping(value = "/deleteContactsGroupById", method = RequestMethod.POST, headers = "Accept=application/json")
+		public String deleteContactsGroupById(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request) throws Exception
+		{
+			contactsGroupService.deleteContactsGroupById(groupId);
+			return "success";
+		}
 		
 		public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

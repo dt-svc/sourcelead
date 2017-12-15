@@ -66,7 +66,7 @@ function projectTask(projectId, status) {
 	}
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';
 		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
 			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
@@ -76,7 +76,7 @@ function projectTask(projectId, status) {
 		result = result	+ '	</li>';
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';
 		
 		<c:forEach var="status" items="${taskStatusList}">     
@@ -92,7 +92,7 @@ function projectTask(projectId, status) {
 		result = result	+ '	</li>';
 		
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Task Type</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';   
 		<c:forEach var="type" items="${taskTypeList}">        
 		 
@@ -286,7 +286,7 @@ function projectTaskPaginations(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -400,8 +400,8 @@ function editCancel(){
     <div id="addTaskPopupDivId"></div>
   </div>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 
  <script>
  function showtasktype(){
@@ -594,7 +594,11 @@ function editCancel(){
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Due Date</label>';
 			result = result	+ '           <div class="col-md-8">';
+			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
+			 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+			 result = result +'</div>';
+			 
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
@@ -903,3 +907,9 @@ $('body').on('blur', '#projectTask_form', function() {
 	})(jQuery);
 </script>
  
+ <script>
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+
+</script>

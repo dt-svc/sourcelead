@@ -9,7 +9,7 @@
         <h2>View Expense</h2>
       </div>
       
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; View Expense</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expenses'/>">My Expenses</a> &raquo; View Expense</div>
     </section>  
     <div class="project_tabs"> 
             <div class="project_tabs_inn_table">
@@ -71,11 +71,23 @@
 					</div>
 					 <div class="project_details_cta">
 						<strong>Client:</strong><span> 
+						
+						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						  <c:if test="${pm.masterCandidateId == expenses.masterCandidateId}">
-						   ${pm.clientName}
+						  <c:if test="${pm.projectId == expenses.projectId}">
+						   <a href="<c:url value="/clientDashboard?orgRelationUUID=${pm.orgRelationUUID}"/>"> ${pm.clientName}</a>
 						  </c:if>
 						</c:forEach>
+						</sec:authorize>
+						
+						<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
+						  <c:if test="${pm.projectId == expenses.projectId}">
+						    ${pm.clientName}
+						  </c:if>
+						</c:forEach>
+						</sec:authorize>
+						
 		             </span><div class="clearfix"></div>
 					</div> 
 					<div class="project_details_cta">
@@ -142,7 +154,7 @@
 					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 					                        <c:if test = '${entryDoc.status == 1}'>
 						                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-						                               <a class='downicon' href='${entryDoc.fileURL}'>
+						                               <a class='downicon' href='${entryDoc.fileURL}' download>
 							                                 <i class='glyphicon glyphicon-save'></i>
 												             <input type='button' value='${entryDoc.fileName}'/>
 												        </a>

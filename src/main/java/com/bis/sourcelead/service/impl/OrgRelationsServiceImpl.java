@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -181,8 +184,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					if(orgRelation.getResponderLocationId() !=  null){
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
-							StringBuilder sb =new StringBuilder();
-							orgRelation.setWebSite(sb.append(orgRelation.getResponderLocationId().getWebsite()).toString());
+							orgRelation.setWebSite(orgRelation.getResponderLocationId().getWebsite());
 						}
 						
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
@@ -208,9 +210,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
-						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
-							StringBuilder sb =new StringBuilder();
-							orgRelation.setWebSite(sb.append("www.").append(orgRelation.getResponderLocationId().getWebsite()).toString());
+						if(StringUtils.isNotBlank(orgRelation.getLocationId().getOrg().getWebSite())) {
+							orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 						}
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -563,6 +564,20 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public OrgRelations getOrgRelationsByUUID(String UUID) throws Exception {
 		return orgRelationsDao.getOrgRelationsByUUID(UUID);
+	}
+
+	@Override
+	public ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO,
+			Long id, String status, String vendorsRelationId) throws Exception {
+		return orgRelationsDao.getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(orgRelationDTO, id, status, vendorsRelationId);
+	}
+
+	@Override
+	public ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, Long orgLocationId, String relationType, String vendorStatus, List<Long> vendorOrgLocationsIds)throws Exception {
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
+		ResponseList<OrgSpoc> vandorContactList = orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(orgSpocDTO,loginUserId, userIds, orgLocationId, relationType, vendorStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
+		return vandorContactList;
+	 
 	}
 	
 }

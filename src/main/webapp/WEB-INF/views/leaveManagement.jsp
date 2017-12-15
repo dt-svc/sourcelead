@@ -26,43 +26,83 @@ $(document).ready(function(){
   <div class="clearfix mb">
     <div class="col-md-6">
       <div class="dashboard-widget">
-          <h4 class="pull-left"><a href="<c:url value='/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
-        <div class="clearfix require_wrap_table dashboard-data">
+          <h4 class="pull-left"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
+        <div class="clearfix">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
             <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
             	<li><a data-toggle="tab" href="#employee">Employees</a></li>
             </sec:authorize>
           </ul>
-          <div class="tab-content clearfix mt10">
+          <div class="tab-content clearfix">
             <div id="self" class="tab-pane fade in active">
-              <div class="db-widget-sm clearfix">
+              <div class="col-md-3 padding_left" style="position:absolute; top:16px; left:140px;">
+                        <label class="pull-left">Balance Leaves</label>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+              </div>
+              <div class="db-widget-sm clearfix row">
                 <div class="width100percnt clearfix">
-                  <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left"> </div>
-                  <div style="width: 40%; height: 105px;" class="countList pull-left">
-                <ul class="list-unstyled  clearfix">
-                    <li class="clearfix">
+                  <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left hidden"> </div>
+                    <div class="clearfix"></div>
+              <div class="mt5 clearfix">
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                    <p class="info-box-number"><span id="selfPendingCounts"></span></p>
+                    <p class="info-box-text" id="selfpend"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                   <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
+                   <p class="info-box-text" id="selfapp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                  <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
+                  <p class="info-box-text" id="selfrej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                  <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
+                  <p class="info-box-text" id="selfcanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+            
+                <ul class="list-unstyled  clearfix hidden">
+                    <%-- <li class="clearfix">
                         <label class="pull-left">Pending Leaves</label>
-                        <a href="<c:url value='/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
+                        <a href="<c:url value='${appPath}/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
-                    </li>
-                      <li class="clearfix">
+                        <a href="<c:url value='${appPath}/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
+                    </li> --%>
+                      <!-- <li class="clearfix">
                         <label class="pull-left">Balance Leaves</label>
                         <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
-                    </li>
+                    </li> -->
                 </ul>
-                    </div>
+                    
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 mb hidden">
@@ -79,24 +119,63 @@ $(document).ready(function(){
                 
             <div class="db-widget-sm clearfix">
                 <div class="width100percnt clearfix">
-                  <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div>
-                  <div style="width: 40%; height: 105px;" class="countList pull-left">
+                <div class="clearfix"></div>
+                <div class="mt5 clearfix row">
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                    <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
+                    <p class="info-box-text" id="empReq"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                    <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
+                    <p class="info-box-text" id="empApp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                    <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
+                    <p class="info-box-text" id="empRej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                  <div class="info-box-content text-center">
+                    <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
+                    <p class="info-box-text" id="empCanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+                
+                
+                
+                  <!-- <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div> -->
+                  <div style="width: 40%; height: 105px;" class="countList pull-left hidden">
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -141,25 +220,37 @@ function getEmployeeTotalCounts(){
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
-	      				$('#empReq').removeAttr("href");
+// 	      				$('#empReq').removeAttr("href");
+	      				$('#empReq').html("Requested");
+	      			   }else{
+	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
     		   if(report.employeeApprovedCounts != null && report.employeeApprovedCounts != '' && report.employeeApprovedCounts != 'undefined'){
     			   if(report.employeeApprovedCounts == 0){
-    	   				$('#empApp').removeAttr("href");
+//     	   				$('#empApp').removeAttr("href");
+    	   				$('#empApp').html("Approved");
+    	   			   }else{
+    	   				$('#empApp').html("<a href='/sourcelead/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
     		   if(report.employeeRejectedCounts != null && report.employeeRejectedCounts != '' && report.employeeRejectedCounts != 'undefined'){
     			   if(report.employeeRejectedCounts == 0){
-    	   				$('#empRej').removeAttr("href");
+//     	   				$('#empRej').removeAttr("href");
+    	   				$('#empRej').html("Rejected");
+    	   			   }else{
+    	   				$('#empRej').html("<a href='/sourcelead/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
     		   if(report.employeeCancelledCounts != null && report.employeeCancelledCounts != '' && report.employeeCancelledCounts != 'undefined'){
     			   if(report.employeeCancelledCounts == 0){
-    	   				$('#empCanc').removeAttr("href");
+//     	   				$('#empCanc').removeAttr("href");
+    				    $('#empCanc').html("Cancelled");
+    	   			   }else{
+    	   				$('#empCanc').html("<a href='/sourcelead/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
@@ -232,25 +323,38 @@ function getSelfTotalCounts(){
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
-   				$('#selfpend').removeAttr("href");
+//    				$('#selfapp').removeAttr("href");
+   				$("#selfpend").html("Pending"); 
+   			   }else{
+   				$("#selfpend").html("<a href='/sourcelead/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
    		   if(report.selfApprovedCounts != null && report.selfApprovedCounts != '' && report.selfApprovedCounts != 'undefined'){
    			if(report.selfApprovedCounts == 0){
-   				$('#selfapp').removeAttr("href");
+//    				$('#selfrej').removeAttr("href");
+   				$("#selfapp").html("Approved"); 
+   			   }else{
+   				$("#selfapp").html("<a href='/sourcelead/approvedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
    		   if(report.selfRejectedCounts != null && report.selfRejectedCounts != '' && report.selfRejectedCounts != 'undefined'){
    			   if(report.selfRejectedCounts == 0){
-   				$('#selfrej').removeAttr("href");
+//    				$('#selfrej').removeAttr("href");
+   				$("#selfrej").html("Rejected"); 
+   			   }else{
+   				$("#selfrej").html("<a href='/sourcelead/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
    		   if(report.selfCancelledCounts != null && report.selfCancelledCounts != '' && report.selfCancelledCounts != 'undefined'){
+   			   
    			if(report.selfCancelledCounts == 0){
-   				$('#selfcanc').removeAttr("href");
+//    				$('#selfrej').removeAttr("href");
+   				$('#selfcanc').html("Cancelled");
+   			   }else{
+   				$("#selfcanc").html("<a href='/sourcelead/rejectedLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

@@ -580,5 +580,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 			throws Exception {
 		return orgSpocDao.getSpocListByVendorUserIdAndOrgRelationId(orgRelationId, vendorUserId);
 	}
+
+	@Override
+	public OrgSpoc getOrgSpocByUUID(String UUID) throws Exception
+	{
+		return orgSpocDao.getOrgSpocByUUID(UUID);
+	}
 	
 }

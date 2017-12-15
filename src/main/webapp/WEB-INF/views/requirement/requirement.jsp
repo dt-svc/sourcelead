@@ -9,40 +9,22 @@
 	<jsp:include page="requirementClientDetails.jsp"></jsp:include>
 	<jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 	
-	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<c:if test="${empty requirement.id}">
+	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+	</c:if>
 	
+	<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		$(document).ready(function() {
+			//getProjectsList();
 			$("#txtEditor").Editor();
 		});
     </script> 
-
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
-	var requirementAssignedIds ='${requirementAssignedIds}';
-	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
-	{
-		
-		if(requirementAssignedIds != null && requirementAssignedIds != 'undefined' && requirementAssignedIds != ''){
-			var result = "";
-			var requirementAssignedToIds = [];
-			requirementAssignedToIds = requirementAssignedIds.split("&");
-			var count = 1;
-			
-			for (i=0;i < requirementAssignedToIds.length;i++)
-	        {
-	        	 result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='defaultAssignUserId"+count+"' id='defaultAssignUserId"+count+"' value='"+requirementAssignedToIds[i]+"' />";
-	        	 count++;
-	        }
-			result = result+"<input type='hidden' name='defaultAssignedToMaxCount' id='defaultAssignedToMaxCount' value='"+count+"'/>";
-			$("#defaultAssignedToSavingDiv").empty();
-			$("#defaultAssignedToSavingDiv").append(result); 
-			assignedToValidation();
-		}	
-	} 
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
@@ -77,7 +59,7 @@ $(document).ready(function() {
 					
 				}
 			
-			getAllCountries();
+			
 			removeEditButton();
 			disableMonths();
 			
@@ -211,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -291,68 +273,28 @@ $(document).ready(function () {
           </div>
           
           <div class="form-group" id="projectDurationYearsDiv" style="display:none">
-            <label class="col-md-3">Project Duration</label>
+            <label class="col-md-3">Project Duration </label>
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6 dropdown-select">
 						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
 							<option value="">--Select Years--</option>
-	                 <option  ${requirement.projectDurationYears  == '0' ? 'selected' : ''}>0</option>
-	                 <option  ${requirement.projectDurationYears  == '1' ? 'selected' : ''}>1</option>
-	                 <option  ${requirement.projectDurationYears  == '2' ? 'selected' : ''}>2</option>
-	                 <option  ${requirement.projectDurationYears  == '3' ? 'selected' : ''}>3</option>
-	                 <option  ${requirement.projectDurationYears  == '4' ? 'selected' : ''}>4</option>
-	                 <option  ${requirement.projectDurationYears  == '5' ? 'selected' : ''}>5</option>
-	                 <option  ${requirement.projectDurationYears  == '6' ? 'selected' : ''}>6</option>
-	                 <option  ${requirement.projectDurationYears  == '7' ? 'selected' : ''}>7</option>
-	                 <option  ${requirement.projectDurationYears  == '8' ? 'selected' : ''}>8</option>
-	                 <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
-	                 <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
-	                 <option  ${requirement.projectDurationYears  == '11' ? 'selected' : ''}>11</option>
-	                 <option  ${requirement.projectDurationYears  == '12' ? 'selected' : ''}>12</option>
-	                 <option  ${requirement.projectDurationYears  == '13' ? 'selected' : ''}>13</option>
-	                 <option  ${requirement.projectDurationYears  == '14' ? 'selected' : ''}>14</option>
-	                 <option  ${requirement.projectDurationYears  == '15' ? 'selected' : ''}>15</option>
-	                 <option  ${requirement.projectDurationYears  == '16' ? 'selected' : ''}>16</option>
-	                 <option  ${requirement.projectDurationYears  == '17' ? 'selected' : ''}>17</option>
-	                 <option  ${requirement.projectDurationYears  == '18' ? 'selected' : ''}>18</option>
-	                 <option  ${requirement.projectDurationYears  == '19' ? 'selected' : ''}>19</option>
-	                 <option  ${requirement.projectDurationYears  == '20' ? 'selected' : ''}>20</option>
-	                 <option  ${requirement.projectDurationYears  == '21' ? 'selected' : ''}>21</option>
-	                 <option  ${requirement.projectDurationYears  == '22' ? 'selected' : ''}>22</option>
-	                 <option  ${requirement.projectDurationYears  == '23' ? 'selected' : ''}>23</option>
-	                 <option  ${requirement.projectDurationYears  == '24' ? 'selected' : ''}>24</option>
-	                 <option  ${requirement.projectDurationYears  == '25' ? 'selected' : ''}>25</option>
-	                 <option  ${requirement.projectDurationYears  == '26' ? 'selected' : ''}>26</option>
-	                 <option  ${requirement.projectDurationYears  == '27' ? 'selected' : ''}>27</option>
-	                 <option  ${requirement.projectDurationYears  == '28' ? 'selected' : ''}>28</option>
-	                 <option  ${requirement.projectDurationYears  == '29' ? 'selected' : ''}>29</option>
-	                 <option  ${requirement.projectDurationYears  == '30' ? 'selected' : ''}>30</option>
+							<c:forEach var="durationYears" begin="0" end="30" >
+							    <option  ${requirement.projectDurationYears  == durationYears ? 'selected' : ''}>${durationYears}</option>
+							</c:forEach>
 	                   
 						</select>	                 
 	                </div>
 	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
 	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
 							<option value="">--Select Months--</option>
-							 <option  ${requirement.projectDurationMonths  == '0' ? 'selected' : ''}>0</option>
-							 <option  ${requirement.projectDurationMonths  == '1' ? 'selected' : ''}>1</option>
-							 <option  ${requirement.projectDurationMonths  == '2' ? 'selected' : ''}>2</option>
-							 <option  ${requirement.projectDurationMonths  == '3' ? 'selected' : ''}>3</option>
-							 <option  ${requirement.projectDurationMonths  == '4' ? 'selected' : ''}>4</option>
-							 <option  ${requirement.projectDurationMonths  == '5' ? 'selected' : ''}>5</option>
-							 <option  ${requirement.projectDurationMonths  == '6' ? 'selected' : ''}>6</option>
-							 <option  ${requirement.projectDurationMonths  == '7' ? 'selected' : ''}>7</option>
-							 <option  ${requirement.projectDurationMonths  == '8' ? 'selected' : ''}>8</option>
-							 <option  ${requirement.projectDurationMonths  == '9' ? 'selected' : ''}>9</option>
-							 <option  ${requirement.projectDurationMonths  == '10' ? 'selected' : ''}>10</option>
-							 <option  ${requirement.projectDurationMonths  == '11' ? 'selected' : ''}>11</option>
+							<c:forEach var="durationMonths" begin="0" end="11" >
+							    <option  ${requirement.projectDurationMonths  == durationMonths ? 'selected' : ''}>${durationMonths}</option>
+							</c:forEach>
 							 
 						</select>
 	                </div>
               </div>
-              <!-- <div class="row" id="projectduration">
-                  <input type="hidden" name="expValidation" id="projectDuration">
-              </div>  -->
             </div>
           </div>
             
@@ -363,6 +305,27 @@ $(document).ready(function () {
             </div>
           </div>
           
+                 <div class="form-group">
+              <label class="col-md-3">Project</label>
+              <div class="col-md-9 select-field">
+                <select class="chosen-select form-control" id="projectId" name="projectClientID" field-name="Project Name">
+                <option value="">--Select Project--</option>
+                
+                <c:forEach var="projectClient" items="${projectList}">
+								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
+								<c:if test="${! empty projectClient.clientName}">
+		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
+								 </c:if>
+								 <c:if test="${empty projectClient.clientName}">
+								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
+								 </c:if>
+				                    	
+				                 <%--    </c:if>   --%>
+							</c:forEach>
+                
+              </select>
+              </div>
+            </div>
             
               <div class="form-group">
               <label class="col-md-3">Education</label>
@@ -384,15 +347,28 @@ $(document).ready(function () {
               </div>
             </div>
             
-         <div class="form-group pras req-title" >
+        <div class="form-group" >
+            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <div class="col-md-9 dropdown-select"> 
+            <select name="experienceLevel" id="experienceLevel">
+            	<option value="">--Select Level--</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+                   <option value="${level.uniqueKey}" ${requirement.experienceLevel.name  == level.name ? 'selected' : ''} >${level.name}</option>  
+            	</c:forEach>
+            </select>
+            
+            </div>
+          </div>
+        
+         <div class="form-group" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_float validate_length length1-3" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_float validate_length length1-3" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
@@ -461,9 +437,7 @@ $(document).ready(function () {
                 <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Min Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 <input type="text" class="form-control input-sm" id="maxRate" name="maxRate" field-name="Max Rate" placeholder="Max Rate" value="${requirement.maxRate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
-                 <div class="row" id="rateValidateId">
-                  <input type="hidden" name="rateValidation" id="rateValidation">
-              </div> 
+                
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
@@ -477,7 +451,7 @@ $(document).ready(function () {
 	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                     </c:if>
                   
-                  <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
+                  <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
                         <option value="">Rate Per</option>
                         <option ${requirement.rateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
                         <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
@@ -487,86 +461,29 @@ $(document).ready(function () {
 	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
                     </c:if>
-                    
-                  <c:if test="${SourceLeadWeb_currencyCode == 'AUD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'GBP'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	               <c:if test="${SourceLeadWeb_currencyCode == 'SGD'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
-	                     
-	                        <c:if test="${SourceLeadWeb_currencyCode == 'EUR'}">
-                        <option value="">Rate Per</option>
-                        <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                        <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-	                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-	                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-	                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-	                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-	                  </c:if>
+                   
                   </select>
                 </div>
+              </div>
+              <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
             </div>
           </div>
           
-		<div class="form-group">
-				<label class="col-md-3">Travel Allowance</label>
-				<div class="col-md-9">
-				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
-	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
-	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
-	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
-	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
-	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
-	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
-	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
-	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
-	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
-	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
-                 </select>
-                 
-				</div>
-		 </div>
+		
 		 
 		 <div class="form-group">
                       <label class="col-md-3">Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text"  name="closedDate" class="form-control" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
                   
-                  
+              <c:if test="${empty requirement.id}">
               <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
@@ -576,8 +493,10 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+            </c:if> 
+            <c:if test="${!empty requirement.id}">   
 		     <c:if test="${! empty requirement.closedDateStringFormat}">
-		     <div class="form-group"  style="display:block">
+		     <div class="form-group" id="receivingApplicantsDiv">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
                  <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
@@ -587,44 +506,54 @@ $(document).ready(function () {
               </div>
             </div>
 		     </c:if>
+		      <c:if test="${empty requirement.closedDateStringFormat}">
+		     <div class="form-group" id="receivingApplicantsDiv" style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+            </c:if>
+		     </c:if>
           
           <div class="form-group">
-				<label class="col-md-3">Location<span class="text-danger paddingLeft">*</span></label>
+				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
-				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Location" data-validation="required"></input>
+				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
           			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
 		</div>
 		
-		<div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country" readonly>
-				</div>
+		 <div class="form-group">
+			<label class="col-md-3">City</label>
+			<div class="col-md-9">
+			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
+			</div>
 		</div>
 		
 		 <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
-				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State" readonly>
+				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
 		 </div>
-		
-		 <div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City"  readonly>
-			</div>
-		</div>
-		
-		
-		 <div class="form-group">
+		 
+		  <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" readonly>
+			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
 		</div>
 		
+		<div class="form-group">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
+				</div>
+		</div>
 	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -666,13 +595,156 @@ $(document).ready(function () {
                 </select>
               </div>
             </div>
-            
+            <div class="form-group">
+				<label class="col-md-3">Travel Allowance</label>
+				<div class="col-md-9">
+				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
+	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
+	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
+	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
+	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
+	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
+	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
+	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
+	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
+	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
+	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
+                 </select>
+                 
+				</div>
+		 </div>
+		 
+		 
+	 <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group" id="addmedical" style="display:block">
+				<label class="col-md-3">Medical  Clearance </label>
+				<div class="col-md-9">
+				<c:if test="${requirement.medicalClearence == 'Y'}">
+				<span class="paddingRight"><input type="radio"  checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.medicalClearence == 'N'}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" checked  value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.medicalClearence}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 <div class="form-group" id="medicalTemplate" style="display:none">
+		 <div id="medicalClearenceDivId"></div>
+		 </div>
+		 
+		 
+		 <div class="form-group" id="addSecurityClearence" style="display:block">
+				<label class="col-md-3">Security Clearance</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.securityClearance == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.securityClearance == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				<c:if test="${empty requirement.securityClearance}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 <div class="form-group" id="securityClearenceTemplate" style="display:none">
+		 <div id="securityClearenceDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addOverTime" style="display:block">
+				<label class="col-md-3">OT</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.overTime == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.overTime == 'N'}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.overTime}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				</div>
+		 </div>
+		  <div class="form-group" id="overTimeTemplate" style="display:none">
+		 <div id="overTimeDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addBackgroundCheck" style="display:block">
+				<label class="col-md-3">Background Check</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.backgroundCheck == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.backgroundCheck == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.backgroundCheck}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div> 
+		  <div class="form-group" id="backgroundCheckTemplate" style="display:none">
+		 <div id="backgroundCheckDivId"></div>
+		 </div>
+		 
+		 <div class="form-group" id="addGender" style="display:block">
+				<label class="col-md-3">Gender</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.gender == 'Male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'All'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				
+				</div>
+		 </div> 
+		 <div class="form-group" id="genderTemplate" style="display:none">
+		 <div id="genderDivId"></div>
+		 </div>
+		 
+		 
+		 
+		 
+		 <!--  Radio Buttons -->
           <div class="form-group pras">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-            <div class="col-md-9">
-              <div class="input-group attachfile" id= "uploadFileGroup">
+            <div class="col-md-9 positionRelative">
+            <c:if test="${empty requirement.id}">
+          <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
@@ -681,7 +753,46 @@ $(document).ready(function () {
                 
                 <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
+              </div> 
+              </c:if>
+              <c:if test="${!empty requirement.id}">
+              
+                 <c:if test="${empty requirement.fileName}">
+                 <div class="input-group attachfile" id= "uploadFileGroup">
+                <label class="input-group-btn">
+                <span class="btn btn-primary" onchange="uploadButton();"><i class="fa fa-folder-open-o" ></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
+              </div> 
+              </c:if>
+              
+              <c:if test="${!empty requirement.fileName}">
+              
+              <div class="input-group attachfile" id= "uploadFileGroup123" style="display: none;">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+              <div class="clearUpload"></div>
               </div>
+              
+              <div class="col-md-6" id="uploadDocNameDiv" >
+				 <label id="uploadDocumentName" name="uploadDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="${requirement.fileName}" >${requirement.fileName}</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeReqDoc(${requirement.id});"><i class="fa fa-trash removeIcon"></i></span>
+				 <input type="hidden" id="uploadExisitngFile" name="uploadExisitngFile" value="${requirement.fileName}">
+				</div>
+				
+				 </c:if>
+              </c:if>
             </div>
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
@@ -839,39 +950,6 @@ $(document).ready(function () {
                     	  </select>
 						  </c:otherwise>
 				</c:choose>
-                
-                  </div>
-                  <div role="dialog" id="addLevel" class="modal fade">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                          <h4 class="modal-title">Add Level</h4>
-                        </div>
-                        <div class="modal-body clearfix">
-                          <div class="form-horizontal custom-form clearfix">
-                            <div class="col-xs-12 col-md-12 col-lg-12">
-                              <div class="form-group">
-                                <label class="col-lg-3">Level Name</label>
-                                <div class="col-lg-9">
-                                  <input type="text" class="form-control" value="">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label class="col-lg-3">Description </label>
-                                <div class="col-lg-9">
-                                  <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-primary" type="button" >Save</button>
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -927,17 +1005,32 @@ $(document).ready(function () {
 	                </select>
 	                
 	                </div>
-	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                <div class="pull-left input_minmax">
+	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text" disabled="disabled" class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
+			                <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
 			                <option value="">Rate Per</option>
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <option value="">Rate Per</option>
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 			 </c:when>
@@ -966,24 +1059,41 @@ $(document).ready(function () {
                 </select>
 	                
 	                </div>
-	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
+	                    <div class="pull-left input_minmax">
+	                <input type="text"  class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Min Rate" onblur="minMaxRate();">
+	                <input type="text"  class="form-control" id="clientMaxRate" name="clientMaxRate" field-name="Client Max Rate" value="${requirement.clientMaxRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" placeholder="Max Rate" onblur="minMaxRate();">
+	                </div>
 	                <div class="input-group-btn selp-custom-min">
 	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
-	                    
-			                <option value="">Rate Per</option>
+	                      <c:if test="${SourceLeadWeb_currencyCode == 'INR'}">
+			               <!--  <option value="">Rate Per</option> -->
+			                <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : 'selected'}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 		                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
 		                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 		                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    </c:if>
+		                    <c:if test="${SourceLeadWeb_currencyCode != 'INR'}">
+                        <!-- <option value="">Rate Per</option> -->
+                        <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : 'selected'}>Hourly</option>
+                        <option ${requirement.clientRateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+	                    <option ${requirement.clientRateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+	                    <option ${requirement.clientRateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+                    </c:if>
 	                  </select>
            			</div>
 				</c:otherwise>
 				</c:choose>
 	                
               </div>
+              </div>
+                 <div class="row mxrateerror" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
               </div>
               <div class="clearfix"></div>
               <div class="clearfix"></div>
@@ -1147,37 +1257,6 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group">
-             
-            <div id="assignedToSavingDiv"></div>
-            <div id="defaultAssignedToSavingDiv"></div>
-													
-            <label class="col-md-3">Assign To</label>
-            <div class="col-md-9">
-                <div class="form-icon">
-                <span class="icon-inside"> <i class="fa fa-search-plus"></i>
-				
-                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
-                  </span>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
-                  </div>
-                <!-- Modal content Assign To -->
-                <div role="dialog" id="assignTeam"   class="modal fade">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button class="close" type="button" id="closebtnId" onclick="clearSelections();">×</button>
-                        <h4 class="modal-title">Assign To</h4>
-                      </div>
-                       <!-- <div id="userList"></div> -->
-                       <div id="popupWindow"></div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <!-- Assign To modal popup ends -->
-              </div>
-          </div>
-          <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
@@ -1199,6 +1278,29 @@ $(document).ready(function () {
                </select>					
           </div>
         </div>
+        
+        <div class="form-group">
+             
+            <!-- <div id="assignedToSavingDiv"></div>
+            <div id="defaultAssignedToSavingDiv"></div> -->
+													
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            
+            <div class="col-md-9">
+              <div class="form-icon">
+              <c:if test="${empty requirement.id}"> 
+              	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
+              </c:if>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
+                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  </span>
+                  </div>
+              </div>
+              <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
+          </div>
+          <div class="col-md-12 assigned-Table">
+          <div class="assignTableScroll" id="assignedTeamsOrUsers" style="display: none"></div>
+          </div>
         
         <div class="clearfix"></div>
          <div class="form-group">
@@ -1241,7 +1343,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -1302,20 +1404,19 @@ $(document).ready(function () {
 </section>
 
 <script>
-  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatJobSave = '';
+	  var jsDateFormat= '';
 	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatJobSave = 'yy-mm-dd';
+		  jsDateFormat = 'yy-mm-dd';
 	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatJobSave = 'dd-mm-yy'; 
+		  jsDateFormat = 'dd-mm-yy'; 
 	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatJobSave = 'mm-dd-yy'; 
+		  jsDateFormat = 'mm-dd-yy'; 
 	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatJobSave = 'yy-dd-mm'; 
+		  jsDateFormat = 'yy-dd-mm'; 
 	  }
 	  $('#closedDate').datepicker({
-	      dateFormat: finalDateFormatJobSave,
+	      dateFormat: jsDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
 	  	  minDate: 1,
@@ -1323,8 +1424,6 @@ $(document).ready(function () {
 	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
 	  	}
 	  });
-	  
- 
 </script>
 
 <script>
@@ -1375,24 +1474,15 @@ function validate_fileupload(fileName)
 
 
 <script type="text/javascript">
-
  function receivingApplicants(){
-	
 	if (document.getElementById('receivingApplicantsId').checked){
 		 $("#receivingApplicantsId").val('Y');
 	}
-	
 	else{
-		
 		 $("#receivingApplicantsId").val('N');
-		
 		}
-	
-} 
-	  
+ } 
 </script>
-
-
 
 <script type="text/javascript">
 	function storeRequirement(saveType) {
@@ -1402,7 +1492,6 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		 
 		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
 		
 		checkTemplateforDouplicate();
@@ -1410,7 +1499,6 @@ function validate_fileupload(fileName)
 		$('#addClient').empty();
 		$('#addContact').empty();
 		//$('#addTeam').empty(); /* commented by Venkat Kesav because of issue #2673 */ 
-		
           if(saveType=='draft'){
 			
 			//For internal details in draft
@@ -1459,7 +1547,6 @@ function validate_fileupload(fileName)
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
- 		 
  		var maxRate = document.getElementById("maxRate").value; 
 		 if(maxRate != null && maxRate != ""){
 			 $('#rateType').removeAttr('data-validation-optional');
@@ -1469,14 +1556,17 @@ function validate_fileupload(fileName)
 			 $('#rateType').removeAttr('data-validation');
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
- 		 
+		 var existingValue = document.getElementById('isClientJob').value;
+		 if(existingValue == 'Y'){
  		 var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
  			 $('#clientRate').attr("data-validation","required"); 
+ 			 
  		 }else{
  			 $('#clientRate').removeAttr('data-validation');
- 			 $('#clientRate').attr("data-validation-optional","true"); 
+ 			 $('#clientRate').attr("data-validation-optional","true");
+ 			 
  		 }
  		 
  		 var clientRate = document.getElementById("clientRate").value; 
@@ -1487,14 +1577,11 @@ function validate_fileupload(fileName)
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
  		 }
-		
+		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
-			
-			
-      		
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1502,7 +1589,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
+						location.replace(sourceleadUrl+"/jobs");
 
 					},
 				});
@@ -1579,85 +1666,18 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
+
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
+
+	});
+ </script>
+
+
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-	       
-	     //Adding Customized Skills to the list
-	       var select, chosen;
-		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
-		    chosen = select.data('chosen');
-				   chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#skills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#skills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                   });
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#skills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#skills").trigger("chosen:updated"); 
-				                }
-			    	         }
-		    	});
-		    
-		    //Adding Customized Educations to the list 
-		    var selectone, chosenone;
-		    selectone = $("#education");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace("\'","");
-		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-			        {
-		    		   var par = this.parent;
-			            var option = $("<option>").val(newEducation).text(newEducation);
-			            selectone.append(option);
-			            selectone.find(option).prop('selected', true);
-			            
-			            $("#education option").each(function(){
-	                         $(this).siblings("[value='"+ this.value+"']").remove();
-	                   });
-			            
-			            $("#education").trigger("chosen:updated");
-			           
-			        }
-		    
-		    });
-            
 			/* upload file script */
 			document.getElementById("uploadBtn").onchange = function () {
 			//document.getElementById("uploadFile").value = this.value;
@@ -1711,7 +1731,6 @@ function getRequirementAndLookUpSkills(requirementid){
 </script>
 <script>
 function setTemplateValues(){
-	
 	var requirementId = document.getElementById('template').value;
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1719,24 +1738,23 @@ function setTemplateValues(){
 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
-	   	
 	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
-		    success: function(data) {
-		    	
-		    	if(data != null && data != 'undefined' && data !='' ){ 
-		    		
-		    		var json = JSON.parse(data);
-		    		
+		    success: function(json) {
+		    	if(json != null && json != 'undefined' && json !='' ){ 
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 		    			$("#templateId").val(json.id);
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	$("#experienceLevel").val(json.experienceLevel);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
 			    	$("#industryName").val(json.industryName);
 			    	$("#industryName").trigger("chosen:updated");
+			    	
+			    	$("#projectId").val(json.projectId);
+			    	$("#projectId").trigger("chosen:updated");
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1745,7 +1763,112 @@ function setTemplateValues(){
 			    	$("#travelAllowance").val(json.travelAllowance);
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
+			    	if(json.medicalClearence !=  null && json.medicalClearence != '' && json.medicalClearence != 'undefined'){
+			    		 $("#medicalTemplate").css("display","block"); 
+			    		 $("#addmedical").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Medical  Clearance </label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.medicalClearence == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="medicalClearence"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#medicalClearenceDivId").empty();
+			    		$("#medicalClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addmedical").css("display","block"); 
+			    		 $("#medicalTemplate").css("display","none"); 
+			    	}
 			    	
+			    	if(json.securityClearance !=  null && json.securityClearance != '' && json.securityClearance != 'undefined'){
+			    		 $("#securityClearenceTemplate").css("display","block"); 
+			    		 $("#addSecurityClearence").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Security Clearance</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.securityClearance == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#securityClearenceDivId").empty();
+			    		$("#securityClearenceDivId").append(result);
+			    	}else{
+			    		 $("#addSecurityClearence").css("display","block"); 
+			    		 $("#securityClearenceTemplate").css("display","none"); 
+			    	}
+			    	
+			    	if(json.overTime !=  null && json.overTime != '' && json.overTime != 'undefined'){
+			    		 $("#overTimeTemplate").css("display","block"); 
+			    		 $("#addOverTime").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Overtime</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.overTime == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="overTime"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#overTimeDivId").empty();
+			    		$("#overTimeDivId").append(result);
+			    	}else{
+			    		 $("#addOverTime").css("display","block"); 
+			    		 $("#overTimeTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.backgroundCheck !=  null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+			    		 $("#backgroundCheckTemplate").css("display","block"); 
+			    		 $("#addBackgroundCheck").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Background Check</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.backgroundCheck == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#backgroundCheckDivId").empty();
+			    		$("#backgroundCheckDivId").append(result);
+			    	}else{
+			    		 $("#addBackgroundCheck").css("display","block"); 
+			    		 $("#backgroundCheckTemplate").css("display","none"); 
+			    	}
+			    	
+			    	
+			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
+			    		 $("#genderTemplate").css("display","block"); 
+			    		 $("#addGender").css("display","none"); 
+			    		var result = "";
+			    		result = result + '<label class="col-md-3">Gender</label>';
+			    		result = result + '<div class="col-md-9">';
+			    		if(json.gender == "Y"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		}
+			    		result = result + '<div>';
+			    		$("#genderDivId").empty();
+			    		$("#genderDivId").append(result);
+			    	}else{
+			    		 $("#addGender").css("display","block"); 
+			    		 $("#genderTemplate").css("display","none"); 
+			    	}
 			    	if(null != json.jobType && json.jobType != "" && json.jobType != "undefined" && json.jobType == 'Other'){
 						  $( ".jobTypeDiv" ).show();
 						  $("#jobOtherType").attr("data-validation-optional", "true");
@@ -1783,7 +1906,7 @@ function setTemplateValues(){
 							$("#existingCity").val('');
 						}
 						
-					getAllCountries(); 		
+					 		
 					
 					$('#description').val('');
 					$('#rate').val('');
@@ -1832,6 +1955,8 @@ function setTemplateValues(){
 			    	$("#positions").val('');
 			    	$("#industryName").val('');
 			    	$("#industryName").trigger("chosen:updated");
+			    	$("#projectId").val('');
+			    	$("#projectId").trigger("chosen:updated");
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
 					$("#countryReq").val('');
@@ -1866,7 +1991,6 @@ function setTemplateValues(){
 		 $("#existingCountry").val('');
 		 $("#existingState").val('');
 		 $("#existingCity").val('');
-		 getAllCountries(); 		
 		 $("#rate").val('');
 		
 		 
@@ -1917,38 +2041,12 @@ $(document).ready(function() {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+    $(".clearUpload").hide();
 });
 
 // Show hide Approver script
 $("#apprverReq").removeAttr("checked");
 $("#sequential input").removeAttr("checked");
-/* 
-function selApprover(){
-	
-  if ($("#apprverReq").prop('checked') ) {
-			$(".parallel, #parallel, .apprverReq").show();
-			$(".sequential").hide();
-			$("#parallel i").addClass("apprverReq-active");
-			$("#sequential i").removeClass("apprverReq-active");
-
-} 
-else {
-	$(".parallel, #parallel, .apprverReq, .sequential").hide();
-}
-};
-
-$("#sequential").click(function(){
-	$(".parallel").hide();
-	$(".sequential").show();
-	$("#parallel i").removeClass("apprverReq-active");
-	$("#sequential i").addClass("apprverReq-active");
-});
-$("#parallel").click(function(){
-	$(".parallel").show();
-	$(".sequential").hide();
-	$("#parallel i").addClass("apprverReq-active");
-	$("#sequential i").removeClass("apprverReq-active");
-}); */
 function addLvl(){
 	$(".lvlTow").toggle();
 }
@@ -2038,7 +2136,6 @@ function approvalType(type){
 				
 				$('#parallelApprover').val('').trigger('chosen:updated');
 		  }
-		  
 		}
 		else{
 			$("#save").removeAttr("style");
@@ -2053,417 +2150,10 @@ function approvalType(type){
 			$('#sequentialApprover1').attr("data-validation-optional","true"); 
 			$('#sequentialApprover2').attr("data-validation-optional","true"); 
 			$('#parallelApprover').attr("data-validation-optional","true"); 
-			
-			
 		}
 	  
 }
 </script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for get model dialog box.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     AssignedTo model dialog box
---%>
-
-<script>
-function popupWindow(reqId){ 
-	  
-	  $("#popupWindow").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $("#popupWindow").removeAttr("style");
-	  var result = '';
-	    result = result +'<div class="modal-body clearfix">';
- 		result = result +'       <div class="col-xs-12 col-md-8 col-lg-8 hidden">';
- 		result = result +'         <div class="input-group">';
- 		result = result +'           <input type="search" class="form-control" value="">';
- 		result = result +'           <span class="input-group-addon bt-primary"><i class="fa fa-search"></i></span> ';
- 		result = result +'			</div>';
- 		result = result +'       </div>';
- 		
- 		result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10">';
- 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
- 		result = result +'          </select>';
- 		result = result +'       </div>';
- 		
- 		result = result +'  <div id="usersGrid" class="clearfix datatable_filter">'; 
-    	
- 		result = result +'     </div>';
-		result = result +'     </div>';
-		$("#popupWindow").empty();
-	    $("#popupWindow").append(result); 
-	    
-	    getTeamsList(reqId);
-	    $("#rolesDiv").selectpicker("refresh");
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get users list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     append Users list to AssignedTo model dialog box
---%>
-
-
-
-<script>
-function getUserList(teamType){  
-	   
-	  
-	   var selectedUsersForAssign = [];
-	   $('input[name^="assignUserId"]').each(function() {
-	 		selectedUsersForAssign.push($(this).val());
-	   });
- 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 	   $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
-            success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-               		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
-               		 }
-               		 else{
-			    	     $("#usersGrid").removeAttr("style");
-	                	    var result = '';
-	                	    result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-	                		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-	                		result = result +'           <thead>';
-	                		result = result +'           <tr>';
-	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
-	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
-	                		result = result +'           </tr>';
-	                		result = result +'           </thead>';
-		                    result = result +"<tbody>"; 
-		                    var json = JSON.parse(data);
-		                    var refreshIds = [];
-		                    for (var i = 0; i < json.length; i++) {
-		                    	 var opt = json[i]; 
-		                    	 result = result +'<tr>';
-		                    	 var localCheckedStatus = "";
-		                    	 
-		                    	 $(".defaultAssignCheckBox").each(function() {
-         							var localValue = this.value;
-         						    var assignedUserId = '' ;
-         						    var assignedTeamId = '' ;
-         							if(localValue != null && localValue != '' && localValue != 'undefined'){
-         								var res = localValue.split(",")
-         								assignedUserId = res[0];
-         								assignedTeamId = res[1];
-	         							if(assignedUserId == opt.id){
-	         								localCheckedStatus = "checked";
-	         							}  
-         							}
-		                    	 });
-		                    	 
-		                    	 var lastName = '';
-		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-		                    		 lastName = ' '+opt.lastName;
-		                    	 }
-		                    	 var owner ='';
-		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
-		         					 owner = opt.isAssignedOwner;
-		         				 }
-		         				 var assignedTeam = '';
-		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
-		         					 assignedTeam = opt.assignedTeam;
-		         				 }
-		                    	 
-		                    	 if(ids.indexOf(''+opt.id) > -1){
-		                    		 refreshIds.push(''+opt.id);
-		                    		 result = result +'             <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required"></td>';
-		                    	 }else if('' != assignedTeam){
-		                    		 if(localCheckedStatus == "checked"){
-			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }else{
-		                    		 	 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();"  value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }
-		                    	 }else if(localCheckedStatus == "checked"){
-		                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-		                    		 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" checked="checked" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    	 }else{
-		                    		 if(localCheckedStatus == "checked"){
-			                    		 //result = result +'  <td><i class="text-muted fa fa-check-square" aria-hidden="true"></i></td>';
-			                    		 result = result +'  <td><input class="myCheckbox"  type="checkbox" onclick="handleClick();" checked="checked"></td>';
-		                    		 }else{
-		                    			 
-		                    			 var selectedUserIdForAssign = "";
-		                    			 var iteratedUserValue = opt.id+","+opt.assignedTeamId;
-				                    	 $.each(selectedUsersForAssign, function (i, value)  
-		                                 {  
-				                    		 selectedUserIdForAssign = value;
-		                                     if(selectedUserIdForAssign == iteratedUserValue){
-		                                    	 localCheckedStatus = "checked";
-		                                     }
-		                                 });
-		                    			 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox" onclick="handleClick();" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" name="team" '+localCheckedStatus+' data-validation="required" ></td>';
-		                    		 }
-		                    	 }
-		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
-		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
-		                    	 result = result +'           </tr>';
-	                       }
-		                   ids =  refreshIds;
-		                    
-	                       result = result +" </tbody>";
-	                       result = result +"</table>"; 
-	                       result = result +'   <div class="clearfix"></div>'; 
-	                 	   result = result +'   </div>'; 
-	                 	   result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>';
-	                 	   result = result +'   <div class="clearfix">';
-	                 	  result = result +'   <div class="pull-right mt">';
-	                 	   result = result +'     <button class="btn btn-primary" type="button" id="assignbtnId" onClick="assignMembers();">Assign</button>';
-	                 	   result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Clear</button>';
-	                 	   result = result +'   </div>'; 
-	                 	   result = result +'   </div>'; 
-	                 	   $("#usersGrid").empty(); 
-	                       $("#usersGrid").append(result); 
-	                       paginations(); 
-			    		}
-                 	}else{
-                	 	$("#usersGrid").removeAttr("style");
-  	    	        	var result ="";
-		        		result = result +'       <table id="assignToDataTableId" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
-		        		result = result +'           <thead>';
-		        		result = result +'           <tr>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;"></th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Name</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Email</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Role</th>';
-		        		result = result +'             <th class="sorting_disabled" rowspan="1" colspan="1" style="width: 30px;">Active Jobs</th>';
-		        		result = result +'           </tr>';
-		        		result = result +'           </thead>';
-		        		result = result +'           </table>';
-		        		var refreshIds = [];
-		        		ids =  refreshIds;
-		        		
-                 	    result = result +'   <div class="modal-footer mt">';
-                 	    result = result +'     <button class="btn btn-default" type="button" id="cancelbtnId" onClick="clearSelections();">Cancel</button>';
-                 	    result = result +'   </div>'; 
-						$("#usersGrid").empty();
-					    $("#usersGrid").append(result); 
-					    paginations(); 
-                	}
-          		},
-       		}); 
-  	} 
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get checked users.
-     1.usage     : onload.
-     declared 'ids' as a global variable for keep all checked user ids
---%>
-<script>
-window.ids = new Array();
-function handleClick() {
-	ids = [];
-	$("input:checkbox[name=team]:checked").each(function(){
-		$('span.jquery_form_error_message').hide();
-		ids.push($(this).val());
-	});
-	if(ids.length < 1){
-		$('span.jquery_form_error_message').show();
-	}
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get selected team(s) and role(s).
-     1.usage     : onload.
-     declared 'teamRoleIds' as a global variable for keep all selected role and teams
---%>
-<script>
-window.teamRoleIds = new Array();
-function handleTeamRoleClick() {
-	teamRoleIds = [];
-	$("option[name=TeamAndRole]:selected").each(function(){
-		teamRoleIds.push($(this).val());
-	});
-}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for get Roles and Teams list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
-     append Roles and Teams list to AssignedTo model dialog box
---%>
-<script>
-function getTeamsList(reqId){
-	if(reqId == '' || reqId == 'undefined' || reqId == null){
-		reqId = '';
-	}
-	  
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
-            success :function(data) {
-            	var json = JSON.parse(data);
-				var output = "";
-			  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
-			  if(json.teams.length > 0){
-				  output = output + "<optgroup label='Teams'>";
-				  for (var i = 0; i < json.teams.length; i++) {
-						var opt = json.teams[i];
-						if('Y' == opt.isTeamAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
-						}else if($.inArray(''+opt.id, teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
-					    }else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
-						}
-
-					}
-				  output = output + "</optgroup>";
-			  }
-			  '</sec:authorize>';
-
-			  if(json.roles.length > 0){
-				  output = output + "<optgroup label='Roles'>"; 
-					for (var i = 0; i < json.roles.length; i++) {
-						var opt = json.roles[i];
-						if('Y' == opt.isRoleAssigned){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
-						}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-						}else{
-							output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
-						}
-					}
-					output = output + "</optgroup>";
-			  }
-				$("#rolesDiv").empty();
-			    $("#rolesDiv").append(output);
-			    $("#rolesDiv").selectpicker("refresh");
-            	
-            },
-            complete: function (data) {
-            	var teamType = $("#rolesDiv").val();
-          		getUserList(teamType);
-            }
-            
-      }); 
- } 
-</script>
-
-<script type="text/javascript">
-	function filterTeamMembers(){
-		var teamType = $("#rolesDiv").val();
-		getUserList(teamType);
-	}
-</script>
-
-<%-- 
-     @author : venkat kesav
-     this script is for clear uncheck all users.
-     1.usage     : onload.
-     clear all checked users when click on cancel and close buttons of AssignedTo model dialog
---%>
-<script type="text/javascript">
-	function clearSelections(){
-		$('#cancelbtnId').attr("data-dismiss","modal");
-		$('#closebtnId').attr("data-dismiss","modal");
-		$("#assignedToSavingDiv").empty();
-		teamRoleIds = [];
-		$("#rolesDiv").empty();
-	}
-</script>
-
-
-<%-- 
-     @author : sarath kumar.
-     this script is for prepare pagination to requirementList.
-     1.usage     : used in candidateList() function.
---%>
-
-<script>
-
-function paginations(){
-    $("#assignToDataTableId").DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"aaSorting": [[1,'desc']],
-    	"ordering": true,
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
-}
-</script>
-
-
-
-<script>
-function assignMembers() {
-	handleTeamRoleClick();
-	var result = "";
-	var oTable = $('#assignToDataTableId').DataTable();
-	var rowcollection =  oTable.$(".myCheckbox:checked", {"page": "all"});
-	//var totalCount = $("[type='checkbox']:checked").length;
-	var count = 1;
-	var totalCount = oTable
-    .rows()
-    .nodes()
-    .to$()
-	.find('input[type="checkbox"].myCheckbox:checked').length;
-	
-	if(totalCount == 0){
-		$('span.jquery_form_error_message').show();
-	}else{
-		$("#assignedToSavingDiv").empty();
-		$('#assignbtnId').attr("data-dismiss","modal");
-		rowcollection.each(function(index,elem){
-		    var checkbox_value = $(elem).val();
-		    result = result+ "<input type='hidden' class='defaultAssignCheckBox' name='assignUsers["+(count-1)+"]' id='assignUserId"+count+"' value='"+checkbox_value+"' />";
-		    count++;
-		});
-		result = result+"<input type='hidden' name='assignedToMaxCount' id='assignedToMaxCount' value='"+count+"'/>";
-		//$("#assignedToSavingDiv").empty();
-		$("#assignedToSavingDiv").append(result);
-		assignedToValidation();
-		$("#assignedTeamId").val($("#rolesDiv").val());
-	}
-}
-</script>
-
-
-<script type="text/javascript">
-	function assignedToValidation() {
-		var count = $('#assignedToMaxCount').val();
-		if(count != null && count != 'undefined' && count!= ''){
-				 $('#assignedTo').attr("data-validation-optional","true"); 
-		} 
-	}
-</script>	
-
 
 <script type="text/javascript">
 	function flushStoreTeam() { 
@@ -2585,6 +2275,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
+		 $('#clientMaxRate').val('');
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
 		 $("#clientRateType").val("").trigger('change');
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
@@ -2711,24 +2402,6 @@ function getLevel2Approvers(currentApproverId){
  }
  </script>     
  
- <script>
-function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[name="team"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-    }
-$('input:checkbox:not(#checkAll)').click(function() {
-	
-    if(!this.checked) {
-        $('#checkAll').removeAttr('checked');
-    }
-});
-}
-</script>
- 
- <!-- Job Id validation script ends here -->
- 
 <script>
 //Function to validate if maximum exp value is more the minimum exp value
 function minMaxExperience(){
@@ -2771,7 +2444,26 @@ function minMaxRate(){
 }
 
 </script>
+<script>
+//Function to validate if maximum rate value is more the minimum rate value
+function clientMinMaxRate(){
+	var maxRate = ($('#clientMaxRate').val());
+    var minRate = ($('#clientRate').val());
+    
+    if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+		$('input#rateValidation').attr('class','error signin_fild');
+		$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#rateValidation').attr('record-exist','yes');
+		$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+    }  else{
+    	$('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateValidateId').find('p.jquery_form_error_message').remove();
+    }
+}
 
+</script>
 <script type="text/javascript">
 function checkTemplateforDouplicate(){
 	if(document.getElementById('isTemplate').checked) {
@@ -2807,17 +2499,6 @@ function checkTemplateforDouplicate(){
 
 }
 </script>
-
-<!-- <script type="text/javascript">
-function removeEditButton() {
-	var reqId = document.getElementById("requirementId").value;
-	if(reqId != null && reqId != 0){
-		 var draftId = document.getElementById("draft");
-		 draftId.parentNode.removeChild(draftId);
-		    return false;
-	}
-}
-</script> -->
 
 <script>
 function getJobType(jobType){
@@ -2908,6 +2589,34 @@ function getEditRequirementDetails(requirementId){
  }
  </script> 
 
+
+<script>
+function getProjectsList(projectName){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getAllProjectsByOrgRelationIdAndInProgress?"+tokenParamName+"="+tokenValue+"",
+	success :function(json) {
+	var output = "";
+	output = output + "<option value=''>--Select Project--</option>";
+	for (var i=0; i<json.length; i++){
+	var opt = json[i];
+	var selected = "";
+	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
+		selected = 'selected';
+	}
+	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.projectName+"</option>";
+	}
+	$("#projectId").empty();
+	$("#projectId").append(output);
+	$('#projectId').trigger("chosen:updated");
+	},
+	});
+
+}
+</script>
+
+
 <script type="text/javascript">
 $(document).ready(function(){
 	var requirementId  = "${requirementId}";
@@ -2917,12 +2626,64 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
+		$(".clearUpload").show();
 	});
  }); 
 </script>
+
+
+<script>
+function clearDate(){
+	$("#closedDate").val("");
+	document.getElementById("receivingApplicantsDiv").style.display="none";
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('N');
+	}
+	};
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#requirement_form input[data-id*=uploadBtn]").remove();
+	});
+	
+	</script>
+
+<script>
+$("#showGrid").click(function(){
+	var shogridlist = $('#showGrid').find(".showGrid");
+	if($(shogridlist).text() > 0){
+		$("#assignedTeamsOrUsers").slideToggle();
+	}
+	});
+$("button.btnShowlist").click(function(){
+    if ($("#sl").text() === 'Hide List') {
+        $("#sl").text('Show List');
+    } else {
+        $("#sl").text('Hide List');        
+    }
+    return false; 
+});
+
+</script>
+<script type="text/javascript">
+function removeReqDoc(requirementId){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/deleteJobDoc?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    success: function(data) {
+		    	$("#uploadDocNameDiv").hide();
+		     	$("#uploadFileGroup123").show();
+		     	$("#uploadExisitngFile").val('');
+		     	$('#uploadFile').attr("data-validation-optional","true"); 
+		     	$("#uploadFile").attr("data-validation", "validatedoc"); 
+		    },
+		    });		
+	
+}
+</script>
+
  
 <jsp:include page="../masterFooter.jsp" />

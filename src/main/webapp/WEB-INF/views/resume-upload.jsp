@@ -13,7 +13,7 @@
 	href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
-	href="resources/css/bootstrap.min.css"
+	href="/resources/css/bootstrap.min.css"
 	rel="stylesheet">
 </head>
 <style>
@@ -163,13 +163,38 @@ height: 24px;
 border: 1px solid gray;
 padding: 2px
     }
+    .mb {
+    margin-bottom: 15px;
+    }
 </style>
 <body>
 	<header>
 		<div class="logo">
-		<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
- 	 		<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}">
- 	 	</c:if>
+		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
+  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  </c:if>
+  
+   <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead">
+   </c:if>
+  
+  
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  </c:if>
+  
+  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  </c:if>
+		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+ 	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+ 	 	<img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 </c:if>
+ 	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+ 	  <img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	 </c:if>
+ 	 </c:if>
  	 	<c:if test="${empty SourceLeadWeb_org.fileContentType}">
 				<div class="text_logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -187,6 +212,9 @@ padding: 2px
 	</header>
 	<section>
 		<div class="browseOut">
+		<div class="clearfix mb">
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/candidatesList'/>">Candidate List</a> &raquo; Bulk Import </div>
+			</div>
 			<div class="browseProgress">
             <div class="browseProgressInn">
             <div class="labText" id='progressText'>Text here...</div>
@@ -197,6 +225,7 @@ padding: 2px
             </div>
 			<div class="browse">
 				<h2>Candidate (Resume) Bulk Import</h2>
+				
 				<div class="browseScroll">
 					<div class="browseWrap">
 						<div class="browseInn">
@@ -223,7 +252,7 @@ padding: 2px
 		<div class="editor">
 			<span>
 <!-- 				<div class='copy btn' data-clipboard-target='#log'><i class="fa fa-copy"></i></div> -->
-				<h3>File load log</h3>
+				<h3>Imported log</h3>
 				<div class="editText" id='log'></div>
 			</span>
 		</div>
@@ -235,6 +264,7 @@ padding: 2px
 		</div>
 	</footer>
 	<div style='display:none' id='browserBar'>
+	
 		<div class="browseWrap">
 			<div class="browseInn">
 				<input type="file" id='abc' class="btnHide" multiple="multiple">
@@ -247,9 +277,10 @@ padding: 2px
 	</div>
 </body>
 
-<script src="resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
+var sourceleadUrl = '${sourceleadUrl}';
 var count = 1;
 	$(document).ready(function() {
 		$(".browseInn input:file").change(function() {
@@ -304,47 +335,56 @@ var count = 1;
 				alert("Please select resume(s)");
 				return;
 			}
-			uploadid = new Date().getTime();
-			getUploadStatus();
-			data1.append("uploadid", uploadid);
-			$(".browseProgress").show();
-			$("#progressBar").html('0%');
-			$(".progress div").css("width", "0%");
-			$(".editText").html("");
-			$.ajax({
-				  xhr: function() {
-				    var xhr = new window.XMLHttpRequest();
-					$("#progressText").html('Please wait while uploading files...');
-				    xhr.upload.addEventListener("progress", function(evt) {
-				      if (evt.lengthComputable) {
-				        var percentComplete = evt.loaded / evt.total;
-				        percentComplete = parseInt(percentComplete * 100);
-				        $("#progressBar").html(percentComplete+'%');
-				        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
-				        if (percentComplete === 100) {
-				        		$("#progressText").html('Please wait while parsing the uploaded files...');
-				        		$(".progress div").css("width",  "0%");
-				        		$("#progressBar").html('0%');
-				        }
+			//var sourceleadUrl ='${sourceleadUrl}';
+			$.post("check-session", {}, function(data) {
+				if(data === "YES") {
+					uploadid = new Date().getTime();
+					getUploadStatus();
+					data1.append("uploadid", uploadid);
+					$(".browseProgress").show();
+					$("#progressBar").html('0%');
+					$(".progress div").css("width", "0%");
+					$(".editText").html("");
+					$.ajax({
+						  xhr: function() {
+						    var xhr = new window.XMLHttpRequest();
+							$("#progressText").html('Please wait while uploading files...');
+						    xhr.upload.addEventListener("progress", function(evt) {
+						      if (evt.lengthComputable) {
+						        var percentComplete = evt.loaded / evt.total;
+						        percentComplete = parseInt(percentComplete * 100);
+						        $("#progressBar").html(percentComplete+'%');
+						        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
+						        if (percentComplete === 100) {
+						        		$("#progressText").html('Please wait while parsing the uploaded files...');
+						        		$(".progress div").css("width",  "0%");
+						        		$("#progressBar").html('0%');
+						        }
 
-				      }
-				    }, false);
+						      }
+						    }, false);
 
-				    return xhr;
-				  },
-				  url: 'upload-resumes',
-				  type: "POST",
-				  processData: false,
-				  contentType: false,
-				  data: data1,
-				  success: function(result) {
-				    console.log(result);
-				  },
-				  error: function(request) {
-					  uploadid = 0;
-					  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
-				  }
-				});
+						    return xhr;
+						  },
+						  url: 'upload-resumes',
+						  type: "POST",
+						  processData: false,
+						  contentType: false,
+						  data: data1,
+						  success: function(result) {
+						    console.log(result);
+						  },
+						  error: function(request) {
+							  uploadid = 0;
+							  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
+						  }
+						});
+				} else {
+					alert("No Session found");
+					location.href='/app/login';
+				}
+			});
+			
 		});
 		
 	});

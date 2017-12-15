@@ -35,6 +35,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimesheetReportsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -245,7 +247,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
 		 //DateFormat format = Constants.DF_DMY;
 		 //DateFormat format= LoginSessionController.DATEFORMAT;
-		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		  DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
@@ -297,10 +299,16 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			for (ProjectMembers projectMember : projectMembers)
 			{
 				 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+				  User consultantUser = null;
+					 String fileUrl = "";
+				 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+						consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
+						fileUrl = consultantUser.getFileUrl();
+					}
 				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
 					 timesheetApprovalDiv.append("  <td>")
 					                       .append("<div class='lg clearfix'>")
-					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
+					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
 				                                             .append("<i title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</i>");
@@ -528,13 +536,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public File prepareTimeSheetExport(String frequencyYear, String frequencyMonth, User loginUser,OrgLocations orgLocations) throws Exception {
+	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations) throws Exception {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
 		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
+		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		  
@@ -595,7 +603,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    StringBuilder sbTsReports =  new StringBuilder();
 	    sbTsReports.append("timesheetSheet_").append(dateFormat.format(new Date()));
 	    StringBuilder fileSB = new StringBuilder();
-	    file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
+	    file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetReports_").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append("-").toString(),".pdf");
 	    file.setReadable(true);
 
 	    try {
@@ -606,10 +614,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        StringBuilder userStyle = new StringBuilder();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 			BaseColor myColor = WebColors.getRGBColor("#000000");
-			userStyle.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
+			userStyle.append(orgLocations.getOrgLocationName()).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports");
 			
 			StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports").toString());
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 			
@@ -636,9 +644,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
             java.util.List<String[]> reportList = new ArrayList<>();
-            for(ProjectMembers promembers:projectMembers){
+            for(ProjectMembers promembers:projectMembers.getData()){
             	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
             }
             for (String[] tsreportList: reportList) {
@@ -830,14 +838,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 
 	@Override
-	public File prepareTimeSheetExportExcel(String frequencyYear, String frequencyMonth, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
+	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
 		File file = null;
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
 		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
+		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		  
@@ -887,20 +895,20 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		}else{
 		 replacedOrgName = orgLocations.getOrgLocationName();
 		}
-		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports").toString());
 		Row writeRow = null;
 		createExcelsheet = gettimesheetReportsExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,weekFrequencyDates);
 		
 		
 		int column = 0;
-		 List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
-		 for(ProjectMembers promembers:projectMembers){
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
+		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
-		 file = File.createTempFile(fileSB.append(replacedOrgName).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
+		 file = File.createTempFile(fileSB.append(replacedOrgName).append("_TimeSheetReports_").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append("-").toString(),".xls");
 		 file.setReadable(true);
 		 FileOutputStream fos = new FileOutputStream(file);
 		 try {

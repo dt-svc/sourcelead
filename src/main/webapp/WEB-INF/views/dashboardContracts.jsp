@@ -21,7 +21,7 @@ function contractList(){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
-	  $("#contractList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#contractList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -89,9 +89,9 @@ function contractList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-			                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"' title='Create Sow'>SOW</a>";
+			                     result = result +"<td><div><a href='/app/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>";
 			                     if(opt.vendorMsaCreated != true){
-			                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
+			                    	 result = result +"<a href='/app/addNewContract?orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Msa' title='Create Msa'> / MSA</a>";
 			                     }
 			                     result = result +"</div></td>";
 			                     

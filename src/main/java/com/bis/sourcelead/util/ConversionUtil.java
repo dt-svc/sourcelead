@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -96,6 +97,26 @@ public class ConversionUtil {
 		}
 		return 0;
 	}
+	
+	
+	public  float convert(String fromCurrencyCode, String toCurrencyCode, BigDecimal bigDecimal)
+	{
+		
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
+				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+			
+			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
+					+ fromCurrencyCode);
+			if (response != null) {
+				
+				String rate = response.getRates().get(toCurrencyCode);
+				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
+				return conversionRate * bigDecimal.floatValue();
+			}
+		}
+		return 0;
+	}
+	
 	
 	
 	// Method to get the response from API
@@ -371,17 +392,28 @@ public class ConversionUtil {
 	 * @return
 	 */
 	public List<LocalDate> getAllDatesBetweenGivenDates(LocalDate date1, LocalDate date2) {
-		List<LocalDate> datesList = null;
-		if (date1 != null && date2 != null) {
-			datesList = new ArrayList<>();
-			// LocalDate date1 = new LocalDate(startDateUTC);
-			// LocalDate date2 = new LocalDate(endDateUTC);
-			while (date1.isBefore(date2)) {
-				datesList.add(date1);
-				// System.out.println(date1.toString("MMM/yyyy"));
-				date1 = date1.plus(Period.months(1));
-			}
-		}
+		
+		LocalDate start = date1.dayOfMonth().withMinimumValue();
+	     LocalDate end = date2.dayOfMonth().withMaximumValue();
+	     List<LocalDate> datesList = null;
+	     if (start != null && end != null) {
+	             datesList = new ArrayList<>();
+	             // LocalDate date1 = new LocalDate(startDateUTC);
+	             // LocalDate date2 = new LocalDate(endDateUTC);
+	             while (start.isBefore(end)) {
+	                 if(date1.isBefore(date2)) {
+	                   datesList.add(date1);
+	                 }
+	                 else {
+	                   datesList.add(date2.dayOfMonth().withMinimumValue());
+	                 }
+	                 // System.out.println(date1.toString("MMM/yyyy"));
+	                 date1 = date1.plus(Period.months(1));
+	                 start = date1;
+	             }
+	             if(start.equals(end))
+	            	 datesList.add(date2.dayOfMonth().withMinimumValue());
+	     }
 		return datesList;
 	}
 

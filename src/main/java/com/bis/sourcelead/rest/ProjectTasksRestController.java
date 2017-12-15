@@ -61,7 +61,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.sun.star.awt.Command;
 
 @RestController
-@RequestMapping("/ProjectTasks")
+@RequestMapping("/app/ProjectTasks")
 public class ProjectTasksRestController {
 
 	@Value("${static.path}")

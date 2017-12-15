@@ -43,6 +43,12 @@ public class Registration {
 	
 	private String dateFormat;
 	
+	private String dba;
+	
+	private String generatedUserId;
+	
+	private Integer averageWorkingHours;
+	
 
 	public String getTimeZone() {
 		return timeZone;
@@ -210,6 +216,30 @@ public class Registration {
 
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
+	}
+
+	public String getDba() {
+		return dba;
+	}
+
+	public void setDba(String dba) {
+		this.dba = dba;
+	}
+
+	public String getGeneratedUserId() {
+		return generatedUserId;
+	}
+
+	public void setGeneratedUserId(String generatedUserId) {
+		this.generatedUserId = generatedUserId;
+	}
+
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
 	}
 	
 	

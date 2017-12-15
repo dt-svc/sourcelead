@@ -104,6 +104,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class UsersListRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);
@@ -111,6 +112,9 @@ public class UsersListRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	UserRoleService userRoleService;
 
@@ -226,6 +230,7 @@ public class UsersListRestController {
 				 userRoleType = null;
 			}
 			
+			
 			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset,viewType);
 	
 			if(null != rolesList && rolesList.size() >0){
@@ -258,7 +263,7 @@ public class UsersListRestController {
 						}
 						role.setReportingManagerName(reportingManagerName.toString());
 					}
-					Employees emp = employeesService.getEmployeeByUserId(role.getUser().getId());
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
 					if(emp !=null){
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
 							role.setEmployeMentType(emp.getUserEmploymentType());
@@ -538,7 +543,7 @@ public class UsersListRestController {
 	public @ResponseBody void userSummary(@PathVariable Long userId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/sourcelead/userSummaryDetails?userId=").append(userId).toString());
+		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userId=").append(userId).toString());
 
 	}
 
@@ -1190,11 +1195,12 @@ public class UsersListRestController {
 	         }
 	        
 	         StringBuilder loginBuilder = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
 	         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-	        
-	         //getting the current EmailScenario by EmailScenario unique name and entity type
+	
+	         
+	          //getting the current EmailScenario by EmailScenario unique name and entity type
 	         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDEMAIL,Constants.ENTITY_TYPE_EMAIL);
 	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDNOTIFICATIONEMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 
@@ -1246,7 +1252,7 @@ public class UsersListRestController {
 		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
 		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	  
 	
 	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1303,7 +1309,7 @@ public class UsersListRestController {
 			 globalVarsMap.put("reqCount", requirementsCountAsApprover.toString());
 			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 			 StringBuilder loginBuilder = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
 		  
 		
@@ -1359,7 +1365,7 @@ public class UsersListRestController {
 			 globalVarsMap.put("reqCount", count.toString());
 			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 			 StringBuilder loginBuilder = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
 		  
 		
@@ -1412,7 +1418,7 @@ public class UsersListRestController {
 			 globalVarsMap.put("reqCount", teamsCountAsOwner.toString());
 			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 			 StringBuilder loginBuilder = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
 		  
 		
@@ -1653,7 +1659,7 @@ public class UsersListRestController {
 		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 	 
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("Loginlink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("Loginlink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 	
@@ -1844,6 +1850,8 @@ public class UsersListRestController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}else{
+				employees.setHireDate(null);
 			}
 			employees.setUpdatedBy(loginUser.getUserCode());
 			employees.setUpdatedDate(commonUtil.currentDate());

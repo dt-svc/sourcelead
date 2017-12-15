@@ -11,7 +11,7 @@
 	<c:if test="${staticTime == null || staticTime == 0 }">
 	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 	 </c:if>
-	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <style>
 .settPop .form-control {
@@ -42,7 +42,7 @@ $(document).ready(function(){
 <script>
 function onboardingCandidatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -228,7 +228,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 

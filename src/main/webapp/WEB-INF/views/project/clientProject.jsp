@@ -2,9 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="/resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
+<link href="/resources/css/register-style.css" rel="stylesheet">
 
 <style>
 .clsDatePicker {
@@ -28,8 +28,8 @@
 			<h2>Create Client Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Client Project
 	</section>
 	
@@ -123,7 +123,7 @@
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue"  id="save_project" onclick="saveClientProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -283,7 +283,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 function saveClientProject(){
 	 if ($('#project_form').validate(false, validationSettings)){ 
 		 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var formData = getFormData("project_form");
 		 

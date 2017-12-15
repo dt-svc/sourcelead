@@ -63,6 +63,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class RequirementOfferRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementOfferRestController.class);
@@ -300,7 +301,7 @@ public class RequirementOfferRestController {
 	* 
 	* @throws Exception
 	*/
-	@RequestMapping(value = "/downloadOfferAttachment", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/downloadOfferAttachment", method = RequestMethod.GET)
     public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
 		
 		
@@ -329,7 +330,7 @@ public class RequirementOfferRestController {
 			} 
 		}
 	
-	@RequestMapping(value = "/acceptOrRejectOffer")
+	@RequestMapping(value = "/ws/acceptOrRejectOffer")
     @ResponseBody  String acceptOrRejectOffer(@RequestParam(value="offerStatus", required=false) String offerStatus,
                            @RequestParam(value = "offerId", required = false) Long offerId,
                            @RequestParam(value="rejectedReason", required=false) String rejectedReason,

@@ -1,7 +1,8 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script> 
 $(document).ready(function(){
 	requirementSubmissionsCount("today");
@@ -9,8 +10,7 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix">Jobs &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
-          <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
+          <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs &nbsp;&nbsp;</a> </h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Current</a></li>
@@ -141,6 +141,12 @@ function requirementSubmissionsCount(daterange){
 		        	
 		 		}
 		  });
+		 
+		 if(daterange == "today"){
+			 $("#jobsLink").attr("href", "<c:url value='/app/jobs'/>");
+		 }else{
+			 $("#jobsLink").attr("href", "<c:url value='/app/jobs'/>");
+		 }
 		 
 	}
 

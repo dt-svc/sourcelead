@@ -15,7 +15,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Cancelled Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Cancelled Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -27,10 +27,10 @@ $(document).ready(function(){
           <li class="dropdown">
            <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
-                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves" selected>Cancelled Leaves</option>
+                        <option value="${appPath}/employeeRequestedLeaves">Requested Leaves</option>
+                        <option  value="${appPath}/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="${appPath}/employeeRejectedLeaves">Rejected Leaves</option>
+                        <option value="${appPath}/employeeCancelLeaves" selected>Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -384,7 +384,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result+'<div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+            	 result = result+'<div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
             	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a></div>';
              }else{
             	 result = result +'<span>--</span>'; 

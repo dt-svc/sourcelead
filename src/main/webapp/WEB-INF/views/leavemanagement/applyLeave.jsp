@@ -19,7 +19,7 @@ window.onload = function() {
       <div class="pull-left">
         <h2>Apply Leave</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div> 
@@ -38,7 +38,7 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee</label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf');">
+                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
                    <option value=" ">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -370,8 +370,8 @@ function applyLeave(){
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/applyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
 			if(data == true){
 				location.replace(sourceleadUrl+ "/leaveManagementReports");
 			}
@@ -458,9 +458,10 @@ function validateMaxLeave(data){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data == true){
+				$('.jquery_form_error_message').remove();
 				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
 			}else{
-				$('.jquery_form_error_message cOranges').hide();
+				$('.jquery_form_error_message').hide();
 			}
 		}); 
 	}
@@ -470,12 +471,20 @@ function validateMaxLeave(data){
 <div class='comMask'></div>
 <script>
 function validateDate(){
+	
 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&roleId="+roleId, function(data) {
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 		if(data != null){
 			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
 			$(".comMask").fadeIn();
@@ -500,23 +509,32 @@ $(".comMask").click(function()
 
 <script>
 function getApproversList(){
-	var userId = '${SourceLeadWeb_userId}';
 	var behalf = $("#checkbox-1");
-	var result = "";
+	var userId = "";
 	if(behalf.is(':checked')){
-		<c:forEach var="user" items="${approverList}">
-			result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
-		</c:forEach>
+		userId = $("#user").val();
 	}else{
-		<c:forEach var="user" items="${approverList}">
-			if(userId != '${user.id}'){
-				result += "<option value='${user.id}'> ${user.firstName} ${user.lastName} (${user.userType}) </option> ";
-			}
-		</c:forEach>
-	} 
-	$("#approverUser").empty();
-	$("#approverUser").append(result);
-	$('#approverUser').trigger("chosen:updated");
+		userId = '${SourceLeadWeb_userId}';
+	}
+
+	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
+		if(data !=null){
+		var result = "";
+		for(var i=0;i<data.length;i++){
+		var opt = data[i];
+		if(behalf.is(':checked')){
+		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+		}else{
+		if(userId != opt.id){
+		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+		}
+		}
+		}
+		$("#approverUser").empty();
+		$("#approverUser").append(result);
+		$('#approverUser').trigger("chosen:updated");
+		}
+		});
 }
 </script>
 

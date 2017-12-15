@@ -22,6 +22,9 @@ width: 100%;
 #loadMoreDiv .fa-spinner{
 margin-right: 15px;
 }
+.filter_position .dataTables_filter {
+  position: relative !important; top: -60px !important;
+}
 </style>
 <script type="text/javascript">
 window.onload = function () {
@@ -57,7 +60,7 @@ function getUsersSearchResult(searchValue){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 <input type="hidden" id="noUsers" name="noUsers"/>
@@ -80,7 +83,7 @@ function getUsersSearchResult(searchValue){
         <h2>Users </h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
     </section>
     <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-x: auto;">
@@ -239,20 +242,12 @@ function getUsersSearchResult(searchValue){
                 </c:forEach>
 				</select>
 		   </li>
-		   
-		 <li id="searchIdDiv">
-			  <a href="javascript:void(0)">
-			  <i class="fa fa-user"></i></a>
-				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');" title="Search"><i class="fa fa-search"></i></span>
-		  </li> 
-		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
+	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
@@ -265,6 +260,20 @@ function getUsersSearchResult(searchValue){
 				</div>
 		   </li>
 		    </sec:authorize>
+		    <li id="searchIdDiv">
+			  <a>
+			  <i class="fa fa-user"></i>
+				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName" ></span>
+				<span class="action-search" title="Search" onclick="getUsersList('manual');"><i class="fa fa-search"></i></span>
+				</a>
+		  </li>
+		  <li id="dynamicSearch" style="display:none;">
+			  <span class="width215px">
+			  
+			  </span>
+		  </li>
+		  
+		  
         </ul>
       </div>
       </div>
@@ -290,7 +299,7 @@ function getUsersSearchResult(searchValue){
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
@@ -445,15 +454,23 @@ function exportToPdf(){
   Script is used search  based on search key if Enter Key is Pressed -->
   
  <script type="text/javascript">
-   
-    $("#searchByName").keydown(function (e) {
-			  if (e.keyCode == 13) {
-			    $('input[name = searchByName]').click();
-				 $("#user_forms")[0].reset();
-				 getUsersList("manual");
-			  }
-			});
-  </script> 
+ $(document).ready(function(){
+	// Handles the enter keypress
+		$("#searchByName").keypress(function(event) {
+			if (event.keyCode == 13) {
+				getUsersList("manual");
+			}
+		});
+});
+
+/*  $("#searchByName").keydown(function (e) {
+		  if (e.keyCode == 13) {
+		    $('input[name = searchByName]').click();
+			 $("#user_forms")[0].reset();
+			 getUsersList("manual");
+		  }
+		}); */
+	</script> 
  
  <!--  David
   this script is not used -->    
@@ -481,7 +498,7 @@ function exportToPdf(){
     		 offset = 0;
     	}
 	
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -512,7 +529,7 @@ function exportToPdf(){
 			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
 			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			       	    	}else{
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			       	    	}
 			       	    	
 			       	    	opt = opt +"</div>";
@@ -523,7 +540,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	opt = opt +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
+			       	         	opt = opt +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
@@ -591,7 +608,7 @@ function exportToPdf(){
 <script type="text/javascript">
 function resendInvitation(userId){
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
@@ -743,7 +760,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
@@ -1021,7 +1038,7 @@ function showGrid(){
 	$("#userListViewDiv").hide();
 	getUsersList('manual');
 	$("#usersListBody").show();
-	
+	$("#dynamicSearch").hide();
 }
 
 function showList(viewType){
@@ -1030,6 +1047,7 @@ function showList(viewType){
 	getUsersListView('manual',viewType);
 	$("#userListViewDiv").show();
 	$('#loadMoreDiv').empty();
+	$("#dynamicSearch").show();
 	
 }
 </script>
@@ -1094,11 +1112,11 @@ function showList(viewType){
 			        		   if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
-			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
+			        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
 			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			        			    }else{
-						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			        			    }
 					       	    	result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';
