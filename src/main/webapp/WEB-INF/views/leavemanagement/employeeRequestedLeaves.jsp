@@ -355,7 +355,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
-			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +'<label class="col-md-2 control-label"><b>Role:</b></label>';
 			 result = result +' <div class="col-md-8">';
 			 if(data.empType != null && data.empType !='' && data.empType !='undefined'){
 				 result = result +'<span>'+data.empType+'</span>';
