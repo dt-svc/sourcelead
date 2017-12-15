@@ -95,7 +95,13 @@ right: 15px;
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
 				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                   </c:if>
+				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
+				                     <img src="/resources/images/office-image.jpg">
+				                   </c:if>
+				                     
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -453,12 +459,6 @@ function getDBAName(){
 }
 </script>
 
-
-<script>
-	function predefineOrgImage(imageId){
-		$(imageId).attr('src','/resources/images/office-image.jpg');
-	}
-</script>
 
 <script type="text/javascript">
   var loadFile = function(event) {
