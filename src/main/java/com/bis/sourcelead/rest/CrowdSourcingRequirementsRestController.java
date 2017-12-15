@@ -2454,7 +2454,7 @@ public class CrowdSourcingRequirementsRestController {
 		 
 		 
 		@RequestMapping(value = "/addContactsGroup", method = RequestMethod.POST)
-		public String addContactsGroup(ContactsGroupDTO contactsGroupDTO,
+		public @ResponseBody String addContactsGroup(ContactsGroupDTO contactsGroupDTO,
 					HttpServletRequest request,HttpServletResponse response)
 					throws Exception {
 

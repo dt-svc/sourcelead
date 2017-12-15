@@ -29,10 +29,10 @@ $(document).ready(function(){
           <li class="dropdown">
              <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
-                        <option  value="/employeeApprovedLeaves" selected>Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves">Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
+                        <option value="/app/employeeRequestedLeaves">Requested Leaves</option>
+                        <option  value="/app/employeeApprovedLeaves" selected>Approved Leaves</option>
+                        <option value="/app/employeeRejectedLeaves">Rejected Leaves</option>
+                        <option value="/app/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
         </li>

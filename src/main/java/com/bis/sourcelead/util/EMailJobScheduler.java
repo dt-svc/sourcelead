@@ -1084,8 +1084,6 @@ public class EMailJobScheduler {
 	 * @throws Exception 
 	 */
 
-
-
 	//TODO commented by Rakshith
 	//	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	//	@Async
@@ -1281,6 +1279,52 @@ public class EMailJobScheduler {
 		        {
 		            System.out.println("Exception: " + ex);
 		        }
+	}
+	
+	/**
+	 * cron to move expired contract to EXPIRED stage
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void runExpiredContract() throws Exception{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLoc : orgLocationsList) {
+			List<Contracts> contractList = contractsTemplateService.getContractByLocationId(orgLoc.getId());
+			if(contractList != null && contractList.size() > 0) {
+				for(Contracts contracts : contractList) {
+				   	if(contracts.getEndDate()!=null){
+			    		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			    		Date date = new Date();
+			    		String currentTimeStr = TZ_DF_TS.format(date);
+						Date curDate = TZ_DF_TS.parse(currentTimeStr);
+			    		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			    			contracts.setId(contracts.getId());
+							contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+							String fromStage = contracts.getTemplateSubmissionStatus();
+			    			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			    			if(null != childContarct && null != childContarct.getParentContractId()){
+			    				fromStage = childContarct.getTemplateSubmissionStatus();
+			    				childContarct.setId(childContarct.getId());
+			    				childContarct.setTemplateSubmissionStatus(Constants.EXPIRED);
+			    				contractsTemplateService.saveNewContract(childContarct);
+			    				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+			        				if(!(Constants.EXPIRED).equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+				        				ContractsHistory childContractsHistory = new ContractsHistory();
+				            			childContractsHistory.setFromStage(fromStage);
+				        				childContractsHistory.setContractsId(childContarct);
+				        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+				        				childContractsHistory.setCreatedDate(new Date());
+				        				childContractsHistory.setUpdatedDate(new Date());
+				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			        				}
+			    				}
+			    		}
+			    	 }
+			    	}
+				}
+			}
+		}
 	}
 	
 	

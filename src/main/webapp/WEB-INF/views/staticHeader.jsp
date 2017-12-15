@@ -32,7 +32,7 @@
     	<ul>
         	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
             <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="http://localhost:8080/login"><i class="fa fa-user-o"></i> Login</a></li>
+            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
             <div class="clear"></div>
         </ul>
     	<div class="clear"></div>    
@@ -41,7 +41,7 @@
 
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="index.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="home.html"><i class="fa fa-home"></i></a></li>

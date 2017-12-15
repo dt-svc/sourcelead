@@ -28,6 +28,8 @@ public class CampaignStatsDTO extends SearchDTO {
 	private String createdBy;
 	private String updatedDate;
 	private String updatedBy;
+	private String listName;
+	private int numberOfRecipients;
 	
 	
 	
@@ -238,6 +240,22 @@ public class CampaignStatsDTO extends SearchDTO {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+	public String getListName()
+	{
+		return listName;
+	}
+	public void setListName(String listName)
+	{
+		this.listName = listName;
+	}
+	public int getNumberOfRecipients()
+	{
+		return numberOfRecipients;
+	}
+	public void setNumberOfRecipients(int numberOfRecipients)
+	{
+		this.numberOfRecipients = numberOfRecipients;
 	}
 	
 	

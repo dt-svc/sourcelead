@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>::. Sign In .::</title>
-    <%-- <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <%-- <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -33,7 +33,7 @@
 
 
 <div class="signin_wrap SignSlide">
-	<img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
+	<a href="/index.html"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
@@ -83,20 +83,20 @@
         <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
         <input type="hidden" name="referUUID" value="${referUUID}" />
 	            
-		<div class="for-pas-text"><a onclick="forgotPassword();"><strong id="FgPas">Forgot Password</strong></a><i class="fa fa-question"></i></div>
+		<div class="for-pas-text"><strong id="FgPas" onclick="forgotPassword();">Forgot Password</strong><i class="fa fa-question"></i></div>
 <!-- 		<input type="button" value="Login" class="sign_btn" id="OrgVi" /> -->
 		<input type="submit" value="Submit" class="sign_btn" />
 		
 		<c:if test="${!empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></div>
         </c:if>
         
         <c:if test="${!empty requirementUUID && !empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></div>
         </c:if>
         
         <c:if test="${empty requirementUUID && empty referUUID}">
-         <div class="siUpText"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+         <div class="siUpText">Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></div>
         </c:if>
 		
 		</form>
@@ -287,6 +287,7 @@ function applyInputSlide() {
         $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
+        	    alert("pradeep")
         		var form = $('#forgetPassword_form').serializeFormJSON();
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -296,7 +297,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: "/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -308,10 +309,10 @@ function applyInputSlide() {
 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
-    			        		  location.replace(sourceleadUrl+"/login"); 
+    			        		  location.replace("/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+                    			  location.replace("/resetPassword"); 
     			        	}
 			        },  
                 });

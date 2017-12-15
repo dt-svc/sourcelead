@@ -6,6 +6,8 @@
 <script>
 $(document).ready(function(){
    getRejectedEmployeesList();
+   var abc = "${appPath}";
+   alert("Hai");
 });
 </script>
 
@@ -27,10 +29,10 @@ $(document).ready(function(){
           <li class="dropdown">
           <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="/employeeRequestedLeaves">Requested Leaves</option>
-                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="/employeeRejectedLeaves" selected>Rejected Leaves</option>
-                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
+                        <option value="${appPath}/employeeRequestedLeaves">Requested Leaves</option>
+                        <option  value="${appPath}/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="${appPath}/employeeRejectedLeaves" selected>Rejected Leaves</option>
+                        <option value="${appPath}/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
           </li>

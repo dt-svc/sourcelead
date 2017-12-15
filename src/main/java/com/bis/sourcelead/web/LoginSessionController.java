@@ -13,8 +13,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,6 +183,13 @@ public class LoginSessionController {
 			   @RequestParam(value = "switchUserType", required = false) String switchUserType,
 			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 		
+		
+		ModelAndView model = new ModelAndView();
+		if(authentication == null) {
+			model.setViewName("login");
+			return model;
+		}
+		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
@@ -209,7 +216,7 @@ public class LoginSessionController {
 			}
 		}
 		
-		ModelAndView model = new ModelAndView();
+		
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
@@ -247,9 +254,9 @@ public class LoginSessionController {
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
 					
-					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
+					/*if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
 						associatesTabsCount = associatesTabsCount+1;
-					}
+					}*/
 					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
@@ -344,6 +351,7 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
@@ -394,6 +402,19 @@ public class LoginSessionController {
 				}
 			}
 			
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded())) {
+				if(orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+					List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+					model.addObject("bussinessTypesList", bussinessTypesList);
+					List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+					model.addObject("timezoneList", timezoneList);
+					model.setViewName("onboard/companyOnboard");
+				}else{
+					model.setViewName("dashboard");
+				}
+			}
+			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
 			
@@ -422,6 +443,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
 
@@ -1045,6 +1067,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+		  if(orgLocations.getDba() == null || orgLocations.getDba().isEmpty()){
+			  SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+		  }
+		
 	}
 	
 	
