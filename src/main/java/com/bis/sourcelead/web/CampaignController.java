@@ -216,6 +216,7 @@ public class CampaignController {
 		 commonUtil.highLightMenu(Constants.CampaignSender, request);
 		 
 		model.setViewName("campaign/campaignSenderList");
+		commonUtil.highLightMenu(Constants.Campaigns, request);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
@@ -233,6 +234,7 @@ public class CampaignController {
 	{
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		commonUtil.highLightMenu(Constants.Campaigns, request);
 		model.setViewName("campaign/campaignRecipientList");
 		commonUtil.highLightMenu(Constants.CampaignRecipient, request);
 		return model;
@@ -273,6 +275,14 @@ public class CampaignController {
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("campaignName", campaignName);
 		   model.setViewName("campaign/campaignStatsGraph");
+	       return model;
+	}
+	
+	@RequestMapping(value = "/campaignStats")
+	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStats");
 	       return model;
 	}
 	

@@ -17,7 +17,7 @@ z-index: 1040 !important;
     var tokenValue = "${_csrf.token}";
  </script>
 
-<script src="/esources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -44,7 +44,7 @@ z-index: 1040 !important;
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right" id="cpnListNameDiv">
-                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-250" field-name="List Name">
+                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-100" field-name="List Name">
 				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
 				</div>
 			</div>			

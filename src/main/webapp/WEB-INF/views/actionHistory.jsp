@@ -67,7 +67,7 @@ margin-top: 52px; padding:10px; border: 1px solid #ddd;
   	<div id="actionHistoryOrgList" class="clearfix clients_wrap_table overflow_inherint"></div>
 	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">
-<div class="welSiO" onclick="location.href='<c:url value='/login'/>'" title="Sign Out"><i class="fa fa-sign-out"></i></div>
+<div class="welSiO" onclick="logoutFormSubmit();"  title="Sign Out"><i class="fa fa-sign-out"></i></div>
 <%-- 	<a href="<c:url value='/login'/>" class="btn btn-primary" title="Go to Loginpage">Go to Login <i class="fa fa-arrow-right paddingLeft"></i></a> --%>
 </div>
 </div>
@@ -245,6 +245,17 @@ var validationSettings = {
 			document.getElementById('shift' + orgLocationsId + '').className = 'active';
 		};
 	</script>
+	
+	<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post" id="logoutForm">
+ <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
          
 
 </body>

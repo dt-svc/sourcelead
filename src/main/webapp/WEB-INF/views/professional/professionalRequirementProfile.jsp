@@ -33,7 +33,7 @@ $(document).ready(function() {
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
