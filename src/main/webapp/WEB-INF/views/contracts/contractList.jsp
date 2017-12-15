@@ -1404,9 +1404,9 @@ function preparedContractListWTS(json){
 		         result = result + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         if(report.typeOfContract == "New"){
-		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>'; 
+		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 		         }else{
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a><a href="<c:url value="/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>';
 		         }
 		         '</sec:authorize>';
 		         result = result + '</td>';
@@ -1498,9 +1498,9 @@ function preparedContractListWTS(json){
 	         opt = opt + '<td>';//Waiting to be signed
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	         if(output.typeOfContract == "New"){
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>'; 
+	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 	         }else{
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
+	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a><a href="<c:url value="/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>';
 	         }
      		'</sec:authorize>';
      		 opt = opt + '</td>';
@@ -1844,13 +1844,13 @@ function preparedContractListWTV(json){
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
  		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
-		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+		        	 if(report.contractStatus != "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
 		         }
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         if(report.typeOfContract == "New"){
-		        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
+		        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a>';
 		         }else{
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 		         }
@@ -1944,13 +1944,13 @@ function preparedContractListWTV(json){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
-	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		     		}
  	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	         if(output.typeOfContract == "New"){
-	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	         if(output.typeOfContract == "New" || output.typeOfContract == "Custom"){
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></i></a>';
 	         }else{
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	         }
@@ -2033,7 +2033,7 @@ function preparedContractListWTV(json){
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
  		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
-		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
+		        	 if(appReport.contractStatus != "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
 			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 			     		}
 		         }
@@ -2289,8 +2289,8 @@ function preparedContractListFinalize(json){
 		         
 		         result = result + '<td>';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         if(report.typeOfContract == "New"){
-		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
+		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a></div>';
 		         }else{
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
 		         }
@@ -2382,8 +2382,8 @@ function preparedContractListFinalize(json){
 
 	         opt = opt + '<td>';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	         if(output.typeOfContract == "New"){
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+	         if(output.typeOfContract == "New" || output.typeOfContract == "Custom"){
+	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></i></a></div>';
 	         }else{
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
 	         }

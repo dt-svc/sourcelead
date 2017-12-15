@@ -89,10 +89,9 @@ public class VendorContractsDTO {
 	private Long approverUserId;
 	private Long ownerUser;
 	private String templateId;
-	
     private String orgRelationUUID;
 	private String spocUUID;
-	
+	private String templateFileURL;
 	
 	
 	public String getTemplateId()
@@ -944,6 +943,12 @@ public class VendorContractsDTO {
 	{
 		this.spocUUID = spocUUID;
 	}
-	
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
 	
 }

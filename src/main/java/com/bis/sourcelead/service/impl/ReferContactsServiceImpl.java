@@ -191,4 +191,10 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		return referContactsDao.validateGoogleEamil(email, loginUserId);
 	}
 
+	@Override
+	public ReferContacts findByEmail(String recipientMail) throws Exception
+	{
+		return referContactsDao.findByEmail(recipientMail);
+	}
+
 }
