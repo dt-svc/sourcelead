@@ -358,6 +358,7 @@ public class Constants {
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
 	public static final String CONTRACT_SIGNED = "ContractSigned";
+	public static final String SEND_CONTRACT = "SendContract";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
