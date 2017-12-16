@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -167,7 +167,7 @@ function backoutCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
   <div class="timesheet_out">
     
@@ -523,7 +523,7 @@ function activeTabs(){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -1177,7 +1177,7 @@ function reqNotes(requirementId){
    	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
    	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
@@ -1718,7 +1718,7 @@ function clientSideBar(candidateId,recScore){
 			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 			               }else{
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	   
 			               }
 						if(recScore != null && recScore != '' && recScore != 'undefined'){
@@ -2302,7 +2302,7 @@ function getRateListDiv(submissionId, candidateId){
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
@@ -2929,7 +2929,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -2976,7 +2976,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -3141,7 +3141,7 @@ function refreshImageBlock(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 						 }else{
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	 
 						 }
 						 result = result+'  <div class="btn-group uploadfile">';
@@ -3265,7 +3265,7 @@ function saveCandidateImage(candidateId){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 

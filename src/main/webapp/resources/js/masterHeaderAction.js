@@ -94,39 +94,46 @@
        
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi ").next('ul').slideUp();
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli ").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".usersLi, .billingLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".usersLi, .billingLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".backofficeLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLis").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".timesheetLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });	
        $(".associatesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".billingLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".expencesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".campaignsli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        

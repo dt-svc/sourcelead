@@ -9,6 +9,8 @@
 
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="resources/js/jquery.twbsPagination.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+
 
 <div id="TimeshgeetStatusListId"></div>
 
@@ -19,7 +21,7 @@
           <div class="pull-left">
             <h2> ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</h2>
           </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Wait For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Wait For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</div>
             <div class="clearfix"></div>
         </section>
 	<div class="timesheet-content">

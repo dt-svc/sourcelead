@@ -6,17 +6,17 @@ import java.util.List;
 
 public class CampaignListDTO extends SearchDTO implements Serializable{
 	
-	private long id;
+	private String id;
 	
-	private long orgLocationId;
+	private String orgLocationId;
 	
 	private String listId;
 	
 	private String listName;
 	
-	private int listCount;
+	private String listCount;
 	
-	private int status;
+	private String status;
 	
 	private String createdDate;
 
@@ -42,22 +42,25 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 	
 	private String email;
 
-	public long getId()
+	
+
+	public String getId()
 	{
 		return id;
 	}
 
-	public void setId(long id)
+	public void setId(String id)
 	{
 		this.id = id;
 	}
 
-	public long getOrgLocationId()
+
+	public String getOrgLocationId()
 	{
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(long orgLocationId)
+	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
 	}
@@ -82,12 +85,14 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 		this.listName = listName;
 	}
 
-	public int getStatus()
+	
+
+	public String getStatus()
 	{
 		return status;
 	}
 
-	public void setStatus(int status)
+	public void setStatus(String status)
 	{
 		this.status = status;
 	}
@@ -152,12 +157,13 @@ public class CampaignListDTO extends SearchDTO implements Serializable{
 		this.recipientEmail = recipientEmail;
 	}
 
-	public int getListCount()
+
+	public String getListCount()
 	{
 		return listCount;
 	}
 
-	public void setListCount(int listCount)
+	public void setListCount(String listCount)
 	{
 		this.listCount = listCount;
 	}

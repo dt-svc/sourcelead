@@ -26,7 +26,7 @@ margin-right: 15px;
 </style>
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -46,7 +46,7 @@ margin-right: 15px;
         <h2>Orgs List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Orgs List </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
     <input id="searchOrgElement" type="hidden"></input>
     </section>
      <input type="hidden" id="noOrgsList" name="noOrgsList"/>
@@ -72,7 +72,7 @@ margin-right: 15px;
 				<span class="action-search" onclick="getOrgsList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
-		  <li><a href="<c:url value='/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
+		  <li><a href="<c:url value='${appPath}/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
@@ -86,7 +86,7 @@ margin-right: 15px;
   </section>
   
       <!-- Content Area Ends--> 
-	<div class="backtotop"><img src="resources/images/backtotop.png"></div>  
+	<div class="backtotop"><img src="/resources/images/backtotop.png"></div>  
       <jsp:include page="../masterFooter.jsp" />
       
       <script>
@@ -134,11 +134,11 @@ margin-right: 15px;
 	    /* $('#orgListBody').empty();
         $('#orgListEmptyBody').empty(); */
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
+	    	url: "/app/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
@@ -176,7 +176,7 @@ margin-right: 15px;
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
+	       	    	result = result +"<h4><a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+org.location+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
@@ -245,7 +245,7 @@ margin-right: 15px;
 function resendInvitation(userId,orgId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  

@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Shift</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Shift</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Shift</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -25,7 +25,7 @@
     <div class="timesheet_head">
       <ul>
           <li>
-               <a href="<c:url value='/addShift'/>" title="Add Shift">
+               <a href="<c:url value='${appPath}/addShift'/>" title="Add Shift">
                 <i class="fa fa-plus paddingRight"></i>Add Shift
               </a>
           </li>

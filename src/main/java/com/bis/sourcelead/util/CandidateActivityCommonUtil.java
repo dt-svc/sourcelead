@@ -289,7 +289,6 @@ public class CandidateActivityCommonUtil {
 		candidateDocumentsHistory.setRequestedDocRejectedReason(candidateDocuments.getRequestedDocRejectedReason());
 		candidateDocumentsHistory.setDocumentType(candidateDocuments.getDocumentType());
 		candidateDocumentsHistory.setDocumentOtherType(candidateDocuments.getDocumentOtherType());
-		candidateDocumentsHistory.setFileURL(candidateDocuments.getFileURL());
 		candidateDocumentsHistory.setFileContentType(candidateDocuments.getFileContentType());
 		candidateDocumentsHistory.setFileName(candidateDocuments.getFileName());
 		candidateDocumentsHistory.setDescription(candidateDocuments.getDescription());

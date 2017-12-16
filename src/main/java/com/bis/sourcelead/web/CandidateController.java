@@ -51,6 +51,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 	@Value("${sourceleadUrl}")
@@ -403,7 +404,7 @@ public class CandidateController {
 		} 
 	 
 	 
-/*	 @RequestMapping(value = "/viewProfessionalCandidateDocument/{title}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewProfessionalCandidateDocument/{title}", method = RequestMethod.GET)
 	    public void viewProfessionalCandidateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
 	    		@PathVariable(value="title") String title,
 	    		HttpServletResponse response) throws Exception {
@@ -411,12 +412,12 @@ public class CandidateController {
 		 CandidateDocuments candidateDocuments =  candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);	
 			    
 		 byte[] pdfBytes = null;
-			if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
+			/*if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
 				pdfBytes = candidateDocuments.getDocFile();
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateDocuments.getDocFile());
-			}
+			}*/
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
 		  	    ServletOutputStream sos = response.getOutputStream();
@@ -427,7 +428,7 @@ public class CandidateController {
 		          sos.flush();
 		          sos.close();
 
-		} */
+		} 
 	 
 	 
 	 @RequestMapping(value = "/candidateResumeDownload", method = RequestMethod.GET)

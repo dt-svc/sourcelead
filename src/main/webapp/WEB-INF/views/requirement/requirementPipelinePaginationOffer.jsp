@@ -214,7 +214,7 @@
 												result = result
 														+ '         <td title='+opt.attachment+'><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'
 														+ sourceleadUrl
-														+ '/downloadOfferAttachment?offerId='
+														+ '/ws/downloadOfferAttachment?offerId='
 														+ opt.offerId
 														+ '\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''
 														+ opt.offerId
@@ -304,7 +304,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		

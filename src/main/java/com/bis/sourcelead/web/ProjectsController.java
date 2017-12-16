@@ -1,18 +1,31 @@
 package com.bis.sourcelead.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +40,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -41,6 +55,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
@@ -56,11 +71,15 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ProjectsController {
 	
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	 @Autowired
 	 private OrgService orgService;
@@ -89,6 +108,8 @@ public class ProjectsController {
 	 @Autowired
 	 CountriesService countriesService;
 	 
+	 @Autowired
+	 ProjectDocumentsService projectDocumentsService;
 
 	@Autowired
 	CommonUtil commonUtil;
@@ -257,91 +278,101 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				
 			    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-				OrgLocations clientOrgLocations = null;
-				String isClientOrgActive = Constants.NO;
-				if(projects != null){
-					model.addObject("projectId", projects.getId());
-					model.addObject("projectName", projects.getProjectName());
-					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getStartDate()));
-					}
-					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
-					}
-					List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"");
-					model.addObject("projectAssignMemberList", projectAssignMemberList);
-					model.addObject("projectStatus", projects.getProjectStatus());
-					
-				}
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				
+				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
 				
-				
-				if(StringUtils.isNotEmpty(projectClientUUID)){
-					ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
-					if(projectClients != null && projectClients.getOrgRelationId() != null){
-						if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
-							clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
-						}else{
-							clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
+				if(flag == true) {
+					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+					OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+					OrgLocations clientOrgLocations = null;
+					String isClientOrgActive = Constants.NO;
+					if(projects != null){
+						model.addObject("projectId", projects.getId());
+						model.addObject("projectName", projects.getProjectName());
+						if(projects.getStartDate() != null){
+							model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getStartDate()));
 						}
+						if(projects.getEndDate() != null){
+							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
+						}
+						List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"");
+						model.addObject("projectAssignMemberList", projectAssignMemberList);
+						model.addObject("projectStatus", projects.getProjectStatus());
 						
-						if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
-							isClientOrgActive = Constants.YES;
-						}
 					}
-					model.addObject("isClientOrgActive", isClientOrgActive);
-				}
-				model.addObject("projectClientUUID", projectClientUUID);
-				
-				if(null != tabType && !tabType.isEmpty() && tabType != ""){
-					model.addObject("tabType", tabType);
-				}
-				
-				ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-				Integer projectMembersCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
-				model.addObject("projectMembersCount", projectMembersCount);
-				
-				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
-				model.addObject("resourceRequestsCount", resourceRequestsCount);
-				
-				List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orgLocations.getId());
-				if(projectBudgetList != null) {
-					model.addObject("projectBudgetCount", projectBudgetList.size());
+					
+					
+					
+					if(StringUtils.isNotEmpty(projectClientUUID)){
+						ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+						if(projectClients != null && projectClients.getOrgRelationId() != null){
+							if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
+								clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
+							}else{
+								clientOrgLocations = projectClients.getOrgRelationId().getResponderLocationId();
+							}
+							
+							if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
+								isClientOrgActive = Constants.YES;
+							}
+						}
+						model.addObject("isClientOrgActive", isClientOrgActive);
+					}
+					model.addObject("projectClientUUID", projectClientUUID);
+					
+					if(null != tabType && !tabType.isEmpty() && tabType != ""){
+						model.addObject("tabType", tabType);
+					}
+					
+					ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+					Integer projectMembersCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
+					model.addObject("projectMembersCount", projectMembersCount);
+					
+					Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
+					model.addObject("resourceRequestsCount", resourceRequestsCount);
+					
+					List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orgLocations.getId());
+					if(projectBudgetList != null) {
+						model.addObject("projectBudgetCount", projectBudgetList.size());
+					}else {
+						model.addObject("projectBudgetCount", 0);
+					}
+					
+					Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+					Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+					if(rolesList != null) {
+						model.addObject("rolesList", rolesList);
+					}
+					
+					model.addObject("projectUUID", projectUUID);
+					model.addObject("projectCurrency", projects.getCurrency());
+					model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
+					
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+					model.addObject("orgLocationsList", orgLocationsList);
+					
+					 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
+					 model.addObject("taskTypeList", taskTypeList);
+					 
+					 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSEVERITY);
+					 model.addObject("taskSeverityList", taskSeverityList);
+					 
+					 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKPRIORITY);
+					 model.addObject("taskPriorityList", taskPriorityList);
+					 
+					 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
+					 model.addObject("taskStatusList", taskStatusList);
+					 
+					commonUtil.highLightMenu(Constants.Projects, request);
+					 
+					model.setViewName("project/projectSummary");
 				}else {
-					model.addObject("projectBudgetCount", 0);
+					model.setViewName("registration/persmissionDenied");
 				}
 				
-				Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
-				Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
-				if(rolesList != null) {
-					model.addObject("rolesList", rolesList);
-				}
-				
-				model.addObject("projectUUID", projectUUID);
-				model.addObject("projectCurrency", projects.getCurrency());
-				model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
-				
-				List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
-				model.addObject("orgLocationsList", orgLocationsList);
-				
-				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
-				 model.addObject("taskTypeList", taskTypeList);
-				 
-				 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSEVERITY);
-				 model.addObject("taskSeverityList", taskSeverityList);
-				 
-				 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKPRIORITY);
-				 model.addObject("taskPriorityList", taskPriorityList);
-				 
-				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
-				 model.addObject("taskStatusList", taskStatusList);
-				 
-				commonUtil.highLightMenu(Constants.Projects, request);
-				 
-				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
@@ -426,34 +457,44 @@ public class ProjectsController {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
-				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-				//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-				if(projects != null){
-					model.addObject("projectId", projects.getId());
-					model.addObject("projectName", projects.getProjectName());
-					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
-					}
-					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
-					}
-					model.addObject("projectStatus", projects.getProjectStatus());
-				}
 				
-				 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-					if(null != countries){
-		            model.addObject("loginCountryName", countries.getName());
-		            model.addObject("currencyCode", countries.getCurrency());
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 
+				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+				 
+				 if(flag == true) {
+					 Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+					//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+					if(projects != null){
+						model.addObject("projectId", projects.getId());
+						model.addObject("projectName", projects.getProjectName());
+						if(projects.getStartDate() != null){
+							model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
+						}
+						if(projects.getEndDate() != null){
+							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
+						}
+						model.addObject("projectStatus", projects.getProjectStatus());
 					}
-			    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
-			    model.addObject("rolesList", rolesList);
-			    
-			    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
-				model.addObject("approversList", approversList);
-			    
-				model.addObject("projectClientUUID", projectClientUUID);
-				model.addObject("projectUUID", projectUUID);
-				model.setViewName("project/newResourceRequest");
+					
+					 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+						if(null != countries){
+			            model.addObject("loginCountryName", countries.getName());
+			            model.addObject("currencyCode", countries.getCurrency());
+						}
+				    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+				    model.addObject("rolesList", rolesList);
+				    
+				    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+					model.addObject("approversList", approversList);
+				    
+					model.addObject("projectClientUUID", projectClientUUID);
+					model.addObject("projectUUID", projectUUID);
+					model.setViewName("project/newResourceRequest");
+				 }else {
+					 model.setViewName("registration/persmissionDenied");
+				 }
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
@@ -464,9 +505,15 @@ public class ProjectsController {
 			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    
 	    ModelAndView model = new ModelAndView();
-		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		
+	    boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+	    
+	    if(flag == true) {
+	    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(projects != null){
 			model.addObject("projectId", projects.getId());
@@ -489,6 +536,9 @@ public class ProjectsController {
 		model.addObject("approversList", approversList);
 		
 		model.setViewName("project/requestAssociates");
+	    }else {
+	    	 model.setViewName("registration/persmissionDenied");
+	    }
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
     }
@@ -499,6 +549,8 @@ public class ProjectsController {
 			@RequestParam(value="projectClientUUID", required=true) String projectClientUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    
 	    ModelAndView model = new ModelAndView();
 	    
@@ -510,8 +562,10 @@ public class ProjectsController {
 		sessionData.setNav(Constants.Projects);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
+		
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
 	
-	    
+	    if(flag == true) {
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 		if(projects != null){
 			model.addObject("projectId", projects.getId());
@@ -528,6 +582,9 @@ public class ProjectsController {
 		model.addObject("projectUUID", projectUUID);
 		model.addObject("projectClientUUID",projectClientUUID);
 		model.setViewName("project/addNewProjectMembers");
+	    }else {
+	    	model.setViewName("registration/persmissionDenied");
+	    }
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
     }
@@ -683,6 +740,6 @@ public class ProjectsController {
    		return model;
        }
 
-
+    
 
 }

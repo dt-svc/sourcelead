@@ -49,11 +49,12 @@ function prepareCampaignStatsList(url){
  	    result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +' <th>Category Name</th>';
+		 result = result +' <th>List Name</th>';
+		 result = result +' <th>No.Of Recipients</th>';
 	    result = result +' <th>Opens</th>';
 	    result = result +' <th>Delivered</th>';
-	    result = result +' <th>Unique Opens</th>';
-	    result = result +' <th>Unique Clicks</th>';
-	    result = result +' <th>Unsubscribes</th>';
+	    result = result +' <th>CLicks</th>';
+	    result = result +' <th>Bounces</th>';
 	    result = result +' <th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -78,11 +79,12 @@ function campaignStatsPagination(url){
         }),
         "columns": [
             { "data": "categoryName" },
+            { "data": "listName"},
+            { "data": "numberOfRecipients"},
             { "data": "opens"},
             { "data": "delivered"},
-            { "data": "uniqueOpens" },
-            { "data": "uniqueClicks"},
-            { "data": "unsubscribes" },
+            { "data": "clicks" },
+            { "data": "bounces"},
             { "data": "action" }
             
 
@@ -96,6 +98,26 @@ function campaignStatsPagination(url){
 		             return result;
 	    	  	}
 	      },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "listName",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	  	     if(report.listName !=null && report.listName !='' && report.listName !='undefined'){
+	    	  	    	result = result +    '<div class="tbldata-dotdot-sm" title="'+report.listName+'">'+report.listName+'</div>';
+	    	  	     }else{
+	    	  	    	result = result +    '<div class="tbldata-dotdot-sm">--</div>'; 
+	    	  	     }
+	    	  		return result;
+	    	  	}
+	    	  },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "numberOfRecipients",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		var result = "";
+		    	  		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.numberOfRecipients+'">'+report.numberOfRecipients+'</div>';
+	  	                return result;
+		    	  	}
+		    	  },{
 	    	  "targets": colIndex++,
               "data": "opens",
               "render": function ( data, type, report, meta ) {
@@ -117,7 +139,7 @@ function campaignStatsPagination(url){
               "data": "uniqueOpens",
               "render": function ( data, type, report, meta ) {
             	var result = "";
-            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueOpens+'">'+report.uniqueOpens+'</div>';
+            	  result = result +    '<div class="tbldata-dotdot-sm" title="'+report.clicks+'">'+report.clicks+'</div>';
             	 return result;
               }
             }, {
@@ -125,18 +147,10 @@ function campaignStatsPagination(url){
                 "data": "uniqueClicks",
                 "render": function ( data, type, report, meta ) {
                 	var result = "";
-                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.uniqueClicks+'">'+report.uniqueClicks+'</div>';
+                		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.bounces+'">'+report.bounces+'</div>';
     	              return result;
                 }
           },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "unsubscribes",
-	    	  	"render": function(data, type, report, meta) {
-	    	  		var result = "";
-	    	  		result = result +    '<div class="tbldata-dotdot-sm" title="'+report.unsubscribes+'">'+report.unsubscribes+'</div>';
-  	                return result;
-	    	  	}
-	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "action",
 	    	  	"render": function(data, type, report, meta) {
@@ -163,7 +177,7 @@ function campaignStatsPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#campaignStatsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
