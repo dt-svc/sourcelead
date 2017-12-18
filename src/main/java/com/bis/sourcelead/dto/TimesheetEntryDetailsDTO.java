@@ -1,9 +1,14 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -22,9 +27,16 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private Map<String,String> timeSubFrequencies;
 	
+	private LinkedList<String> filledTimeSubFrequencies;
+	
 	private String currentTimeSubFrequency;
 	
 	private TimeSheetSubmissionDTO timesheetSubmission;
+	
+	private String timesheetFor;
+	
+	@JsonIgnore
+	private Map<String,String>  timesheetFrequencyMap;
 	
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
@@ -97,7 +109,29 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.timesheetSubmission = timesheetSubmission;
 	}
 
-	
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
 
-    
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
+
+	public Map<String, String> getTimesheetFrequencyMap() {
+		return timesheetFrequencyMap;
+	}
+
+	public void setTimesheetFrequencyMap(Map<String, String> timesheetFrequencyMap) {
+		this.timesheetFrequencyMap = timesheetFrequencyMap;
+	}
+
+	public LinkedList<String> getFilledTimeSubFrequencies() {
+		return filledTimeSubFrequencies;
+	}
+
+	public void setFilledTimeSubFrequencies(LinkedList<String> filledTimeSubFrequencies) {
+		this.filledTimeSubFrequencies = filledTimeSubFrequencies;
+	}
+	
+     
 }

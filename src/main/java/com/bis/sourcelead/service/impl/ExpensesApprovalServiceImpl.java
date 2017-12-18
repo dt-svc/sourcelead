@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -92,6 +94,10 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
@@ -108,7 +114,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception {
+	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 	//	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
@@ -130,8 +136,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
 		}
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus, startDateUTC, endDateUTC);
-		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
+		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus, startDateUTC, endDateUTC,searchValue,start,length);
+		LinkedList<ExpensesApproverHierarchy> freshEahList = new LinkedList<>();
+		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy.getData()){
 			Expenses expenses = expensesApproverHierarchy.getExpenseId();
 			expenses.setLocationsCode(expensesApproverHierarchy.getExpenseId().getOrgLocationId().getLocationCode());
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
@@ -174,7 +181,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 						if (null != projectMember.getProjectMemberCandidteId()) {
 							expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(projectMember.getProjectMemberCandidteId().getFullName());
 							expensesApproverHierarchy.setExpenseEmpUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
-							if(null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
+							if(pmWithUser != null && null !=  pmWithUser.getProjectMemberCandidteId().getConsultantUser()){
 								expensesApproverHierarchy.setExpensesUserid(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getId());
 								expensesApproverHierarchy.setUserFileUrl(pmWithUser.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 							}
@@ -195,8 +202,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					}
 				}
 			}
-
+			freshEahList.add(expensesApproverHierarchy);
 		 }
+		expApperoverHierarchy.setData(freshEahList);
 		return expApperoverHierarchy;
 	}
 
@@ -214,8 +222,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
-			String rejectedReason) throws Exception {
-		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
+			String rejectedReason,OrgLocations location) throws Exception {
+		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location);
 	}
 
 
@@ -649,7 +657,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 globalVarsMap.put("amount",Float.toString(expenses.getTotalAmount()));
 				 globalVarsMap.put("reason",reason);
 				 
-				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+				 globalVarsMap.put("loginURL","<a href='"+sourceleadLoginUrl+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

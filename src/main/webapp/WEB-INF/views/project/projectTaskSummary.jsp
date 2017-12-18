@@ -6,8 +6,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
@@ -29,7 +29,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 			<h2 class="pull-left paddingRight">${projectName} - Task</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			  <div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
+			  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
 		</div>
 		
 	</section>
@@ -225,7 +225,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 						</div>
 						
 						<!-- Document Modal Pop -->
-						<div class="modal-Time document clearfix"> 
+						<div class="modal-Time document clearfix" style="margin-bottom: 45px;"> 
 						  <div id="addDocumentId"></div>
 						  <div id="editDocumentId"></div>
 						</div>
@@ -924,7 +924,7 @@ function getEditTaskDocument(projectTaskDocId){
 					result  = result + '	                <div class="input-group col-md-10 pull-left errorInptgroup">';
 					result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="editUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file"  id="uploadBtn" style="display: none;"   class="upload">';
 					result  = result + '	                    </span> </label>';
-					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" data-validation="required validate_docimgpdf">';
+					result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" >';
 					result  = result + '	                </div>';
 					result  = result + '	        </div>';
 					result  = result + '	      </div>';
@@ -1027,20 +1027,15 @@ $('body').on('blur', '#addDocument_form', function() {
 <script>
 function updateDocument(documentId){
 	if ($('#updateDocument_form').validate(false, validationSettings)) {
-		var frm = $('#updateDocument_form').serializeFormJSON();
-		var jsonData = JSON.stringify(frm);
-		var form = $('#updateDocument_form')[0];
-		var formData = new FormData(form);
-		formData.append("json",jsonData)
 		var projectTaskId = '${projectTask.id}';
 	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	var userId = '${SourceLeadWeb_userId}';
 	  	$("#save_document").attr("disabled", "disabled");
 		$("#save_document").addClass('button').val('Processing..');
+		var formData = getFormData1("updateDocument_form");
 		$.ajax({
 			 type : "POST",
 			 data: formData,
-   	         contentType : 'application/json; charset=utf-8',
 	         processData: false,
 	         contentType:false, 
    	         dataType : 'json',
@@ -1171,7 +1166,7 @@ function addSubTasks(){
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Due Date</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <div class="col-md-8 clearDate" onClick="cleartprojectdueDate();">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
@@ -1364,6 +1359,13 @@ function uploadButton(id){
 	fileUpload("file"+id+"", "tasks", "projectTask_form");
 }
 </script>
+
+<script>
+function cleartprojectdueDate(){
+	$("#dueDate").val("");
+	};
+
+ </script>
 <script>
 function getOwnerList(){
 	
@@ -1760,7 +1762,7 @@ $('body').on('blur', '#addComment_form', function() {
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 

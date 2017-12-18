@@ -50,12 +50,14 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -75,6 +77,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -161,6 +164,10 @@ public class CommonUtil {
 	@Autowired
 	SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	ProjectClientService projectClientService;
+	
+	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
 	 * @author: Naresh Bolisetty
@@ -217,6 +224,14 @@ public class CommonUtil {
 			return date;
 	}
 	
+	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
+		DateTime dt = new DateTime(date);
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		DateTime dtus = dt.withZone(dtZone); 
+		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
+		return dateWithTimezone;
+	}
+	
 	
 	public  Date  dateFromElk(String dateString){
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -248,6 +263,18 @@ public class CommonUtil {
 		if(tasksList != null && !tasksList.isEmpty()){
 			for(ProjectTasks task :tasksList){
 				task.setProjectId(projects);
+				if (!Constants.HOLIDAY.equalsIgnoreCase(task.getTaskName()) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(task.getTaskName()) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(task.getTaskName())) {
+					task.setBillableType(Constants.TASK_NON_BILLABLE);
+				} else {
+					task.setBillableType(Constants.TASK_BILLABLE);
+				}
+				LookUpData taskTypeLookUpData = new LookUpData();
+				taskTypeLookUpData.setId(1060L);
+				task.setTaskType(taskTypeLookUpData);
+				LookUpData taskStatusLookUpData = new LookUpData();
+				taskStatusLookUpData.setId(1069L);
+				task.setTaskStatus(taskStatusLookUpData);
+				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setCreatedBy(user.getCreatedBy());
 				task.setCreatedDate(new Date());
 				task.setUpdatedDate(new Date());
@@ -266,19 +293,21 @@ public class CommonUtil {
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
 	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
 	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
-	    if(     
-	    		//If the Login User As Location Admin Of Client
-	    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
-	    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
-	    		||
-	    		//If the Login User As Top-Level(Level2) Approver Of Client
-	    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
-	    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
-	    		
-	      ){
-	    	isSuperUser = true;
-	  }
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		 && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId() && clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser().getId().longValue() == loginUser.getId().longValue())
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
 	    return isSuperUser;
 	}
 	/**
@@ -1013,6 +1042,27 @@ public class CommonUtil {
 			requirementDTO.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementDTO.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getProjectClientID() != null){
+			requirementDTO.setProjectClientID(requirement.getProjectClientID().toString());
+			}
+			if(requirement.getMedicalClearence() !=null){
+			requirementDTO.setMedicalClearence(requirement.getMedicalClearence());
+		}
+			if(requirement.getSecurityClearance() !=null){
+			requirementDTO.setSecurityClearance(requirement.getSecurityClearance());
+		}
+			if(requirement.getOverTime() !=null){
+			requirementDTO.setOverTime(requirement.getOverTime());
+		}
+			if(requirement.getBackgroundCheck() !=null){
+			requirementDTO.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() !=null){
+			requirementDTO.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() !=null){
+			requirementDTO.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementDTO.setDescription(requirement.getDescription());
 			}
@@ -1505,6 +1555,30 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			usersDTOList.add(userDTO);
 		}
 		return usersDTOList;
+	}
+	
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole) {
+		boolean flag = false;
+		try {
+			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+			if(projectClients != null) {
+				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
+						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						if(approverHierarchy != null) {
+							flag = true;
+						}
+					}else {
+						flag = true;
+					}
+					
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return flag;
 	}
 		
 }

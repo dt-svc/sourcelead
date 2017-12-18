@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateDocumentsService;
@@ -272,11 +274,12 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
+        Date date = new Date();
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
-			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			candidate.setCreatedBy(user.getUserCode());
 			
 			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
@@ -533,7 +536,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsAssociate(Constants.NO);
 		}
 		candidate.setUpdatedBy(user.getUserCode());
-		candidate.setUpdatedDate(commonUtil.currentDate());
+		candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		/*
@@ -1453,22 +1456,33 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User candidateUser,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception
 	{
-		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(candidateUser.getId(), orgLocations.getId());
 		if(null == candidate){
 			candidate = new Candidate();
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 			candidate.setOrgLocationId(orgLocations);
 			candidate.setCandidateType(Constants.CANDIDATE);
-			candidate.setFirstName(user.getFirstName());
-			candidate.setLastName(user.getLastName());
+			candidate.setFirstName(candidateUser.getFirstName());
+			candidate.setLastName(candidateUser.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
-			candidate.setEmail(user.getEmail());
+			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
-			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCreatedBy(loginUser.getUserCode());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getRate())){
+				candidate.setCurrentRate(addUserDTO.getRate());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getRatePer())){
+				candidate.setCurrentRateType(addUserDTO.getRatePer());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getCurrentCurrency())){
+				candidate.setCurrentRateCurrency(addUserDTO.getCurrentCurrency());
+			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
 				candidate.setMobilePhone(candidateDTO.getPhoneNumber());
@@ -1494,7 +1508,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
-				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
 				candidate.setParentCandidateId(vendorCandidate);
 				}else{
 				candidate.setOrgRelationId(null);
@@ -1509,10 +1523,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setGeneratedId(getCandidateId(orgLocations));
-			candidate.setCreatedDate(commonUtil.currentDate());
-			candidate.setUpdatedDate(commonUtil.currentDate());
+			Date date= new Date();
+			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		}else{
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
 		candidateDao.storeCandidate(candidate);
@@ -1598,9 +1613,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
@@ -1670,6 +1685,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		canList.setData(candtoList);
 		return canList;
+	}
+	
+	@Override
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception
+	{
+		return candidateDao.getCandidateByShortURL(shortURL);
 	}
 
 }

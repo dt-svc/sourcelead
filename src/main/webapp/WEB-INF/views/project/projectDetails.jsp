@@ -7,8 +7,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- script for dateformat in datepicker End -->
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor1").Editor();
@@ -29,7 +29,7 @@
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
 	function projectDetails(projectId) {
-		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
@@ -170,21 +170,12 @@
 						
 	   		    		result = result + '</div>';
 	   		    		
-						result = result	+ '<div class="project_details_cta">';
-						result = result + '<strong>Status:</strong><span>';
-						result = result +  proStatus;
-						result = result + '</span>';
-						result = result	+ '</div><div class="clearfix"></div>';
-						
-						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
-						result = result + '<div class="clearfix"></div>';
-
-						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
+	   		    		result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 						result = result + '<strong>Project Id:</strong>';
 						result = result + '<span>'+projectSequeneNumber+'</span>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
-
+						
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
 						result = result + '	<strong>Project name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
@@ -206,10 +197,33 @@
 						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
-						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 if (json.client != null && json.client != '' && json.client != 'undefined') {
+							 result = result + '<span><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
+						 }else{
+							 result = result + '<span>'+clientName+'</span>';
+						 }
+						 '</sec:authorize>';
+						
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
+						'</sec:authorize>';
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						
+						result = result	+ '<div class="project_details_cta">';
+						result = result + '<strong>Status:</strong><span>';
+						result = result +  proStatus;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						
+						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
+						result = result + '<div class="clearfix"></div>';
+
+						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
 						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
@@ -273,6 +287,8 @@
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						
 						result = result + '</div>';
+						
+						}
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
@@ -566,11 +582,14 @@
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
+						result = result +'<div class="input-group">';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
+					    result = result +'<span class="input-group-addon" onClick="clearEndtDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+
 						result = result + '</div>';
-						
+						result = result +'</div>';
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Invoice Frequency<span class="text-danger">*</span></label>';
@@ -585,10 +604,10 @@
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
 						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
-						result = result  +' <option '+(json.timesheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
-						result = result  +'	 <option '+(json.timesheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-						result = result  +'	<option '+(json.timesheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +' <option '+(json.timeSheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.timeSheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.timeSheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
 						result = result + '</div>';
 				 
@@ -1051,3 +1070,10 @@ function toDate(selector) {
 }
 </script>
 
+<script>
+function clearEndtDate(){
+	$("#endDateStr1").val("");
+	};
+	
+	
+</script>

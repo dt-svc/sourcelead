@@ -17,23 +17,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class OrgSettingsController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);
 	@Value("${sourceleadUrl}")
@@ -51,12 +65,34 @@ public class OrgSettingsController {
 	@Autowired
 	ModulesService modulesService;
 	
+	@Autowired
+	StatesService statesService;
+	
+	@Autowired
+	OrglocationBankingDetailsService orglocationBankingDetailsService;
+	
+	@Autowired
+	OrglocationOnboardDocumentsService orglocationOnboardDocumentsService;
+	
+	@Autowired
+	OrglocationSignatoryService orglocationSignatoryService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	CountriesService countriesService;
+
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
 	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
 	{
 		logger.debug("Org settings");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
@@ -70,6 +106,63 @@ public class OrgSettingsController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
+		model.addObject("statesList", states);
+		
+		List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+		model.addObject("bussinessTypesList", bussinessTypesList);
+		
+		
+		OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
+		if(bankingDetails != null) {
+			model.addObject("uuid", bankingDetails.getUuid());
+			SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+		}
+		
+		
+		OrglocationOnboardDocuments businessLicense = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ONBOARD_DOCUMENT_BUSNIESS_LICENSE, orgLocations.getId());
+		if(businessLicense != null) {
+			model.addObject("businessLicenseDoc", businessLicense);
+		}
+		
+		OrglocationOnboardDocuments bankCheque = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.BANK_CHEQUE, orgLocations.getId());
+		if(bankCheque != null) {
+			model.addObject("bankChequeDoc", bankCheque);
+		}
+		
+		OrglocationOnboardDocuments registrationDoc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.REGISTRATION_OR_INCORPORATION_OF_RECORDING, orgLocations.getId());
+		if(registrationDoc != null) {
+			model.addObject("registrationDoc", registrationDoc);
+		}
+		
+		OrglocationOnboardDocuments annulReportBusiness  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ANNUAL_REPORT_BUSINESS_LICENSE, orgLocations.getId());
+		if(annulReportBusiness != null) {
+			model.addObject("annulReportBusinessDoc", annulReportBusiness);
+		}
+		
+		OrglocationOnboardDocuments w9Doc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.W9_W8_BEN_E, orgLocations.getId());
+		if(w9Doc != null) {
+			model.addObject("w9Doc", w9Doc);
+		}
+		
+		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+	    model.addObject("rolesList", rolesList);
+		
+		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
+		if(signatory != null) {
+			model.addObject("signatoryUser", signatory.getUserId().getId());
+			if(!signatory.getUserId().getId().equals(user.getId())) {
+				model.addObject("signatory", signatory);
+				model.addObject("role",signatory.getUserRoleId().getRoles().getDisplayName());
+			}
+		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(countries != null){
+			model.addObject("loginCountryName", countries.getName());
+		}
+
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
 		model.setViewName("orgSettings");

@@ -105,6 +105,10 @@ public class UserRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	 
 	@Autowired
 	UserService userService;
@@ -185,7 +189,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getUnassignedProjects")
+	@RequestMapping(value = "/app/getUnassignedProjects")
 	public @ResponseBody String getUnassignedProjects(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
@@ -201,7 +205,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/addProject" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/addProject" , method = RequestMethod.POST)
 	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -213,7 +217,7 @@ public class UserRestController {
 		 return resultJson;
 	   }
 	
-	@RequestMapping(value = "/getActiveAssociateList", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getActiveAssociateList", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesList(
 		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
 		String resultJson = null;
@@ -223,7 +227,7 @@ public class UserRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getDepartmentsList", method = RequestMethod.POST)
 	public @ResponseBody String getDepartmentsList(
 		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
 		String resultJson = null;
@@ -233,7 +237,7 @@ public class UserRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getActiveAssociateDetails",  method = RequestMethod.POST)
     public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 if(candidateId !=null){
@@ -274,7 +278,7 @@ public class UserRestController {
 	 * @throws Exception
 	 */
 	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
-	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/createUser" , method = RequestMethod.POST)
 	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
 
@@ -295,7 +299,7 @@ public class UserRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/getProjectManager" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/getProjectManager" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProjectManager(@RequestParam(value="projectId", required=false) String projectId, HttpServletRequest request) throws Exception {
 		 	
 		 	String resultJson = null;
@@ -318,7 +322,7 @@ public class UserRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/validateUserEmail" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/validateUserEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	String result = null;
@@ -333,7 +337,7 @@ public class UserRestController {
 	   }
 	 
 	 
-	 @RequestMapping(value = "/getUserByUserEmail" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/getUserByUserEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  UserDTO getUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId, HttpServletRequest request) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
 		 	UserDTO userDTO = new UserDTO();
@@ -353,7 +357,7 @@ public class UserRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/validateEmployeeId" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/validateEmployeeId" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateEmployeeId(@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Boolean flag = employeesService.validateEmployeeId(EmployeeId,orgLocations.getId());
@@ -371,7 +375,7 @@ public class UserRestController {
 	  * @return
 	  * @throws Exception
 	  */
-		 @RequestMapping(value = "/validateExistingEmployeeId" , method = RequestMethod.POST)
+		 @RequestMapping(value = "/app/validateExistingEmployeeId" , method = RequestMethod.POST)
 		 public @ResponseBody  Boolean validateExistingEmployeeId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmployeeId", required=false) String EmployeeId, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			   Employees employees = employeesService.getEmployeeByEmployeeIdAndUserIdAndOrgLocationsId(EmployeeId, userId, orgLocations.getId());
@@ -384,7 +388,7 @@ public class UserRestController {
 		   }
 	 
 		 
-		 @RequestMapping(value = "/validateExistingEmployeeEmailId" , method = RequestMethod.POST)
+		 @RequestMapping(value = "/app/validateExistingEmployeeEmailId" , method = RequestMethod.POST)
 		 @ResponseBody  Boolean validateExistingEmployeeEmailId(@RequestParam(value="id", required=false) Long id,@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="EmailId", required=false) String emailId, HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    Boolean flag = false;
@@ -403,7 +407,7 @@ public class UserRestController {
 		  * @return
 		  * @throws Exception
 		  */
-		@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/getApproversByUserId", method = RequestMethod.POST)
 		public @ResponseBody List<User> getApproversByUserId(
 				@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
 				HttpServletRequest request) throws Exception {
@@ -429,7 +433,7 @@ public class UserRestController {
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/getAllApprovers")
+		@RequestMapping(value = "/app/getAllApprovers")
 		public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
@@ -447,7 +451,7 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/validateProjectSequeneNumber" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/validateProjectSequeneNumber" , method = RequestMethod.POST)
 	 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	Boolean flag = projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
@@ -463,7 +467,7 @@ public class UserRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	  @RequestMapping(value = "/resendInvitationEmail" , method = RequestMethod.POST)
+	  @RequestMapping(value = "/app/resendInvitationEmail" , method = RequestMethod.POST)
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
 			  @RequestParam(value="orgId", required=false) Long orgId,HttpServletRequest request) throws Exception {
 		    
@@ -515,7 +519,7 @@ public class UserRestController {
 	 	 * @throws Exception
 
 	 	 */
-		 @RequestMapping(value = "/getProjectDetailsById", method = RequestMethod.POST)
+		 @RequestMapping(value = "/app/getProjectDetailsById", method = RequestMethod.POST)
 		 @ResponseBody String getProjectDetailsById(HttpServletRequest request,
 					@RequestParam(value = "userId", required = false) Long userId,
 					@RequestParam(value = "filterValue", required = false) String filterValue,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
@@ -533,7 +537,7 @@ public class UserRestController {
 			 * @return
 			 * @throws Exception
 			 */
-			@RequestMapping(value = "/saveAssignProject", method = RequestMethod.POST)
+			@RequestMapping(value = "/app/saveAssignProject", method = RequestMethod.POST)
 			@ResponseBody String saveAssignProject(@RequestParam(value = "json", required = false) String json,
 					@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request)
 							throws Exception {
@@ -597,7 +601,7 @@ public class UserRestController {
 			 * @return
 			 */
 			@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
-			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
+			@RequestMapping(value = "/app/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
 					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
 					@RequestParam(value = "projectId", required = false) Long projectId,
@@ -745,7 +749,7 @@ public class UserRestController {
 					}
 				 
 				 StringBuilder linkBuild = new StringBuilder();
-			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			   
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				
@@ -861,7 +865,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 
 
 			 StringBuilder linkBuild = new StringBuilder();
-		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -906,7 +910,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 
 		 -	 */
 
-		@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/updateEndDateByProjectMemberId", method = RequestMethod.POST)
 		public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
 
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,HttpServletRequest request) throws Exception {
@@ -1039,7 +1043,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 public void authenticate() {
 		 }
 		 
-		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
+		 @RequestMapping(value = "/app/rest/loginUserProfile", method = RequestMethod.GET)
 		 public UserProfileDTO getLoginUserProfile() {
 			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			 User  user = userService.findByUserName(auth.getName());
@@ -1199,7 +1203,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/saveReAssignProject", method = RequestMethod.POST)
 		@ResponseBody String saveReAssignProject(ProjectsDTO projectsDTO,
 				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
 						throws Exception {
@@ -1376,7 +1380,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @throws Exception
 		 */
 		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
-		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
@@ -1421,7 +1425,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
                 return "updated";
          }
 		
-		@RequestMapping(value = "/getVendorsByOrgLocationId")
+		@RequestMapping(value = "/app/getVendorsByOrgLocationId")
 		public String getVendorsByOrgLocationId(
 				HttpServletRequest request) throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -1449,7 +1453,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/getReportingManager", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/getReportingManager", method = RequestMethod.POST)
 		public @ResponseBody String getReportingManager(
 				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
@@ -1488,7 +1492,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 * @return json object
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+	@RequestMapping(value = { "/app/getAssignedProjectsListForUser",
 			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
 	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{

@@ -12,10 +12,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
- <link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
-
+ <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
@@ -55,10 +54,10 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	
-/* 	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">'; */
+
 		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
 		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
-	/* '</sec:authorize>'; */
+	
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -80,16 +79,13 @@ function getAddApplicant(requirementId){
 	result = result + '</select>';
 	result = result + '</div>';	
 	result = result + '</div>';	
-	
 	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
 	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
-	
 	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
 	result = result + '------- ( OR ) -------';
 	result = result + '</div>';
-	
 	
 	
 	
@@ -115,7 +111,6 @@ function getAddApplicant(requirementId){
 	result = result + '		 </div>';
 	result = result + '	 </div>';
 	result = result + '	 </div>';
-	
 	
     result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
@@ -404,7 +399,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -531,7 +526,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	$("body").css('overflow-y', 'hidden');
 	
 	getSubmittedCandidateResumes(candidateId,resumeId);
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	setTimeout(function () {
 		       getSubmittedCandidateDetails(submissionId);
 		    $("#loading").removeAttr('style');
@@ -660,7 +655,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
       con = encodeURIComponent(con);
       
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	     $.ajax({
 	    	type: "POST",
@@ -930,8 +925,6 @@ function discordApplicant(){
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
 	
-	 getCandidateStates();
-	 getSubmissionCandidateCities();
  }
 </script>
 
@@ -1060,7 +1053,7 @@ function addApplicantSubmission(){
    
     
 		
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
 	     $.ajax({
 	    	type: "POST",
@@ -1212,7 +1205,7 @@ function addRequirementRecommendations(){
 	     
 	      
 			
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
 	  	     $.ajax({
 		    	type: "POST",
@@ -1224,6 +1217,7 @@ function addRequirementRecommendations(){
 	 	        dataType : 'json',
 	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 		        success: function(result) {
+		        	requirementRecommendations(requirementId)
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');
@@ -1452,7 +1446,7 @@ function getCandidateSelectionType(){
 			        	$("#candidateResumesList").empty();
 				        $("#candidateResumesList").append(output);
 				        
-				        document.getElementById("newResumeDiv").style.display="none";
+// 				        document.getElementById("newResumeDiv").style.display="none";
 				        
 				      
 				        $('#newUploadFile').removeAttr('data-validation');
@@ -1466,7 +1460,7 @@ function getCandidateSelectionType(){
 		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
 		        		
 		        		 document.getElementById("resumesDiv").style.display="none";
-		        		 document.getElementById("newResumeDiv").style.display="";
+// 		        		 document.getElementById("newResumeDiv").style.display="";
 		        		
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
@@ -1579,7 +1573,6 @@ function getCandidateDetails(){
 		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	
 		        	 $("input[name=FirstName]").val(json['firstName']);
 		        	 $("input[name=EmailId]").val(json['email']);
 		        	 $("input[name=EmailId]").attr('readonly', 'readonly');
@@ -1684,8 +1677,6 @@ function getCandidateDetails(){
 		        	 }else{
 		        		 $("input[name=ExpectedCTC]").val(''); 
 		        	 }
-		        	 
-		        	 
 		        	 if(json['rateType'] != null && json['rateType'] != "" && json['rateType'] != 'undefined'){
 		        		 $("select[name=expectedCTCRatePer]").val(json['rateType']);
 		        		 validateExpectedCTCRatePer();
@@ -1727,13 +1718,14 @@ function getCandidateDetails(){
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
     	 $("input[name=EmailId]").removeAttr("readonly");
-    	 
-    	 
+    	 $("input[name=AlternateNumber]").val(''); 
+    	 $("#submissionZipCode").val('');
+		 $("#submissionCity").val('');
+		 $("#submissionState").val('');
+		 $("#submissionCountry").val('');
+		 $("#submissionLocation").val('');
     	 $("input[name=PhoneNumber]").val('');
     	 $("input[name=Designation]").val('');
-    	 $("select[name=country]").val('');
-    	 $("select[name=state]").val('');
-    	 $("select[name=city]").val('');
     	 $("select[name=NoticePeriod]").val('');
     	 $("select[name=WorkExperience]").val('');
     	 $("input[name=ExpectedCTC]").val('');
@@ -1868,7 +1860,6 @@ function getSubmittedCandidateDetails(submissionId){
 		        	 }else{
 		        		 $("select[name=currentCTCRateType]").val(''); 
 		        	 } 
-		        	 
 		        	 if(json.currentCTC != null && json.currentCTC != "" && json.currentCTC != 'undefined'){
 		        		 $("input[name=CurrentCTC]").val(json.currentCTC);
 		        	 }else{
@@ -1961,25 +1952,38 @@ function getRecomededCandidateDetails(candidateId){
 		        		 $("input[name=Education]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#submissionLocation").val(json['location']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#submissionLocation").val('');
+		        	 }
+		        	 
+		        	 
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("#submissionCountry").val(json['country']);
+		        	 }else{
+		        		 $("#submissionCountry").val('');
 		        	 }
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates(json['state']);
+		        		 $("#submissionState").val(json['state']);
 		        	 }else{
-		        		 $("select[name=state]").val('');
+		        		 $("#submissionState").val('');
 		        	 }
 		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 getSubmissionCandidateCities(json['city']);
+		        		 $("#submissionCity").val(json['city']);
 		        	 }else{
-		        		 $("select[name=city]").val('');
+		        		 $("#submissionCity").val('');
 		        	 }
 		        
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#submissionZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#submissionZipCode").val('');
+		        	 }
+		        
+		        	 
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 		        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
 		        	 }else{
@@ -2051,13 +2055,13 @@ function getRecomededCandidateDetails(candidateId){
     	 $("input[name=LastName]").val('');
     	 $("input[name=EmailId]").val('');
     	 $("input[name=EmailId]").removeAttr("readonly");
-    	 
-    	 
     	 $("input[name=PhoneNumber]").val('');
     	 $("input[name=Designation]").val('');
-    	 $("select[name=country]").val('');
-    	 $("select[name=state]").val('');
-    	 $("select[name=city]").val('');
+    	 $("#submissionZipCode").val('');
+		 $("#submissionCity").val('');
+		 $("#submissionState").val('');
+		 $("#submissionCountry").val('');
+		 $("#submissionLocation").val('');
     	 $("select[name=NoticePeriod]").val('');
     	 $("select[name=WorkExperience]").val('');
     	 $("input[name=ExpectedCTC]").val('');
@@ -2081,13 +2085,12 @@ function getExpYears(){
 }
 </script>
 
-
 <script type="text/javascript">
 function getAllSubmissionCandidateCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
+    	 url: '${sourceleadUrl}'+"/ws/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
@@ -2118,7 +2121,7 @@ function getCandidateStates(state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionState').empty();
@@ -2162,11 +2165,11 @@ function getSubmissionCandidateCities(city){
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
@@ -2193,19 +2196,9 @@ function getSubmissionCandidateCities(city){
 </script>
 <script type="text/javascript">
 function init(){
-	getAllSubmissionCandidateCountries();
 	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
 	var country = '${SourceLeadWeb_orgLocations.country}';
 	$("#submissionCountry").val(country)
-	      
-	       /* $("#submissionCountry").on('change', function (e) {
-	    	   getCandidateStates();
-	    	   getSubmissionCandidateCities();
-	       });
-	       $("#submissionState").on('change', function (e) {
-	    	   getSubmissionCandidateCities();
-	       }); */
-	      
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
@@ -2310,7 +2303,7 @@ function SubmissionUploadFileDoc1(){
 	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
    		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
  	 
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
@@ -2717,4 +2710,13 @@ function validate_fileupload(fileName)
 		 }); 
  }
  </script>
+ 
+ <!-- <script>
+	 function clearUpload(){
+		$("#newUploadFile").val("");
+	} 
+	function clearImpCanUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->
  

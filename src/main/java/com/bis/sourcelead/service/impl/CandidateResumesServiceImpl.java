@@ -89,20 +89,20 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		StringBuffer activitySummary = new StringBuffer();
 		if (resumeId != null && !resumeId.equalsIgnoreCase("null")) {
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
-			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
 				if (candidateResume.getTitle() != null) {
 					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
-				candidateResume.setTitle(candidateResumeDTO.getTitle());
-			}
-			if (StringUtils.isNotBlank(candidateResumeDTO.getDescription())) {
+				
+				if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+					candidateResume.setTitle(candidateResumeDTO.getTitle());
+				}else {
+					candidateResume.setTitle(candidateResume.getFileName());
+				}
+				
 				if (candidateResume.getDescription() != null) {
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				candidateResume.setDescription(candidateResumeDTO.getDescription());
-			}else{
-				candidateResume.setDescription("");
-			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(CommonUtil.currentDate());
 			if (candidateResumeDTO.getFileInfo() != null) {
@@ -148,6 +148,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				// candidateResume.setDocFile(multiFile.getBytes());
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
+				
+				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
+					candidateResume.setTitle(fileInfo.getFileName());
+				}
 				candidateResume.setFileContentType(fileInfo.getContentType());
 					candidate.setFileName(fileInfo.getFileName());
 					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");

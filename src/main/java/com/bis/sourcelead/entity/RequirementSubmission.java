@@ -545,6 +545,7 @@ public class RequirementSubmission implements Serializable{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
+    @JsonBackReference
     @NotFound(action=NotFoundAction.IGNORE)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;

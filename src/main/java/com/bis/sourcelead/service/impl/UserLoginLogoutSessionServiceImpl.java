@@ -38,6 +38,9 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
 		return userLoginLogoutSessionDao.getUserLoginLogoutSessionById(userSessionId);
 	}
 	
-	
+	@Override
+	public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
+		return userLoginLogoutSessionDao.getUserLoginLogoutSessionByActionUUID(actionUUID);
+	}
 	
 }

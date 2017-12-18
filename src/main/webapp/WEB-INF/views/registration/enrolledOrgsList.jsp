@@ -4,13 +4,29 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 window.onload = function () {
-	getOrgsList();
+	getOrgsList('manual');
  };
 </script>
+<style type="text/css">
+#loadMoreDiv{
+text-align: center;
+font-size: 18px;
+font-weight: bold;
+vertical-align: middle;
+padding: 20px 15px;
+clear: both;
+display: inline-block;
+margin: auto;
+width: 100%;
 
+}
+#loadMoreDiv .fa-spinner{
+margin-right: 15px;
+}
+</style>
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -30,12 +46,16 @@ window.onload = function () {
         <h2>Orgs List</h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; Orgs List </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
+    <input id="searchOrgElement" type="hidden"></input>
     </section>
+     <input type="hidden" id="noOrgsList" name="noOrgsList"/>
       <section class="clearfix section-action-btns">
         <ul class="pull-right list-unstyled list-inline">
+         <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
+        
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getOrgsList();">
+               <select id="userState" onchange="getOrgsList('manual');">
 				<option value="" selected>--Select Status--</option>
 				<option value="ALL" >All</option>
 				<option value="ACTIVE" >Active</option>
@@ -49,15 +69,16 @@ window.onload = function () {
 			  <a href="javascript:void(0)"></a>
 			  
 				<span class="action-search"><input type="text" id="searchByName"></span>
-				<span class="action-search" onclick="getOrgsList();"><i class="fa fa-search"></i></span>
+				<span class="action-search" onclick="getOrgsList('manual');"><i class="fa fa-search"></i></span>
 		  </li> 
 		
-		  <li><a href="<c:url value='/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
+		  <li><a href="<c:url value='${appPath}/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
         </ul>
       </section>
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="orgListBody"></div> 
+          <div id="loadMoreDiv"></div> 
       </div>
       <div id="orgListEmptyBody"></div>
       </div>
@@ -65,29 +86,59 @@ window.onload = function () {
   </section>
   
       <!-- Content Area Ends--> 
-	<div class="backtotop"><img src="resources/images/backtotop.png"></div>  
+	<div class="backtotop"><img src="/resources/images/backtotop.png"></div>  
       <jsp:include page="../masterFooter.jsp" />
       
-      
-      
+      <script>
+	$(document).scroll(function(e){
+	    // grab the scroll amount and the window height
+	    
+	    var scrollAmount = $(window).scrollTop();
+	    var documentHeight = $(document).height();
+	    offset = $("#orgOffset").val();
+	    var UsersCount = $("#totalUsersCount").val(); 
+	    // calculate the percentage the user has scrolled down the page
+	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+	    	var avilableCount = $("#orgOffset").val();
+	    	
+	    	avilableCount = parseInt(avilableCount) + parseInt(20); 
+	    	$("#orgOffset").val(avilableCount);
+	    	//searchUser("scroll");
+	    	 getOrgsList("scroll");
+	    }
+	    
+	});
+</script>
+     
       
 <script type="text/javascript">
-	function getOrgsList(){
-		
+	function getOrgsList(type){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var searchByName = document.getElementById("searchByName").value;
 		var userState = document.getElementById("userState").value;
 		
+		if(type == "scroll"){
+			offset = $("#orgOffset").val();
+			var searchByName =  document.getElementById("searchOrgElement").innerHTML
+    	}
+		if(type == "manual"){
+			$('#orgListEmptyBody').empty();
+			$('#orgListBody').empty();
+    		$("#orgOffset").val(0);
+    		$("#searchOrgElement").val("");
+    		var searchByName = document.getElementById("searchByName").value;
+   		     $('#searchOrgElement').append(searchByName);
+    		 offset = 0;
+    	}
 		
+	    /* $('#orgListBody').empty();
+        $('#orgListEmptyBody').empty(); */
 		
-	    $('#orgListBody').empty();
-        $('#orgListEmptyBody').empty();
-		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState,
+	    	url: "/app/getOrgsList?${_csrf.parameterName}=${_csrf.token}&searchByName="+searchByName+"&userState="+userState+"&offset="+offset,
 	    			 
             success: function(data) {
 	        var json = JSON.parse(data);
@@ -95,7 +146,7 @@ window.onload = function () {
 	        
 	    	 if(json.length > 0)
 	   		{
-	    		
+	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
 		       	 
 	 				var org = json[i];
@@ -125,7 +176,7 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4><a href='<c:url value='/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
+	       	    	result = result +"<h4><a href='<c:url value='/app/orgSummary/"+org.id+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+org.location+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
@@ -147,17 +198,40 @@ window.onload = function () {
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	$("#loading").removeAttr("style"); 
-	       	 	    $('#orgListBody').append(result);
-	       	 	    $("#searchByName").val("");
-				   }
+	       	 	    
+	       	 	if(type == "manual"){
+            		$('#orgListBody').append(result);
+            		 $("#searchByName").val("");
+            	}else{
+            		$('#orgListBody').append(result);
+            		 $("#searchByName").val("");
+            	}
 	   		    }
-	    	else{
+	 			result = result + '<div class="clear"></div>';
+	 			$("#noOrgsList").val("")
+	   		}else if(type == "scroll"){
+            	$("#noOrgsList").val("noOrgsList")
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+	         	$("#noOrgsList").val("")
+            }else{
+            	$("#noOrgsList").val("noOrgsList")
+            	$('#loadMoreDiv').empty(); 
+            	$("#loading").removeAttr("style");
+            	var result ="";
+	         	result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+	         	$('#loadMoreDiv').append(result);
+            }
+	    	/* else{
 	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Orgs List is Empty</h3></div>";
 	    		$('#orgListBody').empty();
 	    		$("#loading").removeAttr("style");
 	    		$('#orgListEmptyBody').append(result);
        	 	    $("#searchByName").val("");
-	    	} 
+	    	}  */
 
 			 },
 	        error: function(e){
@@ -171,7 +245,7 @@ window.onload = function () {
 function resendInvitation(userId,orgId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  

@@ -4,6 +4,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,7 +45,7 @@ public class TimesheetEntries implements Serializable{
 	private TimesheetSubmissions timesheetSubmissions;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
 	@JoinColumn(name = "PROJECT_TASK")
 	private ProjectTasks projectTask;
 	

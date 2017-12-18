@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;
@@ -650,7 +650,7 @@ function getNotifyToOtersValInterview(){
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,

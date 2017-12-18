@@ -88,7 +88,7 @@ public class RegistrationServiceTest {
 		user.setPassword("PWD123");
         File file = new File("C:\\testing.txt");
         byte[] bFile = new byte[(int) file.length()];
-		user.setDocFile(bFile);
+//		user.setDocFile(bFile);
 		Set<PasswordResets> passwordResets = new HashSet<PasswordResets>();
 		PasswordResets ps = new PasswordResets();
 		ps.setUser(user);

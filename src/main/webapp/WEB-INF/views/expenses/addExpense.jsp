@@ -42,10 +42,10 @@
     
 	 <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
-	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
+	       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
     
@@ -59,15 +59,27 @@
 	             <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-	
+	                   <c:if test="${submissionStatus != 'SUBMITTED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
-							       <option  ${expenses.masterCandidateId == projMembers.masterCandidateId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
+							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
+						</c:if>
+						<c:if test="${submissionStatus == 'SUBMITTED'}">
+						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
+							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
+							</c:forEach>
+						</select>
+						</c:if>
+						<input type="hidden" id="projectMemberIdHidden" value="" name="projectMemberId">
 					</div>
 				</div>
 
@@ -96,10 +108,16 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <span class="input-group-addon" onClick="clearProjectStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>  
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <span class="input-group-addon" onClick="clearProjectEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>  
 						  </div> 		  
 						</div>
 	              </div>
@@ -114,8 +132,8 @@
 <div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="totalAmount" value="${expenses.totalAmount > 0 ? expenses.totalAmount : '00.00' }" class="ReadTextFli valid" readonly="readonly">
 </div>
+<div class="pull-left" id="exceedSpan"></div>
 </div>
-	<div class="pull-left" id="exceedSpan"></div>
 	<a href="javascript:addExpenseRow('emp');" id="addExpenseItemButton" data-id="emp" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
@@ -138,32 +156,54 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.dateOccurred}</div></td>
-			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.categoryName}">${entry.categoryName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.categoryAmount}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
-			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
+			           <td>
+			                <input type='hidden' id="categoryDateDivInput${(2*(entryCount.count))-1}" value="${entry.dateOccurred}"/>
+			                <div id="categoryDateDiv${(2*(entryCount.count))-1}"> ${entry.dateOccurred}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="categoryTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryTypeId},${entry.allowedAmount}"/>
+			               <div id="categoryTypeDiv${(2*(entryCount.count))-1}" title="${entry.categoryName}">${entry.categoryName}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="receiptIssuedByDivInput${(2*(entryCount.count))-1}" value="${entry.receiptIssuedBy}"/>
+			               <input type='hidden' id="entryDesDivInput${(2*(entryCount.count))-1}" value="${entry.entryDescription}"/>
+			               <div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmount}"/>
+			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div>
+			          </td>
+			          <td>
+			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
+			              <div id="expenseRateTypeDiv${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paymentModeDivInput${(2*(entryCount.count))-1}" value="${entry.paymentMode}"/>
+			               <div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paidByDivInput${(2*(entryCount.count))-1}" value="${entry.paidBy}"/>
+			               <div id="paidByDiv${(2*(entryCount.count))-1}">${entry.paidBy}</div>
+			          </td>
+			           <td><div id="hideAndShowDetailsDiv${(2*(entryCount.count))-1}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
-			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
+		                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 			          <td colspan="8">
 				         <div class="expDetails">
-				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
+				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 							<div class="col-md-4 minHeight chosen-custom">
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
+						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
-						   <c:if test="${pm.id == expenses.projectMemberId}">
+						   <c:if test="${pm.projectId == expenses.projectId}">
 				 	    	 <c:forEach var="expCat" items="${pm.expenseCategoryList}">
 				 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 				 	    	 </c:forEach>
@@ -173,15 +213,15 @@
 					</div>
 							<div class="col-md-4 minHeight">
 								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="expenseEntry[${entryCount.index}].dateOccurred" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].dateOccurred" readonly="readonly" class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+								<input type="text" id="receiptIssuedBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-								<select id="paymentMode${entryCount.count}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
+								<select id="paymentMode${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 								         <option value="">Select Mode</option>
 								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option  ${entry.paymentMode == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
@@ -189,23 +229,23 @@
 								</select>
 							</div>	
 							
-		                  <div id="amountDiv${entryCount.count}" class='col-md-4 minHeight valid_ation'>
+		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-											 <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+											 <select class='btn btn-info' id='expenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
 												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
 									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									              </c:forEach>
 										  </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${entryCount.count}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
 		                 <div class="col-md-4 minHeight">
 								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
-								<select class="chosen-select form-control" id="paidBy${entryCount.count}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
+								<select class="chosen-select form-control" id="paidBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
 								         <option value="">Select Paid By</option>
 								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
 							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
@@ -215,7 +255,7 @@
 		                 
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${entryCount.count}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${entryCount.count});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -224,14 +264,14 @@
 			                 <div id='timesheetDocumentsId' class=''>
 			                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 			                       <c:if test = '${entryDoc.status == 1}'>
-			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
+			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
-			                             <a class='downicon' href='${entryDoc.fileURL}'>
+			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
-								             <input type='button' value='${entryDoc.fileName}'/>
-								        </a>
-								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count});deleteAttchment(${entryDoc.fileDbId})" />
+								            <input type='button' value='${entryDoc.fileName}'/>
+							        </a>
+						        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
@@ -250,7 +290,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
+			        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix" style="position: static;"></div>
@@ -266,7 +306,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>
@@ -291,25 +331,47 @@ function removeWhiteSpacesMyExp(rowCount){
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			 var projectStartDate = $("#projectStartDateExpensesId").val();
+			 var projectEndDate = $("#projectEndDateExpensesId").val();
+			 
+			 var d1= getJSDate(projectStartDate,locationDate);
+			 var d2= getJSDate(projectEndDate,locationDate);
+		    
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
+			var date_validation = "falseS";
 			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
 				for(var i = 1; i < maxRecCount; i++){
-				   if($("#divEntityTsRow"+i).is(':visible'))
-				   {
+				    var categoryDate = $("#categoryDate"+i).val();
+				    if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				    	    var d3= getJSDate(categoryDate,locationDate);
+						    if(!(d1<=d3 && d3<=d2)){
+						    	$("#categoryDateDiv"+i).addClass("ColRed");
+						    	date_validation = "true";
+						    }
+				    }
+				    if($("#divEntityTsRow"+i).is(':visible'))
+				    {
 					   validation_required = "false";
-				   }
+				    }
 				}
 			}
-			if(validation_required == "true"){
-				$("#exceedSpan") .html( "<p class='textWarning small'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
+			if(date_validation == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
+				return false;
+			}
+			else if(validation_required == "true"){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
 			else{
 				$("#submitForApprovalExpensesId").prop('disabled', true);
 				$("#draftForApprovalExpensesId").prop('disabled', true);
 				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
+				var  pmIdValue = $("#projectMemberId option").eq($("#projectMemberId").prop("selectedIndex")).val();
+				$("#projectMemberIdHidden").val(pmIdValue);
 				
 				/* var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
@@ -402,46 +464,7 @@ function getClientBasedOnSelectedProject(){
 }
 </script>
 
-<script>
-	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormataddExpense= '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormataddExpense = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormataddExpense = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormataddExpense = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormataddExpense = 'yy-dd-mm'; 
-		  }
-		
-		$("#projectStartDateExpensesId").datepicker("destroy");
-		$("#projectEndDateExpensesId").datepicker("destroy");
-		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : finalDateFormataddExpense,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
-						removeErrStr();
-					}
-				});
-		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : finalDateFormataddExpense,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
-						removeErrEnd();
-					}
-				});
-	}
-</script>
+
 <script>
 function removeErrStr(){
 	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
@@ -473,7 +496,7 @@ function expensesDateCheck(){
 
 <script>
 function withdrawMyExpense(id){
-	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
    	       url: sourceleadUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
@@ -573,6 +596,14 @@ function flushDetailsExpenses(){
 		}
 	} 
 }
+</script>
+ <script>
+function clearProjectStartDate(){
+	$("#projectStartDateExpensesId").val("");
+	};
+function clearProjectEndDate(){
+		$("#projectEndDateExpensesId").val("");
+		};	
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

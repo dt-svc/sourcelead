@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -11,6 +12,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -45,7 +47,7 @@ public interface LeaveService {
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveId, User user, String reason) throws Exception;
 
-//	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id, String fromDate, String toDate);
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
 
 	boolean deleteAllLeaveRolesByParticularTableId(String from,String fromId);
 
@@ -55,5 +57,10 @@ public interface LeaveService {
 
 	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
 
+	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type);
+
+	List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId)throws Exception;
+	
+	public void deleteAllHolidayOrRestrictDayById(String id,String type);
 
 }

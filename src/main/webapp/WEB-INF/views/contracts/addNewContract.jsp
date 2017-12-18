@@ -16,11 +16,13 @@
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
+	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
-	 	 getContractTemplates();
-	 }
+
+	 if(contractType != '' && contractType != 'undefined' && contractType != null)
+	 $("#contractType").val(contractType);
+
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
 	 	 $('#billingRateType').removeAttr('data-validation');
@@ -43,8 +45,12 @@
 
 	 }
 	 
-	 if(relationId != null && relationId != ''){
-		 getVendorContacts();
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
+	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
+		 getVendorContacts(spocUserCode);
 	 }
 };
 </script>
@@ -55,7 +61,7 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -72,7 +78,16 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+		                    <option ${contract.contractType == 'NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType == 'NSA' ? 'selected' : ''}>NSA</option>
+		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+		                 </select>
 				    </c:when>
 				    <c:otherwise>
 				    <c:if test = "${!empty contractType}">
@@ -81,7 +96,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
@@ -243,12 +258,18 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
+						  <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
 						<div id="endDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						   <span class="input-group-addon" onClick="clearEndDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						</div>
 					  </div>
 					</div>
@@ -418,7 +439,7 @@
             <div class="form-group" id="descriptionDiv"  style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
+					<textarea class="form-control" rows="3" id="mainDescription" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
@@ -1206,8 +1227,20 @@ function contractTypeLabels(){
 		$("#orgRelationId").val(''); 
 		$('#orgRelationId').trigger("chosen:updated");
 		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
 		$("#vendorContact").val(''); 
 		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
 		
 		//commented by Pavan Jampana for change request #5851(taiga Id)
 		/* $('#flatReward').removeAttr('data-validation-optional');
@@ -1233,6 +1266,8 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 	}
@@ -1296,6 +1331,14 @@ function contractTypeLabels(){
 		$("#vendorContact").val(''); 
 		$('#vendorContact').trigger("chosen:updated");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1335,9 +1378,29 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val('');    
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
+		
 	}
 	if(contractType == "Vendor SOW"){
 		$('#candiFlatReward').removeAttr('data-validation');
@@ -1374,6 +1437,28 @@ function contractTypeLabels(){
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");   
+		
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1463,6 +1548,25 @@ function contractTypeLabels(){
 		//$('#overtimeRateType').removeAttr('data-validation');
 		//$('#overtimeRateType').attr('data-validation-optional',"true");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 	}
 	if(contractType == "Full time offer"){
@@ -1537,6 +1641,26 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
@@ -1601,7 +1725,7 @@ function hideCommonSOWFields(){
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			  var formData = getFormData("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
                        if(data == true){
                     	   location.replace(sourceleadUrl+"/contractListbyStatus");
@@ -2032,7 +2156,7 @@ function flush(){
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
@@ -2128,6 +2252,7 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>
+
 function refreshVendorList(){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
@@ -2192,6 +2317,14 @@ function addCustomEmptyVendorContact(){
 	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
    $('#vendorContact').trigger("chosen:updated");
 }
+
+function clearStartDt(){
+	$("#startDate").val("");
+	};
+function clearEndDt(){
+	$("#endDate").val("");
+	};
+
 </script>
 
 <script>

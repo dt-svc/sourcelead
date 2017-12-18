@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
@@ -512,15 +514,15 @@ public class LeaveDaoImpl implements LeaveDao{
 	}
 
 
-	/*@Override
+	@Override
 	@Transactional
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if("Holiday".equalsIgnoreCase(fromTable))
+		/*if("Holiday".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.holidayName = :name ";
-		else if("Shift".equalsIgnoreCase(fromTable))
+		else*/ if("Shift".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.shiftName = :name ";
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
@@ -533,7 +535,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			return false;
 		}
 		
-	}*/
+	}
 
 
 	@Override
@@ -583,7 +585,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date to =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
+		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc left join fetch day.restrictDay left join fetch day.holiday  where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", from).setParameter("toDate", to).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
 	}
@@ -602,7 +604,53 @@ public class LeaveDaoImpl implements LeaveDao{
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel < (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
-	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", role.getRoles().getId()).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
         return userRoleList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<HolidayAndRestrictday> list = null;
+		if("RestrictDay".equalsIgnoreCase(type)){
+			String query = "from HolidayAndRestrictday day where day.restrictDay.id =:resId ";
+	    	list = session.createQuery(query).setString("resId", id).setCacheable(true).list();
+		}else{
+			String query = "from HolidayAndRestrictday day where day.holiday.id =:holId ";
+	    	list = session.createQuery(query).setString("holId", id).setCacheable(true).list();
+		}
+        return list;
+	}
+
+
+	@Override
+	@Transactional
+	public List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveRole> list = null;
+			String query = "from LeaveRole role where role.restrictDay.id =:resId ";
+	    	list = session.createQuery(query).setString("resId", restrictDayId).setCacheable(true).list();
+        return list;
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteAllHolidayOrRestrictDayById(String id, String type)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query qry = null;
+		if("RestrictDay".equalsIgnoreCase(type)){
+			String query = "delete from HolidayAndRestrictday day where day.restrictDay.id =:resId ";
+	    	qry = session.createQuery(query).setString("resId", id);
+		}else{
+			String query = "delete from HolidayAndRestrictday day where day.holiday.id =:holId ";
+	    	qry = session.createQuery(query).setString("holId", id);
+    	}
+		qry.executeUpdate();
 	}
 }

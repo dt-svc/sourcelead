@@ -180,6 +180,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserByUserId(Long userId) throws Exception {
 		return userRoleDao.getUserByUserId(userId);
 	}
+	
 	@Override
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception {
 		return userRoleDao.getUsersCountByOrgLocationID(orgLocationId);
@@ -190,10 +191,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 	
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
-			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState)
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,String userState,OrgLocations orgLocations)
 			throws Exception {
 		Row writeRow = null;
-        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,activeList,inactiveList,notLoggedInList,userState,userRolesList);
+        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,activeList,inactiveList,notLoggedInList,userState,userRolesList,orgLocations);
         
         int column=0;
         for(UserRole userRoles : userRolesList){
@@ -204,7 +205,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return createExcelsheet;
 	}
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
-			List<UserRole> activeList, List<UserRole> inactiveList, List<UserRole> notLoggedInList, String userState, ArrayList<UserRole> userRolesList) {
+			List<UserRole> activeList, List<UserRole> inactiveList, List<UserRole> notLoggedInList, String userState, ArrayList<UserRole> userRolesList,OrgLocations orgLocations) {
 
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -213,9 +214,29 @@ public class UserRoleServiceImpl implements UserRoleService{
         font.setColor(IndexedColors.BLACK.getIndex());
          style.setFont(font);
 		 
+		 writeRow = createExcelsheet.createRow(0);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 
+		 Cell cell0 = writeRow.createCell(0);
+		 cell0.setCellValue("Orgnization :");
+		 cell0.setCellStyle(style);
+		 
+		 Cell cell01 = writeRow.createCell(1);
+		 if(orgLocations.getOrgLocationName()!=null)
+		 {
+			 cell01.setCellValue(orgLocations.getOrgLocationName()); 
+		 }
+		 else
+		 {
+			 cell01.setCellValue("--");
+		 }
+		cell01.setCellStyle(style);
+		 
 		 writeRow = createExcelsheet.createRow(1);
 		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
+		 
 		 
 		 Cell cell1 = writeRow.createCell(0);
 		 cell1.setCellValue("Active :");
@@ -569,6 +590,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllActiveUsersListByOrgLocationId(orgLocationId);
 	}
+	
+	@Override
+	public UserRole getUserRoleById(Long userRoleId) throws Exception {
+		return userRoleDao.getUserRoleById(userRoleId);
+	}
 
 	@Override
 	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId) {
@@ -585,6 +611,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email, String userType) throws Exception
 	{
 		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
+	}
+
+	@Override
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+		return userRoleDao.getUserRoleWithoutAdminsByUserIdAndLocationId(userId, locationId);
+	}
+	
+	@Override
+	public UserRole getUserRoleByVerficationUUID(String uuid)
+	{
+		return userRoleDao.getUserRoleByVerficationUUID(uuid);
 	}
 
 }

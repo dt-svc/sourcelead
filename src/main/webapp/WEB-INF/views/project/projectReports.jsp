@@ -11,10 +11,10 @@
     bottom: -26px;
 }
 </style>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 function getDayWiseReports(projectId){
@@ -146,7 +146,7 @@ function submitBtn(projectId){
 			
 			/* =======================  Tasks Progress Chart ======================= */
 			result = result + '	 <div class="clearfix mt">';
-			result = result + '        	<div class="col-md-6">';
+			result = result + '        	<div class="col-md-6 mb">';
 			result = result + '	                <div class="projectDashboad-widget">';
 			result = result + '			            <div class="clearfix projectDashboad-header">';
 			result = result + '			              <h4>Tasks Progress</h4>';
@@ -235,7 +235,7 @@ function submitBtn(projectId){
 			result = result + '                 <div class="media">';
 			result = result + '                     <div class="media-left">';
 			result = result + '                     <a href="#">';
-			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png">';
+			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/resources/images/userprofile-img.png">';
 			result = result + '                     </a>';
 			result = result + '                     </div>';
 			result = result + '                     <div class="media-body">';
@@ -262,7 +262,7 @@ function submitBtn(projectId){
 			result = result + '	    <div class="OverdueWorkItems" style="height: 225px; width: 100%;">';
 			result = result + '	      <div class="column-data clearfix mt scroll-pane">';
 			result = result + '	        <div class="media">';
-			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png"> </a> </div>';
+			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/esources/images/userprofile-img.png"> </a> </div>';
 			result = result + '	          <div class="media-body">';
 			result = result + '	            <div class="taskminators-txt">';
 			result = result + '	              <p title="Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.  "> Cras sit amet nibh libero. </p>';
@@ -1230,7 +1230,7 @@ function getTaskPercentge(data){
 	 var projectClientUUID = '${projectClientUUID}';
 	 $.post(sourceleadUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
 		var result = "";
-	    result = result + '  <div class="col-md-6">';
+	    result = result + '  <div class="col-md-6 mb">';
 		result = result + '      <!-- Overdue Work Items -->';
 		result = result + '     <div class="projectDashboad-widget">';
 		result = result + '      <div class="clearfix projectDashboad-header">';
@@ -1268,11 +1268,11 @@ function getTaskPercentge(data){
 					result = result + '                       <div class="text-center">';
 					
 					if(report.taskAssignedUsers.length == 0){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/qmrk-userImg.png" title="Not Assigned">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/qmrk-userImg.png" title="Not Assigned">';
 					}else if(report.taskAssignedUsers.length == 1){
 						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
 					}else {
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
 					}
 					 
 					result = result + '                        </div>';

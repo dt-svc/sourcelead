@@ -19,6 +19,8 @@ public interface OrgLocationsDao {
 	public Boolean deleteOrgLocations(Long id)throws Exception;
     
 	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception;
+	
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
     
 	public List<OrgLocations> getAllOrgLocations()throws Exception; 
     
@@ -45,4 +47,6 @@ public interface OrgLocationsDao {
 	public boolean validateOrgShortCode(String orgShortId);
     
 	public List<OrgLocations> userList(Long orgId) throws Exception;
+
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long userId);
 }

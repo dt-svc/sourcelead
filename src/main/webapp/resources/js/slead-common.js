@@ -1,4 +1,119 @@
 
+function tagIt(id, noResultText, func,type,placeholderName) {
+	if(type == "emails"){
+		var select, chosen;
+	    select = $("#"+id);
+	    select.chosen({ no_results_text: noResultText });
+	    chosen = select.data('chosen');
+	    chosen.search_field.bind(('keydown keyup'), function(e)
+	    { 
+	    	if(this.value === noResultText) {
+	    		this.placeholder = this.value;
+	    		this.value = "";
+	    	} else {
+	    		this.placeholder = "";
+	    	}
+	    	
+	    	 var enterEmailArray = this.value.split(/[ ,]+/);
+	    	 if(enterEmailArray.length > 1){
+	    		 for (var i=0; i < enterEmailArray.length; i++) {
+	    			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
+	    			 select.append(option);
+			             select.find(option).prop('selected', true);
+		        		 $("#"+id).trigger("chosen:updated");
+	             }
+	    	 }else{
+		    	var newEmail = this.value.replace(","," ");
+		        if (window[func](e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        {
+		        	preventTabkey(e); 
+		        	var par = this.parent;
+		        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
+		        		 select.append(option);
+				            select.find(option).prop('selected', true);
+			        		$("#"+id).trigger("chosen:updated");
+		        }
+	    	 }
+	    });
+	}else if(type =="skills"){
+	
+	var select, chosen;
+	    select = $("#"+id);
+	    select.chosen({ no_results_text: noResultText });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keydown keyup', function(e)
+			    {
+				    	if(this.value === placeholderName) {
+				    		this.placeholder = this.value;
+				    		this.value = "";
+				    	} else {
+				    		this.placeholder = "";
+				    	}
+					    	
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#"+id).trigger("chosen:updated");
+			                 }
+				    	 }else{
+				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
+			    			var newSkill = this.value.replace(","," ");
+			    			 if (window[func](e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                 {
+			    				 preventTabkey(e);
+			                   // below code manually enter skills are taken
+			    				  
+			                   var isNewSkill = true;
+								 $("#"+id+" option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								
+									if(focussedSkills.length > 0){
+										var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
+										select.append(skillOption);
+										select.find(skillOption).prop('selected',true);
+										select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
+										$("#"+id).trigger("chosen:updated");
+								   }
+								   else{
+									   if(isNewSkill){
+										var option = $("<option>").val(newSkill).text(newSkill);
+										select.append(option);
+										select.find(option).prop('selected', true);
+									   }
+								   }
+								
+				               $("#"+id).trigger("chosen:updated"); 
+			                   
+			                }
+					       
+		    	         }
+	    	});
+	}
+	
+}
+
+$(function() {
+
+    for (var selector in config) {
+		$(selector).chosen(config[selector]);
+	}
+	
+    $('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+	});
+
+});
+
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
@@ -10,10 +125,10 @@ function getFormData(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			indexed_array[n['name']] = n['value'];
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
 		else
-			indexed_array[n['name']] = n['value'].trim();
+			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
 }
@@ -23,10 +138,10 @@ function getFormData1(formId) {
 	var unindexed_array = $($form).serializeArray();
 	var formData = new FormData();
 	$.map(unindexed_array, function (n, i) {
-		if($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "password")
-			formData.append(n['name'], n['value']);
+		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
+			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
 		else
-			formData.append(n['name'], n['value'].trim());
+			formData.append(n['name'], n['value']);
 	});
 	return formData;
 }
@@ -72,7 +187,6 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 			}
 		}, 
 		error: function (err) { 
-			 alert(err); 
 			 $(".file_mask").hide();
 		} 
 	});
@@ -204,8 +318,9 @@ function uploadResumeOnSelect(formId) {
 	$("#uploadBtn").change(function() {
 		$("#uploadFile").focus();
      	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-     	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     	     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		     fileUpload("uploadBtn", "resumes", formId, null, null, null, "/parse-resumes");
+ 		    $(".clearUpload").show();
 
 	});
 }
@@ -286,4 +401,56 @@ function applyResumeData(json) {
 	 }		
 	$("#candidateEducation").append(internalOutput);
 	$("#loading").removeAttr("style");
+}
+function getJSDate(date,dateFormat){
+	 var start = date.split("-");
+    if(dateFormat.match("yyyy-MM-dd")){
+	   var jsDate = new Date(start[0], start[1] - 1, start[2]);
+	    }if(dateFormat.match("dd-MM-yyyy")){
+	    	var jsDate = new Date(start[2], start[1] - 1, start[0]);
+	    }if(dateFormat.match("MM-dd-yyyy")){
+	    	var jsDate = new Date(start[2], start[0] - 1, start[1]);
+	    }if(dateFormat.match("yyyy-dd-MM")){
+	    	var jsDate = new Date(start[0], start[2] - 1, start[1]);
+	    }
+	    return jsDate;
+}
+
+
+function getJSDateFormat(locationDate){
+	 var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  return jsDateFormat;
+}
+
+function getOrgDateFormat(locationList){
+var reqListDate = '';
+	if(locationList.match("yyyy-MM-dd")){
+		  reqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqListDate = 'YYYY-DD-MM'; 
+	  } 
+	  return reqListDate;
+}
+function removeEmptyLines(ele) { //removeEmptyLines($(".."))
+	if($(ele).is(":visible")) {
+		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
+		if($(ele).val().endsWith("\n")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
+		} else if($(ele).val().endsWith("\r")) {
+			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
+		}
+	}	
 }

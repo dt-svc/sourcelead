@@ -4,12 +4,14 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -171,9 +173,9 @@ public interface CandidateService {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 	
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception;
 	
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
+	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
@@ -182,5 +184,7 @@ public interface CandidateService {
 	String getCandidateId(OrgLocations orgLocations);
 	
 	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+	
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception;
 
 }

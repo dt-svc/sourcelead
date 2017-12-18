@@ -90,6 +90,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
@@ -180,6 +181,8 @@ public class CandidateRestController {
 		} else{
 			return "DataMissing";
 		}
+		 SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", "Success new candidate is created");
+		
 		return "success";
 	}
 	

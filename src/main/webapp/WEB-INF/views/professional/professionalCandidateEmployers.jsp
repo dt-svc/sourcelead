@@ -174,13 +174,13 @@ function closeCertificatePopup(){
 		
 		result = result + '	               <div class="clearfix mb10 dates">';
 		
-		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result + '	                 <p>Start Date</p>';
+		result = result + '	                   <div class="col-md-6 clearDate" id="startYearDiv" onClick="clearStartDate();">';
+		result = result + '	                 <label>Start Date</label>';
 		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
 		result = result + '	                 </div>';
 
-		result = result + '	                  <div class="col-md-6 endDate" id="endDateDiv">';
-		result = result + '	                 <p>End Date</p>';
+		result = result + '	                  <div class="col-md-6 endDate clearDate" id="endDateDiv" onClick="clearEndDate();">';
+		result = result + '	                 <label>End Date</label>';
 		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
 		result = result + '	                 </div> ';
 
@@ -531,33 +531,27 @@ function employeePagination(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 
-<script>
-function removeEmployer(candidateemployerId, candidateId){
-	
-	alertMessageforEmp(candidateemployerId, candidateId);
-}
-</script>
 
 <script type="text/javascript">
 function cancelEmployeers(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
 <div id="deleteEmp1PopUp"></div> 
 
 <script type="text/javascript">
-function alertMessageforEmp(candidateemployerId, candidateId){
+function removeEmployer(candidateemployerId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_emp_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Employer</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmp("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEmployeers();'></b>";
 	result = result +"	</div>";
 	$("#deleteEmp1PopUp").empty();
 	$("#deleteEmp1PopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_emp_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -597,7 +591,7 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");
 								 $("#popUpDivEmp").removeClass("edit-details-active");
-								 $("#remove_user_pop, .project_inn_mask").fadeOut();
+								 $("#remove_user_emp_pop, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
 							}
@@ -770,5 +764,12 @@ function validYearEdit(){
 		$('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
 	}
 }
-
+</script>
+<script>
+function clearStartDate(){
+	$("#startYear").val("");
+	};
+function clearEndDate(){
+	$("#endYear").val("");
+	};
 </script>

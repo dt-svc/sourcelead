@@ -44,10 +44,18 @@ $(document).ready(function() {
 /*.tbldata-dotdot span{
 max-width:220px;
 } */
+/* .side-bar { */
+/* z-index: 8; */
+/* } */
+/* .main-header { */
+/* z-index: 99; */
+/* } */
+/* .advancedsearch-mask { */
+/* z-index: 99; */
+/* } */
 .clsDatePicker {
 	z-index: 100000 !important;
 }
-
 .side-bar .side-nav ul li span {
 	display: inline-block;
 	float: none;
@@ -76,6 +84,7 @@ max-width:220px;
 .require_wrap_table select {
 	width: 100% !important;
 }
+
 </style>
 <script>
  window.onload = function() { 
@@ -89,7 +98,7 @@ function statusvalidating(id){
 }
 </script>
 <jsp:include page="requirementTable.jsp" />
-<!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
+<!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
@@ -103,11 +112,11 @@ function statusvalidating(id){
 		<div class="pull-left">
 			<h2 class="pull-left paddingRight">Jobs List</h2>
 			<span class="paddingLeft pull-left">|<a class="paddingLeft"
-				href="<c:url value='/professionalRequirements'/>">Crowdsourcing
+				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
 					Jobs</a></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Job List
 		</div>
 	</section>
@@ -118,12 +127,15 @@ function statusvalidating(id){
 				onClick="openPop();loadChosenRequirementScripts();"> Advanced
 				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
 			</a>
+			</div>
 			<form:form id="requirement_form" name="requirement_form"
 				enctype='multipart/form-data'>
-				<div class="cand-advsrch-popup reqadvsrch candAdvsrch">
+				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+				<h5 class="headerAdsrch">Advanced Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
-
+				</h5>
+				<div class="addInner">
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
@@ -204,7 +216,7 @@ function statusvalidating(id){
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
 												<option
-													value="${report.responderLocationId.org.orgName}"
+													value="${report.locationId.org.orgName}"
 													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>
@@ -292,7 +304,8 @@ function statusvalidating(id){
 							</div>
 						</div>
 					</div>
-					<div class="row form-footer">
+					</div>
+					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
@@ -302,8 +315,6 @@ function statusvalidating(id){
 					</div>
 				</div>
 			</form:form>
-
-		</div>
 	</div>
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
@@ -386,11 +397,11 @@ function statusvalidating(id){
 					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='/requirement'/>"><i
+						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-						<li><a href="<c:url value='/team'/>"><i
+						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
 
@@ -426,7 +437,7 @@ function statusvalidating(id){
 	
 	
 </section>
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 <!-- 
 
@@ -457,16 +468,23 @@ function changeStatusAuthorisation(requirementId){
 <script type="text/javascript">
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	$("tr").find("td.sorting_1").removeClass("sorting_1");
+	if(status == "FILLEDCLOSED" || status == "OPEN"){
+		$("#job_"+requirementId).addClass("row-success");
+	}else if(status == "CANCEL"){
+		$("#job_"+requirementId).addClass("row-danger");
+	}else{
+		$("#job_"+requirementId).addClass("row-warning");
+	}
+
 	 var userId ='${SourceLeadWeb_userId}';
-	 
-     if(requirementStatus == "DRAFT"){
+     if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  location.replace(sourceleadUrl+"/requirementList");
+	           	  //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }else{
@@ -475,7 +493,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 location.replace(sourceleadUrl+"/requirementList");
+	           	 //location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }
@@ -489,8 +507,16 @@ function changeStatus(requirementId, requirementStatus){
 		 var table = $('#requirementPagination').DataTable();
 		 $('#Row_'+requirementId).remove();
 	 } */
-     
+	 setTM();
 	}
+	function setTM (){
+		  setTimeout(function() { 
+		  $("tr").removeClass("row-info");
+		  $("tr").removeClass("row-success");
+		  $("tr").removeClass("row-warning");
+		  $("tr").removeClass("row-danger");
+		}, 2000);
+	};
 </script>
 <script>
 $('#mypop').click(function(){
@@ -596,16 +622,38 @@ function getActions(){
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
 		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
 	</script>
 
+<script>
+  $(function() { 
+	       //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		   //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+		   
+		 //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+		 
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
+  });
+  </script>
+  
 
 <script type="text/javascript">
-			//Adding Customized Any Of Keyword to the list 
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
@@ -678,13 +726,13 @@ function getActions(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script>
 
 <script>
@@ -711,7 +759,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -746,7 +794,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -774,11 +822,9 @@ function clearSearch(){
 	$('#updatedOn').val('').trigger('chosen:updated');
 	$('#client').val('').trigger('chosen:updated');
 	$('#country').val('').trigger('chosen:updated');
-	$('#state').empty();
-	$('#state').append('<option value="">---select city---</option>');
+	$('#visaType').val('').trigger('chosen:updated');
+	$('#requirementSkills').val('').trigger('chosen:updated');
 	$('#state').val('').trigger('chosen:updated');
-	$('#city').empty();
-	$('#city').append('<option value="">---select city---</option>');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');

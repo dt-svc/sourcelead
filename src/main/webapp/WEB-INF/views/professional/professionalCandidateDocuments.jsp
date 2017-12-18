@@ -122,7 +122,8 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" download href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -253,7 +254,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
@@ -607,3 +608,8 @@ function refreshDocList(candidateId){
 		    });
  }
  </script>
+ <!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->

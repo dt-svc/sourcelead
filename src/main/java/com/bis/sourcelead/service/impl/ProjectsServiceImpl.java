@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -73,6 +74,8 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectDocumentFolderService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -101,6 +104,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	HttpServletRequest request;
@@ -180,7 +186,8 @@ public class ProjectsServiceImpl implements ProjectsService{
      @Autowired
      ProjectBudgetService projectBudgetService;
      
-	 
+	 @Autowired
+	 ProjectDocumentFolderService projectDocumentFolderService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -438,18 +445,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowBidding(null);
 		}
 		
+		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
 		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
-			List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
-			for(FileInfo fileInfo : projectDocumentsList){
-				ProjectDocuments documents = new ProjectDocuments();
-				documents.setFileName(fileInfo.getFileName());
-				documents.setFileType(fileInfo.getContentType());
-				documents.setFileUrl(fileInfo.getFileURL());
-				documents.setStatus(Constants.CANDIDATE_ACTIVE);
-				documents.setProjects(projects);
-				projDocDBList.add(documents);
+			
+			Set<ProjectDocumentFolder> projectDocumentFolder = storeDocumentFolder(projects,user);
+			projects.setProjectDocumentFolder(projectDocumentFolder);
+			
+			//save documents
+			for(ProjectDocumentFolder pdf : projectDocumentFolder) {
+				List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
+				for(FileInfo fileInfo : projectDocumentsList){
+					ProjectDocuments documents = new ProjectDocuments();
+					documents.setFileName(fileInfo.getFileName());
+					documents.setFileType(fileInfo.getContentType());
+					documents.setFileUrl(fileInfo.getFileURL());
+					documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					documents.setProjects(projects);
+					documents.setProjectFolderId(pdf);
+					documents.setCreatedBy(user);
+					documents.setCreatedByName(user.getFullName());
+					documents.setCreatedDate(commonUtil.currentDate());
+					projDocDBList.add(documents);
+				}
 			}
+			
 			projects.setProjectDocuments(projDocDBList);
 	        for(FileInfo fileInfo : projectsDTO.getUploadedFileInfo()){
 				FileUploadUtil.moveFile(projectsDTO.getStaticPath(), fileInfo, "projects");
@@ -504,6 +524,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	private Set<ProjectDocumentFolder> storeDocumentFolder(Projects projects, User user) throws Exception {
+		HashSet<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
+		ProjectDocumentFolder pdf  = null;
+		if(projects.getId() != null) {
+			pdf = projectDocumentFolderService.getProjectDocumentFolderByProjectId(projects.getId());
+		}else {
+			pdf = new ProjectDocumentFolder();
+		}
+		pdf.setProjectId(projects);
+		pdf.setFoderName("Default Folder");
+		pdf.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+		pdf.setCreatedBy(user);
+		pdf.setCreatedDate(commonUtil.currentDate());
+		projectDocumentFolderList.add(pdf);
+		return projectDocumentFolderList;
+	}
+
 	private Set<ProjectBudget> storeProjectBudget(ProjectsDTO projectsDTO ,User user,Projects projects) throws  Exception {
 		ProjectBudget projectBudget = null;
 		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
@@ -932,8 +969,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects projects = getProjectById(projectId);
 		ProjectsDTO projectsDTO = new ProjectsDTO();
 		
-		String resultJson =null;
-		
 		if(projects.getCreatedDate() != null){
 			projectsDTO.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
 		}
@@ -1034,6 +1069,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
+				projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
  	  }
 	    
 		
@@ -1074,7 +1110,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
 		projectsDTO.setProjectName(projects.getProjectName());
 		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
-		
+		projectsDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
+		projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
 		if(projects.getFlatPercent() != null) {
 			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
 		}
@@ -1851,10 +1888,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	
 	@Override
-	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception {
+	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds) throws Exception {
 		
 		
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
@@ -1872,6 +1909,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
+						 pm.setUserRoleId(userRole.getId());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");
@@ -2079,7 +2117,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					 globalVarsMap.put("reqCount", projectApproverCount.toString());
 					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 					 StringBuilder loginBuilder = new StringBuilder();
-					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				  
 				  
 				
@@ -2297,6 +2335,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,
 					Long clientOrgLocationId) throws Exception {
 				return projectsDao.getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(orgLocationsId, clientOrgLocationId);
+			}
+
+			@Override
+			public Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId, String userCode) throws Exception {
+				return projectsDao.getProjectCountByOrgLocationIdAndUserCode(orgLocationId, userCode);
 			}
 
 

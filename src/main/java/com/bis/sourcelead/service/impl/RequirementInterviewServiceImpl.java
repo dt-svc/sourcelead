@@ -69,6 +69,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -486,7 +489,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 }else{
 				 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 			 }
-			 globalVarsMap.put("LoginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("LoginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			globalVarsMap.put("interviewTableDetails",interviewTable.toString());
 			globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
 		 //setting the Recipient information
@@ -935,9 +938,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				 
 			 }
 			 
-			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Not_Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-			 //globalVarsMap.put("proposeNewTime",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>").toString());
+			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Not_Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			 //globalVarsMap.put("proposeNewTime",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Tentative</div></a>").toString());
 			 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1165,10 +1168,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 StringBuilder rejectBuilder = new StringBuilder();
 			 StringBuilder tentativeBuilder = new StringBuilder();
 			 
-			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:90px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectInterview?interviewStatus=Not_Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:90px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:90px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+			 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectInterview?interviewStatus=Not_Attending&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:90px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			if("Y".equalsIgnoreCase(requirementInterview.getProposeTime())){
-				globalVarsMap.put("tentativeURL",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/proposeNewTimePublicpage?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:180px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Propose New Time</div></a>").toString());	
+				globalVarsMap.put("tentativeURL",tentativeBuilder.append("<a href='").append(sourceleadUrl).append("/ws/proposeNewTimePublicpage?interviewStatus=Maybe&requirementInterviewId=").append(requirementInterview.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:180px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:14px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Propose New Time</div></a>").toString());	
 			}
 			 
 			 
@@ -1937,8 +1940,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    						 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).toString());
 	    					 }
 	    				}else{
-	    					emailMessage.setFirstName(candidate.getFirstName());
-	    					 emailMessage.setLastName(candidate.getLastName());
+	    					emailMessage.setFirstName(interviewrUser.getFirstName());
+	    					 emailMessage.setLastName(interviewrUser.getLastName());
 	    					 emailMessage.setToEmail(interviewrUser.getEmail());
 	    					 emailMessage.setFromEmail(candidate.getEmail());
 	    					 emailMessage.setCreatedBy(user.getUserCode());
@@ -1988,9 +1991,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			//setting the class filed values
 	    			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 	    				 if(emailMessage.getLastName() != null){
-	    					 globalVarsMap.put("applicantName", emailMessage.getFirstName() +" "+emailMessage.getLastName());
+	    					 globalVarsMap.put("applicantName", candidate.getFirstName() +" "+candidate.getLastName());
 	    				 }else{
-	    					 globalVarsMap.put("applicantName", emailMessage.getFirstName());
+	    					 globalVarsMap.put("applicantName", candidate.getFirstName());
 	    				 }
 	    				 if(interviewrUser.getLastName() != null){
 	    					 globalVarsMap.put("interviewerName", interviewrUser.getFirstName() +" "+interviewrUser.getLastName());	 

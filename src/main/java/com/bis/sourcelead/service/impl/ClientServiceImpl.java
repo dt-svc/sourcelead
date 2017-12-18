@@ -22,12 +22,13 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
@@ -40,6 +41,8 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -57,7 +60,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
@@ -83,6 +85,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.util.Calendar;
 
 /**
  * 
@@ -176,11 +179,20 @@ public class ClientServiceImpl implements ClientService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	ProjectsService projectsService;
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	LookUpDataDao lookUpDataDao;
 
 	/**
 	 * @author VenkatKesav
@@ -210,6 +222,15 @@ public class ClientServiceImpl implements ClientService {
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
 
 		String newlyRegistred = "N";
+		
+		
+		if (StringUtils.isBlank(clientDTO.getOrgLocationId())) {
+			OrgLocations invitedOrgLocation = orgLocationService.getOrgLocationsByOrgLocationName(clientDTO.getOrgName());
+			if(invitedOrgLocation != null) {
+				clientDTO.setOrgLocationId(invitedOrgLocation.getId().toString());
+			}
+		}
+		
 	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
@@ -219,12 +240,12 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCountry(clientDTO.getCountry());
 			}else
 			{
-				clientOrgLocations.setCountry("--");
+				clientOrgLocations.setCountry("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
 			} else {
-				clientOrgLocations.setState("--");
+				clientOrgLocations.setState("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
@@ -232,7 +253,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCity(clientDTO.getCity());
 			}else
 			{
-				clientOrgLocations.setCity("--");
+				clientOrgLocations.setCity("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
@@ -241,7 +262,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setZipCode(clientDTO.getZipcode());
 			}else
 			{
-				clientOrgLocations.setZipCode("--");
+				clientOrgLocations.setZipCode("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
@@ -249,20 +270,20 @@ public class ClientServiceImpl implements ClientService {
 			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getLocation());
 			}else{
-				clientOrgLocations.setLocation("--");
+				clientOrgLocations.setLocation("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
 				clientOrgLocations.setLatitude(clientDTO.getLatitude());
 			}else
 			{
-				clientOrgLocations.setLatitude("--");
+				clientOrgLocations.setLatitude("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
 				clientOrgLocations.setLongitude(clientDTO.getLongitude());
 			}else{
-				clientOrgLocations.setLongitude("--");
+				clientOrgLocations.setLongitude("");
 			}
 
 		}
@@ -279,7 +300,7 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
 			}else{
-				clientOrgLocations.setOrgLocationName("--");
+				clientOrgLocations.setOrgLocationName("");
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
@@ -292,11 +313,27 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
+			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
+			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
 			orgService.addOrganization(org);
+			
+			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    for(LookUpData lookUpData:lookUpExpCatList){
+			    ExpensesCategory expensesCategory = new ExpensesCategory();
+			    expensesCategory.setExpensesName(lookUpData.getName());
+			    expensesCategory.setAmountType("Flat");
+			    expensesCategory.setOrgLocationId(clientOrgLocations);
+			    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+				expensesCategory.setCreatedBy(user.getUserCode());
+				expensesCategory.setCreatedDate(commonUtil.currentDate());
+				expensesCategory.setUpdatedBy(user.getUserCode());
+				expensesCategory.setUpdatedDate(commonUtil.currentDate());
+				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
 			newlyRegistred = "Y";
@@ -315,17 +352,17 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 				org.setClientAddress(clientDTO.getAddress());
 			}else{
-				org.setClientAddress("--");
+				org.setClientAddress("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				org.setClientBillingAddress(clientDTO.getBillingAddress());
 			}else{
-				org.setClientBillingAddress("--");
+				org.setClientBillingAddress("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
-				org.setPaymentTerm("--");
+				org.setPaymentTerm("");
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
@@ -507,10 +544,21 @@ public class ClientServiceImpl implements ClientService {
 		 	
 	    	Projects projects = new Projects();
 	    	StringBuilder defaultProjectName = new  StringBuilder();
-	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
 	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
-	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
+
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
+
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsDefaultProject(Constants.YES);
@@ -831,7 +879,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setCity("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+			if (clientDTO.getWebSite()!=null) {
 				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getState())) {
@@ -989,6 +1037,14 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setZipCode("");
 			}
+			
+			 if(StringUtils.isNotBlank(clientDTO.getAddress())){
+				 orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			 }
+			 
+			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
+				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }
 			
 
 			/*
@@ -1181,7 +1237,7 @@ public class ClientServiceImpl implements ClientService {
 		globalVarsMap.put("changedOwnerName", changedUser.getFullName());
 		globalVarsMap.put("loginUser", loginUser.getFirstName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 				.toString());
 		// setting the Recipient information
@@ -1359,7 +1415,7 @@ public class ClientServiceImpl implements ClientService {
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 					.toString());
 
@@ -1426,7 +1482,7 @@ public class ClientServiceImpl implements ClientService {
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 					.toString());
 		}

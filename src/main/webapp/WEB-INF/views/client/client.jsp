@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
  };
 </script>
  <script>
@@ -22,7 +22,9 @@ window.onload = function () {
 .ui-front {
     z-index: 9999999;
 }
-
+.margintop {
+margin-top: -50px;
+}
 </style>
 
 
@@ -34,7 +36,7 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
@@ -62,59 +64,35 @@ window.onload = function () {
 						
 			
 			<div class="form-group" id="locationDiv" style="display: block;">
-	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
-	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
+	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
 	        </div>
 		
 		   <div class="form-group" id="orgLocationDiv" style="display: none;">
-	          <label class="col-md-3">Location</label>
+	          <label class="col-md-3">Address</label>
 	          <div class="col-md-9">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Location" readonly></input>
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Address" readonly></input>
 	          </div>
 	          </div>
 	        </div>
 		
-			<div class="form-group" id="countryDiv" style="display: block;">
-	          <label class="col-md-3">Country</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group" id="orgCountryDiv" style="display: none;">
-				<label class="col-md-3">Country</label>
+		  <div class="form-group ">
+				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
-	        
-	        
-	        <div class="form-group" id="stateDiv" style="display: block;">
-	          <label class="col-md-3">State</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	        	 
-			 <div class="form-group" id="orgStateDiv" style="display: none;">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-				</div>
-		 	</div>
-		
-		
-	        <div class="form-group" id="cityDiv" style="display: block;">
+			
+			<div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -125,11 +103,26 @@ window.onload = function () {
 				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
 				</div>
 		   </div>
-		 
-	        <div class="form-group" id="zipCodeDiv" style="display: block;">
+		   
+		   <div class="form-group" id="stateDiv" style="display: block;">
+	          <label class="col-md-3">State</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
+	          </div>
+	        </div>
+	        
+	        	 
+			 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+				</div>
+		 	</div>
+		 	
+		 	 <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        
@@ -139,6 +132,29 @@ window.onload = function () {
 	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
 	          </div>
 	  		  </div>	
+	  		  
+			<div class="form-group" id="countryDiv" style="display: block;">
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" data-validation="required" >
+	                   <option  ${loginCountryName  == 'Australia' ? 'selected' : ''}>Australia</option>
+	                   <option  ${loginCountryName  == 'France' ? 'selected' : ''}>France</option>
+	                   <option  ${loginCountryName  == 'India' ? 'selected' : ''}>India</option>
+	                   <option  ${loginCountryName  == 'Singapore' ? 'selected' : ''}>Singapore</option>
+	                   <option  ${loginCountryName  == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>
+	                   <option  ${loginCountryName  == 'United States' ? 'selected' : ''}>United States</option>
+                 </select>
+                  
+	          </div>
+	        </div>
+	        
+	        <div class="form-group" id="orgCountryDiv" style="display: none;">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				</div>
+			</div>
+	        
 			
 			<div class="form-group hidden">
 	          <label class="col-md-3">Lat</label>
@@ -155,6 +171,8 @@ window.onload = function () {
 	        </div> 
          
             <div class="form-group">
+            
+            <div class="clearfix mb">
               <label class="col-md-3">Tier</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
@@ -165,25 +183,9 @@ window.onload = function () {
                     <option selected="selected" value="Tier-5">Tier-5</option>
                   </select>
               </div>
-            </div>
-            
-            
-            <div class="form-group ">
-				<label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-			<div class="form-group ">
-				<label class="col-md-3">Billing Address</label>
-				<div class="col-md-9">
-				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-            <div class="clearfix mb"></div>
-             <div class="form-group">
+              </div>
+              
+              <div class="clearfix width100Percnt">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
@@ -197,6 +199,23 @@ window.onload = function () {
                   </select>
               </div>
             </div>
+              
+              
+              
+            </div>
+            
+            
+            
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             
             
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -306,7 +325,7 @@ window.onload = function () {
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
-			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
           </div>
         </div>
       </div>
@@ -326,36 +345,6 @@ window.onload = function () {
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	
-	/* $( "#orgName" ).val( '' ); */
-	$( "#orgLocationId" ).val( '' );
-	
-	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val('');
-	
-	$("#orgCountry").val('');
-	$("#orgState").val('');
-	$("#orgCity").val('');
-	$("#orgLocation").val('');
-	$("#orgZipCode").val('');
-	
-	document.getElementById("countryDiv").style.display="";
-	document.getElementById("orgCountryDiv").style.display="none";
-	
-	document.getElementById("stateDiv").style.display="";
-	document.getElementById("orgStateDiv").style.display="none";
-	
-	document.getElementById("cityDiv").style.display="";
-	document.getElementById("orgCityDiv").style.display="none";
-	
-	document.getElementById("locationDiv").style.display="";
-	document.getElementById("orgLocationDiv").style.display="none";
-	
-	document.getElementById("zipCodeDiv").style.display="";
-	document.getElementById("orgZipCodeDiv").style.display="none";
-	
-	
-	document.getElementById("userRoleDiv").style.display="none"; 
 	
 	$.ajax({                           
     	type: "POST",
@@ -396,6 +385,37 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	
+$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
+	$("#orgLocation").val('');
+	$("#orgZipCode").val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	document.getElementById("locationDiv").style.display="";
+	document.getElementById("orgLocationDiv").style.display="none";
+	
+	document.getElementById("zipCodeDiv").style.display="";
+	document.getElementById("orgZipCodeDiv").style.display="none";
+	
+	
+	document.getElementById("userRoleDiv").style.display="none"; 
+	
+	
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
  	var orgLocationId = document.getElementById("orgLocationId").value; 
@@ -440,7 +460,6 @@ function getOrgDetails()
 			      	if(json['zipCode'] != null && json['zipCode'] != ''){
 			      	document.getElementById("zipCodeDiv").style.display="none";
    	        		document.getElementById("orgZipCodeDiv").style.display="";
-   	        		    $("#orgZipCode").val(json['zipCode']);
 			      	}
    	        	}
    			 },
@@ -463,7 +482,7 @@ function getRolesList(){
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	
 	if(orgName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
@@ -519,7 +538,7 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
 				location.replace(sourceleadUrl+ "/clientDashboard");
 			});
@@ -641,10 +660,10 @@ function validateClientName(){
 	if(client.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (client != null && client != '') {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -701,7 +720,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
+			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -775,7 +794,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -815,7 +834,6 @@ function validateOrgName(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
  
 <script type="text/javascript">
 $(function(){

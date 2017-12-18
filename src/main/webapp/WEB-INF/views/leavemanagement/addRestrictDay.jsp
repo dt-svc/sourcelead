@@ -19,7 +19,7 @@
       <div class="pull-left">
         <h2>Add Restrict Day</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='${appPath}/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="restrictLoading"></div>
@@ -38,14 +38,20 @@
     <div class="form-group" id="startDateDiv">
        <label class="col-md-3">Start Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
+        <div class="input-group errorInptgroup">
        <input type="text" id="startDate" name="startDate" placeholder="Start Date" value="${restrictDay.startDateStr}" field-name="Start Date" class="form-control calendar" data-validation="required" readonly>
+       <span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
+       </div>
        </div>
     </div>
     <div class="form-group" id="endDateDiv">
        <label class="col-md-3">End Date<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
+        <div class="input-group errorInptgroup">
        <input type="text" id="endDate" name="endDate" placeholder="End Date" value="${restrictDay.endDateStr}" field-name="End Date" class="form-control calendar" data-validation="required" readonly>
+       <span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
         <div id="warnDiv"></div>
+        </div>
        </div>
     </div>
     <div class="form-group">
@@ -114,7 +120,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='/viewRestrictDay'/>'" >
+            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/viewRestrictDay'/>'" >
           </div>
         </div>
       </div>
@@ -130,7 +136,7 @@ function storeRestrictedDay(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
          if ($('#restrictDay_form').validate(false, validationSettings)){  
  	 	  	var formData = $($('#restrictDay_form')[0]).serialize();
-		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(data) {
 			  				if(data == "success"){
 			  					$("#restrictLoading").removeAttr("style");
@@ -237,6 +243,14 @@ function removeEndValid(){
 	$('#endDateDiv').find('p.jquery_form_error_message').remove();
 }
  </script>
-
+<script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+	
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

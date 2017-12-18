@@ -353,12 +353,12 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearFromtDt();">';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearToDt();">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
@@ -390,16 +390,8 @@ function addCertification(candidateId) {
 		 
 
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerAdd = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatCerAdd = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatCerAdd = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatCerAdd = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatCerAdd = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatCerAdd = getJSDateFormat(locationDate);
+		  
 		  $('#StartDate').datepicker({
 		      dateFormat: finalDateFormatCerAdd,
 		      changeMonth: true,
@@ -559,50 +551,14 @@ function addCertification(candidateId) {
 								var proCertificateEndDate = $("#EndDateEdit").val(); 
 
 								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 var proCertificateStartDateSplit = proCertificateStartDate.split("-");
-								 var proCertificateEndDateSplit = proCertificateEndDate.split("-");
-								 
-								 var finalDateFormatEduEditOneSave = '';
-								  var proCertificateStartDateEdit = '';
-								  var proCertificateEndDateEdit = '';
+								
+								 // written common method in slead-common.js for date formats start
+								  var proCertificateStartDateEdit = getJSDate(proCertificateStartDate,locationDate);
+								  var proCertificateEndDateEdit = getJSDate(proCertificateEndDate,locationDate);
 								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[2])+parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[0])+parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[0])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[2])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }
 								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[2])-parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[0])-parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[0])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[2])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }
-								  var finalDateFormatCerEdit = '';
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEdit = 'yy-mm-dd';
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEdit = 'dd-mm-yy'; 
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEdit = 'mm-dd-yy'; 
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEdit = 'yy-dd-mm'; 
-								  }
+								  var finalDateFormatCerEdit = getJSDateFormat(locationDate);
+								  // end
 								 
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerEdit,
@@ -788,7 +744,11 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 function selectScoreType(){
-	
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	 var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
@@ -891,4 +851,12 @@ function toDate(selector) {
 }
 </script>
 
-<!-- script for dateformat in datepicker End -->             
+<!-- script for dateformat in datepicker End -->     
+<script>
+function clearFromtDt(){
+	$("#StartDate").val("");
+	};
+function clearToDt(){
+	$("#EndDate").val("");
+	};
+</script>        

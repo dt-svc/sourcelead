@@ -59,6 +59,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
 
 @RestController
+@RequestMapping("/app")
 public class EmployeePayrollRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeePayrollRestController.class);
@@ -129,9 +130,9 @@ public class EmployeePayrollRestController {
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
-			}else if(Constants.BIS_USERS.equalsIgnoreCase(payrollType)){
+			}/*else if(Constants.BIS_USERS.equalsIgnoreCase(payrollType)){
 				isInserted = bisUserMappingService.saveBisUserData(multipartFile,orgLocation,user,jsonObj);
-			}else if(Constants.BIS_CHECKS.equalsIgnoreCase(payrollType)){
+			}*/else if(Constants.BIS_CHECKS.equalsIgnoreCase(payrollType)){
 				isInserted = bisUserMappingService.saveChecksData(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.INVOICE_DATA.equalsIgnoreCase(payrollType)) {
 				isInserted = invoiceDataService.saveInvoiceData(multipartFile,orgLocation,user,jsonObj);
@@ -458,9 +459,6 @@ public class EmployeePayrollRestController {
 	@ResponseBody
 	public ResponseList<Checks> getChecksList(ChecksDTO checksDTO,HttpServletRequest request)
 					throws Exception {
-		
-		
-//	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		String[] tableColumns = {"empId", "empName", "date", "typeOfExpense", "bankName", "month","legalFees","advance","generalExpenses","vendorPayments","electronicWithdrawals","payrollChecks","amount","checkNo"};
 	     int sortColumnIndex = 1; //by default sorting using updated date

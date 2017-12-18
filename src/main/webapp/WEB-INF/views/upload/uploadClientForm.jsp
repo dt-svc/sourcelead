@@ -27,7 +27,7 @@ margin:10px 220px 0;
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
-    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="${appPath}/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
     <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -49,10 +49,8 @@ margin:10px 220px 0;
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
 			<div class="col-xs-8 col-md-8">
-			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
+			 <a href="<c:url value='${appPath}/downloadClientTemplate?name=Contact'/>" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
 			</a>
 			</div>
 			<div class="col-xs-4 col-md-4">
@@ -61,7 +59,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'">
 				</div>
 			  </div>
 			</div>
@@ -213,7 +211,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 	var form = $('#upload_form')[0];
 	var formData = new FormData(form); 
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -224,7 +222,7 @@ if ($('#upload_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
  		    success : function(data) {
- 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	if(data == "empty"){
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
@@ -253,7 +251,6 @@ if ($('#upload_form').validate(false, validationSettings)){
  		    	}
  		    },
  		   error: function(e){
- 			  alert(e);
 	        }
 	 });
 	 

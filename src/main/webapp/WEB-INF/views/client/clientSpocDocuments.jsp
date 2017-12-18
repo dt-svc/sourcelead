@@ -118,7 +118,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
 	                    		 result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getClientSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
@@ -196,7 +196,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="cleartClientSpocDocumentUpload()">';
 	result = result+'	                          <label class="input-group-btn" onChange="clientSpocDocumentFileSaving();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
@@ -222,12 +222,12 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartClientSpocDocumentStartDate();">                                                                                            ';
 	result = result  +'                      <input type="text" id="startDate" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartClientSpocDocumentEndDate();">                                                                                            ';
 	result = result  +'                      <input type="text" id="endDate" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
 	result = result  +'                    </div>                                                                                                                             ';
@@ -414,6 +414,7 @@ function getSpocsList(orgRelationId){
 <script>
 function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";
+	 result = result  +'          <form role="form"  id="document_form_del" name="document_form_del" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Document delete message here</p>";
@@ -421,6 +422,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
+	result = result  +'                </form>                                                                                                                                ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200); 
@@ -430,7 +432,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 <script>
 function saveReason(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#document_form_del').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
@@ -599,4 +601,19 @@ function clientSpocDocumentFileSaving()
 {
 	fileUpload("uploadBtn", "clientDocuments", "document_form_spoc");
 }
+</script>
+
+<script>
+	function cleartClientSpocDocumentUpload(){
+		$("#uploadFile").val("");
+	}
+</script>
+
+<script>
+function cleartClientSpocDocumentStartDate(){
+	$("#startDate").val("");
+	};
+function cleartClientSpocDocumentEndDate(){
+	$("#endDate").val("");
+	};
 </script>

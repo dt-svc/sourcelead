@@ -36,13 +36,153 @@
  position: relative !important;
  }
  </style>
- 
+ <script>
+	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	    var finalDateFormataddExpense= getJSDateFormat(locationDate);
+		$("#projectStartDateExpensesId").datepicker("destroy");
+		$("#projectEndDateExpensesId").datepicker("destroy");
+		$('#projectStartDateExpensesId').datepicker({
+					dateFormat : finalDateFormataddExpense,
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
+						var maxRecCount = $('#maxRecCount').val();
+						if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+							var expenseEndDate = $("#projectEndDateExpensesId").val();
+							 for(var i = 2; i < maxRecCount; i=i+2){
+								 if($("#divEntityTsRow"+i).is(':visible'))
+								 {
+									    var categoryId = $("#categoryDate"+(i-1)).attr("id");
+									    if(categoryId != null && categoryId != '' && categoryId != 'undefined'){
+								    	    $("#categoryDate"+(i-1)).datepicker("option","minDate", selected);
+										    if(expenseEndDate != null && expenseEndDate != '' && expenseEndDate != 'undefined'){
+										    	$("#categoryDate"+(i-1)).datepicker("option","maxDate", expenseEndDate);
+										    }
+									    }
+							    	  
+								 }
+								else{
+									 var categoryDate = $("#categoryDate"+(i-1)).val();
+								     if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+								    	 var d1= getJSDate(selected,locationDate);
+										 var d2= getJSDate(expenseEndDate,locationDate);
+										 var d3= getJSDate(categoryDate,locationDate);
+										 if(!(d1<=d3 && d3<=d2)){
+										    	$("#categoryDateDiv"+(i-1)).addClass("ColRed");
+										 }
+										 else{
+											 $("#categoryDateDiv"+(i-1)).removeClass("ColRed");
+										 }
+								    	
+								     }
+								 } 
+							   
+							}  
+						}	    
+							 
+					}
+				});
+		$('#projectEndDateExpensesId').datepicker({
+					dateFormat : finalDateFormataddExpense,
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
+						var maxRecCount = $('#maxRecCount').val();
+						if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+							var expenseStartDate = $("#projectStartDateExpensesId").val();
+							 for(var i = 2; i < maxRecCount; i=i+2){
+								 if($("#divEntityTsRow"+i).is(':visible'))
+								   {
+									    var categoryId = $("#categoryDate"+(i-1)).attr("id");
+									    if(categoryId != null && categoryId != '' && categoryId != 'undefined'){
+									    	  $("#categoryDate"+(i-1)).datepicker("option","maxDate", selected);
+										    	if(expenseStartDate != null && expenseStartDate != '' && expenseStartDate != 'undefined'){
+											    	$("#categoryDate"+(i-1)).datepicker("option","minDate", expenseStartDate);
+											    }
+									    }
+								   
+								  }
+								 else{
+									 var categoryDate = $("#categoryDate"+(i-1)).val();
+								     if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+								    	 var d1= getJSDate(expenseStartDate,locationDate);
+										 var d2= getJSDate(selected,locationDate);
+										 var d3= getJSDate(categoryDate,locationDate);
+										 if(!(d1<=d3 && d3<=d2)){
+										    	$("#categoryDateDiv"+(i-1)).addClass("ColRed");
+										 }else{
+											 $("#categoryDateDiv"+(i-1)).removeClass("ColRed");
+										 }
+								    	
+								     }
+								 }
+							}  
+						}	    
+							 
+					}
+				});
+	}
+</script>
+
 <script>
 function hideAndShowDetailsRow(rowId,type){
 	$(".fa-plus-square-o").toggleClass("closExp");
+	var entityId = parseInt(rowId-1);
+	var previousCategory = $("#categoryTypeDivInput"+entityId).val();
+	var previousCategoryDate = $("#categoryDateDivInput"+entityId).val();
+	var previousReceiptIssuedBy = $("#receiptIssuedByDivInput"+entityId).val();
+	var previousPaymentmode = $("#paymentModeDivInput"+entityId).val();
+	var previousRateType = $("#expenseRateTypeDivInput"+entityId).val();
+	var previousAmount = $("#expenseAmountDivInput"+entityId).val();
+	var previousDesc = $("#entryDesDivInput"+entityId).val();
+	var previousPaidBy = $("#paidByDivInput"+entityId).val();
+	var categoryType = $("#categoryType"+entityId).val();
+	      if(previousCategory != null && previousCategory != '' && previousCategory != 'undefined' && categoryType != previousCategory){
+		    $("#categoryType"+entityId).val(previousCategory).trigger("chosen:updated");
+	}  
+	var categoryDate = $("#categoryDate"+entityId).val();
+           if(previousCategoryDate != null && previousCategoryDate != '' && previousCategoryDate != 'undefined' && categoryDate !=previousCategoryDate ){
+    	    $("#categoryDate"+entityId).val(previousCategoryDate);
+	}
+	var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
+    if(previousReceiptIssuedBy != null && previousReceiptIssuedBy != '' && previousReceiptIssuedBy != 'undefined' && receiptIssuedBy != previousReceiptIssuedBy){
+    	$("#receiptIssuedBy"+entityId).val(previousReceiptIssuedBy);
+	}else if(previousReceiptIssuedBy == null || previousReceiptIssuedBy == '' || previousReceiptIssuedBy == 'undefined' ){
+		$("#receiptIssuedBy"+entityId).val('');
+	}
+	var paymentMode = $("#paymentMode"+entityId).val();
+    if(previousPaymentmode != null && previousPaymentmode != '' && previousPaymentmode != 'undefined' && paymentMode != previousPaymentmode){
+    	$("#paymentMode"+entityId).val(previousPaymentmode);
+	}
+	var expenseRateType = $("#expenseRateType"+entityId).val();
+    if(previousRateType != null && previousRateType != '' && previousRateType != 'undefined' &&  expenseRateType != previousRateType){
+    	$("#expenseRateType"+entityId).val(previousRateType);
+	}
+	var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
+    if(previousAmount != null && previousAmount != '' && previousAmount != 'undefined' && expenseAmount != previousAmount ){
+    	$("#expenseAmount"+entityId).val(previousAmount);
+	}
+
+	var descriptions = $("#entryDes"+entityId).val();
+    if(previousDesc != null && previousDesc != '' && previousDesc != 'undefined' &&   descriptions != previousDesc){
+    	 $("#entryDes"+entityId).val(previousDesc);
+	}
+	
+	var paidBy = $("#paidBy"+entityId).val();
+    if(previousPaidBy != null && previousPaidBy != '' && previousPaidBy != 'undefined' &&  paidBy !=previousPaidBy){
+    	$("#paidBy"+entityId).val(previousPaidBy).trigger("chosen:updated");
+	}
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		var validation_required = "true";
-		var entityId = parseInt(rowId-1);
 		 var maxRecCount = $("#maxRecCount").val();
 		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
 			 $("#addExpenseItemButton").removeAttr('href');
@@ -84,17 +224,27 @@ function hideAndShowDetailsRow(rowId,type){
 			 $("#0docFile"+entityId).attr('data-validation','required');
 		}
 		else{
-			$("#0docFile"+entityId).removeAttr('data-validation');
+			 $("#0docFile"+entityId).removeAttr('data-validation');
 			 $("#0docFile"+entityId).attr('data-validation-optional','true');
 		}
-		
+		displayCalendar(entityId);
 		if($("#divEntityTsRow"+rowId).is(':visible'))
 	   {
+			
 			$("#divEntityTsRow"+rowId).removeAttr('style');
 			$("#divEntityTsRow"+rowId).attr('style','display:none;');
+			
+			var from = $("#addExpenseItemButton").attr('data-id');
+			if(from == null || from == '' || from == 'undefined'){
+				from = "emp";
+			}
+			$("#addExpenseItemButton").attr('href','javascript:addExpenseRow("'+from+'");');
+		    $("#addExpenseItemButton").removeClass("btn-default");
+    	    $("#addExpenseItemButton").addClass("btn-primary");
 	   }
 		else{
 			$("#divEntityTsRow"+rowId).removeAttr('style');
+			$("#categoryDateDiv"+entityId).removeClass("ColRed");   
 		}
 	}
 }
@@ -207,25 +357,33 @@ function addAttachment(entityRowId,from){
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
+    <input type='hidden' id="categoryDateDivInputREPLACEROWID"/>
     <div id="categoryDateDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td2" style="display: none; float: left;">
+    <input type='hidden' id="categoryTypeDivInputREPLACEROWID"/>
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
+    <input type='hidden' id="entryDesDivInputREPLACEROWID"/>
+    <input type='hidden' id="receiptIssuedByDivInputREPLACEROWID"/>
    <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot-me">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
+    <input type='hidden' id="expenseAmountDivInputREPLACEROWID"/>
     <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
+    <input type='hidden' id="expenseRateTypeDivInputREPLACEROWID"/>
     <div id="expenseRateTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
+    <input type='hidden' id="paymentModeDivInputREPLACEROWID" />
     <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
 
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
+    <input type='hidden' id="paidByDivInputREPLACEROWID" />
     <div id="paidByDivREPLACEROWID">--</div>
 </div>
 
@@ -334,16 +492,7 @@ function addExpenseRow(from){
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateExpenseEntrie = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateExpenseEntrie = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateExpenseEntrie = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateExpenseEntrie = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateExpenseEntrie = 'yy-dd-mm'; 
-		  }
+		  var finalDateExpenseEntrie= getJSDateFormat(locationDate);
 		
 		   var maxRecCount = $("#maxRecCount").val();
 		   for(var i = 2; i < maxRecCount; i=i+2){
@@ -540,6 +689,13 @@ function addExpenseRow(from){
 			
 			var categoryType = $("#categoryType"+entityId).val();
 			var categoryTypeName = $("#categoryType"+entityId+" option[value='"+categoryType+"']").text();
+			
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			 var projectStartDate = $("#projectStartDateExpensesId").val();
+			 var projectEndDate = $("#projectEndDateExpensesId").val();
+			 var d1= getJSDate(projectStartDate,locationDate);
+			 var d2= getJSDate(projectEndDate,locationDate);
+			
 			var categoryDate = $("#categoryDate"+entityId).val();
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
@@ -559,6 +715,22 @@ function addExpenseRow(from){
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			$("#paidByDiv"+entityId).html(paidBy);
+			
+			$("#categoryTypeDivInput"+entityId).val(categoryType);
+			$("#categoryDateDivInput"+entityId).val(categoryDate);
+			$("#receiptIssuedByDivInput"+entityId).val(receiptIssuedBy);
+			$("#paymentModeDivInput"+entityId).val(paymentMode);
+			$("#expenseRateTypeDivInput"+entityId).val(expenseRateType);
+			$("#expenseAmountDivInput"+entityId).val(expenseAmount);
+			$("#entryDesDivInput"+entityId).val(descriptions);
+			$("#paidByDivInput"+entityId).val(paidBy);
+			
+			if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				 var d3= getJSDate(categoryDate,locationDate);
+			    if(!(d1<=d3 && d3<=d2)){
+			    	$("#categoryDateDiv"+entityId).addClass("ColRed");
+			    }
+	        }
 			
 			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
@@ -590,6 +762,7 @@ function addExpenseRow(from){
 </script>
  <script>
 function displayCalendar(entityId){
+if('${type}' !='view'){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
 	var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -606,7 +779,7 @@ function displayCalendar(entityId){
 	else {
 		alert("Please Select StartDate & EndDate")
 	}
-	
+  } 
 }
 </script>
 

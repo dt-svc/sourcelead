@@ -22,7 +22,7 @@ margin: 0.1% 2%;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
         </section>
 	   
 		   
@@ -36,6 +36,7 @@ margin: 0.1% 2%;
  	   <div id="popUp"></div>
             <!--   Popup's   -->	
             <jsp:include page="employee.jsp" />
+            <jsp:include page="projectTeam.jsp" />
             <jsp:include page="projectDetails.jsp" />
             <jsp:include page="projectTasks.jsp" />
             <jsp:include page="projectDocuments.jsp"/>
@@ -73,14 +74,15 @@ window.onload = function () {
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
 		  	         result = result + '<li id="requestResources"><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
-		  	    '</sec:authorize>';
+				  	  result = result + '<li class="" id="projectTeam"><a href="#tab-6" onClick="projectTeam('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Team</a></li>';
+		  	         '</sec:authorize>';
 		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
-			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
-			  	'</sec:authorize>';
+			  	    result = result + '<li class=""><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
+			  	    result = result + '<li class="" id="projectTeam"><a href="#tab-6" onClick="projectTeam('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Team</a></li>';
+			  	    '</sec:authorize>';
 		  	  '</sec:authorize>';
 		  	
-		  	
-		  	  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		  	 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
 		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
 				  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
 				      	 result = result + '<li id="projectTaskTab"><a href="#tab-3" id="taskTab" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
@@ -89,6 +91,9 @@ window.onload = function () {
 				  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 				  	'</sec:authorize>';
 			  	'</sec:authorize>';
+		  	 }
+	  	   
+		  	if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 			  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
 				'</sec:authorize>';
@@ -118,6 +123,9 @@ window.onload = function () {
 			result = result + '<div id="tab-5" class="project_tabs_inn">';
 		  	result = result + '</div>';
 		  	
+		  	result = result + '<div id="tab-6" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
 		  	result = result + '</div>'; 
 		  	$("#projectSideDiv").empty();  
 		    $("#projectSideDiv").append(result);  
@@ -129,12 +137,16 @@ window.onload = function () {
 					 projectTask(projectId, status)
 				 }else  if(tabType == "projectMembers"){
 					 document.getElementById('requestResources').className = 'current'
+				      $( "#details" ).removeClass( "current" );
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('projectMembersTab').click();
 				 }else if(tabType == "resources") {
 					 document.getElementById('requestResources').className = 'current'
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('resourceTab').click();
+				 }else if(tabType == "team"){
+					 document.getElementById('projectTeam').className = 'current'
+						 projectTeam(projectId,startDateStr,endDateStr,status,projectName);
 				 }
 			     document.getElementById("details").removeAttribute("class")
 			}else{

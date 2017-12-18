@@ -28,7 +28,7 @@
 	       		}
 	       		$("#temp").val("temp");
 			}else{
-				getExpensesList();
+				getExpensesList('${sourceleadUrl}');
 			}
 		 };
 </script>
@@ -39,7 +39,7 @@
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Expenses</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Expenses</div>
         </section>
         
 		<!-- Timesheet -->
@@ -49,7 +49,9 @@
 	<div class="timesheet_head">
         	<ul>
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
-				    <div class="pull-left mt5 mr">   		
+				    <div class="input-group">
+				    <div class="pull-left mt5 mr"> 
+				    <div class="input-group">  		
 				     <span class="dashboard-datepkr pull-left">
 					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
 					 <p id="reportStartDate" class="ReError"></p>
@@ -58,23 +60,24 @@
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
+					</div>
 					</div>
 					
 					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
-								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
-								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList('${sourceleadUrl}');"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList('${sourceleadUrl}');"><label >Approved</label></li>
+								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Submitted</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList('${sourceleadUrl}');"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList('${sourceleadUrl}');"><label >Rejected</label></li>
 	                        </ul>
 	                    </div>                	
 	                </li>
                </sec:authorize>
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
-			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
+			   		<li><a href="<c:url value='${appPath}/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
 			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
@@ -90,6 +93,10 @@
             <div class="clearfix"></div>
             
         </div>
+        
+        <div class='remove_search'>
+		       <input type='text' placeholder='search' value="" id='dataTableSearchExpensesEmp'/>
+	   </div>
         
     <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
@@ -113,7 +120,9 @@
 		
       </section>
       <!-- Content Area Ends--> 
-<script>
+      
+      
+<!-- <script>
 
 function getExpensesList(){
 	var startDate = $("#filterStartDate").val();
@@ -252,7 +261,7 @@ function getExpensesList(){
 	
 	}
 
-</script>      
+</script> -->      
 
 <script>
 function expensesPagination(){ 
@@ -488,8 +497,16 @@ function expenseView(expenseId){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatExpenses,
-			onSelect : function(selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 			}
 		
 		});
@@ -498,8 +515,16 @@ function expenseView(expenseId){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatExpenses,
-			onSelect : function(selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 			}
 		});
 		
@@ -571,3 +596,4 @@ function expensesCancel(){
 	       e.stopPropagation();
 	   });        
 </script> 
+<jsp:include page="expensesEmployeeTable.jsp" />

@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -41,7 +41,7 @@
           <div class="pull-left">
             <h2>Add User</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; Add User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Users List</a> &raquo; Add User </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
@@ -93,8 +93,8 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -109,7 +109,7 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
                   </div>
                 </div>
@@ -117,7 +117,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" data-validation-optional="true"  field-name="Last Name" data-validation=" validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -303,7 +303,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -504,8 +504,8 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("createUser_form");
-			$("#createUser_form").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#create_user").attr("disabled", "disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
 			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 				location.replace(sourceleadUrl+"/usersList");	
@@ -888,16 +888,9 @@ function getAssociateUserDetails(){
 <script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat = 'yy-dd-mm'; 
-	  }
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
 	  $('#DateofJoin').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -947,27 +940,6 @@ function getAssociateUserDetails(){
 	
  }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#reportingManager").chosen();
-	       $("#role").chosen();
-	       $("#invoiceFrequency").chosen();
-	       
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
- 
 
 <script>
 function maskme(){
@@ -1035,6 +1007,7 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+
 	 <script>
 	 function vendorContactEmpty(){
 		 $('#vendorcontact').empty();
@@ -1080,3 +1053,10 @@ function refreshRoleList(){
 	 }
 	 </script>
 	
+
+<script>
+function clearDate(){
+	$("#DateofJoin").val("");
+	};
+</script>
+

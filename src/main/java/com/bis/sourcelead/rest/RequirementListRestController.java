@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,6 +50,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementAssignToDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -63,6 +63,8 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -85,6 +87,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -113,10 +117,15 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class RequirementListRestController {
 	private static final Logger logger = LoggerFactory.getLogger(RequirementListRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	CommonUtil commonUtil;
 	@Autowired
@@ -164,6 +173,12 @@ public class RequirementListRestController {
 	@Autowired
 	ConversionUtil conversionUtil;
 	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	protected boolean isNullOrEmpty(String str)
 	{
 		return (str == null || "".equals(str.trim()));
@@ -187,15 +202,13 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementById", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody Requirement getRequirementById(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
+		Requirement requirement = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (requirementId != null && !requirementId.isEmpty()) {
-			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-			User intiatorUser = userService.getUserById(requirement.getCreatedBy().getId());
-			 //SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			 if(requirement.getCreatedDate()!=null){
 					requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 				}
@@ -291,26 +304,8 @@ public class RequirementListRestController {
 			}
 			
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
-			
-			// UnWanted Code
-			/*
-			 * Boolean isLoginUserAsTeamMember = requirementAssignToService.
-			 * checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(
-			 * Long.parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.
-			 * toString());
-			 * 
-			 * 
-			 * 
-			 * Boolean isLoginUserAsManager = requirementService.
-			 * checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.
-			 * parseLong(requirementId), user.getId());
-			 * requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString
-			 * ());
-			 */
-			resultJson = commonUtil.toJSON(requirement);
 		}
-		return resultJson;
+		return requirement;
 	}
 	
 	/**
@@ -329,41 +324,33 @@ public class RequirementListRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getRequirementAssignedListByRequirementId", method = RequestMethod.POST)
-	public @ResponseBody String getRequirementAssignedListByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<RequirementAssignTo> getRequirementAssignedListByRequirementId(RequirementAssignToDTO requirementAssignToDTO, HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
-		List<RequirementAssignTo> requirementAssignToList = new ArrayList<RequirementAssignTo>();
-		if (requirementId != null && !requirementId.isEmpty()) {
-			Collection<RequirementAssignTo> requirementAssignToListdb = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
-			if (requirementAssignToListdb != null && !requirementAssignToListdb.isEmpty()) {
-				for (RequirementAssignTo assing : requirementAssignToListdb) {
-					RequirementAssignTo ra = new RequirementAssignTo();
-					StringBuilder assignUserSB = new StringBuilder();
-					if (assing.getAssignUserId().getLastName() != null) {
-						ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-					}
-					else {
-						ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+		ResponseList<RequirementAssignTo> requirementAssignToDtoResponse = new ResponseList<>();
+		ResponseList<RequirementAssignTo> list = requirementAssignToService.loadRequirementAssignToListByRequirementId(requirementAssignToDTO);
+		List<RequirementAssignTo> requirementAssignToList = list.getData();
+			if (list != null && list.getRecordsTotal() > 0) {
+				for (RequirementAssignTo assing : requirementAssignToList) {
+					if (assing.getAssignUserId() != null) {
+						assing.setAssignedUserName(assing.getAssignUserId().getFullName());
 					}
 					if (assing.getRoleId() != null) {
-						ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
+						assing.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					}
 					if (assing.getTeamId() != null) {
-						ra.setTeamName(assing.getTeamId().getName());
+						assing.setTeamName(assing.getTeamId().getName());
 					}
 					if (assing.getAssignUserId() != null) {
-						Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(Long.parseLong(requirementId), assing.getAssignUserId().getUserCode());
-						ra.setApplicantCount(applicantCount.toString());
+						Integer applicantCount = requirementSubmissionService.getApplicantCountByrequirementIdandAssignedUsercode(requirementAssignToDTO.getRequirementId(), assing.getAssignUserId().getUserCode());
+						assing.setApplicantCount(applicantCount.toString());
 					}
-					requirementAssignToList.add(ra);
 				}
 			}
-			resultJson = commonUtil.toJSON(requirementAssignToList);
-		}
-		else {
-			resultJson = "failure";
-		}
-		return resultJson;
+		requirementAssignToDtoResponse.setData(requirementAssignToList);
+		requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
+		requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+		requirementAssignToDtoResponse.setError(list.getError());
+		return requirementAssignToDtoResponse;
 	}
 	
 	/**
@@ -758,19 +745,19 @@ public class RequirementListRestController {
 						}
 					}
 					String candidateName = "";
-					if (requirementSubmission.getCandidate() != null) {
-						if (!isNullOrEmpty(requirementSubmission.getCandidate().getLastName())) {
+					if (requirementSubmissionTemplateFields != null) {
+						if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 							StringBuilder candidateNameSB = new StringBuilder();
-							candidateName = candidateNameSB.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString();
+							candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
 						}
 						else {
-							candidateName = requirementSubmission.getCandidate().getFirstName();
+							candidateName = requirementSubmissionTemplateFields.getFirstName();
 						}
 						requirementSubmission.setCandidateName(candidateName);
 						requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
 						requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
-						requirementSubmission.setPhoneNumber(requirementSubmission.getCandidate().getMobilePhone());
+						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 					}
 					requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 					requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
@@ -860,17 +847,16 @@ public class RequirementListRestController {
 	}
 	
 	
-	
-	
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
 	String saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
@@ -891,12 +877,13 @@ public class RequirementListRestController {
 	
 	@RequestMapping(value = "/saveChangedStatusFromDraft", method = RequestMethod.POST)
 	@ResponseBody
-	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId) throws Exception
+	String saveChangedStatusFromDraft(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
 	{
 		User loginUser = userService.getUserById(userId);
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if (isLoginUserAsTeamMember) {
+		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
 			return "false";
 		}
 		else {
@@ -1157,7 +1144,7 @@ public class RequirementListRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadRequirementAttachment", method = RequestMethod.GET)
 	public void downloadRequirementAttachment(@RequestParam(value = "requirementId", required = false) String requirementId, HttpServletResponse response) throws Exception
 	{
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
@@ -1178,7 +1165,7 @@ public class RequirementListRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
-	
+	*/
 	/**
 	 * @author Sammeta David Raju
 	 * 
@@ -1344,7 +1331,7 @@ public class RequirementListRestController {
 	 * @throws Exception
 	 * @returns void
 	 */
-	@RequestMapping(value = "/downloadOfferAttachment")
+	@RequestMapping(value = "/ws/downloadOfferAttachment")
 	public void downloadOfferAttachment(@RequestParam(value = "offerId", required = false) Long offerId, HttpServletResponse response) throws Exception
 	{
 		RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
@@ -1590,7 +1577,6 @@ public class RequirementListRestController {
 	@RequestMapping(value = "/searchRequirement")
 	public ResponseList<Requirement> searchRequirement(RequirementSearchDTO search, HttpServletRequest request) throws Exception
 	{
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1810,6 +1796,18 @@ public class RequirementListRestController {
 	            	if(requirement !=null){
 	            		Integer applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
 	            		requirement.setTotalApplicants(applicantsCount);
+	            		
+	            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
+	            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
+	            			requirement.setOrgRelationUUID(orgRelations.getUUID());
+	            		}
+	            		
+	            		if(requirement.getSpocId() != null){
+	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+	            			requirement.setSpocUUID(orgSpoc.getUUID());
+	            		}
+	            		
+	            		
 	            		reqList.add(requirement);
 	            	}
 	            }
@@ -1896,6 +1894,8 @@ public class RequirementListRestController {
       	requirement.setJobTitle(requirementIndex.getJobTitle());
       	requirement.setGeneratedId(requirementIndex.getGeneratedId());
       	String convertedStirng = requirementIndex.getCreatedDate();
+      	requirement.setOrgRelationId(requirementIndex.getOrgRelationId());
+      	
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
       	Date elkDate = elkFormat.parse(convertedStirng);
@@ -2037,7 +2037,7 @@ public class RequirementListRestController {
 				}
 				globalVarsMap.put("reqExp", reqExp);
 				StringBuilder linkBuild = new StringBuilder();
-				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				// getting the current EmailScenario by EmailScenario unique
 				// name and entity type

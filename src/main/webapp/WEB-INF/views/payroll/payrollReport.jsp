@@ -14,8 +14,11 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Employee Payroll Invoice</h2>
       </div>
-      <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Reports Dashboard</a> &raquo; Employee Payroll Invoice </div>
+
+<%--       <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a> --%>
+ <%--  <a href="<c:url value='/searchBasedReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Search Based Report</a>--%>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Employee Payroll Invoice </div>
+
     </section>
     <section class="project_side_wrap_inn_tabs payroll-invoice">
         <div class="clearfix mb">
@@ -146,7 +149,7 @@ function redirect() {
 	 $("#tab-1").show();
 //   $(".project-tabs-menu a").click(function(event) {
       event.preventDefault();
-      $("#menuli").removeClass("current");
+      $("#menuli li").removeClass("current");
       $("#wtsli").addClass("current");
       
 //   });
@@ -157,7 +160,7 @@ function redirect() {
     function getIncomeData(){
     	var empId = $("#empId").val();
     	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
@@ -290,7 +293,7 @@ function redirect() {
   function getChecks(){
 	     var empId = $("#empId").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
@@ -437,7 +440,8 @@ function empInvoiceDetails(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#incometable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -454,7 +458,8 @@ function empChecksListPagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
+    $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -465,7 +470,7 @@ function empChecksListPagination(){
 function getWagesTaxSummaryByEmpId(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
@@ -576,7 +581,8 @@ function wagesAndTaxEmpTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -584,7 +590,7 @@ function wagesAndTaxEmpTablePagination(){
 function getAccontDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -709,6 +715,7 @@ function accountDeductionsEmpTablePagination(){
        }
     });
     $("#accontDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -800,7 +807,7 @@ function closeModalExpenses(){
 function getHRDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -918,6 +925,7 @@ function hrDeductionsEmpTablePagination(){
        }
     });
     $("#hrDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -1019,6 +1027,7 @@ function finalBalance(){
 			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';
 			        	result = result + '  <div class="payrollinvoice-generate">';
 			        	result = result + '   <h4 class="clearfix text-center">Balance Sheet</h4>';
+			        	result = result + '  <div class="payrollinvoice-header">';
 			        	result = result + '<table style="width:100%" class="table-responsive table-bordered table-BLsheet mb">';
 			        	result = result + '<tr>';
 			        	result = result + '<th rowspan="2" class="bg-info">Income</th>';
@@ -1032,6 +1041,7 @@ function finalBalance(){
 			        	result = result + '<td class="bg-success">$ '+data.due+'</td>';
 			        	result = result + '</tr>';
 			        	result = result + '</table>';
+			        	result = result + '  </div>';
 			        	
 			        	
 			        	
@@ -1122,6 +1132,21 @@ function finalBalance(){
 			        
 			    });
 }
+</script>
+
+<script>
+//project side bar tabs
+$(document).ready(function() {
+	$("#tab-1").show();
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

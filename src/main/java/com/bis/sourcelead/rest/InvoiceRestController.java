@@ -109,6 +109,7 @@ import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
+@RequestMapping("/app")
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
@@ -122,6 +123,9 @@ public class InvoiceRestController {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Value("${static.path}")
     private String staticPath;
@@ -226,7 +230,7 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	@RequestMapping(value = "/downloadInvoiceAttachment")
+	/*@RequestMapping(value = "/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
 		
 		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);
@@ -250,7 +254,7 @@ public class InvoiceRestController {
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
- }
+ }*/
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
@@ -302,13 +306,12 @@ public class InvoiceRestController {
     
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects> getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectsList = projectsService.getClientProjectsByOrgRelationId(orgRelationId,loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(projectsList);
- 	  return resultJson;
+// 	  resultJson = commonUtil.toJSON(projectsList);
+ 	  return projectsList;
  	}
     
     @RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
@@ -432,6 +435,10 @@ public class InvoiceRestController {
 			}
 			if(null != invoice.getProjectID()){
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
+			}
+			
+			if(invoice.getOrgRelationID() != null){
+			billingDto.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
 			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){
@@ -598,6 +605,10 @@ public class InvoiceRestController {
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
 					}
+					
+					if(invoice.getOrgRelationID() != null){
+					invoice.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+					}
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
@@ -715,7 +726,7 @@ public class InvoiceRestController {
 	     	
 	 	}
     
-	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	 /* @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
 	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
 		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
 			    response.setContentType("application/octet-stream");
@@ -740,7 +751,7 @@ public class InvoiceRestController {
 				} 
 
 		}  
-
+*/
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
@@ -795,8 +806,8 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
-				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
-				if (null != projectMember.getEmployee().getUser().getId()) {
+				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
+				if (null != projectMember.getProjectMemberCandidteId().getId()) {
 //					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != projectMember.getProjectMemberCandidteId()){
 						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
@@ -941,13 +952,13 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
- 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-     	String resultJson;
+     	//String resultJson;
      	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
      	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
- 	    resultJson = commonUtil.toJSON(projectList);
- 	    return resultJson;
+ 	   // resultJson = commonUtil.toJSON(projectList);
+ 	    return projectList;
  	}
 	
 	/**
@@ -1044,7 +1055,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 EmailScenario  emailScenario = null ;
@@ -1131,7 +1142,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 EmailScenario  emailScenario = null ;
@@ -1406,7 +1417,8 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId);
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		BillingReportDTO invoiceList = invoiceService.getBillingReports(billingReportType, invoiceType, startDate, endDate,orgLocation,user,loginUserRoleId,loginOrgCurrencyCode);
 		if(invoiceList !=null){
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}

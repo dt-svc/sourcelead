@@ -62,6 +62,9 @@ public interface ProjectsDao {
 	
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 	
+	Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId,String userCode)throws Exception;
+
+	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;

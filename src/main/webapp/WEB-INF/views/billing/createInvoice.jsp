@@ -7,8 +7,8 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 
-<script src="resources/js/jquery.mask.min.js"></script>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.mask.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <style type="text/css">
 .inline_field, .inline_field:focus {
@@ -57,10 +57,11 @@ function errRemoveClientContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Invoice</h2>
+			<h2>Client Invoice</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
-	
+		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Custom Based Invoice</div>
+	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -136,10 +137,13 @@ function errRemoveClientContact(){
 						</div>
 						<div class="form-group">
 							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="errDuedate">
+							<div class="col-md-9 " id="errDuedate">
+							<div class="input-group errorInptgroup">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
+								<span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -172,7 +176,7 @@ function errRemoveClientContact(){
 						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -201,7 +205,7 @@ function errRemoveClientContact(){
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
@@ -214,7 +218,7 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot_80">
+	<div class="tbldata-dotdot_80 validationTxt">
 		<input type="text"
 			class="form-control input-sm"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
@@ -545,7 +549,7 @@ if(selectedTextInvoice =='percentage'){
 				 var opt = invoiceDocumentsList[i]; 
 	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -554,6 +558,18 @@ if(selectedTextInvoice =='percentage'){
 	    	 }
 			 
 			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+		}else{
+			
+			 <c:forEach var="doc" items="${documents}">
+			 result = result +"<strong id='invoiceDocument${doc.id}'>";
+    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+			 result = result +"<input type='button' value='${doc.fileName}'>";
+			 result = result +"</a>";
+			 result = result +"</strong>";
+     		</c:forEach>
+     		
+     		 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
 		}
     	
@@ -566,7 +582,7 @@ if(selectedTextInvoice =='percentage'){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -787,7 +803,7 @@ if(selectedTextInvoice =='percentage'){
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -1947,7 +1963,7 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -1997,7 +2013,7 @@ function saveInvoice(saveType){
 	     		$("#invoice_pop").slideDown(200);
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(data) {
 		  				if(data == "success"){
 		  					$("#invoiceLoading").removeAttr("style");
@@ -2093,7 +2109,7 @@ function getEstimatedHours(rowId){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2112,7 +2128,7 @@ function editHoursValidations(startDate,endDate,rowId){
 	if(startDate && endDate){
 		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2159,6 +2175,7 @@ function attachFile(id){
  
 </script>
 <script>
+<<<<<<< HEAD
 function createInvoiceEmptyClientContact(){
 	$("#clientContact").empty();
 	 $('#clientContact').append('<option value="">--select Client contact--</option>');
@@ -2172,4 +2189,12 @@ function createInvoiceEmptyClientContact(){
 		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 	 </script>
+<script>
+function clearDate(){
+	$("#dueDate").val("");
+	};
+	
+	
+</script>
+>>>>>>> d0c2b046141be6bba39ea2f639ca80a871cc10a6
 <jsp:include page="../masterFooter.jsp" />

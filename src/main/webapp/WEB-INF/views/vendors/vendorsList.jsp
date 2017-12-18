@@ -33,7 +33,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
@@ -43,9 +43,16 @@ border:none; background-color: none !important; padding:0 5px !important;
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </div>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+          
+          <h5 class="headerAdsrch">Advanced Search
+          <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </h5>
+          
+          
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
-           
+          <div class="addInner"> 
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -89,7 +96,31 @@ border:none; background-color: none !important; padding:0 5px !important;
                   </div>
                 </div>
                 
+                <div class="col-md-4">
+                  <label>Tier</label>
+                  <div class="clearfix">
+                    <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
+	                     <option value="Tier-1">Tier-1</option>
+	                     <option value="Tier-2">Tier-2</option>
+	                     <option value="Tier-3">Tier-3</option>
+	                     <option value="Tier-4">Tier-4</option>
+	                     <option value="Tier-5">Tier-5</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Created By</label>
+                  <div class="clearfix">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
+                  </div>
+                </div>
+                
               </div>
+             
+               </div>
+               
               <div class="clearfix">
                 
               </div>
@@ -125,31 +156,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 							  </div>
 						  </div>
               </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Tier</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" data-placeholder="Tier" name="tierAdvanced" id="tierAdvanced"  multiple>
-	                     <option value="Tier-1">Tier-1</option>
-	                     <option value="Tier-2">Tier-2</option>
-	                     <option value="Tier-3">Tier-3</option>
-	                     <option value="Tier-4">Tier-4</option>
-	                     <option value="Tier-5">Tier-5</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Created By</label>
-                  <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Created By" id="createdByAdvanced" name="createdByAdvanced"></select>
-                  </div>
-                </div>
-                
-              </div>
-             
-               </div>
+              
                 
                 <div class="clearfix">
                
@@ -204,7 +211,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                                <option value="${vendor.vendorNameForList}">${vendor.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -238,24 +245,24 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>  
               
             </div>
-            <div class="row form-footer custom_formfooter">
+            </div>
+            <div class="advancedsearch-footer clearfix">
               <div class="pull-right mr"> 
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
             </div>
+            </div>
             </form:form>
           </div>
-        </div>
-        </div>
 <!-- Advanced Search Ends -->
 
 
@@ -317,14 +324,14 @@ border:none; background-color: none !important; padding:0 5px !important;
 		                </li>  
 		                    
 		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
-				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
+				       <li><a href="<c:url value='${appPath}/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
 					</sec:authorize>
 					
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
+                       <li><a href="<c:url value='${appPath}/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
                         <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-                       <li title="Import"><a href="<c:url value='/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+                       <li title="Import"><a href="<c:url value='${appPath}/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
                  	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
@@ -516,8 +523,48 @@ function clearSearch(){
 </script> -->
 
 
+
+<script>
+  $(function() { 
+	       //Adding Customized Any KeyWord Title list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		 
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		 
+		 //Adding Customized Vendor Name list this method is slead-common.js
+		   tagIt("orgNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:', 'tagItBykeyForSkills','skills','Vendor Name');
+		 
+		 //Adding Customized createdBy Name list this method is slead-common.js
+		   tagIt("createdByAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Created By');
+		 
+		 
+		 //vendor contact customize details
+		 
+		  //Adding Customized vendor contact Name list this method is slead-common.js
+		   tagIt("contactNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Contact Name');
+		 
+		   //Email
+		   tagIt("emailAdvanced", 'Press Enter-Key Or Comma(,) To Add Email:', 'tagItBykeyForSkills','skills','Email');
+		   
+		   //Phone Number
+		   tagIt("phoneNumberAdvanced", 'Press Enter-Key Or Comma(,) To Add Phone Number:', 'tagItBykeyForSkills','skills','Phone Number');
+		   
+		 //Owner Name
+		   tagIt("ownerAdvanced", 'Press Enter-Key Or Comma(,) To Add Owner:', 'tagItBykeyForSkills','skills','Owner');
+		   
+		   //Owner Name
+		   tagIt("orgAdvanced", 'Press Enter-Key Or Comma(,) To Add Vendor:', 'tagItBykeyForSkills','skills','Vendor');
+		   
+  });
+  </script>
+  
+  	       
 <script type="text/javascript">
-    	   var config = {
+    	   /* var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -758,8 +805,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		    
-		    
+		     */
 		    
 		  
 		      $("#country").on('change', function (e) {
@@ -768,13 +814,13 @@ function clearSearch(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+				/* for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 
@@ -1407,7 +1453,7 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 	 $("#row"+orgSpocId).empty();
 	 $("#row"+orgSpocId).html("<td colspan='8'  id='loading"+orgSpocId+"'></td>");
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendVendorSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
@@ -1511,7 +1557,7 @@ function updateSpocStatus(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	$.ajax({
 	   	type: "POST",
@@ -1744,7 +1790,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		
-		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Bills</a></li>';
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
@@ -2217,7 +2263,7 @@ document.getElementById("advanceSearchDiv").style.display="block";
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
-<script src="resources/js/jquery-fun.js"></script> 
+<script src="/resources/js/jquery-fun.js"></script> 
 <script>
 
 // Approved Popup
@@ -2327,6 +2373,12 @@ $(document).ready(function() {
 
 // project side bar tabs
 $(document).ready(function() {
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+		vendorSideBar('${vendorLocationId}','${orgRelationId}','${vendorName}');
+	}
+	
+	
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();
@@ -2385,7 +2437,7 @@ function acceptInvitation(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
@@ -2409,7 +2461,7 @@ function rejectInvitation(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
@@ -2620,14 +2672,22 @@ function cancelTermination(){
 	}
 </script> 
 
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+
 <script>
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
+    $(".advancedsearch-mask").fadeOut();
     };
     function openPop(){
     $("div.cand-advsrch-popup").toggle();
+    $(".advancedsearch-mask").fadeIn();
     };
+	function closeAdsrch(){
+		$("div.cand-advsrch-popup").fadeOut();
+		$(".advancedsearch-mask").fadeOut();
+	};
 </script> 
 
 <script>
@@ -2637,7 +2697,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -2674,7 +2734,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2737,6 +2797,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#country').val('${loginCountryName}'); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
+	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");

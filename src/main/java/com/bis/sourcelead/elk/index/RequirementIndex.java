@@ -47,9 +47,28 @@ public class RequirementIndex {
 	
 	private String zipCode;
 	
+	private String medicalClearence;
+	
+	private String securityClearance;
+	
+	private String overTime;
+	
+	private String backgroundCheck;
+	
+	private String gender;
+	
+	private String experienceLevel;
+	
+	private String projectClientID;
+	
+	
 	private String[] education;
 	
 	private String client;
+	
+	private String orgRelationId;
+	
+	private String spocId;
 	
 	private String[] skills;
 	
@@ -168,7 +187,7 @@ public class RequirementIndex {
 	private String referUUID;
 	
 	private String[] visaTypes;
-	
+	private String url;
 	private String generatedId;
 	
 	public String getManagerUserId() {
@@ -850,6 +869,104 @@ public class RequirementIndex {
 		this.generatedId = generatedId;
 	}
 
-	
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(String spocId)
+	{
+		this.spocId = spocId;
+	}
 	
 }
