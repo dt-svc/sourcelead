@@ -16,4 +16,6 @@ public interface OrglocationFormFieldsService {
 
 	public String deleteCustomFieldById(Long customID);
 
+	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation);
+
 }

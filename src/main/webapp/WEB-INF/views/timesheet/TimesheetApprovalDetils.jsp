@@ -10,7 +10,7 @@
 }
 
 </style>
-<div class="timesheetNewHead" id ="timeApprovaldiv">
+<div class="timesheetNewHead">
 <div class="timeNewSe timeNewSe_month addicon">
 	<select id="frequencyMonth" name="frequencyMonth" class="form-control chosen-select" onchange="timesheetApprovalDetils('month');">
 		<c:forEach var="frequencyMonth" items="${timesheetApprovalDTO.frequencyMonthList}">

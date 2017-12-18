@@ -20,7 +20,10 @@
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
-			getCustomDependentField();
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
 		});
     </script> 
 <script>
@@ -886,8 +889,17 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-        
+        	
+        	 <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 0}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   </c:if>
+        	
       </div>
+      
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
@@ -915,7 +927,6 @@ $(document).ready(function () {
 						 </c:otherwise>
 			</c:choose>
 	        </c:if>
-	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
@@ -1126,6 +1137,13 @@ $(document).ready(function () {
                   </div>
                 </div>
               </div>
+               <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	              <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	         </c:if>
             </div>
           </div>
         </div>
@@ -1321,7 +1339,13 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-			<jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
+			 <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	              <c:if test="${sectionOrder.index == 2}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	         </c:if>
       </div>
     </div>
     <!-- Internal Details html Ends -->
@@ -1405,6 +1429,22 @@ $(document).ready(function () {
   
   </div>
 </section>
+
+
+<!-- for custom requirement fields start -->
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+<!-- for custom requirement fields end -->
 
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 

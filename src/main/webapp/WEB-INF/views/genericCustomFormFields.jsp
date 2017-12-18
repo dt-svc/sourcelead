@@ -1,10 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<div id="customFormDiv"></div>
-<c:forEach var="formSections" items="${SourceleadForm_Sections}" varStatus="customCount">
-	<c:forEach var="customForm" items="${formSections.customFieldsList}">
-	<input type="text" value="${customCount}">
+
+	<c:forEach var="customForm" items="${customFieldsList}">
 	<c:if test="${customForm.fieldType == 'textfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
@@ -38,15 +36,25 @@
                   </div>
 	   </c:if>
 	   
+	   <c:if test="${customForm.fieldType == 'selectfield'}">
+		<div class="form-group">
+	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+	    	 <div class="col-md-9">
+	     	 	<select class="chosen-select form-control" id="" name="${customForm.fieldName}" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" data-validation="${customForm.isRequired == 1 ? 'Required':''}" data-validation-optional="${customForm.isRequired == 0 ? 'true':''}">
+	     	 		<option value="">1</option>
+	     	 		<option value="">2</option>
+	     	 	</select>
+	    	</div>
+	  </div>
+	 </c:if>
+	   
 	</c:forEach>
-</c:forEach>
 
 
 <script>
    function dateScriptsCustomDate() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormat = getJSDateFormat(locationDate);
-	  //end
 	  $('.customDate').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -54,20 +62,39 @@
 	  });
   } 
 </script>
- 
 
+<script type="text/javascript">
+$(function(){
+    var config = {
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+		}
+       
+    $('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+	  })
+});
+</script>
+ 
+<!-- 
 <script>
 function getCustomDependentField(){
 	 var actionId = $("#actionId").val();
+	 alert(actionId);
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getFormSectionsByActionId?actionId="+actionId+"&requestFrom=genericCustomPage",
+				 url: sourceleadUrl+"/getAllSectionByActionId?actionId="+actionId,
 				 success: function(data) {
+				 alert(data);
 		        	$('#customFormDiv').empty();
 		        	$('#customFormDiv').append(data);
 				 }
 		  })
 }
-</script>
+</script> -->
 
 

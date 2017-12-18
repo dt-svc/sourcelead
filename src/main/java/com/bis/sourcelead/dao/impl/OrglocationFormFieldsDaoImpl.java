@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrglocationFormFieldsDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
@@ -81,6 +82,16 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 			  }
 		 }
 		 return returnResult;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc left join fetch slSection.sourceleadActions action  where action.id =:actionId and orgLoc.id =:orgLocation and orgForm.status = '1'";
+		List<OrglocationFormFields> result = session.createQuery(query).setLong("actionId", actionId).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+		return result;
 	}
 
 

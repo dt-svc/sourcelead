@@ -115,6 +115,13 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	public String deleteCustomFieldById(Long customID) {
 		return orglocationFormFieldsDao.deleteCustomFieldById(customID);
 	}
+
+
+	@Override
+	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation) {
+		return orglocationFormFieldsDao.getAllSectionByActionId(actionId,orgLocation);
+		
+	}
 	
 	
 

@@ -7,9 +7,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/jquery.twbsPagination.js"></script>
-
+<!-- <script src="/resources/js/jquery.twbsPagination.js"></script> -->
+<script src="/resources/js/jquery.simplePagination.js"></script>
 
 
 <div id="TimeshgeetStatusListId"></div>
@@ -58,27 +57,24 @@
 						</tbody>                              
 				</table>
 		    </div>
-		    
-		  <div id="paginationDiv" class="clearfix">
-		  <div class="col-md-6">
-		  <div class="pull-left mt5">
-		  <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
-		  <div class="dropdown-select pull-left mr5 tblminwidth-50">
-		  <select id="pageSize" onchange="getTableDataByPageSizeDashboard()">
-		  <option value="10" ${timesheetApprovalDTO.pageSize == 10 ? 'selected' : ''}>10</option>
-		  <option value="15" ${timesheetApprovalDTO.pageSize == 15 ? 'selected' : ''}>15</option>
-		  <option value="20" ${timesheetApprovalDTO.pageSize == 20 ? 'selected' : ''}>20</option>
-		  </select>
-		  </div>
-		  <span class="pull-left mt10">entries</span>
-		  </label> 
-		  <span class="pull-left mt10 ml" id="pageMsg">Showing 1 to 1 of 1 entries</span>
-		  </div>
-		  </div>
-		  <div id="paginationholder" class="col-md-6 pagiPad">
-		  <ul id="pagination-demo" class="pagination-sm pull-right"></ul>
-		  </div>
+		<div id= "paginationDiv" class="clearfix">
+	<div class="col-md-6">
+		<div class="pull-left mt5">
+			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
+				<div class="dropdown-select pull-left mr5 tblminwidth-50">
+					<select id="pageSize" onchange="getTableDataByPageSize()">
+						<option value="10" ${timesheetApprovalDTO.pageSize == 10 ? 'selected' : ''}>10</option>
+		  				<option value="15" ${timesheetApprovalDTO.pageSize == 15 ? 'selected' : ''}>15</option>
+		 				<option value="20" ${timesheetApprovalDTO.pageSize == 20 ? 'selected' : ''}>20</option>
+					</select>
+				</div> <span class="pull-left mt10">entries</span> </label>
+				 <span class="pull-left mt10 ml" id="pageMsg"></span>
 		</div>
+	</div>
+	<div id="paginationholder" class="col-md-6 pagiPad">
+		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
+	</div>
+</div>
 		    
 		</div>
 		
@@ -109,7 +105,7 @@ function filter(){
 	var status = '${status}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var pageSize = $("#pageSize").val();
-		$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status,
@@ -132,8 +128,7 @@ function filter(){
 
 
 <script>		
-	function getTableDataByPageSizeDashboard(){
-		  $('#pagination-demo').twbsPagination('destroy'); 
+	function getTableDataByPageSize(){
 		  getStatusListData(1);
 		}
 	
@@ -145,7 +140,7 @@ function filter(){
 					if(searchValue == null || searchValue == '' || searchValue == 'undefined'){
 						searchValue = '';
 					}
-					$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+					$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 					$.ajax({
 						    	type: "POST",
 						        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
@@ -177,17 +172,18 @@ function filter(){
 				  if(endingRecord > totalRows){
 					  endingRecord = totalRows;
 				  }
-				  var options = {
-				              currentPage : '${timesheetApprovalDTO.pageNo}',
-				              totalPages: pageCount,
-				              prev:'',
-				              next:'',
-				              initiateStartPageClick: false,
-				              onPageClick: function (event, page) {
-				            	  getStatusListData(""+page+"");
-				              }
-			    };
-			    $("#pagination-demo").twbsPagination(options);
+			    var options = {
+					      currentPage:pageNo,
+					      items: totalRows,
+			              itemsOnPage: pageSize,
+			              ellipsePageSet :false,
+			              cssStyle: 'light-theme',
+			               onPageClick: function (pageNumber, event) {
+			            	   getStatusListData(""+pageNumber+"","");
+			              }
+		      };
+		      $("#pagination-demo").pagination(options);
+			    
 			    var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
 			}else{
 				  $("#tableDivId").empty();

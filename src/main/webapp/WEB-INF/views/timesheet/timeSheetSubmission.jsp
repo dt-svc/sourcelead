@@ -5,9 +5,6 @@
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
-
-
-
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
  <div class="pull-left timeAppUse">
@@ -1461,7 +1458,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
     	 var projectMemberId = $("#projectMemberId").val();
     	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     	 $("#loadTime").removeAttr('style');
-    	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+    	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 		    type : "POST",
    	        data: formData,
@@ -1561,7 +1558,7 @@ function timesheetDivAfterSaving(){
     if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
  	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
     }
-    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
     $.ajax({
 	          type : "POST",
 	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
@@ -1627,7 +1624,6 @@ function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequ
 	  
 
 </script>
-<<<<<<< HEAD
 
 <script>
 function cancelReOpenRejected(){
@@ -1664,7 +1660,7 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	               if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 	            	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
 	               }
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	               $.ajax({
 		      	          type : "POST",
 	        	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
@@ -1683,5 +1679,5 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	}
 </script> 
 <!-- Tab Switching -->
-<script type="text/javascript"	src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

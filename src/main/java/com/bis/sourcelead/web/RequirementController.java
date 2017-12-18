@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -157,14 +159,16 @@ public class RequirementController {
 	private SourceleadActionsService sourceleadActionsService;
 	
 	@Autowired
-private ProjectClientService projectClientService;
+	private ProjectClientService projectClientService;
 	
 
 	TeamService teamService;
 	
 	@Autowired
 	RolesService roleService;
-
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -183,6 +187,9 @@ private ProjectClientService projectClientService;
 		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
 		
+	    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+	    model.addObject("sourceleadSectionList",sections); 
+	    
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
 

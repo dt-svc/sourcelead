@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
-<script src="resources/js/jquery.simplePagination.js"></script>
+<script src="/resources/js/jquery.simplePagination.js"></script>
 
 <script>
 $(document).ready(function() {
