@@ -1200,12 +1200,35 @@ function loadOpenJobsChosenRequirementScripts(){
 
 <script type="text/javascript">
 function redirectPage(){
+	var url = "";
 	var title = document.getElementById("openJobsRequirementTitleId").value;
+	if(title != null && title != '' && title != 'undefined'){
+		url += "/"+title;
+	}else{
+		url += "/all";
+	}
 	var location = document.getElementById("openJobsLocationId").value;
+	if(location != null && location != '' && location != 'undefined'){
+		url += "/"+location;
+	}else{
+		url += "/all";
+	}
 	var experience = document.getElementById("openJobsExperienceId").value;
-	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
+	if(experience != null && experience != '' && experience != 'undefined'){
+		url += "/"+experience;
+	}
+	
+	if((title == null || title == '' || title == 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs";
+	}else if((title != null && title != '' && title != 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs/"+title;
+	}else{
+		window.location.href = "jobs"+url;
+	}
+	
 }
 </script>
+
 
 
 <script>
