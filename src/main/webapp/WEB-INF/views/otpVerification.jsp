@@ -108,7 +108,7 @@ function verifyOTP(){
 	var password = $("#password").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
-	if(enteredOTP == '${authToken}'){
+	if((enteredOTP != null && enteredOTP != '' && enteredOTP !='undefined') && (enteredOTP == '${authToken}')){
 		$("#errorDiv").removeAttr("style");
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({

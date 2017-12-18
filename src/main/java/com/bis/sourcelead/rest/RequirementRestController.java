@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +34,11 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
+
+import com.bis.sourcelead.entity.OrgRelations;
+
 import com.bis.sourcelead.entity.Projects;
+
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -47,6 +52,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendationsService;
@@ -146,6 +152,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementDao requirementDao; 
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
 	 
 	/**
 	 * @author prasad k
@@ -944,6 +953,22 @@ public class RequirementRestController {
 
 		} 
 	    
+
+	    @RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
+		public @ResponseBody Collection<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+			return orgClientList;
+		   
+		    
+		   
+		} 
+	    
+
 	    
 		/*@RequestMapping(value = "/getAllProjectsByOrgRelationIdAndInProgress", method = RequestMethod.GET)
 	 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -987,4 +1012,5 @@ public class RequirementRestController {
 		return commonUtil.toJSON(existedUser);
 	}
 	
+
 }

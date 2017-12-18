@@ -53,7 +53,6 @@ public class CampaignUtil {
 	 */
 	public String createSender(CreateSenderDTO createSenderDTO, OrgLocations orgLocation) throws IOException
 	{
-		logger.info("====Sendgrid key "+sendgridKey);
 		String isSenderCreated = null;
 		String city = "";
 		String country = "";
@@ -157,7 +156,6 @@ public class CampaignUtil {
 	 */
 	public String createList(CampaignListDTO campaignListDTO) throws IOException
 	{
-		logger.info("====Sendgrid key "+sendgridKey);
 		String isListCreated = null;
 		try {
 			SendGrid sg = new SendGrid(sendgridKey);
