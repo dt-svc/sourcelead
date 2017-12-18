@@ -134,6 +134,7 @@ function timeSheetSubmissionStatusCount(timesheetType){
 	                     $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
 	                	/*  $("#rejectedCountAnchor").html("Rejected"); */
 	                  }
+
 		 		}
 		  });
 		 

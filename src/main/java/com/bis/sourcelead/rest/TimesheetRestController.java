@@ -592,7 +592,9 @@ public class TimesheetRestController {
         		if(StringUtils.isNotEmpty(sah.getReopenReason())){
         			 statusMap.put("REOPEN_REASON",sah.getReopenReason());
         		}
-        		 statusMap.put("IS_REOPEN_ACCEPT_REJECT_BUTTON_VISIBLE","true");
+        		statusMap.put("REOPEN_USER_ID",""+sah.getReopenedUser().getId());
+        		statusMap.put("REOPEN_REQUEST_SENT","true");
+        	    statusMap.put("IS_REOPEN_ACCEPT_REJECT_BUTTON_VISIBLE","true");
         	}
         }
         if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
@@ -704,7 +706,8 @@ public class TimesheetRestController {
 		    tsDTO.setReopenRejectedReason(statusMap.get("REOPEN_REJECTED_REASON"));
 		    tsDTO.setReopenButtonVisible(new Boolean(statusMap.get("IS_REOPEN_BUTTON_VISIBLE")));
 		    tsDTO.setReopenRequestSent(new Boolean(statusMap.get("REOPEN_REQUEST_SENT")));
-		    tsDTO.setReopenAcceptRejectButtonVisible(new Boolean("IS_REOPEN_ACCEPT_REJECT_BUTTON_VISIBLE"));
+		    tsDTO.setReopenAcceptRejectButtonVisible(new Boolean(statusMap.get("IS_REOPEN_ACCEPT_REJECT_BUTTON_VISIBLE")));
+		    tsDTO.setReopenUserId(statusMap.get("REOPEN_USER_ID"));
 		    tsDTO.setRejectedReason(statusMap.get("REJECTED_REASON"));
 		    
 		    String approvalStatus = tsDTO.getTimesheetStatus();

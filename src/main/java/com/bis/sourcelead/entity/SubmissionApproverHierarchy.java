@@ -40,7 +40,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
 	

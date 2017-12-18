@@ -24,6 +24,7 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
+		getCustomDependentField();
 	});
 </script>
 <style type="text/css">
@@ -33,7 +34,6 @@
     bottom: -14px;
 }
 </style>
-
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
@@ -47,6 +47,7 @@
           
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
+          <input type="hidden" id="actionId" value="${actionId}">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -270,6 +271,7 @@
 		                </div>
 		                 </div>
                </div>
+               <jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
             </div>
             </div>
                 
@@ -290,6 +292,7 @@
       <!-- Footer Area -->
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
+
 
 
 <script>

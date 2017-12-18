@@ -511,4 +511,16 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId);
 	}
 
+	@Override
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectApproverHierarchyId(Long projectApproverHierarchyId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectApproverHierarchyId(projectApproverHierarchyId);
+	}
+	
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(Long projectApproverHierarchyId,Long submissionId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(projectApproverHierarchyId,submissionId);
+	}
+	
+	
+
 }

@@ -2228,6 +2228,7 @@ margin-bottom:15px !important;
 .timeNewSe.timeNewSe_a {
     width:240px;
 }
+
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
 }
@@ -6683,7 +6684,24 @@ text-shadow: 0 1px 0 #fff;
 .removeNote i {
 	padding: 5px; cursor: pointer; font-size: 16px; display: inline-block;
 }
-
+.cusFieldHeadFixed {
+	position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box; padding: 15px 20px 15px 210px !important;
+}
+.cusFieldHeadFixedAct {
+	padding: 15px 20px 15px 70px !important;
+}
+.immigraTabsWrapFixed {
+	margin: 50px 0px 0px 0px !important;
+}
+.timeNewStatus {
+	float: right; width: 240px;
+}
+.timeNewStatus b {
+	width: 45%;
+}
+.timesheetApproved-status {
+    float: right; width: 320px !important;
+}
 .noRecordFound {
 	border-top: 1px solid #ededed; background-color: #fff; text-align: center; padding: 45px 0px;
 }

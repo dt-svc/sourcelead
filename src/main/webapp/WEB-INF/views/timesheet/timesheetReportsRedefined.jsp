@@ -1,16 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
 <!-- this is for mask -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="/resources/js/formvalidator.js"></script>
-
-
-
 
 <style type ="text/css">
 .timesheet_container {
@@ -85,7 +82,6 @@ $(document).ready(function() {
 	        		    	  $("#reportsDiv").append(result);
 	        		    	  $("#reportsDiv").removeAttr('style');
 	        		    	  prepareChosenScripts();
-	        		    	  $('#pagination-demo').twbsPagination('destroy');
 	        		    	  preparePagination(1);
         		      }
         	    }); 

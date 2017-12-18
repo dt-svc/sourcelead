@@ -1,5 +1,10 @@
 package com.bis.sourcelead.service;
 
-public interface OrglocationFormSubFieldsService {
+import java.util.List;
 
+import com.bis.sourcelead.entity.OrglocationFormSubFields;
+
+public interface OrglocationFormSubFieldsService {
+	
+	List<OrglocationFormSubFields> getOrgCustomSufieldsBySectionId(Long customFieldId);
 }
