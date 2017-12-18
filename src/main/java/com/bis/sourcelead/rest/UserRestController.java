@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -179,6 +180,8 @@ public class UserRestController {
 	
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
+
+	private Org org;
 	
 	/**
 	 * To get All Approvers
@@ -1496,4 +1499,15 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
 		return projectMembersList;
 	}
+	
+	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)
+		public @ResponseBody List<Roles> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
+		  roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+                  return 	rolesList;	   
+		    
+		   
+		} 
 }

@@ -141,10 +141,15 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
+	result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="interviewTemplate();"><i class="fa fa-refresh "></i></span>';
 	result = result + '</div>';
+	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
+	result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	result = result + '</div>';
 	
 	
@@ -893,7 +898,6 @@ $(function(){
 
 <script>
 function interviewTemplate(){
-
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
@@ -901,17 +905,20 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
+	        	output = output + "<option value=''>--select Template--</option>";
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
 	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
-	         	$("#interviewSubmissionTemplate").empty();
-	 	        $("#interviewSubmissionTemplate").append(output);
-	 	       
-	 	        $("#interviewSubmissionTemplate").chosen();
-	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$("#interviewSubmissionTemplate").empty();
+	        	$("#interviewSubmissionTemplate").append(output);
+	        	
+	        	$("#interviewSubmissionTemplate").chosen();
+	    		$("#interviewSubmissionTemplate").trigger("chosen:updated");
+	    		
+	    		
 	 			$('.chosen-container').css({'width': '100% !important'});
 	 			
 	        }else{

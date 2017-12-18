@@ -1341,7 +1341,7 @@ $("#editRoleDetailsList").empty();
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>First name<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
 					result = result + ' </div>';
 					
@@ -1393,15 +1393,15 @@ $("#editRoleDetailsList").empty();
 					} */
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
-						result = result + ' <label>Manager</label>';
-						result = result + '  <select id="reportingManager" name="reportingManager" >'+
+						result = result + ' <label>Manager<span class="text-danger">&nbsp;*</span></label>';
+						result = result + '  <select id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">'+
 			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
