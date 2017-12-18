@@ -7,7 +7,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- <script src="/resources/js/jquery.twbsPagination.js"></script> -->
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
 
@@ -40,7 +39,7 @@
 			
 			<div class="timesheet_appr_table datatable_filter pt5" id="tableDivId">
 					<table id='example'  style='width:100%' >
-						<thead>                                
+						 <thead id="timesheetApprHead">                                
 						    <tr>                               
 						        <th>Employee</th>              
 						        <th>Project</th>               
@@ -51,10 +50,10 @@
 						        <th>Stage</th>                 
 						        <th>Action</th>                
 						    </tr>                              
-						</thead>                               
+						   </thead>                               
 							<tbody id="timesheetApprList">
 								<jsp:include page="timesheetDashboardTableData.jsp" />
-						</tbody>                              
+						   </tbody>                              
 				</table>
 		    </div>
 		<div id= "paginationDiv" class="clearfix">
@@ -115,6 +114,7 @@ function filter(){
 			                     $("#timesheetApprList").append(data); 
 			                     $("#TimeshgeetStatusListIdLoading").empty();
 			                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
+			                     $("#timesheetApprHead").removeAttr('style');
 			                     preparePagination(1);
 			                     
 			                     
@@ -145,11 +145,12 @@ function filter(){
 						    	type: "POST",
 						        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 						        success: function(data) {
-						        	   if(data != null && data != 'undefined' && data != ""){
+						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();
 							                     $("#timesheetApprList").append(data); 
 							                     $("#TimeshgeetStatusListIdLoading").empty();
 							                     $("#TimeshgeetStatusListIdLoading").removeAttr('style');
+							                     $("#timesheetApprHead").removeAttr('style');
 							                     preparePagination(pageNo);
 							                     
 						                 }
@@ -163,31 +164,33 @@ function filter(){
 				  var pageCount = $('#pageCount').val();
 				  var pageSize = $("#pageSize").val();
 				  var searchData = '${timesheetApprovalDTO.searchValue}';
-				  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
-				  $('#paginationDiv').show();
-				  $('#dataTableSearchExpenses123').val('') ;
-				  $('#dataTableSearchExpenses123').val(searchData); 
-				  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
-				  var endingRecord = parseInt(pageNo*pageSize);
-				  if(endingRecord > totalRows){
-					  endingRecord = totalRows;
-				  }
-			    var options = {
-					      currentPage:pageNo,
-					      items: totalRows,
-			              itemsOnPage: pageSize,
-			              ellipsePageSet :false,
-			              cssStyle: 'light-theme',
-			               onPageClick: function (pageNumber, event) {
-			            	   getStatusListData(""+pageNumber+"","");
-			              }
-		      };
-		      $("#pagination-demo").pagination(options);
-			    
-			    var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+			 if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
+					  $('#paginationDiv').show();
+					  $('#dataTableSearchExpenses123').val('') ;
+					  $('#dataTableSearchExpenses123').val(searchData); 
+					  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+					  var endingRecord = parseInt(pageNo*pageSize);
+					  if(endingRecord > totalRows){
+						  endingRecord = totalRows;
+					  }
+				    var options = {
+						      currentPage:pageNo,
+						      items: totalRows,
+				              itemsOnPage: pageSize,
+				              ellipsePageSet :false,
+				              cssStyle: 'light-theme',
+				               onPageClick: function (pageNumber, event) {
+				            	   getStatusListData(""+pageNumber+"","");
+				              }
+			      };
+			      $("#pagination-demo").pagination(options);
+				    
+				    var pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
 			}else{
-				  $("#tableDivId").empty();
-				  $("#tableDivId").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+				  $("#timesheetApprHead").removeAttr('style');
+				  $("#timesheetApprHead").attr('style','display:none;');
+				  $("#timesheetApprList").empty();
+				  $("#timesheetApprList").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
 				  $('#dataTableSearchExpenses123').val('') ;
 				  $('#dataTableSearchExpenses123').val(searchData);
 				  $('#paginationDiv').hide();
