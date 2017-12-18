@@ -395,8 +395,8 @@ public class LeaveServiceImpl implements LeaveService{
 		else {
 			globalVarsMap.put("loginOrg", "--");
 		}
-		if (leaveManagementHistory.getLeaveid().getLeaveType().getName() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getLeaveType().getName())) {
-			globalVarsMap.put("leaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getName());
+		if (leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType())) {
+			globalVarsMap.put("leaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType());
 		}
 		else {
 			globalVarsMap.put("leaveTypeName", "--");

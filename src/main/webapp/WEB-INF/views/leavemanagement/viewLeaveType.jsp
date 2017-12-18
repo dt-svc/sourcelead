@@ -196,7 +196,7 @@ function deleteType(typeId){
 	   });
 	}else{
 		if(reason.length == 0){
-			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
 		}else{
 			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
