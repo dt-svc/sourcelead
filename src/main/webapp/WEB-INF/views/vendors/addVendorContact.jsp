@@ -101,7 +101,7 @@
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
             <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 		</sec:authorize>
           </div>
           </div>
