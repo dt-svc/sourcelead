@@ -17,7 +17,6 @@ import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
@@ -426,6 +425,5 @@ public class CampaignDaoImpl implements CampaignDao {
 		}
 		return createSender;
 	}
-
 
 }

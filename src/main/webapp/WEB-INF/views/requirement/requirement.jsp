@@ -2685,5 +2685,51 @@ function removeReqDoc(requirementId){
 }
 </script>
 
- 
+ <script>
+function refreshRequirementClientList(){
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#addClientId").empty();
+	        	 $("#selectContact").empty();
+	        	 $("#selectContact").trigger("chosen:updated");
+		        $("#addClientId").append(output);
+		        $('#addClientId').trigger("chosen:updated");
+		        
+	        }
+		 });
+	
+}
+</script>
+<script>
+function refreshRequirementClientContactList(){
+var a = document.getElementById('contactRefreshId');
+var valueArray = a.getAttribute('value').split(",");
+	if(valueArray[0] != ""){
+		clientContactList(valueArray[0],valueArray[1]);
+	}
+}
+</script>
+<script>
+	 function selectedClient(){
+		 var a = document.getElementById('contactRefreshId');
+		 var valueArray = a.getAttribute('value').split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
 <jsp:include page="../masterFooter.jsp" />

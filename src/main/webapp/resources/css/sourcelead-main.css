@@ -3602,6 +3602,9 @@ max-height: 150px !important;
 .errorInptgroup p.jquery_form_error_message {
     position: absolute; left: 0; bottom: -16px;
 }
+.errorInptgroup.errorInptgroup-bottom p.jquery_form_error_message {
+	bottom: 0px !important;
+}
 .addconsultant-popup {
     display: none; position:absolute; padding: 15px; left: 15%; width: 70%; z-index: 99999; top: 30%; border-radius: 5px;
 }

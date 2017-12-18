@@ -31,10 +31,10 @@ $(document).ready(function(){
           <li class="dropdown">
             <div class="pull-left select-fild">
                     <select onchange="redirectlocation(this.value);">
-                        <option value="${appPath}/employeeRequestedLeaves" selected>Requested Leaves</option>
-                        <option  value="${appPath}/employeeApprovedLeaves">Approved Leaves</option>
-                        <option value="${appPath}/employeeRejectedLeaves" >Rejected Leaves</option>
-                        <option value="${appPath}/employeeCancelLeaves">Cancelled Leaves</option>
+                        <option value="/employeeRequestedLeaves" selected>Requested Leaves</option>
+                        <option  value="/employeeApprovedLeaves">Approved Leaves</option>
+                        <option value="/employeeRejectedLeaves" >Rejected Leaves</option>
+                        <option value="/employeeCancelLeaves">Cancelled Leaves</option>
                     </select>
             </div>
         </li>
@@ -273,11 +273,8 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 	 var userId = '${SourceLeadWeb_userId}';
 	 if(approveStatus == 'REJECTED'){
 		 var reason = document.getElementById("leaveReasonForDelete").value;
-		 if(reason == null || reason == '' || reason == 'undefined'){
-			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
-		  	 $("#rejectReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-		 } 
 	 }    
+	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
@@ -299,6 +296,10 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 						getRequestedEmployeesList();
 					}
 				});
+ }else{
+	 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
+ 	 $("#rejectReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+  }
 }
 </script>
 
@@ -355,7 +356,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
-			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +'<label class="col-md-2 control-label"><b>Role:</b></label>';
 			 result = result +' <div class="col-md-8">';
 			 if(data.empType != null && data.empType !='' && data.empType !='undefined'){
 				 result = result +'<span>'+data.empType+'</span>';
