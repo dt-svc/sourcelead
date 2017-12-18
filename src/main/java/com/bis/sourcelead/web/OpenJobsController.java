@@ -99,7 +99,11 @@ public class OpenJobsController {
 				modelAndView.addObject("employementType", requirementDeatilsSummary.getJobType().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 			}
 		}
-		if (requirementDeatilsSummary.getIsRequirementRelesedToPublic() != null
+		else {
+			modelAndView.addObject("requirementUUID", "not found");
+		}
+		if (requirementDeatilsSummary != null
+				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != null
 				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != "") {
 			modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
 		}
@@ -107,30 +111,24 @@ public class OpenJobsController {
 		return modelAndView;
 	}
 	
+
 	@RequestMapping(value = "/jobs")
-	public String openRequirementsRedirect(ModelMap modelMap, HttpServletRequest request) throws Exception
+	public String openRequirementsRedirect(ModelMap modelMap, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/null/null/null";
 	}
 	
-/*	@RequestMapping(value = "/jobs/{title}")
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/jobs/{title}")
+	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/" + title + "/null/null";
 	}
 	
 	@RequestMapping(value = "/jobs/{title}/{location}")
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, HttpServletRequest request) throws Exception
+	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
 		return "forward:/jobs/" + title + "/" + location + "/null";
 	}
-	
-	@RequestMapping(value = "/jobs/{title}/{location}/{experience}")
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, HttpServletRequest request) throws Exception
-	{
-		return "forward:/jobs/" + title + "/" + location + "/"+experience;
-	}*/
-	
 	@RequestMapping(value = "/requirementsSummary.html")
 	public String requirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception
 	{
