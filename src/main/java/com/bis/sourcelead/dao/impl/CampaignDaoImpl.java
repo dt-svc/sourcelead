@@ -17,7 +17,6 @@ import com.bis.sourcelead.dao.CampaignDao;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
@@ -392,8 +391,10 @@ public class CampaignDaoImpl implements CampaignDao {
 			}
 		System.out.println(sb.toString());	
 		String listName = sb.toString();
-		listName = listName.substring(0, listName.length() - 1);
-		System.out.println(numberOfRecipients);	
+		if(!"".equalsIgnoreCase(listName)) {
+			listName = listName.substring(0, listName.length() - 1);
+		}
+//		System.out.println(numberOfRecipients);	
 		map.put(listName, numberOfRecipients);
 			
 			
@@ -424,6 +425,5 @@ public class CampaignDaoImpl implements CampaignDao {
 		}
 		return createSender;
 	}
-
 
 }

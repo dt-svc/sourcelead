@@ -112,7 +112,7 @@ public class StaticWebController {
 		return "static-web/home";
 	}
 	
-	@RequestMapping("/index.html")
+	@RequestMapping(value={ "/","/index.html"})
 	public String index(HttpServletRequest request) {
 	    Map<String,String> map =new HashMap();
 	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);

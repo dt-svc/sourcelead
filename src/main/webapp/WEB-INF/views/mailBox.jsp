@@ -683,7 +683,7 @@ function getEmialSettings(){
 function deleteReadMail(uuid,nextMailUUID,type){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 
 	$.ajax({
 		type : "POST",
