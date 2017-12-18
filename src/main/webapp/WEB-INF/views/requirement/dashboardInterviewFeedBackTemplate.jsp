@@ -177,7 +177,7 @@ function saveFeedbackNo(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+			url :"/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 			success : function(data) {
 				$("#cancelFeedbackDiv").hide();
 				viewTemplateNo();
@@ -367,7 +367,7 @@ function saveInterviewTemplate(){
 	      var con = JSON.stringify(fields);
 	      con = encodeURIComponent(con);
 	      
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
 	  	     $.ajax({
 		    	type: "GET",
@@ -440,7 +440,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
   
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url:"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -631,7 +631,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/app/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 

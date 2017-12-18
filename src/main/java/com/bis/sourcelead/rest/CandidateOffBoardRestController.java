@@ -69,6 +69,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class CandidateOffBoardRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -78,6 +79,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
     @Autowired
 	CommonUtil commonUtil;
@@ -608,7 +612,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		/* @RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
+		 /*@RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
 		    public void downloadOffboardDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
 				
 				
@@ -635,7 +639,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					} 
 
-			}  */
+			}*/  
 			
 			
 			@RequestMapping(value = "/deleteOffBoardingDocumentByDocumentUUID" , method = RequestMethod.POST)
@@ -1480,7 +1484,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
 		        
 		         StringBuilder linkBuild = new StringBuilder();
-		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("login").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		        
 		                
 		        

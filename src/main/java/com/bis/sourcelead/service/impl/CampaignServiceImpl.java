@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -114,7 +115,7 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean validateNickName(String nickName, OrgLocations orgLocation,Long senderId) throws Exception
+	public boolean validateNickName(String nickName, OrgLocations orgLocation,String senderId) throws Exception
 	{
 		return campaignDao.validateNickName(nickName, orgLocation,senderId);
 	}
@@ -133,7 +134,7 @@ public class CampaignServiceImpl implements CampaignService{
 				senderDTO.setCpnReplyMail(sender.getReplyTo());
 				senderDTO.setIsSenderEmailVerified(sender.getIsSenderEmaiklVerified());
 				senderDTO.setCpnSenderFromMail(sender.getFromMail());
-				senderDTO.setId(sender.getId());
+				senderDTO.setId(String.valueOf(sender.getId()));
 				createSenderDTOList.add(senderDTO);
 			}
 			if (createSenderDTOList != null && createSenderDTOList.size() > 0) {
@@ -293,7 +294,7 @@ public class CampaignServiceImpl implements CampaignService{
 		List<CreateSenderDTO> list = new ArrayList<>();
 		for (CreateSender sender : senderList) {
 			CreateSenderDTO createSenderDTO = new CreateSenderDTO();
-			createSenderDTO.setId(sender.getId());
+			createSenderDTO.setId(String.valueOf(sender.getId()));
 			createSenderDTO.setCpnNickName(sender.getNickName());
 			createSenderDTO.setCpnSenderName(sender.getFromName());
 			createSenderDTO.setCpnSenderFromMail(sender.getFromMail());
@@ -312,11 +313,11 @@ public class CampaignServiceImpl implements CampaignService{
 		List<CampaignListDTO>  campaignListDtoList = new ArrayList<>();
 		for(CampaignList  campaignList : cpnList) {
 			CampaignListDTO campaignListdto = new CampaignListDTO();
-			campaignListdto.setId(campaignList.getId());
+			campaignListdto.setId(String.valueOf(campaignList.getId()));
 			campaignListdto.setListId(campaignList.getListId());
 			campaignListdto.setListName(campaignList.getListName());
 			if(campaignList.getCampaignRecipient() !=null) {
-				campaignListdto.setListCount(campaignList.getCampaignRecipient().size());
+				campaignListdto.setListCount(String.valueOf(campaignList.getCampaignRecipient().size()));
 				
 				List<String> emailList = new ArrayList<>();
 				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0){
@@ -387,8 +388,16 @@ public class CampaignServiceImpl implements CampaignService{
 		
 		if(campStats.getData() !=null && campStats.getData().size() >0) {
 			for (CampaignStats campaignStats : campStats.getData()) {
+				Map<String,Integer> map = campaignDao.getCampaignListName(campaignStats.getCampaignId());
 				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
 				campaignStatsListDTO.setId(campaignStats.getId());
+				for (Map.Entry<String, Integer> entry : map.entrySet()) {
+					campaignStatsListDTO.setListName(entry.getKey());
+					campaignStatsListDTO.setNumberOfRecipients(entry.getValue());
+					String key = entry.getKey();
+				    Object value = entry.getValue();
+				    // you code here
+				}
 				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
 				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
 				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
@@ -500,6 +509,17 @@ public class CampaignServiceImpl implements CampaignService{
 			}
 		}
 		return isValid;
+	}
+
+	@Override
+	public boolean validateFromMail(String email, String toWhom,String id) throws Exception
+	{
+		boolean isDuplicate = false;
+		CreateSender createSender = campaignDao.validateFromMail(email,toWhom,id);
+		if(createSender !=null) {
+			isDuplicate = true;
+		}
+		return isDuplicate;
 	}
 
 }

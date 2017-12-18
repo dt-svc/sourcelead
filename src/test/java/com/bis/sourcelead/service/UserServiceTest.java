@@ -86,6 +86,7 @@ public class UserServiceTest {
 
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
@@ -142,6 +143,7 @@ public class UserServiceTest {
 		user.setId(1l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
@@ -206,6 +208,7 @@ public class UserServiceTest {
 //		user.setId(10l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");

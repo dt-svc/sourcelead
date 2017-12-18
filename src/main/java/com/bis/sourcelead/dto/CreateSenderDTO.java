@@ -1,15 +1,15 @@
 package com.bis.sourcelead.dto;
 
 public class CreateSenderDTO {
-	private long id;
+	private String id;
 	private String senderId;
-	private long orgLocationId;
+	private String orgLocationId;
 	private String cpnSenderName;
 	private String cpnSenderFromMail;
 	private String cpnReplyMail;
 	private String cpnNickName;
 	private String isSenderEmailVerified;
-	private int status;
+	private String status;
 	private String city;
 	private String zipCode;
 	private String country;
@@ -21,17 +21,16 @@ public class CreateSenderDTO {
 	private String updatedDate;
 	
 	
-	public long getId()
+	public String getId()
 	{
 		return id;
 	}
 
-	public void setId(long id)
+	public void setId(String id)
 	{
 		this.id = id;
 	}
 
-	
 	public String getSenderId()
 	{
 		return senderId;
@@ -42,16 +41,17 @@ public class CreateSenderDTO {
 		this.senderId = senderId;
 	}
 
-	public long getOrgLocationId()
+	
+	public String getOrgLocationId()
 	{
 		return orgLocationId;
 	}
-	
-	public void setOrgLocationId(long orgLocationId)
+
+	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
 	}
-	
+
 	public String getCpnSenderName()
 	{
 		return cpnSenderName;
@@ -92,16 +92,17 @@ public class CreateSenderDTO {
 		this.cpnNickName = cpnNickName;
 	}
 	
-	public int getStatus()
+	
+	public String getStatus()
 	{
 		return status;
 	}
-	
-	public void setStatus(int status)
+
+	public void setStatus(String status)
 	{
 		this.status = status;
 	}
-	
+
 	public String getCity()
 	{
 		return city;

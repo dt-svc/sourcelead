@@ -20,6 +20,7 @@ right: 15px;
 <script type="text/javascript">
 window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
+	getBusinessTypeValue();
 	getAllCountries();
 	colourpicker();
 	orgShortCode();
@@ -28,7 +29,7 @@ window.onload = function () {
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -143,11 +144,12 @@ function cancelOrgImg(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <div id="loading"></div> 
+      <div id="loading"></div>
+      <div id="popUp"></div>  
       <div id="signatureLoading"></div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
@@ -156,9 +158,17 @@ function cancelOrgImg(){
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
-        
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
+        <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
+
+        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
+        </c:if>
+
       </ul>
       <!-- Tab Pills navbar -->
       <div class="tab-content">
@@ -204,6 +214,7 @@ function cancelOrgImg(){
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
+							
 							 
 							<div class="form-group">
 								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
@@ -260,7 +271,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group">
+						<div class="form-group">
 							<label class="col-md-3">Date Format</label>
 							<div class="col-md-9">
 							
@@ -273,11 +284,42 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group mt">
+							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+							</div>
+						</div>
+						
+						<div class="form-group mt">
+							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							</div>
+						</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
 					<div class="col-md-5">
+							
 						<div class="form-group">
+							<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+								 <div class="col-md-10 noPad">
+				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
+				                </div>
+				                <div class="col-md-2 dbaCheck dbaCheck-cs">
+				                     
+				                   <div class="ml10">
+						              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
+						              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
+				          			</div>
+				                </div>
+							</div>
+						</div>
+							
+							<div class="form-group">
 							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="websiteDiv">
 							<c:if test="${SourceLeadWeb_website == null}">
@@ -290,6 +332,7 @@ function cancelOrgImg(){
 							
 							</div>
 							</div>
+							
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
@@ -303,7 +346,43 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						<div class="form-group comp-textarea">
+						
+						<div class="form-group mt">
+							<label class="col-md-3">Business type<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+									<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
+									<option value="">--Select Business type--</option>
+									<c:forEach var="bt" items="${bussinessTypesList}">
+								      <c:choose>
+						                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
+						                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
+						                      </c:when>
+						                      <c:otherwise>
+						                         <option value="${bt.id}">${bt.name}</option>
+						                      </c:otherwise>
+						              </c:choose>
+					                </c:forEach>  
+					                
+					                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
+										<option value="Other" selected="selected">Other</option>
+									</c:if>
+									
+								  <c:if test="${empty SourceLeadWeb_orgLocations.otherBusinessType}">
+										<option value="Other">Other</option>
+									</c:if>
+									
+								  </select>
+							</div>
+						</div>
+						
+						<div class="form-group mt" id="otherBusinessTypeDiv" style="display: none;">
+							<label class="col-md-3">Other Business type<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							</div>
+						</div>
+						
+						<div class="form-group comp-textarea mt">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
@@ -317,7 +396,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
 					</div>
 					</div>
 					</div>
@@ -372,7 +451,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="SignatureHeading">Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i></h4>
+                                    <h4 id="SignatureHeading">Create Default Signature</h4>
                                     <div id="signLoading"></div>
                                     <div id="restorePopUp"></div>
                                 </div>
@@ -417,13 +496,69 @@ function cancelOrgImg(){
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
                 			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
-            			</div>            			
+            			</div> 
+            			
+            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	                           <div class="clearfix mb">
+	                               <div class="pull-left">
+	                                   <h4>Login Security</h4>
+	                               </div>
+	                           </div>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-7 toggle-button">
+			                      <label class="switch">
+			                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+			                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+			                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+			                      </c:if>
+			                      <div class="slider round"></div>
+			                      </label>
+	                   			</div>
+	               			</div>         
+	           			</div> 
+           			</c:if>
+           			           			
         			</div>
     			</div>
-    
+    			
+    			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    <div class="accountsettings-tab">
+                        <div class="tab-content panel-body">
+                        <div id="whiteListLoading"></div>
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="whiteListHeading">Whitelist Ips</h4>
+                                </div>
+                                <div class="pull-right">
+                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
+                                </div>
+                             </div>
+                            
+                            <div class="tableStyles datatable_filter mt40">
+                				<div id="whiteListIpsDiv"></div>   
+                			</div>
+                			
+                			</div>         
+            			</div>
+            			
+        			</div>
+        			
+   			 <jsp:include page="federalAndStateTaxes.jsp" />
+     		 <jsp:include page="orglocationBankingDetails.jsp" />
+     		 <jsp:include page="orglocationDocuments.jsp" />
+     		 <jsp:include page="orglocationSignatory.jsp" />
+     		 
+    			</div>
+     		
   	</div>
   </div>
-		</div>
+  
+
 		
 		
 			<!-- Tab for Profile setting-area ends -->
@@ -432,11 +567,193 @@ function cancelOrgImg(){
   <!-- Content Area Ends-->
 
 </body>
+<<div class="comMask"></div>
+<!-- Add IP Modal -->
+  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add IP</h4>
+        </div>
+        <div class="modal-body">
+        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+        <input type="hidden" name="id" id="whiteListId"/>
+         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
+           <label class="col-md-3">From IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           </div>
+           </div>
+           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
+           <label class="col-md-3">To IP</label>
+           <div class="col-md-9">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           </div>
+           </div>
+        
+        </form:form>
+          
+        </div>
+        <div class="clearfix"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add IP Modal -->
 
 <script>
 $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
+</script>
+
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateLoginSecurity?security="+security+"&locationId="+locationId,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+	
+}
+</script>
+
+<script>
+function saveWhiteListIps(){
+	var fromIpAddress = $("#fromIpAddress").val();
+	var toIpAddress = $("#toIpAddress").val();
+	var whiteListId = $("#whiteListId").val();
+	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
+		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$.ajax({
+			      type : "GET",
+			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
+			       success :function(data) {
+			       if(data == "Success"){
+			    	   $("#fromIpAddress").val("");
+			    	   $("#toIpAddress").val("");
+			    	   $(".modal.addipPopup-modal").fadeOut();
+			    	   $(".comMask").fadeOut();
+			    	   getWhiteListIps();
+			       	} 
+			      },
+			  }); 
+		
+	}else{
+		if(fromIpAddress == null || fromIpAddress == '' || fromIpAddress =='undefined'){
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>From IP Address is required</span>");
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("fromIpAddress").setAttribute( 'record-exist-errorMsg',"From IP Address is required");
+		}
+		if(toIpAddress == null || toIpAddress == '' || toIpAddress =='undefined'){
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			$("input#toIpAddress").after( "<p class='jquery_form_error_message'>To IP Address is required</span>");
+			document.getElementById("toIpAddress").setAttribute( 'record-exist', 'yes');
+			document.getElementById("toIpAddress").setAttribute( 'record-exist-errorMsg',"To IP Address is required");
+		}
+	}
+}
+</script>
+
+<script>
+function getWhiteListIps(){
+	$.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getWhiteListIps",        
+       success :function(data) {
+    	   var result = '';
+    		 	result = result +  '<table id="WhiteListIpTable" class="display" cellspacing="0" width="100%" >';
+    			result = result + '	<thead>';
+    			result = result + '   <tr>';
+    			result = result + '    <th>From Ip</th>';
+    			result = result + '    <th>To Ip</th>';
+    			result = result + '    <th>Action</th>';
+    			result = result + '   </tr>';
+    			result = result + '	</thead>';
+    			result = result + '	<tbody>';
+    		if(data.length > 0){
+    			    for (var i = 0; i < data.length; i++) {
+    			    	var report= data[i];
+    			    	result = result + '<tr>';
+    			    	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.fromIpAddress+'</div>';
+    		        	result = result + '</td>';
+    		        	result = result + '<td>';
+    		           	result = result + '<div class="tblminwidth-75">'+report.toIpAddress+'</div>';
+    		        	result = result + '</td>';	 
+    		        	result = result + '<td>';
+    		        	result = result +'     <div class="tblminwidth-50">                                                                                            ';
+    		        	result = result +'          <span title="Edit" class="paddingRight"><a onclick="editWhiteListIp('+report.id+');"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+    		        	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteWhiteListIp(\''+report.id+'\');"></i></span>              ';
+    		        	result = result +'      </div> ';
+    		        	result = result + '</td>';
+    			        result = result + '</tr>';
+    			    }
+    				
+    		}
+    		result = result + '	</tbody>';
+    		result = result + '</table>';
+    		$("#whiteListIpsDiv").empty();
+    		$("#whiteListIpsDiv").append(result);
+    		WhiteListIpTablePagination();
+       	} 
+      }); 
+}
+
+
+function WhiteListIpTablePagination(){
+	$('#WhiteListIpTable').DataTable({ 
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+}
+</script>
+
+<script>
+function editWhiteListIp(id){
+	$.ajax({
+	    type: "GET",
+        url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
+        success: function(data) {
+        	$(".modal.addipPopup-modal").fadeIn();
+        	$(".comMask").fadeIn();
+        	if(data.id != null && data.id != '' && data.id != 'undefined'){
+        		$("#whiteListId").val(data.id);
+        	}
+        	if(data.fromIpAddress != null && data.fromIpAddress != '' && data.fromIpAddress != 'undefined'){
+        		$("#fromIpAddress").val(data.fromIpAddress);
+        	}
+			if(data.toIpAddress != null && data.toIpAddress != '' && data.toIpAddress != 'undefined'){
+				$("#toIpAddress").val(data.toIpAddress);
+        	}
+        	
+        }
+	});
+}
 </script>
 
 <script type="text/javascript">
@@ -512,7 +829,7 @@ var validationSettings = {
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -638,13 +955,13 @@ function configCoolingOff(){
 function loadSignature(){
 	
 	$("#campaignSignatrue").empty(); 
-	$("#SignatureHeading").html("Create Default Signature <i class='fa fa-info-circle' title='Configure deafult signature for all employees in the organisation'></i>");
+	$("#SignatureHeading").html("Create Default Signature");
 	document.getElementById("reset").style.display="";
 	document.getElementById("settings").style.display="none";
 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -960,7 +1277,7 @@ var validationSettings = {
   			var con = JSON.stringify(frm);
   			con = con.replace(/[{}]/g, ""); 
   		    var jsonData = encodeURIComponent(con);
-  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		
   		     $.ajax({
   				type : "POST",
@@ -996,7 +1313,7 @@ var validationSettings = {
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
         		    var jsonData = encodeURIComponent(con);
-        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           		
         		     $.ajax({
         				type : "POST",
@@ -1070,7 +1387,7 @@ function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
 			type : "POST",
@@ -1102,7 +1419,7 @@ function loadRegisteredOrgs(){
      
      
      var sourceleadUrl = '${sourceleadUrl}';
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      
      $.ajax({ 
 	    	type: "POST",
@@ -1189,7 +1506,7 @@ function getOrgLocationDetails(orgLocationId){
     document.getElementById("orgsList").style.display=""; 
     
     var sourceleadUrl = '${sourceleadUrl}';
-    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
      $.ajax({ 
     	type: "POST",
@@ -1412,7 +1729,7 @@ function getOrgLocationDetails(orgLocationId){
 			});
 			 
 	 	 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
@@ -1435,7 +1752,7 @@ function getOrgLocationDetails(orgLocationId){
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId,  
@@ -1485,7 +1802,7 @@ function createOrg(){
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />';
+	            result = result +'<input type="text" name="email" id="companyEmail"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />';
 	            result = result +'<span class="hidden">Email</span>';
 	            result = result +'</div>';
 	            result = result +' </div>';
@@ -1712,7 +2029,7 @@ function getLocationStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationState').empty();
@@ -1748,7 +2065,7 @@ function getLocationCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationCity').empty();
@@ -1876,7 +2193,7 @@ function validateOrgLocationWebsite (){
 		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1923,7 +2240,7 @@ function validateWebsite (){
 		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1959,32 +2276,32 @@ function validateWebsite (){
 <script type="text/javascript">
 function validateCompanyEmail(){
     var websiteValue = document.getElementById("companyWebsite").value;
-    var emailValue = document.getElementById("email").value;
+    var emailValue = document.getElementById("companyEmail").value;
     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
     var sourceleadUrl ='${sourceleadUrl}';
 		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       url: sourceleadUrl+"/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid Email'){
 					    	    //Invalid Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
 					    	   //Existed Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
@@ -1994,7 +2311,7 @@ function validateCompanyEmail(){
 				       		$("#register_button").removeAttr("disabled");
 				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
-							$('input#email').attr('class','valid form-control');
+							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
 							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
@@ -2013,7 +2330,7 @@ function validateCompanyEmail(){
 
 <script type="text/javascript">
 function getUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("companyEmail").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(email){
 		$.ajax({
@@ -2174,7 +2491,7 @@ function validatePrimaryUserEmail(){
          var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
          
-         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
@@ -2231,7 +2548,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -2274,6 +2591,81 @@ function cancelBtn(){
 	  location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
 }
 
+</script>
+
+
+<script>
+function validateOrgShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgShortId = $("#generatedUserId").val();
+	$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#saveOrgConfiguration").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#saveOrgConfiguration").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+$(function(){
+	$("#generatedUserId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+$(function() {
+	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+$(function(){
+    $("#averageWorkingHours").keyup(function(event){
+        var ew = $("#averageWorkingHours").val();
+        $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+        if(ew > 24){
+        	$("#averageWorkingHours").val('');
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        }
+    });
+});
+
+</script>
+
+
+<script>
+function getDBAName(){
+	 if (document.getElementById('dbaCheckbox').checked) {
+		 var companyName = document.getElementById("orgLocationCompanyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dba").val(companyName); 
+		 }
+     }else{
+    	 $("#dba").val('');
+     } 
+}
+</script>
+
+<script>
+function getBusinessTypeValue(){
+ 	var businessType = document.getElementById("businessType").value;
+	
+	if(businessType && businessType == 'Other'){
+		 document.getElementById("otherBusinessTypeDiv").style.display="";
+		 $("#otherBusinessType").removeAttr("data-validation-optional");
+		 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+	}else{
+		    document.getElementById("otherBusinessTypeDiv").style.display="none";
+			$("#otherBusinessType").removeAttr("data-validation-optional");
+			 $("#otherBusinessType").attr("data-validation-optional","true");
+			 $("#otherBusinessType").removeAttr("data-validation");
+			 $("#otherBusinessType").attr("data-validation","required validate_Space validate_AlphaNumber validate_length length1-100");
+		} 
+}
 </script>
 
 
@@ -2415,7 +2807,93 @@ function addOrgRefreshGoogleApiLocation(){
 	$("#orgSetZipCode").val('');
 }
 </script>
+
+<script>
+function addipPopup(){
+	$('#fromIpAddressDiv').val("");
+	$('#toIpAddressDiv').val("");
+	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+	$(".modal.addipPopup-modal").fadeIn();
+	$(".comMask").fadeIn();
+}
+$(function(){
+$(".close").click(function(){
+	$(".modal.addipPopup-modal").fadeOut();
+	$(".comMask").fadeOut();
+});
+})
+</script>
+
+<script>
+function ValidateIPaddress()  
+	{
+		var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;  
+		var fromIpAdd = $("#fromIpAddress").val();
+		var toIpAdd = $("#toIpAddress").val();
+		if(fromIpAdd != '' && fromIpAdd != null && fromIpAdd != 'undefined'){
+			if(!fromIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+				document.getElementById("saveWhiteListbtn").disabled = false;
+			}
+		}
+		
+		if(toIpAdd != '' && toIpAdd != null && toIpAdd != 'undefined'){
+			if(!toIpAdd.match(ipformat))  
+			{
+				document.getElementById("saveWhiteListbtn").disabled = true;
+			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>You have entered an invalid IP address!</span>");
+			}else{
+				document.getElementById("saveWhiteListbtn").disabled = false;
+
+				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+			}
+		}
+		
+	}  
+</script>
+
+
+<script>
+function deleteWhiteListIp(whiteListIpId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function deleteIP(id){
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 getWhiteListIps()
+		   		    }
+			     });
+}
+
+</script>
+
 <jsp:include page="masterFooter.jsp" />
+
 </html>
 
 

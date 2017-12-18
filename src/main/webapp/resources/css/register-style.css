@@ -280,3 +280,55 @@ left:12px
 }
 
 
+.otp_wrap {
+    width:430px; margin:7% auto 0px; display:block;  z-index:100; position:relative; border-radius:5px;
+    background-color:#fff; box-shadow:0px 0px 5px rgba(0,0,0,0.2); text-align: center; padding: 25px 30px 35px 30px;
+    }
+.otp_wrap img {
+    width: 320px; margin: 0px auto; display: block;
+}
+.otp_wrap h2 {
+    font-size: 18px; font-weight: 500; color: #2d3447; margin: 0px 0px; padding: 5px 0px 5px 0px;
+}
+.otp_wrap p {
+    font-size: 13px; font-weight: 400; color: #898989; margin: 0px 0px; padding:2px 0px 7px 0px;
+}
+.otpfeild {
+    width: 200px; padding:7px 15px; border-radius: 3px; border: 1px solid #ccc; font-size: 14px;
+    font-weight: 500; color: #333;
+}
+.otpfeild:focus {
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+}
+.otp_wrap button {
+    width: 100px; padding:7px 15px; border-radius: 3px; border: 1px solid #20874d; font-size: 14px;
+    font-weight: 500; color: #fff; background-color: #309e60;
+}
+.otp_wrap button:hover {
+    background-color: #20874d;
+}
+.otpMail {
+    width: 95%; margin: 5px auto 15px; border: 1px solid #f1f1f1; border-radius: 2px; padding: 10px 15px;
+}
+.otpMail input {
+    margin: 0px 0px; padding: 0px; float: left; position: relative; top: 3px; background-color: #ff6600;
+}
+.otpMail span {
+    display: block; text-align: left; padding: 5px 0px;
+}
+.otpMail span label {
+    width: 270px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0px 0px;
+    padding: 0px 0px 0px 10px; float: left;
+}
+.otp_wrap a {
+    display: inline-block; padding: 5px 5px; color: #197ad4;
+}
+.otpTime {
+    width: 40px !important; padding:0px !important; border-radius: 3px; border:none !important; position: static !important;
+    font-weight: 400 !important; color: #309e60 !important; text-align: center; float: none !important;
+    background-color: transparent !important; cursor: pointer;
+}
+.resendBtn {
+    width: inherit !important; color: #309e60 !important; background-color: #fff !important; padding:2px 10px !important;
+    border: none !important; float: right;
+}

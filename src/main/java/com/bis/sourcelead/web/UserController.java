@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @Controller
+@RequestMapping("/app")
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -65,6 +68,9 @@ public class UserController {
 	
 	@Autowired
     CountriesService countriesService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	
 	/**
@@ -126,16 +132,23 @@ public class UserController {
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			}
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+		   
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		    model.addObject("documentsList", documentsList);
+		    
 			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
                
 				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 				model.addObject("org_projectsList", projectsList);*/
-				
+				Candidate candidate = null;
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+					candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
 					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId());
 					
 					model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
@@ -145,7 +158,7 @@ public class UserController {
 					model.addObject("assignedProjectsCount", assignedProjectsCount);
 				}
 				
-				
+				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
 				request.setAttribute("userId", userId);
 				model.setViewName("users/userSummary");
 			}else{

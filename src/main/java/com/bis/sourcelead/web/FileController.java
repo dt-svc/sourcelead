@@ -46,6 +46,7 @@ import com.bis.sourcelead.util.SourceleadResumeParser;
 
 
 @Controller
+@RequestMapping("/app")
 public class FileController {
 
 	@Value("${static.path}")

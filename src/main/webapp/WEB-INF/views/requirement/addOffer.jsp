@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
 <script>
 		$(document).ready(function() {
@@ -19,6 +19,7 @@
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
+	 $(".clearUpload").hide();
 	$('.action-pop').slideUp();
 	var clientSubmissions = '${clientSubmissions}';
 	
@@ -100,7 +101,17 @@ function addOffer(requirementId){
 				$("body").css('overflow-y', 'hidden');
 				
 				addOfferRow();
-    
+				
+				
+				$(".clearUpload").click(function(){
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+					$(".clearUpload").hide();
+					document.getElementById("OfferAttachmentuploadFile").value("");
+				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				        
+				});
+				
 	        },
 	    });
 	 
@@ -203,6 +214,7 @@ function selectOfferApplicants(){
           <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
+		<div class="clearUpload"></div>
      </div>                 
 </div>
 
@@ -410,7 +422,7 @@ function validateRateAndRateType(){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
   		
-  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 	    	type: "POST",
  	    	data: formData,
@@ -694,6 +706,7 @@ function otherJobType(id){
 
 <<script type="text/javascript">
 $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
+	 $(".clearUpload").show();
 	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
 	 $("#OfferAttachmentuploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -713,5 +726,6 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 	 }
 });
 </script>
+
   
 <jsp:include page="../masterFooter.jsp" />

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -59,7 +59,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Bill List
 		</div>
 	</section>
@@ -265,11 +265,11 @@ $(document).ready(function(){
 				onClick="closeCandidate()">&times;</a>
 			<div class="col-md-4 mt25">
 				<div class="small-widget bgGreen">
-					<a href="<c:url value='/createPayables'/>"
+					<a href="<c:url value='${appPath}/createPayables'/>"
 						title="Create Vendor Based Bill">
 
 						<div class="clearfix mb10">
-							<img src="resources/images/invoice_icon.png" class="text-center"
+							<img src="/resources/images/invoice_icon.png" class="text-center"
 								alt="create_receivables">
 						</div> <strong class="clearfix">Vendor Based</strong>
 					</a>
@@ -278,11 +278,11 @@ $(document).ready(function(){
 
 			<div class="col-md-4 mt25">
 				<div class="small-widget bg-yellow">
-					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
+					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>"
 						title="Create Project Based Bill">
 						<div class="clearfix mb10">
 							<!--<i class="fa fa-usd fa-3x"></i>-->
-							<img src="resources/images/invoice_icon.png" class="text-center"
+							<img src="/resources/images/invoice_icon.png" class="text-center"
 								alt="Invoice">
 						</div> <strong class="clearfix">Project Based </strong>
 					</a>
@@ -291,10 +291,10 @@ $(document).ready(function(){
 
 			 <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create Other Bill">
+		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
-		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		             <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
@@ -678,7 +678,7 @@ function payablePagination(url){
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 						'</sec:authorize>';
 					}
 					
@@ -892,7 +892,7 @@ function payablePagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#payableListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -1573,7 +1573,7 @@ function cancelExport(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
