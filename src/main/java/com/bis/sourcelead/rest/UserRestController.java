@@ -1039,7 +1039,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
+		 @RequestMapping(value = "/app/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 

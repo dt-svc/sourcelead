@@ -639,7 +639,7 @@ public class ContractController {
           sos.close();
 	}
 
-	@RequestMapping(value = "/docusign")
+	@RequestMapping(value = {"/docusign","/ws/docusign"})
 	public ModelAndView docusignRedirect(@RequestParam(value="contractUUID", required=false)String contractUUID) throws Exception {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);

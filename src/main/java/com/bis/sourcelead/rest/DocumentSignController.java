@@ -84,7 +84,7 @@ public class DocumentSignController {
 		 fileName = contract.getContractsTemplate().getTemplateName();
 		}
 		
-		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(orgLocations.getId()),String.valueOf(org.getId()),true);
+		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(contract.getContractOrgLocationId().getId()),String.valueOf(contract.getContractOrgLocationId().getOrg().getId()),true);
 		logger.info("folder creation path in our local system : "+userData);
 		userInfo.setFileName(fileName);
 		userInfo.setFileURL(userData);
