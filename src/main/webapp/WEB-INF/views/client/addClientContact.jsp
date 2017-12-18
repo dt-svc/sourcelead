@@ -155,7 +155,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
@@ -164,8 +164,7 @@ function getOrgDetails()
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span>
-            <i class='fa fa-info-circle' title='Select the client with whom already relationship build,So added contacts will be added to that client'></i></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
@@ -286,7 +285,7 @@ function getOrgDetails()
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -314,7 +313,7 @@ function getOrgDetails()
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
 					location.replace(sourceleadUrl+ "/clientDashboard");
 				});
@@ -447,7 +446,7 @@ function validateClientName(){
 	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -589,7 +588,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(vendorName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 

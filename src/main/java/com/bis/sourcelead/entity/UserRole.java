@@ -22,8 +22,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author bis113
@@ -117,6 +119,9 @@ public class UserRole implements Serializable {
 	
     @Column(name = "EXTENSION_NUMBER")
 	private String extensionNumber;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 
 	@Transient
 	private String userRoleName;
@@ -203,9 +208,11 @@ public class UserRole implements Serializable {
 	List<User> projectApproversList;
 
 	@Transient
+	@JsonProperty
 	private String userEmail;
 
 	@Transient
+	@JsonProperty
 	private String mobilePhone;
 	
 	@Transient
@@ -248,6 +255,7 @@ public class UserRole implements Serializable {
 
 
 	@Transient
+	@JsonProperty
 	private Long userId;
 
 	@Transient
@@ -846,5 +854,15 @@ public class UserRole implements Serializable {
 	{
 		this.extensionNumber = extensionNumber;
 	}
-	
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+
 }

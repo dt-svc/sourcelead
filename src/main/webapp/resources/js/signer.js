@@ -34,20 +34,15 @@ var Signer = (function() {
     }
     
     let uploadDone = function(pages, userId){
-    	$.ajax({
-    	    url: userId + "-"+pages+".png?"+genran(),
-    	    type: "HEAD",
-    	    error: function () {
-    	    	console.log("no image"); 
-    	    	window.setTimeout(()=>{
-    	    		uploadDone(pages, userId);
-    	    	},1000);
-    	    },success: function () {
-    	    	console.log("has image");
-    	    	$('.sign-container,.signActions').show();
-                loadPages(pages, userId);
-	    	}
-    	});
+    	initializeDrager();
+        $('#signerType').show();
+        $('.signContainer,.signActions').show();
+        $('.askUserDetails,.addRecipients').hide();
+        $('#btnAddSignature,#btnAddInitial,#btnSendToRecip').show();
+        
+        window.setTimeout(function() {
+        loadPages(pages, userId);
+        }, 10000);
     }
     
     function genran() {
@@ -70,12 +65,10 @@ var Signer = (function() {
     //Get stored coordinates
     let getCoordinatesData = function(sign) {
         let userId = localStorage.getItem('userId');
-        let DirName = localStorage.getItem('DirName');
         let data = {
             "signatures": [],
             "initials": [],
             "userId": userId,
-            "docId": DirName,
             "signatureWidth": 100,
             "signatureHeight": 50,
             "initialsWidth": 200,
@@ -185,25 +178,6 @@ var Signer = (function() {
         return false;
     }
 
-    //Check if user signature already added
-    let checkIfSignatureExist = function(userId) {
-        $.ajax({
-            url: '../' + userId + '/signatureInfo.json?' + getBurst(),
-            data: '',
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function(data) {
-                $('#addSign,#backShadow').hide();
-                localStorage.setItem('fontStyle', data.fontId);
-                localStorage.setItem('signature', data.signatureText);
-                localStorage.setItem('initial', data.initialText);
-            },
-            error: function(data) {
-                $('#addSign,#backShadow').show();
-            }
-        });
-    }
-
     //Save coordinates
     let saveCoordinates = function() {
         $.ajax({
@@ -266,76 +240,6 @@ var Signer = (function() {
        
     }
 
-    //Get coordinates from API
-    let getCoordinates = function() {
-        let userId = localStorage.getItem('userId');
-        let pages = localStorage.getItem('pages');
-
-        //if (!coordinates || isRecipient) {
-        checkIfSignatureExist(userId);
-        return $.get("../" + userId + '/signatureCoordinates.json?burst=' + getBurst(), function(data) {
-            window.setTimeout(function() {
-                Signer.loadAllPlaceholders(data);
-            }, 100);
-        }).fail(function() {
-        	 window.setTimeout(function() {
-        		 loadPages(pages, userId);
-             }, 10000);
-        });
-    }
-
-
-
-    //Load all placeholders on the pdf
-    let loadAllPlaceholders = function(data) {
-        let signaturesPH = data.signatures;
-        let initialsPH = data.initials;
-        let sLen = signaturesPH.length;
-        let iLen = initialsPH.length;
-        let placeholderHtml = '';
-        let isRecipient = (localStorage.getItem('recipient'));
-        let closeLink = '<a class="delete-sign"></a>';
-        if (isRecipient) {
-            closeLink = '';
-        }
-        let scrollTop = $('#pdf-preview').scrollTop();
-        let hasFlag = false;
-        for (let i = 0; i < sLen; i++) {
-            let pageIndex = signaturesPH[i].pageNumber;
-            let top = ((signaturesPH[i].y * 4) / 3);
-            let left = (signaturesPH[i].x * 4) / 3;
-            top = top + (Signer.getPageSettings().pdfPageHeight * (pageIndex - 1));
-            placeholderHtml += '<div id="signature-' + i + '" class="sign-signature signature" style="top:' + (top + scrollTop - signOffset) + 'px;left: ' + left + 'px;"><a class="signLabel">Sign</a>' + closeLink + '</div>'
-            hasFlag = true;
-        }
-        for (let i = 0; i < iLen; i++) {
-            let pageIndex = initialsPH[i].pageNumber;
-            let top = ((initialsPH[i].y) * 4) / 3;
-            let left = (initialsPH[i].x * 4) / 3;
-            top = top + (Signer.getPageSettings().pdfPageHeight * (pageIndex - 1));
-            placeholderHtml += '<div id="initial-' + i + '" class="sign-initial signature" style="top:' + (top + scrollTop - signOffset) + 'px;left: ' + left + 'px;"><a class="signLabel">Initial</a>' + closeLink + '</div>'
-            hasFlag = true;
-        }
-        if (hasFlag) {
-            $('#btnSendToRecip').removeClass('disabled');
-        } else {
-            $('#btnSendToRecip').addClass('disabled');
-        }
-        let userId = localStorage.getItem('userId');
-        let pages = localStorage.getItem('pages');
-        loadPages(pages, userId);
-        window.setTimeout(() => {
-            $('#pdf-preview').prepend(placeholderHtml);
-            let isRecipient = (localStorage.getItem('recipient'));
-            if (!isRecipient) {
-                $('.sign-container').find(".sign-signature").drags();
-                $('.sign-container').find(".sign-initial").drags();
-            }
-            attachEvents();
-            validateSignCount();
-        }, 500);
-
-    }
 
     let attachEvents = function() {
         $('.signature').off('click').on('click', function() {
@@ -455,7 +359,6 @@ var Signer = (function() {
     let validateSignCount = function() {
         let signedCount = $('.insertSignImg').length;
         let totalSignatureCount = $('.signature').length;
-        $('#signCountStatus').html(signedCount + ' of ' + totalSignatureCount + ' Signed');
         $('#btnSignDoc').addClass('disabled');
         if (signedCount === totalSignatureCount) {
             $('#btnSignNext').hide();
@@ -526,7 +429,6 @@ var Signer = (function() {
             'signatures': data.signatures,
             'initials': data.initials,
             'userId': userId,
-//            'docId': docId,
             'fontId': fontStyle,
             "signatureWidth": 65,
             "signatureHeight": 24,
@@ -560,18 +462,30 @@ var Signer = (function() {
               dataType: "json",
     	       url: sourceleadUrl+"/signDocument?&contractId="+contractId,       
     	       success: function(data) {
-                   console.log(data);
-                   alert('Document successfully signed.');
-                   location.replace(sourceleadUrl+"/contractListbyStatus");
+               	var result = "";
+            	result = result +"	<div class='project_inn_mask'></div>"; 
+            	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+            	result = result +"		<p >Document successfully signed..</p>";
+            	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="successHidePopuop();"  style="background-color: #5cb85c; width : 100%"></b>';
+            	result = result +"	</div>";
+            	$("#popup").append(result);
+            	$("#remove_user_pop").slideDown(200);
+            	$(".project_inn_mask").fadeIn(200);
                },
                error: function(data) {
-                   console.log(data);
-                   alert('Error occured.');
+                result = result +"	<div class='project_inn_mask'></div>"; 
+               	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+               	result = result +"		<p>Error occured..</p>";
+               	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="errorHidePopuop();" style="width : 100%"></b>';
+               	result = result +"	</div>";
+               	$("#popup").append(result);
+               	$("#remove_user_pop").slideDown(200);
+               	$(".project_inn_mask").fadeIn(200);
                }
     	  });
         
     }
-
+    
 
     //Get query string
     let getQueryString = function(name, target) {
@@ -682,30 +596,12 @@ var Signer = (function() {
     }
 
 
-    //Initialize Signer
-    let init = function() {
-        $(document).ready(() => {
-            initializeDrager();
-                $('#signerType').show();
-                localStorage.removeItem('recipient');
-                window.setTimeout(()=>{
-                        getCoordinates();
-                        $('.signContainer,.signActions').show();
-                        $('.askUserDetails,.addRecipients').hide();
-                        $('#btnAddSignature,#btnAddInitial,#btnSendToRecip').show();
-    	    	},2000);
-        });
-    }
-
-    init();
-
     //Exposed public methods
     return {
         uploadDoc: uploadDoc,
         addSignaturePlaceholder: addSignaturePlaceholder,
         addInitialPlaceholder: addInitialPlaceholder,
         saveCoordinates: saveCoordinates,
-        loadAllPlaceholders: loadAllPlaceholders,
         deleteSign: deleteSign,
         signMyDocument: signMyDocument,
         hideSignModal: hideSignModal,
@@ -716,3 +612,16 @@ var Signer = (function() {
         setSigningType: setSigningType,
     }
 })();
+
+function successHidePopuop(){
+	 $("#popUp").empty();
+  	 $(".project_inn_mask").fadeOut(200);
+  	 $("#remove_user_pop").hide();
+  	 location.replace(sourceleadUrl+"/contractListbyStatus");
+}
+
+function errorHidePopuop(){
+	 $("#popUp").empty();
+	 $("#remove_user_pop").hide();
+ 	 $(".project_inn_mask").fadeOut(200);
+}

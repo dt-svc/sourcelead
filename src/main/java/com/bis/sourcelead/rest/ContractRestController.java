@@ -93,6 +93,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ContractRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractRestController.class);

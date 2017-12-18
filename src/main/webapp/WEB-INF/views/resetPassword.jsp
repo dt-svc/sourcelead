@@ -19,19 +19,19 @@
     </c:if>
    
     <title>::. Reset Password .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="resources/css/bootstrap.min.css" rel="stylesheet?staticTime=${staticTime}">
-    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/bootstrap.min.css" rel="stylesheet?staticTime=${staticTime}">
+    <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
      
 </head>
 
 <body>
   
 <div class="regis_bg">
-	<div class="regis_logo"><img src="resources/images/SourceLead-logo.png" alt=""/></div>
+	<div class="regis_logo"><img src="/resources/images/SourceLead-logo.png" alt=""/></div>
     <div class="regis_wrap">
      <div id="loading"></div> 
     	<div class="signin_wrap reset_wrap_a" id="signin">
@@ -69,11 +69,11 @@
 </div>  
 <input id="autocomplete"/>&nbsp;<input id="submit" type="submit"/>
   
-	  <script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
-    <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	  <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+    <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     
     
     
@@ -173,7 +173,7 @@ var validationSettings = {
         		var form = $('#resetPassword_form').serializeFormJSON();
           		var sourceleadUrl ='${sourceleadUrl}';
           		 $("#submit_button").attr("disabled", "disabled");
-          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+          		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
                   $.ajax({
               	      type: "POST",
               	      data:JSON.stringify(form),

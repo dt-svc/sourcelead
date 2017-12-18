@@ -22,7 +22,7 @@ function changeCountry(){
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
@@ -50,7 +50,7 @@ function changeCountry(){
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	              <input type="text" name="email" id="companyEmail"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
 	            <span class="hidden">Email</span>
 	            </div>
             </div>
@@ -197,7 +197,7 @@ function changeCountry(){
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -273,7 +273,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -367,7 +367,7 @@ function validateWebsite (){
 		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+       	            url: sourceleadUrl+"/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
 			        success: function(data) {
 			        	 var result = data;
 			        		if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -403,7 +403,7 @@ function validateWebsite (){
 
 <script type="text/javascript">
 function getUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("companyEmail").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(email){
 		$.ajax({
@@ -459,32 +459,32 @@ function getUserDetails(){
 <script type="text/javascript">
 function validateCompanyEmail(){
     var websiteValue = document.getElementById("companyWebsite").value;
-    var emailValue = document.getElementById("email").value;
+    var emailValue = document.getElementById("companyEmail").value;
     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
     var sourceleadUrl ='${sourceleadUrl}';
 		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       url: sourceleadUrl+"/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid Email'){
 					    	    //Invalid Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
 					    	   //Existed Email
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-			    	    		$('input#email').attr('class','error form-control');
-			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
+			    	    		$('input#companyEmail').attr('class','error form-control');
+			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
+			    				$('input#companyEmail').attr('record-exist','yes');
+			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
 			    				$( "#register_button" ).addClass('sign_btn').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
@@ -492,9 +492,9 @@ function validateCompanyEmail(){
 				       	else{
 				       		//Valid Email
 				       		$("#register_button").removeAttr("disabled");
-				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
+				    		$('input#companyEmail').removeAttr( "class record-exist record-exist-errormsg");
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
-							$('input#email').attr('class','valid form-control');
+							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
 							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {

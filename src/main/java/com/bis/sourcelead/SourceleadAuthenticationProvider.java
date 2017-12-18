@@ -27,10 +27,12 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.UserLoginHelper;
 
 /**
  * Custom AuthenticationProvider 
@@ -58,9 +60,15 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     
     @Autowired
 	EmployeesService employeesService;
+    
+    @Autowired
+    OrgLocationService orgLocationService;
 	
 	@Autowired 
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired 
+	UserLoginHelper userLoginHelper;
   
     /*@param
      * 
@@ -74,6 +82,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           User  user = userService.findByUserName(username);
           UserRole userRole = null;
           List<Long> modulesId = null;
+          List<UserRole> userRolesList = null;
 			
           try {
         	    if(user != null){
@@ -89,54 +98,83 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           }
           else if((userRole == null) || (userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.INACTIVE))){
         	  throw new BadCredentialsException("login_inActive_error");
+          }else if(Constants.NO.equalsIgnoreCase(user.getIsVerified())){
+        	  throw new BadCredentialsException("email_notVerified_error");
           }
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
-        		  OrgLocations orgLocations = null;
-      			  Org org = null;
-      			  List<SourceleadActions> actionsList = null;
-      			
-        		  if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
-        			  orgLocations = userRole.getOrgLocations();
-          			  org = orgLocations.getOrg();
-    				try {
-    					modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
-    				} catch (Exception e1) {
-    					e1.printStackTrace();
-    				} 
-    				try {
-    					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-    				} catch (Exception e) {
-    					e.printStackTrace();
-    				}
-        		  }else{
-        			  try {
-      					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
-      				} catch (Exception e) {
-      					e.printStackTrace();
-      				} 
-        		  }
-    			
-        		  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
-				  try {
-					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
-	        			  userRole.setUserState(Status.ACTIVE);
-	        			  userRole.setNewlyLoginUser(Constants.YES);
-	        			  userRoleService.addUserRole(userRole);
-
-	        			  /*
-                           * Update USER DB data as ElasticSearch Documents
-                           */
-                          Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
-                          if(null != employee){
-                              userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
-                          }
-	        		  }
-				   } catch (Exception e) {
-					  e.printStackTrace();
-				   }
         		  
-        		  return new UsernamePasswordAuthenticationToken(username, password, authorities);
+        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
+        		  try {
+					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+        		  
+        		  /**
+        		   * Changes made for mobile restAuthenticate Service
+        		   */
+        		  if(authentication.getDetails() != null){
+        			  if(userRolesList.size() > 1)
+            			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
+            		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
+            			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
+            		  else
+            			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
+        		  }
+        		  else{
+        			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);  
+        		  }
+        		  
+        			  
+        			  /*OrgLocations orgLocations = null;
+        			  Org org = null;
+        			  List<SourceleadActions> actionsList = null;
+        			
+        			  if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
+        				  orgLocations = userRole.getOrgLocations();
+        				  org = orgLocations.getOrg();
+        				try {
+        					modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+        				} catch (Exception e1) {
+        					e1.printStackTrace();
+        				} 
+        				try {
+        					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+        				} catch (Exception e) {
+        					e.printStackTrace();
+        				}
+        			  }else{
+        				  try {
+        					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+        				} catch (Exception e) {
+        					e.printStackTrace();
+        				} 
+        			  }
+        			
+        			  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
+        			  try {
+        				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+        	  			  userRole.setUserState(Status.ACTIVE);
+        	  			  userRole.setNewlyLoginUser(Constants.YES);
+        	  			  userRoleService.addUserRole(userRole);
+
+        	  			  
+        	               Update USER DB data as ElasticSearch Documents
+        	                 
+        	                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
+        	                if(null != employee){
+        	                    userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
+        	                }
+        	  		  }
+        			   } catch (Exception e) {
+        				  e.printStackTrace();
+        			   }
+        			  
+        			  return new UsernamePasswordAuthenticationToken(username, password, authorities);*/
+        			  
+        			  
+        		  
         	  }
         	  else{
         		  throw new BadCredentialsException("login_password_error");

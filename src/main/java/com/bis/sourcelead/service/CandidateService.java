@@ -11,6 +11,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -183,5 +184,7 @@ public interface CandidateService {
 	String getCandidateId(OrgLocations orgLocations);
 	
 	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+	
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception;
 
 }

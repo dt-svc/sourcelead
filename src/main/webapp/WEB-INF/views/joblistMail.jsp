@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 
 <style>
@@ -25,6 +25,7 @@ display: none;
 
 <script>
  $(document).ready(function(){
+	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
 		 
@@ -42,7 +43,7 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/campaigns/hotcampaigns'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
    
@@ -208,6 +209,7 @@ display: none;
                 <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <div class="clearUpload"></div>
             </div>
           </div>
         </div> -->
@@ -218,7 +220,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
@@ -228,7 +230,7 @@ display: none;
     
   </section>
   
-  <script src="resources/js/nicEdit.js"></script> 
+  <script src="/resources/js/nicEdit.js"></script> 
   
    <script type="text/javascript">
 	function sendJobListCampaign() {
@@ -245,7 +247,7 @@ display: none;
   	    	alertMailerMsg();
   	    }else{
 	  	    	
-	  	     	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  	     	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
@@ -307,6 +309,7 @@ $(function(){
 $(function() {
 	$("#attachfileBtn").change(function() {
 		fileUpload("attachfileBtn", "Joblist Campaign Documents", "joblistCampaign_form");
+		$(".clearUpload").show();
 	});
  });
  
@@ -344,7 +347,7 @@ function jobListChange(type){
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
-	    allJobs = {};
+	    allJobs = [];
 	    jobsDataTableList(type);
 }
 </script>
@@ -501,7 +504,7 @@ function jobsPagination(url,type){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#jobsDataTable").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -879,7 +882,7 @@ function vendorsPagination(url){
 	    	"oLanguage": {
 	     	"sSearch": "",
 	     	"sZeroRecords": "", "sEmptyTable": "", 
-	     	"sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     	"sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#vendorDataTable").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -1050,7 +1053,7 @@ function contactsPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -1418,6 +1421,16 @@ function getContactEmails(){
      }); 
 	 
 }
+</script>
+
+
+ <script>
+	$(".clearUpload").click(function(){
+		$("#attachfile-mail").val("");
+		$("#attachfileBtn").val("");
+	        $("#joblistCampaign_form input[data-id*=attachfileBtn]").remove();
+	        $(".clearUpload").hide();
+	});
 </script>
 
 <script>

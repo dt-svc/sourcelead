@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class SignImageService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(SignImageService.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
 	@Autowired
 	private DocuSignUtil docuSignUtil;
 
-	public void signImage(SignedImageInfo signedImageInfo, String contextPath, String userPath1) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
+	public void signImage(SignedImageInfo signedImageInfo, String contextPath) throws JsonGenerationException, JsonMappingException, IOException, FontFormatException {
 		String[] imageLocation =  docuSignUtil.getimageLocation();
 		String dirPath = null;
 		if(signedImageInfo.getUserId().contains("/unsigned.pdf")) {
@@ -39,6 +43,7 @@ public class SignImageService {
 		}
 		String result = staticPath.substring(0,staticPath.lastIndexOf("/"));
 		String filePath = result + dirPath+ "/signatures";
+		logger.info("Signature folder path : "+filePath);
 		new File(filePath).mkdir();
 		for (int i = 0; i < imageLocation.length; i++) {
 			BufferedImage image = null;
@@ -46,6 +51,7 @@ public class SignImageService {
 			Font font = null;
 			try {
 				String imageType = imageLocation[i];
+				
 				image = ImageIO.read(new File(contextPath + imageType));
 
 				font = Font.createFont(Font.TRUETYPE_FONT,

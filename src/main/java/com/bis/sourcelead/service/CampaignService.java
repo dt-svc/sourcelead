@@ -21,7 +21,7 @@ public interface CampaignService {
 
 	boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation)throws Exception;
 
-	boolean validateNickName(String nickName, OrgLocations orgLocation, Long senderId)throws Exception;
+	boolean validateNickName(String nickName, OrgLocations orgLocation, String senderId)throws Exception;
 
 	ResponseList<CreateSenderDTO> getSendersListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 
@@ -54,9 +54,11 @@ public interface CampaignService {
 
 	CampaignStats getCampaignStatsByCampaignId(String campaignName) throws Exception;
 
-	boolean validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType)throws Exception;
+	boolean validateCampaignSubject(String subjectName, Long orgLocationId, int campaignType) throws Exception;
 
 	boolean deleteStats(String categoryName) throws Exception;
+
+	boolean validateFromMail(String email, String toWhom, String id) throws Exception;
 
 
 

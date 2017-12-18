@@ -8,7 +8,7 @@
     var tokenValue = "${_csrf.token}";
  </script>
 
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
  	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -22,36 +22,33 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnSenderName"name="cpnSenderName" value="${sender.fromName}" data-validation="required validate_length length1-250" field-name="Name">
+                	<input type="text" class="form-control" id="cpnSenderName" name="cpnSenderName" value="${sender.fromName}" data-validation="required validate_length length1-100" field-name="Name">
 				<input type="hidden" value="${sender.id}" name="senderId" id="senderId" >
 				</div>
 			</div>
-          <div class="col-sm-12 noPad mt clearfixclearfix">
+          <div class="col-sm-12 noPad mt clearfixclearfix" id="fromMailDiv">
 				<label class="col-md-3 padding_left">From Mail<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnSenderFromMail"name="cpnSenderFromMail" value="${sender.fromMail}" data-validation="required validate_length length1-250 validate_email" field-name="From Mail">
+                	<input type="text" class="form-control" id="cpnSenderFromMail"name="cpnSenderFromMail" value="${sender.fromMail}" data-validation="required validate_length length5-100 validate_email" field-name="From Mail" onblur="validateFromMail('from',${sender.id});">
 				</div>
 			</div>
-          <div class="col-sm-12 noPad mt clearfix" >
-				<label class="col-md-3 padding_left">Replay Mail<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-sm-12 noPad mt clearfix" id="replyMailDiv">
+				<label class="col-md-3 padding_left">Reply Mail<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnReplyMail" name="cpnReplyMail" value="${sender.replyTo}" data-validation="required validate_length length1-250 validate_email" field-name="Reply Mail">
+                	<input type="text" class="form-control" id="cpnReplyMail" name="cpnReplyMail" value="${sender.replyTo}" onblur="validateReplyMail('reply',${sender.id});" data-validation="required validate_length length5-100 validate_email" field-name="Reply Mail" >
 				</div>
 			</div>
 			<div class="col-sm-12 noPad mt clearfix" id="nickNameDiv">
 				<label class="col-md-3 padding_left">Nickname<span
 					class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9 padding_right">
-					<input type="text" class="form-control" id="cpnNickName"
-						name="cpnNickName" value="${sender.nickName}"
-						data-validation="required validate_length length1-250"
-						field-name="Nick Name" onblur="validateNickName(${sender.id});">
+					<input type="text" class="form-control" id="cpnNickName" name="cpnNickName" value="${sender.nickName}" data-validation="required validate_length length1-100" field-name="Nick Name" onblur="validateNickName(${sender.id});">
 				</div>
 			</div>		
 		</div>
 		<div class="popupFoot">
             <input value="Save" class="btn btn-primary" id="saveCampaignSender" name="" type="button">
-            <input value="reset" class="btn btn-primary" type="button" id="resetForm">
+            <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
             <input onclick="senderClose();" value="Cancel" class="btn btn-default ml" type="button">
           </div>		
 		

@@ -4,6 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
+
 	<div class='timesheet_head timesheetRep'>
 		<div class="timeReFi">
 			<select id="frequencyYear" name="frequencyYear"	class="form-control chosen-select" onchange="getMonths();">
