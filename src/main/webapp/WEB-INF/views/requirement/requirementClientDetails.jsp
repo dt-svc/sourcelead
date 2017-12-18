@@ -315,6 +315,7 @@ function getContactList(local){
 			clientContactList(valueArray[0],valueArray[1]);
 			$("#addContactPlus").show();
 			$("#addContactPlus").attr("onclick", "addClientContactPopUp("+valueArray[0]+","+valueArray[1]+");");
+			$("#contactRefreshId").attr('value', local.value);
 			//   $("#vendorName").attr('value', local.value);
 		}else{
 			$("#addContactPlus").hide();

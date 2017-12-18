@@ -37,6 +37,7 @@ public class Constants {
 	public static final String RATEPER = "Rate Per";
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
+	public static final String MANAGER = "Manager*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
