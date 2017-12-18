@@ -1036,7 +1036,51 @@ public class ContractRestController {
 		 	}
 			
 			return "success";
+			
+			
+			
+			
+			
+			
 		}
+	 
+	 @RequestMapping(value = "/refreshClientList" , method = RequestMethod.POST)
+		 public @ResponseBody List<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		 for (OrgRelations orgRelations : clientList) {
+				String orgName = "";
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getLocationId().getOrgLocationName();
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+				}
+				orgRelations.setOrgName(orgName);
+			}
+		return clientList;	 
+			 
+	 }
+	 
+	 @RequestMapping(value = "/refreshVendorList" , method = RequestMethod.GET)
+	 public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception {
+	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+	 for (OrgRelations orgRelations : orgRelationsList) {
+			String orgName = "";
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getLocationId().getOrgLocationName();
+			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+			}
+			orgRelations.setOrgName(orgName);
+ }
+	return orgRelationsList;
+	 
+	 }
+	 
+	 
+	 
+	 
 	 
 	 
 	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")

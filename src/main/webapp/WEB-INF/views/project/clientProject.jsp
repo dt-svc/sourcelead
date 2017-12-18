@@ -5,6 +5,7 @@
 <link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="resources/css/register-style.css" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 .clsDatePicker {
@@ -44,10 +45,9 @@
 			<div class="col-md-12 clearfix mt5 mb5">
 			<div class="col-md-6 col-lg-6">
 			  <div class="form-group mb10">
-					<label class="col-md-3 mt10" for="Project Manager">Select Client<span
-						class="text-danger">*&nbsp;</span></label>
-					<div class="col-md-9">
-						<div class="form-icon-min" id="clientsDiv">
+					<label class="col-md-3 mt10" for="Project Manager">Select Client<span class="text-danger">*&nbsp;</span></label>
+					<div class="col-md-9 chooRadius">
+						<div class="input-group col-md-10 pull-left" id="clientsDiv">
 							<select class="form-control chosen-select"
 								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
 								data-validation="required" onchange="getEndClientProjects();">
@@ -61,8 +61,11 @@
 								 </c:if>
 								</c:forEach>
 							</select> 
-						</div>
-						<span class="hidden">Select Client</span>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList(); "><i class="fa fa-refresh "></i></span>
+                </div>	
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+               </sec:authorize>                						
 					</div>
 				</div>
 			</div>
@@ -337,4 +340,32 @@ function saveClientProject(){
 					});
  }
 </script>
-
+<script>
+function refreshClientList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#clientOrgLocId").empty();
+		        $("#clientOrgLocId").append(output);
+		        $('#clientOrgLocId').trigger("chosen:updated");
+	        }
+		 });
+		 
+	
+	
+}
+</script>

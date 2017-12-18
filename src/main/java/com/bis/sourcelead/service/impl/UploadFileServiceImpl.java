@@ -202,6 +202,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 						userImport.setDateOfJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
+					
+					userImport.setManager(record.get(Constants.MANAGER));
 					/*if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
 						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 					}else{
@@ -367,6 +369,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDateOfJoin(hireDate);
 							}
 							userImport.setRole(row.getCell(9).toString());
+							userImport.setManager(row.getCell(11).toString());
 							/*if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
@@ -482,6 +485,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
+		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
 		userRole.setIsPrimary(1);
 		userRole.setRoles(role);
 		userRole.setUserType(role.getDisplayName());
@@ -535,10 +539,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserName(userImport.getEmailId());
-			
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
+			userRole.setReportingManager(reportUser);
 			userRole.setIsMailSent(userImport.getIsMailChecked());
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
@@ -654,10 +658,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param orgLocations 
  * @param roleHierarchyId 
  * @param org 
- * @throws IOException
+ * @throws Exception 
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws IOException {
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws Exception {
 		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
+		String[] usersList = getUsersList(orgLocations.getId());
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			
@@ -750,6 +755,21 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			writeRow.createCell(9).setCellValue("");
 		}
+		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(usersList,11,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(usersList,11,createExcelsheet));
+			}
+	        writeRow.createCell(11).setCellValue(row.getCell(11).toString());
+		} else {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(usersList,11,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(usersList,11,createExcelsheet));
+			}
+			writeRow.createCell(11).setCellValue("");
+		}
 	/*	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
@@ -773,7 +793,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				writeRow.createCell(10).setCellValue("");
 			}
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(12).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -850,7 +870,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			
 			
 			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
-				userImport.setReason("Required fields is not filled");
+				userImport.setReason("Role is Required");
+				return false;
+			}
+			
+			if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
+				userImport.setReason("Manager is Required");
 				return false;
 			}
 			
@@ -973,7 +998,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN);
 		excelHeader.createCell(9).setCellValue(Constants.ROLE);
 		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
-		excelHeader.createCell(11).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(11).setCellValue(Constants.MANAGER);
+		excelHeader.createCell(12).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
@@ -999,6 +1025,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN+dateFormate);
 		excelHeader.createCell(9).setCellValue(Constants.ROLE);
 		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(11).setCellValue(Constants.MANAGER+"(Email)");
 		return sheet;
 	}
 	
@@ -1105,8 +1132,17 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell10 = writeRow.createCell(10);
 			cell10.setCellValue("");
 		}
+		
+		if (record.get(Constants.MANAGER) != null && !"".equalsIgnoreCase(record.get(Constants.MANAGER))) {
+			Cell cell11 = writeRow.createCell(11);
+			cell11.setCellValue(record.get(Constants.MANAGER));
+		} else {
+			Cell cell11 = writeRow.createCell(11);
+			cell11.setCellValue("");
+		}
+		
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(11).setCellValue(userImport.getReason());
+			writeRow.createCell(12).setCellValue(userImport.getReason());
 		} 
 	
 	}
@@ -1236,7 +1272,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	}
 
 	@Override
-	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws FileNotFoundException {
+	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws Exception {
 		OrgLocations orglocation = null;
 		try {
 			orglocation = orgLocationService.getOrgLocations(orgLocationId);
@@ -1283,6 +1319,24 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		 wb.setSheetHidden(1, true);
 		 sheet.addValidationData(roleValidation);
 		 
+		 // manager user list
+		 String[] usersList = getUsersList(orgLocationId); 
+			HSSFSheet userhidden = (HSSFSheet) wb.createSheet("userhidden");
+			HSSFRow userRow = userhidden.createRow(0);
+			for (int i = 0, length= usersList.length; i < length; i++) {
+			   String name = usersList[i];
+			   HSSFCell cell = userRow.createCell(i);
+			   cell.setCellValue(name);
+			 }
+			 Name namedUserCel = wb.createName();
+			 namedUserCel.setNameName("userhidden");
+			 namedUserCel.setRefersToFormula("userhidden!$A$1:$DZ$1" + usersList.length);
+			 DVConstraint userConstraint = DVConstraint.createFormulaListConstraint("userhidden");
+			 CellRangeAddressList userAddressList = new CellRangeAddressList(1, 1000, 11, 11);
+			 HSSFDataValidation userValidation = new HSSFDataValidation(userAddressList, userConstraint);
+			 wb.setSheetHidden(2, true);
+			 sheet.addValidationData(userValidation);
+		 
 	    //Day hours list
 	    HSSFSheet hidden = (HSSFSheet) wb.createSheet("hidden");
 	    HSSFRow row = hidden.createRow(0);
@@ -1326,5 +1380,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		String [] roleList = list.toArray(new String[list.size()]);
 		 return roleList;
+	}
+	
+	private String[] getUsersList(Long orgLocationId) throws Exception {
+		List<String> list = new ArrayList<>();  
+		List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocationId);
+		for(User user :usersList){
+			list.add(user.getEmail());
+		}
+		String [] userList = list.toArray(new String[list.size()]);
+		 return userList;
 	}
 }

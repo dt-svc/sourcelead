@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Save client Model popup  Start-->
          <div role="dialog" id="selectVendor" class="modal fade">
          <form:form id="vendor_form" name="vendor_form" method="post">
@@ -80,23 +81,29 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
             <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
-            <div class="col-md-9">
+            <div class="col-md-9 chooRadius">
+            <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
+                    <option ${report.id == vid ? 'selected':''}  value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
+                  	 	<option ${report.id == vid ? 'selected':''} value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();"><i class="fa fa-refresh "></i>		</span>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+		</sec:authorize>
           </div>
           </div>
+             </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           
             <div class="form-group" id="EmailIdDiv">
@@ -786,4 +793,24 @@ function getRolesList(){
 		};
 	})(jQuery);
 </script>
+ <script>
+ function getVendorsByOrgLocation(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--Select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		            
+		        }
+		 });
+ }
+ </script>
 

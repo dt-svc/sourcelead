@@ -146,6 +146,7 @@ public class OrgRelations implements Serializable{
     private String orgType;
 	
 	@Transient
+	@JsonProperty
     private Long orgid;
 	
 	@Transient
