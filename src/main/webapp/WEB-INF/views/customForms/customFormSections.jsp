@@ -65,9 +65,10 @@
  
   <!-- <!--   Popup Code  -->
  
- <div class="popMask popMask-zindex"></div>
+ 
   <form:form id="saveAddForm_form" name="saveAddForm_form">
-	<div class="cusFielPopup cusFiel-popup " id="popUpData">
+  <div class="popMaskCustom popMask-zindex"></div>
+	<div class="cusFielPopup cusFiel-popup " id="popUpDataCustom">
 		<div class="popupHead">
 			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
@@ -359,7 +360,7 @@ function getSelectedFieldDetails(){
 			 url : sourceleadUrl+"/storeNewCustomFormField",
 			 	 	success : function(data) {
 			 	 			$("#cusFielTable"+selectedSectionID).append(data);
-			 	 			$(".popMask").fadeOut(200);
+			 	 			$(".popMaskCustom").fadeOut(200);
 			 				$(".cusFielPopup").fadeOut(100);
 							flushPopupData();
 			},
@@ -420,8 +421,8 @@ var validationSettings = {
 		 type : "POST",
 		 url : sourceleadUrl+"/editNewCustomFormField?&id="+customRowId+"&actionId="+actionIdEdit,
 		 	 	success : function(data) {
-		 	 		$("#popUpData").empty();
-			        $("#popUpData").append(data);
+		 	 		$("#popUpDataCustom").empty();
+			        $("#popUpDataCustom").append(data);
 			        addFieldPopUp(selectedSectionID);
 			        getSelectedFieldDetails();
 			        

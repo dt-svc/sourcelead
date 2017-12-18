@@ -59,12 +59,12 @@ $(document).ready(function() {
   
   <script>
   function addFieldPopUp(sectionId){
-			$(".popMask").fadeIn(200);
+			$(".popMaskCustom").fadeIn(200);
 			$(".cusFielPopup").fadeIn(100);
 			$('#minDate').datepicker({changeMonth : true,changeYear : true}); 
 			$('#maxDate').datepicker({changeMonth : true,changeYear : true}); 
 		$(".popCan").click(function(){
-			$(".popMask").fadeOut(200);
+			$(".popMaskCustom").fadeOut(200);
 			$(".cusFielPopup").fadeOut(100);
 			flushPopupData();
 		});

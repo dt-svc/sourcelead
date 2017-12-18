@@ -2,8 +2,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <div id="customFormDiv"></div>
-<c:forEach var="formSections" items="${SourceleadForm_Sections}">
+<c:forEach var="formSections" items="${SourceleadForm_Sections}" varStatus="customCount">
 	<c:forEach var="customForm" items="${formSections.customFieldsList}">
+	<input type="text" value="${customCount}">
 	<c:if test="${customForm.fieldType == 'textfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
