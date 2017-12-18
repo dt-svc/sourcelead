@@ -106,12 +106,12 @@ public class MailBoxController {
 	 public @ResponseBody void mailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/sourcelead/userMailBox?mailType=").append(mailType).toString());
+		     response.sendRedirect(redirectUrl.append("/app/userMailBox?mailType=").append(mailType).toString());
 			
 	}
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/userMailBox")
+	@RequestMapping(value = "/app/userMailBox")
  	public ModelAndView userMailBox(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 
 		    ModelAndView model = new ModelAndView();
@@ -164,7 +164,7 @@ public class MailBoxController {
  			
  			return model;
  	}
-	@RequestMapping(value = "/emailSettings")
+	@RequestMapping(value = "/app/emailSettings")
  	public ModelAndView emailSettings(HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("emailSettings");
@@ -456,20 +456,12 @@ public class MailBoxController {
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String commonDateFormat = standardFormat.format(converteDate);
-				userMailBox.setCalDays(commonDateFormat.toString());
 			} 
 
 		}
 
 	}
 	
-	@RequestMapping(value = "/campaignStats")
-	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("campaign/campaignStats");
-	       return model;
-	}
 	
 	
 }

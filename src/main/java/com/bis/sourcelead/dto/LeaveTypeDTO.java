@@ -30,6 +30,23 @@ public class LeaveTypeDTO {
 	private int cancelCount;
 	private String numberOfDaysCount;
 	private String status;
+	private String period;
+	private String leaveEffective;
+	private String newJoinee;
+	private String experiencedType;
+	private String experiencedDuration;
+	private String experiencedApplicableDays;
+	private String reasonRequired;
+	private String attachmentRequired;
+	private String overdrawLeaves;
+	private String donateLeave;
+	private String priorLeaveApplying;
+	private String priorDays;
+	private String leaveDuration;
+	private String minDays;
+	private String maxDays;
+	private String noOfDays;
+	
 	
 	public String getName()
 	{
@@ -247,6 +264,137 @@ public class LeaveTypeDTO {
 	{
 		this.status = status;
 	}
+	public String getPeriod()
+	{
+		return period;
+	}
+	public void setPeriod(String period)
+	{
+		this.period = period;
+	}
+	public String getLeaveEffective()
+	{
+		return leaveEffective;
+	}
+	public void setLeaveEffective(String leaveEffective)
+	{
+		this.leaveEffective = leaveEffective;
+	}
 	
+	public String getExperiencedType()
+	{
+		return experiencedType;
+	}
+	public void setExperiencedType(String experiencedType)
+	{
+		this.experiencedType = experiencedType;
+	}
+	
+	
+	public String getReasonRequired()
+	{
+		return reasonRequired;
+	}
+	public void setReasonRequired(String reasonRequired)
+	{
+		this.reasonRequired = reasonRequired;
+	}
+	public String getAttachmentRequired()
+	{
+		return attachmentRequired;
+	}
+	public void setAttachmentRequired(String attachmentRequired)
+	{
+		this.attachmentRequired = attachmentRequired;
+	}
+	public String getOverdrawLeaves()
+	{
+		return overdrawLeaves;
+	}
+	public void setOverdrawLeaves(String overdrawLeaves)
+	{
+		this.overdrawLeaves = overdrawLeaves;
+	}
+	public String getDonateLeave()
+	{
+		return donateLeave;
+	}
+	public void setDonateLeave(String donateLeave)
+	{
+		this.donateLeave = donateLeave;
+	}
+	public String getPriorLeaveApplying()
+	{
+		return priorLeaveApplying;
+	}
+	public void setPriorLeaveApplying(String priorLeaveApplying)
+	{
+		this.priorLeaveApplying = priorLeaveApplying;
+	}
+	public String getLeaveDuration()
+	{
+		return leaveDuration;
+	}
+	public void setLeaveDuration(String leaveDuration)
+	{
+		this.leaveDuration = leaveDuration;
+	}
+	public String getNewJoinee()
+	{
+		return newJoinee;
+	}
+	public void setNewJoinee(String newJoinee)
+	{
+		this.newJoinee = newJoinee;
+	}
+	public String getExperiencedDuration()
+	{
+		return experiencedDuration;
+	}
+	public void setExperiencedDuration(String experiencedDuration)
+	{
+		this.experiencedDuration = experiencedDuration;
+	}
+	public String getExperiencedApplicableDays()
+	{
+		return experiencedApplicableDays;
+	}
+	public void setExperiencedApplicableDays(String experiencedApplicableDays)
+	{
+		this.experiencedApplicableDays = experiencedApplicableDays;
+	}
+	public String getPriorDays()
+	{
+		return priorDays;
+	}
+	public void setPriorDays(String priorDays)
+	{
+		this.priorDays = priorDays;
+	}
+	public String getMinDays()
+	{
+		return minDays;
+	}
+	public void setMinDays(String minDays)
+	{
+		this.minDays = minDays;
+	}
+	public String getMaxDays()
+	{
+		return maxDays;
+	}
+	public void setMaxDays(String maxDays)
+	{
+		this.maxDays = maxDays;
+	}
+	public String getNoOfDays()
+	{
+		return noOfDays;
+	}
+	public void setNoOfDays(String noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
+		
 	
 }

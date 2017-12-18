@@ -614,6 +614,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId, Long locationId) throws Exception {
+		return userRoleDao.getUserRoleWithoutAdminsByUserIdAndLocationId(userId, locationId);
+	}
+	
+	@Override
 	public UserRole getUserRoleByVerficationUUID(String uuid)
 	{
 		return userRoleDao.getUserRoleByVerficationUUID(uuid);

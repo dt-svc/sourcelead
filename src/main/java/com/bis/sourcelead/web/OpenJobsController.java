@@ -58,7 +58,7 @@ public class OpenJobsController {
 	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
 			"/app/jobs/{title}/{location}/{experience}" })
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies,@RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName, HttpServletRequest request) throws Exception
+	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName, HttpServletRequest request) throws Exception
 	{
 		List<Countries> countriesList = countriesService.getAllCountries();
 		modelMap.addAttribute("countryList", countriesList);
@@ -99,14 +99,19 @@ public class OpenJobsController {
 				modelAndView.addObject("employementType", requirementDeatilsSummary.getJobType().toLowerCase().replaceAll(" ", "-").replaceAll(" & ", "-and-"));
 			}
 		}
-		if (requirementDeatilsSummary.getIsRequirementRelesedToPublic() != null
+		else {
+			modelAndView.addObject("requirementUUID", "not found");
+		}
+		if (requirementDeatilsSummary != null
+				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != null
 				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != "") {
-		modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
+			modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
 		}
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
 	
+
 	@RequestMapping(value = "/jobs")
 	public String openRequirementsRedirect(ModelMap modelMap, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
@@ -124,7 +129,6 @@ public class OpenJobsController {
 	{
 		return "forward:/jobs/" + title + "/" + location + "/null";
 	}
-	
 	@RequestMapping(value = "/requirementsSummary.html")
 	public String requirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception
 	{

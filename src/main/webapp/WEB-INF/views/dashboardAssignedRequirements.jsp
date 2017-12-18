@@ -17,7 +17,7 @@
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         <div class="pull-right" id="viewmoresDiv" style="display: none;"> 
-      <a href="/app/requirementList" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a>
+      <a href="/app/jobs" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a>
         </div>
         </h4>
       <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->

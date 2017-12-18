@@ -170,7 +170,7 @@
 	                 
 	                                 
 	                 
-                     <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
+                     <%-- <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
 	                   <li class="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}">
 														  
 							  <a href="#" class="associatesLi" title="Associates">
@@ -199,10 +199,10 @@
 	                 
 	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'Associates List'}">
 	                   <li class="${sessionData.nav == 'Associates' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/associatesList'/>" title="Associates List"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">Associates List</i></a></li>
-	                 </c:if>
+	                 </c:if> --%>
 	                 
-	                 <c:if test="${SourceLeadWeb_associatesTabsCount < 2 && userTabs.tabName == 'On & Off Boarding'}">
-	                 <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">On / Off Boarding</i></a></li>
+	                 <c:if test="${userTabs.tabName == 'On & Off Boarding'}">
+	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span><i class="fa fa-black-tie"></i></span><i class="subMenu">On / Off Board</i></a></li>
 	                 </c:if>
 	                 
 	                 
@@ -288,7 +288,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">
-	                   <li class="${sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management"><span><i class="fa fa-cogs"></i></span><i class="subMenu">Asset Management</i></a></li>
+	                   <li class="${sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><span><i class="fa fa-cogs"></i></span><i class="subMenu">Asset Management</i></a></li>
 	                </c:if> 
 	                 
             	   
@@ -303,16 +303,33 @@
           	</c:if>	
           	
           	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-					<%-- <li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='/campaigns/hotcampaigns'/>" title="Campaigns"><span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i></a></li> --%>
-				<li class="side-nav-active"> 
-				<a href="#" class="tree-view">
-					<span><i class="fa fa-bullhorn"></i></span><i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i> </a>
-					<ul class="collapses">
-					<li class="${sessionData.nav == 'Campaigns' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Campaigns</a></li>
-					<li><a href="<c:url value='${appPath}/campaignSendersList'/>">Senders</a></li>
-				<li><a href="<c:url value='${appPath}/recipientsList'/>">Recipients</a></li>
-			</ul>
-			</li> 
+			
+			<li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'side-nav-active' : ''}">
+														  
+							  <a href="#" class="campaignsli" title="Expenses">
+								<span><i class="fa fa-bullhorn"></i></span>
+							  <i class="subMenu">Campaigns</i> <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+						   
+						   <c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}">
+                              <ul class="collapses" style="display: none">
+                                  <li class="${sessionData.nav == 'Campaigns' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Hotlist / Job</a></li>
+                                  <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li>
+                                  <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li>
+                              </ul>
+                           </c:if>
+                              
+                           <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}">
+                           <ul class="collapses" style="display: none">
+                               <li class="${sessionData.nav == 'Campaigns' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns">Hotlist / Job</a></li>
+                               <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li>
+                                <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li>
+                           </ul>
+                           </c:if>
+                              
+			  </li>
+		 
 			</sec:authorize>
 	
           	

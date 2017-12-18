@@ -46,7 +46,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 
 				 Long  orgLocId = rs1.getLong("ID");
 				 String  orgLocName = rs1.getString("ORG_NAME");
-				 String projectName = orgLocName+" Default Project";
+				 String projectName = orgLocName.trim()+" Default Project";
 				 Date startDate = rs1.getDate("CREATED_DATE");
 				 String createdBy = rs1.getString("CREATED_BY");
 				 String country = rs1.getString("COUNTRY");

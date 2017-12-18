@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -387,8 +388,16 @@ public class CampaignServiceImpl implements CampaignService{
 		
 		if(campStats.getData() !=null && campStats.getData().size() >0) {
 			for (CampaignStats campaignStats : campStats.getData()) {
+				Map<String,Integer> map = campaignDao.getCampaignListName(campaignStats.getCampaignId());
 				CampaignStatsDTO campaignStatsListDTO = new CampaignStatsDTO();
 				campaignStatsListDTO.setId(campaignStats.getId());
+				for (Map.Entry<String, Integer> entry : map.entrySet()) {
+					campaignStatsListDTO.setListName(entry.getKey());
+					campaignStatsListDTO.setNumberOfRecipients(entry.getValue());
+					String key = entry.getKey();
+				    Object value = entry.getValue();
+				    // you code here
+				}
 				campaignStatsListDTO.setCategoryName(campaignStats.getCategoryName());
 				campaignStatsListDTO.setDelivered(campaignStats.getDelivered());
 				campaignStatsListDTO.setUniqueOpens(campaignStats.getUniqueOpens());
@@ -500,6 +509,17 @@ public class CampaignServiceImpl implements CampaignService{
 			}
 		}
 		return isValid;
+	}
+
+	@Override
+	public boolean validateFromMail(String email, String toWhom,String id) throws Exception
+	{
+		boolean isDuplicate = false;
+		CreateSender createSender = campaignDao.validateFromMail(email,toWhom,id);
+		if(createSender !=null) {
+			isDuplicate = true;
+		}
+		return isDuplicate;
 	}
 
 }

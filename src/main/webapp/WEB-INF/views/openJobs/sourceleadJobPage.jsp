@@ -74,13 +74,13 @@ function getPostValueDetails(){
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if('${requirementUUID != null}'){
-			getOpenJobsRequirementSummary('${requirementUUID}');
-			getDropDownCount();
-		}else{
-		getOpenJobsELKList();
+// 		if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
+// 			getOpenJobsRequirementSummary('${requirementUUID}');
+// 			getDropDownCount();
+// 		}else{
+// 		getOpenJobsELKList();
 		getDropDownCount();
-	  }
+// 	  }
 	});
 </script>
  
@@ -97,7 +97,7 @@ display: none;}
     	<ul>
         	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
             <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="${sourceleadUrl}/login"><i class="fa fa-user-o"></i> Login</a></li>
+            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
             <div class="clear"></div>
         </ul>
     	<div class="clear"></div>    
@@ -687,9 +687,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				description =  description+'Job Title:'+json.jobTitle+";";
 				
 				result = result +'    <div class="jobDetailsLogo">';
-				result = result +'	<a href="'+sourceleadUrl+'/login">Apply</a>';
+				result = result +'	<a href="/login">Apply</a>';
 				if (json.isCrowdSourcing == 'Y'){
-				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
+				result = result +'	<a href="/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				}
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	<div class="share mt10">';
@@ -1200,12 +1200,35 @@ function loadOpenJobsChosenRequirementScripts(){
 
 <script type="text/javascript">
 function redirectPage(){
+	var url = "";
 	var title = document.getElementById("openJobsRequirementTitleId").value;
+	if(title != null && title != '' && title != 'undefined'){
+		url += "/"+title;
+	}else{
+		url += "/all";
+	}
 	var location = document.getElementById("openJobsLocationId").value;
+	if(location != null && location != '' && location != 'undefined'){
+		url += "/"+location;
+	}else{
+		url += "/all";
+	}
 	var experience = document.getElementById("openJobsExperienceId").value;
-	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
+	if(experience != null && experience != '' && experience != 'undefined'){
+		url += "/"+experience;
+	}
+	
+	if((title == null || title == '' || title == 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs";
+	}else if((title != null && title != '' && title != 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs/"+title;
+	}else{
+		window.location.href = "jobs"+url;
+	}
+	
 }
 </script>
+
 
 
 <script>

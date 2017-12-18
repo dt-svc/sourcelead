@@ -961,7 +961,6 @@ function requirementsFilter(type){
 	var title = document.getElementById("openJobsRequirementTitleId").value;
 	var location = document.getElementById("openJobsLocationId").value;
 	var experience = document.getElementById("openJobsExperienceId").value;
-	
 	var dates = $('input:radio[name=dateFilter]:checked').val();
 	
 	var country = $('input:radio[name=countryFilter]:checked').val();
@@ -971,13 +970,13 @@ function requirementsFilter(type){
 // 		reqType.push($(this).val());
 		reqType	+=	(reqType==""?"":"--") + $(this).val();
     });
-	
-	var orgLocationIds = "";
+	var orgLocationIds = [];
 	$('input:checkbox[name=orgName]:checked').each(function() 
     {
-// 		orgLocationIds.push($(this).val());
-		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
+ 		orgLocationIds.push($(this).val());
+// 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
+	
 	var offset = 0;
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
@@ -1021,7 +1020,6 @@ function requirementsFilter(type){
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-	
 	window.location.href = sourceleadUrl+"/jobs"+url;
 }
 </script>
@@ -1029,38 +1027,47 @@ function requirementsFilter(type){
 
 <script>
 function getOpenJobsELKListJOBS(){
-	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
-	var openJobsLocation = document.getElementById("openJobsLocationId").value;
-	var openJobsExperience = document.getElementById("openJobsExperienceId").value;
-var search = openJobsRequirementTitle.replace(/ & /g, '-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-");
-	openJobsRequirementTitle = search;
-	if(openJobsRequirementTitle != null && openJobsLocation != null && openJobsExperience != null){
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation+"/"+openJobsExperience;
-	}
-	if(openJobsRequirementTitle != null && openJobsLocation != null  && openJobsExperience == null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsLocation;
-	}
-	
-	if(openJobsRequirementTitle != null && openJobsLocation == null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsRequirementTitle+"/"+openJobsExperience;
-	}
-	
-	if(openJobsRequirementTitle == null && openJobsLocation != null  && openJobsExperience != null){
-		
-		location.href = "/jobs/"+openJobsLocation+"/"+openJobsExperience;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var str = sourceleadUrl;
+		var sourceleadUrl1 = str.replace("app", "");
+		var url = "";
+		var openJobsRequirementTitle = document
+				.getElementById("openJobsRequirementTitleId").value;
+		if (openJobsRequirementTitle != null && openJobsRequirementTitle != ''
+				&& openJobsRequirementTitle != 'undefined') {
+			url += "/" + openJobsRequirementTitle;
+		} else {
+			url += "/all";
 		}
-	else if(openJobsRequirementTitle != null && openJobsExperience == null && openJobsLocation == null){
-		location.href = "/jobs/"+openJobsRequirementTitle;
-	}if(openJobsLocation != null && openJobsRequirementTitle ==null && openJobsExperience == null){
-		location.href = "/jobs/"+openJobsLocation;
+		var openJobsLocation = document.getElementById("openJobsLocationId").value;
+		if (openJobsLocation != null && openJobsLocation != ''
+				&& openJobsLocation != 'undefined') {
+			url += "/" + openJobsLocation;
+		} else {
+			url += "/all";
+		}
+		var openJobsExperience = document
+				.getElementById("openJobsExperienceId").value;
+		if (openJobsExperience != null && openJobsExperience != ''
+				&& openJobsExperience != 'undefined') {
+			url += "/" + openJobsExperience;
+		}
+
+		if ((openJobsRequirementTitle == null || openJobsRequirementTitle == '' || openJobsRequirementTitle == 'undefined')
+				&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+				&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+			location.replace(sourceleadUrl1 + "jobs");
+		} else if ((openJobsRequirementTitle != null
+				&& openJobsRequirementTitle != '' && openJobsRequirementTitle != 'undefined')
+				&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+				&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+			location.replace(sourceleadUrl1 + "jobs/"
+					+ openJobsRequirementTitle);
+		} else {
+			location.replace(sourceleadUrl1 + "jobs" + url);
+		}
+
 	}
-	
-	else if(openJobsExperience != null && openJobsLocation == null && openJobsRequirementTitle ==null){
-		location.href = "/jobs/"+openJobsExperience;
-	}
-}
 </script>
 
 <script>
@@ -1072,6 +1079,16 @@ function getOpenJobsELKList(orgLocationId){
 	var openJobsExperience = $("#openJobsExperienceId").val();
     var dates = $('input:radio[name=dateFilter]:checked').val();
 	var country = $('input:radio[name=countryFilter]:checked').val();
+	var companies= ""; 
+	
+	var companies11 ='${companies}';
+	if(companies11 ==null && companies11 =='' && companies11 =='undefined') {
+		companies = $('input:checkbox[name=typeFilter]:checked').val();
+	}
+	
+	else{
+		companies=companies11;
+	}
 	var reqType = "";
 	$('input:checkbox[name=typeFilter]:checked').each(function() 
     {
@@ -1079,11 +1096,11 @@ function getOpenJobsELKList(orgLocationId){
 		reqType	+=	(reqType==""?"":"--") + $(this).val();
     });
 	
-	var orgLocationIds = "";
+	var orgLocationIds = [];
 	$('input:checkbox[name=orgName]:checked').each(function() 
     {
-// 		orgLocationIds.push($(this).val());
-		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
+		orgLocationIds.push($(this).val());
+// 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
 	if(orgLocationId != null){
 		orgLocationIds = orgLocationId
@@ -1107,6 +1124,8 @@ function getOpenJobsELKList(orgLocationId){
 		url+="&dates="+dates;
 	if(country)
 		url+="&country="+country;
+	if(companies)
+		url+="&companies="+companies;
 	if(reqType)
 		url+="&reqType="+reqType;
 	if(orgLocationIds)
@@ -1334,13 +1353,14 @@ function getOrgsList(alphabet,type){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
+	    	
 	    	if(type != 'main'){
 	    		var org = "";    	
 				for(var i=0; i<json.length; i++){
 					var opt = json[i];
 					org = org +'	<li class="control-group">';
 					org = org +'		<label class="control control--checkbox"><span>'+opt.orgName+'</span>';
-					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt.id+'")!=-1?"checked=checked":""} /><div class="control__indicator"></div>';
+					org = org +'		  <input type="checkbox" name="orgName" value="'+opt.id+'"  /><div class="control__indicator"></div>';
 					org = org +'	</label>';
 					org = org +'	</li>';
 				}
@@ -1352,7 +1372,11 @@ function getOrgsList(alphabet,type){
 		    		if(opt != null && opt !='undefined'){ 	
 		    			result = result +'<li class="control-group">';
 				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="getOpenJobsELKList('+opt.id+');"/><div class="control__indicator"></div>';
+// 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	
+				    	var checked = "checked";
+				    	
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
 				    	result = result +'</label>';                                                 
 				    	result = result +'</li>';
 		    		}

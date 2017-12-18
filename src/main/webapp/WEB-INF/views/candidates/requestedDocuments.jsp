@@ -28,7 +28,7 @@
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <style type="text/css">

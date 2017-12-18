@@ -217,6 +217,10 @@ public class UserServiceImpl implements UserService {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
 		  
+		  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+		  }
+		  
 		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
 		    }
@@ -444,6 +448,10 @@ public class UserServiceImpl implements UserService {
 			user.setUserName(null);
 		}
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
+	    }
+		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
 		user.setCreatedDate(commonUtil.currentDate());
@@ -462,6 +470,8 @@ public class UserServiceImpl implements UserService {
 			User reportingManager = new User();
 			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 			userRole.setReportingManager(reportingManager);
+		}else {
+			userRole.setReportingManager(user);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -671,7 +681,7 @@ public class UserServiceImpl implements UserService {
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("login").append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
@@ -937,7 +947,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("loginUsername",loginUser.getLastName());
 			 }
 			 StringBuilder urlBuilder = new StringBuilder();
-			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("login").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			// globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 StringBuilder rejecturlBuilder = new StringBuilder();
 			 globalVarsMap.put("rejectURL",rejecturlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());

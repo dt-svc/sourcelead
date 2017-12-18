@@ -695,6 +695,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 	}
 
+	@Override
+	@Transactional
+	public List<Contracts> getContractByLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contractsList = session.createQuery("from Contracts contracts where contracts.orgLocationId.id =:orgLocationId").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if (contractsList != null && contractsList.size() > 0) {
+		return contractsList;
+		}
+		return null;
+	}
+
 	
 
 }

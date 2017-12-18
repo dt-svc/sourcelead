@@ -1405,8 +1405,10 @@ function preparedContractListWTS(json){
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
 		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
-		         }else{
+		         }else if(report.typeOfContract == "Existing"){
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
+		         }else{
+		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 		         }
 		         '</sec:authorize>';
 		         result = result + '</td>';
@@ -1499,8 +1501,10 @@ function preparedContractListWTS(json){
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	         if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
-	         }else{
+	         }else if(output.typeOfContract == "Existing"){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
+	         }else{
+	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	         }
      		'</sec:authorize>';
      		 opt = opt + '</td>';
