@@ -33,6 +33,112 @@ $(document).ready(function() {
 	}
 </script> 
 
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="clearfix minHeight40 form-group">
+          <a href="<c:url value='${appPath}/downloadContactCSVTemplate?'/>" class="btn btn-info col-md-4 col-md-offset-4">
+					Download Contact CSV<i class="fa fa-download paddingLeft"></i>
+		  </a>
+<!--             <button type="button" class="btn btn-info col-md-4 col-md-offset-4">Download CSV <i class="fa fa-download paddingLeft"></i></button> -->
+          </div>
+          <div class="clearfix minHeight40 form-group">
+            <label class="col-md-3 padding_left mt5"><strong>Choose CSV File</strong></label>
+            <div class="clearfix col-md-9">
+              <div class="row">
+                <div style="margin:0 auto" class="input-group col-md-9 clearUploads pull-left">
+                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                    <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
+                    </span></label>
+                  <input class="form-control" readonly id="uploadFile" placeholder="Attachment" type="text">
+                </div>
+                <div class="col-md-3 padding_right">
+                  <button type="button" class="btn btn-primary btn-block">Upload</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix mt10"></div>
+          <div class="bs-example importcsv-accordion">
+            <div class="panel-group" id="accordion">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span>Outlook</a> </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ol class="col-md-12 mb0">
+                      <li>Choose Open &amp; Export > Import/Export. </li>
+                      <li>Choose Export to a file. </li>
+                      <li>Select Comma Separated Values (Windows) and click Next. </li>
+                      <li>Select Contacts and click Next. A screen appears where you can specify where to save the file. </li>
+                      <li>Click Browse and go to where to save the file, and then enter a name for the .CSV file. </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span>Gmail</a> </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p>HTML stands for HyperText Markup Language. HTML is the standard markup language for describing the structure of web pages. <a href="https://www.tutorialrepublic.com/html-tutorial/" target="_blank">Learn more.</a></p>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span>Thunderbird</a> </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p>HTML stands for HyperText Markup Language. HTML is the standard markup language for describing the structure of web pages. <a href="https://www.tutorialrepublic.com/html-tutorial/" target="_blank">Learn more.</a></p>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span>Yahoo Mail</a> </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <p>Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web development. It is a collection of CSS and HTML conventions. <a href="https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank">Learn more.</a></p>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span>LinkedIn</a> </h4>
+                </div>
+                <div id="collapseFive" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ol class="col-md-12 mb0">
+                      <li>Click on My Network icon at top of your page</li>
+                      <li>Click on "See all" in the network list</li>
+                      <li>Click on "Manage synced and imported contacts</li>
+                      <li>Click on Export Contacts on left side of the page</li>
+                      <li>Enable the "Connections" Checkbox and click on Request archive.</li>
+                      <li>Authorize account by providing password of LinkedIn. </li>
+                      <li>The mail will be forwarded to your mail with download link.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
 <section class="content-wraper">
 <section class="content-header clearfix">
      <div class="success_pop" id="selector" style="display: none;">
@@ -52,6 +158,10 @@ $(document).ready(function() {
             
             <li>
             	<span  id="moveFolder" class="moveFolder" onClick="movefolderPop();"><i class="fa fa-folder mr" title="Move"></i>|</span>
+            </li>
+            
+            <li>
+            <span  class="pull-right" data-toggle="modal" data-target="#myModal" "><i class="fa fa-folder mr" title="Move"></i>csv</span>
             </li>
             
             <li class="hidden">
