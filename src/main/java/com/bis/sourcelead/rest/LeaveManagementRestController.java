@@ -1246,13 +1246,15 @@ public class LeaveManagementRestController {
 					e.printStackTrace();
 				}
 			}
+			Employees emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
-			int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+			int balLeaves = totalLeavesperYear - nuberOfLeavestaken;
 			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
