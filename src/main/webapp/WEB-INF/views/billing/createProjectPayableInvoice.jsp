@@ -42,7 +42,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatProPayInvoiceEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			          <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			          <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">

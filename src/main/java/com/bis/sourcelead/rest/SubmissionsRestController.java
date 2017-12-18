@@ -654,7 +654,7 @@ public class SubmissionsRestController {
 
 
 	@RequestMapping(value = "/app/rejectApplicant")
-	public @ResponseBody String rejectApplicant(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
+	public @ResponseBody String rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 
 	{
 		
@@ -1015,7 +1015,7 @@ public class SubmissionsRestController {
 
 
 	@RequestMapping(value = "/app/backoutApplicant")
-	public @ResponseBody String backoutApplicant(
+	public @ResponseBody String backoutApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
 			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,

@@ -81,7 +81,7 @@ function checkBox(){
 		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			 <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
+			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
 			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
