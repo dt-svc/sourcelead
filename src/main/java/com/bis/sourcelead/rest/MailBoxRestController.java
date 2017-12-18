@@ -82,6 +82,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class MailBoxRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MailBoxRestController.class);
