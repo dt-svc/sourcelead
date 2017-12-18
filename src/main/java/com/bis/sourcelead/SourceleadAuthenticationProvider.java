@@ -104,7 +104,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  
-        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
+//        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
         		  try {
 					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
 				} catch (Exception e) {

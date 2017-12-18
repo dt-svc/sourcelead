@@ -120,7 +120,7 @@ input.signin_fild:-webkit-autofill {
 .orgCta span {
 	width: 52px; height: 52px; border: 2px solid #e0e0e0; display: block; float: left; text-align: center;
 	vertical-align: middle; margin: 5px 10px 0px 10px; border-radius: 50%; box-sizing: border-box;
-	background-image: url(../images/office-image.jpg); background-repeat: no-repeat; background-position: center;
+	background-repeat: no-repeat; background-position: center;
 	background-size: cover;
 }
 .orgCta span img {

@@ -304,7 +304,10 @@ function getConfiguredList(){
 						</c:if>
 						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
 						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>		
+						</c:if>	
+						<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>	
 							<div class="slider round"></div>
 						</label>
 					</div>
@@ -370,6 +373,7 @@ function getConfiguredList(){
 
 <script>
 function switchLoginSecurity(){
+	alert("sdasd")
 	var ckbox = $('#loginSecurityId');
 	var security = "";
 	if (ckbox.is(':checked')) {
