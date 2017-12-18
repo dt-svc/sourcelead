@@ -21,6 +21,7 @@
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
+			getCustomDependentField();
 		});
     </script> 
 <script>
@@ -199,6 +200,7 @@ $(document).ready(function () {
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form">
+    <input type="hidden" id="actionId" value="${actionId}">
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -1307,6 +1309,7 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
+			<jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
       </div>
     </div>
     <!-- Internal Details html Ends -->

@@ -49,7 +49,7 @@ public class CustomFormRestController {
     	List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
     	model.addObject("SourceleadForm_Sections",sections);
     	if(requestFrom != null && StringUtils.isNotBlank(requestFrom) && StringUtils.isNotEmpty(requestFrom) && requestFrom.equalsIgnoreCase("genericCustomPage") ) {
-    		model.setViewName("users/genericCustomFormFields");
+    		model.setViewName("genericCustomFormFields");
     	}else {
     		model.setViewName("customForms/customFormSections");
     	}

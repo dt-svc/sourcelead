@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<div id="customFormDiv">
+<div id="customFormDiv"></div>
 <c:forEach var="formSections" items="${SourceleadForm_Sections}">
 	<c:forEach var="customForm" items="${formSections.customFieldsList}">
 	<c:if test="${customForm.fieldType == 'textfield'}">
@@ -30,7 +30,7 @@
                       <label class="col-md-3">${customForm.labelName}</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="${customForm.fieldName}" class="form-control calendar" id="${customForm.fieldName}" readonly="readonly">
+                              <input type="text" value="" name="${customForm.fieldName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate();" id="${customForm.fieldName}" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
@@ -39,23 +39,21 @@
 	   
 	</c:forEach>
 </c:forEach>
-</div>
+
 
 <script>
-  $( function() {
+   function dateScriptsCustomDate() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
-	  var dateId = $(".calendar").val();
-	  alert(dateId);
-	  $('#dateId').datepicker({
+	  $('.customDate').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  });
-	  
-  } );
+  } 
 </script>
+ 
 
 <script>
 function getCustomDependentField(){
@@ -70,3 +68,5 @@ function getCustomDependentField(){
 		  })
 }
 </script>
+
+

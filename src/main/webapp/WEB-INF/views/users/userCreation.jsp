@@ -271,7 +271,7 @@
 		                </div>
 		                 </div>
                </div>
-               <jsp:include page="genericCustomFormFields.jsp"></jsp:include>
+               <jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
             </div>
             </div>
                 
@@ -872,21 +872,6 @@ function getAssociateUserDetails(){
 </script>
 <!-- end script for datepicker -->
 
- <script>
-   function dateScripts() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = getJSDateFormat(locationDate);
-	  //end
-	  var dateId = $(".calendar").val();
-	  alert(dateId);
-	  $('#dateId').datepicker({
-	      dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  });
-  } 
-</script>
- 
  
 <script type="text/javascript">
  function getReportingManager() {

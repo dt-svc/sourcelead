@@ -943,6 +943,7 @@ public class Constants {
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
+	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
 
 
 }
