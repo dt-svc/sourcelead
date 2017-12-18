@@ -307,6 +307,10 @@ input[readonly] {
     background-image: url(../images/addinitial.png);
 }
 
+#btnAddInitial.disabled {
+    background-image: url(../images/addinitial_disabled.png);
+}
+
 #btnPreviewSignature {
     background-image: url(../images/previewsign.png);
 }
