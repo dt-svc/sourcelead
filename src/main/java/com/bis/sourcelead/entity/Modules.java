@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bis.sourcelead.enums.Status;
 
 @Entity
-@Table(name = "MODULES", catalog = "sourcelead")
+@Table(name = "MODULES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="modules")
 public class Modules implements Serializable{
 

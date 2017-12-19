@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "HOLIDAY_RESTRICT_DAYS", catalog = "sourcelead")
+@Table(name = "HOLIDAY_RESTRICT_DAYS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "HolidayAndRestrictday")
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;

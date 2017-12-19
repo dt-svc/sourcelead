@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "TABS_ACTIONS", catalog = "sourcelead")
+@Table(name = "TABS_ACTIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class TabActions implements Serializable{
 	

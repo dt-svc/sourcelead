@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "ROLE_HIERARCHY", catalog = "sourcelead")
+@Table(name = "ROLE_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="roleHierarchy")
 public class RoleHierarchy implements Serializable{
 	

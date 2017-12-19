@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "EXPENSE_CATEGORY", catalog = "sourcelead")
+@Table(name = "EXPENSE_CATEGORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesCategory")
 public class ExpensesCategory implements Serializable {
 	private static final long serialVersionUID = 1L;

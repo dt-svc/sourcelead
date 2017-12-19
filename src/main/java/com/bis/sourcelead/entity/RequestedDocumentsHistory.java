@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "REQUESTED_DOCUMENTS_HISTORY", catalog = "sourcelead")
+@Table(name = "REQUESTED_DOCUMENTS_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requestedDocumentsHistory")
 public class RequestedDocumentsHistory implements Serializable{
 	

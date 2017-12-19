@@ -30,7 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bis.sourcelead.enums.PaymentModes;
 
 @Entity
-@Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
+@Table(name = "EXPENSES_ENTRIES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
 public class ExpensesEntries implements Serializable {
 	private static final long serialVersionUID = 1L;

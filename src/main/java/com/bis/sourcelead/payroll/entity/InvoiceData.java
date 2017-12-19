@@ -20,7 +20,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "INVOICE_DATA", catalog = "sourcelead")
+@Table(name = "INVOICE_DATA")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceData")
 public class InvoiceData implements Serializable {
 	
