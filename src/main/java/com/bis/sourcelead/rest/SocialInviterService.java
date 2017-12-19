@@ -206,7 +206,7 @@ public class SocialInviterService {
 	}
     
     
-    @RequestMapping(value = {"/storeCsv", "/app/storeCsv"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/storeCsv"}, method = RequestMethod.POST)
 	public @ResponseBody String storeCsv(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;
