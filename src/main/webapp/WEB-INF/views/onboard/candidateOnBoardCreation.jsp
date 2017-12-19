@@ -2508,7 +2508,6 @@ function toDate(selector) {
 </script>
 <script>
 function refreshRoleList(){
-	alert("gii");
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRoleList",       

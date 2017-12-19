@@ -175,9 +175,9 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 chooRadius" id="chosen-role">
+                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -185,9 +185,9 @@
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
-                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
+                       <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
 			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			      </sec:authorize>
+			           </sec:authorize>
                 </div>
                 </div> 
                
