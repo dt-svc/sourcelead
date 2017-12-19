@@ -55,7 +55,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class ProfessionalRequirementsController {
 
 	@Value("${sourceleadUrl}")
@@ -557,7 +556,7 @@ public class ProfessionalRequirementsController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/downloadContactCSVTemplate")
+	 @RequestMapping(value = "/app/downloadContactCSVTemplate")
 		public void downloadContactCSVTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			File file = null;
 			String fn;	

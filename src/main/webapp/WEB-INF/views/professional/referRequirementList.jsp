@@ -16,6 +16,16 @@ $(document).ready(function() {
 .emailWidth {
 	width:400px;
 }
+.model-err-msg {
+    clear: both;  margin: 0 auto;  padding: 0px;
+    color: #E65C8D; text-align: center; width: 54%;
+    margin-bottom: 10px; margin-top: -18px; font-size: 12px;
+}
+img.contact-images { width:24px; height: 24px; margin-right: 10px;
+}
+.importcsv-accordion .panel-title a {
+	display: block; width:100%;
+}
 </style>
 <script>
  function contactsImportSucess(service,status){
@@ -35,37 +45,62 @@ $(document).ready(function() {
 
 
 <div class="modal fade" id="myModal" role="dialog">
+   <form:form id="uploadContactCSV_form" name="uploadContactCSV_form" enctype="multipart/form-data">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
           <div class="clearfix minHeight40 form-group">
-          <a href="<c:url value='${appPath}/downloadContactCSVTemplate?'/>" class="btn btn-info col-md-4 col-md-offset-4">
+          <a href="<c:url value='${appPath}/downloadContactCSVTemplate'/>" class="btn btn-info col-md-4 col-md-offset-4">
 					Download Contact CSV<i class="fa fa-download paddingLeft"></i>
 		  </a>
-<!--             <button type="button" class="btn btn-info col-md-4 col-md-offset-4">Download CSV <i class="fa fa-download paddingLeft"></i></button> -->
           </div>
+          
           <div class="clearfix minHeight40 form-group">
             <label class="col-md-3 padding_left mt5"><strong>Choose CSV File</strong></label>
             <div class="clearfix col-md-9">
               <div class="row">
-                <div style="margin:0 auto" class="input-group col-md-9 clearUploads pull-left">
+                <div style="margin:0 auto" class="input-group col-md-9 pull-left errorInptgroup">
                   <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                    <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
+                    <input type="file" name="file" style="display: none;" multiple id="uploadBtn" class="upload" >
                     </span></label>
-                  <input class="form-control" readonly id="uploadFile" placeholder="Attachment" type="text">
+                  <input class="form-control" readonly id="uploadFile" placeholder="No file chosen" field-name="Contact CSV"  data-validation="required">
+                  <div class="clearUpload" style="display: none"></div>
                 </div>
                 <div class="col-md-3 padding_right">
-                  <button type="button" class="btn btn-primary btn-block">Upload</button>
+                  <button type="button" class="btn btn-primary btn-block" id="uploadContact_id" onclick = "saveContactCSV();">Upload</button>
                 </div>
               </div>
             </div>
           </div>
+          
+          <div class="model-err-msg" style="display: none">Please upload a file of type *.CSV</div>
+          
+          <h5>How to Export Contacts(.csv) ? </h5>
           <div class="clearfix mt10"></div>
           <div class="bs-example importcsv-accordion">
-            <div class="panel-group" id="accordion">
+            <div class="panel-group mb10" id="accordion">
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/gmail-icon.png" class="contact-images">Gmail</a> </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                  <div class="panel-body">
+                  <ol class="col-md-12 mb0">
+                    <li>From your Gmail account, choose Gmail >Contacts</li>
+					<li>Select More >Export.</li>
+					<li>Choose the contact group you want to export.</li>
+					<li>Choose the export format Outlook CSV (for importing into Outlook or another application).</li>
+					<li>Choose Export.</li>
+					<li>When prompted, choose Save As, and browse to a location to save the file.</li>
+				</ol>
+                  </div>
+                </div>
+              </div>
+              
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span>Outlook</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/outlook-icon.png" class="contact-images">Outlook</a> </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -79,39 +114,41 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
+              
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span>Gmail</a> </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse">
-                  <div class="panel-body">
-                    <p>HTML stands for HyperText Markup Language. HTML is the standard markup language for describing the structure of web pages. <a href="https://www.tutorialrepublic.com/html-tutorial/" target="_blank">Learn more.</a></p>
-                  </div>
-                </div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span>Thunderbird</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/thunderbird-ic.png" class="contact-images">Thunderbird</a> </h4>
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse">
                   <div class="panel-body">
-                    <p>HTML stands for HyperText Markup Language. HTML is the standard markup language for describing the structure of web pages. <a href="https://www.tutorialrepublic.com/html-tutorial/" target="_blank">Learn more.</a></p>
+                  <ol class="col-md-12 mb0">
+	                  <li> Click Tools and select Address Book</li>
+					  <li> Select the address book you want to export.</li>
+					  <li> Then click Tools again in the Address Book and select Export... while keeping your address book selected.</li>
+				      <li> Save the file somewhere convenient as an LDIF file with whatever filename you wish.</li>
+			        </ol>
                   </div>
                 </div>
               </div>
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span>Yahoo Mail</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/yahoo-icon.png" class="contact-images">Yahoo Mail</a> </h4>
                 </div>
                 <div id="collapseFour" class="panel-collapse collapse">
                   <div class="panel-body">
-                    <p>Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web development. It is a collection of CSS and HTML conventions. <a href="https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank">Learn more.</a></p>
+                   <ol class="col-md-12 mb0">
+                     <li>Click on the Contacts tab.</li>
+					 <li>Click the Actions dropdown box.</li>
+					 <li>Choose Export.</li>
+					 <li>Click Export Now next to "Yahoo! CSV" which is the type of program to which you want to export your contacts.</li>
+					 <li>After clicking Export Now, you will see a verification code. Write it in the text box above the security code box and then click Export Now.</li>
+					</ol>
                   </div>
                 </div>
               </div>
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span>LinkedIn</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/linkedin-icon.png" class="contact-images">LinkedIn</a> </h4>
                 </div>
                 <div id="collapseFive" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -129,16 +166,96 @@ $(document).ready(function() {
               </div>
             </div>
           </div>
+          <div class="clearfix">
+          <div class="small pull-left"><span class="text-muted">Note:</span><span class="text-info ml">Email is required to Import a Contact</span></div>
+          <button type="button" class="btn btn-default pull-right ml10" data-dismiss="modal" onclick="resetForm();">Close</button>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Submit</button>
-        </div>
+
       </div>
     </div>
+     </form:form>
   </div>
   
-  
+  <script type="text/javascript">
+	//script for upload file
+	document.getElementById("uploadBtn").onchange = function () {
+		var uploadBtn = $("#uploadBtn").val();
+		 var splitFile = uploadBtn.split(".")
+		if(splitFile[1] == "csv"){
+			document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+			$(".clearUpload").show();
+			$("#uploadContact_id").removeAttr("disabled");
+			$(".model-err-msg").hide();
+		}else{
+			$("#uploadContact_id").attr("disabled", "disabled");
+			$(".model-err-msg").show();
+		}
+	
+		
+	}
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#uploadContactCSV_form input[data-id*=uploadBtn]").remove();
+	});
+	function resetForm(){
+		$("#uploadContactCSV_form")[0].reset();
+		$("#uploadContact_id").removeAttr("disabled");
+		$(".model-err-msg").hide();
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#myModal").hide();
+		$("#myModal").addClass("fade");
+		$("#accordion").find(".in").removeClass("in");
+	}
+</script>
+  <script>
+  function saveContactCSV(){
+	if ($('#uploadContactCSV_form').validate(false, validationSettings)){
+		var frm = $('#uploadContactCSV_form').serializeFormJSON();
+		$("#uploadContact_id").attr("disabled", "disabled");
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		
+		//It will escape all the special characters
+		var jsonData = encodeURIComponent(con);
+		var form = $('#uploadContactCSV_form')[0];
+		var formData = new FormData(form); 
+		 $.ajax({
+			   	type: "POST",
+			   	data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+	    	    enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	    	    dataType : 'json',
+			    url : sourceleadUrl+"/storeCsv?"+tokenParamName+"="+tokenValue+"", 	   
+	 		    success : function(data) {
+	 		    	$("#uploadContact_id").removeAttr("disabled");
+	 		    	$("#myModal").modal("hide");
+	 		    	location.reload();
+	 		    },
+		 });
+		 
+	}
+  }
+  </script>
+  <script>
+	//File Accordion Script
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.in").each(function(){
+        	$(this).siblings(".panel-heading").find(".fa").addClass("fa-angle-up").removeClass("fa-angle-down");
+        });
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+        	$(this).parent().find(".fa").removeClass("fa-angle-down").addClass("fa-angle-up");
+        }).on('hide.bs.collapse', function(){
+        	$(this).parent().find(".fa").removeClass("fa-angle-up").addClass("fa-angle-down");
+        });
+    });
+</script>
 <section class="content-wraper">
 <section class="content-header clearfix">
      <div class="success_pop" id="selector" style="display: none;">
@@ -158,10 +275,6 @@ $(document).ready(function() {
             
             <li>
             	<span  id="moveFolder" class="moveFolder" onClick="movefolderPop();"><i class="fa fa-folder mr" title="Move"></i>|</span>
-            </li>
-            
-            <li>
-            <span  class="pull-right" data-toggle="modal" data-target="#myModal" "><i class="fa fa-folder mr" title="Move"></i>csv</span>
             </li>
             
             <li class="hidden">
