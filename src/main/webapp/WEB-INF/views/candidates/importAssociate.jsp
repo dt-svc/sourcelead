@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
@@ -221,21 +222,33 @@
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9" id="errorvendor">
+			<div class="col-md-9 chooRadius" id="errorvendor">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();importAssociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+		               <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+           </sec:authorize>
 		</div>
-		
+			</div>
 		 <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9" id="errorvendorContact">
+			<div class="col-md-9 chooRadius" id="errorvendorContact">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			       <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			       <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+                    </sec:authorize>
+		    </span>
 		</div>
 		</div>
-		
+			</div>
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
@@ -791,6 +804,21 @@ function  removeValiationVendorContact() {
 	 
 });
  </script>
+
+ <script>
+function importAssociateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =   $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+
  
 <!--  <script>
 	$(".clearUpload").click(function(){
@@ -799,3 +827,4 @@ function  removeValiationVendorContact() {
 		$("#candidate_form input[data-id*=uploadBtn]").remove();
 	});
 </script> -->
+

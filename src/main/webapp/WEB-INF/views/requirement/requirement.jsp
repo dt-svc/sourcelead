@@ -193,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -921,8 +921,8 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -951,12 +951,17 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                   </div>
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                       <span class="col-md-3 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+                       <span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
+                       </span>
+                  </sec:authorize>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -982,9 +987,14 @@ $(document).ready(function () {
                     	</select>
 				    </c:otherwise>
 				</c:choose>
-                    
+                    <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
                  </div>
-                  
+                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			      	</sec:authorize>
+			      	
+			  </span>
                 </div>
               </div>
               <div class="form-group">
@@ -1343,7 +1353,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -2685,5 +2695,53 @@ function removeReqDoc(requirementId){
 }
 </script>
 
- 
+ <script>
+function refreshRequirementClientList(){
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#addClientId").empty();
+	        	 $("#selectContact").empty();
+	        	 $("#selectContact").trigger("chosen:updated");
+		        $("#addClientId").append(output);
+		        $('#addClientId').trigger("chosen:updated");
+		        
+	        }
+		 });
+	
+}
+</script>
+
+<script>
+	 function selectedClient(){
+		 var a = $("#addClientId").val();
+		 var valueArray = a.split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+</script>
+
+<script>
+function refreshRequirementClientContactList(){
+	 var a = $("#addClientId").val();
+	 var valueArray = a.split(",");
+	if(valueArray[0] != ""){
+		clientContactList(valueArray[0],valueArray[1]);
+	}
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />

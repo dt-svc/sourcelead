@@ -1,7 +1,5 @@
 package com.bis.sourcelead.util;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1330,7 +1328,7 @@ public class EMailJobScheduler {
 	}
 	
 	
-	private void contractSignedByReceiver(Contracts contracts) throws Exception
+	public void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());

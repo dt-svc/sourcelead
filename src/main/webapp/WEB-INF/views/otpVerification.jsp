@@ -24,10 +24,10 @@
 </style>
 <!--  OTP Wrap  -->
     <div class="otp_wrap" style="display:block">
-    
+    	<div class="otpBackNew" style="display: none;"><a onclick="otpClose();"><i class="fa fa-close"></i></a></div>
 <%--     <c:if test='${empty SourceLeadWeb_sourceleadUrl}'> --%>
 	    <div class="backBtn" id="gobackBtn">
-			<a id="backAnch" onclick="goToLocations();"><u class="fa fa-arrow-left OtpBack"></u></a>
+			<u class="fa fa-arrow-left OtpBack" id="backAnch" onclick="goToLocations();"></u>
 		</div>
 <%--     </c:if> --%>
              
@@ -41,7 +41,7 @@
 				<input type="radio" checked name="radio" id="email" value="${emailId}"><label for="email" id="emailLabel">${emailId}</label>
 			</span>
 			<c:if test="${!empty mobilePhone}">
-				<span class="clearfix" id="mobileSpan">
+				<span class="clearfix" id="mobileSpan" style="display:none">
 					<input type="radio" name="radio" id="mobile" value="${mobilePhone}"><label for="mobile" id="mobileLabel">${mobilePhone}</label>
 				</span>
 			</c:if>
@@ -58,6 +58,7 @@
    		<input type="text" id="enteredOTP" class="otpfeild" placeholder="Enter OTP"/>
 		<button id="verifyOTP" onclick="verifyOTP();">Verify</button>	
    		<p class="text-danger" id="errorDiv" style="display:none"></p>
+   		
     </div>               
 <!--  OTP Wrap  -->
 
@@ -107,7 +108,7 @@ function verifyOTP(){
 	var password = $("#password").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
-	if(enteredOTP == '${authToken}'){
+	if((enteredOTP != null && enteredOTP != '' && enteredOTP !='undefined') && (enteredOTP == '${authToken}')){
 		$("#errorDiv").removeAttr("style");
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({

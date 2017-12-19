@@ -1,18 +1,31 @@
 package com.bis.sourcelead.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +40,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -41,6 +55,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
@@ -62,6 +77,9 @@ public class ProjectsController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	 @Autowired
 	 private OrgService orgService;
@@ -90,6 +108,8 @@ public class ProjectsController {
 	 @Autowired
 	 CountriesService countriesService;
 	 
+	 @Autowired
+	 ProjectDocumentsService projectDocumentsService;
 
 	@Autowired
 	CommonUtil commonUtil;
@@ -261,8 +281,9 @@ public class ProjectsController {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				
-				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 				
 				if(flag == true) {
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -441,7 +462,8 @@ public class ProjectsController {
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				 
-				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 				 
 				 if(flag == true) {
 					 Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -490,7 +512,8 @@ public class ProjectsController {
 	    
 	    ModelAndView model = new ModelAndView();
 		
-	    boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+	    Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 	    
 	    if(flag == true) {
 	    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -543,7 +566,8 @@ public class ProjectsController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
-		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 	
 	    if(flag == true) {
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -720,6 +744,6 @@ public class ProjectsController {
    		return model;
        }
 
-
+    
 
 }

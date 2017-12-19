@@ -34,23 +34,35 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-										<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
-											data-validation="required" field-name="Vendor">
-										</select>
-							</div>
+              <div class="col-md-9 chooRadius">
+               <div class="input-group col-md-10 pull-left">
+			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
+				data-validation="required" field-name="Vendor">
+			</select>
+			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatProPayInvoiceEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			</div>
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			          <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
             </div>
-              
+              </div>
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-9 chooRadius">
+                 <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
               </div>
+             <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			           <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			        </sec:authorize>
+		     </span>
             </div>
-              
+             </div>
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
@@ -1644,9 +1656,26 @@ function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
 </script>
+
 <!-- <script>
 function clearDate(){
 	$("#dueDate").val("");
 	};	
 </script> -->
+
+<script>
+
+function creatProPayInvoiceEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $("#vendorOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+</script>
+
  <jsp:include page="../masterFooter.jsp" />	

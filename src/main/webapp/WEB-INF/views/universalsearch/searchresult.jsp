@@ -502,7 +502,7 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	
 									    	if(opt.length>5 && j==4){
 								                result = result+'  <div class="clearfix">';
-										    	result = result+'      <a href="/app/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										    	result = result+'      <a href="/app/jobs" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 										    	result = result+'  </div>';
 								             }
 									    	
@@ -551,8 +551,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 }
 				            	 /*========== Universal Search list of User End ==========*/ 
 				            	 
+				            	 
+				            	 //dont remove the code because projects are changing 
 				            	 /*========== Universal Search list of Projects ==========*/ 
-				            	 if(report.searchType=="Projects"){
+				            	/*  if(report.searchType=="Projects"){
 				            		 if((report.searchType=="Projects") && j == 0){
 				            			 result = result+'  <div class="clearfix">'; 
 					            		 result = result+'   <h4>Projects</h4>';
@@ -615,7 +617,7 @@ function getSearchResultsForAll(searchType,searchValue){
 							                result = result+'<a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 									    	result = result+'  </div>';
 							             }
-				            	 }
+				            	 } */
 				            	 /*========== Universal Search list of Projects End ==========*/ 
 				            	 
 				            	 /*========== Universal Search list of Candidate ==========*/ 

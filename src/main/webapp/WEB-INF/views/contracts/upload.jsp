@@ -1,13 +1,25 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<spring:url value="/resources/css/styles.css" var="cssmy"/>
+<link href="${cssmy}" rel="stylesheet">
+<script src="/resources/js/jquery-1.11.3.min.js"></script>
+<script src="/resources/js/signer.js" type="text/javascript"></script>
+             
+             
+<c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-	<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-            <spring:url value="/resources/css/styles.css" var="cssmy"/>
-            <link href="${cssmy}" rel="stylesheet">
-             <script src="/resources/js/jquery-1.11.3.min.js"></script>
-             <script src="/resources/js/signer.js" type="text/javascript"></script>
+</c:if>
+
+ <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+ <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+ <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+ <script src="/resources/js/bootstrap.min.js"></script> 
+ </c:if>
+
 <script>
 	$(document).ready(function() {
 		Signer.uploadDoc();
@@ -63,15 +75,41 @@ z-index: 99; top:-5px !important;
 .sign-initial {
 width: 125px !important; height: 35px; line-height: 35px;
 }
+.publicpageHeader {
+	min-height: 50px; background-color: #368ee0; padding:0px;
+}
+.publicpageHeader .publicpage-logo {
+background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
+}
+.publicpageHeader .publicpage-logo img {
+max-height: 100%;
+}
+.content-wraper {
+padding: 0;
+}
 </style>
+
+<c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+<header class="publicpageHeader">
+<div class="clearfix">
+	<div class="publicpage-logo col-md-2 text-center">
+		<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"></i></a>
+	</div>
+	</div>
+</header>
+</c:if>
+
+
  <div id="backShadow"></div>
   <div id="popup"></div>
-<section class="content-wraper">
+<section class="content-wraper container">
 <section class="content-header clearfix">
-    <div class="pull-left">
+    <div class="text-center clearfix">
       <h2>Create Signature</h2>
     </div>
+    <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts List</a>&raquo;Create Signature</div>
+  </c:if>
   </section>
 
            
@@ -114,7 +152,7 @@ width: 125px !important; height: 35px; line-height: 35px;
 					<button id="btnShowPreview" class="btn btn-success btn-block" onclick="Signer.createSignaturePreview();Signer.storeStyle()">Use This Sign</button>
 					</div>
                 </div>
-                <div id="signPreview">
+                <div id="signPreview" style="display: none;">
                     
                     <div class="clearfix">
                     <img id="signImage" src="">
@@ -155,7 +193,7 @@ width: 125px !important; height: 35px; line-height: 35px;
                             </div>
                         </div>
                         <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
-                        <input id="txtEmail" value="${contract.contactUser.email}" type="hidden">
+                        <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>
                     <div class="sign-container">
@@ -181,6 +219,7 @@ width: 125px !important; height: 35px; line-height: 35px;
                 </div>
             </div>
             </section>
-<!-- Footer Area -->
-<jsp:include page="../masterFooter.jsp" />
-<!-- Footer Area -->
+            
+ <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+ <jsp:include page="../masterFooter.jsp" />
+ </c:if>

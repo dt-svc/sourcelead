@@ -196,11 +196,13 @@
                 
                  <div class="form-group">
                        <label class="col-md-3 control-label">Offboard Template</label>
-                  <div class="col-md-6">
-                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
+                  <div class="col-md-6 chooRadius">
+<div class="input-group col-md-10 pull-left">                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
                        </select>
-                  </div>
-                </div>
+                        <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>                  </div>
+ <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
+                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+               </sec:authorize></div>                </div>
                 
                 
                   <div class="form-footer">

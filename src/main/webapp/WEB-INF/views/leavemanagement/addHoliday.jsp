@@ -108,7 +108,7 @@ $(document).ready(function() {
                       
                       </div>
                       
-                      <div class="clearfix row mt10 mb10">
+                      <div class="clearfix row mt25 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
                       <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
                       </div>

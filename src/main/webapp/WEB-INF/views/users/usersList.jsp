@@ -514,12 +514,18 @@ function exportToPdf(){
 	    		$('#loadMoreDiv').empty(); 
 	 			for(var i=0; i<json.length; i++){
 	 				
-			 				var userRole = json[i];
-			 				var mobilePhone = ""
+			 				var userRole = json[i];  
+			 				var mobilePhone = "";
+			 				var reportingManagerName = "";
 			 			    if(userRole.mobilePhone != null && userRole.mobilePhone  != '' && userRole.mobilePhone != 'undefined'){
 			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
-			 			    	mobilePhone = "No Data"
+			 			    	mobilePhone = "No Data"  
+			 			    }
+			 			   if(userRole.reportingManagerName != null && userRole.reportingManagerName  != '' && userRole.reportingManagerName != 'undefined'){
+			 				  reportingManagerName = userRole.reportingManagerName;
+			 			    }else{
+			 			    	reportingManagerName = "No Data"  
 			 			    }
 			       	    	opt = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 			       	    	opt = opt +"<div class='user-profile'>";
@@ -540,7 +546,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	opt = opt +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
+			       	         	opt = opt +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
@@ -549,6 +555,7 @@ function exportToPdf(){
 			       	    	
 			       	    	opt = opt +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	opt = opt +"<p><label><i class='fa fa-user-circle-o'  aria-hidden='true'></i>&nbsp;<span title='"+reportingManagerName+"'> "+reportingManagerName+"</span></label></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
 			       	    	
 			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){

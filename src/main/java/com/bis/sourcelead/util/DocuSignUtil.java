@@ -46,8 +46,8 @@ public class DocuSignUtil {
 		fontFileMap.put(3, "MrsSaintDelafield-Regular.ttf");
 		fontFileMap.put(4, "Pacifico-Regular.ttf");
 		
-		imageLocation[0] = "resources/images/signature.png";
-		imageLocation[1] = "resources/images/initial.png";
+		imageLocation[0] = "/resources/images/signature.png";
+		imageLocation[1] = "/resources/images/initial.png";
 	}
 	
 	public int getFontFileMapSize() {

@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "SUBMISSION_TEMPLATE", catalog = "sourcelead")
+@Table(name = "SUBMISSION_TEMPLATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionTemplate")
 public class SubmissionTemplate implements Serializable{
 

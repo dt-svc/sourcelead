@@ -119,7 +119,7 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(exception));
 		if (auth != null && auth.getPrincipal() != null) {
-			return "redirect:/dashboard";
+			return "redirect:/app/dashboard";
 		} else {
 			return "redirect:/login";
 		}
@@ -172,7 +172,7 @@ public class HomeController {
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {
 			if (isNullOrEmpty(requirementUUID)) {
-				return new ModelAndView("redirect:/dashboard");
+				return new ModelAndView("redirect:/app/dashboard");
 			} else {
 				StringBuilder redirectUrl = new StringBuilder();
 				try {
