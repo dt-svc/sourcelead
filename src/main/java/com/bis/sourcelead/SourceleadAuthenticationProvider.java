@@ -104,19 +104,25 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  
-        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
+//        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
         		  try {
 					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-        		  if(userRolesList.size() > 1)
-        			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
-        		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
-        			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
-        		  else{
-        			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
-        			  
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+        		  
+        		   if(authentication.getDetails() != null){
+        			  if(userRolesList.size() > 1)
+            			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
+            		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
+            			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
+            		  else{
+            			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
+            		  }
+        		   }else{
+        			   return userLoginHelper.redirectToDashboard(userRole,username,password,null);
+        		   }
+        		    
         			  /*OrgLocations orgLocations = null;
         			  Org org = null;
         			  List<SourceleadActions> actionsList = null;
@@ -164,7 +170,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         			  return new UsernamePasswordAuthenticationToken(username, password, authorities);*/
         			  
         			  
-        		  }
+        		
         	  }
         	  else{
         		  throw new BadCredentialsException("login_password_error");

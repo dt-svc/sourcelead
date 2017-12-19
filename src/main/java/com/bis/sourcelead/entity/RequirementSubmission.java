@@ -136,6 +136,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "REASON_TYPE")
     private String rejectedCategoryType;
 	
+	@Column(name = "BACKOUT_REASON", columnDefinition = "TEXT default NULL")
+    private String backOutReason;
+	
+	@Column(name = "BACKOUT_TYPE")
+    private String backOutCategoryType;
+	
     
 	@Column(name = "FINALIZED_RATE")
 	private String finalizedRate;
@@ -493,6 +499,9 @@ public class RequirementSubmission implements Serializable{
     
     @Column(name = "REASON_OTHER_TYPE")
     private String rejectedCategoryOther;
+    
+    @Column(name = "BACKOUT_OTHER_TYPE")
+    private String backOutCategoryOther;
     
     @Transient
     @JsonProperty
@@ -1588,6 +1597,30 @@ public class RequirementSubmission implements Serializable{
 
 	public void setDocURL(String docURL) {
 		this.docURL = docURL;
+	}
+
+	public String getBackOutReason() {
+		return backOutReason;
+	}
+
+	public void setBackOutReason(String backOutReason) {
+		this.backOutReason = backOutReason;
+	}
+
+	public String getBackOutCategoryType() {
+		return backOutCategoryType;
+	}
+
+	public void setBackOutCategoryType(String backOutCategoryType) {
+		this.backOutCategoryType = backOutCategoryType;
+	}
+
+	public String getBackOutCategoryOther() {
+		return backOutCategoryOther;
+	}
+
+	public void setBackOutCategoryOther(String backOutCategoryOther) {
+		this.backOutCategoryOther = backOutCategoryOther;
 	}
 
 	

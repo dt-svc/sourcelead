@@ -1801,13 +1801,15 @@ function preparedContractListWTV(json){
 		         
 		         result = result + '<td>';
 		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 if(report.orgRelationUUID != null && report.orgRelationUUID != '' && report.orgRelationUUID != 'undefined'){
 		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
 		        	 '</sec:authorize>';
-		        	 
-		        	 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+		        	 }else{
+	        		 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
 		        	   result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
 		        	 '</sec:authorize>';
+		        	 }
 		         }
 		         result = result + '</td>';
 		         
@@ -1907,14 +1909,15 @@ function preparedContractListWTV(json){
 	         
 	         opt = opt + '<td>';
 	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 if(output.orgRelationUUID != null && output.orgRelationUUID != '' && output.orgRelationUUID != 'undefined'){
 	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 	        	  opt = opt + '<div><span title="'+output.contractWith+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+output.orgRelationUUID+'" title="'+output.contractWith+'">'+output.contractWith+'</a></span></div>';
 	        	 '</sec:authorize>';
-	        	 
-	        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+	        	 }else{
+        		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
 	        	  opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
 	        	 '</sec:authorize>';
-	        	 
+	        	 }
 	         }
 	         opt = opt + '</td>';
 	         
