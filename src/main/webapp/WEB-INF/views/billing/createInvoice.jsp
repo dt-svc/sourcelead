@@ -2175,7 +2175,7 @@ function attachFile(id){
  
 </script>
 <script>
-<<<<<<< HEAD
+
 function createInvoiceEmptyClientContact(){
 	$("#clientContact").empty();
 	 $('#clientContact').append('<option value="">--select Client contact--</option>');
@@ -2196,5 +2196,5 @@ function clearDate(){
 	
 	
 </script>
->>>>>>> d0c2b046141be6bba39ea2f639ca80a871cc10a6
+
 <jsp:include page="../masterFooter.jsp" />
