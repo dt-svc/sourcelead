@@ -2372,7 +2372,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
@@ -2508,6 +2508,7 @@ function toDate(selector) {
 </script>
 <script>
 function refreshRoleList(){
+	alert("gii");
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRoleList",       

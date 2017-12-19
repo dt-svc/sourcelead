@@ -921,8 +921,8 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -951,12 +951,17 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                   </div>
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                       <span class="col-md-3 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+                       <span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
+                       </span>
+                  </sec:authorize>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -984,7 +989,13 @@ $(document).ready(function () {
 				</c:choose>
                     
                  </div>
-                  
+                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			      	</sec:authorize>
+			      	<span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="getContactList(this);"><i class="fa fa-refresh "></i></span>
+			  </span>
                 </div>
               </div>
               <div class="form-group">
