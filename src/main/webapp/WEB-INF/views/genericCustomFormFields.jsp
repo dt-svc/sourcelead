@@ -1,13 +1,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-	<c:forEach var="customForm" items="${customFieldsList}">
+	<c:set var="currentIndex" value="0"></c:set>
+	<c:forEach var="customForm" items="${customFieldsList}" varStatus="customFormIndex">
 	<c:if test="${customForm.fieldType == 'textfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 	    	 <div class="col-md-9">
-	     	 	<input type="text" class="form-control" id="" name="${customForm.fieldName}" placeholder="${customForm.placeHolder}" value="" field-name="Email Id" data-validation="${customForm.isRequired == 1 ? 'Required':''}" data-validation-optional="${customForm.isRequired == 0 ? 'true':''}">
+	    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+	     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="Email Id" data-validation="${customForm.isRequired == 1 ? 'Required':''}" data-validation-optional="${customForm.isRequired == 0 ? 'true':''}">
 	    	</div>
 	  </div>
 	 </c:if>
@@ -17,7 +18,9 @@
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
 		                <div class="checkbox checkBox">
-		                  <label><input type="checkbox" value="" name="${customForm.fieldName}"  ${customForm.isRequired == 1 ? 'checked':''}>
+		                  <label>
+		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+		                  <input type="checkbox" value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''}>
 		                    ${customForm.labelName}</label>
 		                </div>
 		             </div>
@@ -29,14 +32,15 @@
                       <label class="col-md-3">${customForm.labelName}</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="${customForm.fieldName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate();" id="${customForm.fieldName}" readonly="readonly">
+                              <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+                              <input type="text" value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" class="form-control calendar customDate" onclick="dateScriptsCustomDate();" id="${customForm.fieldName}" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
 	   </c:if>
 	   
-	   <c:if test="${customForm.fieldType == 'selectfield'}">
+	   <%-- <c:if test="${customForm.fieldType == 'selectfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 	    	 <div class="col-md-9">
@@ -46,8 +50,7 @@
 	     	 	</select>
 	    	</div>
 	  </div>
-	 </c:if>
-	   
+	 </c:if> --%>
 	</c:forEach>
 
 
