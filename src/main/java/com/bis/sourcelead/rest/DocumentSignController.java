@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.impl.SignDocumentService;
 import com.bis.sourcelead.service.impl.SignImageService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DocuSignUtil;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,6 +70,9 @@ public class DocumentSignController {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
+	@Autowired
+	private EMailJobScheduler eMailJobScheduler;
+	
 
 	@RequestMapping(value = "/signer",method = RequestMethod.POST)
 	@ResponseBody
@@ -84,7 +88,7 @@ public class DocumentSignController {
 		 fileName = contract.getContractsTemplate().getTemplateName();
 		}
 		
-		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(orgLocations.getId()),String.valueOf(org.getId()),true);
+		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(contract.getContractOrgLocationId().getId()),String.valueOf(contract.getContractOrgLocationId().getOrg().getId()),true);
 		logger.info("folder creation path in our local system : "+userData);
 		userInfo.setFileName(fileName);
 		userInfo.setFileURL(userData);
@@ -181,6 +185,7 @@ public class DocumentSignController {
 				contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
 				contractsTemplateService.saveNewContract(contracts);
 				contractsTemplateService.saveNewContract(childContarct);
+				eMailJobScheduler.contractSignedByReceiver(contracts);
 				
 				ContractsHistory parentContractsHistory = new ContractsHistory();
 				parentContractsHistory.setFromStage(parentFromStage);

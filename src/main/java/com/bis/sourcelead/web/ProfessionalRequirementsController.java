@@ -1,5 +1,11 @@
 package com.bis.sourcelead.web;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -548,6 +555,30 @@ public class ProfessionalRequirementsController {
 			
 		}
 	 
+	 
+	 @RequestMapping(value = "/app/downloadContactCSVTemplate")
+		public void downloadContactCSVTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			File file = null;
+			String fn;	
+		    		 fn = "/templates/contact_csv_template.csv";
+		    		 URL url = getClass().getResource(fn);
+				     file = new File(url.toURI());
+
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();
+			
+		}
 	 
 	 /* @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
 	  @RequestMapping(value = "/getProfessionalInterviewsEvent")
