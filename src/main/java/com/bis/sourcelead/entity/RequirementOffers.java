@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
-	@Table(name = "REQUIREMENT_OFFERS", catalog = "sourcelead")
+	@Table(name = "REQUIREMENT_OFFERS")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementOffers")
 	public class RequirementOffers implements Serializable{
 

@@ -18,7 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "LEAVE_MANAGEMENT_HISTORY", catalog = "sourcelead")
+@Table(name = "LEAVE_MANAGEMENT_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveManagementhistory")
 public class LeaveManagementHistory {
 	

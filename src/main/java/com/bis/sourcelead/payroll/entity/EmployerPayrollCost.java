@@ -20,7 +20,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "EMPLOYER_PAYROLL_COST", catalog = "sourcelead")
+@Table(name = "EMPLOYER_PAYROLL_COST")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "employerPayrollCost")
 public class EmployerPayrollCost implements Serializable {
 	private static final long serialVersionUID = 1L;

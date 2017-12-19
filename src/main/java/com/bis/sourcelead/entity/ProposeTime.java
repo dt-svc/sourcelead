@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INTERVIEW_PROPOSE_TIME", catalog = "sourcelead")
+@Table(name = "INTERVIEW_PROPOSE_TIME")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="interviewProposeTime")
 public class ProposeTime implements Serializable{
 	

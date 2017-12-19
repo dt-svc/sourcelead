@@ -26,7 +26,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
-@Table(name = "CANDIDATE_EMPLOYERS", catalog = "sourcelead")
+@Table(name = "CANDIDATE_EMPLOYERS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
 
 public class CandidateEmployers implements Serializable{

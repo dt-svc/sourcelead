@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INVOICE_LINE_ITEMS", catalog = "sourcelead")
+@Table(name = "INVOICE_LINE_ITEMS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceLineItems")
 public class InvoiceLineItems {
 	

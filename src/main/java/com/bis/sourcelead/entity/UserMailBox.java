@@ -24,7 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_MAIL_BOX", catalog = "sourcelead")
+@Table(name = "USER_MAIL_BOX")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
 public class UserMailBox implements Serializable{
 
