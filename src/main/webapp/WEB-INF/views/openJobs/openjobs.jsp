@@ -266,8 +266,8 @@ a.alertBtn {
 		</div>
 		<nav>
 			<ul class="menu">
-				<li><a href="/login"><i class="fa fa-home"></i></a></li>
-				<li><a href="/openJobs" class="rcolor">Jobs</a></li>
+				<li><a href="/"><i class="fa fa-home"></i></a></li>
+				<li><a href="/jobs" class="rcolor">Jobs</a></li>
 				<li><a href="javascript:void(0)" class="ma">What we do<i
 						class="fa fa-caret-down"></i></a>
 					<ul>
@@ -931,6 +931,9 @@ function clearcheck(){
 }
 
 function clearFilters(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	window.location.href = sourceleadUrl+"/jobs";
 	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
 	$('#dateFilterId').find('input[type=radio]:checked').removeAttr('checked');
 	$('#countryFilterId').find('input[type=radio]:checked').removeAttr('checked');
