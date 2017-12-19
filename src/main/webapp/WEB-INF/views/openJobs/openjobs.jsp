@@ -931,6 +931,9 @@ function clearcheck(){
 }
 
 function clearFilters(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	window.location.href = sourceleadUrl+"/jobs";
 	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
 	$('#dateFilterId').find('input[type=radio]:checked').removeAttr('checked');
 	$('#countryFilterId').find('input[type=radio]:checked').removeAttr('checked');
