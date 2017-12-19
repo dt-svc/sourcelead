@@ -373,7 +373,6 @@ function getConfiguredList(){
 
 <script>
 function switchLoginSecurity(){
-	alert("sdasd")
 	var ckbox = $('#loginSecurityId');
 	var security = "";
 	if (ckbox.is(':checked')) {
