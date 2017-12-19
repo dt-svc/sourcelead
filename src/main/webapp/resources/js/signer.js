@@ -586,12 +586,14 @@ var Signer = (function() {
             $('#btnSignNext').show();
             $("#btnAddSignature").addClass("disabled","disabled");
             $("#btnAddInitial").addClass("disabled","disabled");
-//            $('#btnAddSignature').removeAttr("onClick");
-//            $('#btnAddInitial').removeAttr("onClick");
+            $('#btnAddSignature').removeAttr("onClick");
+            $('#btnAddInitial').removeAttr("onClick");
         }else {
         	 $('#btnSignNext').hide();
         	 $("#btnAddSignature").removeClass("disabled");
         	 $("#btnAddInitial").removeClass("disabled");
+        	 $('#btnAddSignature').attr("onClick","Signer.addSignaturePlaceholder()");
+             $('#btnAddInitial').attr("onClick","Signer.addInitialPlaceholder()");
         }
         validateSigning();
     }
