@@ -24,7 +24,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CHECKS", catalog = "sourcelead")
+@Table(name = "CHECKS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "checks")
 public class Checks implements Serializable {
 	

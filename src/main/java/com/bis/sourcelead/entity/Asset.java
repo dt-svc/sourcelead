@@ -25,7 +25,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "ASSET", catalog = "sourcelead")
+@Table(name = "ASSET")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "asset")
 public class Asset implements Serializable{
 	

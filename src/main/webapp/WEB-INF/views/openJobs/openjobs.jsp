@@ -87,6 +87,8 @@ window.onload = function () {
 	}, 1000);
 	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
 		 if('${requirementReleaseStatus}' == 'Y'){
+			 $("#filterDiv").hide();
+			 $(".jobResults").addClass("jobResults_New");
 			getOpenJobsRequirementSummary('${requirementUUID}');
 			getDropDownCount();
 		}else{
@@ -153,7 +155,7 @@ function getPostValueDetails(){
 }
 
 a.alertBtn {
-	padding: 8px 15px !important;
+	padding: 7px 15px !important; float: left; margin: 0px 5px 0px 0px;
 }
 
 .ratetype p {
@@ -164,10 +166,6 @@ a.alertBtn {
 
 .adSearch .chosen-container .search-field input[type="text"] {
 	width: 100% !important;
-}
-
-a.alertBtn {
-	padding: 8px 15px !important;
 }
 
 .jobResultsCta.job_container {
@@ -229,6 +227,15 @@ a.alertBtn {
 .pac-container::after {
 	display: none;
 }
+.jobResults_New {
+	float: none!important; width: 100%;
+}
+.jobResults_New .jobDetails {
+	width: 100% !important;
+}
+.jobResults_New .innerContent {
+	padding: 0px 0px 30px !important;
+}
 </style>
 
 
@@ -254,7 +261,7 @@ a.alertBtn {
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="logo">
-			<a href="/login"><img src="/resources/css/jobs/images/logo.png"
+			<a href="/login"><img src="../resources/css/jobs/images/logo.png"
 				alt="SourceLead" title="SourceLead" /></a>
 		</div>
 		<nav>
@@ -333,7 +340,7 @@ a.alertBtn {
 <section class="innerContent">
 	<input type="hidden" name="openJobsOffset" id="openJobsOffset"
 		value="0" />
-	<div class="filter">
+	<div class="filter" id="filterDiv">
 		<h2>
 			Fliter your search <i class="fa fa-refresh" aria-hidden="true"
 				onclick="clearFilters(); getOpenJobsELKList();"
@@ -517,7 +524,7 @@ a.alertBtn {
 
 	</div>
 
-	<div class="jobResults jobResults_New">
+	<div class="jobResults">
 	
 	
 				<!-- <div class="jobResultsHead" id="jobResultHeadId" style="display:none">
@@ -1166,6 +1173,10 @@ function getOpenJobsELKList(orgLocationId){
 function prepareOpenJobsElkList(data,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
     var json = JSON.parse(data);
   	 var experience ="";
   	 var location = "";
@@ -1221,8 +1232,11 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsURL(\''+requirements.requirementId+'\',\''+requirements.jobTitle.toLowerCase().replace(/ /g ,"-").replace(/ & /g, '-and-').replace(/&/g, "-and-").replace(/'/g, "-or-").replace(/ /g, "-").replace(/\//g, "-or-")+'\');">'+requirements.jobTitle+'</h3>';
+				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/'+requirements.jobTitle.toLowerCase().replace(/ /g ,"-").replace(/ & /g, '-and-').replace(/&/g, "-and-").replace(/ /g, "-or-").replace(/ /g, "-").replace(/\/ /g, "-or-")+'-'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
+				
+				
+// 				sourceleadUrl+"/"+jobTitle+"-"+id
 				
 				link = "/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
@@ -1490,7 +1504,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				
     
 		      result = result +' <div class="beard clearfix">';
-		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();"><i class="fa fa-arrow-left text-muted paddingRight"></i>Back to List</a>';
+// 		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();"><i class="fa fa-arrow-left text-muted paddingRight"></i>Back to List</a>';
 		      result = result +'</div>';
 		      
 				result = result +'	<section class="innerContent">';

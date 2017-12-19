@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE", catalog = "sourcelead")
+@Table(name = "CANDIDATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
 public class Candidate implements Serializable{
 

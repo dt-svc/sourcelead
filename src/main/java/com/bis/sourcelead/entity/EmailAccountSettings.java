@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "EMAIL_ACCOUNT_SETTINGS", catalog = "sourcelead")
+@Table(name = "EMAIL_ACCOUNT_SETTINGS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="emailAccountSettings")
 public class EmailAccountSettings implements Serializable{
 
