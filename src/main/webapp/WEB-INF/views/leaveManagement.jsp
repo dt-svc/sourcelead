@@ -354,7 +354,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/app/rejectedLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

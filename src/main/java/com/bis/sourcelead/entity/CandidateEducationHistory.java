@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
  *		
  */
 @Entity
-@Table(name = "CANDIDATE_EDUCATION_HISTORY", catalog = "sourcelead")
+@Table(name = "CANDIDATE_EDUCATION_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEducationHistory")
 public class CandidateEducationHistory implements Serializable {
 	private static final long serialVersionUID = 1L;

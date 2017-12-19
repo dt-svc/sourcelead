@@ -70,9 +70,15 @@ function checkBox(){
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-9 chooRadius">
+                <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                 </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createExpenseRecInvoiceEmptyClientContact()"><i class="fa fa-refresh "></i></span>
+                    </div>
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+             </sec:authorize>                    
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="clientCurrency" id="clientCurrency">
@@ -80,9 +86,17 @@ function checkBox(){
               
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 select-field">					   
+              <div class="col-md-9 chooRadius">
+                 <div class="input-group col-md-10 pull-left">					   
                 <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
+                </div>
+                 <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			       <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			         <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			       </sec:authorize>
+		        </span>
               </div>
             </div>
               
@@ -1763,11 +1777,27 @@ function attachFile(id){
 }
 </script>
 <script>
+
+function createExpenseRecInvoiceEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
+}
+
+</script>
+ <script>
+	 function selectedClient(){
+		 var cid = $("#clientOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
+<script>
 function clearDate(){
 	$("#dueDate").val("");
 	};
 	
 	
 </script>
+
     
  <jsp:include page="../masterFooter.jsp" />	

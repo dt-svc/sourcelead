@@ -3602,9 +3602,6 @@ max-height: 150px !important;
 .errorInptgroup p.jquery_form_error_message {
     position: absolute; left: 0; bottom: -16px;
 }
-.errorInptgroup.errorInptgroup-bottom p.jquery_form_error_message {
-	bottom: 0px !important;
-}
 .addconsultant-popup {
     display: none; position:absolute; padding: 15px; left: 15%; width: 70%; z-index: 99999; top: 30%; border-radius: 5px;
 }
@@ -7231,8 +7228,8 @@ position:relative;
 	width: 100%; margin-top: 15px;
 }
 .jobpipline-count ul li {
-	padding: 5px; text-align: center; width: 19.5%; border-radius: 2px;
-	background-color: #F5F5F5;
+	padding: 10px; text-align: center; width: 19.5%; border-radius: 3px;
+	background-color: #fff; box-shadow: 1px 1px 1px #ddd;
 }
 .jobpipline-count ul li a  {
 	width: 100%; padding: 0px; display: inline-block; clear: both; margin-bottom: 5px;
@@ -7407,7 +7404,7 @@ min-height: 40px;
 min-height:80px;
 }
 .tableStyles {
-	position: relative; border: 1px solid #ddd;
+	position: relative; /*border: 1px solid #ddd;*/
 }
 .tableStyles table tbody{
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
@@ -7569,6 +7566,50 @@ vertical-align: middle !important; padding: 15px 10px !important;
 .immigration-head {
 background-color: #f5f5f5; padding:5px 15px;
 }
+.importcsv-accordion h4 {
+	font-size: 14px; font-weight: normal;
+}
+.importcsv-accordion .panel-heading {
+	padding:8px 10px;
+}
+.importcsv-accordion .panel-body {
+	padding:10px;
+}
+.importcsv-accordion ol li{
+	font-size: 12px; padding: 1px 0;
+}
+
+/* Card Model UI Styles */
+.cardModel-widget {
+ background: #fff; padding: 15px; box-shadow: 1px 1px 1px #ddd; border-radius: 3px; color: #444;
+}
+.cardModel-widget h4 {
+	margin: 0; margin-bottom: 10px; font-size: 15px;
+}
+.div-borderBottom {
+	border-bottom: 1px solid #ddd;
+}
+.mail-actionicons {
+position: absolute; right: 5px; top:8px; z-index: 1; color: #808080; cursor: pointer;
+}
+.mail-actionicons .fa:hover {
+color: #333;
+}
+.newMailSet.mailInboxli ul li a {
+width: 225px;
+}
+.newMailSet ul li a.Active {
+background: none !important;
+}
+.newMailSet ul li.Active {
+background:#f1f6ff;
+color: #444;
+}
+.inBox-list li {
+padding: 5px 10px;
+}
+/* Card Model UI Styles */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

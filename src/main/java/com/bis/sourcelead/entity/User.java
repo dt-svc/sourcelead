@@ -34,7 +34,7 @@ import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "USER", catalog = "sourcelead")
+@Table(name = "USER")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
 public class User implements Serializable{
 
