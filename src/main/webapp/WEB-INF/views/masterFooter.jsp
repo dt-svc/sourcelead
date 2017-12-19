@@ -94,6 +94,6 @@ $( this ).addClass( feedback.vertical )
 <script src="/resources/js/cropper.min.js"></script>
 <link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
 <div id='imagecrop' class='post_popup'></div>
-
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
 </body>
 </html>

@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "OFFBOARD_CHECKLIST", catalog = "sourcelead")
+@Table(name = "OFFBOARD_CHECKLIST")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offboardCheckList")
 public class OffboardCheckList implements Serializable{
 	

@@ -23,7 +23,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "USER_PYAROLL", catalog = "sourcelead")
+@Table(name = "USER_PYAROLL")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userPyaroll")
 public class UserPayroll implements Serializable {
 	private static final long serialVersionUID = 1L;

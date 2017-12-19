@@ -74,21 +74,35 @@ function errRemoveClientContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-				              <div class="col-md-9 select-field" id="errClient">
+				              <div class="col-md-9 select-field chooRadius" id="errClient">
+               					<div class="input-group col-md-10 pull-left">				              
 
 				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
-				              </div>
+				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
+				                </div>
+				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                                 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                                 </sec:authorize>
+				               </div> 
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
 				                <input type="hidden" name="clientCurrency" id="clientCurrency">
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9" id="errClientContact">
+				              <div class="col-md-9 select-field chooRadius" id="errClientContact">
+				              	<div class="input-group col-md-10 pull-left">	
 				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
+				                    <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 				              </div>
+				               <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			                             </sec:authorize>
+		             	</span>
 				            </div>
+				              </div>
 						<div class="form-group">
 							<label class="col-md-3">Invoice Id<span
 								class="text-danger">&nbsp;*</span></label>
@@ -1881,6 +1895,7 @@ function getClients(){
 <script>
 function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
+	$("#clientContact").empty();
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
@@ -1899,7 +1914,7 @@ function getClientContacts(clientContactId){
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	
-	$("#clientContact").empty();
+	
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
 	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
@@ -2160,10 +2175,26 @@ function attachFile(id){
  
 </script>
 <script>
+
+function createInvoiceEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
+}
+
+</script>
+ <script>
+	 function selectedClient(){
+		 var cid = $("#clientOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
+<script>
 function clearDate(){
 	$("#dueDate").val("");
 	};
 	
 	
 </script>
+
 <jsp:include page="../masterFooter.jsp" />

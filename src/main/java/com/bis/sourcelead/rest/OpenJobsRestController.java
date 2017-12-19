@@ -232,9 +232,8 @@ public class OpenJobsRestController {
 			// for org specific job filter
 			String[] Locations = null;
 			if (null != companies && !"".equals(companies)) {
-				Locations = companies.split("--");
+				Locations = companies.split(",");
 			}
-
 			if (null != Locations) {
 				BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
 				for (String locationId : Locations) {
@@ -245,7 +244,7 @@ public class OpenJobsRestController {
 				}
 				boolQueryBuilder.must(orgOpenJobsBuilder);
 			}
-
+			
 			// for jobs filter when clicked on org name
 			if (postedOrgName != null) {
 				BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
