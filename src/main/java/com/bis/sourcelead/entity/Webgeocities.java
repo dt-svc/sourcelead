@@ -13,7 +13,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "webgeocities", catalog = "sourcelead")
+@Table(name = "webgeocities")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="webgeocities")
 public class Webgeocities implements Serializable{
 	

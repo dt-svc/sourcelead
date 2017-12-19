@@ -25,7 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "LEAVES_ROLE", catalog = "sourcelead")
+@Table(name = "LEAVES_ROLE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leavesRoles")
 public class LeaveRole {
 

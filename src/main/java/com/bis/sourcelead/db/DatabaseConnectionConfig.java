@@ -36,6 +36,9 @@ public class DatabaseConnectionConfig {
 
 	@Value("${jdbc.url}")
 	private String jdbcUrl;
+	
+	@Value("${jdbc.reporturl}")
+	private String reportUrl;
 
 	@Value("${jdbc.username}")
 	private String user;
@@ -114,6 +117,10 @@ public class DatabaseConnectionConfig {
 	public void setStaticPath(String staticPath)
 	{
 		this.staticPath = staticPath;
+	}
+
+	public String getReportUrl() {
+		return reportUrl;
 	}
 	
 	

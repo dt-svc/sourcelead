@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE_ON_BOARDING", catalog = "sourcelead")
+@Table(name = "CANDIDATE_ON_BOARDING")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="candidateOnBoarding")
 public class CandidateOnBoarding implements Serializable{
 	

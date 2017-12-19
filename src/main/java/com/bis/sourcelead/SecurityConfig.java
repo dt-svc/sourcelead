@@ -53,9 +53,9 @@ public class SecurityConfig  {
     	
         protected void configure(HttpSecurity http) throws Exception {
         	 http
-        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
+        	 .antMatcher("/app/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
                  .and()
-                 .authorizeRequests().antMatchers("/rest/**").fullyAuthenticated()
+                 .authorizeRequests().antMatchers("/app/rest/**").fullyAuthenticated()
                  .and().anonymous()
                   .and()
                    .securityContext()

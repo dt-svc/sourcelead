@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INVITE_COMPANY", catalog = "sourcelead")
+@Table(name = "INVITE_COMPANY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="inviteCompany")
 public class InviteCompany implements Serializable{
 	

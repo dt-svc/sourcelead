@@ -2879,6 +2879,7 @@ var contactimporter = (function () {
         //        csvStr += "<li><img src=\"" + tgturl + "assets/img/icons/hotmail-icon.png\" /></li><li><img src=\"" + tgturl + "assets/img/icons/linkedin-icon.png\" /></li>";
         //        csvStr += "</ul>";
         csvStr += "</div></div></div>";
+        
         if (addressbookData.addressbook) {
             csvStr += "<div class=\"CI-list-container-footer CI-footer-back-list\">";
             csvStr += "<div class=\"CI-contact-refresh-holder\">";
@@ -4432,7 +4433,11 @@ var modalSI = (function () {
                 $(".modal-SI-CI").find(".modal-SI-holder").addClass("inModal");
             }
             attachModalEvents();
-            $(".modal-SI-CI").fadeIn("slow");
+            $(".modal-SI-CI").hide();
+            $(".modal-SI-CI-BG").hide();
+            $("#myModal").show().removeClass("fade");
+           
+            
             if (type == "large") {
                 $(".modal-SI-CI").find(".modal-SI-holder").removeClass("modal-SI-small");
             } else {

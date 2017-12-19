@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 @Entity
-@Table(name = "CONTRACTS", catalog = "sourcelead")
+@Table(name = "CONTRACTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contracts")
 public class Contracts {
 	

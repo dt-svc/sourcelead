@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
-	@Table(name = "INTERVIEW_REMAINDER", catalog = "sourcelead")
+	@Table(name = "INTERVIEW_REMAINDER")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewRemainder")
 	public class InterviewRemainder implements Serializable{
 

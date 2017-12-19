@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CROWDSOURCING_USER_BANK_ACCOUNTS", catalog = "sourcelead")
+@Table(name = "CROWDSOURCING_USER_BANK_ACCOUNTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "crowdSourcingUserBankAccounts")
 public class CrowdSourcingUserBankAccounts implements Serializable{
 
