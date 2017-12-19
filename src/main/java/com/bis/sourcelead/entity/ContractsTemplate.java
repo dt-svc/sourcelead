@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "CONTRACTS_TEMPLATE", catalog = "sourcelead")
+@Table(name = "CONTRACTS_TEMPLATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsTemplate")
 public class ContractsTemplate {
 	

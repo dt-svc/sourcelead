@@ -18,7 +18,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_LOGIN_LOGOUT_SESSION", catalog = "sourcelead")
+@Table(name = "USER_LOGIN_LOGOUT_SESSION")
 //@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
 public class UserLoginLogoutSession  implements Serializable{
 

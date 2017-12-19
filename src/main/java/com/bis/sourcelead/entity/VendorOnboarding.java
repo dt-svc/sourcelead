@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "VENDOR_ON_BOARDING", catalog = "sourcelead")
+@Table(name = "VENDOR_ON_BOARDING")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="vendorOnboarding")
 public class VendorOnboarding implements Serializable{
 

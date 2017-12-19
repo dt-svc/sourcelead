@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "REQUIREMENT_REFER", catalog = "sourcelead")
+@Table(name = "REQUIREMENT_REFER")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRefer")
 public class RequirementRefer implements Serializable {
 
