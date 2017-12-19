@@ -152,7 +152,7 @@
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
 					 </div>
 					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
-					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
                    </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
@@ -294,7 +294,7 @@
                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                  </sec:authorize>
           </div> 
            </div>                     
@@ -345,7 +345,7 @@
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
              </sec:authorize>
           </div>                      
               </div>               

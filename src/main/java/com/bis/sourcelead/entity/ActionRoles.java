@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bis.sourcelead.enums.Status;
 
 @Entity
-@Table(name = "ACTION_ROLES", catalog = "sourcelead")
+@Table(name = "ACTION_ROLES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="actionRole")
 public class ActionRoles implements Serializable {
 	

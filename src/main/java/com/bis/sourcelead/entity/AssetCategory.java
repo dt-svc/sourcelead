@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ASSET_CATEGORY", catalog = "sourcelead")
+@Table(name = "ASSET_CATEGORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetCategory")
 public class AssetCategory implements Serializable{
 	

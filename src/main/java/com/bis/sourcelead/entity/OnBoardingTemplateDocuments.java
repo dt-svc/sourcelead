@@ -26,7 +26,7 @@ import org.hibernate.annotations.Type;
 import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
-@Table(name = "ON_BOARDING_TEMPLATE_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "ON_BOARDING_TEMPLATE_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="onBoardingTemplateDocuments")
 public class OnBoardingTemplateDocuments implements Serializable{
 

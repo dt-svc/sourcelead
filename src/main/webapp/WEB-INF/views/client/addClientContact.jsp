@@ -156,7 +156,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
@@ -183,7 +183,7 @@ function getOrgDetails()
                 <!-- <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> -->
             </div>
             <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+			 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 			</sec:authorize>
 			</div>            
             	</div>  

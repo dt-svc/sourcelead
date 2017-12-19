@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "ORGLOCATION_ONBAORD_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "ORGLOCATION_ONBAORD_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationOnboardDocuments")
 public class OrglocationOnboardDocuments implements Serializable{
 	

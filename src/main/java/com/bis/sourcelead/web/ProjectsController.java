@@ -281,8 +281,9 @@ public class ProjectsController {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				
-				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 				
 				if(flag == true) {
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -461,7 +462,8 @@ public class ProjectsController {
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				 
-				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 				 
 				 if(flag == true) {
 					 Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -510,7 +512,8 @@ public class ProjectsController {
 	    
 	    ModelAndView model = new ModelAndView();
 		
-	    boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+	    Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 	    
 	    if(flag == true) {
 	    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -563,7 +566,8 @@ public class ProjectsController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
-		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole);
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
 	
 	    if(flag == true) {
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);

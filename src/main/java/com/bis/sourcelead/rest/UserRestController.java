@@ -99,6 +99,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@RequestMapping("/app")
 public class UserRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
@@ -1039,7 +1040,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
+		 @RequestMapping(value = "/app/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 
@@ -1506,7 +1507,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
-                  return 	rolesList;	   
+            return 	rolesList;	   
 		    
 		   
 		} 

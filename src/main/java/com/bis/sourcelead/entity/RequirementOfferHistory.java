@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
-	@Table(name = "REQUIREMENT_OFFER_HISTORY", catalog = "sourcelead")
+	@Table(name = "REQUIREMENT_OFFER_HISTORY")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentOfferHistory")
 	public class RequirementOfferHistory implements Serializable{
 

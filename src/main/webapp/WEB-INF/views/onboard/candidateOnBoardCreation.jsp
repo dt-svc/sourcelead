@@ -2237,7 +2237,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +' </div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
@@ -2292,7 +2292,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadTeams(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2372,7 +2372,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
