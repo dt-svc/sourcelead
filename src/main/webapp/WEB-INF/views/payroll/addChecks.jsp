@@ -66,10 +66,7 @@ window.onload = function () {
                         <div class="form-group" id="toDateDiv">
 	                        <label class="col-md-3">Date<span class="text-danger paddingLeft">*</span></label>
 	                        <div class="col-md-9">
-	                        <div class="input-group errorInptgroup">
 	                        <input type="text" class="form-control calendar" id="date" name="date" value="" placeholder="Date*" field-name="Date" data-validation="required">
-	                        <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
-	                        </div>
 	                        </div>
                         </div>
                         

@@ -124,12 +124,9 @@ function errRemoveVendorContact(){
 						<div class="form-group">
 							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
-							<div class="input-group errorInptgroup">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
-									readonly data-validation="required" field-name="Due Date">
-								<span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-							</div>
+									readonly data-validation="required" field-name="Due Date">							
 							</div>
 						</div>
 						<div class="form-group">
@@ -2183,12 +2180,12 @@ if(selectedTextInvoice =='percentage'){
  
 }
 </script>
-<script>
+<!-- <script>
 function clearDate(){
 	$("#dueDate").val("");
 	};
 	
 	
-</script>
+</script> -->
 
 <jsp:include page="../masterFooter.jsp" />

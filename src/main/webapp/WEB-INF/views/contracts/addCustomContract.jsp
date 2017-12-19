@@ -182,10 +182,7 @@ $(document).ready(function(){
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
-						   <span class="input-group-addon" onClick="clearCustomStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-						 </div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -1980,9 +1977,9 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>
-function clearCustomStartDate(){
+/* function clearCustomStartDate(){
 	$("#startDate").val("");
-	};
+	}; */
 function clearCustomEndDate(){
 	$("#endDate").val("");
 	};
