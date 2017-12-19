@@ -800,7 +800,7 @@ function preventTabkey(e){
 // 	    	   hasLocationAccess = result;
 	    	   
 	    	   if(result == true){
-	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y') || ('${SourceLeadWeb_isAuthenticated}' == 'N')){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
