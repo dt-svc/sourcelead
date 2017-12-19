@@ -234,6 +234,11 @@ public class OpenJobsRestController {
 			if (null != companies && !"".equals(companies)) {
 				Locations = companies.split(",");
 			}
+			
+			if (null != orgLocationIds && !"".equals(orgLocationIds)) {
+				Locations = orgLocationIds.split("--");
+			}
+			
 			if (null != Locations) {
 				BoolQueryBuilder orgOpenJobsBuilder = QueryBuilders.boolQuery();
 				for (String locationId : Locations) {
