@@ -60,7 +60,7 @@ function getOrgName(){
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
-		document.getElementById("email").value="";
+		document.getElementById("emailId").value="";
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
@@ -194,7 +194,7 @@ function getOrgDetails()
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -339,7 +339,7 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("emailId").value;
 	var vendorName = document.getElementById("vendorName").value;
 	var orgRelationId = vendorName.split(",")[0];
 	if(email != null  && email != '' && orgRelationId != null){
@@ -505,7 +505,7 @@ function flusAddClint(){
 
 <script type="text/javascript">
 function getSpocUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("emailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var vendorName = document.getElementById("vendorName").value;
 	var orgLocationId = vendorName.split(',');
@@ -626,7 +626,7 @@ function getRolesList(){
 
 <script type="text/javascript">
  function getOwners() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("emailId").value; 
 	 var vendorName = document.getElementById("vendorName").value;
 	 var orgLocationId = vendorName.split(',');
 	 var orgRelationId = orgLocationId[0];
@@ -684,7 +684,7 @@ function getRolesList(){
 </script>
 <script type="text/javascript">
  function getOwnersList() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("emailId").value; 
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
@@ -771,9 +771,6 @@ function refreshClientList(){
 		        $('#vendorName').trigger("chosen:updated");
 	        }
 		 });
-		 
-	
-	
 }
 </script>
 
