@@ -24,7 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "ACCOUNT_DEDUCTIONS", catalog = "sourcelead")
+@Table(name = "ACCOUNT_DEDUCTIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "accountDeductions")
 public class AccountDeductions implements Serializable {
 	private static final long serialVersionUID = 1L;

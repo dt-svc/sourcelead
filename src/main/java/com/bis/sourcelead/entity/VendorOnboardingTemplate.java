@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "VENDOR_ON_BOARDING_TEMPLATE", catalog = "sourcelead")
+@Table(name = "VENDOR_ON_BOARDING_TEMPLATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="vendorOnboardingTemplate")
 public class VendorOnboardingTemplate implements Serializable{
 	

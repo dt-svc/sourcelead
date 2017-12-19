@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "LEAVE", catalog = "sourcelead")
+@Table(name = "LEAVE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leave")
 public class Leave {
 

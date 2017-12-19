@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "LEAVE_OPTION", catalog = "sourcelead")
+@Table(name = "LEAVE_OPTION")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveoptions")
 public class Option {
 
