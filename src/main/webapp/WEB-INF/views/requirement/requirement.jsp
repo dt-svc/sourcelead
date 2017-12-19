@@ -20,7 +20,7 @@
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
-			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			  var sectionId = '${section.id}';
 			  getCustomDependentField(sectionId);
 			 </c:forEach>
@@ -202,7 +202,7 @@ $(document).ready(function () {
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form">
-    <input type="hidden" id="actionId" value="${actionId}">
+ 	<input type="hidden" id="actionId" value="${actionId}">
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -889,17 +889,16 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-        	
-        	 <c:if test="${!empty sourceleadSectionList}">
+        
+         <c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               <c:if test="${sectionOrder.index == 0}">
 	                  <div id="customDiv${section.id}"></div>
 	               </c:if>
 	            </c:forEach>
 	   </c:if>
-        	
+        
       </div>
-      
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
 	        <c:if test="${(SourceLeadWeb_vms == 'Y' && SourceLeadWeb_ats == 'Y') || (SourceLeadWeb_vms != 'Y')}">
@@ -927,6 +926,7 @@ $(document).ready(function () {
 						 </c:otherwise>
 			</c:choose>
 	        </c:if>
+	      
           <div id="clientDetails" style="display: none;">
             <div class="clearfix">
               <h3>Client Details</h3>
@@ -934,8 +934,8 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -964,12 +964,17 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                   </div>
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                       <span class="col-md-3 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+                       <span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
+                       </span>
+                  </sec:authorize>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -997,7 +1002,13 @@ $(document).ready(function () {
 				</c:choose>
                     
                  </div>
-                  
+                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			      	</sec:authorize>
+			      	<span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="getContactList(this);"><i class="fa fa-refresh "></i></span>
+			  </span>
                 </div>
               </div>
               <div class="form-group">
@@ -1339,7 +1350,7 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-			 <c:if test="${!empty sourceleadSectionList}">
+			<c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              <c:if test="${sectionOrder.index == 2}">
 	                  <div id="customDiv${section.id}"></div>
@@ -1430,8 +1441,6 @@ $(document).ready(function () {
   </div>
 </section>
 
-
-<!-- for custom requirement fields start -->
 <script>
 function getCustomDependentField(sectionId){
 	 $.ajax({
@@ -1444,7 +1453,6 @@ function getCustomDependentField(sectionId){
 		  });
 }
 </script>
-<!-- for custom requirement fields end -->
 
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -2728,5 +2736,51 @@ function removeReqDoc(requirementId){
 }
 </script>
 
- 
+ <script>
+function refreshRequirementClientList(){
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#addClientId").empty();
+	        	 $("#selectContact").empty();
+	        	 $("#selectContact").trigger("chosen:updated");
+		        $("#addClientId").append(output);
+		        $('#addClientId').trigger("chosen:updated");
+		        
+	        }
+		 });
+	
+}
+</script>
+<script>
+function refreshRequirementClientContactList(){
+var a = document.getElementById('contactRefreshId');
+var valueArray = a.getAttribute('value').split(",");
+	if(valueArray[0] != ""){
+		clientContactList(valueArray[0],valueArray[1]);
+	}
+}
+</script>
+<script>
+	 function selectedClient(){
+		 var a = document.getElementById('contactRefreshId');
+		 var valueArray = a.getAttribute('value').split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
 <jsp:include page="../masterFooter.jsp" />
