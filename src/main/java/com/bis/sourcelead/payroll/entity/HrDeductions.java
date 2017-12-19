@@ -25,7 +25,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "HR_DEDUCTIONS", catalog = "sourcelead")
+@Table(name = "HR_DEDUCTIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "hrDeductions")
 public class HrDeductions implements Serializable {
 	private static final long serialVersionUID = 1L;

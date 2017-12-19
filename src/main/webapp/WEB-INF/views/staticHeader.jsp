@@ -44,7 +44,7 @@
   <div class="logo"><a href="index.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
-    	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
+    	<li><a href="/"><i class="fa fa-home"></i></a></li>
 		<li><a href="index.html">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>

@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name = "USER_ROLE", catalog = "sourcelead")
+@Table(name = "USER_ROLE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
 public class UserRole implements Serializable {
 

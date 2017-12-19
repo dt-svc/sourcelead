@@ -27,7 +27,7 @@ import com.bis.sourcelead.enums.Contact_Source;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "REFER_CONTACTS", catalog = "sourcelead")
+@Table(name = "REFER_CONTACTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
 public class ReferContacts implements Serializable{
 	

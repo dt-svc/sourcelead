@@ -21,7 +21,7 @@ import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "WAGE_TAX_SUMMARY", catalog = "sourcelead")
+@Table(name = "WAGE_TAX_SUMMARY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "wageTaxSummary")
 public class WageTaxSummary implements Serializable {
 	private static final long serialVersionUID = 1L;

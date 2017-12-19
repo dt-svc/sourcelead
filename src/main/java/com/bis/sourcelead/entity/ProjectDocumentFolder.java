@@ -28,7 +28,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "PROJECT_DOCUMENT_FOLDER", catalog = "sourcelead")
+@Table(name = "PROJECT_DOCUMENT_FOLDER")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocumentFolder")
 public class ProjectDocumentFolder implements Serializable{
 	
