@@ -3602,9 +3602,6 @@ max-height: 150px !important;
 .errorInptgroup p.jquery_form_error_message {
     position: absolute; left: 0; bottom: -16px;
 }
-.errorInptgroup.errorInptgroup-bottom p.jquery_form_error_message {
-	bottom: 0px !important;
-}
 .addconsultant-popup {
     display: none; position:absolute; padding: 15px; left: 15%; width: 70%; z-index: 99999; top: 30%; border-radius: 5px;
 }
@@ -7581,6 +7578,7 @@ background-color: #f5f5f5; padding:5px 15px;
 .importcsv-accordion ol li{
 	font-size: 12px; padding: 1px 0;
 }
+
 /* Card Model UI Styles */
 .cardModel-widget {
  background: #fff; padding: 15px; box-shadow: 1px 1px 1px #ddd; border-radius: 3px; color: #444;
@@ -7611,6 +7609,7 @@ color: #444;
 padding: 5px 10px;
 }
 /* Card Model UI Styles */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
