@@ -266,8 +266,8 @@ a.alertBtn {
 		</div>
 		<nav>
 			<ul class="menu">
-				<li><a href="/login"><i class="fa fa-home"></i></a></li>
-				<li><a href="/openJobs" class="rcolor">Jobs</a></li>
+				<li><a href="/"><i class="fa fa-home"></i></a></li>
+				<li><a href="/jobs" class="rcolor">Jobs</a></li>
 				<li><a href="javascript:void(0)" class="ma">What we do<i
 						class="fa fa-caret-down"></i></a>
 					<ul>
