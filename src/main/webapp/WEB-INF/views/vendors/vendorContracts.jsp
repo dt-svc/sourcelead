@@ -7,6 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <style type="text/css">
 .edit-details {
 text-align:left;
@@ -282,9 +283,21 @@ function vendorContractsList(orgRelationId){
 		                	     	         }
 	                		     		  }
 	                		     		 
-	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	                	       				result = result + '<div class="pull-left" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></div>';
-	                	       			'</sec:authorize>';
+		                		         
+		                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	                		     		 if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
+	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+	                			         }else if(report.typeOfContract == "Existing"){
+	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></small></a></div>';
+	                			         }else if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || report.templateSubmissionStatus == "FINALIZED"){
+	                			        	 result = result + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a>';
+	                			         }else{
+	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a></div>';
+	                			         }
+	                		     		'</sec:authorize>';
+// 	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+// 	                	       				result = result + '<div class="pull-left" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></div>';
+// 	                	       			'</sec:authorize>';
 	                	       			
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -352,7 +365,12 @@ function VendorContractpagination(){
 function previewContractPDF(uuid, templateName) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
-}</script>
+}
+
+function previewNewContractPDF(uuid, templateName) {
+ 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+}
+</script>
 
 <script>
 function approveContract(recordId,status){
