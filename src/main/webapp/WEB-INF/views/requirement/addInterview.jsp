@@ -141,15 +141,17 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	 result = result +'<div class="col-md-6 chooRadius">';
-	 result = result +'<div class="input-group col-md-10 pull-left">';
+	 result = result +'<div class="col-md-6 chooRadius mb">';
+	 result = result +'<div class="input-group col-md-10 pull-left chooOverFlow">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="interviewTemplate();"><i class="fa fa-refresh "></i></span>';
 	result = result + '</div>';
-	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
-	 result = result +'</sec:authorize>';
+	result = result +'<span class="col-md-2 noPad clearfix">';
+	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
+	result = result +'<a href="<c:url value="/app/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'</sec:authorize>';	
+	result = result + '</span>';
 	result = result + '</div>';
 	
 	
