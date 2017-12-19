@@ -169,7 +169,6 @@
 			<span class="caret cursorPointer"></span>
 		</span>
 			<ul class="dropdown-menu">
-			<li><a href="project-dashboard-V1.html">Project Summary</a></li>
 			<li><a href="#">Project Summary</a></li>
 			<li><a href="#">Task Performance</a></li>
 			<li><a href="#">Task Overdue</a></li>
