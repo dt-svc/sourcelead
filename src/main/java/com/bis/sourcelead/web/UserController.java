@@ -122,7 +122,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+			@RequestParam(value = "userCode", required = false) String userCode) throws Exception {
 		ModelAndView model = new ModelAndView();
 		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -139,7 +139,7 @@ public class UserController {
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
 		    
-			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
                
@@ -147,8 +147,8 @@ public class UserController {
 				model.addObject("org_projectsList", projectsList);*/
 				Candidate candidate = null;
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
-					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-					candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
+					candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId());
 					
 					model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
@@ -159,7 +159,7 @@ public class UserController {
 				}
 				
 				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
-				request.setAttribute("userId", userId);
+				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");
