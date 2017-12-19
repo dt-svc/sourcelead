@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
-@Table(name = "INVOICE", catalog = "sourcelead")
+@Table(name = "INVOICE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
 public class Invoice {
 	

@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "BO_JMPC_TRANS", catalog = "sourcelead")
+@Table(name = "BO_JMPC_TRANS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boJmpcTrans")
 public class BoJmpcTrans implements Serializable{
 
