@@ -187,8 +187,10 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 			$(".clearUpload").show();
 			$("#uploadContact_id").removeAttr("disabled");
 			$(".model-err-msg").hide();
+			$(".errorInptgroup").find('p.jquery_form_error_message').remove();
 		}else{
 			$("#uploadContact_id").attr("disabled", "disabled");
+			$(".errorInptgroup").find('p.jquery_form_error_message').remove();
 			$(".model-err-msg").show();
 		}
 	
