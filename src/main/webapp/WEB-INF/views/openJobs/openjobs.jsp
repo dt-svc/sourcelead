@@ -99,6 +99,12 @@ window.onload = function () {
 		getOpenJobsELKList();
 		
 	}
+	
+	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
+		$("#orgList").show();
+		$("#companiesListDiv").find("i").toggleClass("arrAc");
+		getOrgsList('none','main');
+	}
  };
 </script>
 
@@ -1340,13 +1346,14 @@ function getPostedOrgJobs(id){
 
 <script>
 function getOrgsList(alphabet,type){
-
 	var country = "";
 	$('input:radio[name=countryFilter]:checked').each(function() 
     {
 		country = ($(this).val());
     });
 	
+	var companies = '${companies}';
+	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: "/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
@@ -1369,16 +1376,29 @@ function getOrgsList(alphabet,type){
 	    	}else{
 	    		for(var i=0; i<5; i++){
 		    		var opt = json[i];
-		    		if(opt != null && opt !='undefined'){ 	
-		    			result = result +'<li class="control-group">';
-				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-// 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
-				    	
-				    	var checked = "checked";
-				    	
-				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
-				    	result = result +'</label>';                                                 
-				    	result = result +'</li>';
+		    		if(opt != null && opt !='undefined'){ 
+		    			if(selectedCompanies != '' && selectedCompanies != 'undfined' && selectedCompanies != null){
+		    				var selected = "";
+		    				for(var j=0; j <= selectedCompanies.length; j++){
+						    	if(selectedCompanies[j] == opt.id){
+						    		selected = "checked";
+						    	}
+				    		}
+		    				result = result +'<li class="control-group">';
+					    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
+//	 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+					    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" '+selected+' onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+					    	result = result +'</label>';                                                 
+					    	result = result +'</li>';
+		    			}else{
+		    				result = result +'<li class="control-group">';
+					    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
+//	 				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" ${companies.indexOf("'+opt1.id+'")!=-1?"checked=checked":""} onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+					    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+					    	result = result +'</label>';                                                 
+					    	result = result +'</li>';
+		    			}
+		    			
 		    		}
 		    	}
 	    		if(json.length > 5){

@@ -47,6 +47,8 @@ private Status isMailChecked;
 
 private String reason;
 
+private String manager;
+
 
 
 public String getReason() {
@@ -169,6 +171,14 @@ public String getDayHours() {
 
 public void setDayHours(String dayHours) {
 	this.dayHours = dayHours;
+}
+
+public String getManager() {
+	return manager;
+}
+
+public void setManager(String manager) {
+	this.manager = manager;
 }
 
 

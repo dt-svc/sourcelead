@@ -13,6 +13,6 @@ public interface UploadFileService {
 
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception;
 
-	public File getUserTemplate(Org org, Long long1, Long roleHierarchyId) throws FileNotFoundException;
+	public File getUserTemplate(Org org, Long long1, Long roleHierarchyId) throws FileNotFoundException, Exception;
 
 }

@@ -1017,6 +1017,13 @@ jQueryFormUtils.validateNumberAlphabet = function(val) {
 jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
+
+//**** validate Alphanumeric value must start with Alphabet and contains numeric and SpecialChar
+jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
+	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
+};
+
+
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
 	 return val.trim().match(/^[^\s-](.*)*$/) !== null;
@@ -1281,6 +1288,10 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
       }
+     // Validate if  Must start with Alphabet - Alphanumeric and special characters allowed       
+        else if(validationRules.indexOf('validate_AlphaNumeric_SpecialChar') > -1 && !jQueryFormUtils.validateAlphaNumericSpecialChar(value)) {
+            return validationErrorMsg || language.badAlphaNumericSpecialChar;
+        }
         
      // Validate Mask Phone
         else if (validationRules.indexOf('validate_MaskPhone') > -1 && !jQueryFormUtils.validateMaskPhone(value)) {
@@ -1386,6 +1397,7 @@ jQueryFormUtils.LANG =  {
 	badPassLength:'Password length must be greater than 6 characters',
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
+	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',
 	badFileFormat:'Invalid Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',
