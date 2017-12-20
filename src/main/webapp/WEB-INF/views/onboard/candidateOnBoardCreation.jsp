@@ -2245,9 +2245,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="dojDiv">';
 	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<div class="input-group errorInptgroup">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
-	 result = result +'<span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2529,9 +2527,9 @@ function refreshRoleList(){
 </script>
   
 <script>
-function clearStartDate(){
+/* function clearStartDate(){
 	$("#startDate").val("");
-	};
+	}; */
 function clearEndDate(){
 	$("#endDate").val("");
 	};
