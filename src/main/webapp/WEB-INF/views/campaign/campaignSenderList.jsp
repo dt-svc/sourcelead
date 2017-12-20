@@ -88,7 +88,7 @@ function getSendersList(){
 			         result += '    <td>';
 			         if(report.cpnSenderName != null && report.cpnSenderName != '' && report.cpnSenderName != 'undefined'){
 			        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.cpnSenderName+'">'+report.cpnSenderName+'</div>';
-			        	 result += '          <i class="fa fa-binoculars pull-right"></i>';
+			        	/*  result += '          <i class="fa fa-binoculars pull-right"></i>'; */
 				         result += '      </div>';
 			         } 
 			         result += '    </td>';
@@ -158,11 +158,9 @@ function deleteIdentity(senderId){
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure you want to Cancel ?</p>";
-	result = result +"		<textarea id='reason' class='form-control' field-name='Delete Identity'  readonly data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Are you sure you want to delete ?' rows='2'></textarea>";
+	result = result +"	<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<p>Are you sure you want to Delete ?</p>";
 	result = result + ' <div id="deleteIdentityDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);

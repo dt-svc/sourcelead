@@ -302,14 +302,20 @@ function addDocument(vendorLocationId,orgRelationId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="clearStartDt();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="clearEndDt();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -711,10 +717,10 @@ function vendorDocFileSaving()
 	}
 </script> -->
 <script>
-function clearStartDt(){
+function clearVendorDocuStartDate(){
 	$("#startDate").val("");
 	};
-function clearEndDt(){
+function clearVendorDocuEndDate(){
 	$("#endDate").val("");
 	};
 </script>

@@ -134,10 +134,7 @@ $(document).ready(function(){
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date" readonly="readonly">
-						  <span class="input-group-addon" onClick="clearExistedContractStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-						 </div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -2096,9 +2093,9 @@ function addExistedEmptyClientContact(){
 	 </script>
 
 <script>
-function clearExistedContractStartDate(){
+/* function clearExistedContractStartDate(){
 	$("#startDate").val("");
-	};
+	}; */
 function clearExistedContractEndDate(){
 	$("#endDate").val("");
 	};
