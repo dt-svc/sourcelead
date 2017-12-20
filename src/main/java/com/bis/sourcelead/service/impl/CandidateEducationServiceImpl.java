@@ -123,6 +123,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}else{
+			candidateEducation.setStartDate(null);
 		}
 		if (candidateEducationDTO.getEndDate() != null && candidateEducationDTO.getEndDate() != "") {
 			try {
@@ -133,6 +135,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}else{
+			candidateEducation.setEndDate(null);
 		}
 		
 		
