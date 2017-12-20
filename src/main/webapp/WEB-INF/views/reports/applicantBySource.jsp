@@ -27,21 +27,21 @@ $(document).ready(function(){
         <a href="applicantsource-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Job">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
 			</c:forEach>
           </select>
         </div>
         <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" id="custom-dates">
-            <option>Select Date</option>
-            <option selected>Last 7 days</option>
-            <option>Last 15 days</option>
-            <option>1 month</option>
-            <option>3 months</option>
-            <option>YTD</option>
-            <option>Last Year</option>
+          <select class="form-control" id="custom-dates" name="dateSelection">
+            <option value=''>Select Date</option>
+            <option value='Last 7 days' selected>Last 7 days</option>
+            <option value='Last 15 days'>Last 15 days</option>
+            <option value='1 month'>1 month</option>
+            <option value='3 months'>3 months</option>
+            <option value='YTD'>YTD</option>
+            <option value='Last Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
           
