@@ -22,7 +22,7 @@
 				<li><a href="${appPath}/vendorsReports">Vendors Report</a></li>
 				<li><a href="#">Client Report</a></li>
 				<li><a href="#">New Customer</a></li>
-				<li><a href="#">Applicant Backout</a></li>
+				<li><a href="${appPath}/applicantsBackoutReport">Applicant Backout</a></li>
 				<li><a href="#">Applicant Decline</a></li>
 				<li><a href="#">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
