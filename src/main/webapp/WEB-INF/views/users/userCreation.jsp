@@ -131,11 +131,10 @@
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
-                    <div class="col-md-6 paddingLeft erMesMid">
+                    <div class="col-md-6 paddingLeft">
                     <div class="row">
-                    <label class="col-md-5">Extension </label>
-                    <div class="col-md-7 posSta">
-                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
+                    <div class="col-md-12">
+                    <input type="text" class="form-control" id="extensionNumber" placeholder="Extension Number" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
                     </div>
                     </div>
                     </div>

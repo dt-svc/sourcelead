@@ -859,6 +859,10 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
 							
+							employeeSubmissionProfile(candidateId);
+							educationSubmissionProfile(candidateId);
+							certificationSubmissionProfile(candidateId);
+
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1230,18 +1234,18 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#employeeSubmissionDetailsList").empty();
+					success : function(json) {
+						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
+								$("#employeeSubmissionProfile").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
 								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
 								result = result +'          <div class="row">';
 								result = result +'            <div class="col-md-12">';
 								result = result +'              <ul class="list-unstyled personal-info">';
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
+							//	var json = JSON.parse(data);
+								for (var i = 0; i < json.data.length; i++) {
+									var opt = json.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -1308,11 +1312,11 @@ function removeSkillById(candidateId, skillId){
 <script>
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#educationSubmissionDetailsList").empty();
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
+	                	 $("#educationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
 	                	 
@@ -1323,9 +1327,9 @@ function educationSubmissionProfile(candidateId){
 							result = result +'              <ul class="list-unstyled personal-info">';
 							
 							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
+// 							 var json = JSON.parse(data);
+		                     for (var i = 0; i < json.data.length; i++) { 
+		                    	 var opt = json.data[i];  
 		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
 	                    		        EducationName = opt.name;
 		                    	    }else{
@@ -1398,10 +1402,10 @@ function educationSubmissionProfile(candidateId){
 <script>
 function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
