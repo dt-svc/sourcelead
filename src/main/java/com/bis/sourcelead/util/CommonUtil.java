@@ -172,6 +172,7 @@ public class CommonUtil {
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
+	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
 	 * @author: Naresh Bolisetty
@@ -1561,7 +1562,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
@@ -1569,7 +1570,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
-						if(approverHierarchy != null) {
+						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
+						if(approverHierarchy != null || pm != null) {
 							flag = true;
 						}
 					}else {

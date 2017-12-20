@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
  *
  */
 @Entity
-@Table(name = "EXPENSES_HISTORY", catalog = "sourcelead")
+@Table(name = "EXPENSES_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesHistory")
 public class ExpensesHistory implements Serializable {
 

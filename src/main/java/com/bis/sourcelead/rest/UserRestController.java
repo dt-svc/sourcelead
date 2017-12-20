@@ -1507,7 +1507,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
-                  return 	rolesList;	   
+            return 	rolesList;	   
 		    
 		   
 		} 

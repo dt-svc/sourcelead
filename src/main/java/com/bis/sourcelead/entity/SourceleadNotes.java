@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
-@Table(name = "SOURCELEAD_NOTES", catalog = "sourcelead")
+@Table(name = "SOURCELEAD_NOTES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadNotes")
 public class SourceleadNotes {
 	

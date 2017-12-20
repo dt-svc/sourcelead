@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CANDIDATE_TIMELINE_ACTIVITY", catalog = "sourcelead")
+@Table(name = "CANDIDATE_TIMELINE_ACTIVITY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateTimelineActivity")
 public class CandidateTimelineActivity implements Serializable {
 	private static final long serialVersionUID = 1L;

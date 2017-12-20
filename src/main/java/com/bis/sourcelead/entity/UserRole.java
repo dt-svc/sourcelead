@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name = "USER_ROLE", catalog = "sourcelead")
+@Table(name = "USER_ROLE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
 public class UserRole implements Serializable {
 
@@ -257,6 +257,11 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private Long userId;
+	
+	
+	@Transient
+	@JsonProperty
+	private String userCode;
 
 	@Transient
 	private String vendorOrgRelationId;
@@ -863,6 +868,14 @@ public class UserRole implements Serializable {
 	public void setLoginSecurity(String loginSecurity)
 	{
 		this.loginSecurity = loginSecurity;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 }

@@ -1433,5 +1433,10 @@ public class UserServiceImpl implements UserService {
 	{
 		return userDao.getUserByVerficationUUID(token);
 	}
+
+	@Override
+	public User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception {
+		return userDao.getUserByUserCodeAndOrgLocationsId(userCode, orgLocationsId);
+	}
 	
 }

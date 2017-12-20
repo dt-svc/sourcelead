@@ -22,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.bis.sourcelead.entity.OrgLocations;
 
 @Entity
-@Table(name = "ACCOUNT_DEDUCTIONS_DETAILS", catalog = "sourcelead")
+@Table(name = "ACCOUNT_DEDUCTIONS_DETAILS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "accountDeductionsDetails")
 public class AccountDeductionsDetails implements Serializable {
 	private static final long serialVersionUID = 1L;

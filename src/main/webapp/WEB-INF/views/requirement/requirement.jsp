@@ -1000,14 +1000,13 @@ $(document).ready(function () {
                     	</select>
 				    </c:otherwise>
 				</c:choose>
-                    
+                    <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
                  </div>
                   <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
 			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
-			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			      	</sec:authorize>
-			      	<span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="getContactList(this);"><i class="fa fa-refresh "></i></span>
+			      	
 			  </span>
                 </div>
               </div>
@@ -2766,21 +2765,23 @@ function refreshRequirementClientList(){
 	
 }
 </script>
+
+<script>
+	 function selectedClient(){
+		 var a = $("#addClientId").val();
+		 var valueArray = a.split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+</script>
+
 <script>
 function refreshRequirementClientContactList(){
-var a = document.getElementById('contactRefreshId');
-var valueArray = a.getAttribute('value').split(",");
+	 var a = $("#addClientId").val();
+	 var valueArray = a.split(",");
 	if(valueArray[0] != ""){
 		clientContactList(valueArray[0],valueArray[1]);
 	}
 }
 </script>
-<script>
-	 function selectedClient(){
-		 var a = document.getElementById('contactRefreshId');
-		 var valueArray = a.getAttribute('value').split(",");
-		 var cid = valueArray[0]             
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
-	 }
-	 </script>
 <jsp:include page="../masterFooter.jsp" />
