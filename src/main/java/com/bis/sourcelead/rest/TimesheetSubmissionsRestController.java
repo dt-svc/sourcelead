@@ -169,7 +169,7 @@ public class TimesheetSubmissionsRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
-    @RequestMapping(value = "/ws/saveSubmissionApprovalStatusByProjectMemberId", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveSubmissionApprovalStatusByProjectMemberId", method = RequestMethod.POST)
     public  String saveSubmissionApprovalStatusByProjectMemberId(HttpServletRequest request,
                                                 @RequestParam(value="projectMemberId", required=false) Long projectMemberId,
                                                 @RequestParam(value="startDate", required=false) String startDate,
