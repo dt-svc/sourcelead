@@ -2186,6 +2186,7 @@ function createInvoiceEmptyClientContact(){
  <script>
 	 function selectedClient(){
 		 var cid = $("#clientOrgRelationId").val();
+		 alert(cid)
 		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 	 </script>

@@ -828,6 +828,10 @@ public class ClientRestController {
 			clientVendorDTO.setOrgName(orgRelation.getOrgName());
 		}
 		
+		if(orgRelation.getOrgType() != null){
+			clientVendorDTO.setOrgType(orgRelation.getOrgType());
+		}
+		
 		if(orgRelation.getWebSite() !=null){
 			clientVendorDTO.setWebSite(orgRelation.getWebSite());
 		}
