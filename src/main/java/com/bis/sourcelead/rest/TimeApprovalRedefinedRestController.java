@@ -646,20 +646,7 @@ public class TimeApprovalRedefinedRestController {
 			    int tdSpanLength = 8;
 			    if(list != null && !list.getData().isEmpty())
 			    {
-			    	
 			    	timesheetApprovalDTO.setTotalRows(list.getRecordsTotal());
-					
-					int totalRows = list.getRecordsTotal();
-					if(totalRows > 0) {
-						 int remainder = totalRows % length;
-						 int pageCount = totalRows / length;
-						 if(remainder > 0) {
-							 timesheetApprovalDTO.setPageCount(pageCount+1);
-						 }
-						 else {
-							 timesheetApprovalDTO.setPageCount(pageCount);
-						 }
-					}
 			    	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
 			    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list.getData()) {
 			    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
