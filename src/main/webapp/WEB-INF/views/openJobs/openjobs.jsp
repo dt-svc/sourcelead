@@ -2641,7 +2641,7 @@ var validationSettings = {
 			  		        contentType:false, 
         					url : "/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace("/openRequirementsRedirect");
+        							location.replace("/jobs");
         					},
         				});
                 
