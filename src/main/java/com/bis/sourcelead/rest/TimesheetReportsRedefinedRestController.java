@@ -247,6 +247,8 @@ public class TimesheetReportsRedefinedRestController {
 			 }
 		}
         for (ProjectMembers projectMember : projectMembers)	{	
+        	if(projectMember == null)
+        		continue;
         TimeReportsSubmissionDetailsDTO details = new TimeReportsSubmissionDetailsDTO();
 		/* ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());*/
 		  User consultantUser = null;
@@ -256,13 +258,14 @@ public class TimesheetReportsRedefinedRestController {
 			 }
 			 	details.setProjectMemberId(projectMember.getId());
 			 	details.setFullName(projectMember.getProjectMemberCandidteId().getFullName());
+			 	details.setEmail(projectMember.getProjectMemberCandidteId().getEmail());
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
-             if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+             if(null != projectMember && projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
             	  details.setEmployeeId(projectMember.getEmployee().getEmployeeId());
              }
-		     if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
+		     if(null != projectMember && null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 		    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 		    	 details.setProjectName(projectMember.getProjects().getProjectName());
 		    	 details.setVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
@@ -274,7 +277,7 @@ public class TimesheetReportsRedefinedRestController {
 		     }else{
 		    	 details.setFrequrncy("--"); 
 		     }
-		     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
+		     if(projectMember.getEmployee() != null && null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
 		    	 StringBuilder rate = new StringBuilder();
 		    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
 		    		 details.setRate(rate.append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString()); 
@@ -315,6 +318,20 @@ public class TimesheetReportsRedefinedRestController {
 		    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
 		    	    	}
 		    	    	
+		    	    	String approvalClass = "draft";
+		    	         if(approvalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
+		    	        	  approvalClass = "subm";
+		    	    	 }
+		    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.APPROVED)){
+		    	    		 approvalClass = "appr";
+		    	    	 }
+		    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.REJECTED)){
+		    	    		 approvalClass = "reje";
+		    	    	 }
+		    	    	
+		    	         reportsTimeDTO.setApprovalClass(approvalClass);
+		    	         
+		    	         
 		    	        if(approvalStatus == Submission_ApprovalStatus.REJECTED){
 		    	        	if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.REJECTED){
 		    	        		combinedApprovalStatus = Submission_ApprovalStatus.REJECTED;
@@ -377,20 +394,27 @@ public class TimesheetReportsRedefinedRestController {
 		     details.setMonthNonBillableHours(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours));
 		     	
 		     
+		     
 		     String combinedApprStatus = "Action Required";
+		     String combinedApprClass = "draft";
 	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
 	    		  combinedApprStatus = "Approved";
+	    		  combinedApprClass = "appr";
 	    	 }
 	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
 	    		  combinedApprStatus = "Rejected";
+	    		  combinedApprClass = "reje";
 	    	 }
 	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
 	    		  combinedApprStatus = "Submitted";
+	    		  combinedApprClass = "subm";
 	    	 }
 	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
 	    		  combinedApprStatus = "NEW";
+	    		  combinedApprClass = "draft";
 	    	 }
 	         details.setApprovalStatus(combinedApprStatus);
+	         details.setCombinedApprovalClass(combinedApprClass);
 	         
 	         details.setProjectToDateTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours()));
 	         details.setProjectToDateBillableTotal(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours()));
