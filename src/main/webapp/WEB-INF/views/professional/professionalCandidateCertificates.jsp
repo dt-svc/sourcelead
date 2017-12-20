@@ -353,15 +353,21 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearFromtDt();">';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertFromtDate();"></div>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 clearDate" onClick="clearToDt();">';
+		result  = result + '                   </div>';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertEndDate();"></div>';
+		result  = result + '                   </div>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
@@ -499,29 +505,43 @@ function addCertification(candidateId) {
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
-									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								result  = result + '                   </div>';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
 									
+									result  = result + '                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								
@@ -853,10 +873,18 @@ function toDate(selector) {
 
 <!-- script for dateformat in datepicker End -->     
 <script>
-function clearFromtDt(){
+function clearProfCertFromtDate(){
 	$("#StartDate").val("");
 	};
-function clearToDt(){
+function clearProfCertEndDate(){
 	$("#EndDate").val("");
 	};
-</script>        
+</script>  
+<script>
+function editProfCandCertStartDate(){
+	$("#StartDateEdit").val("");
+	};
+ function editProfCandCertEndDate(){
+	$("#EndDateEdit").val("");
+	}; 
+</script>      

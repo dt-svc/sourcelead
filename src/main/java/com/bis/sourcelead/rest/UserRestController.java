@@ -1500,7 +1500,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		return projectMembersList;
 	}
 	
-	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/refreshRoleList", method = RequestMethod.POST)
 		public @ResponseBody List<Roles> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
 		  roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

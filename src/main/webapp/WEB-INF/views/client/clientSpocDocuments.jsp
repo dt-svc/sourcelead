@@ -196,7 +196,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group clearUpload" id="uploadFileGroup" onClick="cleartClientSpocDocumentUpload()">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn" onChange="clientSpocDocumentFileSaving();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
@@ -222,14 +222,20 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartClientSpocDocumentStartDate();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" id="startDate" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearClientSpocDocutStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartClientSpocDocumentEndDate();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" id="endDate" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearClientSpocDocutEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -603,17 +609,17 @@ function clientSpocDocumentFileSaving()
 }
 </script>
 
-<script>
+<!-- <script>
 	function cleartClientSpocDocumentUpload(){
 		$("#uploadFile").val("");
 	}
-</script>
+</script> -->
 
 <script>
-function cleartClientSpocDocumentStartDate(){
+function clearClientSpocDocutStartDate(){
 	$("#startDate").val("");
 	};
-function cleartClientSpocDocumentEndDate(){
+function clearClientSpocDocutEndDate(){
 	$("#endDate").val("");
 	};
 </script>
