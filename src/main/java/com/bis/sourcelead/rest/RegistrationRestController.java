@@ -792,7 +792,7 @@ public class RegistrationRestController {
 	   @RequestMapping(value = "/app/orgSummary/{orgId}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable Long orgId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/enrolledOrgSummary?orgId=").append(orgId).toString());
+				response.sendRedirect(redirectUrl.append("/app/enrolledOrgSummary?orgId=").append(orgId).toString());
 				
 		   }
 	   

@@ -342,7 +342,7 @@ a.alertBtn {
 		value="0" />
 	<div class="filter" id="filterDiv">
 		<h2>
-			Fliter your search <i class="fa fa-refresh" aria-hidden="true"
+			Filter your search <i class="fa fa-refresh" aria-hidden="true"
 				onclick="clearFilters(); getOpenJobsELKList();"
 				style="cursor: pointer;"></i>
 		</h2>
