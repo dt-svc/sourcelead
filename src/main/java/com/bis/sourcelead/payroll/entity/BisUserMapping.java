@@ -19,7 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
 @Entity
-@Table(name = "BIS_USER_MAPPING", catalog = "sourcelead")
+@Table(name = "BIS_USER_MAPPING")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "bisUserMapping")
 public class BisUserMapping implements Serializable {
 	private static final long serialVersionUID = 1L;

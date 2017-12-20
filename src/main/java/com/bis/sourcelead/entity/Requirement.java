@@ -43,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *
 	 */
 	@Entity
-	@Table(name = "REQUIREMENT", catalog = "sourcelead")
+	@Table(name = "REQUIREMENT")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 

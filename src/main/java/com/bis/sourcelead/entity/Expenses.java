@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ibm.icu.math.BigDecimal;
 
 @Entity
-@Table(name = "EXPENSES", catalog = "sourcelead")
+@Table(name = "EXPENSES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "Expenses")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
