@@ -24,7 +24,7 @@
 				<li><a href="#">New Customer</a></li>
 				<li><a href="#">Applicant Backout</a></li>
 				<li><a href="#">Applicant Decline</a></li>
-				<li><a href="#">Jobs Pipeline</a></li>
+				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
 				<li><a href="#">Time to Fill</a></li>
 				<li><a href="#">Retention Rate</a></li>
