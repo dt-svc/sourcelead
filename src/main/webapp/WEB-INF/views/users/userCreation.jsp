@@ -25,6 +25,10 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -34,7 +38,6 @@
     bottom: -14px;
 }
 </style>
-
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
@@ -48,6 +51,7 @@
           
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
+          <input type="hidden" id="actionId" value="${actionId}">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -296,6 +300,13 @@
 		                </div>
 		                 </div>
                </div>
+                <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
             </div>
             </div>
                 
@@ -317,6 +328,19 @@
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
 
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
  function employementType(type){

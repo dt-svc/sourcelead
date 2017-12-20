@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 	import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.annotations.Email;
@@ -155,6 +156,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String userId;
 
+		private List<CustomFormFieldDTO> customFormData;
+		
 		public String getFirstName() {
 			return firstName;
 		}
@@ -700,6 +703,14 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setUserId(String userId){
 			this.userId = userId;
 
+		}
+
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
 		}
 			
 		
