@@ -52,7 +52,7 @@ public class ApplicantBySourceRestController {
 			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
 		}
 		
-		Integer crowdsourcingApplicantsCount =  applicantsBySourceService.getCrowdsourcingApplicantsCount(jobIdList, searchDates[0], searchDates[1]); 
+		Integer crowdsourcingApplicantsCount =  applicantsBySourceService.getCrowdsourcingApplicantsCount(jobIdList, searchDates); 
 		System.out.println(crowdsourcingApplicantsCount);
 		
 		return applicantBySourceList;

@@ -36,13 +36,21 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 
 	@Override
 	@Transactional
-	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date startDate, Date endDate) {
+	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date[] searchDates) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		query ="select count(*) from RequirementSubmission rs where rs.candidate.candidateType = 'Professional' and rs.requirement.id IN (:jobIds) "
-				+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
-		List<Long> submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setCacheable(true).list();
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			 query ="select count(*) from RequirementSubmission rs where rs.candidate.candidateType = 'Professional' and rs.requirement.id IN (:jobIds) "
+					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+		}else {
+			 query ="select count(*) from RequirementSubmission rs where rs.candidate.candidateType = 'Professional' and rs.requirement.id IN (:jobIds) ";
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setCacheable(true).list();
+		}
+		
 			Integer count= 0;
 			if(submissionCount != null && !submissionCount.isEmpty()){
 					count = submissionCount.get(0).intValue();
