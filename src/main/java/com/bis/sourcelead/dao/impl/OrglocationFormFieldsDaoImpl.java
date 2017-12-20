@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.OrglocationFormFieldsDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+import com.bis.sourcelead.entity.OrglocationFormSubFields;
 
 @Repository
 public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
@@ -54,6 +54,16 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).setCacheable(true).list();
 		return orglocaFormField;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId and orgSubForm.status = '1'";
+		List<OrglocationFormSubFields> orglocaFormSubField = session.createQuery(query).setLong("formFieldId", formFieldId).setCacheable(true).list();
+		return orglocaFormSubField;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -91,6 +101,19 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc left join fetch slSection.sourceleadActions action  where action.id =:actionId and orgLoc.id =:orgLocation and orgForm.status = '1'";
 		List<OrglocationFormFields> result = session.createQuery(query).setLong("actionId", actionId).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId, List<Long> orders) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "Select Count(*) from OrglocationFormFields orgForm    where orgForm.sourceleadFormSections.sourceleadActions.id =:actionId and orgForm.sourceleadFormSections.order IN(:orders) and orgForm.status ='1'";
+		List<Long> list = session.createQuery(query).setLong("actionId", actionId).setParameterList("orders", orders).setCacheable(true).list();
+		Long result = 0l;
+		if(list != null && !list.isEmpty()) {
+			result = list.iterator().next();
+		}
 		return result;
 	}
 

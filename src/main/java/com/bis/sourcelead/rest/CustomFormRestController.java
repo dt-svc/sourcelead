@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,10 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.SourceleadFormFields;
+import com.bis.sourcelead.entity.SourceleadFormSections;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -70,20 +70,38 @@ public class CustomFormRestController {
     
     @RequestMapping(value="/getAllASectionCustomFields",method = RequestMethod.POST)
     public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(@RequestParam(value="sectionId")Long sectionId,HttpServletRequest request) throws Exception {
-		List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId, request);
+		
+    	
+    	List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId, request);
+    	
 		ModelAndView model = new ModelAndView();
 		List<OrglocationFormFieldsDTO> OrglocationFormFieldsDTOList =new ArrayList<>();
+		Long actionId = null;
+		long currentIndex = 0;
     	for(OrglocationFormFields customForm:orglocationFormFieldList) {
-    		OrglocationFormFieldsDTO customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, null);
+    		List<OrglocationFormSubFields>  CustomFormSubFields = orglocationFormFieldsService.getAllCustomFormSubFieldsBySectionIdandOrgLocationId(customForm.getId());
+    		SourceleadFormSections section = customForm.getSourceleadFormSections();
+    		actionId = section.getSourceleadActions().getId();
+    		List<Long> orders = new  ArrayList<>();
+    		if(section != null && section.getOrder() >1) {
+    			for(long i = 1;i<section.getOrder();i++) {
+    				orders.add(i);
+    			}
+    		}
+    		if(orders != null && !orders.isEmpty()) {
+    			currentIndex = orglocationFormFieldsService.getCurrentIndexBySourceleadActionIdAndOrders(actionId, orders);
+    		}
+    		OrglocationFormFieldsDTO customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, CustomFormSubFields);
     		OrglocationFormFieldsDTOList.add(customFormSectonsListDTO);
     	}
-		model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
+    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
+		model.addObject("currentIndex",currentIndex);
     	model.setViewName("genericCustomFormFields");
     	return model;
     }
     
     
-    @RequestMapping(value="/getAllSectionByActionId",method = RequestMethod.POST)
+    /*@RequestMapping(value="/getAllSectionByActionId",method = RequestMethod.POST)
     public  ModelAndView getAllSectionByActionId(@RequestParam(value="actionId", required=true) Long actionId, HttpServletRequest request) throws Exception {
     	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	ModelAndView model = new ModelAndView();
@@ -99,6 +117,6 @@ public class CustomFormRestController {
     	return model;
     	
     }
-    
+    */
     
 }

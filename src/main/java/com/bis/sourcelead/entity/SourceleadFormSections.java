@@ -19,6 +19,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+/**
+ * @author BIS115
+ *
+ */
 @Entity
 @Table(name = "SOURCELEAD_FORM_SECTIONS", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormSections")
@@ -42,6 +46,9 @@ public class SourceleadFormSections implements Serializable{
 
 	@Column(name = "SECTION_NAME")
 	private String sectionName;
+	
+	@Column(name = "ORDER")
+	private long order;
 
 	@Column(name = "SECTION_DESC",columnDefinition = "TEXT default NULL")
 	private String sectionDesc;
@@ -95,6 +102,12 @@ public class SourceleadFormSections implements Serializable{
 
 	public void setSectionName(String sectionName) {
 		this.sectionName = sectionName;
+	}
+	public long getOrder() {
+		return order;
+	}
+	public void setOrder(long order) {
+		this.order = order;
 	}
 
 	public String getSectionDesc() {

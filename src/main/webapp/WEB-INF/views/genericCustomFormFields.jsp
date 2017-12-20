@@ -1,14 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-	<c:set var="currentIndex" value="0"></c:set>
 	<c:forEach var="customForm" items="${customFieldsList}" varStatus="customFormIndex">
 	<c:if test="${customForm.fieldType == 'textfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 	    	 <div class="col-md-9">
 	    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-	     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="Email Id" data-validation="${customForm.isRequired == 1 ? 'Required':''}" data-validation-optional="${customForm.isRequired == 0 ? 'true':''}">
+	     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
 	    	</div>
 	  </div>
 	 </c:if>
@@ -20,7 +19,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		                  <input type="checkbox" value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''}>
+		                  <input type="checkbox" value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''} >
 		                    ${customForm.labelName}</label>
 		                </div>
 		             </div>
@@ -40,17 +39,19 @@
                   </div>
 	   </c:if>
 	   
-	   <%-- <c:if test="${customForm.fieldType == 'selectfield'}">
+	   <c:if test="${customForm.fieldType == 'selectfield'}">
 		<div class="form-group">
 	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 	    	 <div class="col-md-9">
-	     	 	<select class="chosen-select form-control" id="" name="${customForm.fieldName}" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" data-validation="${customForm.isRequired == 1 ? 'Required':''}" data-validation-optional="${customForm.isRequired == 0 ? 'true':''}">
-	     	 		<option value="">1</option>
-	     	 		<option value="">2</option>
+	    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+	     	 	<select class="chosen-select form-control" id="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+	     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
+	     	 			<option value="${optionValue.id},${optionValue.option}">${optionValue.option}</option>
+	     	 		</c:forEach>
 	     	 	</select>
 	    	</div>
 	  </div>
-	 </c:if> --%>
+	 </c:if> 
 	</c:forEach>
 
 
@@ -82,22 +83,3 @@ $(function(){
 	  })
 });
 </script>
- 
-<!-- 
-<script>
-function getCustomDependentField(){
-	 var actionId = $("#actionId").val();
-	 alert(actionId);
-	 $.ajax({
-			type : "POST" , 
-				 url: sourceleadUrl+"/getAllSectionByActionId?actionId="+actionId,
-				 success: function(data) {
-				 alert(data);
-		        	$('#customFormDiv').empty();
-		        	$('#customFormDiv').append(data);
-				 }
-		  })
-}
-</script> -->
-
-

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -108,6 +109,9 @@ public class UserController {
 		    
 		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+		     model.addObject("sourceleadSectionList",sections); 
+		     
 		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);

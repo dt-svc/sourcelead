@@ -29,7 +29,8 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	@Autowired
 	private OrglocationFormSubFieldsDao orglocationFormSubFieldsDao;
 	
-	private OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception {
+	@Override
+	public OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception {
 		return orglocationFormFieldsDao.getOrglocationFormFieldsById(id);
 	}
 
@@ -53,11 +54,13 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			orgLocFormFields.setLabelName(orgLocFormFieldsDTO.getLabelName());
 		}
 		orgLocFormFields.setLabelInfo(orgLocFormFieldsDTO.getLabelinfo());
-		orgLocFormFields.setFieldName(orgLocFormFieldsDTO.getLabelName().toLowerCase().replaceAll("\\s",""));
+		if(orgLocFormFieldsDTO.getLabelName() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getLabelName()) && StringUtils.isNotBlank(orgLocFormFieldsDTO.getLabelName())) {
+			orgLocFormFields.setFieldName(orgLocFormFieldsDTO.getLabelName().toLowerCase().replaceAll("\\s",""));
+		}
 		orgLocFormFields.setFieldType(orgLocFormFieldsDTO.getFieldType());
 		orgLocFormFields.setFieldDesc(orgLocFormFieldsDTO.getFieldDescription());
 		orgLocFormFields.setPlaceHolder(orgLocFormFieldsDTO.getPlaceHolder());
-		
+		orgLocFormFields.setIsFieldRequired(orgLocFormFieldsDTO.getIsRequired());
 		if(orgLocFormFieldsDTO.getSlDependedntField() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSlDependedntField().toString())) {
 			SourceleadFormFields sourceLeadDependantField = new SourceleadFormFields();
 			sourceLeadDependantField.setId(orgLocFormFieldsDTO.getSlDependedntField());
@@ -121,6 +124,18 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation) {
 		return orglocationFormFieldsDao.getAllSectionByActionId(actionId,orgLocation);
 		
+	}
+
+
+	@Override
+	public Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId, List<Long> orders) {
+		return orglocationFormFieldsDao.getCurrentIndexBySourceleadActionIdAndOrders(actionId, orders);
+	}
+
+
+	@Override
+	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long customFieldId) {
+		return orglocationFormFieldsDao.getAllCustomFormSubFieldsBySectionIdandOrgLocationId(customFieldId);
 	}
 	
 	

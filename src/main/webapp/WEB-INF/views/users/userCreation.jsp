@@ -25,7 +25,10 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
-		getCustomDependentField();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -297,7 +300,13 @@
 		                </div>
 		                 </div>
                </div>
-               <jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
+                <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
             </div>
             </div>
                 
@@ -320,6 +329,18 @@
       <!-- Footer Area -->
 
 
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
  function employementType(type){
