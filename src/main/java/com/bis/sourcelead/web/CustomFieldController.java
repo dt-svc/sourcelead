@@ -11,10 +11,11 @@ import com.bis.sourcelead.dao.SourceleadFormSectionsDao;
 import com.bis.sourcelead.entity.SourceleadActions;
 
 @Controller
+@RequestMapping (value="/app")
 public class CustomFieldController {
 
-	@Autowired
-	private SourceleadFormSectionsDao SourceleadFormSectionsDao;
+@Autowired
+private SourceleadFormSectionsDao SourceleadFormSectionsDao;
 	
 @RequestMapping (value="/customFields")
 public ModelAndView CustomField() throws Exception {

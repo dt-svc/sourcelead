@@ -25,7 +25,10 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
-		getCustomDependentField();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -176,9 +179,9 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 chooRadius" id="chosen-role">
+                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -186,9 +189,9 @@
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
-                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
+                       <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
 			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			      </sec:authorize>
+			           </sec:authorize>
                 </div>
                 </div> 
                
@@ -297,7 +300,13 @@
 		                </div>
 		                 </div>
                </div>
-               <jsp:include page="../genericCustomFormFields.jsp"></jsp:include>
+                <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
             </div>
             </div>
                 
@@ -320,6 +329,18 @@
       <!-- Footer Area -->
 
 
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
  function employementType(type){

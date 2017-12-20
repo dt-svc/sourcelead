@@ -93,7 +93,9 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		customDTO.setFieldDescription(customList.getFieldDesc());
 		customDTO.setFieldName(customList.getFieldName());
 		customDTO.setFieldType(customList.getFieldType());
-		customDTO.setIsRequired(customList.getIsFieldRequired());
+		if((Integer)customList.getIsFieldRequired()!= null) {
+			customDTO.setIsRequired(customList.getIsFieldRequired());
+		}
 		customDTO.setLabelinfo(customList.getLabelInfo());
 		customDTO.setLabelName(customList.getLabelName());
 		customDTO.setPlaceHolder(customList.getPlaceHolder());
@@ -111,10 +113,12 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		List<OrglocationFormSubFieldsDTO> orglocationFormSubfieldDTO = new ArrayList<>();
 		for( OrglocationFormSubFields customSubList:customFieldsubList) {
 			OrglocationFormSubFieldsDTO orgSubDTO = new OrglocationFormSubFieldsDTO();
+			orgSubDTO.setId(customSubList.getId());
+			orgSubDTO.setOption(customSubList.getLabelName());
 			orgSubDTO.setFieldName(customSubList.getFieldName());
 			orgSubDTO.setFieldDesc(customSubList.getFieldDesc());
 			orgSubDTO.setFormField(customSubList.getFormField().getId());
-			orgSubDTO.setStatus(1);
+			orgSubDTO.setStatus(customSubList.getStatus());
 			orglocationFormSubfieldDTO.add(orgSubDTO);
 		}
 		return orglocationFormSubfieldDTO;
@@ -126,12 +130,14 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		formfieldDTO.setFieldDesc(formFields.getFieldDesc());
 		formfieldDTO.setFieldType(formFields.getFieldType());
 		formfieldDTO.setFieldstatus(formFields.getStatus());
-		formfieldDTO.setIsFieldRequired(formFields.getIsFieldRequired());
 		formfieldDTO.setLabelInfo(formFields.getLabelInfo());
 		formfieldDTO.setLabelName(formFields.getLabelName());
 		formfieldDTO.setPlaceHolder(formFields.getPlaceHolder());
 		formfieldDTO.setSectionId(formFields.getSourceleadFormSections().getId());
 		formfieldDTO.setSourceLeadlDependantField(formFields.getSlDependantField());
+		if(((Integer)formFields.getIsFieldRequired()!= null)) {
+			formfieldDTO.setIsFieldRequired(formFields.getIsFieldRequired());
+		}
 		return formfieldDTO;
 	}
 }

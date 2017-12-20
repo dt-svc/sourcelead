@@ -1266,7 +1266,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
 //	        List<ProjectMembers> projectsMembersList = null;
 	        String[] tokens = status.split(",");
-	        
+	        String [] roleId = null;
 	        String subQuery2 = "";
 	     
 	        if (Arrays.asList(tokens).contains("Active")) {
@@ -1286,9 +1286,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			} else if (subQuery2 != null && !"".equals(subQuery2)) {
 				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
-	  
-	        String [] roleId = roleIds.split(",");
-	        if (roleId[0] != null && roleId[0].length() > 0) {
+	 
+	        if(StringUtils.isNotBlank(roleIds)) {
+				  roleId = roleIds.split(",");
+		  }
+	      
+	        if ( roleId != null && roleId[0] != null && roleId[0].length() > 0) {
 	        	for (String roleid : roleId) {
 	        		String subquery3 = "and user.id IN( select ur.user.id from UserRole ur where ur.roles.id = "+roleid+" )";
 	        		 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
@@ -1449,6 +1452,23 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	      
 	        return projectsMembersList;
 	
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId, Long projectClientsId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projectClientsId.id = :projectClientsId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectClientsId", projectClientsId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
 	}
 	
 	

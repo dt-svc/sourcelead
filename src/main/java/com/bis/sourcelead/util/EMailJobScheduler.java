@@ -1328,7 +1328,7 @@ public class EMailJobScheduler {
 	}
 	
 	
-	private void contractSignedByReceiver(Contracts contracts) throws Exception
+	public void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());

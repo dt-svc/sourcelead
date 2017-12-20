@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <script type="text/javascript" src='resources/js/slead-common.js'></script>
 
  <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
      <div class="cusFielInn" >
@@ -110,7 +109,7 @@
 			  
 			  <div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
-					  <div class="col-md-6"><input name="isRequired" value="${customFormPopDetails.isRequired}" id="isRequired" class="toggle-required" type="checkbox"></div>
+					  <div class="col-md-6"><input name="isRequired" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" type="checkbox"></div>
 				</div>
 			  
 				<div class="clearfix"></div>
@@ -349,6 +348,7 @@ function getSelectedFieldDetails(){
  
  <script>
  function saveAddFormField(){
+	 alert("hi");
 	 if ($('#saveAddForm_form').validate(false, validationSettings)){
 	    var formData = getFormData1("saveAddForm_form");
 	    var selectedSectionID = $("#addFieldSection").val();
@@ -376,7 +376,8 @@ function getSelectedFieldDetails(){
 <script>
 function flushPopupData(){
 	$("#labelName").val('');
-	$("#isRequired").val(''); 
+	$("#isRequired").val('');
+	$('#isRequired').removeAttr('checked');
 	$("#selectOptionId").val('');
 	$("#placeHolder").val(''); 
 	$("#statusId").val('');

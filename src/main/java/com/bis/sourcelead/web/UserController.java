@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -108,6 +111,9 @@ public class UserController {
 		    
 		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+		     model.addObject("sourceleadSectionList",sections); 
+		     
 		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);
@@ -129,7 +135,7 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+			@RequestParam(value = "userCode", required = false) String userCode) throws Exception {
 		ModelAndView model = new ModelAndView();
 		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -146,7 +152,7 @@ public class UserController {
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
 		    
-			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
                
@@ -166,7 +172,7 @@ public class UserController {
 				}
 				
 				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
-				request.setAttribute("userId", userId);
+				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");
@@ -186,4 +192,6 @@ public class UserController {
 	 protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());
 		}
+	 
+	
 }

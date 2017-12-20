@@ -768,12 +768,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
             
             ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
             
-            if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+            if(requirement != null && !"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
                 releasedBy = requirement.getReleasedBy().split(",");
             }
              boolean requirementReleased = false;
              List<Long> releasedByUserIds = new ArrayList<Long>();
-             if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+             if(requirement != null && !"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
              for (String s : requirement.getReleasedBy().split(",")){
                  releasedByUserIds.add(Long.parseLong(s));
              }

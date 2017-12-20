@@ -27,7 +27,7 @@ import org.hibernate.annotations.Type;
  */
 
 @Entity
-@Table(name = "CANDIDATE_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "CANDIDATE_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocuments")
 
 public class CandidateDocuments implements Serializable{
