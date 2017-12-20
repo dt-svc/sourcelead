@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -33,9 +35,11 @@ public class ReportsUtil {
 	private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	
-     public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole){
+     public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
 		
 		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		List<Long> requirementIdsList = new ArrayList<>();
+		
 		try {
 			
 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
@@ -85,6 +89,7 @@ public class ReportsUtil {
 						requirementDTO.setRequirementId(String.valueOf(requirementIndex.getRequirementId()));
 						requirementDTO.setJobTitle(requirementIndex.getJobTitle());
 						requirementDTOList.add(requirementDTO);
+						requirementIdsList.add(Long.valueOf(requirementIndex.getRequirementId()));
 					}
 				}
 				
@@ -94,6 +99,7 @@ public class ReportsUtil {
 			e.printStackTrace();
 		}
 		
+		SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
 		return requirementDTOList;
 	}
 	
@@ -196,5 +202,35 @@ public class ReportsUtil {
 		return dates;
 
 	}
+	
+	
+	
+	
+	public Date[] getJobFilterDate(String dateSelection) {
+		Date[] dates = new Date[2];
+		Date[] searchDates = null;
+		Date startDate = null;
+		Date endDate = null;
+		if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+			searchDates = last7Days();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_15_DAYS)) {
+			searchDates = last15DaysDates();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_MONTH)) {
+			searchDates = last1MonthDates();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_3_MONTHS)) {
+			searchDates = last3MonthDates();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YTD)) {
+			searchDates = yearToDate();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
+			searchDates = lastYearDates();
+		}
+		
+		startDate = new java.sql.Date(searchDates[0].getTime());
+		endDate = new java.sql.Date(searchDates[1].getTime());
+		dates[0] = startDate;
+		dates[1] = endDate;
+		return dates;
+	}
+	
 	
 }

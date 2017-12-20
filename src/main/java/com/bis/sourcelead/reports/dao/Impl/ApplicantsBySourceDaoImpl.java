@@ -36,11 +36,13 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 
 	@Override
 	@Transactional
-	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date startDate, Date endDate,Long orgLocationId) {
+	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date startDate, Date endDate) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query ="select count(*) from RequirementSubmission rs where rs.requirement.orgLocationId =:orgLocationId ";
-		List<Long> submissionCount =   session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = null;
+		query ="select count(*) from RequirementSubmission rs where rs.candidate.candidateType = 'Professional' and rs.requirement.id IN (:jobIds) "
+				+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
+		List<Long> submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setCacheable(true).list();
 			Integer count= 0;
 			if(submissionCount != null && !submissionCount.isEmpty()){
 					count = submissionCount.get(0).intValue();
