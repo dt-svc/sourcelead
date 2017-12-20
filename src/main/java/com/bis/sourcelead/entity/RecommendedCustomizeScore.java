@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
-	@Table(name = "RECOMMENDED_CUSTOMIZE_SCORE", catalog = "sourcelead")
+	@Table(name = "RECOMMENDED_CUSTOMIZE_SCORE")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "recommendedCustomizeScore")
 	public class RecommendedCustomizeScore implements Serializable{
 

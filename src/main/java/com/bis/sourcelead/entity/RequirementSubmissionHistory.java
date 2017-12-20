@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "REQUIREMENT_SUBMISSION_HISTORY", catalog = "sourcelead")
+@Table(name = "REQUIREMENT_SUBMISSION_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionHistory")
 public class RequirementSubmissionHistory implements Serializable{
 	private static final long serialVersionUID = 1L;

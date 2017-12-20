@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "INTERVIEW_FEEDBACK_TEMPLATE", catalog = "sourcelead")
+@Table(name = "INTERVIEW_FEEDBACK_TEMPLATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewfeedbackTemplate")
 public class InterviewFeedbackTemplate implements Serializable{
 

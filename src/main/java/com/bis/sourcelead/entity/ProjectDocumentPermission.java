@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "PROJECT_DOCUMENT_PERMISSIONS", catalog = "sourcelead")
+@Table(name = "PROJECT_DOCUMENT_PERMISSIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocumentPermission")
 public class ProjectDocumentPermission implements Serializable{
 	

@@ -3,10 +3,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-fun.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
+<!-- <script src="/resources/js/jquery-1.11.1.min.js"></script> -->
+<!-- <script src="/resources/js/jquery-ui.js"></script> -->
+<!-- <script src="/resources/js/jquery-fun.js"></script> -->
+<!-- <script src="/resources/js/jquery.timepicker.js"></script> -->
 
 
 
@@ -19,22 +19,24 @@
 	<div class="orgInn">
 	<div id="whiteListerrDiv" class="orgErrorMes"></div>
 	<c:forEach var="userRole" items="${roleList}">
+	<a onclick="selectLoc(${userRole.id});">
 	   <input type="hidden" id="isTwoStepEnabled${userRole.id}" name="isTwoStepEnabled${userRole.id}" value="${userRole.orgLocations.loginSecurity}"/>
 		<div class="orgCta clearfix">
 		<input type="hidden" value="${userRole.user.loginSecurity}" id="userLoginSecurity"/>
 			<div class="raBtn" id="locDiv${userRole.id}">
 				   <input id="userRoleId${userRole.id}" name="userRoleId" type="radio" class="with-font" value="${userRole.id}"/>
-				 <label for="userRoleId" onclick="selectLoc(${userRole.id});"></label>
+				 <label for="userRoleId"></label>
 			</div>
 					
-			<span></span>
+			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
-				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : userRole.orgLocations.country}</p>
+				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
 				<p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
-				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p>
+<%-- 				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p> --%>
 			</div>
 	    </div>
+	    </a>
 	</c:forEach>
 	</div>
 <!-- 	<div class="orgCon"> -->

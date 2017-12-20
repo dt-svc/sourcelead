@@ -105,11 +105,11 @@ display: none;}
 </section>
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="/"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
-    	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="index.html" class="rcolor">Jobs</a></li>
+    	<li><a href="/"><i class="fa fa-home"></i></a></li>
+		<li><a href="javascript:redirectPage();" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
 				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>

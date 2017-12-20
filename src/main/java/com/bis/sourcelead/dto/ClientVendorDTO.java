@@ -78,6 +78,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String searchValue;
 	
+	private String orgType;
+	
 	public String getVendorCreateduserName()
 	{
 		return vendorCreateduserName;
@@ -590,6 +592,16 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	public void setSearchValue(String searchValue)
 	{
 		this.searchValue = searchValue;
+	}
+
+	public String getOrgType()
+	{
+		return orgType;
+	}
+
+	public void setOrgType(String orgType)
+	{
+		this.orgType = orgType;
 	}
 
 }

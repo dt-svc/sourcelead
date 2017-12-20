@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_SIGNATURE", catalog = "sourcelead")
+@Table(name = "USER_SIGNATURE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userSignature")
 public class UserSignature implements Serializable{
 	

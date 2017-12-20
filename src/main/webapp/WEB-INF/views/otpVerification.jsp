@@ -34,15 +34,15 @@
 		<img src="/resources/images/otp.png" alt=""/>
 		<div class="otpMail">
 			<span class="clearfix">
-				<input type="hidden" name="userRoleId" id="userRoleId" value="${userRoleId}">
-				<input type="hidden" name="username" id="username" value="${username}">
-				<input type="hidden" name="password" id="password" value="${password}">
-				<input type="hidden" name="userId" id="userId" value="${userId}">
-				<input type="radio" checked name="radio" id="email" value="${emailId}"><label for="email" id="emailLabel">${emailId}</label>
+				<input type="hidden" name="userRoleId" id="otpuserRoleId" value="${userRoleId}">
+				<input type="hidden" name="username" id="otpusername" value="${username}">
+				<input type="hidden" name="password" id="otppassword" value="${password}">
+				<input type="hidden" name="userId" id="otpuserId" value="${userId}">
+				<input type="radio" checked name="radio" id="otpemail" value="${emailId}"><label for="email" id="emailLabel">${emailId}</label>
 			</span>
 			<c:if test="${!empty mobilePhone}">
 				<span class="clearfix" id="mobileSpan" style="display:none">
-					<input type="radio" name="radio" id="mobile" value="${mobilePhone}"><label for="mobile" id="mobileLabel">${mobilePhone}</label>
+					<input type="radio" name="radio" id="otpmobile" value="${mobilePhone}"><label for="mobile" id="mobileLabel">${mobilePhone}</label>
 				</span>
 			</c:if>
 			<span class="clearfix" style="display:none">
@@ -64,16 +64,16 @@
 
 <script>
 function sendOtp() {
-	var userId = $("#userId").val();
-	var userRoleId = $("#userRoleId").val();
-	var username = $("#username").val();
-	var password = $("#password").val();
+	var userId = $("#otpuserId").val();
+	var userRoleId = $("#otpuserRoleId").val();
+	var username = $("#otpusername").val();
+	var password = $("#otppassword").val();
 	var email = '${emailId}';
 	if(email != null && email != '' && email != 'undefined')
-		email = $("#email").val();
+		email = $("#otpemail").val();
 	var mobile = '${mobilePhone}';
 	if(mobile != null && mobile != '' && mobile != 'undefined')
-		mobile = $("#mobile").val();
+		mobile = $("#otpmobile").val();
 	$("#resendOTP").removeAttr("onclick");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
@@ -84,14 +84,14 @@ function sendOtp() {
 	    	   if(data != null){
 	    		    $("#twoStepAuthDiv").empty();
 	    		    $("#twoStepAuthDiv").append(data);
-	    		   	$("#userId").val(userId);
-	    			$("#userRoleId").val(userRoleId);
-	    			$("#username").val(username);
-	    			$("#password").val(password);
+	    		   	$("#otpuserId").val(userId);
+	    			$("#otpuserRoleId").val(userRoleId);
+	    			$("#otpusername").val(username);
+	    			$("#otppassword").val(password);
 	    			$("#emailLabel").html(email);
 	    			$("#mobileLabel").html(mobile);
-	    			$("#email").val(email);
-	    			$("#mobile").val(mobile);
+	    			$("#otpemail").val(email);
+	    			$("#otpmobile").val(mobile);
 	    		   	$("#sendOTP").attr("style","display:none");
 	    		   	$("#resendOTP").attr("style","display:block");
 	    		   	$("#otpText").html("OTP has been sent to your registered "+type);
@@ -103,12 +103,12 @@ function sendOtp() {
 
 function verifyOTP(){
 	var enteredOTP = $("#enteredOTP").val();
-	var userRoleId = $("#userRoleId").val();
-	var username = $("#username").val();
-	var password = $("#password").val();
+	var userRoleId = $("#otpuserRoleId").val();
+	var username = $("#otpusername").val();
+	var password = $("#otppassword").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
-	if(enteredOTP == '${authToken}'){
+	if((enteredOTP != null && enteredOTP != '' && enteredOTP !='undefined') && (enteredOTP == '${authToken}')){
 		$("#errorDiv").removeAttr("style");
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({

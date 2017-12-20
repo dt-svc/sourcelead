@@ -1080,6 +1080,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
         	 $("#onboardingTemplate").empty();
            	 $("#onboardingTemplate").append(result); 
            	 $('#onboardingTemplate').trigger("chosen:updated");
+           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
 	    }
    });
 }
@@ -2170,7 +2171,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Location <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Locatin" data-validation="required" >';
+	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Location" data-validation="required" >';
 	 result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'offBoardLocation\',\'country\',\'state\',\'city\',\'zipCode\');"></i>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2229,12 +2230,18 @@ function addCandidateDetailsForOnboarding(){
 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +' </div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
-
+	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="dojDiv">';
 	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2270,17 +2277,24 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<label class="col-md-3 control-label">Manager<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Team</label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadTeams(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +'</div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
    
@@ -2350,10 +2364,17 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
-	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="row">';
+	 result = result +'<div class="col-md-9 padding_right">';
+	 result = result +'<select class="chosen-select form-control" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
+	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</div>';
+	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 
 	 
@@ -2483,6 +2504,27 @@ function validOnboardCandiate(){
 function toDate(selector) {
     var from = $(selector).val().split("-");
     return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function refreshRoleList(){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRoleList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Role</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.displayName+"</option>";
+				}
+	        	$("#onboardCandidateRole").empty();
+		        $("#onboardCandidateRole").append(output);
+		        $('#onboardCandidateRole').trigger("chosen:updated");
+	        }
+		 });
+	
 }
 </script>
   
