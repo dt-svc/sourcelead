@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -29,16 +30,16 @@ import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadUtil {
 
-	public String cropImage(String staticPath, MultipartFile multiFile, int x, int y, int w, int h) {
+	public String cropImage(String staticPath, File inFile, int x, int y, int w, int h) {
 		try {
-			BufferedImage bufferedImage = Thumbnails.of(multiFile.getInputStream()).useExifOrientation(true).scale(1).asBufferedImage();
+			BufferedImage bufferedImage = Thumbnails.of(new FileInputStream(inFile)).useExifOrientation(true).scale(1).asBufferedImage();
 			if(x > 0 || y > 0 || w > 0 || h > 0)
 				bufferedImage = bufferedImage.getSubimage(x, y, w, h);
 			if (bufferedImage == null) {
 				return "failed";
 			}
 			bufferedImage = Thumbnails.of(bufferedImage).size(250, 250).asBufferedImage();
-			String fileName = multiFile.getOriginalFilename().replace("&", "").replace("%", "").replace("?", "");
+			String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");
 			String extenstion = fileName.substring(fileName.lastIndexOf("."));
 			fileName = fileName.substring(0, fileName.lastIndexOf("."));
 			long time = new Date().getTime();
@@ -60,8 +61,8 @@ public class FileUploadUtil {
 	}
 
 	public String uploadFile(String staticPath, long orgId, long locationId, String fileType,
-			MultipartFile multipartFile) {
-		String fileName = multipartFile.getOriginalFilename().replace("&", "").replace("%", "").replace("?", "");;
+			File inFile) {
+		String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");;
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
@@ -77,8 +78,7 @@ public class FileUploadUtil {
 
 		File file = new File(staticPath, fileName);
 		try {
-
-			multipartFile.transferTo(file);
+			Files.move(inFile.toPath(), file.toPath());
 			return url;
 		} catch (IllegalStateException | IOException e) {
 			e.printStackTrace();
@@ -86,10 +86,10 @@ public class FileUploadUtil {
 		return "";
 	}
 	
-	public List<FileInfo> uploadZipFile(String staticPath, long orgId, long locationId, String fileType, MultipartFile multipartFile)
+	public List<FileInfo> uploadZipFile(String staticPath, long orgId, long locationId, String fileType, File inFile)
 	{
 		List<FileInfo> fileInfoList = new ArrayList<>();
-		String fileName = multipartFile.getOriginalFilename();
+		String fileName = inFile.getName();
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
@@ -102,7 +102,7 @@ public class FileUploadUtil {
 			folderFile.mkdirs();
 		File file = new File(staticPath, fileName);
 		try {
-			multipartFile.transferTo(file);
+			Files.move(inFile.toPath(), file.toPath());
 			List<FileInfo> list = extractAll1(file.toPath(), folderFile.toPath(), orgId, locationId, staticPath);
 			if (list != null)
 				fileInfoList.addAll(list);

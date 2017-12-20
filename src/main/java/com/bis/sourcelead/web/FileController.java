@@ -2,6 +2,8 @@ package com.bis.sourcelead.web;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,12 +74,28 @@ public class FileController {
 			@RequestParam (defaultValue = "0") int x,
 			@RequestParam (defaultValue = "0") int y,
 			@RequestParam (defaultValue = "0") int w,
-			@RequestParam (defaultValue = "0") int h) {
+			@RequestParam (defaultValue = "0") int h, 
+			@RequestParam (defaultValue = "0") int chunk, 
+			@RequestParam (defaultValue = "0") int chunks, String name, String uploadid) {
+		
 		List<FileInfo> fileInfoList = new ArrayList<>();
 		Iterator<String> itrator = request.getFileNames();
 		while (itrator.hasNext()) {	
 			FileInfo fileInfo = new FileInfo();
+			boolean chunkDataFlag = false;
 			MultipartFile multiFile = request.getFile(itrator.next());
+			if(name == null)
+				name = multiFile.getOriginalFilename();
+			File file = new File(staticPath, "temp\\"+(uploadid != null ? uploadid +"-" : "")+name);
+			try (FileOutputStream fis = new FileOutputStream(file, true);){
+				fis.write(multiFile.getBytes());
+				chunkDataFlag = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(chunks > chunk + 1) {
+				return fileInfoList;
+			}
 			if(!type.equalsIgnoreCase("profile") && (orgId == 0 || orgLocationId == 0)) {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -91,20 +109,20 @@ public class FileController {
 			}
 			FileUploadUtil fileUploadUtil = new FileUploadUtil();
 			if(type.equals("profile")) {
-				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, multiFile, x, y, w, h));
+				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, file, x, y, w, h));
 				fileInfo.setFileName(multiFile.getOriginalFilename());
 				fileInfo.setContentType(multiFile.getContentType());
 				fileInfoList.add(fileInfo);
 			} else {
-				String fileName = multiFile.getOriginalFilename();
+				String fileName = chunkDataFlag ? name : multiFile.getOriginalFilename();
 				String extenstion = fileName.substring(fileName.lastIndexOf("."));
 				if(extenstion.equalsIgnoreCase(".rar"))
 					continue;
 				if (extenstion.equalsIgnoreCase(".zip")) {
-					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, multiFile));
+					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, file));
 				}
 				else {
-					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, multiFile);
+					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, file);
 					fileInfo.setFileName(multiFile.getOriginalFilename());
 					fileInfo.setFileURL(fileURL);
 					fileInfo.setContentType(multiFile.getContentType());
@@ -118,16 +136,20 @@ public class FileController {
 		
 	@RequestMapping(value = "/upload-resumes", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, List<ResumeParserJsonUtil>> uploadResumeFiles(MultipartHttpServletRequest request, String uploadid) throws Exception
+	public Map<String, List<ResumeParserJsonUtil>> uploadResumeFiles(MultipartHttpServletRequest request, String uploadid, int chunk, int chunks, String name) throws Exception
 	{
-		
 		HttpSession session = request.getSession();
 		Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
-		saveLogMessage(uploadid, "File uploading completed");
-		saveLogMessage(uploadid, "<br/>Processing files...");
-		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0);
+		if(chunks <= chunk + 1) {
+			saveLogMessage(uploadid, "File uploading completed");
+			saveLogMessage(uploadid, "<br/>Processing files...");
+		}
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, chunk, chunks, name, uploadid);
+		if(chunks <= chunk + 1) {
+			saveLogMessage(uploadid, "<br/>Initial process completed "+fileInfoList.size()+" file(s) found!");
+		} else 
+			return parsedList;
 		long fileName = new Date().getTime();
-		saveLogMessage(uploadid, "<br/>Initial process completed "+fileInfoList.size()+" file(s) found!");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
@@ -190,9 +212,9 @@ public class FileController {
 					fileInfoList1.add(fileInfo);
 					candidateDto.setFileInfo(fileInfoList1);
 					candidateDto.setStaticPath(staticPath);
-					String name = resume.getName();
-					candidateDto.setFirstName(name.contains(".") ? name.substring(0, name.lastIndexOf(".")) : name);
-					candidateDto.setLastName(name.contains(".") ? name.substring(name.lastIndexOf(".")+1) : "");
+					String name1 = resume.getName();
+					candidateDto.setFirstName(name1.contains(".") ? name1.substring(0, name1.lastIndexOf(".")) : name1);
+					candidateDto.setLastName(name1.contains(".") ? name1.substring(name1.lastIndexOf(".")+1) : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
 					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
 					addToResponse(1, session, uploadid, resume, fileInfo, count, i++);
@@ -225,7 +247,7 @@ public class FileController {
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request)
 	{
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
-		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0);
+		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			try {

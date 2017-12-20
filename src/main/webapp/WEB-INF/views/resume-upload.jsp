@@ -27,6 +27,7 @@ body {
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
     }
+    .plupload_header {display: none !important;}
     .text_logo {
     font-size: 18px;
 font-weight: bold;
@@ -74,8 +75,9 @@ margin: 0px auto;
         width: 650px; background-color: #fff; margin: 0px 0px; display: block; padding: 8px 12px 12px;
         box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; float: left;
     }
+    h2 {font-size: 16px; padding: 0px 20px;}
     .browseWrap {
-        width: 92%; border: 1px solid #dedede; border-radius: 4px; box-sizing:  border-box; position: relative;
+        border: 1px solid #dedede; border-radius: 4px; box-sizing:  border-box; position: relative;
         margin: 4px 0px;
     }    
     .browseInn {
@@ -171,21 +173,21 @@ padding: 2px
 	<header>
 		<div class="logo">
 		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
-  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
   </c:if>
   
    <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead">
+   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead"></a>
    </c:if>
   
   
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
 		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -210,7 +212,7 @@ padding: 2px
 		</div>
 		<div class="clear"></div>
 	</header>
-	<section>
+<%-- <!-- 	<section> -->
 		<div class="browseOut">
 		<div class="clearfix mb">
 		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/candidatesList'/>">Candidate List</a> &raquo; Bulk Import </div>
@@ -232,17 +234,17 @@ padding: 2px
 							<input type="file" class="btnHide" id='uploadFile' multiple="multiple"> <a
 								href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 						</div>
-						<span class="filename">Upload File</span>
+						<div class="filename" id='container'>Upload File</div>
 						<div class="clear"></div>
-						<div class="addFilBtn">
-							<i class="fa fa-plus"></i>
-						</div>
+<!-- 						<div class="addFilBtn"> -->
+<!-- 							<i class="fa fa-plus"></i> -->
+<!-- 						</div> -->
 					</div>
 				</div>
 
 			</div>
 			<div class="browseBtns">
-				<button id='upload'>
+				<button id='upload1'>
 					<i class="fa fa-upload"></i> Upload
 				</button>
 				<button class="cleBtn" id='clear'>Clear</button>
@@ -252,12 +254,18 @@ padding: 2px
 		<div class="editor">
 			<span>
 <!-- 				<div class='copy btn' data-clipboard-target='#log'><i class="fa fa-copy"></i></div> -->
-				<h3>Imported log</h3>
+				<h3>Import log</h3>
 				<div class="editText" id='log'></div>
 			</span>
 		</div>
-	</section>
-
+	</section> --%>
+<!-- 	<div class="browse"> -->
+		<h2><b>Candidate (Resume) Bulk Import</b></h2>
+<!-- 		<div style='clear:both;'></div> -->
+<!-- 	</div> -->
+<div id="uploader">
+    <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+</div>
 	<footer>
 		<div class="copyright">
 			&copy; 2017 SourceLead <sup>&reg;</sup> , All Rights Reserved
@@ -270,7 +278,7 @@ padding: 2px
 				<input type="file" id='abc' class="btnHide" multiple="multiple">
 				<a href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
 			</div>
-			<span class="filename">Upload File</span>
+			<div class="filename">Upload File</div>
 			<div class="clear"></div>
 			<div class="abcdef"><i class="fa fa-trash-o"></i></div>
 		</div>	
@@ -304,23 +312,30 @@ var count = 1;
 		$("#upload").click(function() {
 			var data1 = new FormData();
 			var j = 0;
-			var validFiles = [];
+			var invalidFiles = [];
 			var k = 0;
+			var files1 = [];
 			$("input[type=file]").each(function(i) {
 				var files = document.getElementById($(this).attr('id')).files;
 				for(var i=0;i<files.length;i++) {
 					var validFlag = isValidFile(files[i].name);
 					if(!validFlag)
-						validFiles[k++] = files[i].name;
-					data1.append("inputFile"+(j++), files[i]);
+						invalidFiles[k++] = files[i].name;
+					data1.append("inputFile"+(j), files[i]);
+					files1[j++] = files[i];
 				}
 			});
-			if(validFiles.length > 0) {
+			if(j > 0) {
+				for(var i=0;i<j;i++) {
+					document.getElementById('filesSelected').files[i]=files1[i];
+				}
+			}
+			if(invalidFiles.length > 0) {
 				var text = "<span class='c'>Unbale to process your request as you have selected unsupported formatted files</span><br/><br/>Unsupported Files:";
 				var rarflag = false;
-				for(var i=0;i<validFiles.length;i++) {
-					text += "<br/>"+validFiles[i];
-					if(validFiles[i].toLowerCase().endsWith(".rar"))
+				for(var i=0;i<invalidFiles.length;i++) {
+					text += "<br/>"+invalidFiles[i];
+					if(invalidFiles[i].toLowerCase().endsWith(".rar"))
 						rarflag = true;
 				}
 				text += "<br/><br/><span class='a'>To upload candidates using Excel (.xls | .xlsx) file</span> ";
@@ -331,7 +346,7 @@ var count = 1;
 				$(".editText").html(text);
 				return;
 			}
-			if(j == 0) {
+			/* if(j == 0) {
 				alert("Please select resume(s)");
 				return;
 			}
@@ -364,8 +379,8 @@ var count = 1;
 						      }
 						    }, false);
 
-						    return xhr;
-						  },
+						    return xhr; 
+// 						  },
 						  url: 'upload-resumes',
 						  type: "POST",
 						  processData: false,
@@ -381,9 +396,9 @@ var count = 1;
 						});
 				} else {
 					alert("No Session found");
-					location.href='/app/login';
+					location.href='/sourcelead/login';
 				}
-			});
+			}); */
 			
 		});
 		
@@ -451,5 +466,129 @@ var count = 1;
 		});
 	}
 </script>
+<input type='file' style='display:none' multiple="multiple" id='filesSelected'/>
+<script type="text/javascript" src="/resources/pluploadjs/plupload.full.min.js"></script>
 
+<script type="text/javascript" src="/resources/pluploadjs/jquery.plupload.queue.min.js" charset="UTF-8"></script>
+<link type="text/css" rel="stylesheet" href="/resources/pluploadjs/jquery.plupload.queue.css" media="screen" />
+
+<script type="text/javascript">
+// Custom example logic
+
+/* var uploader = new plupload.Uploader({
+	runtimes : 'html5,flash,silverlight,html4',
+	browse_button : 'uploadFile', // you can pass an id...
+	container: document.getElementById('container'), // ... or DOM Element itself
+	
+	url : 'upload-resumes',
+	flash_swf_url : '/resources/pluploadjs/Moxie.swf',
+	silverlight_xap_url : '/resources/pluploadjs/Moxie.xap',
+	chunk_size: '1mb',
+	filters : {
+		max_file_size : '1000mb',
+		mime_types: [
+			{title : "Doc files", extensions : "doc,docx,pdf"},
+			{title : "Zip files", extensions : "zip"}
+		]
+	},
+
+	init: {
+		PostInit: function() {
+			document.getElementById('log').innerHTML = '';
+
+			document.getElementById('upload1').onclick = function() {
+				$.post("check-session", {}, function(data) {
+					if(data === "YES") {
+						uploadid = new Date().getTime();
+						uploader.settings.url = 'upload-resumes?uploadid='+uploadid;
+						uploader.start();
+						getUploadStatus();
+					} else {
+						alert("No Session found");
+						location.href='/login';
+					}
+				});
+				return false;
+			};
+		},
+
+		 FilesAdded: function(up, files) {
+			plupload.each(files, function(file) {
+				document.getElementById('container1').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
+			});
+		},
+
+		UploadProgress: function(up, file) {
+			document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+		}, 
+
+		Error: function(up, err) {
+			document.getElementById('log').appendChild(document.createTextNode("\nError #" + err.code + ": " + err.message));
+		}
+	}
+});
+
+uploader.init(); */
+var uploader1;
+$(function() {
+    // Setup html5 version
+    uploader1 =  $("#uploader").pluploadQueue({
+        // General settings
+        
+        runtimes : 'html5,flash,silverlight,html4',
+        url : 'upload-resumes',
+        chunk_size : '1mb',
+        rename : false,
+        dragdrop: true,
+         
+        filters : {
+            // Maximum file size
+            max_file_size : '1000mb',
+            // Specify what files to browse for
+            mime_types: [
+                {title : "Resume files", extensions : "doc,docx,pdf,rtf"},
+                {title : "Zip files", extensions : "zip"}
+            ]
+        },
+ 
+        // Resize images on clientside if we can
+        resize: {
+            width : 200,
+            height : 200,
+            quality : 90,
+            crop: true // crop to exact dimensions
+        },
+ 
+ 
+        // Flash settings
+        flash_swf_url : '/resources/pluploadjs/Moxie.swf',
+     
+        // Silverlight settings
+        silverlight_xap_url : '/resources/pluploadjs/Moxie.xap',
+        init: {
+        	
+    		PostInit: function(up) {
+    			$(".plupload_button.plupload_start").unbind('click');
+    			$(".plupload_button.plupload_start").click(function() {
+    				$.post("check-session", {}, function(data) {
+    					if(data === "YES") {
+    						uploadid = new Date().getTime();
+    						up.settings.url = 'upload-resumes?uploadid='+uploadid;
+    						up.start();
+    						getUploadStatus();
+    					} else {
+    						alert("No Session found");
+    						location.href='/login';
+    					}
+    				});
+    				return false;
+    			});
+    		}
+        }
+    });
+    
+    $(".plupload_header").hide();
+});
+
+</script>
 </html>
