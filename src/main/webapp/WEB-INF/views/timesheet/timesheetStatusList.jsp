@@ -9,7 +9,7 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
-
+<jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp" />
 <div id="TimeshgeetStatusListId"></div>
 
  <body  onclick="bodyClick();">
@@ -17,6 +17,7 @@
       <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
+            <input type="hidden" id="timesheetPageStatus" value="${status}"/>
             <h2> ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</h2>
           </div>
             <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Wait For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</div>
@@ -59,6 +60,7 @@
 		<div id= "paginationDiv" class="clearfix">
 	<div class="col-md-6">
 		<div class="pull-left mt5">
+		    <input type="hidden" id="currentPageNumber" />
 			<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
 				<div class="dropdown-select pull-left mr5 tblminwidth-50">
 					<select id="pageSize" onchange="getTableDataByPageSize()">
@@ -163,8 +165,9 @@ function filter(){
 				  var totalRows =  $('#totalRows').val();
 				  var pageCount = $('#pageCount').val();
 				  var pageSize = $("#pageSize").val();
+				  $("#currentPageNumber").val(pageNo);
 				  var searchData = '${timesheetApprovalDTO.searchValue}';
-			 if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
+			      if(totalRows !=null && totalRows != '' && totalRows != 'undefined' && totalRows != 0){
 					  $('#paginationDiv').show();
 					  $('#dataTableSearchExpenses123').val('') ;
 					  $('#dataTableSearchExpenses123').val(searchData); 

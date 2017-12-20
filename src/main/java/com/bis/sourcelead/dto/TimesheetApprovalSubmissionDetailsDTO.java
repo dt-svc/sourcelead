@@ -30,12 +30,14 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String rejectedReason;
 	private String actualStartDate;
 	private String actualEndDate;
+	private String currentTimeFrequency;
 	private int tdSpanLength;
 	
 	private String orgRelationUUID;
 	
 	private String dashboardInvoiceFrequency;
 	private String dashboardDateList;
+	private String tableFor;
 	
 	public Long getProjectMemberId() {
 		return projectMemberId;
@@ -198,6 +200,18 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	}
 	public void setOrgRelationUUID(String orgRelationUUID) {
 		this.orgRelationUUID = orgRelationUUID;
+	}
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
+	}
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
+	}
+	public String getTableFor() {
+		return tableFor;
+	}
+	public void setTableFor(String tableFor) {
+		this.tableFor = tableFor;
 	}
 	
 	

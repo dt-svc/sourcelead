@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -62,6 +64,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Autowired
 	private ProjectsDao projectsDao; 
+	
+	@Autowired
+	private OrgLocationsDao orgLocationsDao;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -1756,7 +1761,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception {
 		//ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
-		Projects projects = projectsDao.getProjectById(projectId);
+		OrgLocations orgLoc = orgLocationsDao.getOrgLocations(locationsId);
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
 		if(startDate != null){
@@ -1827,8 +1832,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
 	    	submissionApproverHierarchy.setTotalHours(0f);
-	    	 DateFormat format = projects.getOrgLocationsId().getLocFullFormDateFormatter();
-	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate),projects.getOrgLocationsId().getDateFormat());
+	    	 DateFormat format = orgLoc.getLocFullFormDateFormatter();
+	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate),orgLoc.getDateFormat());
 	    	
              if(tabFrequencyDates != null && !tabFrequencyDates.isEmpty()){
             	tabFrequencyDates.forEach((k,v)->
