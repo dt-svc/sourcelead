@@ -135,7 +135,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						e.printStackTrace();
 					}
 				}else{
-					candidatecertificate.setValidFrom("");
+					candidatecertificate.setValidFrom(null);
 				}
 				if (StringUtils.isNotBlank(candidateCertificationDTO.getValidTo())) {
 					try {
@@ -147,7 +147,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						e.printStackTrace();
 					}
 				}else{
-					candidatecertificate.setValidTo("");
+					candidatecertificate.setValidTo(null);
 				}
 				candidatecertificate.setStatus(Constants.CANDIDATE_ACTIVE);
 				candidatecertificate.setCreatedBy(user.getUserCode());

@@ -124,7 +124,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				e.printStackTrace();
 			}
 		}else{
-			candidateEducation.setStartDate("");
+			candidateEducation.setStartDate(null);
 		}
 		if (candidateEducationDTO.getEndDate() != null && candidateEducationDTO.getEndDate() != "") {
 			try {
@@ -136,7 +136,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				e.printStackTrace();
 			}
 		}else{
-			candidateEducation.setEndDate("");
+			candidateEducation.setEndDate(null);
 		}
 		
 		
