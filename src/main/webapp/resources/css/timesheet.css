@@ -5933,7 +5933,7 @@ width: 100% !important;
 .newMailSet ul li a {
 	padding: 8px 25px 8px 15px !important; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
 }
-.newMailSet ul li a.Active {
+.newMailSet ul li:hover {
 	background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 }
 .newMailSet ul li a.Active span {

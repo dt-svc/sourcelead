@@ -18,5 +18,9 @@ public interface EmailAccountSettingsService {
 	public List<String> emailAccountRead(Long id,Long user)throws Exception;
 	
 	public List<ReadMailDTO> emailFolderRead(Long id,String folderName,Long userId);
+	
+	public void deleteEmailAccount(Long id,Long userId)throws Exception;
+	
+	public EmailAccountSettingsDTO getEmailAccount(Long id,Long userId)throws Exception;
 
 }

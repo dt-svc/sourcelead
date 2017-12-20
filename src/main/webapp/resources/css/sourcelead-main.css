@@ -7511,8 +7511,6 @@ margin-right: 0;
 .bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
 width: 220px;
 }
-.inBox-list li {
-	padding: 2px 10px; min-height: 25px; line-height: 25px;
 .assignTableScroll.assignTableScroll-mnh {
 min-height: 150px;
 }
@@ -7571,8 +7569,25 @@ vertical-align: middle !important; padding: 15px 10px !important;
 .immigration-head {
 background-color: #f5f5f5; padding:5px 15px;
 }
-.mailbox-table .table tr td {
-	text-align: left !important;
+.mail-actionicons {
+position: absolute; right: 5px;  top:8px; z-index: 1;	color: #808080; cursor: pointer;
+}
+.mail-actionicons .fa:hover {
+	color: #333;
+}
+.newMailSet.mailInboxli ul li a {
+	width: 225px;
+}
+.newMailSet ul li a.Active {
+	background: none !important;
+}
+.newMailSet ul li.Active {
+	background:#f1f6ff;
+	color: #444;
+}
+.inBox-list li {
+	padding: 5px 10px;
+	
 }
 /* media 320px */
 @media (max-width: 320px) {

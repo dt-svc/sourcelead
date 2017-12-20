@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmailAccountSettingsDao;
@@ -24,6 +25,7 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 	
 	@Autowired
 	private EmailAccountSettingsDao emailAccountSettingsDao;
+	
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -111,6 +113,28 @@ public class EmailAccountSettingsServiceImpl implements EmailAccountSettingsServ
 		List<ReadMailDTO> mailsList=new ArrayList<>();
 		mailsList=ReadMailFolder.readMail(host, storeType, email, password,folderName);
 		return mailsList;
+	}
+
+	@Override
+	public void deleteEmailAccount(Long id, Long userId)throws Exception {
+		emailAccountSettingsDao.deleteEmailAccount(id, userId);
+	}
+
+	@Override
+	public EmailAccountSettingsDTO getEmailAccount(Long id, Long userId) throws Exception {
+		EmailAccountSettings emailAccountSettings=emailAccountSettingsDao.getEmailAccount(id, userId);
+		 EmailAccountSettingsDTO emailAccountSettingsDTO=new EmailAccountSettingsDTO();
+		 emailAccountSettingsDTO.setEmail(emailAccountSettings.getEmail());
+		  emailAccountSettingsDTO.setPassword(emailAccountSettings.getPassword());
+		  emailAccountSettingsDTO.setRecieveEmail(emailAccountSettings.getRecieveEmail());
+		  emailAccountSettingsDTO.setRecievePort(emailAccountSettings.getRecievePort());
+		  emailAccountSettingsDTO.setRecieveServerName(emailAccountSettings.getRecieveServerName());
+		  emailAccountSettingsDTO.setRecieveSSL(emailAccountSettings.getRecieveSSL());
+		  emailAccountSettingsDTO.setSendEmail(emailAccountSettings.getSendEmail());
+		  emailAccountSettingsDTO.setSendPort(emailAccountSettings.getSendPort());
+		  emailAccountSettingsDTO.setSendServerName(emailAccountSettings.getSendServerName());
+		  emailAccountSettingsDTO.setSendSSL(emailAccountSettings.getSendSSL());
+		return emailAccountSettingsDTO;
 	}
 
 }

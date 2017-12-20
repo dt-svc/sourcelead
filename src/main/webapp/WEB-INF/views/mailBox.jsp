@@ -73,17 +73,33 @@
 			  </div> 
 
 		<div class="mail-box" id="loading">
-            <div class="box-body no-padding newMailSet">
+            <div class="box-body no-padding newMailSet mailInboxli">
               <ul class="nav nav-pills nav-stacked">
               <c:forEach var="emailAccountList" items="${emailAccountSettingsServiceList}">
               <c:if test="${emailAccountList.emailType == 'gmail'}">
-                      <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-google cGmail"></i> ${emailAccountList.email} <span></span></a></li>
+                      <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-google cGmail"></i> ${emailAccountList.email} <span></span></a>
+                       <div class='mail-actionicons text-center'>
+                      <%--  <b class="fa fa-pencil" onclick="editConMail(${emailAccountList.id});"></b> --%>
+                       <b class="fa fa-trash" onclick="deleteConMail1(${emailAccountList.id});"></b>
+                       </div>
+                       </li>
+                
               </c:if>
               <c:if test="${emailAccountList.emailType == 'yahoo'}">
-                  <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-yahoo cYahoo"></i> ${emailAccountList.email} <span></span></a></li>
+                  <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-yahoo cYahoo"></i> ${emailAccountList.email} <span></span></a>
+                  <div class='mail-actionicons text-center'>
+                      <%--  <b class="fa fa-pencil" onclick="editConMail(${emailAccountList.id});"></b> --%>
+                       <b class="fa fa-trash" onclick="deleteConMail1(${emailAccountList.id});"></b>
+                       </div>
+                  </li>
               </c:if>
              <c:if test="${emailAccountList.emailType == 'other'}">
-                            <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-envelope-o cOut"></i> ${emailAccountList.email} <span></span></a></li>
+                            <li class="aa"><a href="#" id="activeClass${emailAccountList.id}" class="" onclick="activeEmail(${emailAccountList.id});"><i class="fa fa-envelope-o cOut"></i> ${emailAccountList.email} <span></span></a>
+                            <div class='mail-actionicons text-center'>
+                      <%--  <b class="fa fa-pencil" onclick="editConMail(${emailAccountList.id});"></b> --%>
+                       <b class="fa fa-trash" onclick="deleteConMail1(${emailAccountList.id});"></b>
+                       </div>
+                            </li>
              </c:if>
              
               </c:forEach>
@@ -699,7 +715,7 @@ function deleteReadMail(uuid,nextMailUUID,type){
 function activeEmail(id){
 	$("#activeClass"+id).removeClass("Active");
 	$("#activeClass"+id).addClass("Active");
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	$.ajax({
 		type : "POST",
@@ -729,7 +745,7 @@ function activeEmail(id){
 <script type="text/javascript">
 function readFolder(folderName,id){
 	$('#mailboxLabel').html(folderName);
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	$.ajax({
 		type : "POST",
@@ -796,6 +812,21 @@ function readFolder(folderName,id){
 }
 
 </script>
+<<script type="text/javascript">
+function deleteConMail1(id){
+	alert("hello")
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
+		success : function(data) {
+				location.replace(sourceleadUrl+"/mailBox/mails");
+		},
+	}); 
+}
+</script>
+
+
+
 <!-- <script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script> -->
 
 <script>
