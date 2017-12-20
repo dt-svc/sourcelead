@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ApplicantsBySourceDao {
 
-	Integer getCrowdsourcingApplicantsCount(List<Long> jobIds,Date startDate,Date endDate);
+	Integer getCrowdsourcingApplicantsCount(List<Long> jobIds,Date[] searchDates);
 	
 	Integer getRequirementsCount(Long orgLocationId) throws Exception;
 }
