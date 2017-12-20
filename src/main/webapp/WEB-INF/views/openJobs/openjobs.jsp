@@ -319,9 +319,18 @@ a.alertBtn {
 			value="${openJobsTitle==null?'':openJobsTitle}" class="searchHome"></span>
 		<span><i class="fa fa-map-marker"></i><input type="text"
 			placeholder="Location" value="${openJobsLocation}"
-			id="openJobsLocationId" class="searchHome"></span> <span><i
-			class="fa fa-briefcase"></i>
-			<p id="dropDownCountId"></p></span> <span><input type="button"
+			id="openJobsLocationId" class="searchHome"></span> 
+			<span><i class="fa fa-briefcase"></i>
+			<p id="dropDownCountId"></p>
+			<%-- <select class="searchHome searchHomeE" id="openJobsExperienceId">
+			<option value="">--Select Experience--</option>
+				<c:forEach var="exp" items="${totalexperience}">
+					<option value="${exp}">${exp}</option>
+				</c:forEach>
+			</select> --%>
+			</span> 
+			
+			<span><input type="button"
 			value="Search" class="searchBtn"
 			onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
 		<h3>
@@ -950,12 +959,13 @@ function clearFilters(){
 		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
 			selectedExperience = 0;
 		}
+		
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option></option>")';
+				+ '("<option selected value="">--Select Experience--</option>")';
 		for (var i = 1; i <= 25; i++) {
 			if(i == selectedExperience){
 				result = result + '("<option selected value='+i+'>' + i + '</option>")';

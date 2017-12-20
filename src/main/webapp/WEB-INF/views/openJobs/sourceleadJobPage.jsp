@@ -457,7 +457,7 @@ $(window).scroll(function (e) {
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled></option>")';
+				+ '("<option selected value="">--Select Experience--</option>")';
 		for (var i = 1; i <= 25; i++) {
 			result = result + '("<option value='+i+'>' + i + '</option>")';
 		}
