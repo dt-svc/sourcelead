@@ -52,6 +52,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class VendorController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
@@ -273,9 +274,10 @@ public class VendorController {
 	 */
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
-	public ModelAndView addVendorContac(HttpServletRequest request){
+	public ModelAndView addVendorContac(HttpServletRequest request,@RequestParam(value = "vid", required = false) String vid) {
 		ModelAndView model = new ModelAndView();
 		try{
+			model.addObject("vid",vid);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

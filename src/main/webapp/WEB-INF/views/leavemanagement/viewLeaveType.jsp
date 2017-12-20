@@ -16,7 +16,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Leave Type</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -29,7 +29,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addLeaveType'/>" title="Add Leave Type">
+              <a href="<c:url value='${appPath}/addLeaveType'/>" title="Add Leave Type">
                 <i class="fa fa-plus paddingRight"></i>Add Leave Type
               </a>
           </li>
@@ -59,7 +59,7 @@ $(document).ready(function(){
  <script>
  function getLeaveTypesList(){
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(data) {
 	    	 var result = "";
 	    	 result += '<table id="leaveTypeListTable" class="display" cellspacing="0" width="100%" >';
@@ -196,7 +196,7 @@ function deleteType(typeId){
 	   });
 	}else{
 		if(reason.length == 0){
-			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
 		}else{
 			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
@@ -324,6 +324,176 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Period:</b></label>';
+	 		if(report.period != null && report.period != '' && report.period != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.period+'</span>';
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Effective:</b></label>';
+	 		if(report.leaveEffective != null && report.leaveEffective != '' && report.leaveEffective != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.leaveEffective+'</span>';
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.noOfDays != null && report.noOfDays != '' && report.noOfDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.noOfDays+'</span>';
+	 			result +='                  </div>';
+	 		
+			
+			result +='              </div>';
+			}
+			
+			if(report.newJoinee != null && report.newJoinee != '' && report.newJoinee != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.newJoinee+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+	 		}
+			
+			if((report.experiencedType != null && report.experiencedType != '' && report.experiencedType != 'undefined') 
+					&& (report.experiencedDuration != null && report.experiencedDuration !='' && report.experiencedDuration != 'undefined')
+					&& (report.experiencedApplicableDays != null && report.experiencedApplicableDays !='' && report.experiencedApplicableDays != 'undefined')){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 				result +='                      <span>'+report.experiencedDuration+'</span>';
+		 			result +='                      <span>'+report.experiencedType+'</span>'
+		 			result +='                      <span>/'+report.experiencedApplicableDays+'day(s)</span>';
+	 			
+	 			result +='                  </div>';
+	 		
+			result +='              </div>';
+			}
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Reason Required:</b></label>';
+	 		if(report.reasonRequired != null && report.reasonRequired != '' && report.reasonRequired != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.reasonRequired == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Attachment Required:</b></label>';
+	 		if(report.attachmentRequired != null && report.attachmentRequired != '' && report.attachmentRequired != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.attachmentRequired == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Overdraw Leaves:</b></label>';
+	 		if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.overdrawLeaves == 'Y'){
+	 			     result +='                      <span>Yes</span>';
+	 			}else{
+	 				 result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Donate Leave:</b></label>';
+	 		if(report.donateLeave != null && report.donateLeave != '' && report.donateLeave != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.donateLeave == 'Y'){
+	 			     result +='                      <span>Yes</span>';
+	 		   }else{
+	 			     result +='                      <span>No</span>';
+	 		   }
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Prior Leave Applying:</b></label>';
+	 		if(report.priorLeaveApplying != null && report.priorLeaveApplying != '' && report.priorLeaveApplying != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.priorLeaveApplying == 'Y'){
+	 			    result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.priorDays != null && report.priorDays != '' && report.priorDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Prior Days:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.priorDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Duration:</b></label>';
+	 		if(report.leaveDuration != null && report.leaveDuration != '' && report.leaveDuration != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+     			if(report.leaveDuration == 'Y'){
+     				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			
+	 			result +='                  </div>';
+	 			
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.minDays != null && report.minDays != '' && report.minDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Min Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.minDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
+			if(report.maxDays != null && report.maxDays != '' && report.maxDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.maxDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
 			result +='              <div class="clearfix"></div>';
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <h4>Leave Policies</h4>';

@@ -233,12 +233,25 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else {
 			requirement = new Requirement();
+			requirement.setGeneratedId(getRequirementId(orgLocations));
 			requirement.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setTotalApplicants(0);
 			requirement.setCreatedBy(user);
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+			
+			if (StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
+				String jobTitle = "";
+				jobTitle = requirementDTO.getJobTitle().replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
+				if (jobTitle.startsWith("-")){
+					jobTitle = jobTitle.substring(1);
+			    }
+				if (jobTitle.endsWith("-")){
+					jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
+			    }
+				requirement.setUrl(jobTitle);
+			}
 		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
@@ -348,22 +361,15 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setProjectDurationYears(requirementDTO.getProjectDurationYears());
 		}
 		
-		if (StringUtils.isNotBlank(requirementDTO.getClosedDate())
-				&& !"".equalsIgnoreCase(requirementDTO.getClosedDate())) {
+		if (StringUtils.isNotBlank(requirementDTO.getClosedDate()) && !"".equalsIgnoreCase(requirementDTO.getClosedDate())) {
 			try {
-				// SimpleDateFormat formatter =
-				// orgLocations.getLocFullFormDateFormatter();
-				/*Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-				Date startTime = commonUtil.orgLocationDateFormat(requirementDTO.getDateFormat(), requirementDTO.getClosedDate());
-				String currentTimeStr = Constants.TZ_DF.format(startTime);
-				String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
-				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);*/
 				Date convertedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), requirementDTO.getClosedDate());
 				requirement.setClosedDate(convertedDate);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}else{
+			requirement.setClosedDate(null);
 		}
 		if (requirementDTO.getNoticePeriod() != null
 				&& requirementDTO.getNoticePeriod().size() > 0) {
@@ -771,7 +777,7 @@ public class RequirementServiceImpl implements RequirementService {
 		/*
 		 * System Generated Id For Job
 		 */
-		requirement.setGeneratedId(getRequirementId(orgLocations));
+		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
 			List<Requirement> parentrequirement = getAllReleasedRequirementsByParentId(savedRequirement.getId());
@@ -3453,6 +3459,18 @@ public class RequirementServiceImpl implements RequirementService {
    }
 	
 	@Override
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception
+	{
+		return requirementDao.getRequirementByShortURL(shortURL);
+	}
+
+	@Override
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	{
+		Requirement requirement = requirementDao.getRequirementByRequirementIdAndJobTitle(requirementId,title);
+		return requirement;
+	}
+	
 	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId) throws Exception
 	{
 		return requirementDao.getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(orglocationId);
@@ -3474,6 +3492,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds) throws Exception
 	{
 		return requirementDao.getAllCampaignRequirementsByIdsList(requirementIds);
+
 	}
 	
 }

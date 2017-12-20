@@ -6,8 +6,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 
@@ -44,7 +44,7 @@ $(document).ready(function() {
 			<div class="pull-left">
 				<h2 class="pull-left">TimeSheet Reports</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Timesheet Reports</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Timesheet Reports</div>
 		</section>
 		<div class = "timesheet_container datatable_filter">
 			<div class='content-area content-new clearfix'>
@@ -76,7 +76,7 @@ $(document).ready(function() {
   	        	 searchValue = '';
   	           }
                $("#reportsDiv").empty();
-               $("#reportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+               $("#reportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	   $.ajax({
 	      	          type : "POST",
         	      	  url: sourceleadUrl+"/timesheetReportsDiv?&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&searchValue="+searchValue,		

@@ -37,6 +37,7 @@ public class Constants {
 	public static final String RATEPER = "Rate Per";
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
+	public static final String MANAGER = "Manager*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -93,6 +94,14 @@ public class Constants {
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
+	
+	
+	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
+	public static final String BANK_CHEQUE = "Bank Cheque";
+	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
+	public static final String ANNUAL_REPORT_BUSINESS_LICENSE = "Annual Report Business License";
+	public static final String W9_W8_BEN_E = "W-9,W-8 Ben-E";
+	
 	public static final String ONBOARDING_FORMS = "Forms";
 	public static final String ONBOARDING_POLICIES = "Policies";
 	public static final String ONBOARDING_CONTRACTS = "Contracts";
@@ -154,6 +163,8 @@ public class Constants {
 	public static final String EXPENSES_APPROVED_EMAIL_TOVENDOR = "ExpensesApproveEmailToVendor";
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
+	
+	public static final String MAIL_SEND_PROJECT_DOCUMENTS = "SendProjectDocuments";
 	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
@@ -329,7 +340,9 @@ public class Constants {
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
+	public static final String ACTIVATE_EMAIL = "ActivateUserEmail";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	public static final String LOGIN_OTP_EMAIL = "LoginOTPEmail";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_Approver="UserNewActionAssignedAsaApprover";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER="UserNewActionAssignedAsaReportingManager";
@@ -348,6 +361,8 @@ public class Constants {
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
 	public static final String CONTRACT_SIGNED = "ContractSigned";
+	public static final String SEND_CONTRACT = "SendContract";
+	public static final String SEND_SOW_CONTRACT = "SendSowContract";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
@@ -457,6 +472,7 @@ public class Constants {
 	public static final String TASKSEVERITY = "TaskSeverity";
 	public static final String TASKPRIORITY = "TaskPriority";
 	public static final String TASKSTATUS = "TaskStatus";
+	public static final String COMPANY_ONBOARD_BUSINESS_TYPE = "Company Onboard Business type";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	public static final String EXPERIENCELEVEL = "Experience Level";
@@ -554,6 +570,7 @@ public class Constants {
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
+	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
 	public static final String ELK_PROJECT_TYPE = "project";
 	public static final String ELK_CANDIDATE_INDEX = "candidates";
@@ -569,6 +586,8 @@ public class Constants {
 	public static final String ELK_CLIENTVENDOR_CONTACT_TYPE = "clientvendorcontacts";
 	public static final String ELK_CAMPAIGN_INDEX = "campaigns";
 	public static final String Campaigns = "Campaigns";
+	public static final String CampaignSender = "CampaignSender";
+	public static final String CampaignRecipient = "CampaignRecipient";
 	public static final String ELK_CAMPAIGN_TYPE = "campaign";
 	public static final String ELK_CAMPAIGN_ID_PREFIX = "CAMPAIGN";
 	public static final String CANDIDATE = "Candidate";
@@ -730,7 +749,8 @@ public class Constants {
 	
 	public static final int WORKING_HOURS = 8;
 	
-	
+	public static final String DOCUMENT_READ_ACCESS = "0";
+	public static final String DOCUMENT_WRITE_ACCESS = "1";
 	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";

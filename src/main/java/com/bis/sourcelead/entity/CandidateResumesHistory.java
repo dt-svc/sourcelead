@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CANDIDATE_RESUMES_HISTORY", catalog = "sourcelead")
+@Table(name = "CANDIDATE_RESUMES_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumesHistory")
 public class CandidateResumesHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,9 +39,6 @@ public class CandidateResumesHistory implements Serializable {
 	private String title;
 	@Column(name = "DESCRIPTION ")
 	private String description;
-//	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
-//	@Lob
-//	private byte[] docFile;
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
@@ -93,16 +90,6 @@ public class CandidateResumesHistory implements Serializable {
 	{
 		this.description = description;
 	}
-	
-//	public byte[] getDocFile()
-//	{
-//		return docFile;
-//	}
-//	
-//	public void setDocFile(byte[] docFile)
-//	{
-//		this.docFile = docFile;
-//	}
 	
 	public String getFileContentType()
 	{

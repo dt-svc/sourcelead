@@ -27,7 +27,7 @@ import org.hibernate.annotations.Type;
 import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
-@Table(name = "OFF_BOARDING_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "OFF_BOARDING_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offBoardingDocuments")
 public class OffBoardingDocuments implements Serializable{
 
@@ -52,10 +52,6 @@ private static final long serialVersionUID = 1L;
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
-   /* @Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	

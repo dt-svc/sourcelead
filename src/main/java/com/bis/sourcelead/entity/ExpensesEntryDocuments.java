@@ -31,7 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 */
 
 @Entity
-@Table(name = "EXPENSES_ENTRIES_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "EXPENSES_ENTRIES_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntriesDocuments")
 public class ExpensesEntryDocuments implements Serializable {
 private static final long serialVersionUID = 1L;
@@ -46,10 +46,6 @@ private Long id;
 @JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
 private ExpensesEntries expensesEntriesId;
 
-//@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-//@Lob
-//private  byte[] docFile;
-	
 @Column(name = "FILE_CONTENT_TYPE")
 private String fileContentType;
 
@@ -89,14 +85,6 @@ public ExpensesEntries getExpensesEntriesId() {
 public void setExpensesEntriesId(ExpensesEntries expensesEntriesId) {
 	this.expensesEntriesId = expensesEntriesId;
 }
-
-//public byte[] getDocFile() {
-//	return docFile;
-//}
-//
-//public void setDocFile(byte[] docFile) {
-//	this.docFile = docFile;
-//}
 
 public String getFileContentType() {
 	return fileContentType;

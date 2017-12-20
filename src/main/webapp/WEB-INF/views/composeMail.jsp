@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 
 <style>
@@ -24,6 +24,7 @@ display: none;
 
  <script>
  $(document).ready(function(){
+	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
 	
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
@@ -50,7 +51,7 @@ display: none;
       <div class="pull-left">
         <h2>Compose Mail</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox/mails'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
 			&raquo; Compose Email</div>
     </section>
     
@@ -147,7 +148,9 @@ display: none;
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
                 <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
+               
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <div class="clearUpload"></div>
             </div>
           </div>
         </div>
@@ -159,7 +162,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         <!-- Attachment button --> 
@@ -174,10 +177,10 @@ display: none;
   </section>
   
   
-  <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+  <!-- <script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
+  <script src="/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <script src="resources/js/nicEdit.js"></script> 
+  <script src="/resources/js/nicEdit.js"></script> 
   
 <script type="text/javascript">
 $(function() { 
@@ -224,6 +227,7 @@ $(function() {
   $(function() {
 		$("#attachfileBtn").change(function() {
 			fileUpload("attachfileBtn", "Email Documents", "email_form");
+			$(".clearUpload").show();
 		});
 	 });
   </script> 
@@ -261,7 +265,7 @@ $(function() {
 		   	    }
 		  		else{
 		  			
-			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  		 	$.ajax({
 			  		 		type : "POST",
 			  	    	    data: formData,
@@ -379,7 +383,7 @@ function textBoxCancel(){
   <script>
 function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#userList").empty(); 
 	  $.ajax({
            type : "POST",
@@ -483,6 +487,7 @@ function getUserList(teamType){
 
 <script>
 function getContactsList(){
+	
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
@@ -636,7 +641,7 @@ function contactsPagination(url,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -886,6 +891,13 @@ document.getElementById("attachfileBtn").onchange = function () {
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
 
-
+<script>
+	$(".clearUpload").click(function(){
+		$("#attachfile-mail").val("");
+		$("#attachfileBtn").val("");
+	        $("#email_form input[data-id*=attachfileBtn]").remove();
+	        $(".clearUpload").hide();
+	});
+</script>
   
 <jsp:include page="masterFooter.jsp" />

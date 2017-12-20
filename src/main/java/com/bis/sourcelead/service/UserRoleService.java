@@ -44,6 +44,8 @@ public interface UserRoleService {
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
@@ -53,6 +55,10 @@ public interface UserRoleService {
 	 * @throws Exception
 	 */
 	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	
 	
 	/**
 	 * @author Prasad salina
@@ -125,5 +131,7 @@ public interface UserRoleService {
 	 public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
 	 
 	 UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
+
+	public UserRole getUserRoleByVerficationUUID(String uuid);
 
 }

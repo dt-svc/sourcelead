@@ -43,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *
 	 */
 	@Entity
-	@Table(name = "REQUIREMENT", catalog = "sourcelead")
+	@Table(name = "REQUIREMENT")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 
@@ -99,6 +99,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "APPRVER_HIERARCHY")
 	private String approverHierarchy;
 	
+	@Column(name = "URL")
+	private String url;
 	
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
@@ -124,10 +126,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
 	private String noticePeriod;
 	
-	/*@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -805,7 +803,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getFileContentType() {
 		return fileContentType;
@@ -1776,7 +1773,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.fileURL = fileURL;
 	}
 
+	public String getUrl()
+	{
+		return url;
+	}
 
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+	
 	public String getMedicalClearence()
 	{
 		return medicalClearence;
@@ -1887,7 +1893,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setSpocUUID(String spocUUID)
 	{
 		this.spocUUID = spocUUID;
-
 	}
 
 	public LookUpData getExperienceLevel()

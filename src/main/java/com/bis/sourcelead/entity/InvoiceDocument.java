@@ -18,7 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INVOICE_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "INVOICE_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceDocuments")
 public class InvoiceDocument {
 	
@@ -31,10 +31,6 @@ public class InvoiceDocument {
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
-	
-//	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
 	
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
@@ -88,16 +84,6 @@ public class InvoiceDocument {
 	{
 		this.fileContentType = fileContentType;
 	}
-
-//	public byte[] getDocFile()
-//	{
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile)
-//	{
-//		this.docFile = docFile;
-//	}
 
 	public String getFileName()
 	{

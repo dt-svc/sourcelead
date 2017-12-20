@@ -15,13 +15,13 @@
 	    var result = "";
 		result = result + '	  <div class="blank-pages-tech">';
 		result = result + '   <p class="text-center text-danger permissondenied mb">';
-		result = result + '       <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '       <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
 		result = result + '   </p>';
 		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
 		result = result + '   <p class="positionRelative move-btn btn-group mt">';
 		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
-		result = result + '   <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   <a href="<c:url value='${appPath}/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
 		result = result + '   </span></a>';
 		result = result + '   </p>';
 		result = result + ' </div>';
@@ -77,7 +77,7 @@
     padding-right: 5px;
 }
 </style>
-<script type="text/javascript" src="resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
 
@@ -231,7 +231,7 @@ function candidateSideBar(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 }else{
-						result = result+'<img data-id="profileImage" id="userImage" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
 
 						 }
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -276,8 +276,6 @@ function candidateSideBar(candidateId){
 						} */
 						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -572,7 +570,7 @@ $(document).ready(function() {
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -614,7 +612,7 @@ function deleteProfileImage(candidateId){
 	        	 var result = data;
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
-	        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
 	        	// candidateQuickViewProfile(candidateId);
 	       },
 	        
@@ -821,7 +819,7 @@ function cancel(candidateId){
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -1263,7 +1261,9 @@ function cancel(candidateId){
 	}
 </script>
 
- 
+ <script>
+  $('#selector').delay(2000).fadeOut('slow');
+</script> 
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
 // Error pop
@@ -1625,7 +1625,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1663,7 +1663,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2085,7 +2085,7 @@ function getCities(){
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
                           <div class="col-md-4 mt">
                         <div class="small-widget bg-purple">
-                            <a href="<c:url value='/candidate'/>"  title="Import Candidate">
+                            <a href="<c:url value='${appPath}/candidate'/>"  title="Import Candidate">
                                 <div class="clearfix mb10">
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>
@@ -2096,7 +2096,7 @@ function getCities(){
 					  </div>
 					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
-                              <a href="<c:url value='/addCandidate'/>" title="Add Candidate">
+                              <a href="<c:url value='${appPath}/addCandidate'/>" title="Add Candidate">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-user-circle fa-4x"></i>
                                       <span class="fa fa-plus"></span>
@@ -2109,7 +2109,7 @@ function getCities(){
 					  
 					  <div class="col-md-4 mt">
                           <div class="small-widget bgGreen">
-                              <a href="<c:url value='/bulk-resume-import.html'/>" title="Bulk Imports">
+                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-upload fa-4x"></i>
                                       <span class="fa fa-plus"></span>

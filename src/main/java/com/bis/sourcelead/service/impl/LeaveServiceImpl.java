@@ -28,6 +28,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
@@ -89,8 +91,18 @@ public class LeaveServiceImpl implements LeaveService{
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
     
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+    
     @Autowired
     EmailScenerioUtil emailScenerioUtil;
+    
+    @Autowired
+	LeaveManagementUtil leaveManagementUtil;
+    
+    @Autowired
+    EmployeesService employeesService;
     
     
 	@Override
@@ -171,6 +183,7 @@ public class LeaveServiceImpl implements LeaveService{
 				Leave leave = leaveDao.getLeaveById(laph.getLeaveid().getId());
 //				LeaveType LeaveType = leaveTypeService.get
 				LeaveDTO leaveDto = new LeaveDTO();
+				Employees emp = null;
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
@@ -192,6 +205,8 @@ public class LeaveServiceImpl implements LeaveService{
 
 					leaveDto.setEmpName(sb.toString());
 				}
+					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+				
 				durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
 						.append(System.getProperty("line.separator")).append(" to ")
 						.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
@@ -200,10 +215,19 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveType(leave.getLeaveType().getName());
 				leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 				leaveDto.setStatus(leave.getStatus());
-				leaveDto.setNoOfDays(leave.getNumberOfDays());
-				int balLeaves = Integer.parseInt(leave.getLeaveType().getNumbefrOfLeavesPeryear()) - nuberOfLeavestaken;
+				
+				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
+				int balLeaves = totalLeaves - nuberOfLeavestaken;
+				
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				leaveDto.setFromHalfDay(leave.getFromHalfDay());
+				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+					leaveDto.setNoOfDays("1/2");
+				}else{
+					leaveDto.setNoOfDays(leave.getNumberOfDays());
+				}
+				
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}
@@ -282,6 +306,7 @@ public class LeaveServiceImpl implements LeaveService{
 			String approveStatus, String numberOfDays,String reason) throws Exception {
 
 		boolean isApproved = false;
+		Employees emp = null;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveById(leaveId);
 		leaveManagementHistory.setFromStage(leave.getStatus());
@@ -290,7 +315,12 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_APPROVED);
 				leave.setApprovedBy(user);
 					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-					int numberOfLeavesPerYear = Integer.parseInt(leaveType.getNumbefrOfLeavesPeryear()) - Integer.parseInt(numberOfDays);
+					
+					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
+					
+					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
+					
+					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays);
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
@@ -365,8 +395,8 @@ public class LeaveServiceImpl implements LeaveService{
 		else {
 			globalVarsMap.put("loginOrg", "--");
 		}
-		if (leaveManagementHistory.getLeaveid().getLeaveType().getName() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getLeaveType().getName())) {
-			globalVarsMap.put("leaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getName());
+		if (leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType())) {
+			globalVarsMap.put("leaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getLeaveType());
 		}
 		else {
 			globalVarsMap.put("leaveTypeName", "--");
@@ -707,18 +737,21 @@ public class LeaveServiceImpl implements LeaveService{
 			   }
 			   
 			   for (LeaveType leaveType : roleLeaveType) {
-				   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
-				   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
+				   if(StringUtils.isNotBlank(leaveType.getNumbefrOfLeavesPeryear())){
+					   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
+					   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
+					   for (Leave leave : totalleavesTaken) {
+							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+								pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+							}
+							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+							}
+						}
+						   balanceLeaveCounts += totalLeaves;
+				   }
 			   
-			   for (Leave leave : totalleavesTaken) {
-				if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-					pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
-				}
-				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-					totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-				}
-			}
-			   balanceLeaveCounts += totalLeaves;
+			   
 		}
 	}
 		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
@@ -817,7 +850,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 }
 			 
 				StringBuilder stringBuildforLink = new StringBuilder();
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 			 
 			 //setting the Recipient information
@@ -1051,7 +1084,7 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		if(object instanceof Holiday){
 			Holiday holiday = (Holiday) object;
-			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
+			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(holiday.getFromDate(), holiday.getToDate(), orgLocations.getDateFormat());
 			deleteAllHolidayOrRestrictDayById(holiday.getId(),"Holiday");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();
@@ -1067,7 +1100,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 		}else{
 			RestrictDay restrict = (RestrictDay) object;
-			List<Date> dateList = LeaveManagementUtil.getDaysBetweenDates(restrict.getStartDate(), restrict.getEndDate(), orgLocations.getDateFormat());
+			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(restrict.getStartDate(), restrict.getEndDate(), orgLocations.getDateFormat());
 			deleteAllHolidayOrRestrictDayById(restrict.getId(),"RestrictDay");
 			for(Date d : dateList){
 				HolidayAndRestrictday day = new HolidayAndRestrictday();

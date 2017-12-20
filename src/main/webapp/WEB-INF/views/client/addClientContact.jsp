@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
 function getOrgName(){
@@ -59,7 +60,7 @@ function getOrgName(){
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
-		document.getElementById("email").value="";
+		document.getElementById("emailId").value="";
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
@@ -155,34 +156,37 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
         <form:form id="client_contact_form" name="client_contact_form" method="post">
           <div class="clearfix form-horizontal inner-content">
-            <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span>
-            <i class='fa fa-info-circle' title='Select the client with whom already relationship build,So added contacts will be added to that client'></i></label>
-            <div class="col-md-9">
-              <div class="clearfix">
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+            <div class="col-md-9 chooRadius">
+            <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
                   <option value="">Select Client</option>
                    <c:forEach var="report" items="${clientContactList}">
                      <c:if test="${report.locationId.id == loginOrgLocId}">  
-                    <option value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
+                    <option ${report.id == cid ? 'selected':''}  value="${report.id},${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
                    </c:if>  
                     <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-                  	 	<option value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
+                  	 	<option  ${report.id == cid ? 'selected':''} value="${report.id},${report.locationId.id}">${report.locationId.orgLocationName}</option>
                    </c:if>  
                  </c:forEach> 
                 </select>
+                 <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList()"><i class="fa fa-refresh "></i></span>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> </div>
+                <!-- <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> -->
             </div>
-          </div>
+            <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+			</sec:authorize>
+			</div>            
+            	</div>  
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           
@@ -190,7 +194,7 @@ function getOrgDetails()
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -281,12 +285,12 @@ function getOrgDetails()
                 
                 </div>
                 </div>
-                </div>
+
             <div class="form-footer clearfix">
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -299,6 +303,7 @@ function getOrgDetails()
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
 
 <script type="text/javascript">
 	function saveClientContact() {
@@ -314,7 +319,7 @@ function getOrgDetails()
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
 					location.replace(sourceleadUrl+ "/clientDashboard");
 				});
@@ -334,7 +339,7 @@ function getOrgDetails()
 
 <script type="text/javascript">
 function validateEmail(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("emailId").value;
 	var vendorName = document.getElementById("vendorName").value;
 	var orgRelationId = vendorName.split(",")[0];
 	if(email != null  && email != '' && orgRelationId != null){
@@ -447,7 +452,7 @@ function validateClientName(){
 	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -500,7 +505,7 @@ function flusAddClint(){
 
 <script type="text/javascript">
 function getSpocUserDetails(){
-	var email = document.getElementById("email").value;
+	var email = document.getElementById("emailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var vendorName = document.getElementById("vendorName").value;
 	var orgLocationId = vendorName.split(',');
@@ -589,7 +594,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(vendorName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
@@ -621,7 +626,7 @@ function getRolesList(){
 
 <script type="text/javascript">
  function getOwners() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("emailId").value; 
 	 var vendorName = document.getElementById("vendorName").value;
 	 var orgLocationId = vendorName.split(',');
 	 var orgRelationId = orgLocationId[0];
@@ -679,7 +684,7 @@ function getRolesList(){
 </script>
 <script type="text/javascript">
  function getOwnersList() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("emailId").value; 
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
@@ -725,4 +730,47 @@ function getRolesList(){
  }
 </script>
 
- 
+
+ <script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+</script> 
+<script>
+function refreshClientList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+","+opt.orgid+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+","+opt.orgid+"'>"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#vendorName").empty();
+		        $("#vendorName").append(output);
+		        $('#vendorName').trigger("chosen:updated");
+	        }
+		 });
+}
+</script>
+

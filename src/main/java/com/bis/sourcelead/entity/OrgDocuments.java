@@ -28,7 +28,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "ORG_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "ORG_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgDocuments")
 public class OrgDocuments implements Serializable{
 
@@ -57,10 +57,6 @@ public class OrgDocuments implements Serializable{
 
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
-	
-/*	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
 	
 	@Column(name = "FILE_TYPE")
 	private String fileType;

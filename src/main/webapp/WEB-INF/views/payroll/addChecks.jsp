@@ -16,7 +16,7 @@ window.onload = function () {
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
 
@@ -66,10 +66,7 @@ window.onload = function () {
                         <div class="form-group" id="toDateDiv">
 	                        <label class="col-md-3">Date<span class="text-danger paddingLeft">*</span></label>
 	                        <div class="col-md-9">
-	                        <div class="input-group errorInptgroup">
 	                        <input type="text" class="form-control calendar" id="date" name="date" value="" placeholder="Date*" field-name="Date" data-validation="required">
-	                        <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span> 
-	                        </div>
 	                        </div>
                         </div>
                         
@@ -112,7 +109,7 @@ function saveChecks(){
 	var userId = '${SourceLeadWeb_user.id}';
 	 if ($('#add_cheques_form').validate(false, validationSettings)) { 
             var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			var formData = getFormData("add_cheques_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.post(sourceleadUrl+ "/addCheques?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {

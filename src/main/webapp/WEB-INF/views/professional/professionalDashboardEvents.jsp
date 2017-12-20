@@ -82,7 +82,7 @@ window.onload = function() {
 					 result = result + '          </div>                       ';
 					 result = result + '              <div class="media-body paddingLeft">   ';
 					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+					 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Job Title   :</label> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';

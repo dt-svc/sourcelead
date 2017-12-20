@@ -27,7 +27,7 @@ import org.hibernate.annotations.Type;
  */
 
 @Entity
-@Table(name = "CANDIDATE_DOCUMENTS", catalog = "sourcelead")
+@Table(name = "CANDIDATE_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocuments")
 
 public class CandidateDocuments implements Serializable{
@@ -77,10 +77,6 @@ public class CandidateDocuments implements Serializable{
 	@Column(name = "DESCRIPTION ")
 	@Type(type="text")
 	private String description ;
-	
-//	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -154,14 +150,6 @@ public class CandidateDocuments implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
 
 	public String getFileContentType() {
 		return fileContentType;

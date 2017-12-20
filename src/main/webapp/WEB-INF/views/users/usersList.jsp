@@ -60,7 +60,7 @@ function getUsersSearchResult(searchValue){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 <input type="hidden" id="noUsers" name="noUsers"/>
@@ -83,7 +83,7 @@ function getUsersSearchResult(searchValue){
         <h2>Users </h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
     </section>
     <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-x: auto;">
@@ -243,11 +243,11 @@ function getUsersSearchResult(searchValue){
 				</select>
 		   </li>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
+	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 	         </sec:authorize>		  
 		  
 		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
@@ -299,7 +299,7 @@ function getUsersSearchResult(searchValue){
       <!-- Content Area Ends--> 
 
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
@@ -498,7 +498,7 @@ function exportToPdf(){
     		 offset = 0;
     	}
 	
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -514,12 +514,18 @@ function exportToPdf(){
 	    		$('#loadMoreDiv').empty(); 
 	 			for(var i=0; i<json.length; i++){
 	 				
-			 				var userRole = json[i];
-			 				var mobilePhone = ""
+			 				var userRole = json[i];  
+			 				var mobilePhone = "";
+			 				var reportingManagerName = "";
 			 			    if(userRole.mobilePhone != null && userRole.mobilePhone  != '' && userRole.mobilePhone != 'undefined'){
 			 			    	mobilePhone = userRole.mobilePhone;
 			 			    }else{
-			 			    	mobilePhone = "No Data"
+			 			    	mobilePhone = "No Data"  
+			 			    }
+			 			   if(userRole.reportingManagerName != null && userRole.reportingManagerName  != '' && userRole.reportingManagerName != 'undefined'){
+			 				  reportingManagerName = userRole.reportingManagerName;
+			 			    }else{
+			 			    	reportingManagerName = "No Data"  
 			 			    }
 			       	    	opt = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
 			       	    	opt = opt +"<div class='user-profile'>";
@@ -529,7 +535,7 @@ function exportToPdf(){
 			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
 			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			       	    	}else{
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			       	    	}
 			       	    	
 			       	    	opt = opt +"</div>";
@@ -540,7 +546,7 @@ function exportToPdf(){
 			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	opt = opt +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
+			       	         	opt = opt +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
@@ -549,6 +555,7 @@ function exportToPdf(){
 			       	    	
 			       	    	opt = opt +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
+			       	    	opt = opt +"<p><label><i class='fa fa-user-circle-o'  aria-hidden='true'></i>&nbsp;<span title='"+reportingManagerName+"'> "+reportingManagerName+"</span></label></p>";
 			       	    	opt = opt +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
 			       	    	
 			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
@@ -608,7 +615,7 @@ function exportToPdf(){
 <script type="text/javascript">
 function resendInvitation(userId){
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
@@ -760,7 +767,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
@@ -1112,11 +1119,11 @@ function showList(viewType){
 			        		   if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
-			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
+			        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
 			        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 			        			    }else{
-						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
+						       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 			        			    }
 					       	    	result = result + ''+userRole.userName+'</a></td>';
 									'</sec:authorize>';

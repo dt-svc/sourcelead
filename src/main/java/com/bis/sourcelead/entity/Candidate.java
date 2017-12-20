@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE", catalog = "sourcelead")
+@Table(name = "CANDIDATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
 public class Candidate implements Serializable{
 
@@ -161,10 +161,6 @@ public class Candidate implements Serializable{
 	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
 	private String visaType;
 	
-//	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-//	@Lob
-//	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -705,17 +701,6 @@ public class Candidate implements Serializable{
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-
-
-//	public byte[] getDocFile() {
-//		return docFile;
-//	}
-//
-//
-//	public void setDocFile(byte[] docFile) {
-//		this.docFile = docFile;
-//	}
-
 
 	public String getFileContentType() {
 		return fileContentType;

@@ -17,7 +17,7 @@
       <div class="pull-left">
         <h2>View Expense</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; View Expense</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expensesApprovalList'/>">Expenses Approval</a> &raquo; View Expense</div>
     </section> 
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
@@ -114,7 +114,7 @@
 						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						      <c:if test="${project.id == expenses.projectId}">
-						      <a href="<c:url value="/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
+						      <a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
 						      </c:if>
 		                  </c:forEach>
 		                </sec:authorize>  

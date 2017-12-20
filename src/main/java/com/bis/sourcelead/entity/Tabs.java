@@ -18,7 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "TABS", catalog = "sourcelead")
+@Table(name = "TABS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="tabs")
 public class Tabs implements Serializable{
 	
@@ -45,6 +45,10 @@ public class Tabs implements Serializable{
     
     @Column(name = "TAB_ORDER", nullable = false)
    	private Long tabOrder;
+    
+    
+    @Column(name = "STATUS", nullable = false)
+   	private Integer status;
     
     
 
@@ -86,6 +90,14 @@ public class Tabs implements Serializable{
 
 	public void setTabOrder(Long tabOrder) {
 		this.tabOrder = tabOrder;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
     
     

@@ -109,6 +109,7 @@ import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
+@RequestMapping("/app")
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
@@ -122,6 +123,9 @@ public class InvoiceRestController {
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Value("${static.path}")
     private String staticPath;
@@ -199,39 +203,59 @@ public class InvoiceRestController {
 	public @ResponseBody String getClientContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
-		
-		for(OrgSpoc orgSpoc : orgSpocList){
-			StringBuilder sb = new StringBuilder();
-			StringBuilder clientSb = new StringBuilder();
-			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
-			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
-			}
-			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
-			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
-			}
-			orgSpoc.setSpocName(sb.toString());
-			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
-			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
-			orgSpoc.setOwnerName(clientSb.toString());
-			orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
-			}
+		List<OrgSpoc> orgSpocList = null;
+		if(orgRelationId !="" && orgRelationId != null) {
+			orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+			
+			for(OrgSpoc orgSpoc : orgSpocList){
+				StringBuilder sb = new StringBuilder();
+				StringBuilder clientSb = new StringBuilder();
+				if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				}else{
+				sb.append(orgSpoc.getVendorUser().getFirstName());
+				}
+				if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				}else{
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
+				}
+				orgSpoc.setSpocName(sb.toString());
+				orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+				orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+				orgSpoc.setOwnerName(clientSb.toString());
+				orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
+				}
+		}
 		return commonUtil.toJSON(orgSpocList);
 	} 
 	
-	/**
-	 * save invoice
-	 * @param invoiceDTO
-	 * @param saveType
-	 * @param invoiceType
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
+	/*@RequestMapping(value = "/downloadInvoiceAttachment")
+    public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
+		
+		    Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		    response.setContentType("application/octet-stream");
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
+			InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+ }*/
+	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoice(InvoiceDTO invoiceDTO,@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
@@ -702,7 +726,7 @@ public class InvoiceRestController {
 	     	
 	 	}
     
-	/*  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	 /* @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
 	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
 		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
 			    response.setContentType("application/octet-stream");
@@ -726,8 +750,8 @@ public class InvoiceRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		} */ 
-
+		}  
+*/
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
@@ -1031,7 +1055,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 EmailScenario  emailScenario = null ;
@@ -1118,7 +1142,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 EmailScenario  emailScenario = null ;

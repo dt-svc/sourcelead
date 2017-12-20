@@ -16,6 +16,16 @@ $(document).ready(function() {
 .emailWidth {
 	width:400px;
 }
+.model-err-msg {
+    clear: both;  margin: 0 auto;  padding: 0px;
+    color: #E65C8D; text-align: center; width: 54%;
+    margin-bottom: 10px; margin-top: -18px; font-size: 12px;
+}
+img.contact-images { width:24px; height: 24px; margin-right: 10px;
+}
+.importcsv-accordion .panel-title a {
+	display: block; width:100%;
+}
 </style>
 <script>
  function contactsImportSucess(service,status){
@@ -33,6 +43,221 @@ $(document).ready(function() {
 	}
 </script> 
 
+
+<div class="modal fade" id="myModal" role="dialog">
+   <form:form id="uploadContactCSV_form" name="uploadContactCSV_form" enctype="multipart/form-data">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="clearfix minHeight40 form-group">
+          <a href="<c:url value='${appPath}/downloadContactCSVTemplate'/>" class="btn btn-info col-md-4 col-md-offset-4">
+					Download Contact CSV<i class="fa fa-download paddingLeft"></i>
+		  </a>
+          </div>
+          
+          <div class="clearfix minHeight40 form-group">
+            <label class="col-md-3 padding_left mt5"><strong>Choose CSV File</strong></label>
+            <div class="clearfix col-md-9">
+              <div class="row">
+                <div style="margin:0 auto" class="input-group col-md-9 pull-left errorInptgroup">
+                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                    <input type="file" name="file" style="display: none;" multiple id="uploadBtn" class="upload" >
+                    </span></label>
+                  <input class="form-control" readonly id="uploadFile" placeholder="No file chosen" field-name="Contact CSV"  data-validation="required">
+                  <div class="clearUpload" style="display: none"></div>
+                </div>
+                <div class="col-md-3 padding_right">
+                  <button type="button" class="btn btn-primary btn-block" id="uploadContact_id" onclick = "saveContactCSV();">Upload</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="model-err-msg" style="display: none">Please upload a file of type *.CSV</div>
+          
+          <h5>How to Export Contacts(.csv) ? </h5>
+          <div class="clearfix mt10"></div>
+          <div class="bs-example importcsv-accordion">
+            <div class="panel-group mb10" id="accordion">
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/gmail-icon.png" class="contact-images">Gmail</a> </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                  <div class="panel-body">
+                  <ol class="col-md-12 mb0">
+                    <li>From your Gmail account, choose Gmail >Contacts</li>
+					<li>Select More >Export.</li>
+					<li>Choose the contact group you want to export.</li>
+					<li>Choose the export format Outlook CSV (for importing into Outlook or another application).</li>
+					<li>Choose Export.</li>
+					<li>When prompted, choose Save As, and browse to a location to save the file.</li>
+				</ol>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/outlook-icon.png" class="contact-images">Outlook</a> </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ol class="col-md-12 mb0">
+                      <li>Choose Open &amp; Export > Import/Export. </li>
+                      <li>Choose Export to a file. </li>
+                      <li>Select Comma Separated Values (Windows) and click Next. </li>
+                      <li>Select Contacts and click Next. A screen appears where you can specify where to save the file. </li>
+                      <li>Click Browse and go to where to save the file, and then enter a name for the .CSV file. </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/thunderbird-ic.png" class="contact-images">Thunderbird</a> </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse">
+                  <div class="panel-body">
+                  <ol class="col-md-12 mb0">
+	                  <li> Click Tools and select Address Book</li>
+					  <li> Select the address book you want to export.</li>
+					  <li> Then click Tools again in the Address Book and select Export... while keeping your address book selected.</li>
+				      <li> Save the file somewhere convenient as an LDIF file with whatever filename you wish.</li>
+			        </ol>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/yahoo-icon.png" class="contact-images">Yahoo Mail</a> </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse">
+                  <div class="panel-body">
+                   <ol class="col-md-12 mb0">
+                     <li>Click on the Contacts tab.</li>
+					 <li>Click the Actions dropdown box.</li>
+					 <li>Choose Export.</li>
+					 <li>Click Export Now next to "Yahoo! CSV" which is the type of program to which you want to export your contacts.</li>
+					 <li>After clicking Export Now, you will see a verification code. Write it in the text box above the security code box and then click Export Now.</li>
+					</ol>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/linkedin-icon.png" class="contact-images">LinkedIn</a> </h4>
+                </div>
+                <div id="collapseFive" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ol class="col-md-12 mb0">
+                      <li>Click on My Network icon at top of your page</li>
+                      <li>Click on "See all" in the network list</li>
+                      <li>Click on "Manage synced and imported contacts</li>
+                      <li>Click on Export Contacts on left side of the page</li>
+                      <li>Enable the "Connections" Checkbox and click on Request archive.</li>
+                      <li>Authorize account by providing password of LinkedIn. </li>
+                      <li>The mail will be forwarded to your mail with download link.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix">
+          <div class="small pull-left"><span class="text-muted">Note:</span><span class="text-info ml">Email is required to Import a Contact</span></div>
+          <button type="button" class="btn btn-default pull-right ml10" data-dismiss="modal" onclick="resetForm();">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+     </form:form>
+  </div>
+  
+  <script type="text/javascript">
+	//script for upload file
+	document.getElementById("uploadBtn").onchange = function () {
+		var uploadBtn = $("#uploadBtn").val();
+		 var splitFile = uploadBtn.split(".")
+		if(splitFile[1] == "csv"){
+			document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+			$(".clearUpload").show();
+			$("#uploadContact_id").removeAttr("disabled");
+			$(".model-err-msg").hide();
+			$(".errorInptgroup").find('p.jquery_form_error_message').remove();
+		}else{
+			$("#uploadContact_id").attr("disabled", "disabled");
+			$(".errorInptgroup").find('p.jquery_form_error_message').remove();
+			$(".model-err-msg").show();
+		}
+	
+		
+	}
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#uploadContactCSV_form input[data-id*=uploadBtn]").remove();
+	});
+	function resetForm(){
+		$("#uploadContactCSV_form")[0].reset();
+		$("#uploadContact_id").removeAttr("disabled");
+		$(".model-err-msg").hide();
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+		$("#myModal").hide();
+		$("#myModal").addClass("fade");
+		$("#accordion").find(".in").removeClass("in");
+	}
+</script>
+  <script>
+  function saveContactCSV(){
+	if ($('#uploadContactCSV_form').validate(false, validationSettings)){
+		var frm = $('#uploadContactCSV_form').serializeFormJSON();
+		$("#uploadContact_id").attr("disabled", "disabled");
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		
+		//It will escape all the special characters
+		var jsonData = encodeURIComponent(con);
+		var form = $('#uploadContactCSV_form')[0];
+		var formData = new FormData(form); 
+		 $.ajax({
+			   	type: "POST",
+			   	data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+	    	    enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	    	    dataType : 'json',
+			    url : sourceleadUrl+"/storeCsv?"+tokenParamName+"="+tokenValue+"", 	   
+	 		    success : function(data) {
+	 		    	$("#uploadContact_id").removeAttr("disabled");
+	 		    	$("#myModal").modal("hide");
+	 		    	location.reload();
+	 		    },
+		 });
+		 
+	}
+  }
+  </script>
+  <script>
+	//File Accordion Script
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.in").each(function(){
+        	$(this).siblings(".panel-heading").find(".fa").addClass("fa-angle-up").removeClass("fa-angle-down");
+        });
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+        	$(this).parent().find(".fa").removeClass("fa-angle-down").addClass("fa-angle-up");
+        }).on('hide.bs.collapse', function(){
+        	$(this).parent().find(".fa").removeClass("fa-angle-up").addClass("fa-angle-down");
+        });
+    });
+</script>
 <section class="content-wraper">
 <section class="content-header clearfix">
      <div class="success_pop" id="selector" style="display: none;">
@@ -41,7 +266,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Contacts List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -218,7 +443,7 @@ function addContactsGroup(){
 
 </script>
 <jsp:include page="../masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div> 
 
 
 <script>
@@ -401,7 +626,7 @@ function contactsPagination(url,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#example").wrap("<div class='project_tabs_inn_table vendor_wrap_inn_table' style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -420,7 +645,7 @@ function contactsPagination(url,sourceleadUrl){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 
@@ -490,7 +715,7 @@ function validateContactEmail(){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contact").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData1("addcontact_form");
 	        		$.ajax({
 	        					type : "POST",
@@ -630,7 +855,7 @@ $("#contactsFilter").click(function(){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contactgroup").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	     var formData = getFormData1("contactgroup_form");
 	        		$.ajax({
 	        					type : "POST",

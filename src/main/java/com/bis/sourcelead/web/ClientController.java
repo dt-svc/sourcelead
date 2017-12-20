@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
@@ -235,12 +236,13 @@ public class ClientController {
 		 */
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
 		 @RequestMapping(value = "/addClientContact")
-		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
+		 public ModelAndView addClientContact(HttpServletRequest request,@RequestParam(value = "cid", required = false) String cid) throws Exception {
 			 ModelAndView model = new ModelAndView();
 				try{
 					
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 					List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+					model.addObject("cid",cid);
 					model.addObject("userList", userList);
 					model.setViewName("client/addClientContact");
 					model.addObject("sourceleadUrl", sourceleadUrl);

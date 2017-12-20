@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -1180,5 +1181,35 @@ public class UserDaoImpl implements UserDao {
 	       roleAccessUserList.addAll(userList);
 	       
 	       return roleAccessUserList;
+	}
+
+	@Override
+	@Transactional
+	public User getUserByVerficationUUID(String token)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> user = new ArrayList<User>();
+		user = session.createQuery("from User user where user.verificationUUID = :uuid").setString("uuid", token).setCacheable(true).list();
+		if (user.size() > 0) {
+			return user.get(0);
+		}
+		else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		String query = "from User user where user.userCode = :userCode and user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id =:orgLocationsId) ";
+		users = session.createQuery(query).setCacheable(true).setString( "userCode", userCode ).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
 	}
 }

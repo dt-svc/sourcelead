@@ -31,6 +31,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class SocialInviterService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
@@ -38,7 +39,7 @@ public class SocialInviterService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET )
+    @RequestMapping(value={"/ws/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
@@ -205,7 +206,7 @@ public class SocialInviterService {
 	}
     
     
-    @RequestMapping(value = "/storeCsv", method = RequestMethod.POST)
+    @RequestMapping(value = {"/storeCsv"}, method = RequestMethod.POST)
 	public @ResponseBody String storeCsv(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;

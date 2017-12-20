@@ -1,7 +1,6 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +14,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
  
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('userLocation','','','','','','');
@@ -23,7 +22,7 @@
 	</script>
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -31,6 +30,7 @@
 	$(document).ready(function() {
 		document.getElementById("profileSettings_form").reset();
 		document.getElementById("passwordSettings_form").reset();
+		getLoginUserProfile();
 	});
 </script>
 
@@ -44,11 +44,17 @@ function resetPassword(){
     $('#currentPwdDiv').find('p.jquery_form_error_message').remove();
     $('#newPwdDiv').find('p.jquery_form_error_message').remove();
     $('#confirmPwdDiv').find('p.jquery_form_error_message').remove();
-   
+    $('#profile').show();
+    $('#updatepassword').hide();
+    $('#configure').hide();
     $("#save_button").removeAttr("disabled");
+    
 }
 
 function resetProfile(){
+	$('#profile').hide();
+    $('#updatepassword').show();
+    $('#configure').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -63,6 +69,11 @@ function resetProfile(){
 	$('#gplusDiv').find('p.jquery_form_error_message').remove();
 	
 }
+function getConfiguredList(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').show();
+}
 </script>
 
 <body>
@@ -75,15 +86,15 @@ function resetProfile(){
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
     
     </section>
@@ -96,7 +107,8 @@ function resetProfile(){
 		  <div class="accountsettings-tab">
 		  <ul class="nav nav-tabs">
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
-			<li onclick="resetProfile();"><a data-toggle="tab" href="#password">Password</a></li>
+			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
+			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -127,8 +139,6 @@ function resetProfile(){
 				 </form:form>	
 			  
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
@@ -220,7 +230,7 @@ function resetProfile(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -231,7 +241,7 @@ function resetProfile(){
 	
 	
 			</div>
-			<div id="password" class="tab-pane fade">
+			<div id="updatepassword" class="tab-pane fade">
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <div class="password-icon mt mb text-center">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
@@ -267,7 +277,7 @@ function resetProfile(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -275,6 +285,38 @@ function resetProfile(){
 				 </div>
 			</div>
 			</div>
+			
+			
+			<div id="configure" class="tab-pane fade">
+			  <div class="tab-content panel-body">
+                  <div class="clearfix mb">
+                      <div class="pull-left">
+                          <h4>Login Security</h4>
+                      </div>
+                  </div>
+			<div class="col-xs-12 col-sm-9 col-md-9">
+				<div class="form-group">
+					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
+					<div class="col-md-7 toggle-button">
+						<label class="switch">
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+						<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>	
+						<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>	
+							<div class="slider round"></div>
+						</label>
+					</div>
+					
+			</div>
+			</div>
+			</div>
+			
+			
 		   </div>
 		</div>
 			<!-- Tab for Profile setting-area ends -->
@@ -329,6 +371,24 @@ function resetProfile(){
 	 }
  </script>
 
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateUserLoginSecurity?loginSecurity="+security,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+}
+</script>
 
 
 <script type="text/javascript">
@@ -513,7 +573,7 @@ var validationSettings = {
         		    var formData = getFormData("passwordSettings_form");
             		var sourceleadUrl ='${sourceleadUrl}';
             		
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             		
                     $.ajax({
                 	      type: "POST",
@@ -561,7 +621,7 @@ var validationSettings = {
             		
              		var formData = getFormData('profileSettings_form');
              		
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             		
                     $.ajax({
                 	      type: "POST",
@@ -612,6 +672,18 @@ function refreshLocation(){
 	$("#userLocation").val('');
 }
 </script>
+
+<script>
+function getLoginUserProfile(){
+		$.ajax({
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getLoginUserProfile?"+tokenParamName+"="+tokenValue,	    	   
+		    success: function(data) {
+		    }
+	   });
+}
+</script>
+
 
 
 </html>

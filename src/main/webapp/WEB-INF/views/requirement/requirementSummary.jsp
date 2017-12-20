@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
  
 <script>
 $(document).ready(function() {
@@ -167,7 +167,7 @@ function backoutCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
   </section>
   <div class="timesheet_out">
     
@@ -523,7 +523,7 @@ function activeTabs(){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -844,17 +844,56 @@ function viewOfferDocument(offerID,title){
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-    $("#reasonForApplicantDiv").empty();
+    //reject refresh
+	$("#reasonForApplicantDiv").empty();
     $("#reasonForReject").val("");
     $("#designationType").val('');
     //$("#rejectedCategory").val("");
     $("#rejectedCategory").selectpicker('refresh');
+    
+    //backOut refresh
+    $("#backOutForApplicantDiv").empty();
+    $("#backOutForReject").val("");
+    //$("#rejectedCategory").val("");
+    $("#backOutCategory").selectpicker('refresh');
     var subId = submissionId;
     var reqId = requirementId;
     var subType = submissionType;
     var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox == "backout"){
-        backOutApplicant(submissionId,requirementId,submissionType);
+        var result = "";
+        //result = result +"    <div class='project_inn_mask'></div>";
+        result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+        result = result +"<form id='backOut_form' name='backOut_form'>";
+        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
+        result = result +"    <div class='dropdown-select' id='backOutCategorytDiv'>";
+        result = result +"<select id='backOutCategory' name='backOutCategory' class='form-control' onchange='getBackOutCategory()' data-validation='required' field-name='Category' >";
+        result = result +"<option selected value=''>--Select Category--</option>";
+        result = result +"<option value='Current Company'>Current Company</option>";
+        result = result +"<option value='Compensation'>Compensation</option>";
+        result = result +"<option value='Better Offer'>Better Offer</option>";
+        result = result +"<option value='Cold Feet'>Cold Feet</option>";
+        result = result +"<option value='Personal'>Personal</option>";
+        result = result +"<option value='Other'>Other</option>";
+        result = result +"</select>";
+        result = result +"    </div>";
+        
+        result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
+        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" </div>";
+        
+        //result = result +"        <p>Applicant reject message here</p>";
+        result = result +"    <div class='clearfix'>";
+        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length1-500' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
+        result = result +"    </div>";
+        result = result +" </div>";
+        result = result + ' <div id="backOutForApplicantDiv"/>';
+        result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
+        result = result +"</form>";
+        result = result +"    </div>";
+        $("#popUp").append(result);
+        $("#backOutApplicant"+submissionId).slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "Reject"){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
@@ -883,7 +922,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
-        result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
@@ -898,6 +937,16 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 	    output = output.replace(/\s/g, "") 
 	    if(output.length != 0){
 	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
+
+<script>
+   function reqRemoveSpacesForBackOutReason() {
+	    var output = document.getElementById("reasonForbackOut").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForbackOut").removeAttr("data-validation");
 	    }
 	}
 </script>
@@ -920,13 +969,39 @@ function getRejectedCategory(){
 }
 </script>
 
+<script>
+function getBackOutCategory(){
+	var backOutCategory = document.getElementById("backOutCategory").value;
+	if(backOutCategory == 'Other'){
+		 document.getElementById("backOutOtherCategoryDiv").style.display="block";
+	    $("#backOutCategoryOther").removeAttr("data-validation-optional");
+		$('#backOutCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
+		$('#backOutOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#backOutCategoryOther").attr("data-validation-optional","true");
+		$("#backOutCategoryOther").removeAttr("data-validation");
+		$("#backOutCategoryOther").val('');
+		document.getElementById("backOutOtherCategoryDiv").style.display="none";
+		$('#backOutOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+}
+</script>
+
 <script type="text/javascript">
 function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
-	$("#rejectApplicant"+submissionId).fadeOut(200);
+	//script for reject
+	$("#rejectApplicant"+submissionId).fadeOut(200);    
 	$(".project_inn_mask").fadeOut(200);
 	 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 	 document.getElementById("rejectOtherCategoryDiv").style.display="none";
 	 $("#rejectedCategory").val("");
+	 
+	 //script for backOut
+	 $("#backOutApplicant"+submissionId).fadeOut(200);    
+	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
+	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
+	 $("#backOutCategory").val("");
+	 
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -948,6 +1023,40 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 	}
 };
 </script>
+
+<script type="text/javascript">
+function cancelBackOutApplicant(submissionId,requirementId,submissionType){ 
+	
+	 //script for backOut
+	 $("#backOutApplicant"+submissionId).fadeOut(200);
+	 $(".project_inn_mask").fadeOut(200);
+	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
+	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
+	 $("#backOutCategory").val("");
+	 
+	if(submissionType == 'all'){
+		requirementPipeline(requirementId,submissionType);
+	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
+		requirementPipelineDA(requirementId,submissionType);
+	}else if(submissionType == 'REQUEST_SENT'){
+		requirementPipelineRS(requirementId,submissionType);
+	}else if(submissionType == 'SHORTLIST'){
+		requirementPipelineSL(requirementId,submissionType);
+	}else if(submissionType == 'INTERVIEW'){
+		requirementPipelineIN(requirementId,submissionType);
+	}else if(submissionType == 'OFFERMADE'){
+		requirementPipelineOffer(requirementId,submissionType);
+	}else if(submissionType == 'REJECTED'){
+		requirementPipelineRejected(requirementId,submissionType);
+	}else if(submissionType == 'SUBMIT_TO_CLIENT'){
+		requirementPipelineSC(requirementId,submissionType);
+	}else if(submissionType == 'BACKOUT'){
+		requirementPipelineBackout(requirementId,submissionType);
+	}
+};
+</script>
+
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -960,21 +1069,12 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
 		
-		var frm = $('#rejected_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var form = $('#rejected_form')[0];
-  		var formData = new FormData(form); 
-		var jsonData = encodeURIComponent(con);
+		var formData =  getFormData('rejected_form'); 
+		$('#save_Reason').attr("disabled","disabled");
 		$.ajax({
 			type : "POST",
     	    data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-    	    dataType : 'json',
-		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId,	    	   
+		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -991,18 +1091,34 @@ $('body').on('blur', '#rejected_form', function() {
 	$("#rejected_form").validateOnBlur(false, validationSettings);
 });
 </script>
+
 <script>
-function backOutApplicant(submissionId,requirementId,submissionType){
-	
+function backOutApplicantSave(submissionId,requirementId,submissionType){
+	if ($('#backOut_form').validate(false, validationSettings)) {
+		var formData =  getFormData('backOut_form'); 
+		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
-		   	type: "POST",
+			type : "POST",
+    	    data: formData,
 		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
    			    requirementPipeline(requirementId,submissionType);
 		    }
 	   });
+		return true;
+	}else{
+		return false;
+	}
 }
+$('body').on('blur', '#backOut_form', function() {
+	$("#backOut_form").showHelpOnFocus();
+	$("#backOut_form").validateOnBlur(false, validationSettings);
+});
 </script>
+
+
 
 <script>
 function requirementSubmissionCount(requirementId){  
@@ -1177,7 +1293,7 @@ function reqNotes(requirementId){
    	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
    	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
    	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
@@ -1718,7 +1834,7 @@ function clientSideBar(candidateId,recScore){
 			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 			               }else{
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	   
 			               }
 						if(recScore != null && recScore != '' && recScore != 'undefined'){
@@ -2302,7 +2418,7 @@ function getRateListDiv(submissionId, candidateId){
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
@@ -2929,7 +3045,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -2976,7 +3092,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -3141,7 +3257,7 @@ function refreshImageBlock(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 						 }else{
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 	 
 						 }
 						 result = result+'  <div class="btn-group uploadfile">';
@@ -3265,7 +3381,7 @@ function saveCandidateImage(candidateId){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 

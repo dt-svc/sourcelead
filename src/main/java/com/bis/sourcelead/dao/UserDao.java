@@ -142,4 +142,8 @@ public interface UserDao {
 	
 	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
 
+	User getUserByVerficationUUID(String token);
+	
+	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
+
 }

@@ -47,6 +47,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class ProjectPlanningRestController {
 
 	@Autowired
@@ -288,15 +289,17 @@ public class ProjectPlanningRestController {
 		  Integer rejectedCount = 0;
 		  Integer onholdCount = 0;
 		  
-		  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
-			  if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-				  approvedCount = approvedCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-				  waitingCount = waitingCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-				  rejectedCount = rejectedCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-				  onholdCount = onholdCount + 1;
+		  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+			  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
+				  if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+					  approvedCount = approvedCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+					  waitingCount = waitingCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+					  rejectedCount = rejectedCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+					  onholdCount = onholdCount + 1;
+				  }
 			  }
 		  }
 		  
@@ -723,15 +726,17 @@ public class ProjectPlanningRestController {
 				  Integer rejectedCount = 0;
 				  Integer onholdCount = 0;
 				  
-				  for(ProjectBudget budget : projectBudgetList){
-					  if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)){
-						  approvedCount = approvedCount + 1;
-					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL)){
-						  waitingCount = waitingCount + 1;
-					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)){
-						  rejectedCount = rejectedCount + 1;
-					  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)){
-						  onholdCount = onholdCount + 1;
+				  if(projectBudgetList != null && projectBudgetList.size() > 0) {
+					  for(ProjectBudget budget : projectBudgetList){
+						  if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)){
+							  approvedCount = approvedCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL)){
+							  waitingCount = waitingCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)){
+							  rejectedCount = rejectedCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)){
+							  onholdCount = onholdCount + 1;
+						  }
 					  }
 				  }
 				  
@@ -785,15 +790,17 @@ public class ProjectPlanningRestController {
 			  Integer rejectedCount = 0;
 			  Integer onholdCount = 0;
 			  
-			  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
-				  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-					  approvedCount = approvedCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-					  waitingCount = waitingCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-					  rejectedCount = rejectedCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-					  onholdCount = onholdCount + 1;
+			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+				  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
+					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						  approvedCount = approvedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+						  waitingCount = waitingCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+						  rejectedCount = rejectedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+						  onholdCount = onholdCount + 1;
+					  }
 				  }
 			  }
 			  
@@ -850,18 +857,19 @@ public class ProjectPlanningRestController {
 			  Integer rejectedCount = 0;
 			  Integer onholdCount = 0;
 			  
-			  for(ProjectPlanningNewResourceRequest planningRequest : projectPlanningRequestList){
-				  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-					  approvedCount = approvedCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-					  waitingCount = waitingCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-					  rejectedCount = rejectedCount + 1;
-				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-					  onholdCount = onholdCount + 1;
+			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+				  for(ProjectPlanningNewResourceRequest planningRequest : projectPlanningRequestList){
+					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						  approvedCount = approvedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+						  waitingCount = waitingCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+						  rejectedCount = rejectedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+						  onholdCount = onholdCount + 1;
+					  }
 				  }
 			  }
-			  
 			  projectPlanningNewResourceRequestDTO.setWaitingCount(waitingCount);
 			  projectPlanningNewResourceRequestDTO.setApprovedCount(approvedCount);
 			  projectPlanningNewResourceRequestDTO.setRejectedCount(rejectedCount);

@@ -24,6 +24,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class ReportsController {
 
 private static final Logger logger = LoggerFactory.getLogger(ReportsController.class);
@@ -60,9 +61,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 return model;
 		
     }	
-		
+	
+	
 	
 	@RequestMapping(value = "/reportsDashboard")
+	public ModelAndView reportsDashboard(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/reportsDashboard");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+		
+	
+	/*@RequestMapping(value = "/reportsDashboard")
 	public ModelAndView userReports(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -80,7 +92,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/userReports");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
-	}
+	}*/
 	
 	@RequestMapping(value = "/billingReports")
 	public ModelAndView billingReports(HttpServletRequest request) throws Exception

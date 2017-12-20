@@ -34,7 +34,7 @@
   		bottom: 0;
   		background-color: black;
   		opacity: .4;
-  		background-image: url('resources/images/loading.gif');
+  		background-image: url('/resources/images/loading.gif');
   		background-position: center;
   		background-size: 50px;
   		background-repeat: no-repeat;
@@ -42,7 +42,7 @@
   	}
   </style>
   <!-- Footer Area --> 
-  <script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+  <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
   <script type="text/javascript">
        //window.scroll for Side Nav
                $(function() {
@@ -87,13 +87,13 @@ $( this ).addClass( feedback.vertical )
 });
 </script> -->
 <c:if test='${viewPage == "orgChart"}'>
-	<script src="resources/js/jquery.orgchart.js"></script>
-	<link href="resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
+	<script src="/resources/js/jquery.orgchart.js"></script>
+	<link href="/resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
 </c:if>
-<script src="resources/js/cropper.min.js"></script>
-<link rel="stylesheet" href="resources/css/cropper.min.css" type="text/css" />
-<div id='imagecrop' class='post_popup'>
-	
-</div>
+
+<script src="/resources/js/cropper.min.js"></script>
+<link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
+<div id='imagecrop' class='post_popup'></div>
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
 </body>
 </html>

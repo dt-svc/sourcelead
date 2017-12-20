@@ -184,6 +184,7 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String userId;
+	
 	@Transient
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -431,6 +432,10 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String billRateStr;
+	
+	@Transient
+	@JsonProperty
+	private Long userRoleId;
 	
 	@Transient
 	@JsonProperty
@@ -1494,15 +1499,19 @@ public class ProjectMembers implements Serializable {
 		this.projectClientUUID = projectClientUUID;
 	}
 
+	public Long getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
 	public int getTimeReportsTotalCountValue() {
 		return timeReportsTotalCountValue;
 	}
 
 	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
 		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
-	}
-
-	
-	
-	
+	} 
 }

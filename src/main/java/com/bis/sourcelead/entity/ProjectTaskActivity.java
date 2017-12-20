@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "PROJECT_TASK_ACTIVITY", catalog = "sourcelead")
+@Table(name = "PROJECT_TASK_ACTIVITY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTaskActivity")
 public class ProjectTaskActivity implements Serializable{
 	

@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Mailbox</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -126,6 +126,7 @@
 			 <div class="mail-box mail-content">
 			 <div class="mail-box-header">
               <h3 class="box-title" id="mailboxLabel"></h3>
+              
               <!-- <div class="box-tools pull-right">
                 <div class="has-feedback">
                   <input type="text" placeholder="Search Mail" class="form-control input-sm">
@@ -204,7 +205,7 @@
 	  setActiveTab(type)
 	  var mailType = '${mailType}';
 	  
-	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	  $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	  
 	  $.ajax({
           type : "POST",
@@ -470,7 +471,6 @@ function deleteMail(){
 	 $("input[name='mailIds[]']:checked").each( function (i) {
 		 mailIds[i] = $(this).val();
 	});
-	 
 	 if(mailIds.length > 0){
 		 document.getElementById("trashBtn").style.display="";
 	 }else{
@@ -487,7 +487,7 @@ function getMailBoxIds(){
 	 $("input[name='mailIds[]']:checked").each( function (i) {
 		 mailIds[i] = $(this).val();
 		 $("#checkbox"+mailIds[i]).html("<td colspan='4'  id='loading"+mailIds[i]+"'></td>");
-	     $("#loading"+mailIds[i]).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	     $("#loading"+mailIds[i]).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 	});
 	 
@@ -496,7 +496,7 @@ function getMailBoxIds(){
 	}
 	 
 	
-	 $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 		 $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/sendMailsToTrash?${_csrf.parameterName}=${_csrf.token}&mailIds="+mailIds,
@@ -538,7 +538,7 @@ function getEmailDetails(uuid,type){
 	 document.getElementById("details").style.display="";
 	 document.getElementById("inbox").style.display="none";
 	 
-	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 var mailType = '${mailType}';
 	$.ajax({
 		type : "POST",
@@ -574,7 +574,9 @@ function getEmailDetails(uuid,type){
                 result = result +'</div>';
                 result = result +'</div>';
 			    result = result +'<div class="mailbox-read-info">';
-			    result = result +'<h3>'+opt.subject+'</h3>';
+			    result = result +'<h3 class="col-md-4 padding_left">'+opt.subject+'</h3>';
+// 			    result = result +' <a href="<c:url value='/campaignStats'/>" class="pull-left btn btn-sm btn-primary">Stats</a>';
+			    result = result +'<div class="clearfix"></div>';
 			    result = result +'<h5>From: '+opt.fromMail+'' 
 			    result = result +'<h5 class="mail-height">To: '+opt.toMail+'' 
 			    result = result +'<span class="mailbox-read-time pull-right">'+opt.calDays+'</span></h5>';
@@ -601,7 +603,6 @@ function getEmailDetails(uuid,type){
 	   			if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
 	   			}
-	   			
 	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
 	   			}
@@ -652,16 +653,16 @@ function getEmialSettings(){
 	 result = result +'<p>Please select your provider</p>';
 	 result = result +'<ul>';
 	 result = result +'  <li>';
-	 result = result +'<a href="<c:url value="/emailSettings"/>">';
-	 result = result +'  <img src="resources/images/gmail-logo.jpg" alt=""/>Gmail</a>';
+	 result = result +'<a href="<c:url value="/app/emailSettings"/>">';
+	 result = result +'  <img src="/resources/images/gmail-logo.jpg" alt=""/>Gmail</a>';
 	 result = result +'  </li>';
 	 result = result +' <li>';
-	 result = result +'	  <a href="<c:url value="/emailSettings"/>">';
-	 result = result +' <img src="resources/images/yahoo-logo.jpg" alt=""/>Yahoo</a>';
+	 result = result +'	  <a href="<c:url value="/app/emailSettings"/>">';
+	 result = result +' <img src="/resources/images/yahoo-logo.jpg" alt=""/>Yahoo</a>';
 	 result = result +' </li>';
 	 result = result +' <li>';
-	 result = result +' <a href="<c:url value="/emailSettings"/>">';
-	 result = result +' <img src="resources/images/mail-icon.jpg" alt="" />Other</a>';
+	 result = result +' <a href="<c:url value="/app/emailSettings"/>">';
+	 result = result +' <img src="/resources/images/mail-icon.jpg" alt="" />Other</a>';
 	 result = result +'</li>	';				  					  
 	 result = result +' <div class="clear"></div>';
 	 result = result +'</ul>';
@@ -682,7 +683,7 @@ function getEmialSettings(){
 function deleteReadMail(uuid,nextMailUUID,type){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
+	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 
 	$.ajax({
 		type : "POST",

@@ -36,6 +36,7 @@ import com.bis.sourcelead.validation.FileValidator;
  * Handles uploads
  */
 @Controller
+@RequestMapping("/app")
 public class UploadController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
@@ -86,7 +87,7 @@ public class UploadController {
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
 		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-		return "redirect:/usersList";
+		return "redirect:/app/usersList";
 	}
 /**
  * Handles Errored file Download
@@ -122,12 +123,10 @@ public class UploadController {
 /**
  * Handles Temaplate download
  * @param response
- * @throws IOException 
- * @throws URISyntaxException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

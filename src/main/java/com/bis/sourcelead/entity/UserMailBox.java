@@ -24,7 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_MAIL_BOX", catalog = "sourcelead")
+@Table(name = "USER_MAIL_BOX")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
 public class UserMailBox implements Serializable{
 
@@ -119,11 +119,6 @@ public class UserMailBox implements Serializable{
 	@Transient
 	private Integer totalUnReadMailsCount;
 	
-	
-/*	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;*/
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -386,7 +381,6 @@ public class UserMailBox implements Serializable{
 		this.candidatesList = candidatesList;
 	}
 
-	
 	public String getFileContentType() {
 		return fileContentType;
 	}

@@ -13,9 +13,8 @@
 	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
 	</c:if>
 	
-	<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-	<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-	
+	<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		$(document).ready(function() {
@@ -194,7 +193,7 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -484,7 +483,7 @@ $(document).ready(function () {
                         </div>
                   </div>
                   
-                  
+              <c:if test="${empty requirement.id}">
               <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
@@ -494,8 +493,10 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+            </c:if> 
+            <c:if test="${!empty requirement.id}">   
 		     <c:if test="${! empty requirement.closedDateStringFormat}">
-		     <div class="form-group"  style="display:block">
+		     <div class="form-group" id="receivingApplicantsDiv">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
                  <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
@@ -504,6 +505,18 @@ $(document).ready(function () {
 				</label>
               </div>
             </div>
+		     </c:if>
+		      <c:if test="${empty requirement.closedDateStringFormat}">
+		     <div class="form-group" id="receivingApplicantsDiv" style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+            </c:if>
 		     </c:if>
           
           <div class="form-group">
@@ -730,13 +743,25 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9 positionRelative">
-          
+            <c:if test="${empty requirement.id}">
+          <div class="input-group attachfile" id= "uploadFileGroup">
+                <label class="input-group-btn">
+                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                       <input type="file"  id="uploadBtn"  class="hidden upload">
+                  </span>
+                </label>
+                
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"     placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+              <div class="clearfix"></div> <div class="clearfix"></div>
+			   <div class="clearUpload"></div>
+              </div> 
+              </c:if>
               <c:if test="${!empty requirement.id}">
               
                  <c:if test="${empty requirement.fileName}">
                  <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
-                <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <span class="btn btn-primary" onchange="uploadButton();"><i class="fa fa-folder-open-o" ></i>&nbsp;Browse File
                        <input type="file"  id="uploadBtn"  class="hidden upload">
                   </span>
                 </label>
@@ -872,7 +897,7 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -881,7 +906,7 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>&nbsp;<i class='fa fa-info-circle' title='Post Job with reference of your client'></i>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -896,8 +921,8 @@ $(document).ready(function () {
             <div class="clearfix">
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -926,12 +951,17 @@ $(document).ready(function () {
 						  </c:otherwise>
 				</c:choose>
                   </div>
+                    <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+                       <span class="col-md-3 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+                       <span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="refreshRequirementClientList();"><i class="fa fa-refresh "></i></span>
+                       </span>
+                  </sec:authorize>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
-                <div class="col-md-9">
-                  <div>
+                <div class="col-md-9 chooRadius">
+                  <div class="input-group col-md-9 pull-left">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -957,13 +987,18 @@ $(document).ready(function () {
                     	</select>
 				    </c:otherwise>
 				</c:choose>
-                    
+                    <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
                  </div>
-                  
+                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			      	</sec:authorize>
+			      	
+			  </span>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Rate what client Proposed,this is only for internal reference. This rate will not visible publicly'></i></label>
+                <label class="col-md-3">Bill Rate / Salary</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1266,7 +1301,9 @@ $(document).ready(function () {
               <c:if test="${empty requirement.id}"> 
               	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
               </c:if>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
+                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  </span>
                   </div>
               </div>
               <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
@@ -1287,8 +1324,7 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>&nbsp;<i class='fa fa-info-circle' title='Job will be visible to all users in the organization,Users can submit the applicants for the job'></i>
-					
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1317,7 +1353,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
@@ -1555,7 +1591,7 @@ function validate_fileupload(fileName)
 		   if ($('#requirement_form').validate(false, validationSettings)){   
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1563,7 +1599,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
-						location.replace(sourceleadUrl+"/requirementList");
+						location.replace(sourceleadUrl+"/jobs");
 
 					},
 				});
@@ -2600,7 +2636,6 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-
 $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
@@ -2613,6 +2648,10 @@ $(function() {
 <script>
 function clearDate(){
 	$("#closedDate").val("");
+	document.getElementById("receivingApplicantsDiv").style.display="none";
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('N');
+	}
 	};
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val('');
@@ -2656,5 +2695,53 @@ function removeReqDoc(requirementId){
 }
 </script>
 
- 
+ <script>
+function refreshRequirementClientList(){
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#addClientId").empty();
+	        	 $("#selectContact").empty();
+	        	 $("#selectContact").trigger("chosen:updated");
+		        $("#addClientId").append(output);
+		        $('#addClientId').trigger("chosen:updated");
+		        
+	        }
+		 });
+	
+}
+</script>
+
+<script>
+	 function selectedClient(){
+		 var a = $("#addClientId").val();
+		 var valueArray = a.split(",");
+		 var cid = valueArray[0]             
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+</script>
+
+<script>
+function refreshRequirementClientContactList(){
+	 var a = $("#addClientId").val();
+	 var valueArray = a.split(",");
+	if(valueArray[0] != ""){
+		clientContactList(valueArray[0],valueArray[1]);
+	}
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />

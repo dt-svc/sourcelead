@@ -315,6 +315,7 @@ function getContactList(local){
 			clientContactList(valueArray[0],valueArray[1]);
 			$("#addContactPlus").show();
 			$("#addContactPlus").attr("onclick", "addClientContactPopUp("+valueArray[0]+","+valueArray[1]+");");
+			$("#contactRefreshId").attr('value', local.value);
 			//   $("#vendorName").attr('value', local.value);
 		}else{
 			$("#addContactPlus").hide();
@@ -526,7 +527,7 @@ function validateClientName(){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+				url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 				success : function(data) {
 					var result = data;
 					if (result == true) {

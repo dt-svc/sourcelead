@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -16,7 +16,9 @@
 
 <script>
 		$(document).ready(function() {
+			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
+			
 		});
 	</script>
 
@@ -29,7 +31,7 @@
 		<c:if
 			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
-				<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
 					href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo;
 				Add Candidate
 			</div>
@@ -264,24 +266,43 @@
 							<div class="form-group">
 								<label class="col-md-3"><span class="pull-left">Vendor</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9" id="errorvendor">
+								<div class="col-md-9 chooRadius" id="errorvendor">
+								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="vendors"
 										id="vendors" placeholder="Select Vendor" field-name="Vendor"
 										onchange="getVendorContactList();removeValiationVendor();">
 									</select>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+									
 								</div>
+								<span class="col-md-2 noPad clearfix">
+							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</sec:authorize>
+							</span>
+							</div>
 							</div>
 
 							<div class="form-group">
 								<label class="col-md-3"><span class="pull-left">Vendor
 										Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-								<div class="col-md-9" id="errorvendorContact">
+								<div class="col-md-9 chooRadius" id="errorvendorContact">
+								<div class="input-group col-md-10 pull-left chooRadius">
 									<select class="chosen-select form-control" name="vendorcontact"
 										id="vendorcontact" field-name="Vendor Contact"
 										placeholder="Select Vendor Contact"
 										onchange="removeValiationVendorContact();">
 									</select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addCandiadateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			</div>		
+								<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								</sec:authorize>
+							 </span>			
+										
 								</div>
+								
 							</div>
 						</div>
 					</c:if>
@@ -414,13 +435,15 @@
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
 							<div class="col-md-9 zindex positionRelative">
-								<div class="input-group col-md-12 clearUpload" id="uploadFileGroup"
+								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 									</label> 
+									
 									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
+										<div class="clearUpload"></div>
 								</div>
 							</div>
 						</div>
@@ -534,7 +557,7 @@
 						<input type="button" value="Save" id="store_candidate"
 							onclick="storeCandidate();" class="btn btn-primary"> <input
 							type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -930,11 +953,28 @@ function  removeValiationVendorContact() {
  $(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "resumes", "addcandidate_form");
+		$(".clearUpload").show();
 	});
  });
  </script>
 <script>
 	$(".clearUpload").click(function(){
-		$("#uploadFile").val("");
+		$("#uploadFile").val('');
+		$(".clearUpload").hide();
+	        $("#addcandidate_form input[data-id*=uploadBtn]").remove();
 	});
 </script>
+
+<script>
+function addCandiadateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>

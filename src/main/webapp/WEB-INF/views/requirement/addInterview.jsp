@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;
@@ -51,7 +51,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row<i class="fa fa-info-circle" title="Can Schedule multiple Interviews for multiple applicants at different slots"></i></a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -124,9 +124,9 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others<i class="fa fa-info-circle" title="Notify to others than interviewers through their email id"></i></b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
 
-	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time <i class="fa fa-info-circle" title="Applicants can propose their availability slots"></i></b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	
 	result = result + '</div>';
 	
@@ -141,14 +141,21 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	 result = result +'<div class="col-md-6 chooRadius mb">';
+	 result = result +'<div class="input-group col-md-10 pull-left chooOverFlow">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
+	result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="interviewTemplate();"><i class="fa fa-refresh "></i></span>';
 	result = result + '</div>';
+	result = result +'<span class="col-md-2 noPad clearfix">';
+	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
+	result = result +'<a href="<c:url value="/app/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'</sec:authorize>';	
+	result = result + '</span>';
 	result = result + '</div>';
 	
 	
-	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before<i class="fa fa-info-circle" title="Set reminder notification about interview to the interviewers and applicants"></i></strong>';
+	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
 	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';
@@ -325,7 +332,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd1" style="display: none; float: left;" class="positionRelative">
-<small class='requiresymbol text-danger'>*</small><i class='fa fa-info-circle' title='Can schedule interviews for multiple applicants at a single slot'></i>
+<small class='requiresymbol text-danger'>*</small>
        <select  multiple data-placeholder="Select Applicants" onchange="selectInterviewApplicants()" class="blminwidth-50" id="REPLACEROWIDapplicant" name="REPLACEROWIDapplicant" field-name="Applicant" data-validation="required" >
 			
 	  </select>
@@ -362,7 +369,7 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd8" style="display: none; float: left;" >
-		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o" ></i></button>
+		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
 
 	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
 	 <a href="#" title="Remove" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
@@ -645,7 +652,7 @@ function getNotifyToOtersValInterview(){
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
@@ -893,7 +900,6 @@ $(function(){
 
 <script>
 function interviewTemplate(){
-
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
@@ -901,17 +907,20 @@ function interviewTemplate(){
 	        var json = JSON.parse(data);
 	        var output = "";
 	        if(json.length > 0){
+	        	output = output + "<option value=''>--select Template--</option>";
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
 	 	        		
 	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
 	 			}
-	         	$("#interviewSubmissionTemplate").empty();
-	 	        $("#interviewSubmissionTemplate").append(output);
-	 	       
-	 	        $("#interviewSubmissionTemplate").chosen();
-	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$("#interviewSubmissionTemplate").empty();
+	        	$("#interviewSubmissionTemplate").append(output);
+	        	
+	        	$("#interviewSubmissionTemplate").chosen();
+	    		$("#interviewSubmissionTemplate").trigger("chosen:updated");
+	    		
+	    		
 	 			$('.chosen-container').css({'width': '100% !important'});
 	 			
 	        }else{
