@@ -43,6 +43,8 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private String employeePhoneNo;
 	
+	private String locDateFomat;
+	
 	@JsonIgnore
 	private Map<String,String>  timesheetFrequencyMap;
 	
@@ -171,6 +173,14 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 
 	public void setEmployeePhoneNo(String employeePhoneNo) {
 		this.employeePhoneNo = employeePhoneNo;
+	}
+
+	public String getLocDateFomat() {
+		return locDateFomat;
+	}
+
+	public void setLocDateFomat(String locDateFomat) {
+		this.locDateFomat = locDateFomat;
 	}
 	
      
