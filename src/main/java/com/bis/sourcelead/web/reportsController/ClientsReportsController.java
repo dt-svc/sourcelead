@@ -39,7 +39,10 @@ public class ClientsReportsController {
 		model.addObject("activeClientsCount", activeClientsCount);
 		model.addObject("inActiveClientsCount", inActiveClientsCount);
 		model.addObject("totalClientsCount", totalClientsCount);
-		Integer totalSpocCount = clientReportService.getAllClientsSpocCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+		Map<String, Integer> totalSpocCount = clientReportService.getAllClientsSpocCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+		model.addObject("activeSpocCount", totalSpocCount.get("totalactiveCount"));
+		model.addObject("inActiveSpocCount", totalSpocCount.get("totalInactiveCount"));
+		model.addObject("totalSpocCount", totalSpocCount.get("totalSpocCount"));
 		model.setViewName("reports/clientReports");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

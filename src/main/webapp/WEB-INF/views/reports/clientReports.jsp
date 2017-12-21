@@ -31,11 +31,11 @@ $(document).ready(function(){
                   <div class="pull-left col-md-10 padding_right">
                     <div class="clearfix">
                       <h4 class="pull-left">Active Clients</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">1050</label>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${activeClientsCount}</label>
                     </div>
                     <div class="clearfix">
                       <h4 class="pull-left">Contact</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">100</label>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${activeSpocCount}</label>
                     </div>
                   </div>
                 </div>
@@ -48,11 +48,11 @@ $(document).ready(function(){
                   <div class="pull-left col-md-10 padding_right">
                     <div class="clearfix">
                       <h4 class="pull-left">Inactive Clients</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">1050</label>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${inActiveClientsCount}</label>
                     </div>
                     <div class="clearfix">
                       <h4 class="pull-left">Contact</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">100</label>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${inActiveSpocCount}</label>
                     </div>
                   </div>
                 </div>
@@ -65,11 +65,11 @@ $(document).ready(function(){
                   <div class="pull-left col-md-10 padding_right">
                     <div class="clearfix">
                       <h4 class="pull-left">Total Clients</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">1050</label>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${totalClientsCount}</label>
                     </div>
                     <div class="clearfix">
-                      <h4 class="pull-left">Total Contact</h4>
-                      <label class="pull-right ven-count" onClick="usageactiveList()">100</label>
+                      <h4 class="pull-left">Total Contacts</h4>
+                      <label class="pull-right ven-count" onClick="usageactiveList()">${totalSpocCount}</label>
                     </div>
                   </div>
                 </div>
