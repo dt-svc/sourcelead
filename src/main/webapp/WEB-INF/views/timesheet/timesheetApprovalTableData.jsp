@@ -6,6 +6,9 @@
 	       <input type="hidden" id="pageCount" name="totalRows" value="${timesheetApprovalDTO.pageCount}">
  </tr>
 <c:forEach var="timesheetSubmissionDTO" items="${timesheetApprovalDTO.timesheetSubmission}" varStatus="submissionStatus" >
+           <c:if test="${submissionStatus.index == 0}">
+            <input type="hidden" id="tableFor" name="tableFor" value="${timesheetSubmissionDTO.tableFor}">
+          </c:if>
     	<tr id="row${timesheetSubmissionDTO.projectMemberId}" role="row" class="odd">
     	   <c:set var="timesheetSubmission" value="${timesheetSubmissionDTO}" scope="request"></c:set>
 		   <jsp:include page="timesheetApprovalTableRowData.jsp"></jsp:include>

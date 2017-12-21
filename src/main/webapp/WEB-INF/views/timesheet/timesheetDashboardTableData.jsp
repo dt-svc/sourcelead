@@ -8,8 +8,11 @@
 	       <input type="hidden" id="pageCount" name="totalRows" value="${timesheetApprovalDTO.pageCount}">
  </tr>
 <c:forEach var="timesheetSubmissionDTO" items="${timesheetApprovalDTO.timesheetSubmission}" varStatus="submissionStatus" >
-    	<tr id="row${timesheetSubmissionDTO.dashboardDateList}" role="row" class="odd">
-    	   <c:set var="submission" value="${timesheetSubmissionDTO}" scope="request"></c:set>
-		   <jsp:include page="timesheetDashbordpTableRowData.jsp"></jsp:include>
+          <c:if test="${submissionStatus.index == 0}">
+            <input type="hidden" id="tableFor" name="tableFor" value="${timesheetSubmissionDTO.tableFor}">
+          </c:if>
+    	<tr id="row${timesheetSubmissionDTO.projectMemberId}${timesheetSubmissionDTO.currentTimeFrequency}" role="row" class="odd">
+    	   <c:set var="timesheetSubmission" value="${timesheetSubmissionDTO}" scope="request"></c:set>
+		   <jsp:include page="timesheetApprovalTableRowData.jsp"></jsp:include>
        </tr>
 </c:forEach>

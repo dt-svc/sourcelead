@@ -13,25 +13,39 @@
 			</span>
 		</div>
 	</td>
-	<td><span><b title="${timesheetSubmission.designation}">${timesheetSubmission.designation}</b></span></td>
+	<c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
+	   <td><span><b title="${timesheetSubmission.designation}">${timesheetSubmission.designation}</b></span></td>
+    </c:if>
 	<td><div class="tbldata-dotdot-sm">
 			<span><b title="${timesheetSubmission.project}">${timesheetSubmission.project}</b></span>
 		</div></td>
 	<td><div title="${timesheetSubmission.clientName}">${timesheetSubmission.clientName}</div></td>
-	
-	<c:forEach var="weekTot" items="${timesheetSubmission.weeekTotal}" varStatus="status"> 
-			<c:if test="${!empty timesheetSubmission.submissionTotal}">
-				<td><div class="sm">${timesheetSubmission.submissionTotal[status.index]}/${weekTot}</div></td>
-			</c:if>
-			<c:if test="${empty timesheetSubmission.submissionTotal}">
-				<td><div class="sm">0.0/${weekTot}</div></td>
-			</c:if>
-	</c:forEach>	
-	<td>
-		<div class="sm">
-			<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
-		</div>
-	</td>
+    <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
+		<c:forEach var="weekTot" items="${timesheetSubmission.weeekTotal}" varStatus="status"> 
+				<c:if test="${!empty timesheetSubmission.submissionTotal}">
+					<td><div class="sm">${timesheetSubmission.submissionTotal[status.index]}/${weekTot}</div></td>
+				</c:if>
+				<c:if test="${empty timesheetSubmission.submissionTotal}">
+					<td><div class="sm">0.0/${weekTot}</div></td>
+				</c:if>
+		</c:forEach>
+	</c:if>	 
+	<c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'dashboard'}">
+	         <td> <div>${timesheetSubmission.dashboardInvoiceFrequency}</div></td>
+	         <td> <div id="datefrequency${timesheetSubmission.projectMemberId}"><span class="res_date"><i class="fa fa-calendar"></i>${timesheetSubmission.dashboardDateList}</span></div></td>
+	        <td>
+				<div class="sm">
+					<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetSubmission.currentTimeFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+				</div>
+		    </td>
+	</c:if>
+    <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
+		<td>
+			<div class="sm">
+				<a href="#" onclick="timesheetApprovalPopUpByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectId}','${timesheetSubmission.projectMemberId}','${timesheetSubmission.masterCandidateId}','${timesheetSubmission.totalHours}','approver');">${timesheetSubmission.totalHours}/${timesheetSubmission.estimatedHours}</a>
+			</div>
+		</td>
+	</c:if>
 	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
 <c:if test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'submitted for approval'}">
 <td>
