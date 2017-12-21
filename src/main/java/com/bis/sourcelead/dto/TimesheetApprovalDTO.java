@@ -17,6 +17,7 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private String client;
 	private String stage;
 	private Long userId;
+	private Long projectMembersId;
 	private String locationCode;
 	private String frequencyStartDate;
 	private String frequencyEndDate;
@@ -34,6 +35,8 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private int pageNo;
 	private int pageSize;
 	private int pageCount;
+	private String dashboardTimeStatus;
+	private String tableRowFor;
 	
 	public String getWeekFrequency() {
 		return weekFrequency;
@@ -167,6 +170,25 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	public void setPageCount(int pageCount) {
 		this.pageCount = pageCount;
 	}
+	public Long getProjectMembersId() {
+		return projectMembersId;
+	}
+	public void setProjectMembersId(Long projectMembersId) {
+		this.projectMembersId = projectMembersId;
+	}
+	public String getDashboardTimeStatus() {
+		return dashboardTimeStatus;
+	}
+	public void setDashboardTimeStatus(String dashboardTimeStatus) {
+		this.dashboardTimeStatus = dashboardTimeStatus;
+	}
+	public String getTableRowFor() {
+		return tableRowFor;
+	}
+	public void setTableRowFor(String tableRowFor) {
+		this.tableRowFor = tableRowFor;
+	}
+
 	
 	
 }
