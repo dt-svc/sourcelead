@@ -25,7 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheet_Day_Entries")
-public class TimeSheet_Day_Entries implements Serializable{
+public class TimeSheetDayEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -36,12 +36,12 @@ public class TimeSheet_Day_Entries implements Serializable{
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="TIMESHEET_ID") 
+	@JoinColumn(name="SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
-	@JoinColumn(name = "PROJECT_TASK")
+	@JoinColumn(name = "PROJECT_TASK_ID")
 	private ProjectTasks projectTask;
 	
 	@NotNull
@@ -59,6 +59,9 @@ public class TimeSheet_Day_Entries implements Serializable{
 	@Column(name = "TOTALHOURS")
 	private String totalHours;
 	 
+	@Column(name ="TASK_TYPE")
+	private String taskType;
+	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
 	 
@@ -178,4 +181,12 @@ public class TimeSheet_Day_Entries implements Serializable{
 		return serialVersionUID;
 	}
 
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+	
 }

@@ -22,6 +22,11 @@
 		var policy = '${leaveType.leavePolicy}';
 		if (policy == 'Y') {
 			leavePolicy();
+		} else {
+			setTimeout(function () {
+				  $("textarea[name=leavePolicyDescription]").html(ckbox.is(':checked') ? policyDesc : "");
+				 	$(".Editor-editor").html(ckbox.is(':checked') ? policyDesc : "");
+		 			}, 100);
 		}
 		var applicable = '${leaveType.applicableToUsers}';
 		if (applicable == 'N') {
@@ -298,9 +303,9 @@
 							
 							
 							<c:if test="${!empty leaveType.leaveEffective}">
-										<c:if test="${leaveType.leaveEffective == 'AllEmployees'}">
+										<c:if test="${leaveType.leaveEffective == 'All Employees'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" name="leaveEffective">
@@ -309,7 +314,7 @@
 
 										<c:if test="${leaveType.leaveEffective == 'Experienced'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" checked="true" name="leaveEffective">
@@ -319,7 +324,7 @@
 
 									<c:if test="${empty leaveType.leaveEffective}">
 										<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" name="leaveEffective">
@@ -546,10 +551,14 @@
 						<div class="clearfix"></div>
 						<div class="form-group mt10">
 							<div class="col-md-12 checkBox" onClick="leavePolicy();">
-								<c:if test="${!empty leaveType.leavePolicy}">
+								<c:if test="${leaveType.leavePolicy == 'Y'}">
 									<input type="checkbox" checked="true" name="leavePolicy"
 										id="leavePolicy" value="Y">Leave Policy
-	              </c:if>
+	                           </c:if>
+	                              <c:if test="${leaveType.leavePolicy == 'N'}">
+											<input type="checkbox" name="leavePolicy" id="leavePolicy"
+												value="Y">Leave Policy
+			                     </c:if>
 								<c:if test="${empty leaveType.leavePolicy}">
 									<input type="checkbox" name="leavePolicy" id="leavePolicy"
 
@@ -578,7 +587,7 @@
 								<div class="col-md-6 checkBox">
 									<c:if test="${!empty leaveType.visibilityToAllUsers}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y">Visiblity
+											name="visibilityToAllUsers" id="visibilityToAllUsers" value="Y">Visiblity
 										All Users
 									</c:if>
 									<c:if test="${empty leaveType.visibilityToAllUsers}">
@@ -591,7 +600,7 @@
 					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="leavePolicyDescription"   
+						<textarea id="txtEditor" name="leavePolicyDescription" id="leavePolicyDescription"   
 						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 </div>
@@ -712,13 +721,17 @@
 			$('#policyName').attr('data-validation-optional', "true");
 			$('#txtEditor').removeAttr('data-validation');
 			$('#txtEditor').attr('data-validation-optional', "true");
+			$("#policyName").val("");
+			$("#leavePolicyDescription").html("");
+			$("textarea[name=leavePolicyDescription]").html("");
+			$("#visibilityToAllUsers").val("");
 		} 
 		
 		var policyDesc = '${leaveType.policyDescription}';
 		
 		  setTimeout(function () {
-			  $("textarea[name=leavePolicyDescription]").html(policyDesc);
-			 	$(".Editor-editor").html(policyDesc);
+			  $("textarea[name=leavePolicyDescription]").html(ckbox.is(':checked') ? policyDesc : "");
+			 	$(".Editor-editor").html(ckbox.is(':checked') ? policyDesc : "");
 	 			}, 100);
 		
 	}
