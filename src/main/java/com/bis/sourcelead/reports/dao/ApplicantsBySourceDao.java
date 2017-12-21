@@ -12,4 +12,8 @@ public interface ApplicantsBySourceDao {
 	Integer getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
 	
 	Integer getVendorSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
+	
+	Integer getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
+	
+	Integer getInternalSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage,Long orgLocationId);
 }

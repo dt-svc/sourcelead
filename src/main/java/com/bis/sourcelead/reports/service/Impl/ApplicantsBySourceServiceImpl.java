@@ -36,4 +36,15 @@ public class ApplicantsBySourceServiceImpl implements ApplicantsBySourceService{
 		return applicantsBySourceDao.getVendorSourceApplicantsCountByStage(jobIds, searchDates, stage);
 	}
 
+	@Override
+	public Integer getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates,
+			String stage) {
+		return applicantsBySourceDao.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, stage);
+	}
+
+	@Override
+	public Integer getInternalSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage,Long orgLocationId) {
+		return applicantsBySourceDao.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, stage, orgLocationId);
+	}
+
 }
