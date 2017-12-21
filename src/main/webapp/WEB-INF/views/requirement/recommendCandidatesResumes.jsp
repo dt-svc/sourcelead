@@ -40,6 +40,9 @@
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
+	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="resMsgDiv"></span>';
+    result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		result = result+'	    	<a href="javascript:void(0)" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Resume</a>';
 	}else{
@@ -237,7 +240,15 @@ function addResume(candidateId) {
 		            			$("#quickDisVal").append(result+'%');
 		            			 
 						 		$("#popUpDivResume").removeClass("edit-details-active");
+						 		$("#selector2").removeAttr("style");
+		             			$("#selector2").css({ display: "block" });
+		             			if(resumeId != null){
+		             				$("#resMsgDiv").html("Resume details updated");
+		             			}else{
+		             				$("#resMsgDiv").html("Success!! New Resume added");
+		             			}		             			
 						 		candidateResumesList(candidateId);
+						 		resMsgFadeinResumes();
 		            		 }
 						},
 					});
@@ -251,7 +262,12 @@ function addResume(candidateId) {
 		$("#candidateResume_form").validateOnBlur(false, validationSettings);
 	});
 </script>
-
+<script>
+	function resMsgFadeinResumes() {
+		$("#selector2").fadeIn(200);
+        $('#selector2').delay(2000).fadeOut('slow');
+	}
+</script> 
 <%-- 
      @author : Venkat Kesav
      this script is for prepare list of resumes
@@ -371,8 +387,7 @@ function addResume(candidateId) {
 function deleteResume(candidateId, resumeId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var message = confirm("You are choosing to delete the resume");
-	if (message == true) {
+	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
@@ -410,14 +425,19 @@ function deleteResume(candidateId, resumeId){
 	          				 $("#quickPerVal").addClass("progress-bar-success");
 	          			 }
 
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-        			 candidateResume(candidateId);
-        		     candidateResumesList(candidateId);
+        			
+        			
+        			 $("#selector2").removeAttr("style");
+         			 $("#selector2").css({ display: "block" });
+         			 $("#resMsgDiv").html("Resume deleted");
+         			 $("#popUpDivResume").removeClass("edit-details-active");
+        			 candidateResumesList(candidateId);
+        			 resMsgFadeinResumes();
+        		     
         		 }
    		    }
 	     });
-	}
+	
 }
 </script>
 
