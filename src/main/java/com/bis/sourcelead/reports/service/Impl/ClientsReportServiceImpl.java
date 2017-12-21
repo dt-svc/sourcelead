@@ -1,5 +1,6 @@
 package com.bis.sourcelead.reports.service.Impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
 
@@ -49,6 +52,16 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	public List<OrgRelations> getAllClientsByOrgLocationIdAndUserId(Long locationId, Long userId)
 	{
 		return clientReportDao.getAllClientsByOrgLocationIdAndUserId(locationId, userId);
+	}
+
+	@Override
+	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,Date startDate,Date endDate)
+	{
+		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
+		for(OrgRelations rel : orgRelationsList){
+			List<Contracts> contractList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,rel.getId(),userRoleName,startDate,endDate);
+		}
+		return null;
 	}
 
 }

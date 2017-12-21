@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	getTopTenClientReports();
 });
 </script>
 
@@ -84,7 +84,7 @@ $(document).ready(function(){
         <div class="hidden"> <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
-        <select class="form-control" id="custom-dates">
+        <select class="form-control" id="datefilter">
           <option>Select Date</option>
           <option selected>Last 7 days</option>
           <option>Last 15 days</option>
@@ -635,7 +635,15 @@ $(document).ready(function(){
 	]
 }
 			);
-		</script> 
+</script> 
+
+<script>
+function getTopTenClientReports(){
+// 	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
+		
+// 	});
+}
+</script>
 		
 
 <jsp:include page="../masterFooter.jsp" />
