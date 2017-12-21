@@ -152,17 +152,18 @@ public class DashboardRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType") String timesheetCountType,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		if("employes".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId());
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId(),timesheetCountType);
 		}
+		
 		return timeSheetSubmissionCount;
 	}
 	
@@ -197,9 +198,9 @@ public class DashboardRestController {
 			 expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			if("employes".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId());
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),"All");
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId());
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();

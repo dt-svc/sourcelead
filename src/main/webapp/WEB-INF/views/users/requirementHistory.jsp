@@ -134,7 +134,7 @@ function requirementHistoryPagination(){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 

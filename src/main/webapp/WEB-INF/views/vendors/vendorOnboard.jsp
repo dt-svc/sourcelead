@@ -416,7 +416,9 @@ function getVendorOnboardDetails(){
 		        	if(json.vendorLocation != null && json.vendorLocation != "" && json.vendorLocation != "undefined"){
 		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>"+json.vendorLocation+"</p>");
 		        	}else{
+
 		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>--</p>");
+
 		        	}
 		        	
 		        	$("#clientContactName").html("<p title='"+json.clientContactName+"'>"+json.clientContactName+"</p>");

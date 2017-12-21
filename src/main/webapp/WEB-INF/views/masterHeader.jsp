@@ -105,7 +105,7 @@
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" }'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/clientReports"}'>
 	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
@@ -706,6 +706,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
+						  
+						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  
 	              </ul>
 	            </div>
 	          </li>
@@ -802,7 +805,7 @@ function preventTabkey(e){
 // 	    	   hasLocationAccess = result;
 	    	   
 	    	   if(result == true){
-	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y') || ('${SourceLeadWeb_isAuthenticated}' == 'N')){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
