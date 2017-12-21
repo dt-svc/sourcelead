@@ -184,7 +184,7 @@ function cancelOrgImg(){
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
@@ -1162,7 +1162,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -1573,7 +1573,7 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
 	    	        if(null != json['orgLocationAddress'] &&  json['orgLocationAddress'] != 'undefined' && json['orgLocationAddress'] != ''){
 	    	        	    result = result +'<div class="form-group">';
-	    	    	        result = result +'<label class="col-md-4">Address :</label>';
+	    	    	        result = result +'<label class="col-md-4 text-right">Address :</label>';
 	    	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationAddress']+'</p>';
 	    	    	        result = result +'</div>';	
 	    	        }
@@ -1615,7 +1615,7 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
 	    	        if(null != json['orglocationUserPhone'] &&  json['orglocationUserPhone'] != 'undefined' && json['orglocationUserPhone'] != ''){
 	    	        	result = result +'<div class="form-group">';
-	 	    	        result = result +'<label class="col-md-4">Mobile : </label>';
+	 	    	        result = result +'<label class="col-md-4 text-right">Mobile : </label>';
 	 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserPhone']+'</p>';
 	 	    	        result = result +'</div>';
 	    	        }
