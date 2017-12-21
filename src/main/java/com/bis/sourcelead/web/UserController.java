@@ -160,8 +160,8 @@ public class UserController {
 				model.addObject("org_projectsList", projectsList);*/
 				Candidate candidate = null;
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
-					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-					candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
+					candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId(),"All");
 					
 					model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
@@ -170,6 +170,11 @@ public class UserController {
 					model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
 					model.addObject("assignedProjectsCount", assignedProjectsCount);
 				}
+				
+				 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+			     model.addObject("actionId",action.getId());
+			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+			     model.addObject("sourceleadSectionList",sections); 
 				
 				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
 				request.setAttribute("userId", user.getId());
