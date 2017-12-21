@@ -1072,7 +1072,7 @@ function removeSkillById(candidateId, skillId){
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 					success : function(json) {
-						if (json != null && json != 'undefined' && json != "" && json != '[]') {
+						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
 								$("#employeeSubmissionDetailsList").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
@@ -1130,11 +1130,11 @@ function removeSkillById(candidateId, skillId){
 <script>
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "GER",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(json) {
-        	  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#educationSubmissionDetailsList").empty();
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
+	                	 $("#educationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
 	                	 
@@ -1215,7 +1215,7 @@ function certificationSubmissionProfile(candidateId){
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
