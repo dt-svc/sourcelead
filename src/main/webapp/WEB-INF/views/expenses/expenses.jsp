@@ -95,7 +95,7 @@
         </div>
         
         <div class='remove_search'>
-		       <input type='text' placeholder='search' value="" id='dataTableSearchExpensesEmp'/>
+		       <input type='text' placeholder='Search' value="" id='dataTableSearchExpensesEmp'/>
 	   </div>
         
     <div class="project_wrap_table datatable_filter">

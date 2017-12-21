@@ -9,7 +9,6 @@
 <script src="/resources/js/pie.js"></script>
 
 
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getApplicantBySourceChart();
@@ -29,8 +28,8 @@ $(document).ready(function(){
     	<div class="ReqRepHead clearfix">
         
         <div class="col-md-2">
-        <a href="applicant-source.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="applicantsource-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+        <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
@@ -40,7 +39,7 @@ $(document).ready(function(){
           </select>
         </div>
         <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection">
+          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -50,10 +49,29 @@ $(document).ready(function(){
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
+          
+          
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+            <div class="pull-left">
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+              </div>
+              
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+          
         </div>
         
+        
+        
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getApplicantBySourceChart();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Customize</button>
 		</div>
 		
 		
@@ -73,6 +91,14 @@ $(document).ready(function(){
     	 	<div id="applicantSource" class="amchartAnchor-Hide" style="height: 350px; width: 100%;"></div>
     	 	</div>
     	 	<!-- Applicant source Graph December 2017 -->
+    	 	
+    	 	
+ 	<!-- <div class="clearfix dashboard-widget mts col-md-12 mt">
+		<div class="clearfix">
+		  <div id="applicantSourceListView" class="datatable_filter"></div>
+		</div>
+    </div> -->
+    
     	<div class="clearfix"></div>
     </div>
   </section>
@@ -81,52 +107,110 @@ $(document).ready(function(){
 <jsp:include page="../masterFooter.jsp" />
 
 
+<script>
+function getCustomDates(){
+	 var dateSelection = $("#dateSelection").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 $("#customize_btn").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+	 }
+}
+
+</script>
+
+
 
 <script>
   function getApplicantBySourceChart(){
 	  
+	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
 		  jobIds = '';
 	  }
 	  var dateSelection = $("#dateSelection").val(); 
+	  var fromDate = '';
+	  var toDate = '';
+	  if(dateSelection == 'custom'){
+		   fromDate = $("#fromDate").val();
+		   toDate = $("#toDate").val();
+		  
+		  if(fromDate == '' || toDate == ''){
+			  flag = false;
+			  if(fromDate == ''){
+				  document.getElementById("fromDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+			  }
+			  if(toDate == ''){
+				  document.getElementById("toDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+		  }else{
+			  document.getElementById("fromDateDiv").style.display="none";
+			  document.getElementById("toDateDiv").style.display="none";
+		  }
+		  
+	  }
 		
-		$.ajax({ 
-			   	type: "GET",
-			 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-			    success: function(json) {
-			    	
-			        	if(json.length > 0)	
-			 	   		{
-			        		    var chartData = [];
-								for(var i=0; i < json.length ; i++){
-			        			 var applicantSource = json[i];
-			        			    chartData.push( {
-			        			    	category: applicantSource.category,
-			        					column2: applicantSource.applicantsCount,
-			        					column3: applicantSource.shortlistedCount,
-			        					column4: applicantSource.interviewsCount,
-			        					column5: applicantSource.rejectedCount,
-			        					column6: applicantSource.offeredCount,
-			        					column7: applicantSource.offerAcceptedCount,
-			        					column8: applicantSource.offerRejectedCount,
-			        					column9: applicantSource.backoutCount
-			        			     
-			        			    } );
-			        			  }
+	   if(flag){
+			$.ajax({ 
+				   	type: "GET",
+				 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+				    success: function(json) {
+				    	
+				        	if(json.length > 0)	
+				 	   		{
+				        		    var chartData = [];
+									for(var i=0; i < json.length ; i++){
+				        			 var applicantSource = json[i];
+				        			    chartData.push( {
+				        			    	category: applicantSource.category,
+				        					column2: applicantSource.applicantsCount,
+				        					column3: applicantSource.shortlistedCount,
+				        					column4: applicantSource.interviewsCount,
+				        					column5: applicantSource.rejectedCount,
+				        					column6: applicantSource.offeredCount,
+				        					column7: applicantSource.offerAcceptedCount,
+				        					column8: applicantSource.offerRejectedCount,
+				        					column9: applicantSource.backoutCount
+				        			     
+				        			    } );
+				        			  }
+				        	
+				        		 loadApplicantSourceChart(chartData);
+				 	   		}
+				        	
+				        	 var listView = document.getElementById("listView");
+				        	 listView.addEventListener("click", function() {
+								 getListView(json);
+							  });
+				        	 
+				        	 var graphicView = document.getElementById("graphicView");
+				        	 graphicView.addEventListener("click", function() {
+				        		 loadApplicantSourceChart(chartData);
+							  });
 			        	
-			        		 loadApplicantSourceChart(chartData);
-			 	   		}
-		        	
-		        },
-		        error: function(e){
-		        }
-		 });
+			        },
+			        error: function(e){
+			        }
+			 });
+	   }
   }
   </script>
 
  <script>
  function loadApplicantSourceChart(result){
+	 
+	 $("#applicantSource").empty();
+     
 	 var chart = AmCharts.makeChart("applicantSource", {
 		 
 			"type": "serial",
@@ -289,211 +373,117 @@ $(document).ready(function(){
  }
  </script> 
 
- 
- <!-- <script type="text/javascript">
- 
- AmCharts.makeChart("applicantSource",
+ <script>
+ function getListView(json){
+	 if(json.length > 0)	
+ 		{
+		 var result = "";
+		 result = result +"<div class='clearfix tableStyles mt'>"; 
+		 result = result +"<table class='table table-bordered mt10'>"; 
+         result = result +"<thead>"; 
+         result = result +"  <tr>"; 
+         result = result +"    <th>Source</th>";
+         result = result +"    <th>Applicants</th>"; 
+         result = result +"    <th>Shortlisted</th>"; 
+         result = result +"    <th>Rejected</th>"; 
+         result = result +"    <th>Interviews</th>"; 
+         result = result +"    <th>Offered</th>"; 
+         result = result +"    <th>Offer Accepted</th>"; 
+         result = result +"    <th>Offer Rejected</th>"; 
+         result = result +"    <th>Back Out</th>"; 
+         result = result +"  </tr>"; 
+         result = result +"</thead>";
+         result = result +"<tbody>"; 
+			 for(var i=0; i < json.length ; i++){
+				 var applicantSource = json[i];
+				 
+	   					
+				 result = result +"<tr>"; 
 				
-{
-	"type": "serial",
-	"categoryField": "category",
-	"marginBottom": 15,
-	"marginLeft": 15,
-	"marginRight": 15,
-	"marginTop": 15,
-	"colors": [],
-	"startDuration": 1,
-	"responsive": {
-		"enabled": true
-	},
-	"categoryAxis": {
-		"autoRotateAngle": 30,
-		"autoRotateCount": 0,
-		"gridPosition": "start",
-		"autoGridCount": false,
-		"axisColor": "#333",
-		"axisThickness": 0,
-		"gridColor": "#AAB3B3",
-		"gridThickness": 0,
-		"labelOffset": 6,
-		"minHorizontalGap": 0,
-		"minVerticalGap": 0,
-		"tickLength": 0,
-		"title": ""
-	},
-	"trendLines": [],
-	"graphs": [
-		{
-			"balloonText": "[[title]] of<br> [[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#90CAF9",
-			"id": "applicants",
-			"labelText": "[[value]]",
-			"legendValueText": "",
-			"lineColor": "#90CAF9",
-			"title": "Applicants",
-			"type": "column",
-			"urlField": "Rejectd",
-			"urlTarget": "Rejected",
-			"valueField": "column-2"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#F48FB1",
-			"id": "shortlisted",
-			"labelText": "[[value]]",
-			"lineColor": "#F48FB1",
-			"title": "Shortlisted",
-			"type": "column",
-			"valueField": "column-3"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#FFCC80",
-			"id": "interviews",
-			"labelText": "[[value]]",
-			"lineColor": "#FFCC80",
-			"title": "Interviews",
-			"type": "column",
-			"valueField": "column-4"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#B39DDB",
-			"id": "Offered",
-			"labelText": "[[value]]",
-			"lineColor": "#B39DDB",
-			"title": "Offered",
-			"type": "column",
-			"valueField": "column-5"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#81C784",
-			"id": "offerAccepted",
-			"labelText": "[[value]]",
-			"lineColor": "#81C784",
-			"title": "Offer Accepted",
-			"type": "column",
-			"valueField": "column-6"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#E57373",
-			"id": "backout",
-			"labelText": "[[value]]",
-			"lineColor": "#E57373",
-			"title": "Backout",
-			"type": "column",
-			"valueField": "column-7"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#FF8A65",
-			"id": "rejected",
-			"labelText": "[[value]]",
-			"lineColor": "#FF8A65",
-			"title": "Rejected",
-			"type": "column",
-			"valueField": "column-8"
-		}
-	],
-	"guides": [],
-	"valueAxes": [
-		{
-			"id": "ValueAxis-1",
-			"stackType": "regular",
-			"totalText": "",
-			"unit": "",
-			"autoGridCount": false,
-			"axisThickness": 0,
-			"gridColor": "#AAB3B3",
-			"gridThickness": 0,
-			"labelsEnabled": false,
-			"tickLength": 0,
-			"title": ""
-		}
-	],
-	"allLabels": [],
-	"balloon": {
-		"fixedPosition": false
-	},
-	"legend": {
-		"enabled": true,
-		"equalWidths": false,
-		"labelWidth": 0,
-		"marginLeft": 0,
-		"marginRight": 0,
-		"markerLabelGap": 10,
-		"markerSize": 10,
-		"position": "left"
-	},
-	"titles": [],
-	"dataProvider": [
-		{
-			"category": "Crowdsourcing",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Vendors",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Recruiter",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Employee Referral",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Internal DB",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		}
-	]
-}
-);
-		</script> -->
+				 result = result +"<td>"; 
+				 result = result +"<div class='tbldata-dotdot'>"+applicantSource.category+"</div>"; 
+				 result = result +"</td>"; 
+				
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.applicantsCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.shortlistedCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.rejectedCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.interviewsCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offeredCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offerAcceptedCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offerRejectedCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.backoutCount+"</div>"; 
+				 result = result +"</td>";
+				
+				
+				 result = result +"</tr>"; 
+			 }
+			 result = result +" </tbody>";
+             result = result +"</table>";
+             
+             $("#applicantSource").empty();
+             $("#applicantSource").append(result);
+            
+             
+ 		}
+ }
+ </script>
+ <script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
+ 
