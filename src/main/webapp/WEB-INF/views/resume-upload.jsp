@@ -24,6 +24,19 @@ body {
     input, select, textarea, label {
         font-family: Arial, Helvetica, sans-serif;
         }
+        .links {
+        	display: none;
+        }
+        .links li {
+    float: left;
+    list-style: none;
+    padding: 10px;
+    width: 33%;
+    color: #337ab7;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+}
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
     }
@@ -212,259 +225,32 @@ padding: 2px
 		</div>
 		<div class="clear"></div>
 	</header>
-<%-- <!-- 	<section> -->
-		<div class="browseOut">
-		<div class="clearfix mb">
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/candidatesList'/>">Candidate List</a> &raquo; Bulk Import </div>
-			</div>
-			<div class="browseProgress">
-            <div class="browseProgressInn">
-            <div class="labText" id='progressText'>Text here...</div>
-                <div class="progress progress-striped active">
-                    <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
-                </div>
-            </div>                
-            </div>
-			<div class="browse">
-				<h2>Candidate (Resume) Bulk Import</h2>
-				
-				<div class="browseScroll">
-					<div class="browseWrap">
-						<div class="browseInn">
-							<input type="file" class="btnHide" id='uploadFile' multiple="multiple"> <a
-								href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
-						</div>
-						<div class="filename" id='container'>Upload File</div>
-						<div class="clear"></div>
-<!-- 						<div class="addFilBtn"> -->
-<!-- 							<i class="fa fa-plus"></i> -->
-<!-- 						</div> -->
-					</div>
-				</div>
-
-			</div>
-			<div class="browseBtns">
-				<button id='upload1'>
-					<i class="fa fa-upload"></i> Upload
-				</button>
-				<button class="cleBtn" id='clear'>Clear</button>
-			</div>
-			<div class="clear"></div>
-		</div>
-		<div class="editor">
-			<span>
-<!-- 				<div class='copy btn' data-clipboard-target='#log'><i class="fa fa-copy"></i></div> -->
-				<h3>Import log</h3>
-				<div class="editText" id='log'></div>
-			</span>
-		</div>
-	</section> --%>
-<!-- 	<div class="browse"> -->
 		<h2><b>Candidate (Resume) Bulk Import</b></h2>
-<!-- 		<div style='clear:both;'></div> -->
-<!-- 	</div> -->
+
 <div id="uploader">
     <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+</div>
+<div class='links'>
+	<ul>
+		<li id='exportLog'>Download Upload Log</li>
+		<!-- <li id='exportFailed'>Download Failed Resumes</li>
+		<li id='exportDuplicate'>Download Duplicate Resumes</li> -->
+	</ul>
 </div>
 	<footer>
 		<div class="copyright">
 			&copy; 2017 SourceLead <sup>&reg;</sup> , All Rights Reserved
 		</div>
 	</footer>
-	<div style='display:none' id='browserBar'>
-	
-		<div class="browseWrap">
-			<div class="browseInn">
-				<input type="file" id='abc' class="btnHide" multiple="multiple">
-				<a href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
-			</div>
-			<div class="filename">Upload File</div>
-			<div class="clear"></div>
-			<div class="abcdef"><i class="fa fa-trash-o"></i></div>
-		</div>	
-	</div>
 </body>
 
 <script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
-var count = 1;
-	$(document).ready(function() {
-		$(".browseInn input:file").change(function() {
-			updateInputField($(this));
-		});
-		$(".addFilBtn").click(function() {
-			$(".browseScroll").append($("#browserBar").html().replace("abc", "uploadFile"+(count ++)).replace("abcdef", "removeFilBtn"));
-			$(".removeFilBtn").click(function() {
-				$(this).parent(".browseWrap").remove();
-			});
-			$(".browseInn input:file").change(function() {
-				updateInputField($(this));
-			});
-		});
-		$("#clear").click(function() {
-			count = 1;
-			$(".removeFilBtn").each(function(i) {  $(this).click(); });
-			$("input[type=file]").val('');
-			$('.filename').html("Choose File(s)");
-		});
-		$("#upload").click(function() {
-			var data1 = new FormData();
-			var j = 0;
-			var invalidFiles = [];
-			var k = 0;
-			var files1 = [];
-			$("input[type=file]").each(function(i) {
-				var files = document.getElementById($(this).attr('id')).files;
-				for(var i=0;i<files.length;i++) {
-					var validFlag = isValidFile(files[i].name);
-					if(!validFlag)
-						invalidFiles[k++] = files[i].name;
-					data1.append("inputFile"+(j), files[i]);
-					files1[j++] = files[i];
-				}
-			});
-			if(j > 0) {
-				for(var i=0;i<j;i++) {
-					document.getElementById('filesSelected').files[i]=files1[i];
-				}
-			}
-			if(invalidFiles.length > 0) {
-				var text = "<span class='c'>Unbale to process your request as you have selected unsupported formatted files</span><br/><br/>Unsupported Files:";
-				var rarflag = false;
-				for(var i=0;i<invalidFiles.length;i++) {
-					text += "<br/>"+invalidFiles[i];
-					if(invalidFiles[i].toLowerCase().endsWith(".rar"))
-						rarflag = true;
-				}
-				text += "<br/><br/><span class='a'>To upload candidates using Excel (.xls | .xlsx) file</span> ";
-				text += "<a href='uploadCandidateForm' target='_blank'>Click Here</a>";
-				if(rarflag)
-					text += "<br/><br/><span class='b'>Uploading candidates using rar files will be provided in next release.</span> ";
-				
-				$(".editText").html(text);
-				return;
-			}
-			/* if(j == 0) {
-				alert("Please select resume(s)");
-				return;
-			}
-			//var sourceleadUrl ='${sourceleadUrl}';
-			$.post("check-session", {}, function(data) {
-				if(data === "YES") {
-					uploadid = new Date().getTime();
-					getUploadStatus();
-					data1.append("uploadid", uploadid);
-					$(".browseProgress").show();
-					$("#progressBar").html('0%');
-					$(".progress div").css("width", "0%");
-					$(".editText").html("");
-					$.ajax({
-						  xhr: function() {
-						    var xhr = new window.XMLHttpRequest();
-							$("#progressText").html('Please wait while uploading files...');
-						    xhr.upload.addEventListener("progress", function(evt) {
-						      if (evt.lengthComputable) {
-						        var percentComplete = evt.loaded / evt.total;
-						        percentComplete = parseInt(percentComplete * 100);
-						        $("#progressBar").html(percentComplete+'%');
-						        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
-						        if (percentComplete === 100) {
-						        		$("#progressText").html('Please wait while parsing the uploaded files...');
-						        		$(".progress div").css("width",  "0%");
-						        		$("#progressBar").html('0%');
-						        }
 
-						      }
-						    }, false);
-
-						    return xhr; 
-// 						  },
-						  url: 'upload-resumes',
-						  type: "POST",
-						  processData: false,
-						  contentType: false,
-						  data: data1,
-						  success: function(result) {
-						    console.log(result);
-						  },
-						  error: function(request) {
-							  uploadid = 0;
-							  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
-						  }
-						});
-				} else {
-					alert("No Session found");
-					location.href='/sourcelead/login';
-				}
-			}); */
-			
-		});
-		
-	});
-	
-	function updateInputField(ele) {
-		var count = document.getElementById($(ele).attr('id')).files.length;
-		var fileName = $(ele).val();
-		if(count > 1)
-			$(ele).parent().parent().find('.filename').html(count+" file(s) selected | "+ (fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1)));
-		else 
- 			$(ele).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
-	
-	}
-
-	function isValidFile(fileName) {
-		var fileName = fileName.toLowerCase();
-		if(fileName.endsWith(".doc") 
-			|| fileName.endsWith(".docx") 
-			|| fileName.endsWith(".pdf") 
-			|| fileName.endsWith(".odt")
-			|| fileName.endsWith(".zip"))
-			return true;
-		return false;
-	}
-	
 	var uploadid = 0;
-	function getUploadStatus() {
-		if(uploadid > 0) {
-			$.post("bulk-resume-import-log", {uploadid: uploadid}, function(data) {
-				$(".editText").append(data);
-				if(data.indexOf('Completed!') === -1) {
-					window.setTimeout('getUploadStatus()', 1000);
-					window.setTimeout('getUploadFileStatus()', 1000);
-				} else {
-					$(".browseProgress").hide();
-					$("#clear").click();
-				}
-			});
-		}
-	}
 	
-	function getUploadFileStatus() {
-		if(uploadid == 0)
-			return;
-		$.post("bulk-resume-import-counts", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf('Completed!') === -1) {
-				var i = data.split(" ")[0];
-				var count = data.split(" of ")[1].split(" ")[0];
-				percentComplete = parseInt(i)/parseInt(count);
-				$(".progress div").css("width", parseInt(percentComplete*100) + "%");
-				$("#progressBar").html(parseInt(percentComplete*100)+'%');
-				$("#progressText").html(data);
-			} else if(data !== "")
-				$("#progressText").html(data);
-		});
-	}
-	
-	function exportLog() {
-		if(uploadid == 0)
-			return;
-		$.post("bulk-resume-import-export-log", {uploadid: uploadid}, function(data) {
-			if(data !== "")
-				$("#progressText").html(data);
-		});
-	}
 </script>
 <input type='file' style='display:none' multiple="multiple" id='filesSelected'/>
 <script type="text/javascript" src="/resources/pluploadjs/plupload.full.min.js"></script>
@@ -473,66 +259,9 @@ var count = 1;
 <link type="text/css" rel="stylesheet" href="/resources/pluploadjs/jquery.plupload.queue.css" media="screen" />
 
 <script type="text/javascript">
-// Custom example logic
-
-/* var uploader = new plupload.Uploader({
-	runtimes : 'html5,flash,silverlight,html4',
-	browse_button : 'uploadFile', // you can pass an id...
-	container: document.getElementById('container'), // ... or DOM Element itself
-	
-	url : 'upload-resumes',
-	flash_swf_url : '/resources/pluploadjs/Moxie.swf',
-	silverlight_xap_url : '/resources/pluploadjs/Moxie.xap',
-	chunk_size: '1mb',
-	filters : {
-		max_file_size : '1000mb',
-		mime_types: [
-			{title : "Doc files", extensions : "doc,docx,pdf"},
-			{title : "Zip files", extensions : "zip"}
-		]
-	},
-
-	init: {
-		PostInit: function() {
-			document.getElementById('log').innerHTML = '';
-
-			document.getElementById('upload1').onclick = function() {
-				$.post("check-session", {}, function(data) {
-					if(data === "YES") {
-						uploadid = new Date().getTime();
-						uploader.settings.url = 'upload-resumes?uploadid='+uploadid;
-						uploader.start();
-						getUploadStatus();
-					} else {
-						alert("No Session found");
-						location.href='/login';
-					}
-				});
-				return false;
-			};
-		},
-
-		 FilesAdded: function(up, files) {
-			plupload.each(files, function(file) {
-				document.getElementById('container1').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
-			});
-		},
-
-		UploadProgress: function(up, file) {
-			document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
-		}, 
-
-		Error: function(up, err) {
-			document.getElementById('log').appendChild(document.createTextNode("\nError #" + err.code + ": " + err.message));
-		}
-	}
-});
-
-uploader.init(); */
-var uploader1;
 $(function() {
     // Setup html5 version
-    uploader1 =  $("#uploader").pluploadQueue({
+    $("#uploader").pluploadQueue({
         // General settings
         
         runtimes : 'html5,flash,silverlight,html4',
@@ -575,7 +304,6 @@ $(function() {
     						uploadid = new Date().getTime();
     						up.settings.url = 'upload-resumes?uploadid='+uploadid;
     						up.start();
-    						getUploadStatus();
     					} else {
     						alert("No Session found");
     						location.href='/login';
@@ -583,12 +311,50 @@ $(function() {
     				});
     				return false;
     			});
-    		}
+    		},
+    		
+    		UploadComplete: function(up, files) {
+                $(".links").show();
+            },
         }
     });
     
     $(".plupload_header").hide();
 });
 
+$(function() {
+	$("#exportLog").click(function() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-export-log", {uploadid: uploadid}, function(data) {
+			if(data !== "")
+				location.href = '/app/downloadFile?file='+data;
+			else
+				alert("Unable to locate logs for this upload");
+		});
+	});
+	
+	$("#exportFailed").click(function() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
+			if(data !== "")
+				location.href = '/app/downloadFile?file='+data;
+			else
+				alert("Unable to locate logs for this upload");
+		});
+	});
+	
+	$("#exportDuplicate").click(function() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
+			if(data !== "")
+				location.href = '/app/downloadFile?file='+data;
+			else
+				alert("Unable to locate logs for this upload");
+		});
+	});
+});
 </script>
 </html>
