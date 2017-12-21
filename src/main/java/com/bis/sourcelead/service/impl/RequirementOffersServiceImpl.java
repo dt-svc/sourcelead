@@ -1282,7 +1282,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			if(flag == true){
 				offer.setVendorMsaCreated(flag);
 			}
-			offer.setOrgRelationId(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
+			if(offer.getSubmissionId().getSourceSubmission() != null){
+				if(offer.getSubmissionId().getSourceSubmission().getRequirement() != null){
+					if(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId() != null)
+					offer.setOrgRelationId(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
+				}
+			}
 		}
 		return offerList;
 	}
