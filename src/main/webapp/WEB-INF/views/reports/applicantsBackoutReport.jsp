@@ -47,14 +47,14 @@ $(window).load(function() {
         </div>
         
         <div class="col-md-2 dropdown-select positionRelative">
-           <select class="form-control" id="custom-dates" name="dateSelection" id="applicantBackoutdateSelection">
+            <select class="form-control" name="dateSelection" id="dateSelection">
             <option value=''>Select Date</option>
-            <option value='Last 7 days' selected>Last 7 days</option>
-            <option value='Last 15 days'>Last 15 days</option>
-            <option value='1 month'>1 month</option>
-            <option value='3 months'>3 months</option>
+            <option value='Last_7_days' selected>Last 7 days</option>
+            <option value='Last_15_days'>Last 15 days</option>
+            <option value='1_month'>1 month</option>
+            <option value='3_months'>3 months</option>
             <option value='YTD'>YTD</option>
-            <option value='Last Year'>Last Year</option>
+            <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
           <!-- Top Leave Takers Custom Date -->
@@ -160,10 +160,11 @@ $(window).load(function() {
 	  if(jobIds == null){
 		  jobIds = '';
 	  }
-	  var dateSelection = $("#applicantBackoutdateSelection").val(); 
+	  var dateSelection = $("#dateSelection").val(); 
+	  alert(dateSelection);
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&applicantBackoutdateSelection="+dateSelection,
+		   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
 		    success: function(json) {
         		 loadApplicantSourceChart(json);
 		        }

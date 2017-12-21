@@ -4,7 +4,7 @@ public class ApplicantsBackoutDTO {
 
 	private String counts;
 	
-private Integer currentCompany;
+    private Integer currentCompany;
 	
 	private Integer compensation;
 	
