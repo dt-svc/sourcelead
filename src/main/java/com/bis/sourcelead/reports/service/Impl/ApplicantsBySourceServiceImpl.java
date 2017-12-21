@@ -17,8 +17,8 @@ public class ApplicantsBySourceServiceImpl implements ApplicantsBySourceService{
 	ApplicantsBySourceDao applicantsBySourceDao;
 
 	@Override
-	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date startDate, Date endDate,Long orgLocationId) {
-		return applicantsBySourceDao.getCrowdsourcingApplicantsCount(jobIds, startDate, endDate,orgLocationId);
+	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date[] searchDates) {
+		return applicantsBySourceDao.getCrowdsourcingApplicantsCount(jobIds, searchDates);
 	}
 
 	@Override

@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -1391,7 +1392,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		HashSet<Long> templist = null;
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId,loginOrgLocation.getId());
 			    		ProjectClients pc = null;
+			    		Boolean isLevel2ManagerExists = false;
+			    		Long level1HierarchyId = null;
+			    		Long level2HierarchyId = null;
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+				    			 if(prHierarchy.getLevel() == 1){
+						    		 level1HierarchyId = prHierarchy.getId();
+						    	 }else {
+						    		 level2HierarchyId = prHierarchy.getId();
+						    	 }
 			    			     pc = prHierarchy.getProjectClientsId();
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
@@ -1402,6 +1411,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								     }
 								     if(prHierarchy.getLevel() == 2 &&  StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
 								    	 if(!"".equalsIgnoreCase(projectDTO.getLevel2Manager())){
+								    		 isLevel2ManagerExists = true;
 								    		 fieldValuelong = Long.valueOf(projectDTO.getLevel2Manager());
 								    	 }
 								    	 
@@ -1476,7 +1486,74 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    			
 			    		}
-			    		
+			    		 /**
+			    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
+			    		  */
+			    		 LinkedList<SubmissionApproverHierarchy> saHierarchyList = new LinkedList<SubmissionApproverHierarchy>();
+			    		 if(isLevel2ManagerExists){
+			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level1HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 SubmissionApproverHierarchy subSah =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(level2HierarchyId, sah.getSubmissionId().getId());
+				    	    		 if(subSah != null && (StringUtils.isEmpty(subSah.getStatus())  || (StringUtils.isNotEmpty(subSah.getStatus()) && subSah.getStatus().equalsIgnoreCase("0")))){
+				    	    			    subSah.setSubmissionStatus(sah.getSubmissionStatus());
+				    	    			    subSah.setBillingStatus(sah.getBillingStatus());
+				    	    			    subSah.setInvoiceStatus(sah.getInvoiceStatus());
+				    	    			    subSah.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											subSah.setCreatedDate(commonUtil.currentDate());
+											subSah.setCreatedBy(user.getUserCode());
+											subSah.setUpdatedDate(commonUtil.currentDate());
+											subSah.setUpdatedBy(user.getUserCode());
+											subSah.setRejectedReason(sah.getRejectedReason());
+											subSah.setActionPerformedBy(sah.getActionPerformedBy());
+											subSah.setReopenedUser(sah.getReopenedUser());
+											subSah.setReopenReason(sah.getReopenReason());
+											subSah.setReopenRejectedReason(sah.getReopenRejectedReason());
+											subSah.setStatus("1");
+											saHierarchyList.add(subSah);
+				    	    		 }
+				    	    		 else{
+				    	    			    SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+				    	    			    ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+				    	    			    pah.setId(level2HierarchyId);
+											saHierarchy.setHeirarchyId(pah);
+											saHierarchy.setSubmissionId(sah.getSubmissionId());
+											saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+											saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+											saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+											saHierarchy.setCreatedDate(commonUtil.currentDate());
+											saHierarchy.setCreatedBy(user.getUserCode());
+											saHierarchy.setUpdatedDate(commonUtil.currentDate());
+											saHierarchy.setBillingStatus(sah.getBillingStatus());
+											saHierarchy.setInvoiceStatus(sah.getInvoiceStatus());
+											saHierarchy.setRejectedReason(sah.getRejectedReason());
+											saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+											saHierarchy.setReopenedUser(sah.getReopenedUser());
+											saHierarchy.setReopenReason(sah.getReopenReason());
+											saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+											saHierarchy.setUpdatedBy(user.getUserCode());
+											saHierarchy.setStatus("1");
+											saHierarchyList.add(saHierarchy);
+				    	    		 }
+				    	    	 }
+				    	     }
+						 }
+			    		 else{
+			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 sah.setStatus("0");
+									 saHierarchyList.add(sah);
+				    	    	 }
+				    	     }
+			    		 }
+			    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
+			    			 for(SubmissionApproverHierarchy sah : saHierarchyList){
+			    				 submissionApproverHierarchyService.updateSubmissionApproverHierarchy(sah);
+			    			 }
+			    			 
+			    		 }
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
@@ -1511,7 +1588,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 									  projectMember.setMemberHistoryList(memberHistoryList);
 								  }
 								  projectMembersService.saveProjectMember(projectMember);
-			    	    		/* if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    		/*if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
 			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
 			    	    		 }*/
 			    	    	 }
@@ -1519,6 +1596,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	}
 			    }
 		 
+			   
 				/*
 	    	     * Termination Of ProjectMember whose assignDate is greaterthan project endDate /
 	    	     *   in-activate the submissions whose startDate is greaterthan project endDate

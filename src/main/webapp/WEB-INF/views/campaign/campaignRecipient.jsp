@@ -1354,8 +1354,8 @@ function validateCampaignListName(){
 
  <script>
  function msgFadein() {
-	$("#selector1").fadeIn(200);
-    $('#selector1').delay(2000).fadeOut('slow');
+	$("#selector1").fadeIn(300);
+    $('#selector1').delay(3000).fadeOut('slow');
 }
 </script>
 <!--   Popup Code  -->   
