@@ -83,10 +83,10 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		Map<String, Integer> spocCount = new HashMap<>();
 		
 		if (isadmin) {
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
 			activespocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
+			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
 			activespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		
@@ -96,10 +96,10 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		
 		List<Long> inactivespocList = null;
 		if (isadmin) {
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '1' ");
+			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.status <> '1' ");
 			inactivespocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '1' ");
+			Query query= session.createQuery("select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '1' ");
 			inactivespocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		
