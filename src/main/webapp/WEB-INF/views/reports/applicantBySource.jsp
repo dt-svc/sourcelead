@@ -29,8 +29,8 @@ $(document).ready(function(){
     	<div class="ReqRepHead clearfix">
         
         <div class="col-md-2">
-        <a href="applicant-source.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="applicantsource-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+        <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
@@ -73,6 +73,14 @@ $(document).ready(function(){
     	 	<div id="applicantSource" class="amchartAnchor-Hide" style="height: 350px; width: 100%;"></div>
     	 	</div>
     	 	<!-- Applicant source Graph December 2017 -->
+    	 	
+    	 	
+ 	<!-- <div class="clearfix dashboard-widget mts col-md-12 mt">
+		<div class="clearfix">
+		  <div id="applicantSourceListView" class="datatable_filter"></div>
+		</div>
+    </div> -->
+    
     	<div class="clearfix"></div>
     </div>
   </section>
@@ -117,6 +125,16 @@ $(document).ready(function(){
 			        	
 			        		 loadApplicantSourceChart(chartData);
 			 	   		}
+			        	
+			        	 var listView = document.getElementById("listView");
+			        	 listView.addEventListener("click", function() {
+							 getListView(json);
+						  });
+			        	 
+			        	 var graphicView = document.getElementById("graphicView");
+			        	 graphicView.addEventListener("click", function() {
+			        		 loadApplicantSourceChart(chartData);
+						  });
 		        	
 		        },
 		        error: function(e){
@@ -127,6 +145,9 @@ $(document).ready(function(){
 
  <script>
  function loadApplicantSourceChart(result){
+	 
+	 $("#applicantSource").empty();
+     
 	 var chart = AmCharts.makeChart("applicantSource", {
 		 
 			"type": "serial",
@@ -289,211 +310,80 @@ $(document).ready(function(){
  }
  </script> 
 
- 
- <!-- <script type="text/javascript">
- 
- AmCharts.makeChart("applicantSource",
+ <script>
+ function getListView(json){
+	 if(json.length > 0)	
+ 		{
+		 var result = "";
+		 result = result +"<div class='clearfix tableStyles mt'>"; 
+		 result = result +"<table class='table table-bordered mt10'>"; 
+         result = result +"<thead>"; 
+         result = result +"  <tr>"; 
+         result = result +"    <th>Source</th>";
+         result = result +"    <th>Applicants</th>"; 
+         result = result +"    <th>Shortlisted</th>"; 
+         result = result +"    <th>Rejected</th>"; 
+         result = result +"    <th>Interviews</th>"; 
+         result = result +"    <th>Offered</th>"; 
+         result = result +"    <th>Offer Accepted</th>"; 
+         result = result +"    <th>Offer Rejected</th>"; 
+         result = result +"    <th>Back Out</th>"; 
+         result = result +"  </tr>"; 
+         result = result +"</thead>";
+         result = result +"<tbody>"; 
+			 for(var i=0; i < json.length ; i++){
+				 var applicantSource = json[i];
+				 
+	   					
+				 result = result +"<tr>"; 
 				
-{
-	"type": "serial",
-	"categoryField": "category",
-	"marginBottom": 15,
-	"marginLeft": 15,
-	"marginRight": 15,
-	"marginTop": 15,
-	"colors": [],
-	"startDuration": 1,
-	"responsive": {
-		"enabled": true
-	},
-	"categoryAxis": {
-		"autoRotateAngle": 30,
-		"autoRotateCount": 0,
-		"gridPosition": "start",
-		"autoGridCount": false,
-		"axisColor": "#333",
-		"axisThickness": 0,
-		"gridColor": "#AAB3B3",
-		"gridThickness": 0,
-		"labelOffset": 6,
-		"minHorizontalGap": 0,
-		"minVerticalGap": 0,
-		"tickLength": 0,
-		"title": ""
-	},
-	"trendLines": [],
-	"graphs": [
-		{
-			"balloonText": "[[title]] of<br> [[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#90CAF9",
-			"id": "applicants",
-			"labelText": "[[value]]",
-			"legendValueText": "",
-			"lineColor": "#90CAF9",
-			"title": "Applicants",
-			"type": "column",
-			"urlField": "Rejectd",
-			"urlTarget": "Rejected",
-			"valueField": "column-2"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#F48FB1",
-			"id": "shortlisted",
-			"labelText": "[[value]]",
-			"lineColor": "#F48FB1",
-			"title": "Shortlisted",
-			"type": "column",
-			"valueField": "column-3"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#FFCC80",
-			"id": "interviews",
-			"labelText": "[[value]]",
-			"lineColor": "#FFCC80",
-			"title": "Interviews",
-			"type": "column",
-			"valueField": "column-4"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#B39DDB",
-			"id": "Offered",
-			"labelText": "[[value]]",
-			"lineColor": "#B39DDB",
-			"title": "Offered",
-			"type": "column",
-			"valueField": "column-5"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#81C784",
-			"id": "offerAccepted",
-			"labelText": "[[value]]",
-			"lineColor": "#81C784",
-			"title": "Offer Accepted",
-			"type": "column",
-			"valueField": "column-6"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#E57373",
-			"id": "backout",
-			"labelText": "[[value]]",
-			"lineColor": "#E57373",
-			"title": "Backout",
-			"type": "column",
-			"valueField": "column-7"
-		},
-		{
-			"balloonText": "[[title]] of<br>[[category]]:[[value]]",
-			"columnWidth": 0.3,
-			"fillAlphas": 1,
-			"fillColors": "#FF8A65",
-			"id": "rejected",
-			"labelText": "[[value]]",
-			"lineColor": "#FF8A65",
-			"title": "Rejected",
-			"type": "column",
-			"valueField": "column-8"
-		}
-	],
-	"guides": [],
-	"valueAxes": [
-		{
-			"id": "ValueAxis-1",
-			"stackType": "regular",
-			"totalText": "",
-			"unit": "",
-			"autoGridCount": false,
-			"axisThickness": 0,
-			"gridColor": "#AAB3B3",
-			"gridThickness": 0,
-			"labelsEnabled": false,
-			"tickLength": 0,
-			"title": ""
-		}
-	],
-	"allLabels": [],
-	"balloon": {
-		"fixedPosition": false
-	},
-	"legend": {
-		"enabled": true,
-		"equalWidths": false,
-		"labelWidth": 0,
-		"marginLeft": 0,
-		"marginRight": 0,
-		"markerLabelGap": 10,
-		"markerSize": 10,
-		"position": "left"
-	},
-	"titles": [],
-	"dataProvider": [
-		{
-			"category": "Crowdsourcing",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Vendors",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Recruiter",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Employee Referral",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		},
-		{
-			"category": "Internal DB",
-			"column-2": "50",
-			"column-3": "30",
-			"column-4": "20",
-			"column-5": "15",
-			"column-6": "10",
-			"column-7": "5",
-			"column-8": "20"
-		}
-	]
-}
-);
-		</script> -->
+				 result = result +"<td>"; 
+				 result = result +"<div class='tbldata-dotdot'>"+applicantSource.category+"</div>"; 
+				 result = result +"</td>"; 
+				
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.applicantsCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.shortlistedCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.rejectedCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.interviewsCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offeredCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offerAcceptedCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.offerRejectedCount+"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.backoutCount+"</div>"; 
+				 result = result +"</td>";
+				
+				
+				 result = result +"</tr>"; 
+			 }
+			 result = result +" </tbody>";
+             result = result +"</table>";
+             
+             $("#applicantSource").empty();
+             $("#applicantSource").append(result);
+            
+             
+ 		}
+ }
+ </script>
+ 
