@@ -806,7 +806,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    if("OFFERACCEPTED".equalsIgnoreCase(offerStatus)){
 		    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 		    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
-			    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+			    		
+	    		       RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+		    		   
+		    		   if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 			    		}else{
 			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
@@ -814,6 +818,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
 						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+						
+						 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
 				  }
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
@@ -874,7 +880,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    }else if("OFFERREJECTED".equalsIgnoreCase(offerStatus)){
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
-		    		if(requirementSubmission.getSourceSubmission() == null){
+	    		    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			        requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+	    		    
+	    		    if(requirementSubmission.getSourceSubmission() == null){
 		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
 		    		}else{
 		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
@@ -882,6 +891,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
 			  }
 	    	
 	    	
