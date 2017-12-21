@@ -1,6 +1,7 @@
 package com.bis.sourcelead.reports.dao.Impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 
@@ -128,6 +131,44 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		
 		if (clients.size() > 0)
 			return clients;
+		else
+			return null;
+	}
+
+	@Override
+	@Transactional
+	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,Long orgRelationId,String userRoleName,Date startDate,Date endDate)
+	{
+		String userRoleCondition = "";
+		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+			userRoleCondition = "";
+		}else{
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts>  ContractsList = null;
+			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
+					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
+					+ "left join fetch contracts.requirementSubmission.candidateResumes "
+					+ "left join fetch contracts.ownerUserId "
+					+ "left join fetch contracts.orgLocationId "
+					+ "left join fetch contracts.orgRelations "
+					+ "left join fetch contracts.parentContractId "
+					+ "left join fetch contracts.contractOrgLocationId "
+					+ "left join fetch contracts.contactUser "
+					+ "left join fetch contracts.approverUser "
+					+ "left join fetch contracts.candidate "
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like 'Client' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition;
+			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			}else{
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setCacheable(true).list();
+			}
+		
+		if (ContractsList.size() > 0)
+			return ContractsList;
 		else
 			return null;
 	}
