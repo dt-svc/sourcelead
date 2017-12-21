@@ -66,6 +66,9 @@ public class FileController {
 
 	@Autowired
 	private CandidateResumesService candidateResumeService;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 
 	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
 	@ResponseBody
@@ -336,7 +339,7 @@ public class FileController {
 		PrintWriter out = null;
 		File file = null;
 		try {
-			file = new File(staticPath, "temp/log-" + uploadid + ".zip");
+			file = new File(staticPath, "temp/log-" + uploadid + ".html");
 			out = new PrintWriter(new FileOutputStream(file), true);
 			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
 			for (CandidateImportLog c : list) {
@@ -357,7 +360,7 @@ public class FileController {
 		PrintWriter out = null;
 		File file = null;
 		try {
-			file = new File(staticPath, "temp/failed-" + uploadid + ".zip");
+			file = new File(staticPath, "temp/failed-" + uploadid + ".html");
 			
 			out = new PrintWriter(new FileOutputStream(file), true);
 			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
@@ -379,7 +382,7 @@ public class FileController {
 		PrintWriter out = null;
 		File file = null;
 		try {
-			file = new File(staticPath, "temp/duplicate-" + uploadid + ".zip");
+			file = new File(staticPath, "temp/duplicate-" + uploadid + ".html");
 			out = new PrintWriter(new FileOutputStream(file), true);
 			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
 			for (CandidateImportLog c : list) {
@@ -404,7 +407,7 @@ public class FileController {
 				+ "</span><br/>File Name: " + fileInfo.getFileName() + "<br/>Name: " + resume.getName() + "<br/>Email: "
 				+ resume.getEmail());
 		saveLogMessage(uploadid,
-				"<br/><a href='" + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>");
+				"<br/><a href='"+ (sourceleadUrl.replace("/app", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>");
 		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " processed...");
 	}
 	

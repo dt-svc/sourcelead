@@ -328,7 +328,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-log", {uploadid: uploadid}, function(data) {
 			if(data !== "")
-				location.href = '/app/downloadFile?file='+data;
+				location.href = '/app/downloadFile.html?file='+data;
 			else
 				alert("Unable to locate logs for this upload");
 		});
@@ -339,7 +339,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
 			if(data !== "")
-				location.href = '/app/downloadFile?file='+data;
+				location.href = '/app/downloadFile.html?file='+data;
 			else
 				alert("Unable to locate logs for this upload");
 		});
@@ -350,7 +350,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
 			if(data !== "")
-				location.href = '/app/downloadFile?file='+data;
+				location.href = '/app/downloadFile.html?file='+data;
 			else
 				alert("Unable to locate logs for this upload");
 		});
