@@ -22,14 +22,14 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnSenderName" name="cpnSenderName" value="${sender.fromName}" data-validation="required validate_length length1-100" field-name="Name">
+                	<input type="text" class="form-control" id="cpnSenderName" name="cpnSenderName" value="${sender.fromName}" data-validation="required validate_length length1-100 validate_Space validate_AlphaNumber" field-name="Name">
 				<input type="hidden" value="${sender.id}" name="senderId" id="senderId" >
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfixclearfix" id="fromMailDiv">
 				<label class="col-md-3 padding_left">From Mail<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
-                	<input type="text" class="form-control" id="cpnSenderFromMail"name="cpnSenderFromMail" value="${sender.fromMail}" data-validation="required validate_length length5-100 validate_email" field-name="From Mail" onblur="validateFromMail('from',${sender.id});">
+                	<input type="text" class="form-control" id="cpnSenderFromMail"name="cpnSenderFromMail" value="${sender.fromMail}"   data-validation="required validate_length length5-100 validate_email" onblur="validateFromMail('from',${sender.id});" field-name="From Mail">
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix" id="replyMailDiv">
@@ -42,7 +42,7 @@
 				<label class="col-md-3 padding_left">Nickname<span
 					class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9 padding_right">
-					<input type="text" class="form-control" id="cpnNickName" name="cpnNickName" value="${sender.nickName}" data-validation="required validate_length length1-100" field-name="Nick Name" onblur="validateNickName(${sender.id});">
+					<input type="text" class="form-control" field-name="Nick Name" id="cpnNickName" name="cpnNickName" value="${sender.nickName}"   data-validation="required validate_length length1-100 validate_Space validate_AlphaNumber">
 				</div>
 			</div>		
 		</div>
@@ -67,8 +67,8 @@
 		  
  <script>
  function msgFadein() {
-	$("#selector1").fadeIn(200);
-    $('#selector1').delay(2000).fadeOut('slow');
+	$("#selector1").fadeIn(300);
+    $('#selector1').delay(3000).fadeOut('slow');
 }
 </script>
 
