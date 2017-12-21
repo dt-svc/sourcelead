@@ -26,10 +26,83 @@
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
 
+
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  </script>
+
+ <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','/resources/images/office-image.jpg');
+	}
+</script>
+
+<script type="text/javascript">
+$(function(){
+  $('.crsl-items').carousel({
+    visible: 3,
+    itemMinWidth: 180,
+    itemEqualHeight: 370,
+    itemMargin: 9,
+  });
+  
+  $("a[href=#]").on('click', function(e) {
+    e.preventDefault();
+  });
+  
+});
+</script>
+
 <div class="wraper"> 
 	<section class="comLogBg">
 		<section class="comLogInn">
 			<div class="comLogHead">
+			
+			<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+		<div class="offOrg offOrgCompanyOnboard ">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+			                       <c:if test="${!empty links.orgLocations.org.fileContentType}">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                   </c:if>
+				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
+				                     <img src="/resources/images/office-image.jpg">
+				                   </c:if>
+				                     </div>
+				                   </div>
+				                   <div class="pull-left mt5">
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	            </div>
+          </c:if>
+          
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
@@ -74,7 +147,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<label class="input-group-btn"> 
 									<b class="btn btn-primary" onchange="getBusinessLicense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBusinessLicenseBtn" class="upload"> </b>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload Resume ..." field-name="Business License"
+									<input type="text" class="form-control" readonly id="orglocbusinessLicense"  name="orglocbusinessLicense" placeholder="Upload File ..." field-name="Business License"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -103,7 +176,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getBankCheque();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBankChequeBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload Resume ..." field-name="Bank Cheque"
+									<input type="text" class="form-control" readonly id="orglocbankCheque" name="orglocbankCheque" placeholder="Upload File ..." field-name="Bank Cheque"
 										data-validation="required validatedoc" >
 								</div>
 						</c:if>
@@ -134,7 +207,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload Resume ..." field-name="Registration or Incorporation of recording"
+									<input type="text" class="form-control" readonly id="orglocregistrationDocument" name="orglocregistrationDocument" placeholder="Upload File ..." field-name="Registration or Incorporation of recording"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -169,7 +242,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getAnnulBusinessLincense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadAnnualBusinessLicenseBtn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload Resume ..." field-name="Annual Report Business License"
+									<input type="text" class="form-control" readonly id="orglocannualBusinessLicense" name="orglocannualBusinessLicense" placeholder="Upload File ..." field-name="Annual Report Business License"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>
@@ -200,7 +273,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getW9Doc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadW9Btn" class="upload"> </span>
 									</label> 
-									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload Resume ..." field-name="W-9,W-8 Ben-E"
+									<input type="text" class="form-control" readonly id="orglocw9Document" name="orglocw9Document" placeholder="Upload File ..." field-name="W-9,W-8 Ben-E"
 										data-validation="required validatedoc">
 								</div>
 							</c:if>	
@@ -374,6 +447,17 @@ function cancelPopUp(){
 }
 </script>
 
+<script>
+  $(document).ready(function(){
+  	  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  });
+</script>
 
 
 <script>

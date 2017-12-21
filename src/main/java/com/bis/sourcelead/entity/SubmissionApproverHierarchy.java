@@ -28,7 +28,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 
 @Entity
-@Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
+@Table(name = "SUBMISSION_APPROVER_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
 	
@@ -40,7 +40,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
 	

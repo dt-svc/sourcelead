@@ -247,6 +247,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
+					role.setUserCode(role.getUser().getUserCode());
 					//role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
@@ -539,11 +540,11 @@ public class UsersListRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/userSummary/{userId}", method = RequestMethod.GET)
-	public @ResponseBody void userSummary(@PathVariable Long userId, HttpServletRequest request,
+	@RequestMapping(value = "/userSummary/{userCode}", method = RequestMethod.GET)
+	public @ResponseBody void userSummary(@PathVariable String userCode, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userId=").append(userId).toString());
+		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
 

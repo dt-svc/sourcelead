@@ -405,8 +405,8 @@
 
 
 <!-- 
-<script src="resources/js/editor.js"></script>
-    <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+    <link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -415,7 +415,7 @@
 -->
 
 
-<!-- <script src="resources/js/summernote.js"></script>
+<!-- <script src="/resources/js/summernote.js"></script>
 <script>
 	$('#txtEditor').summernote({
   toolbar: [

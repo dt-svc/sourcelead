@@ -5,7 +5,6 @@
 
 <div class="timesheetNewHead">
        <div class="timeNewSe">
-	    <%-- <input type="hidden"  name="projectMembersList" value="${timesheetEntryDetailsDTO.projectMembersList}"/> --%>
 		<select id='projectMemberId' name='projectMemberId' class='form-control chosen-select' onChange='timesheetEntriesDivByProjectMemberId()'>
 			<c:forEach var="pm" items="${timesheetEntryDetailsDTO.projectMembersList}">
 			    <option ${pm.id == timesheetEntryDetailsDTO.projectMemberId ? "selected='selected'":"" } value="${pm.id}">${pm.projectName}</option>

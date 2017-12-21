@@ -448,8 +448,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+  "      (  projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
 					+ "                             ("
-					+ "                                  (pah.level = '2' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
-					+ "                               OR (pah.level = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
+					+ "                                  (pah.level = '2' and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
+					+ "                               OR (pah.level = '1'  and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
@@ -460,8 +460,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+  "      (  pm.projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
 					+ "                             ("
-					+ "                                  (pah.level = '2' and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
-					+ "                               OR (pah.level = '1' and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
+					+ "                                  (pah.level = '2'  and pah.status = '1'  and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
+					+ "                               OR (pah.level = '1'  and pah.status = '1'  and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
 					 + "       OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id)"
@@ -602,6 +602,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		 searchQuery.append(" and (candidate.firstName like '%" + searchValue + "%' ")
 					.append("OR candidate.lastName like '%" + searchValue + "%' ")
+					.append("OR (concat(candidate.firstName,' ',candidate.lastName) like '%" + searchValue + "%')")
+					.append("OR candidate.email like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
 		 			.append("OR projects.invoiceFrequency like '%" + searchValue + "%' )");
@@ -612,6 +614,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		searchCountQuery.append(" and (pm.projectMemberCandidteId.firstName like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "%' ")
+						.append("OR (concat(pm.projectMemberCandidteId.firstName,' ',pm.projectMemberCandidteId.lastName) like '%" + searchValue.trim() + "%')")
+						.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 						.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
 			 			.append("OR pm.projects.invoiceFrequency like '%" + searchValue + "%' )");
@@ -1262,7 +1266,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
 //	        List<ProjectMembers> projectsMembersList = null;
 	        String[] tokens = status.split(",");
-	        String [] roleId = roleIds.split(",");
+	        String [] roleId = null;
 	        String subQuery2 = "";
 	     
 	        if (Arrays.asList(tokens).contains("Active")) {
@@ -1282,8 +1286,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			} else if (subQuery2 != null && !"".equals(subQuery2)) {
 				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
-	        
-	        if (roleId[0] != null && roleId[0].length() > 0) {
+	 
+	        if(StringUtils.isNotBlank(roleIds)) {
+				  roleId = roleIds.split(",");
+		  }
+	      
+	        if ( roleId != null && roleId[0] != null && roleId[0].length() > 0) {
 	        	for (String roleid : roleId) {
 	        		String subquery3 = "and user.id IN( select ur.user.id from UserRole ur where ur.roles.id = "+roleid+" )";
 	        		 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
@@ -1428,6 +1436,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception {
+
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> pmList = null;
+		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
+        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+ 					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+ 					+ "where pm.projectClientsId = :projectClientsId  and pm.status ='1'");
+        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        	 projectsMembersList.addAll(pmList);
+	      
+	        return projectsMembersList;
+	
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId, Long projectClientsId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projectClientsId.id = :projectClientsId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectClientsId", projectClientsId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
 	
 	
 }

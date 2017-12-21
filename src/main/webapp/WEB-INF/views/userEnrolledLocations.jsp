@@ -3,10 +3,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-fun.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
+<!-- <script src="/resources/js/jquery-1.11.1.min.js"></script> -->
+<!-- <script src="/resources/js/jquery-ui.js"></script> -->
+<!-- <script src="/resources/js/jquery-fun.js"></script> -->
+<!-- <script src="/resources/js/jquery.timepicker.js"></script> -->
 
 
 
@@ -19,35 +19,29 @@
 	<div class="orgInn">
 	<div id="whiteListerrDiv" class="orgErrorMes"></div>
 	<c:forEach var="userRole" items="${roleList}">
+	<a onclick="selectLoc(${userRole.id});">
 	   <input type="hidden" id="isTwoStepEnabled${userRole.id}" name="isTwoStepEnabled${userRole.id}" value="${userRole.orgLocations.loginSecurity}"/>
 		<div class="orgCta clearfix">
 		<input type="hidden" value="${userRole.user.loginSecurity}" id="userLoginSecurity"/>
-		<c:if test="${userRole.isPrimary == 1}">
-			<div class="raBtn raBtnActive" id="locDiv${userRole.id}">
-				   <input id="userRoleId${userRole.id}" name="userRoleId" type="radio" class="with-font" value="${userRole.id}" checked />
-				 <label for="userRoleId" onclick="selectLoc(${userRole.id});"></label>
-			</div>
-		</c:if>
-		<c:if test="${userRole.isPrimary != 1}">
 			<div class="raBtn" id="locDiv${userRole.id}">
 				   <input id="userRoleId${userRole.id}" name="userRoleId" type="radio" class="with-font" value="${userRole.id}"/>
-				 <label for="userRoleId" onclick="selectLoc(${userRole.id});"></label>
+				 <label for="userRoleId"></label>
 			</div>
-		</c:if>
 					
-			<span></span>
+			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
-				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : userRole.orgLocations.country}</p>
+				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
 				<p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
-				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p>
+<%-- 				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p> --%>
 			</div>
 	    </div>
+	    </a>
 	</c:forEach>
 	</div>
-	<div class="orgCon">
-		<a href="javascript:validateWhiteListIp();">Continue</a>
-	</div>
+<!-- 	<div class="orgCon"> -->
+<!-- 		<a href="javascript:validateWhiteListIp();">Continue</a> -->
+<!-- 	</div> -->
 </div>
 
 <script>
@@ -61,6 +55,7 @@ function validateWhiteListIp(){
 	    	userRoleId = $(this).val();
 	    }
 	});
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+userRoleId,        
@@ -70,7 +65,7 @@ function validateWhiteListIp(){
 	    		 validateTwoStepAuth();
 	    	 }else{
 	    		$('#whiteListerrDiv').find('p.jquery_form_error_message').remove();
-	 			$("#whiteListerrDiv").append( "<p class='jquery_form_error_message'>You are not accessed from this location</span>");
+	 			$("#whiteListerrDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
 	    	 }
 	      },
 	  }); 
@@ -114,6 +109,7 @@ function selectLoc(id){
  	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');
  	$("#locDiv"+id).addClass("raBtnActive");
  	$("#userRoleId"+id).prop('checked', true);
+ 	validateWhiteListIp();
 }
 
 </script>

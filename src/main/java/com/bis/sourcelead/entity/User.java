@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,11 +30,12 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "USER", catalog = "sourcelead")
+@Table(name = "USER")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
 public class User implements Serializable{
 
@@ -815,6 +816,9 @@ public class User implements Serializable{
 	{
 		this.loginSecurity = loginSecurity;
 	}
+
 	
 
+	
+	
 }

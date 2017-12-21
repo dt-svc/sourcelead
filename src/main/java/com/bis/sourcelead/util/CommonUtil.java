@@ -45,6 +45,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -166,6 +168,9 @@ public class CommonUtil {
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
 	
 	/**
@@ -1557,7 +1562,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
@@ -1565,7 +1570,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
-						if(approverHierarchy != null) {
+						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
+						if(approverHierarchy != null || pm != null) {
 							flag = true;
 						}
 					}else {
@@ -1579,6 +1585,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 		
 		return flag;
+	}
+	
+	public List<SourceleadSectionDTO> getSourceleadFormSectionsByActionId(HttpServletRequest request,Long actionId) throws Exception{
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocations.getId());
+	return sections;
 	}
 		
 }

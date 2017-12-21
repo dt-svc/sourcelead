@@ -74,13 +74,13 @@ function getPostValueDetails(){
 
 <script type="text/javascript">
 	$(window).load(function() {
-		if('${requirementUUID != null}'){
-			getOpenJobsRequirementSummary('${requirementUUID}');
-			getDropDownCount();
-		}else{
-		getOpenJobsELKList();
+// 		if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
+// 			getOpenJobsRequirementSummary('${requirementUUID}');
+// 			getDropDownCount();
+// 		}else{
+// 		getOpenJobsELKList();
 		getDropDownCount();
-	  }
+// 	  }
 	});
 </script>
  
@@ -105,11 +105,11 @@ display: none;}
 </section>
 <div class="head_inn">
   
-  <div class="logo"><a href="home.html"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="/"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
-    	<li><a href="home.html"><i class="fa fa-home"></i></a></li>
-		<li><a href="index.html" class="rcolor">Jobs</a></li>
+    	<li><a href="/"><i class="fa fa-home"></i></a></li>
+		<li><a href="javascript:redirectPage();" class="rcolor">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
 				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
@@ -156,8 +156,8 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg1.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg3.jpg);"></li>
 	</ul> 
 <content>
 		<h1>
@@ -457,7 +457,7 @@ $(window).scroll(function (e) {
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled></option>")';
+				+ '("<option selected value="">--Select Experience--</option>")';
 		for (var i = 1; i <= 25; i++) {
 			result = result + '("<option value='+i+'>' + i + '</option>")';
 		}
@@ -1200,12 +1200,35 @@ function loadOpenJobsChosenRequirementScripts(){
 
 <script type="text/javascript">
 function redirectPage(){
+	var url = "";
 	var title = document.getElementById("openJobsRequirementTitleId").value;
+	if(title != null && title != '' && title != 'undefined'){
+		url += "/"+title;
+	}else{
+		url += "/all";
+	}
 	var location = document.getElementById("openJobsLocationId").value;
+	if(location != null && location != '' && location != 'undefined'){
+		url += "/"+location;
+	}else{
+		url += "/all";
+	}
 	var experience = document.getElementById("openJobsExperienceId").value;
-	window.location.href = "jobs/"+title+"/"+location+"/"+experience;
+	if(experience != null && experience != '' && experience != 'undefined'){
+		url += "/"+experience;
+	}
+	
+	if((title == null || title == '' || title == 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs";
+	}else if((title != null && title != '' && title != 'undefined') && (location == null || location == '' || location == 'undefined') && (experience == null || experience == '' || experience == 'undefined')){
+		window.location.href = "jobs/"+title;
+	}else{
+		window.location.href = "jobs"+url;
+	}
+	
 }
 </script>
+
 
 
 <script>

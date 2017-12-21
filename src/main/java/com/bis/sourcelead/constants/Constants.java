@@ -37,6 +37,7 @@ public class Constants {
 	public static final String RATEPER = "Rate Per";
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
+	public static final String MANAGER = "Manager*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -162,6 +163,8 @@ public class Constants {
 	public static final String EXPENSES_APPROVED_EMAIL_TOVENDOR = "ExpensesApproveEmailToVendor";
 	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
+	
+	public static final String MAIL_SEND_PROJECT_DOCUMENTS = "SendProjectDocuments";
 	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
@@ -358,6 +361,8 @@ public class Constants {
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
 	public static final String CONTRACT_SIGNED = "ContractSigned";
+	public static final String SEND_CONTRACT = "SendContract";
+	public static final String SEND_SOW_CONTRACT = "SendSowContract";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
@@ -744,7 +749,8 @@ public class Constants {
 	
 	public static final int WORKING_HOURS = 8;
 	
-	
+	public static final String DOCUMENT_READ_ACCESS = "0";
+	public static final String DOCUMENT_WRITE_ACCESS = "1";
 	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
@@ -955,6 +961,17 @@ public class Constants {
 	public static final String HOLIDAY_RESTRICTED = "Restricted";
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
+
+	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
+	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
+	
+	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
+	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
+	public static final String REPORT_FILTER_1_MONTH = "1_month";
+	public static final String REPORT_FILTER_3_MONTHS = "3_months";
+	public static final String REPORT_FILTER_YTD = "YTD";
+	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+
 
 
 }

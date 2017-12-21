@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 
 @Entity
-@Table(name = "CANDIDATE_RESUMES", catalog = "sourcelead")
+@Table(name = "CANDIDATE_RESUMES")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumes")
 
 public class CandidateResumes implements Serializable{

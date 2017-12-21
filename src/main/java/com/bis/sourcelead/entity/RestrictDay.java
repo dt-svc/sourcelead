@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 @Entity
-@Table(name = "RESTRICT_DAY", catalog = "sourcelead")
+@Table(name = "RESTRICT_DAY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "restrictDay")
 public class RestrictDay implements Serializable{
 

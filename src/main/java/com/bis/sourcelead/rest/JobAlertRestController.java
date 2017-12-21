@@ -78,14 +78,14 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = "/storeJobAlert", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/storeJobAlert", method = RequestMethod.POST)
    	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
        	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
    	}
     
     
-	 @RequestMapping(value = "/getJobAlertDetails", method = RequestMethod.GET)
+	 @RequestMapping(value = "/app/getJobAlertDetails", method = RequestMethod.GET)
 	 public String getJobAlertDetails(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -112,7 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/app/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = {"/getJobDetailsForJobAlert" ,"/app/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -123,7 +123,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
+	 @RequestMapping(value = {"/validateAlertUserEmail","/app/validateAlertUserEmail"}, method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
@@ -135,7 +135,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		
 	 
-	 @RequestMapping(value = "/getAllJobsAlertList")
+	 @RequestMapping(value = {"/getAllJobsAlertList" ,"/app/getAllJobsAlertList"})
 	 	public String getAllJobsAlertList(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			    String jobAlertsTable = null;

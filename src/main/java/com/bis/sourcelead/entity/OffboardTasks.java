@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "OFFBOARD_TASKS", catalog = "sourcelead")
+@Table(name = "OFFBOARD_TASKS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offboardTasks")
 public class OffboardTasks implements Serializable{
 	

@@ -21,7 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "OFF_BOARDING_TEMPLATE", catalog = "sourcelead")
+@Table(name = "OFF_BOARDING_TEMPLATE")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offBoardingTemplate")
 public class OffBoardingTemplate implements Serializable{
 	

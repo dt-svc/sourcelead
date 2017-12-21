@@ -17,7 +17,7 @@ z-index: 1040 !important;
     var tokenValue = "${_csrf.token}";
  </script>
 
-<script src="/esources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -55,7 +55,7 @@ z-index: 1040 !important;
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                <c:if test="${not empty recipientList}"></c:if>
                <c:forEach items="${recipientList}" var="recipient">
-   						<option value='${recipient.email }' selected>'${recipient.email}'</option>
+   						<option value='${recipient.email }' selected>${recipient.email}</option>
 				</c:forEach>
                 </select>
                 
@@ -1354,8 +1354,8 @@ function validateCampaignListName(){
 
  <script>
  function msgFadein() {
-	$("#selector1").fadeIn(200);
-    $('#selector1').delay(2000).fadeOut('slow');
+	$("#selector1").fadeIn(300);
+    $('#selector1').delay(3000).fadeOut('slow');
 }
 </script>
 <!--   Popup Code  -->   

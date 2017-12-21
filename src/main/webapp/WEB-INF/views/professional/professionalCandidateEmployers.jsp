@@ -153,7 +153,7 @@ function closeCertificatePopup(){
 		result = result	+ '	             <div class="form-horizontal clearfix">';
 		result = result + '	               <div class="clearfix">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumber validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
+		result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumeric_SpecialChar validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
@@ -299,19 +299,31 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="col-md-6">';
 								result = result + '	                 <p class="ml">Start Date</p>';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
+									result  = result + '                   <div>';
 									result = result	+ '<input type="text" max class="form-control calendar" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandEmpStartDate();"></div>';
+									result  = result + '                   </div>';
 								}else{
+									result  = result + '                   <div>';
 									result = result	+ '<input type="text" max class="form-control calendar" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandEmpStartDate();"></div>';
+									result  = result + '                   </div>';
 								}
 								result = result + '</div>';
 								
 								result = result	+ '<div class="col-md-6" id="endDateEditDiv">';
 								result = result	+ '<p class="ml">End Date</p>';
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
+									result  = result + '                   <div>';
 									result = result	+ '<input type="text"  class="form-control calendar" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="End Date"  field-name="end Date" data-validation="required" data-validation-optional="true" readonly>';
 									result = result	+ '<input type="hidden" value="'+json.endYear+'" id="exisitngEndYear">';
+									result  = result + '					<div class="clearDate" onClick="editProfCandEmpEndDate();"></div>';
+									result  = result + '                   </div>';
 								}else{
+									result  = result + '                   <div>';
 									result = result	+ '<input type="text"  class="form-control calendar" value="" id="endYearEdit" name="endYear" placeholder="End Date"  field-name="end Date" data-validation="required" data-validation-optional="true" readonly>';
+									result  = result + '					<div class="clearDate" onClick="editProfCandEmpEndDate();"></div>';
+									result  = result + '                   </div>';
 								}
 								result = result + '	                 </div> ';
 								
@@ -773,3 +785,12 @@ function clearEndDate(){
 	$("#endYear").val("");
 	};
 </script>
+
+<script>
+function editProfCandEmpStartDate(){
+	$("#startYear").val("");
+	};
+ function editProfCandEmpEndDate(){
+	$("#endYearEdit").val("");
+	}; 
+</script> 

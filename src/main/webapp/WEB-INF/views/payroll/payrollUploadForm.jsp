@@ -68,20 +68,14 @@ window.onload = function () {
                         <div class="form-group" id="fromDateDiv">
                         	<label class="col-md-3">From Date<span class="text-danger paddingLeft">*</span></label>
                         	<div class="col-md-9">
-                        	<div class="input-group errorInptgroup">
                         	<input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required">
-                        	<span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-                        	</div>
                         	</div>
                         </div>
                         
                         <div class="form-group" id="toDateDiv">
 	                        <label class="col-md-3">To Date<span class="text-danger paddingLeft">*</span></label>
 	                        <div class="col-md-9">
-	                        <div class="input-group errorInptgroup">
 	                        <input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required">
-	                        <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-	                        </div>
 	                        </div>
                         </div>
                      
@@ -582,7 +576,7 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-<script>
+<!-- <script>
 function clearFromDate(){
 	$("#fromDate").val("");
 	};	
@@ -594,7 +588,7 @@ function clearToDate(){
 		$("#upload_bulk_payroll_form input[data-id*=uploadBtn]").remove();
 
 	}); */
-</script>
+</script> -->
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />

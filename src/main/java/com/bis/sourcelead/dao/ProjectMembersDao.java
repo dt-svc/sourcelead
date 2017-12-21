@@ -45,6 +45,7 @@ public interface ProjectMembersDao {
 	
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId);
 	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception;
 	/**
 	 * @author Prasad Salina
 	 * @param empId
@@ -113,4 +114,6 @@ public interface ProjectMembersDao {
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 
 	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate,Date endDate, Long locationsId, Long approverUserId, String searchValue, int start, int length);
+	
+	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
 }

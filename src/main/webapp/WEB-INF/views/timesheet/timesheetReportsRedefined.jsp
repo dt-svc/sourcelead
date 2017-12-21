@@ -1,16 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
 <!-- this is for mask -->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <script src="/resources/js/formvalidator.js"></script>
-
-
-
 
 <style type ="text/css">
 .timesheet_container {
@@ -44,7 +41,7 @@ $(document).ready(function() {
 			<div class="pull-left">
 				<h2 class="pull-left">TimeSheet Reports</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Timesheet Reports</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Timesheet Reports</div>
 		</section>
 		<div class = "timesheet_container datatable_filter">
 			<div class='content-area content-new clearfix'>
@@ -85,7 +82,6 @@ $(document).ready(function() {
 	        		    	  $("#reportsDiv").append(result);
 	        		    	  $("#reportsDiv").removeAttr('style');
 	        		    	  prepareChosenScripts();
-	        		    	  $('#pagination-demo').twbsPagination('destroy');
 	        		    	  preparePagination(1);
         		      }
         	    }); 

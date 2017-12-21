@@ -1304,7 +1304,7 @@ padding: 0 30px 5px; text-align: center; border-radius: 3px; margin-bottom: 20px
 	color: #FF7043; text-shadow: 1px 1px 1px #333;
 }
 .move-btn .fa-home {
-	padding: 7px 10px;
+	padding: 6px 10px;
 }
 .move-btn .fa-angle-double-right {
 	-webkit-transition: all 0.3s ease-in-out;
@@ -7228,8 +7228,8 @@ position:relative;
 	width: 100%; margin-top: 15px;
 }
 .jobpipline-count ul li {
-	padding: 5px; text-align: center; width: 19.5%; border-radius: 2px;
-	background-color: #F5F5F5;
+	padding: 10px; text-align: center; width: 19.5%; border-radius: 3px;
+	background-color: #fff; box-shadow: 1px 1px 1px #ddd;
 }
 .jobpipline-count ul li a  {
 	width: 100%; padding: 0px; display: inline-block; clear: both; margin-bottom: 5px;
@@ -7404,7 +7404,7 @@ min-height: 40px;
 min-height:80px;
 }
 .tableStyles {
-	position: relative; border: 1px solid #ddd;
+	position: relative; /*border: 1px solid #ddd;*/
 }
 .tableStyles table tbody{
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
@@ -7508,8 +7508,19 @@ margin-right: 0;
 .bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
 width: 220px;
 }
+
+.popMask.popMask-zindex {
+	z-index: 10000 !important;
+}
+.cusFielPopup.cusFiel-popup {
+z-index: 10001 !important;	
+}
 .assignTableScroll.assignTableScroll-mnh {
 min-height: 150px;
+}
+
+.modal.addipPopup-modal {
+    display: none;
 }
 .authenticationMask {
 position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
@@ -7520,7 +7531,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal {
 	display: none;
 }
 .location-alert {
@@ -7559,6 +7570,57 @@ width:75%; padding-left:20px !important; min-height:150px;
 .errorInptgroup.errorInptgroup-bottom p.jquery_form_error_message {
 bottom: 0px !important;
 }
+
+.tableStyles2 tr td {
+vertical-align: middle !important; padding: 15px 10px !important;
+}
+.immigration-head {
+background-color: #f5f5f5; padding:5px 15px;
+
+}
+.importcsv-accordion h4 {
+	font-size: 14px; font-weight: normal;
+}
+.importcsv-accordion .panel-heading {
+	padding:8px 10px;
+}
+.importcsv-accordion .panel-body {
+	padding:10px;
+}
+.importcsv-accordion ol li{
+	font-size: 12px; padding: 1px 0;
+}
+
+/* Card Model UI Styles */
+.cardModel-widget {
+ background: #fff; padding: 15px; box-shadow: 1px 1px 1px #ddd; border-radius: 3px; color: #444;
+}
+.cardModel-widget h4 {
+	margin: 0; margin-bottom: 10px; font-size: 15px;
+}
+.div-borderBottom {
+	border-bottom: 1px solid #ddd;
+}
+.mail-actionicons {
+position: absolute; right: 5px; top:8px; z-index: 1; color: #808080; cursor: pointer;
+}
+.mail-actionicons .fa:hover {
+color: #333;
+}
+.newMailSet.mailInboxli ul li a {
+width: 225px;
+}
+.newMailSet ul li a.Active {
+background: none !important;
+}
+.newMailSet ul li.Active {
+background:#f1f6ff;
+color: #444;
+}
+.inBox-list li {
+padding: 5px 10px;
+}
+/* Card Model UI Styles */
 
 /* media 320px */
 @media (max-width: 320px) {

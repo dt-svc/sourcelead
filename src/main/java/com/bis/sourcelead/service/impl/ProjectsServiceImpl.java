@@ -54,12 +54,14 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -73,6 +75,8 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectDocumentFolderService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -183,7 +187,8 @@ public class ProjectsServiceImpl implements ProjectsService{
      @Autowired
      ProjectBudgetService projectBudgetService;
      
-	 
+	 @Autowired
+	 ProjectDocumentFolderService projectDocumentFolderService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -441,18 +446,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowBidding(null);
 		}
 		
+		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
 		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
-			List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
-			for(FileInfo fileInfo : projectDocumentsList){
-				ProjectDocuments documents = new ProjectDocuments();
-				documents.setFileName(fileInfo.getFileName());
-				documents.setFileType(fileInfo.getContentType());
-				documents.setFileUrl(fileInfo.getFileURL());
-				documents.setStatus(Constants.CANDIDATE_ACTIVE);
-				documents.setProjects(projects);
-				projDocDBList.add(documents);
+			
+			Set<ProjectDocumentFolder> projectDocumentFolder = storeDocumentFolder(projects,user);
+			projects.setProjectDocumentFolder(projectDocumentFolder);
+			
+			//save documents
+			for(ProjectDocumentFolder pdf : projectDocumentFolder) {
+				List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
+				for(FileInfo fileInfo : projectDocumentsList){
+					ProjectDocuments documents = new ProjectDocuments();
+					documents.setFileName(fileInfo.getFileName());
+					documents.setFileType(fileInfo.getContentType());
+					documents.setFileUrl(fileInfo.getFileURL());
+					documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					documents.setProjects(projects);
+					documents.setProjectFolderId(pdf);
+					documents.setCreatedBy(user);
+					documents.setCreatedByName(user.getFullName());
+					documents.setCreatedDate(commonUtil.currentDate());
+					projDocDBList.add(documents);
+				}
 			}
+			
 			projects.setProjectDocuments(projDocDBList);
 	        for(FileInfo fileInfo : projectsDTO.getUploadedFileInfo()){
 				FileUploadUtil.moveFile(projectsDTO.getStaticPath(), fileInfo, "projects");
@@ -507,6 +525,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	private Set<ProjectDocumentFolder> storeDocumentFolder(Projects projects, User user) throws Exception {
+		HashSet<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
+		ProjectDocumentFolder pdf  = null;
+		if(projects.getId() != null) {
+			pdf = projectDocumentFolderService.getProjectDocumentFolderByProjectId(projects.getId());
+		}else {
+			pdf = new ProjectDocumentFolder();
+		}
+		pdf.setProjectId(projects);
+		pdf.setFoderName("Default Folder");
+		pdf.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+		pdf.setCreatedBy(user);
+		pdf.setCreatedDate(commonUtil.currentDate());
+		projectDocumentFolderList.add(pdf);
+		return projectDocumentFolderList;
+	}
+
 	private Set<ProjectBudget> storeProjectBudget(ProjectsDTO projectsDTO ,User user,Projects projects) throws  Exception {
 		ProjectBudget projectBudget = null;
 		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
@@ -1357,7 +1392,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		HashSet<Long> templist = null;
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId,loginOrgLocation.getId());
 			    		ProjectClients pc = null;
+			    		Boolean isLevel2ManagerExists = false;
+			    		Long level1HierarchyId = null;
+			    		Long level2HierarchyId = null;
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+				    			 if(prHierarchy.getLevel() == 1){
+						    		 level1HierarchyId = prHierarchy.getId();
+						    	 }else {
+						    		 level2HierarchyId = prHierarchy.getId();
+						    	 }
 			    			     pc = prHierarchy.getProjectClientsId();
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
@@ -1368,6 +1411,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								     }
 								     if(prHierarchy.getLevel() == 2 &&  StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
 								    	 if(!"".equalsIgnoreCase(projectDTO.getLevel2Manager())){
+								    		 isLevel2ManagerExists = true;
 								    		 fieldValuelong = Long.valueOf(projectDTO.getLevel2Manager());
 								    	 }
 								    	 
@@ -1442,7 +1486,74 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    			
 			    		}
-			    		
+			    		 /**
+			    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
+			    		  */
+			    		 LinkedList<SubmissionApproverHierarchy> saHierarchyList = new LinkedList<SubmissionApproverHierarchy>();
+			    		 if(isLevel2ManagerExists){
+			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level1HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 SubmissionApproverHierarchy subSah =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(level2HierarchyId, sah.getSubmissionId().getId());
+				    	    		 if(subSah != null && (StringUtils.isEmpty(subSah.getStatus())  || (StringUtils.isNotEmpty(subSah.getStatus()) && subSah.getStatus().equalsIgnoreCase("0")))){
+				    	    			    subSah.setSubmissionStatus(sah.getSubmissionStatus());
+				    	    			    subSah.setBillingStatus(sah.getBillingStatus());
+				    	    			    subSah.setInvoiceStatus(sah.getInvoiceStatus());
+				    	    			    subSah.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											subSah.setCreatedDate(commonUtil.currentDate());
+											subSah.setCreatedBy(user.getUserCode());
+											subSah.setUpdatedDate(commonUtil.currentDate());
+											subSah.setUpdatedBy(user.getUserCode());
+											subSah.setRejectedReason(sah.getRejectedReason());
+											subSah.setActionPerformedBy(sah.getActionPerformedBy());
+											subSah.setReopenedUser(sah.getReopenedUser());
+											subSah.setReopenReason(sah.getReopenReason());
+											subSah.setReopenRejectedReason(sah.getReopenRejectedReason());
+											subSah.setStatus("1");
+											saHierarchyList.add(subSah);
+				    	    		 }
+				    	    		 else{
+				    	    			    SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+				    	    			    ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+				    	    			    pah.setId(level2HierarchyId);
+											saHierarchy.setHeirarchyId(pah);
+											saHierarchy.setSubmissionId(sah.getSubmissionId());
+											saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+											saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+											saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+											saHierarchy.setCreatedDate(commonUtil.currentDate());
+											saHierarchy.setCreatedBy(user.getUserCode());
+											saHierarchy.setUpdatedDate(commonUtil.currentDate());
+											saHierarchy.setBillingStatus(sah.getBillingStatus());
+											saHierarchy.setInvoiceStatus(sah.getInvoiceStatus());
+											saHierarchy.setRejectedReason(sah.getRejectedReason());
+											saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+											saHierarchy.setReopenedUser(sah.getReopenedUser());
+											saHierarchy.setReopenReason(sah.getReopenReason());
+											saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+											saHierarchy.setUpdatedBy(user.getUserCode());
+											saHierarchy.setStatus("1");
+											saHierarchyList.add(saHierarchy);
+				    	    		 }
+				    	    	 }
+				    	     }
+						 }
+			    		 else{
+			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 sah.setStatus("0");
+									 saHierarchyList.add(sah);
+				    	    	 }
+				    	     }
+			    		 }
+			    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
+			    			 for(SubmissionApproverHierarchy sah : saHierarchyList){
+			    				 submissionApproverHierarchyService.updateSubmissionApproverHierarchy(sah);
+			    			 }
+			    			 
+			    		 }
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
@@ -1477,7 +1588,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 									  projectMember.setMemberHistoryList(memberHistoryList);
 								  }
 								  projectMembersService.saveProjectMember(projectMember);
-			    	    		/* if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    		/*if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
 			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
 			    	    		 }*/
 			    	    	 }
@@ -1485,6 +1596,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	}
 			    }
 		 
+			   
 				/*
 	    	     * Termination Of ProjectMember whose assignDate is greaterthan project endDate /
 	    	     *   in-activate the submissions whose startDate is greaterthan project endDate
@@ -1875,6 +1987,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
+						 pm.setUserRoleId(userRole.getId());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");

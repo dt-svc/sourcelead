@@ -1,7 +1,7 @@
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-fun.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
+<!-- <script src="/resources/js/jquery-1.11.1.min.js"></script> -->
+<!-- <script src="/resources/js/jquery-ui.js"></script> -->
+<!-- <script src="/resources/js/jquery-fun.js"></script> -->
+<!-- <script src="/resources/js/jquery.timepicker.js"></script> -->
 
 
 <div id="enrolledLocDiv" style="display:none">
@@ -64,6 +64,9 @@ function goToLocations(){
     $("#enrolledLocDiv").attr("style","display : block");
 	$("#twoStepAuthDiv").removeAttr("style");
     $("#twoStepAuthDiv").attr("style","display : none");
-    $(".signWrap").removeClass("orgOutWrap");
+    $("#loading").removeAttr("style");
+    $(".signWrap").addClass("orgOutWrap");
+    $("div.raBtnActive").children().removeAttr("checked");
+ 	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');
 }
 </script>

@@ -15,6 +15,7 @@
 			</div>
 			<div class="Utext">
 				<i title="${subDetails.fullName}">${subDetails.fullName}</i>
+				<i title="${subDetails.email}">${subDetails.email}</i>
 				<i title="Emp Type ${subDetails.designationType}">${subDetails.designationType}</i>
 			</div>
 			<div></div>
@@ -32,7 +33,7 @@
 	  <c:if test="${reportTime.key == dateFrequency}">
 			<td>
 				<div class="week">
-					<span class="draft"><d title="week-Total-Hours:${reportTime.value.weekTotalHours}">${reportTime.value.weekTotalHours}</d></span>
+					<span class="${reportTime.value.approvalClass}"><d title="week-Total-Hours:${reportTime.value.weekTotalHours}">${reportTime.value.weekTotalHours}</d></span>
 					<div class="progress">
 						<div
 							class="progress-bar progress-bar-striped active progress-bar-info"
@@ -52,7 +53,7 @@
 	</c:forEach> 
 	<td>
 		<div class="week">
-			<span class="draft"><d title="Month-Total-Hours:${subDetails.monthTotalHours}">${subDetails.monthTotalHours}</d></span>
+			<span class="${subDetails.combinedApprovalClass}"><d title="Month-Total-Hours:${subDetails.monthTotalHours}">${subDetails.monthTotalHours}</d></span>
 			<div class="progress">
 				<div
 					class="progress-bar progress-bar-striped active progress-bar-info"
@@ -68,19 +69,20 @@
 		</div>
 	</td>
 	<td><div class="sm">
+	<%-- <input type="text" value="${subDetails.approvalStatus}"> --%>
 		<c:if test="${subDetails.approvalStatus == 'Action Required'}">
 			<b class="action" title="ACTION REQUIRED">ACTION REQUIRED</b>
 		</c:if>
 		<c:if test="${subDetails.approvalStatus == 'NEW'}">
 			<b class="bgGReen" title="NEW">NEW</b>
 		</c:if>
-		<c:if test="${subDetails.approvalStatus == 'approved'}">
+		<c:if test="${subDetails.approvalStatus == 'Approved'}">
 			<b class="proj_active" title="APPROVED">APPROVED</b>
 		</c:if>
-		<c:if test="${subDetails.approvalStatus == 'rejected'}">
+		<c:if test="${subDetails.approvalStatus == 'Rejected'}">
 			<b class="proj_closed" title="REJECTED">REJECTED</b>
 		</c:if>
-		<c:if test="${subDetails.approvalStatus == 'submitted for approval'}">
+		<c:if test="${subDetails.approvalStatus == 'Submitted'}">
 			<b class="proj_process" title="SUBMITTED FOR APPROVAL">SUBMITTED FOR APPROVAL</b>
 		</c:if>
 		</div></td>
