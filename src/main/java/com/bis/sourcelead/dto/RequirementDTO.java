@@ -156,6 +156,8 @@ public class RequirementDTO extends CommonDTO {
 	private int start;
 	 
 	private int length;
+	
+	private List<CustomFormFieldDTO> customFormData;
 
 	
 	/*
@@ -1225,4 +1227,12 @@ public class RequirementDTO extends CommonDTO {
 		this.length = length;
 	}
 
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+	
 }
