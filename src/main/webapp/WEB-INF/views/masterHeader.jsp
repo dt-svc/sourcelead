@@ -250,7 +250,9 @@ function getNotificationsByuserId(){
 				result = result + ' <li>';
 				result = result + '<div class="clearfix msg">';
 				result = result + '<div class="msg-img"> <span>';
+				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined'){
 				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
+				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
 				result = result + ' <a href="#"><p>'+opt.body+'</p>';

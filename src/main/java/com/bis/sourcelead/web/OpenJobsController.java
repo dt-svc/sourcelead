@@ -62,6 +62,9 @@ public class OpenJobsController {
 	{
 		List<Countries> countriesList = countriesService.getAllCountries();
 		modelMap.addAttribute("countryList", countriesList);
+		
+		
+		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		modelMap.addAttribute("skillsList", skillsList);
 		List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
@@ -82,11 +85,11 @@ public class OpenJobsController {
 		return "openJobs/openjobs";
 	}
 	
-	@RequestMapping(value = "/{title}-{id}")
+	@RequestMapping(value = "/{title}--{id}")
 	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String title) throws Exception
 	{
 		title = title != null
-				? title.replaceAll("-", " ").replaceAll("-and-", "&").replaceAll("-or-", "||")
+				? title.replaceAll("-mod-","%").replaceAll("-and-","&").replaceAll("-or-","/").replaceAll("-", " ")
 				: title;
 		ModelAndView modelAndView = new ModelAndView();
 		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementIdAndJobTitle(id, title);
