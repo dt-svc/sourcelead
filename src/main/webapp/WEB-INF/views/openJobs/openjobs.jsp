@@ -1750,9 +1750,7 @@ function openJobSearchRequirement(){
 				var openJobsskills = document
 				.getElementById("skills").value;
 			if (openJobsskills != null && openJobsskills != '' && openJobsskills != 'undefined') {
-				alert("openJobsskills "+openJobsskills);
 			url += "/" + openJobsskills;
-			alert("url "+url);
 			}
 				
 				if ((openJobsRequirementTitle == null || openJobsRequirementTitle == '' || openJobsRequirementTitle == 'undefined')
@@ -1767,7 +1765,6 @@ function openJobSearchRequirement(){
 						+ openJobsRequirementTitle);
 				} else {
 				location.replace(sourceleadUrl1 + "jobs" + url);
-				alert("url "+sourceleadUrl1 + "jobs" + url);
 				}
  				
  				
