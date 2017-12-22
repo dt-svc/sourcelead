@@ -427,11 +427,13 @@ public class InvoiceRestController {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
 			
-			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				billingDto.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
+			
+			if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 			}
-			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				billingDto.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				billingDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
 			}
 			if(null != invoice.getProjectID()){
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
