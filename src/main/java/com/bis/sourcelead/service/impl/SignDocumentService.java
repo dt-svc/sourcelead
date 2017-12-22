@@ -138,6 +138,9 @@ public class SignDocumentService {
 		float x = coordinate.getX();
 		float y = coordinate.getY();
 		int pageNumber = coordinate.getPageNumber();
+		if(pageNumber == -1) {
+			pageNumber =+1;
+		}
 		float pageheight = pdfDoc.getFirstPage().getPageSize().getHeight();
 		
 		float width = img.getImageScaledWidth();
