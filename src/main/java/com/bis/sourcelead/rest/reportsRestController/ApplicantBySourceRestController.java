@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
 import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -27,6 +31,9 @@ public class ApplicantBySourceRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	ApplicantsBySourceService applicantsBySourceService;
@@ -50,9 +57,19 @@ public class ApplicantBySourceRestController {
 		Date[] searchDates = null;
 		
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
 		}
 		
+		
+		if(jobIdList != null && jobIdList.size() > 0) {
 		ApplicantsBySourceDTO crowdSourcingApplicantsDTO = new ApplicantsBySourceDTO();
 		
 		Integer crowdsourcingApplicantsCount =  applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates,"SUBMISSION");
@@ -140,7 +157,7 @@ public class ApplicantBySourceRestController {
 		internalSourcingApplicantsDTO.setOfferRejectedCount(internalSourcingOfferRejectedCount);
 		internalSourcingApplicantsDTO.setBackoutCount(internalSourcingBackoutCount);
 		applicantBySourceList.add(internalSourcingApplicantsDTO);
-		
+		}
 		
 		return applicantBySourceList;
 	}
