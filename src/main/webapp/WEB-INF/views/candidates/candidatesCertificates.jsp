@@ -750,7 +750,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 
 				if(data != null && data != 'undefined' && data != ""){
              		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	}
              		else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
