@@ -261,13 +261,13 @@ a.alertBtn {
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="logo">
-			<a href="/login"><img src="../resources/css/jobs/images/logo.png"
+			<a href="/login"><img src="/resources/css/jobs/images/logo.png"
 				alt="SourceLead" title="SourceLead" /></a>
 		</div>
 		<nav>
 			<ul class="menu">
-				<li><a href="/login"><i class="fa fa-home"></i></a></li>
-				<li><a href="/openJobs" class="rcolor">Jobs</a></li>
+				<li><a href="/"><i class="fa fa-home"></i></a></li>
+				<li><a href="/jobs" class="rcolor">Jobs</a></li>
 				<li><a href="javascript:void(0)" class="ma">What we do<i
 						class="fa fa-caret-down"></i></a>
 					<ul>
@@ -319,11 +319,20 @@ a.alertBtn {
 			value="${openJobsTitle==null?'':openJobsTitle}" class="searchHome"></span>
 		<span><i class="fa fa-map-marker"></i><input type="text"
 			placeholder="Location" value="${openJobsLocation}"
-			id="openJobsLocationId" class="searchHome"></span> <span><i
-			class="fa fa-briefcase"></i>
-			<p id="dropDownCountId"></p></span> <span><input type="button"
+			id="openJobsLocationId" class="searchHome"></span> 
+			<span><i class="fa fa-briefcase"></i>
+			<p id="dropDownCountId"></p>
+			<%-- <select class="searchHome searchHomeE" id="openJobsExperienceId">
+			<option value="">--Select Experience--</option>
+				<c:forEach var="exp" items="${totalexperience}">
+					<option value="${exp}">${exp}</option>
+				</c:forEach>
+			</select> --%>
+			</span> 
+			
+			<span><input type="button"
 			value="Search" class="searchBtn"
-			onclick="getOpenJobsELKListJOBS(); clearFilters();"></span>
+			onclick="getOpenJobsELKListJOBS();"></span>
 		<h3>
 			<b id="ADS">Advanced Search</b>
 		</h3>
@@ -342,7 +351,7 @@ a.alertBtn {
 		value="0" />
 	<div class="filter" id="filterDiv">
 		<h2>
-			Fliter your search <i class="fa fa-refresh" aria-hidden="true"
+			Filter your search <i class="fa fa-refresh" aria-hidden="true"
 				onclick="clearFilters(); getOpenJobsELKList();"
 				style="cursor: pointer;"></i>
 		</h2>
@@ -749,7 +758,7 @@ a.alertBtn {
 						<label>Country</label>
 						<div class="clearfix adv-srh-chosen">
 							<select class="chosen-select" name="country" id="country"
-								field-name="Country">
+								field-name="Country" onchange="getStates();">
 								<option value="">--select Country--</option>
 								<c:forEach var="cntry" items="${countryList}">
 									<option value="${cntry.name}"
@@ -762,7 +771,7 @@ a.alertBtn {
 						<label>State</label>
 						<div class="clearfix adv-srh-chosen">
 							<select class="chosen-select" name="state" id="state"
-								field-name="State">
+								field-name="State" onchange="getCities();">
 								<option value="">---Select State---</option>
 								<c:forEach var="state" items="${statesList}">
 									<option value="${state.stateName}">${state.stateName}</option>
@@ -931,6 +940,9 @@ function clearcheck(){
 }
 
 function clearFilters(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	window.location.href = sourceleadUrl+"/jobs";
 	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
 	$('#dateFilterId').find('input[type=radio]:checked').removeAttr('checked');
 	$('#countryFilterId').find('input[type=radio]:checked').removeAttr('checked');
@@ -947,12 +959,13 @@ function clearFilters(){
 		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
 			selectedExperience = 0;
 		}
+		
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option></option>")';
+				+ '("<option selected value="">--Select Experience--</option>")';
 		for (var i = 1; i <= 25; i++) {
 			if(i == selectedExperience){
 				result = result + '("<option selected value='+i+'>' + i + '</option>")';
@@ -1232,7 +1245,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/'+requirements.jobTitle.toLowerCase().replace(/ /g ,"-").replace(/ & /g, '-and-').replace(/&/g, "-and-").replace(/ /g, "-or-").replace(/ /g, "-").replace(/\/ /g, "-or-")+'-'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
+				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/'+requirements.jobTitle.toLowerCase().replace(/ /g, "-").replace(/\//g,"-or-").replace(/ & /g,"-and-").replace("/ % /g","-mod-")+'--'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1450,7 +1463,7 @@ function openPopup(){
 	getOpenJobsRequirementSummary("${uuid}");
 } */
 
-function getOpenJobsURL(id,jobTitle){
+function getOpenJobsURL(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
@@ -1465,7 +1478,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#loadMoreDiv").hide(); 
 	 $.ajax({
 		 type: "POST",
-		   	url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		 url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    		
@@ -1698,8 +1711,65 @@ function viewJobSummaryDocument(jobId,title){
 </script>
 <script>
 function openJobSearchRequirement(){
- 			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
+	/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
+	
+				var sourceleadUrl = '${sourceleadUrl}';
+				var str = sourceleadUrl;
+				var sourceleadUrl1 = str.replace("app", "");
+				var url = "";
+				var openJobsRequirementTitle = document
+					.getElementById("requirementTitle").value;
+				if (openJobsRequirementTitle != null && openJobsRequirementTitle != ''
+					&& openJobsRequirementTitle != 'undefined') {
+				url += "/" + openJobsRequirementTitle;
+				} else {
+				url += "";
+				}
+				var openJobsLocation = document.getElementById("country").value;
+				if (openJobsLocation != null && openJobsLocation != ''
+					&& openJobsLocation != 'undefined') {
+				url += "/" + openJobsLocation;
+				} else {
+				url += "";
+				}
+				
+				var openJobState = document.getElementById("state").value;
+				if (openJobState != null && openJobState != ''
+					&& openJobState != 'undefined') {
+				url += "/" + openJobState;
+				} else {
+				url += "";
+				}
+				
 			
+				var openJobsExperience = document
+					.getElementById("minExp").value;
+				if (openJobsExperience != null && openJobsExperience != '' && openJobsExperience != 'undefined') {
+				url += "/" + openJobsExperience;
+				}
+				var openJobsskills = document
+				.getElementById("skills").value;
+			if (openJobsskills != null && openJobsskills != '' && openJobsskills != 'undefined') {
+			url += "/" + openJobsskills;
+			}
+				
+				if ((openJobsRequirementTitle == null || openJobsRequirementTitle == '' || openJobsRequirementTitle == 'undefined')
+					&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+					&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+				location.replace(sourceleadUrl1 + "jobs");
+				}  if ((openJobsRequirementTitle != null
+					&& openJobsRequirementTitle != '' && openJobsRequirementTitle != 'undefined')
+					&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
+					&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
+				location.replace(sourceleadUrl1 + "jobs/"
+						+ openJobsRequirementTitle);
+				} else {
+				location.replace(sourceleadUrl1 + "jobs" + url);
+				}
+ 				
+ 				
+ 				
+ 				
 			var frm = $('#openJobsAdvancedForm').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1842,12 +1912,11 @@ function openJobSearchRequirement(){
 <script>
 function getStates(){
 	var countryName = $("#country").val();
-	
 	if(countryName != null && countryName !='' && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1885,7 +1954,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2628,7 +2697,7 @@ var validationSettings = {
 			  		        contentType:false, 
         					url : "/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace("/openRequirementsRedirect");
+        							location.replace("/jobs");
         					},
         				});
                 

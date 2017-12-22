@@ -8,6 +8,7 @@ public class ReportsTimeDTO implements Serializable{
 	private String weekBillabeHours;
 	private String weekNonBillableHours;
 	private String weeekApprovalStatus;
+	private String approvalClass;
 	
 	
 	public String getWeekTotalHours() {
@@ -33,6 +34,12 @@ public class ReportsTimeDTO implements Serializable{
 	}
 	public void setWeeekApprovalStatus(String weeekApprovalStatus) {
 		this.weeekApprovalStatus = weeekApprovalStatus;
+	}
+	public String getApprovalClass() {
+		return approvalClass;
+	}
+	public void setApprovalClass(String approvalClass) {
+		this.approvalClass = approvalClass;
 	}
 	
 	

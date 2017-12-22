@@ -258,10 +258,7 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
-						  <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -1920,7 +1917,6 @@ function hideCommonSOWFields(){
 	}
 	
 	function getVendor(){
-		alert("yqhchi");
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType == "Vendor SOW"){
@@ -1928,7 +1924,6 @@ function hideCommonSOWFields(){
 		        type : "GET",
 		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 		         success :function(json) {
-		        	 alert("inside success");
 	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
 // 	            	 var json = JSON.parse(data);
 		             <c:forEach var="vendor" items="${orgRelationsList}">
@@ -2252,7 +2247,6 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>
-
 function refreshVendorList(){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
@@ -2318,9 +2312,9 @@ function addCustomEmptyVendorContact(){
    $('#vendorContact').trigger("chosen:updated");
 }
 
-function clearStartDt(){
+/* function clearStartDt(){
 	$("#startDate").val("");
-	};
+}; */
 function clearEndDt(){
 	$("#endDate").val("");
 	};
