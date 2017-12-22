@@ -309,17 +309,20 @@ public class UserServiceImpl implements UserService {
 			e1.printStackTrace();
 		}
 		
-		for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-			if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-			UserCustomFieldData userCustomFields = new UserCustomFieldData();
-			userCustomFields.setUser(user1);
-			 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-			 userCustomFields.setOrglocationsFormFields(orgFormField);
-			 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-			 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
-			}
-			
+		if(addUserDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				UserCustomFieldData userCustomFields = new UserCustomFieldData();
+				userCustomFields.setUser(user1);
+				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				 userCustomFields.setOrglocationsFormFields(orgFormField);
+				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+				}
+				
+			}	
 		}
+		
 		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){

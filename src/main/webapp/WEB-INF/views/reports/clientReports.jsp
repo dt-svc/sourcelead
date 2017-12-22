@@ -8,6 +8,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	getTopTenClientReports();
+	getTopFiveReceivsblesReports();
 });
 </script>
 
@@ -84,13 +85,14 @@ $(document).ready(function(){
         <div class="hidden"> <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
-        <select class="form-control" id="datefilter">
+        <select class="form-control" id="dateFrequency">
           <option>Select Date</option>
-          <option selected>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
+          <option value="Last_7_days" selected>Last 7 days</option>
+          <option value="Last_15_days">Last 15 days</option>
+          <option value="1_month">1 month</option>
+          <option value="3_months">3 months</option>
+           <option value="YTD">last year</option>
+          <option value="Last_Year">last year</option>
           <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
@@ -641,6 +643,20 @@ $(document).ready(function(){
 function getTopTenClientReports(){
 	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
 		
+	});
+}
+
+
+function getTopFiveReceivsblesReports(){
+	var frequency = $("#dateFrequency").val();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getTopFiveReceivsblesReports?&dateFrequency="+frequency+"&type=Receivable",
+// 	    success: function(data) {
+//  	    	$("#popUp").empty();
+//  		    $(".project_inn_mask").fadeOut(200);
+// 	    		location.replace(sourceleadUrl+"/invoiceList");
+// 	    }
 	});
 }
 </script>

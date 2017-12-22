@@ -14,6 +14,8 @@ public class ApplicantsBySourceDTO {
 	
 	private Integer offerAcceptedCount;
 	
+	private Integer offerRejectedCount;
+	
 	private Integer backoutCount;
 	
 	private Integer rejectedCount;
@@ -82,6 +84,14 @@ public class ApplicantsBySourceDTO {
 
 	public void setRejectedCount(Integer rejectedCount) {
 		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getOfferRejectedCount() {
+		return offerRejectedCount;
+	}
+
+	public void setOfferRejectedCount(Integer offerRejectedCount) {
+		this.offerRejectedCount = offerRejectedCount;
 	}
 	
 	

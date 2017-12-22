@@ -17,13 +17,34 @@ public class ApplicantsBySourceServiceImpl implements ApplicantsBySourceService{
 	ApplicantsBySourceDao applicantsBySourceDao;
 
 	@Override
-	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date[] searchDates) {
-		return applicantsBySourceDao.getCrowdsourcingApplicantsCount(jobIds, searchDates);
+	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIdList, Date[] searchDates) {
+		return applicantsBySourceDao.getCrowdsourcingApplicantsCount(jobIdList, searchDates);
 	}
 
 	@Override
 	public Integer getRequirementsCount(Long orgLocationId) throws Exception {
 		return applicantsBySourceDao.getRequirementsCount(orgLocationId);
+	}
+
+	@Override
+	public Integer getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage) {
+		return applicantsBySourceDao.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, stage);
+	}
+
+	@Override
+	public Integer getVendorSourceApplicantsCountByStage(List<Long> jobIds, Date[] searchDates, String stage) {
+		return applicantsBySourceDao.getVendorSourceApplicantsCountByStage(jobIds, searchDates, stage);
+	}
+
+	@Override
+	public Integer getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates,
+			String stage) {
+		return applicantsBySourceDao.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, stage);
+	}
+
+	@Override
+	public Integer getInternalSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage,Long orgLocationId) {
+		return applicantsBySourceDao.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, stage, orgLocationId);
 	}
 
 }
