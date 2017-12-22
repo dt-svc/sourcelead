@@ -1453,7 +1453,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/getReportingManager", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/getReportingManager", method = RequestMethod.POST)
 		public @ResponseBody String getReportingManager(
 				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
