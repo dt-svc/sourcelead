@@ -1917,7 +1917,6 @@ function hideCommonSOWFields(){
 	}
 	
 	function getVendor(){
-		alert("yqhchi");
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType == "Vendor SOW"){
@@ -1925,7 +1924,6 @@ function hideCommonSOWFields(){
 		        type : "GET",
 		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 		         success :function(json) {
-		        	 alert("inside success");
 	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
 // 	            	 var json = JSON.parse(data);
 		             <c:forEach var="vendor" items="${orgRelationsList}">

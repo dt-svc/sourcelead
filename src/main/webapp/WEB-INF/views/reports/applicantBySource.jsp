@@ -9,7 +9,6 @@
 <script src="/resources/js/pie.js"></script>
 
 
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getApplicantBySourceChart();
@@ -40,7 +39,7 @@ $(document).ready(function(){
           </select>
         </div>
         <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection">
+          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -50,10 +49,29 @@ $(document).ready(function(){
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
+          
+          
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+            <div class="pull-left">
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+              </div>
+              
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+          
         </div>
         
+        
+        
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getApplicantBySourceChart();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Customize</button>
 		</div>
 		
 		
@@ -89,57 +107,110 @@ $(document).ready(function(){
 <jsp:include page="../masterFooter.jsp" />
 
 
+<script>
+function getCustomDates(){
+	 var dateSelection = $("#dateSelection").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 $("#customize_btn").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+	 }
+}
+
+</script>
+
+
 
 <script>
   function getApplicantBySourceChart(){
 	  
+	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
 		  jobIds = '';
 	  }
 	  var dateSelection = $("#dateSelection").val(); 
+	  var fromDate = '';
+	  var toDate = '';
+	  if(dateSelection == 'custom'){
+		   fromDate = $("#fromDate").val();
+		   toDate = $("#toDate").val();
+		  
+		  if(fromDate == '' || toDate == ''){
+			  flag = false;
+			  if(fromDate == ''){
+				  document.getElementById("fromDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+			  }
+			  if(toDate == ''){
+				  document.getElementById("toDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+		  }else{
+			  document.getElementById("fromDateDiv").style.display="none";
+			  document.getElementById("toDateDiv").style.display="none";
+		  }
+		  
+	  }
 		
-		$.ajax({ 
-			   	type: "GET",
-			 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-			    success: function(json) {
-			    	
-			        	if(json.length > 0)	
-			 	   		{
-			        		    var chartData = [];
-								for(var i=0; i < json.length ; i++){
-			        			 var applicantSource = json[i];
-			        			    chartData.push( {
-			        			    	category: applicantSource.category,
-			        					column2: applicantSource.applicantsCount,
-			        					column3: applicantSource.shortlistedCount,
-			        					column4: applicantSource.interviewsCount,
-			        					column5: applicantSource.rejectedCount,
-			        					column6: applicantSource.offeredCount,
-			        					column7: applicantSource.offerAcceptedCount,
-			        					column8: applicantSource.offerRejectedCount,
-			        					column9: applicantSource.backoutCount
-			        			     
-			        			    } );
-			        			  }
+	   if(flag){
+			$.ajax({ 
+				   	type: "GET",
+				 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+				    success: function(json) {
+				    	
+				        	if(json.length > 0)	
+				 	   		{
+				        		    var chartData = [];
+									for(var i=0; i < json.length ; i++){
+				        			 var applicantSource = json[i];
+				        			    chartData.push( {
+				        			    	category: applicantSource.category,
+				        					column2: applicantSource.applicantsCount,
+				        					column3: applicantSource.shortlistedCount,
+				        					column4: applicantSource.interviewsCount,
+				        					column5: applicantSource.rejectedCount,
+				        					column6: applicantSource.offeredCount,
+				        					column7: applicantSource.offerAcceptedCount,
+				        					column8: applicantSource.offerRejectedCount,
+				        					column9: applicantSource.backoutCount
+				        			     
+				        			    } );
+				        			  }
+				        	
+				        		 loadApplicantSourceChart(chartData);
+				        		 
+				        		 var listView = document.getElementById("listView");
+					        	 listView.addEventListener("click", function() {
+									 getListView(json);
+								  });
+					        	 
+					        	 var graphicView = document.getElementById("graphicView");
+					        	 graphicView.addEventListener("click", function() {
+					        		 loadApplicantSourceChart(chartData);
+								  });
+				 	   		}else{
+				 	   			var result = '';
+				 	   			result = result+"<div class='dataTables_empty'>"; 
+				 	   			result = result+"</div> ";
+				 	   	        $("#applicantSource").empty();
+				                $("#applicantSource").append(result);
+				 	   		}
+				        	
+				        	 
 			        	
-			        		 loadApplicantSourceChart(chartData);
-			 	   		}
-			        	
-			        	 var listView = document.getElementById("listView");
-			        	 listView.addEventListener("click", function() {
-							 getListView(json);
-						  });
-			        	 
-			        	 var graphicView = document.getElementById("graphicView");
-			        	 graphicView.addEventListener("click", function() {
-			        		 loadApplicantSourceChart(chartData);
-						  });
-		        	
-		        },
-		        error: function(e){
-		        }
-		 });
+			        },
+			        error: function(e){
+			        }
+			 });
+	   }
   }
   </script>
 
@@ -386,4 +457,41 @@ $(document).ready(function(){
  		}
  }
  </script>
+ <script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
  
