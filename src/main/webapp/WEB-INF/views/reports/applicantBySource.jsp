@@ -173,14 +173,15 @@ function getCustomDates(){
 				        			 var applicantSource = json[i];
 				        			    chartData.push( {
 				        			    	category: applicantSource.category,
-				        					column2: applicantSource.applicantsCount,
-				        					column3: applicantSource.shortlistedCount,
-				        					column4: applicantSource.interviewsCount,
-				        					column5: applicantSource.rejectedCount,
-				        					column6: applicantSource.offeredCount,
-				        					column7: applicantSource.offerAcceptedCount,
-				        					column8: applicantSource.offerRejectedCount,
-				        					column9: applicantSource.backoutCount
+				        					column2: applicantSource.applicantsAvgCount,
+				        					column3: applicantSource.shortlisteAvgdCount,
+				        					column4: applicantSource.submitToClientAvgCount,
+				        					column5: applicantSource.interviewsAvgCount,
+				        					column6: applicantSource.rejectedAvgCount,
+				        					column7: applicantSource.offeredAvgCount,
+				        					column8: applicantSource.offerAcceptedAvgCount,
+				        					column9: applicantSource.offerRejectedAvgCount,
+				        					column10: applicantSource.backoutAvgCount
 				        			     
 				        			    } );
 				        			  }
@@ -232,6 +233,7 @@ function getCustomDates(){
 			"responsive": {
 				"enabled": true
 			},
+			
 			"categoryAxis": {
 				"autoRotateAngle": 30,
 				"autoRotateCount": 0,
@@ -285,7 +287,7 @@ function getCustomDates(){
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
 					"id": "applicants",
-					"labelText": "[[value]]",
+					"labelText": "[[value]] %",
 					"legendValueText": "",
 					"lineColor": "#90CAF9",
 					"title": "Applicants",
@@ -298,21 +300,21 @@ function getCustomDates(){
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
 					"id": "shortlisted",
-					"labelText": "[[value]]",
+					"labelText": "[[value]] %",
 					"lineColor": "#F48FB1",
 					"title": "Shortlisted",
 					"type": "column",
 					"valueField": "column3"
 				},
-				  {
+				{
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#FFCC80",
-					"id": "interviews",
-					"labelText": "[[value]]",
-					"lineColor": "#FFCC80",
-					"title": "Interviews",
+					"fillColors": "#FF8A54",
+					"id": "submittoclient",
+					"labelText": "[[value]] %",
+					"lineColor": "#FF8A54",
+					"title": "Submit to client",
 					"type": "column",
 					"valueField": "column4"
 				},
@@ -320,11 +322,11 @@ function getCustomDates(){
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#B39DDB",
-					"id": "rejected",
-					"labelText": "[[value]]",
-					"lineColor": "#B39DDB",
-					"title": "Rejected",
+					"fillColors": "#FFCC80",
+					"id": "interviews",
+					"labelText": "[[value]] %",
+					"lineColor": "#FFCC80",
+					"title": "Interviews",
 					"type": "column",
 					"valueField": "column5"
 				},
@@ -332,11 +334,11 @@ function getCustomDates(){
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#81C784",
-					"id": "offered",
-					"labelText": "[[value]]",
-					"lineColor": "#81C784",
-					"title": "Offered",
+					"fillColors": "#B39DDB",
+					"id": "rejected",
+					"labelText": "[[value]] %",
+					"lineColor": "#B39DDB",
+					"title": "Rejected",
 					"type": "column",
 					"valueField": "column6"
 				},
@@ -344,11 +346,11 @@ function getCustomDates(){
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#E57373",
-					"id": "offerAccepted",
-					"labelText": "[[value]]",
-					"lineColor": "#E57373",
-					"title": "Offer Accepted",
+					"fillColors": "#81C784",
+					"id": "offered",
+					"labelText": "[[value]] %",
+					"lineColor": "#81C784",
+					"title": "Offered",
 					"type": "column",
 					"valueField": "column7"
 				},
@@ -356,11 +358,11 @@ function getCustomDates(){
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#FF8A54",
-					"id": "offerrejected",
-					"labelText": "[[value]]",
-					"lineColor": "#FF8A54",
-					"title": "Offer Rejected",
+					"fillColors": "#E57373",
+					"id": "offerAccepted",
+					"labelText": "[[value]] %",
+					"lineColor": "#E57373",
+					"title": "Offer Accepted",
 					"type": "column",
 					"valueField": "column8"
 				},
@@ -368,13 +370,25 @@ function getCustomDates(){
 					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#F44336",
-					"id": "backout",
-					"labelText": "[[value]]",
-					"lineColor": "#F44336",
-					"title": "Backout",
+					"fillColors": "#D84315",
+					"id": "offerrejected",
+					"labelText": "[[value]] %",
+					"lineColor": "#D84315",
+					"title": "Offer Rejected",
 					"type": "column",
 					"valueField": "column9"
+				},
+				{
+					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"columnWidth": 0.3,
+					"fillAlphas": 1,
+					"fillColors": "#BCAAA4",
+					"id": "backout",
+					"labelText": "[[value]] %",
+					"lineColor": "#BCAAA4",
+					"title": "Backout",
+					"type": "column",
+					"valueField": "column10"
 				}
 			],
 	 });
