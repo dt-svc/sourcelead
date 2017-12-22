@@ -3,11 +3,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
- <script src="/resources/js/amcharts.js"></script>
+<script src="/resources/js/amcharts.js"></script>
 <script src="/resources/js/serial.js"></script>
 <script src="/resources/js/light.js"></script>
 <script src="/resources/js/pie.js"></script>
 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -88,7 +90,7 @@ $(document).ready(function(){
     	<div class="clearfix"></div>
    	 	<!-- Applicant source Graph 2017 -->
     	 	<div class="dashboard-widget clearfix mt">
-    	 	<div id="applicantSource" class="amchartAnchor-Hide" style="height: 350px; width: 100%;"></div>
+    	 	<div id="applicantSource" class="" style="height: 350px; width: 100%;"></div>
     	 	</div>
     	 	<!-- Applicant source Graph December 2017 -->
     	 	
@@ -242,6 +244,9 @@ function getCustomDates(){
 			"colors": [],
 			"startDuration": 1,
 			"responsive": {
+				"enabled": true
+			},
+			"export": {
 				"enabled": true
 			},
 			
