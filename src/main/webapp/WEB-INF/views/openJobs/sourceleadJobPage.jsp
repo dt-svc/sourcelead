@@ -156,8 +156,8 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/sourcelead//resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg1.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg3.jpg);"></li>
 	</ul> 
 <content>
 		<h1>
@@ -457,7 +457,7 @@ $(window).scroll(function (e) {
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
-				+ '("<option selected disabled></option>")';
+				+ '("<option selected value="">--Select Experience--</option>")';
 		for (var i = 1; i <= 25; i++) {
 			result = result + '("<option value='+i+'>' + i + '</option>")';
 		}
