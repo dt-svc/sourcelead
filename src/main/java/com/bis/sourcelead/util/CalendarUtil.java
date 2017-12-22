@@ -776,6 +776,13 @@ public  class CalendarUtil {
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return format.format(calendar.getTime()); 
 	}
+	
+	public static Date getNextDate(Date  curDate) throws ParseException {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(curDate);
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		return calendar.getTime(); 
+	}
 
 	/*public static String getShortDateFromLongDate(String  curDate) throws ParseException {
 		final DateFormat format =Constants.DF_DMY;
