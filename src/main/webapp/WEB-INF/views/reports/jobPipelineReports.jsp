@@ -1,6 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <script src="/resources/js/pie.js"></script> 
+ <script src="/resources/js/amcharts.js"></script> 
+ <script src="/resources/js/serial.js"></script> 
+ <script src="/resources/reports/export.min.js"></script> 
+ <script src="/resources/js/themes/light.js"></script> 
 <script>
 $(document).ready(function() {
 	getJobPipelineReports();
@@ -25,32 +31,25 @@ $(document).ready(function() {
        
         <div class="col-md-4">
     <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple="" data-selected-text-format="count > 3" title="Select Job" data-live-search="true" style="display: none;">
-		<option>Job-1</option>
-		<option>Job-2</option>
-		<option>Job-3</option>
-		<option>Job-4</option>
-		<option>Job-5</option>
-		<option>Job-1</option>
-		<option>Job-2</option>
-		<option>Job-3</option>
-		<option>Job-4</option>
-		<option>Job-5</option>
-		</select> 
+		<select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+            <c:forEach var="option" items="${requirementsList}">
+				<option value="${option.requirementId}">${option.jobTitle}</option>
+			</c:forEach>
+          </select>
 	</div>
         </div>
         <div class="col-md-3 dropdown-select">
         <div class="dropdown-select positionRelative">
-        <select class="form-control" id="custom-dates">
-          <option>Select Date</option>
-          <option>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
-          <option>Year to Date</option>
-          <option value="custom">Custom</option>
-        </select>
+        <select class="form-control" name="dateSelection" id="dateSelection">
+            <option value=''>Select Date</option>
+            <option value='Last_7_days' selected>Last 7 days</option>
+            <option value='Last_15_days'>Last 15 days</option>
+            <option value='1_month'>1 month</option>
+            <option value='3_months'>3 months</option>
+            <option value='YTD'>YTD</option>
+            <option value='Last_Year'>Last Year</option>
+            <option value="custom">Custom</option>
+          </select>
         <!-- Top Leave Takers Custom Date -->
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
     <div class="pull-left">
@@ -93,135 +92,155 @@ $(document).ready(function() {
 
 <script>
 function getJobPipelineReports(){
-	 $.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/getAllJobsPipelineReoportsList?"+tokenParamName+"="+tokenValue+"",        
-	         success :function(data) { 
-	        	 var json = JSON.parse(data);
-	        	 var report1 = json[0];
-	        	 
-	        	 //$("#applicantsCount").html(report1.numOfSubmissions);
-	        	 $("#shortlistCount").html(report1.numOfShortList);
-	        	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
-	        	 $("#interviewCount").html(report1.numOfInterview);
-	        	 $("#offersCount").html(report1.numOfOffers);
-	        	 $("#rejectedCount").html(report1.numOfRejected);
-	        	 $("#requestSent").html(report1.numofrequestsent);
-	        	 //$("#duplicateApplicantsCount").html(report1.duplicateCount);
-	         },
-		  });
+	
+	 var jobIds = $("#jobIds").val();
+	  if(jobIds == null){
+		  jobIds = '';
+	  }
+	  var dateSelection = $("#dateSelection").val(); 
+		
+	  $.ajax({ 
+		   	type: "POST",
+		   	url: sourceleadUrl+"/getAllJobsPipelineReoportsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
+		    success: function(data) {
+		    	getJobsPipelineAmcahrt(data);
+		    }
+		 });
+	  
 }
 
 </script>
-<!-- amCharts javascript code --> 
-<script type="text/javascript">
-			AmCharts.makeChart("jobspipline",
-				{
-					"type": "serial",
-					"categoryField": "category",
-					"rotate": true,
-					"marginBottom": 0,
-					"marginLeft": 0,
-					"marginRight": 30,
-					"marginTop": 0,
-					"colors": [],
-					"startDuration": 1,
-					"fontSize": 10,
-					"categoryAxis": {
-						"gridPosition": "start",
+  
+<script>
+function getJobsPipelineAmcahrt(data){
+	var mainChar = [];
+	if(data.applicantsCount>0){
+		mainChar.push( {
+			"category": "Applicant(s)",
+			"column-1": data.applicantsCount,
+			"Color": "#90CAF9",
+			"Days": 80,
+			"moveforward": "78"
+		    } );
+	}
+	
+	if(data.shortlistedCount>0){
+		mainChar.push( {
+			"category": "Shortlisted",
+			"column-1": data.shortlistedCount,
+			"Color": "#F48FB1",
+			"Days": data.shortlistedDays,
+			"moveforward": 8
+		    } );
+	}
+	
+	if(data.interviewsCount>0){
+		mainChar.push( {
+			"category": "Interviewed",
+		    "column-1": data.interviewsCount,
+		    "Color": "#FFCC80",
+		    "Days": data.interviewsDays,
+		    "moveforward": 39
+		} );
+	}
+	
+	if(data.offeredCount>0){
+		mainChar.push({
+			"category": "Offered",
+			"column-1": data.offeredCount,
+			"Color": "#B39DDB",
+			"Days": data.offeredDays,
+			"moveforward": 50
+		});
+	}
+	if(data.offeredAcceptedCount>0){
+		mainChar.push({
+			"category": "Offers Accepted",
+			"column-1": data.offeredAcceptedCount,
+			"Color": "#81C784",
+			"Days": 15,
+			"moveforward": 50
+		});
+	}
+	
+	if(data.backoutCount>0){
+		mainChar.push({
+			"category": "Backout(s)",
+			"column-1": data.backoutCount,
+			"Color": "#E57373",
+			"Days": data.backoutDays,
+			"moveforward": 84
+		});
+	}
+	
+	
+	AmCharts.makeChart("jobspipline",
+			{
+				"type": "serial",
+				"categoryField": "category",
+				"rotate": true,
+				"marginBottom": 0,
+				"marginLeft": 0,
+				"marginRight": 30,
+				"marginTop": 0,
+				"colors": [],
+				"startDuration": 1,
+				"fontSize": 10,
+				"categoryAxis": {
+					"gridPosition": "start",
+					"axisThickness": 0,
+					"gridThickness": 0,
+					"tickLength": 10,
+					"titleRotation": -1
+				},
+				"trendLines": [],
+				"graphs": [
+					{
+						"descriptionField": "Days",
+						"fillAlphas": 1,
+						"fillColorsField": "Color",
+						"id": "AmGraph-1",
+						"labelPosition": "right",
+						"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
+						"lineColorField": "Color",
+						"lineThickness": 0,
+						"maxBulletSize": 0,
+						"title": "graph 1",
+						"type": "column",
+						"valueField": "column-1"
+					},
+					{
+						"id": "AmGraph-2",
+						"title": "graph 2",
+						"valueField": "Color"
+					}
+				],
+				"guides": [],
+				"valueAxes": [
+					{
+						"id": "ValueAxis-1",
 						"axisThickness": 0,
 						"gridThickness": 0,
-						"tickLength": 10,
-						"titleRotation": -1
-					},
-					"trendLines": [],
-					"graphs": [
-						{
-							"descriptionField": "Days",
-							"fillAlphas": 1,
-							"fillColorsField": "Color",
-							"id": "AmGraph-1",
-							"labelPosition": "right",
-							"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
-							"lineColorField": "Color",
-							"lineThickness": 0,
-							"maxBulletSize": 0,
-							"title": "graph 1",
-							"type": "column",
-							"valueField": "column-1"
-						},
-						{
-							"id": "AmGraph-2",
-							"title": "graph 2",
-							"valueField": "Color"
-						}
-					],
-					"guides": [],
-					"valueAxes": [
-						{
-							"id": "ValueAxis-1",
-							"axisThickness": 0,
-							"gridThickness": 0,
-							"labelsEnabled": false,
-							"title": ""
-						}
-					],
-					"allLabels": [],
-					"balloon": {},
-					"titles": [
-						{
-							"id": "Title-1",
-							"size": 15,
-							"text": "Jobs Pipline"
-						}
-					],
-					"dataProvider": [
-						{
-							"category": "Applicant(s)",
-							"column-1": "100",
-							"Color": "#90CAF9",
-							"Days": 80,
-							"moveforward": "78"
-						},
-						{
-							"category": "Shortlisted",
-							"column-1": "75",
-							"Color": "#F48FB1",
-							"Days": 35,
-							"moveforward": 8
-						},
-						{
-							"category": "Interviewed",
-							"column-1": "60",
-							"Color": "#FFCC80",
-							"Days": 68,
-							"moveforward": 39
-						},
-						{
-							"category": "Offered",
-							"column-1": "50",
-							"Color": "#B39DDB",
-							"Days": 51,
-							"moveforward": 50
-						},
-						{
-							"category": "Offers Accepted",
-							"column-1": "30",
-							"Color": "#81C784",
-							"Days": 15,
-							"moveforward": 50
-						},
-						{
-							"category": "Backout(s)",
-							"column-1": "10",
-							"Color": "#E57373",
-							"Days": 34,
-							"moveforward": 84
-						}
-					]
+						"labelsEnabled": false,
+						"title": ""
+					}
+				],
+				"allLabels": [],
+				"balloon": {},
+				"titles": [
+					{
+						"id": "Title-1",
+						"size": 15,
+						"text": "Jobs Pipline"
+					}
+				],
+				"dataProvider": mainChar
+            }
+		); 
+	 
 }
-			);
-		</script> 
+
+</script>
 		
 <script type="text/javascript">
 var config = {

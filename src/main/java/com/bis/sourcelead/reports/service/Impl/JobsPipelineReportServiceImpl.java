@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.reports.dao.JobsPipelineReportDao;
 import com.bis.sourcelead.reports.service.JobsPipelineReportService;
 
@@ -27,8 +28,15 @@ public class JobsPipelineReportServiceImpl implements JobsPipelineReportService{
 
 
 	@Override
-	public List<RequirementSubmission> getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(Long orgLocationId, String loginUserCode, Date startUTCDate, Date endUTCDate) {
-		return jobsPipelineReportDao.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(orgLocationId, loginUserCode, startUTCDate, endUTCDate);
+	public List<RequirementSubmission> getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(List<Long> jobIds,Date[] searchDates) {
+		return jobsPipelineReportDao.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIds, searchDates);
+	}
+
+
+
+	@Override
+	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonId(Long submissionId) throws Exception {
+		return jobsPipelineReportDao.getAllJobsReportsCountsBySubmmisonId(submissionId);
 	}
 	
 }
