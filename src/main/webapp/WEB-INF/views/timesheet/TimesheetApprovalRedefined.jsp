@@ -17,6 +17,7 @@
 		            <div class="pull-right brud-crum"><a href="">Home</a> » Timesheet approval</div>
 		       <div class="clearfix"></div>
 		   </section>
+		    <div  id="loadTimeHead"></div>
 		   <div id="timesheetApprovalDiv" class="datatable_filter">
 			   <div class="timesheet_out">
 			     	<div class="timesheet_appr_wrap">
@@ -60,16 +61,15 @@
 	  	           }else{
 	  	        	 searchValue = '';
 	  	           }
-		           
 		           $("#timeApprovaldiv").empty();
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
 		      	          type : "POST",
 	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode+"&userId="+userId+"&searchValue="+searchValue,		
 	        		      success :function(data) {
+	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
-	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
 	        		    	  preparePagination(1);
 	        		      }

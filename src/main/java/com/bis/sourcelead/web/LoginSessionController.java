@@ -496,7 +496,8 @@ public class LoginSessionController {
 				}
 				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
-						response.sendRedirect(redirectUrl.append("/app/professionalPraseCandidate").toString());
+						model.setViewName("professional/professionalPraseCandidate");
+						//response.sendRedirect(redirectUrl.append("/app/professionalPraseCandidate").toString());
 					}else{
 						model.setViewName("professional/professionalDashboard");
 					}

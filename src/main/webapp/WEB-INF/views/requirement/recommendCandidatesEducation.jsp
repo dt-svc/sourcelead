@@ -19,6 +19,9 @@ function candidateEducation(candidateId){
 	}else{
 		result = result  +'    	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>                                                            ';
 	}
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -669,7 +672,11 @@ function candidateEducationStore(candidateId){
 				            			$("#quickDisVal").empty();
 				            			$("#quickDisVal").append(data+'%');
 				               			 $("#popUpDiv").removeClass("edit-details-active");
+				               			$("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+				        				$("#eduMsgDiv").html("Success!! New Education added");
 				               			 candidateEducationList(candidateId);
+				               			eduMsgFadeinFunction();
 							    	}
 				                 }   
 				      }, 
@@ -686,7 +693,12 @@ $('body').on('blur', '#education_form', function() {
 
 
 </script>            
-          
+ <script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>          
 
 <script type="text/javascript">
 	(function($) {
@@ -755,8 +767,13 @@ function removeEducation(candidateEducationId,candidateId){
    	          				 $("#quickPerVal").removeClass('progress-bar-danger');
    	          				 $("#quickPerVal").addClass("progress-bar-success");
    	          			 }
+   	          	   	$("#selector4").removeAttr("style");
+       			 $("#selector4").css({ display: "block" });
+       			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
              			candidateEducationList(candidateId);
+             			eduMsgFadeinFunction();
+             			
 			    	}
                } 
         },

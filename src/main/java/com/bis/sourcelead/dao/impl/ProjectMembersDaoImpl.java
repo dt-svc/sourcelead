@@ -448,8 +448,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+  "      (  projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
 					+ "                             ("
-					+ "                                  (pah.level = '2' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
-					+ "                               OR (pah.level = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
+					+ "                                  (pah.level = '2' and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
+					+ "                               OR (pah.level = '1'  and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
@@ -460,8 +460,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+  "      (  pm.projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and "
 					+ "                             ("
-					+ "                                  (pah.level = '2' and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
-					+ "                               OR (pah.level = '1' and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
+					+ "                                  (pah.level = '2'  and pah.status = '1'  and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')))"
+					+ "                               OR (pah.level = '1'  and pah.status = '1'  and (pm.projectMemberCandidteId.consultantUser IS NULL OR pm.projectMemberCandidteId.consultantUser IS NOT NULL and pm.projectMemberCandidteId.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
 					 + "       OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id)"
@@ -602,6 +602,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		 searchQuery.append(" and (candidate.firstName like '%" + searchValue + "%' ")
 					.append("OR candidate.lastName like '%" + searchValue + "%' ")
+					.append("OR (concat(candidate.firstName,' ',candidate.lastName) like '%" + searchValue + "%')")
+					.append("OR candidate.email like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
 		 			.append("OR projects.invoiceFrequency like '%" + searchValue + "%' )");
@@ -612,6 +614,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		searchCountQuery.append(" and (pm.projectMemberCandidteId.firstName like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "%' ")
+						.append("OR (concat(pm.projectMemberCandidteId.firstName,' ',pm.projectMemberCandidteId.lastName) like '%" + searchValue.trim() + "%')")
+						.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
 						.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 						.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
 			 			.append("OR pm.projects.invoiceFrequency like '%" + searchValue + "%' )");

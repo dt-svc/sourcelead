@@ -706,10 +706,10 @@ public class ContractRestController {
 		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 		 	}
-		 	
+		 	contract.setOrgRelationUUID(contract.getOrgRelations().getUUID());
 		 	}
 		 	
-		 	contract.setOrgRelationUUID(contract.getOrgRelations().getUUID());
+		 	
 		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();
@@ -727,7 +727,7 @@ public class ContractRestController {
 					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
 				}
 		 	}
-		 	if(null != contract.getRequirementSubmission()){
+		 	if(null != contract.getRequirementSubmission() && contract.getRequirementSubmission().getRequirement() != null){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
 		 	

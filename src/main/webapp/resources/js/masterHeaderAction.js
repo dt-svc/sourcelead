@@ -5,6 +5,7 @@
 			$('.content-wraper').toggleClass("content-wraper-active");
 			$('.footer-area').toggleClass("footer-area-active");
 			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
+			$('.cusFieldHeadFixed').toggleClass('cusFieldHeadFixedAct');
 			$(".collapses").hide();
 			});
 		$('.srch-btn-xs').click(function(){
