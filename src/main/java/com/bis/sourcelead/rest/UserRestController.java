@@ -102,7 +102,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 @RequestMapping("/app")
 public class UserRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
