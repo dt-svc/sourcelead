@@ -16,6 +16,6 @@ public interface ClientReportService {
 
 	Map<String, Integer> getAllClientsSpocCountByOrgLocationIdAndUserId(Long locationId, Long userId);
 
-	List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user, String userRoleName, Date startDate, Date endDate);
+	Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user, String userRoleName, Date startDate, Date endDate);
 
 }

@@ -639,9 +639,9 @@ $(document).ready(function(){
 
 <script>
 function getTopTenClientReports(){
-// 	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
+	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
 		
-// 	});
+	});
 }
 </script>
 		

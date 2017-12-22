@@ -1,5 +1,6 @@
 package com.bis.sourcelead.reports.service.Impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,13 +56,16 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,Date startDate,Date endDate)
+	public Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,Date startDate,Date endDate)
 	{
+		Map<String, Integer> conCount = new HashMap<>();
 		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
+		List<Contracts> contractList = new ArrayList<>();
 		for(OrgRelations rel : orgRelationsList){
-			List<Contracts> contractList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,rel.getId(),userRoleName,startDate,endDate);
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,rel.getId(),userRoleName,startDate,endDate);
+			contractList.add(conList.size());
 		}
-		return null;
+		return conCount;
 	}
 
 }
