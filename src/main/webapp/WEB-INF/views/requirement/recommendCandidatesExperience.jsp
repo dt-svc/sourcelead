@@ -19,12 +19,15 @@
 		}else{
 			result = result	+ '   	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';	
 		}
+		result  = result + '<div class="success_pop" id="selector3" style="display: none;">';
+	    result  = result + '<i class="fa fa-check-circle"></i><span id="empMsgDiv"></span>';
+	    result  = result + '</div>';
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result = result + '   <div id="candidateEmployersList" class="datatable_filter"></div>';
 		result = result + '   </div>';
-
+        
 		$("#tab-11").empty();
 		$("#tab-12").empty();
 		$("#tab-13").empty();
@@ -59,48 +62,71 @@ function closeCertificatePopup(){
 			borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
-		};
-		if ($('#employers_form').validate(false, validationSettings)) {
-			//It will escape all the special characters
-			var formData = getFormData('employers_form');
-			$.ajax({
-						type : "POST",
-						data : formData,
-						url : sourceleadUrl+ "/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-						success : function(data) {
+		};if ($('#employers_form').validate(false, validationSettings)) {
+			
+			var formData = getFormData("employers_form");
+			var startYear = document.getElementById("startYear").value;
+			var endYear = document.getElementById("endYear").value;
+			if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+				document.getElementById("endYearValidation").style.display="block";
+				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
+				
+			}
+			else{
+			$("#candidateEmployersAdd").attr("disabled", "disabled");
+			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(data) {
+	        	
+	        	if (data != null && data != 'undefined'
+					&& data != "") {
+				if (data.indexOf('Sign In') >= 0) {
+					location.replace(sourceleadUrl);
+				} else if (data.indexOf('exception') >= 0) {
+					location.replace(sourceleadUrl  + "/errorPage");
+				} else {
+					$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			   $("#perVal").removeClass('progress-bar-success');
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").removeClass("progress-bar-danger");
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
+        			
+        			// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
 
-							if (data != null && data != 'undefined'	&& data != "") {
-									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-			            			 if(data<50){
-			            			   $("#perVal").removeClass('progress-bar-success');
-			            			   $("#perVal").addClass("progress-bar-danger");
-			            			 }
-			            			 if(data>=50){
-			            				 $("#perVal").removeClass("progress-bar-danger");
-			            				 $("#perVal").addClass("progress-bar-success");
-			            			 }
-			            			 $("#disVal").empty();
-			            			$("#disVal").append(data+'%');
-			            			
-			            			// for quick view bar update
-			            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-				          			 if(data<50){
-					          			   $("#quickPerVal").removeClass('progress-bar-success');
-					          			   $("#quickPerVal").addClass("progress-bar-danger");
-					          			 }
-					          			 if(data>=50){
-					          				 $("#quickPerVal").removeClass('progress-bar-danger');
-					          				 $("#quickPerVal").addClass("progress-bar-success");
-					          			 }
-
-			            			$("#quickDisVal").empty();
-			            			$("#quickDisVal").append(data+'%');
-			            			closeCertificatePopup();
-									candidateEmployersList(candidateId);
-							}
-
-						},
-					});
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
+        			
+					$("#popUpDivEmp").removeClass("edit-details-active");
+        			$("#selector3").removeAttr("style");
+        			$("#selector3").css({ display: "block" });
+        			$("#empMsgDiv").html("Success!! New Employer added");
+					candidateEmployersList(candidateId);
+					empMsgFadein();
+					qvemployeeSubmission(candidateId);
+					
+					setTimeout(function(){
+			 			candidateList();					 			
+			 		},100);
+				}
+	        	}
+			
+	        });
+			
+			}
 			return true;
 		} else {
 			return false;
@@ -111,6 +137,15 @@ function closeCertificatePopup(){
 		$("#employers_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+<script>
+	function empMsgFadein() {
+		$("#selector3").fadeIn(200);
+        $('#selector3').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
+
+
 
 
 
@@ -672,6 +707,30 @@ function employeePagination(){
 
 
 
+<script type="text/javascript">
+function deletePopup(){
+	$("#remove_user_pop_emp, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteExcepPopUp"></div> 
+
+<script type="text/javascript">
+function removeEmployer(candidateemployerId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_emp' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Employer</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deletePopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteExcepPopUp").empty();
+	$("#deleteExcepPopUp").append(result);
+	$("#remove_user_pop_emp").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 <%-- 
      @author : David Sammeta.
      this script is getting removing Employer in the  List .
@@ -680,7 +739,7 @@ function employeePagination(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-	function removeEmployer(candidateemployerId, candidateId) {
+	function deleteSelectedEmployer(candidateemployerId, candidateId) {
 
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -723,8 +782,17 @@ function employeePagination(){
 		            			$("#quickDisVal").empty();
 		            			$("#quickDisVal").append(data+'%');
 								$("#popUpDivEmp").removeClass("edit-details-active");
+								$("#selector3").removeAttr("style");
+			         			 $("#selector3").css({ display: "block" });
+			         			 $("#empMsgDiv").html("Employer deleted");
+								 $("#popUpDivEmp").removeClass("edit-details-active");
+								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								closeCertificatePopup();
 								candidateEmployersList(candidateId);
+								empMsgFadein();
+								 setTimeout(function(){
+							 			candidateList();					 			
+							 	 },100);
 							}
 						}
 					},
