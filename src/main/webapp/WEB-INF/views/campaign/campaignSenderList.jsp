@@ -12,14 +12,14 @@ $(document).ready(function(){
 
 <!-- Content Area -->
   <section class="content-wraper">
-    <section class="content-header clearfix">
+   <section class="content-header clearfix">
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
       <div class="pull-left">
         <h2>Senders list</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Senders list </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Senders list </div>
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -74,7 +74,7 @@ function getSendersList(){
 	         result += '    <th>Nikname</th>';
 	         result += '    <th>From mail</th>';
 	         result += '    <th>Reply mail</th>';
-	         result += '    <th>Verified</th>';
+	        /*  result += '    <th>Verified</th>'; */
 	         result += '    <th>Action</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
@@ -99,20 +99,20 @@ function getSendersList(){
 			         result += '    </td>';
 			         result += '    <td>';
 			         if(report.cpnSenderFromMail != null && report.cpnSenderFromMail != '' && report.cpnSenderFromMail != 'undefined'){
-			        	 result += '      <div title="'+report.cpnSenderFromMail+'" class="tbldata-dotdot-100">'+report.cpnSenderFromMail+'</div>'; 
+			        	 result += '      <div title="'+report.cpnSenderFromMail+'" class="tbldata-dotdot">'+report.cpnSenderFromMail+'</div>'; 
 			         }
 			         result += '    </td>';
 			         result += '    <td>';
 			         if(report.cpnReplyMail != null && report.cpnReplyMail != '' && report.cpnReplyMail != 'undefined'){
-			        	 result += '        <div title="'+report.cpnReplyMail+'" class="tblminwidth-75">'+report.cpnReplyMail+'</div>'; 
+			        	 result += '        <div title="'+report.cpnReplyMail+'" class="tblminwidth">'+report.cpnReplyMail+'</div>'; 
 			         }
 			         result += '    </td>';
 			         
-			         if(report.isSenderEmailVerified != null && report.isSenderEmailVerified != '' && report.isSenderEmailVerified != 'undefined'){
+			        /*  if(report.isSenderEmailVerified != null && report.isSenderEmailVerified != '' && report.isSenderEmailVerified != 'undefined'){
 			        	 result += '  <td><div><i class="glyphicon glyphicon-ok"></i></div></td>';
 			         }else{
 			        	 result += '  <td><div><i class="glyphicon glyphicon-ok"></i></div></td>';
-			         }
+			         } */
 			         result += ' <td><div><i class="glyphicon glyphicon-pencil" onclick="campaignSender(this,'+report.id+');"></i><i class="glyphicon glyphicon-trash ml10" onclick="deleteIdentity('+report.id+');"></i></div></td>';
 			         result += '  </tr>';
 		    	 } 

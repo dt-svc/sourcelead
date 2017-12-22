@@ -19,6 +19,7 @@ import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -381,9 +382,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public List<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
-			Long userId, Long orgLocationId, String status,String userRole) throws Exception {
-		List<SubmissionApproverHierarchy> list = new ArrayList<SubmissionApproverHierarchy>();
+	public ResponseList<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
+			Long userId, Long orgLocationId, String status,String userRole,String search,int start,int length) throws Exception {
+		ResponseList<SubmissionApproverHierarchy> list = new ResponseList<SubmissionApproverHierarchy>();
 		
          if(status != null){
  			//if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
@@ -391,16 +392,16 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
  				 *  New  Timesheet List  as  per new User Story 
  				 */
  				 if("APPROVED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  status);
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId,  status,search,start,length);
   				}
                  if("REJECTED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length);
   				}
                  if("SUBMITTED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length);
   				}
                  if("DRAFT".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, status);
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length);
   				}
  				
                  /*}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
@@ -509,5 +510,17 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId){
 		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId);
 	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByProjectApproverHierarchyId(Long projectApproverHierarchyId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectApproverHierarchyId(projectApproverHierarchyId);
+	}
+	
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(Long projectApproverHierarchyId,Long submissionId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(projectApproverHierarchyId,submissionId);
+	}
+	
+	
 
 }

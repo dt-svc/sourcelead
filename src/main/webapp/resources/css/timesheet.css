@@ -1332,7 +1332,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
           
 .modal-backdrop { z-index:10400;}
  
-.modal { z-index:105000;}
+.modal { z-index:105000 !important;}
        
        
        
@@ -2228,6 +2228,7 @@ margin-bottom:15px !important;
 .timeNewSe.timeNewSe_a {
     width:240px;
 }
+
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
 }
@@ -4620,7 +4621,7 @@ display:none;
     padding:0px 15px;
 }
 .proj_show a {
-    color:#454545;
+    color:#368ee0;
 }
 .expDetails .text-danger {
     float: none; width: auto; color: red; display: inline;
@@ -6008,6 +6009,9 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .popMask {
     position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:999999; display:none;
 }
+.popMaskCustom{
+	 position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; display:none; z-index: 9999;
+}
 .popUpOut {
 	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
@@ -6699,7 +6703,24 @@ text-shadow: 0 1px 0 #fff;
 .removeNote i {
 	padding: 5px; cursor: pointer; font-size: 16px; display: inline-block;
 }
-
+.cusFieldHeadFixed {
+	position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box; padding: 15px 20px 15px 210px !important;
+}
+.cusFieldHeadFixedAct {
+	padding: 15px 20px 15px 70px !important;
+}
+.immigraTabsWrapFixed {
+	margin: 50px 0px 0px 0px !important;
+}
+.timeNewStatus {
+	float: right; width: 240px;
+}
+.timeNewStatus b {
+	width: 45%;
+}
+.timesheetApproved-status {
+    float: right; width: 320px !important;
+}
 .noRecordFound {
 	border-top: 1px solid #ededed; background-color: #fff; text-align: center; padding: 45px 0px;
 }

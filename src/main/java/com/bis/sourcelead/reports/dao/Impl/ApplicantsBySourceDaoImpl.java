@@ -36,11 +36,21 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 
 	@Override
 	@Transactional
-	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date startDate, Date endDate,Long orgLocationId) {
+	public Integer getCrowdsourcingApplicantsCount(List<Long> jobIds, Date[] searchDates) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query ="select count(*) from RequirementSubmission rs where rs.requirement.orgLocationId =:orgLocationId ";
-		List<Long> submissionCount =   session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = null;
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			 query ="select count(*) from RequirementSubmission rs where rs.requirement.id IN (:jobIds) "
+					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate) and (rs.candidate.candidateType = 'Professional' OR (rs.vendorCandidateId.candidateType = 'Professional' AND rs.vendorCandidateId IS NOT NULL)) ";
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+		}else {
+			 query ="select count(*) from RequirementSubmission rs where (rs.candidate.candidateType = 'Professional' OR (rs.vendorCandidateId.candidateType = 'Professional' AND rs.vendorCandidateId IS NOT NULL)) and rs.requirement.id IN (:jobIds) ";
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setCacheable(true).list();
+		}
+		
 			Integer count= 0;
 			if(submissionCount != null && !submissionCount.isEmpty()){
 					count = submissionCount.get(0).intValue();
@@ -59,6 +69,156 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where ((rh.submissionId.candidate.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional')) OR (rh.submissionId.vendorCandidateId IS NOT NULL AND rh.submissionId.vendorCandidateId.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional'))) "
+							+ " and  rh.submissionId.requirement.parentRequirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}else {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where ((rh.submissionId.candidate.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional')) OR (rh.submissionId.vendorCandidateId IS NOT NULL AND rh.submissionId.vendorCandidateId.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional'))) "
+							+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}
+			
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
+		}else {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where ((rh.submissionId.candidate.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional')) OR (rh.submissionId.vendorCandidateId IS NOT NULL AND rh.submissionId.vendorCandidateId.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional'))) "
+					 		+ " and rh.toStage = :stage and rh.submissionId.requirement.parentRequirement.id IN (:jobIds) ";
+			}else {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where ((rh.submissionId.candidate.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional')) OR (rh.submissionId.vendorCandidateId IS NOT NULL AND rh.submissionId.vendorCandidateId.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional'))) "
+					 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
+			}
+			
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setString("stage", stage).setCacheable(true).list();
+		}
+		
+			Integer count= 0;
+			if(submissionCount != null && !submissionCount.isEmpty()){
+					count = submissionCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getVendorSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage) {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorLocationId IS NOT NULL "
+						+ " and  rh.submissionId.requirement.parentRequirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}else {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorLocationId IS NOT NULL "
+						+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}
+			
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
+		}else {
+			
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorLocationId IS NOT NULL "
+					 		+ " and rh.toStage = :stage and  rh.submissionId.requirement.parentRequirement.id IN (:jobIds) ";
+			}else {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorLocationId IS NOT NULL "
+					 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
+			}
+			
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setString("stage", stage).setCacheable(true).list();
+		}
+		
+			Integer count= 0;
+			if(submissionCount != null && !submissionCount.isEmpty()){
+					count = submissionCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates,
+			String stage) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.recruiterUserId IS NOT NULL "
+						+ " and rh.submissionId.requirement.parentRequirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}else {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.recruiterUserId IS NOT NULL "
+						+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}
+			 
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
+		}else {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.recruiterUserId IS NOT NULL "
+				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.parentRequirement.id IN (:jobIds) ";
+			}else {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.recruiterUserId IS NOT NULL "
+				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
+			}
+			 
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setString("stage", stage).setCacheable(true).list();
+		}
+		
+			Integer count= 0;
+			if(submissionCount != null && !submissionCount.isEmpty()){
+					count = submissionCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional
+	public Integer getInternalSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates, String stage,Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> submissionCount = null;
+		
+		if(searchDates != null) {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
+							+ " and  rh.submissionId.requirement.parentRequirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}else {
+				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
+							+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+			}
+			
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}else {
+			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
+				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.parentRequirement.id IN (:jobIds) ";
+			}else {
+				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
+				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
+			}
+			 
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setString("stage", stage).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		
+			Integer count= 0;
+			if(submissionCount != null && !submissionCount.isEmpty()){
+					count = submissionCount.get(0).intValue();
 			}
 			return count;
 	}
