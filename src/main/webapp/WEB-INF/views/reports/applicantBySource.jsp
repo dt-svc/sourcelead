@@ -181,7 +181,18 @@ function getCustomDates(){
 				        					column7: applicantSource.offeredAvgCount,
 				        					column8: applicantSource.offerAcceptedAvgCount,
 				        					column9: applicantSource.offerRejectedAvgCount,
-				        					column10: applicantSource.backoutAvgCount
+				        					column10: applicantSource.backoutAvgCount,
+				        					
+				        					
+				        					applicantsCount: applicantSource.applicantsCount,
+				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					submitToClientCount: applicantSource.submitToClientCount,
+				        					interviewsCount: applicantSource.interviewsCount,
+				        					rejectedCount: applicantSource.rejectedCount,
+				        					offeredCount: applicantSource.offeredCount,
+				        					offerAcceptedCount: applicantSource.offerAcceptedCount,
+				        					offerRejectedCount: applicantSource.offerRejectedCount,
+				        					backoutCount: applicantSource.backoutCount
 				        			     
 				        			    } );
 				        			  }
@@ -282,7 +293,7 @@ function getCustomDates(){
 			"titles": [],
 		   "graphs": [
 				{
-					"balloonText": "[[title]] of<br> [[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
@@ -291,11 +302,12 @@ function getCustomDates(){
 					"legendValueText": "",
 					"lineColor": "#90CAF9",
 					"title": "Applicants",
+					"countValue": "applicantsCount",
 					"type": "column",
 					"valueField": "column2"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
@@ -303,11 +315,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#F48FB1",
 					"title": "Shortlisted",
+					"countValue": "shortlistedCount",
 					"type": "column",
 					"valueField": "column3"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FF8A54",
@@ -315,11 +328,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#FF8A54",
 					"title": "Submit to client",
+					"countValue": "submitToClientCount",
 					"type": "column",
 					"valueField": "column4"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FFCC80",
@@ -327,11 +341,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#FFCC80",
 					"title": "Interviews",
+					"countValue": "interviewsCount",
 					"type": "column",
 					"valueField": "column5"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#B39DDB",
@@ -339,11 +354,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#B39DDB",
 					"title": "Rejected",
+					"countValue": "rejectedCount",
 					"type": "column",
 					"valueField": "column6"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#81C784",
@@ -351,11 +367,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#81C784",
 					"title": "Offered",
+					"countValue": "offeredCount",
 					"type": "column",
 					"valueField": "column7"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#E57373",
@@ -363,11 +380,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#E57373",
 					"title": "Offer Accepted",
+					"countValue": "offerAcceptedCount",
 					"type": "column",
 					"valueField": "column8"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#D84315",
@@ -375,11 +393,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#D84315",
 					"title": "Offer Rejected",
+					"countValue": "offerRejectedCount",
 					"type": "column",
 					"valueField": "column9"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#BCAAA4",
@@ -387,6 +406,7 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#BCAAA4",
 					"title": "Backout",
+					"countValue": "backoutCount",
 					"type": "column",
 					"valueField": "column10"
 				}

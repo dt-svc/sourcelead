@@ -127,7 +127,7 @@ public class ApplicantBySourceRestController {
 		Integer recruiterSourcingOfferRejectedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
 		Integer recruiterSourcingOfferBackoutCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
 		
-		recruiterSourcingApplicantsDTO.setCategory("Recruiters");
+		recruiterSourcingApplicantsDTO.setCategory("Freelance Recruiters");
 		recruiterSourcingApplicantsDTO.setApplicantsCount(recruiterSourcingApplicantCount);
 		recruiterSourcingApplicantsDTO.setShortlistedCount(recruiterSourcingShortlistCount);
 		recruiterSourcingApplicantsDTO.setSubmitToClientCount(recruiterSourcingSubmitToClientCount);
