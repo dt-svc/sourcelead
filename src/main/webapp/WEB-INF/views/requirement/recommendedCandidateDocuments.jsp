@@ -114,7 +114,7 @@ function candDocumentsList(candidateId){
 			           		}else{
 			           			var docUUID = opt.documentUUID;
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');"></i>';
+				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');"></i>';
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
@@ -136,7 +136,30 @@ function candDocumentsList(candidateId){
 	}
 </script> 
 <!-- End -->
+<script type="text/javascript">
+function deleteDocumentPopup(){
+	$("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+}
+</script>
 
+<div id="deleteDocumentPopUp"></div> 
+
+<script type="text/javascript">
+function removeDocument(candidateId, documentId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_documents' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Documents</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
+	$("#deleteDocumentPopUp").append(result);
+	$("#remove_user_pop_documents").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 
 <%-- 
      @author : prasadK.
@@ -382,14 +405,18 @@ function getDocumentType(documentType){
 
 		            			$("#quickDisVal").empty();
 		            			$("#quickDisVal").append(result+'%');
-			          			
-								$("#popUpDiv").removeClass("edit-details-active");
+		            			$("#popUpDiv").removeClass("edit-details-active");
 		            			$("#selector9").removeAttr("style");
 		            			$("#selector9").css({ display: "block" });
-	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+		            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+		            			$("#docMsgDiv").html("Document updated");
+			            		else
+			            		$("#docMsgDiv").html("Success!! New Document added");
 		             			candDocumentsList(candidateId);
-		             			resMsgFadein();
-		            		 
+		             			docMsgFadein();
+		             			setTimeout(function(){
+		        		 			candidateList();					 			
+		        		 		},100);
 						},
 					}); 
 				
@@ -467,9 +494,7 @@ function deleteDocument(candidateId, documentId){
 	
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var message = confirm("You are choosing to delete the resume");
-	if (message == true) {
-		$.ajax({
+	$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
@@ -500,16 +525,20 @@ function deleteDocument(candidateId, documentId){
        			$("#quickDisVal").empty();
        			$("#quickDisVal").append(data+'%');
    		    		
-        			 $("#selector9").removeAttr("style");
-         			 $("#selector9").css({ display: "block" });
-         			 $("#docMsgDiv").html("Document deleted");
-        			 $("#popUpDiv").removeClass("edit-details-active");
-        			 candDocumentsList(candidateId);
-        		     resMsgFadein();
+       		 $("#selector9").removeAttr("style");
+    		 $("#selector9").css({ display: "block" });
+    		 $("#docMsgDiv").html("Document deleted");
+   			 $("#popUpDiv").removeClass("edit-details-active");
+   			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+   			 candDocumentsList(candidateId);
+   			 docMsgFadein();
+   			 setTimeout(function(){
+		 			candidateList();					 			
+		 	     },100);
    		    	}
    		    },
 	     });
-}
+
 }
 </script>
 
@@ -528,7 +557,7 @@ function removeDocNameDiv(){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function docMsgFadein() {
 		$("#selector9").fadeIn(200);
         $('#selector9').delay(2000).fadeOut('slow');
 	}
