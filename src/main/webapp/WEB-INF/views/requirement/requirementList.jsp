@@ -418,6 +418,8 @@ function statusvalidating(id){
 					</sec:authorize>
 
 					<div class="clearfix"></div>
+					<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+					<div class="clearfix"></div>
 				</ul>
 				 <div class="clearfix"></div>
 		        <div class='remove_search'>
