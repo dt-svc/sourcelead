@@ -21,4 +21,9 @@ public class ApplicantsBackoutReportServiceImpl implements ApplicantsBackoutRepo
 		return applicantsBackoutReportDao.getApplicantBackoutReport(jobIds, searchDates);
 	}
 
+	@Override
+	public void getApplicantBackoutReportForinduvidalJobs(List<Long> jobIdList, Date[] searchDates) {
+		 applicantsBackoutReportDao.getApplicantBackoutReportForinduvidalJobs(jobIdList, searchDates);		
+	}
+
 }

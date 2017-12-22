@@ -35,8 +35,8 @@ $(window).load(function() {
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-3 pull-left reqListBtn">
-        <a href="applicants-backout.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="applicantsbackout-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+          <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list" onclick = "getJobViseCount();"></i></a>
         </div>
         <div class="col-md-4">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name = "selectJob" id = "reportJobList">
@@ -58,7 +58,7 @@ $(window).load(function() {
             <option value="custom">Custom</option>
           </select>
           <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customLeaves" style="display: none; width: 346px;">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves cusTomShow" style="display: none; width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px">
                 <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
@@ -96,9 +96,9 @@ $(window).load(function() {
       </div>
       <!-- Decline Reasons -->
       
-      <!-- Best recruiters  -->
-      <div class="content-dashboard clearfix hidden"> 
-        <!-- Assigned Requirements -->
+    <!--   <!-- Best recruiters  -->
+      <<!-- div class="content-dashboard clearfix hidden"> 
+        Assigned Requirements
         <div class="clearfix dashboard-widget mt25 col-md-12">
           <div class="clearfix">
           <h4 class="pull-left">Applicant Backout Lists</h4>
@@ -132,8 +132,8 @@ $(window).load(function() {
               </thead>
               <tbody>
               </tbody>
-            </table>
-            <!-- Pagenation -->
+            </table> -->
+         <!--    Pagenation -->
             <nav class="clearfix">
               <ul id="paging" class="pagination pull-right">
                 <li><a href="#">Previous</a></li>
@@ -146,12 +146,12 @@ $(window).load(function() {
               </ul>
             </nav>
           </div>
-        </div>
-        <!-- Pagenation Ends --> 
-      </div>
+        </div> 
+   <!--      Pagenation Ends  -->
+     <!--  </div> --> -->
       <!-- Best recruiters Ends  --> 
       
-    </div>
+   <!--  </div> -->
   </section>
   
   <script>
@@ -161,13 +161,26 @@ $(window).load(function() {
 		  jobIds = '';
 	  }
 	  var dateSelection = $("#dateSelection").val(); 
-	  alert(dateSelection);
 	  $.ajax({ 
 		   	type: "GET",
 		   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
 		    success: function(json) {
-        		 loadApplicantSourceChart(json);
-		        }
+        		 loadApplicantBackoutChart(json);
+        		 
+        		 
+	  	 var listView = document.getElementById("listView");
+    	 listView.addEventListener("click", function() {
+			 getListView(json);
+		  });
+    	 
+    	 var graphicView = document.getElementById("graphicView");
+    	 graphicView.addEventListener("click", function() {
+    		 loadApplicantBackoutChart(json);
+		  });
+	
+},
+error: function(e){
+}
 		 });
 }
   </script>
@@ -209,36 +222,37 @@ $(document).ready(function() {
   
   
   <script type="text/javascript">
-  function loadApplicantSourceChart(json){
+  function loadApplicantBackoutChart(json){
+	  
 	   var mainChartData = [
 		   {
 				"category": "Current Company",
-				"column-1": json['Current Company'],
+				"column-1": json.currentCompany,
 				"color": "#9FA8DA"
 			},
 			{
 				"category": "Compensation",
 				"color": "#90CAF9",
-				"column-1": json['Compensation']
+				"column-1": json.compensation,
 			},
 			{
 				"category": "Better Offer",
-				"column-1": json['Better Offer'],
+				"column-1": json.betterOffer,
 				"color": "#FFAB91"
 			},
 			{
 				"category": "Cold Feet",
-				"column-1": json['Cold Feet'],
+				"column-1": json.coldFeet,
 				"color": "#A5D6A7"
 			},
 			{
 				"category": "Personal",
-				"column-1": json['Personal'],
+				"column-1": json.personal,
 				"color": "#FFE0B2"
 			},
 			{
 				"category": "Other",
-				"column-1": json['other'],
+				"column-1": json.other,
 				"color": "#BCAAA4"
 			}
 		];
@@ -290,6 +304,111 @@ $(document).ready(function() {
 					"dataProvider":  mainChartData
 				}
 			);
-			 
+	  $("#paging").empty();
   }
 		</script>
+		 <script>
+ function getListView(json){
+		 var result = "";
+		 result = result +"<div class='clearfix tableStyles mt'>"; 
+		 result = result +"<table class='table table-bordered mt10'>"; 
+         result = result +"<thead>"; 
+         result = result +"  <tr>"; 
+         result = result +"  <th>Jobs</th>";
+         result = result +"  <th>Current Company</th>";
+         result = result +"  <th>Compensation</th>"; 
+         result = result +"  <th>Better Offer</th>"; 
+         result = result +"  <th>Cold Feet</th>"; 
+         result = result +"  <th>Personal</th>"; 
+         result = result +"  <th>Other</th>"; 
+         result = result +"  <th>Totle</th>"; 
+         result = result +"  </tr>"; 
+         result = result +"</thead>";
+         result = result +"<tbody>"; 
+        
+				 result = result +"<tr>"; 
+				
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+   +"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tbldata-dotdot'>"+json.currentCompany+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+json.compensation  +"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+json.betterOffer  +"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+json.coldFeet  +"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+json.personal  +"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+json.others  +"</div>"; 
+				 result = result +"</td>";
+				 
+				 result = result +"</tr>"; 
+			 
+			 result = result +" </tbody>";
+             result = result +"</table>";
+             $("#backoutReason").empty();
+             $("#backoutReason").append(result);
+            
+             
+ }
+ </script>
+ 
+ <script>
+ 
+ function getJobViseCount(){
+	 alert("hi");
+	 var jobIds = $("#reportJobList").val();
+	 alert("id is "+jobIds);
+	  if(jobIds == null){
+		  jobIds = '';
+	  }
+	  var dateSelection = $("#dateSelection").val(); 
+		 alert("id is "+dateSelection);
+	  $.ajax({ 
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getApplicantBackoutReportForInduvidualJob?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
+		    success: function(json) {
+	 
+	 
+ }
+	  })
+ }
+ 
+ </script>
+ 
+ <script>
+$(function() {
+        $('#dateSelection').change(function(){
+			var optval = $(this).val();
+			if(optval === "custom") {
+				$(".cusTomShow").show();
+			}else{
+				$(".cusTomShow").hide();
+			}
+        });
+    });
+</script>
+ <script>
+  function dobDatePicker() {
+	  $('#dateSelection').datepicker({
+	      dateFormat: 'yy-mm-dd',
+	  });
+	  
+  }
+</script>
+ 
+ 

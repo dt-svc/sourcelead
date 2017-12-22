@@ -7,4 +7,6 @@ import java.util.Map;
 public interface ApplicantsBackoutReportDao {
 
 	Map<String, Integer> getApplicantBackoutReport(List<Long> jobIdList, Date[] searchDates);
+
+	Map<String, Integer> getApplicantBackoutReportForinduvidalJobs(List<Long> jobIdList, Date[] searchDates);
 }

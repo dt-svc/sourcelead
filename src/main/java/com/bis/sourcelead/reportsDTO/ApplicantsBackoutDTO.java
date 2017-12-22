@@ -14,6 +14,8 @@ public class ApplicantsBackoutDTO {
 	
 	private Integer personal;
 	
+	private Integer other;
+	
 	public String getCounts() {
 		return counts;
 	}
@@ -70,7 +72,6 @@ public class ApplicantsBackoutDTO {
 		this.other = other;
 	}
 
-	private Integer other;
 	
 	
 	
