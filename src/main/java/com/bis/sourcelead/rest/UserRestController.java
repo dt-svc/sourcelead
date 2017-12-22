@@ -99,9 +99,10 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@RequestMapping("/app")
 public class UserRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -227,7 +228,7 @@ public class UserRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/app/getDepartmentsList", method = RequestMethod.POST)
+	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)
 	public @ResponseBody String getDepartmentsList(
 		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
 		String resultJson = null;
@@ -1039,7 +1040,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/app/rest/", method = RequestMethod.POST)
+		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 
@@ -1453,7 +1454,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/app/getReportingManager", method = RequestMethod.POST)
+		@RequestMapping(value = "/getReportingManager", method = RequestMethod.POST)
 		public @ResponseBody String getReportingManager(
 				@RequestParam(value = "role", required = false) Long roleId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
@@ -1500,7 +1501,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		return projectMembersList;
 	}
 	
-	 @RequestMapping(value = "/app/refreshRoleList", method = RequestMethod.POST)
+	 @RequestMapping(value = "/refreshRoleList", method = RequestMethod.POST)
 		public @ResponseBody List<Roles> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
 		  roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

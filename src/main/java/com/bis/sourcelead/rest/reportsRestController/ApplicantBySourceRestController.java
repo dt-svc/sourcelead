@@ -56,17 +56,20 @@ public class ApplicantBySourceRestController {
 		
 		Date[] searchDates = null;
 		
-		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
-		}else {
-			
-			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
-    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
-    	    searchDates = new Date[2];
-    	    searchDates[0] = fromDate;
-    	    searchDates[1] = toDate;
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
 		}
 		
+		
+		if(jobIdList != null && jobIdList.size() > 0) {
 		ApplicantsBySourceDTO crowdSourcingApplicantsDTO = new ApplicantsBySourceDTO();
 		
 		Integer crowdsourcingApplicantsCount =  applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates,"SUBMISSION");
@@ -154,7 +157,7 @@ public class ApplicantBySourceRestController {
 		internalSourcingApplicantsDTO.setOfferRejectedCount(internalSourcingOfferRejectedCount);
 		internalSourcingApplicantsDTO.setBackoutCount(internalSourcingBackoutCount);
 		applicantBySourceList.add(internalSourcingApplicantsDTO);
-		
+		}
 		
 		return applicantBySourceList;
 	}
