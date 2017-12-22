@@ -186,17 +186,25 @@ function getCustomDates(){
 				        			  }
 				        	
 				        		 loadApplicantSourceChart(chartData);
+				        		 
+				        		 var listView = document.getElementById("listView");
+					        	 listView.addEventListener("click", function() {
+									 getListView(json);
+								  });
+					        	 
+					        	 var graphicView = document.getElementById("graphicView");
+					        	 graphicView.addEventListener("click", function() {
+					        		 loadApplicantSourceChart(chartData);
+								  });
+				 	   		}else{
+				 	   			var result = '';
+				 	   			result = result+"<div class='dataTables_empty'>"; 
+				 	   			result = result+"</div> ";
+				 	   	        $("#applicantSource").empty();
+				                $("#applicantSource").append(result);
 				 	   		}
 				        	
-				        	 var listView = document.getElementById("listView");
-				        	 listView.addEventListener("click", function() {
-								 getListView(json);
-							  });
 				        	 
-				        	 var graphicView = document.getElementById("graphicView");
-				        	 graphicView.addEventListener("click", function() {
-				        		 loadApplicantSourceChart(chartData);
-							  });
 			        	
 			        },
 			        error: function(e){
