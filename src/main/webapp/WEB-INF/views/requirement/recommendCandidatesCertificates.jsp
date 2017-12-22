@@ -27,7 +27,10 @@ function candidateCertificate(candidateId){
 	 }else{
 		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 	 }
-	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
+	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
+    result  = result + '</div>';
+    result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	result  = result + '   <div id="candidateCertificateList" class="datatable_filter"></div>';
@@ -94,13 +97,21 @@ function storeCertificate(candidateId){
 							if (data != null && data != 'undefined'
 									&& data != "") {
 								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
+									location.replace(sourceleadLoginUrl);
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-				               			$("#popUpDivEmp").removeClass("edit-details-active");
+				               			closeCertificatePopup();
+				    		        	$("#selector5").removeAttr("style");
+				    	     			$("#selector5").css({ display: "block" });
+				    	     			$("#cerMsgDiv").html("Success!! New Certification added");
 				               			candidateCertificateList(candidateId);
+				               			cerMsgFadein();
+				                   		qwikCertificates(candidateId);
+				                   		setTimeout(function(){
+				    			 			candidateList();					 			
+				    			 		},100);
 							    	}
 							   }
 						},
@@ -116,8 +127,17 @@ function storeCertificate(candidateId){
 				$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
 			});
 </script>
-
-
+<script>
+function closeCertificatePopup(){
+	 $("#popUpDivEmp").removeClass("edit-details-active");
+}
+</script>
+<script>
+	function cerMsgFadein() {
+		$("#selector5").fadeIn(200);
+        $('#selector5').delay(2000).fadeOut('slow');
+	}
+</script> 
 <!-- this script is for serializeFormJSON -->
 <script type="text/javascript">
 	(function($) {
@@ -249,6 +269,7 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
+	                     msgFadein();
 // 			    	} 
               
         },
@@ -256,7 +277,12 @@ function candidateCertificateList(candidateId){
      }); 
 }
 </script>
-
+<script>
+       function msgFadein() {
+           setTimeout(function(){
+                   $('#selector1').fadeOut('slow'); }, 1000);
+       }
+</script>     
 <script>
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
@@ -595,7 +621,15 @@ function addCertification(candidateId) {
 						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
-							candidateCertificateList(candidateId);
+							$("#selector5").removeAttr("style");
+			     			$("#selector5").css({ display: "block" });
+			     			$("#cerMsgDiv").html("Certification details updated");
+								candidateCertificateList(candidateId);
+								cerMsgFadein();
+								qwikCertificates(candidateId);
+								setTimeout(function(){
+						 			candidateList();					 			
+						 		},100);
 						},
 					});
 			return true;
@@ -617,9 +651,30 @@ function addCertification(candidateId) {
      2.parameter : candidateId ,csrf.token,candidateemployerId
      3.ajax url implementation in CandidateCertificationRestController.
 --%>    
-      
 <script>
-function removeCertification(candidateCertificationId,candidateId){
+function removeCertification(candidateCertificationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Certification</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteCertificationPopUp").empty();
+	$("#deleteCertificationPopUp").append(result);
+	$("#remove_user_pop_certificates").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script> 
+<div id="deleteCertificationPopUp"></div> 
+<script type="text/javascript">
+function deleteCerPopup(){
+	$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+}
+</script>
+<script>
+function deleteSelectedCertification(candidateCertificationId,candidateId){
 	
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
@@ -627,17 +682,24 @@ function removeCertification(candidateCertificationId,candidateId){
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
+        if(data != null && data != 'undefined' && data != ""){
              		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	}
              		else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}
              		else{
-             			 $("#popUpDivEmp").removeClass("edit-details-active");
-             			candidateCertificateList(candidateId);
+             			  $("#popUpDivEmp").removeClass("edit-details-active");
+             			 $("#selector5").removeAttr("style");
+              			 $("#selector5").css({ display: "block" });
+              			 $("#cerMsgDiv").html("Certification deleted");
+              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+              			candidateCertificateList(candidateId);
+              			cerMsgFadein();
+              			setTimeout(function(){
+				 			candidateList();					 			
+				 	    },100);
 			    	}
                } 
         },
