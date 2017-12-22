@@ -36,7 +36,7 @@ public class ApplicantBySourceController {
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
 	  	 ModelAndView model = new ModelAndView();
-	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation, user, userRole,request);
+	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementsList", requirementsDTOList);
 		 model.setViewName("reports/applicantBySource");

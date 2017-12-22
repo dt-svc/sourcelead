@@ -39,7 +39,7 @@ public class ReportsUtil {
 	private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
 	
 	
-     public List<RequirementDTO> getAllRequirementsByOrgLocationId(OrgLocations orgLocations,User user,String userRole,HttpServletRequest request){
+     public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
 		
 		List<RequirementDTO> requirementDTOList = new ArrayList<>();
 		List<Long> requirementIdsList = new ArrayList<>();
@@ -47,7 +47,7 @@ public class ReportsUtil {
 		try {
 			
 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
+			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			
 			if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 				BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -80,7 +80,7 @@ public class ReportsUtil {
 				boolQueryBuilder.must(assignedBoolQueryBuilder);
 			}
 			
-			Integer maxResults = applicantsBySourceDao.getRequirementsCount(orgLocations.getId());
+			Integer maxResults = applicantsBySourceDao.getRequirementsCount(orgLocationId);
 			
 			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults,boolQueryBuilder).getHits();
 			if(searchHits != null && searchHits.length >0){
