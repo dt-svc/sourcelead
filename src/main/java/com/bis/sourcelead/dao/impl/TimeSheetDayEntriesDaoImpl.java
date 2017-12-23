@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -52,7 +55,16 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		
 	}
 	
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Collection<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).list();	
+		return timesheetEntriesList;
+	}
 	
 	
 
