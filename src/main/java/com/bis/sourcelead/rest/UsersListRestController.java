@@ -655,20 +655,26 @@ public class UsersListRestController {
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
-		 for(SourceleadSectionDTO sec:sections) {
-			 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
-				 CustomFormFieldDTO custom = new CustomFormFieldDTO();
-				 custom.setCustomFormFieldId(customFields.getId());
-				 formFieldId.add(custom);
+		 if(sections != null && !sections.isEmpty()) {
+			 for(SourceleadSectionDTO sec:sections) {
+				 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+					 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+					 custom.setCustomFormFieldId(customFields.getId());
+					 formFieldId.add(custom);
+				 }
 			 }
-		 }
-		 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
-		 Map<String,String> dataMap = new HashMap<>();
-		 for(UserCustomFieldData userCustomData:userData) {
-			 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
-			 String labelData = userCustomData.getCustomFormFieldData();
-			 dataMap.put(labelName, labelData);
-			 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
+			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
+			 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
+			 Map<String,String> dataMap = new HashMap<>();
+			 if(userData!= null && !userData.isEmpty()) {
+				 for(UserCustomFieldData userCustomData:userData) {
+					 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
+					 String labelData = userCustomData.getCustomFormFieldData();
+					 dataMap.put(labelName, labelData);
+					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
+				 	}
+			 	}
+			 }
 		 }
 		resultJson = toJSON(userRole);
 		return resultJson;
