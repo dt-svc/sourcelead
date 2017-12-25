@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -26,6 +25,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
@@ -34,7 +34,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -61,6 +61,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
+	
+	@Autowired
+	TimeSheetDayEntriesDao timeSheetDayEntriesDao;
 	
 	@Autowired
 	private ProjectsDao projectsDao; 
@@ -1288,146 +1291,54 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		if(count == 0){
 	    			submissionApproverHierarchy = sah;
 	    		}
-	    		if( (sah.getSubmissionId().getStartDate().equals(tsStartDate) &&  sah.getSubmissionId().getEndDate().before(tsEndDate))
-	    		    || (sah.getSubmissionId().getStartDate().after(tsStartDate) &&  sah.getSubmissionId().getEndDate().before(tsEndDate))
-	    			||	sah.getSubmissionId().getEndDate().equals(tsEndDate))   {
-	    			
-	    		    if(! sah.getSubmissionId().getEndDate().equals(tsEndDate)
-	    					 && CalendarUtil.getNumberOfDays(sah.getSubmissionId().getStartDate(), sah.getSubmissionId().getEndDate())<6
-	    					 ){
-	    		    	semiMonthlyMidWeekList.add(sah);
-	    		    	continue;
-	    			 }
-	    			 float weekTotalHours            = 0f;
-	    			 float weekBillableTotalHours    = 0f;
-	    			 float weekNonBillableTotalHours = 0f;
-	    			
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-	    				 weekTotalHours=Float.parseFloat(sah.getSubmissionId().getTotalHours());
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-	    				 weekBillableTotalHours=Float.parseFloat(sah.getSubmissionId().getBillableHours());
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-	    				 weekNonBillableTotalHours=Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-	    			 }
-	    			 
-	    			  
-	    			 weekApprovalStatusMap.put(sah.getSubmissionId().getStartDate(),sah.getSubmissionApprovalStatus());
-	    			
-	    			 weekBillableHours.put(sah.getSubmissionId().getStartDate(),weekBillableTotalHours);
-	    			 weekNonBillableHours.put(sah.getSubmissionId().getStartDate(),weekNonBillableTotalHours);
-	    	         weekTotalHoursMap.put(sah.getSubmissionId().getStartDate(),weekTotalHours);
+	    		Date actualStartDate = null;
+	    		Date actualEndDate = null;
+	    		if(sah.getSubmissionId().getStartDate().before(startDate) || sah.getSubmissionId().getStartDate().equals(startDate)){
+	    			actualStartDate = startDate;
+	    		}else{
+	    			actualStartDate = sah.getSubmissionId().getStartDate();
 	    		}
-	    		else{
-	    			if(sah.getSubmissionId().getEndDate().equals(tsStartDate)
-	    			   || (sah.getSubmissionId().getStartDate().before(tsStartDate) && sah.getSubmissionId().getEndDate().after(tsStartDate))){
-	    				float weekTotalHours            = 0f;
-		    			float weekBillableTotalHours    = 0f;
-		    			float weekNonBillableTotalHours = 0f;
-		    			 
-	    				int dayOfWeek = CalendarUtil.getDayOfTheDate(startDate);
-	    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-    					for(TimesheetEntries te : timesheetEntries){
-    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
-    							weekNonBillableTotalHours = weekNonBillableTotalHours+getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek);
-    						}
-    						else{
-    							weekBillableTotalHours = weekBillableTotalHours+getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek);
-    						}
-    					}
-    					 weekTotalHours = weekBillableTotalHours+ weekNonBillableTotalHours;
-    					
-    					 weekApprovalStatusMap.put(startDate,sah.getSubmissionApprovalStatus());
-    		    			
-    					 weekBillableHours.put(startDate,weekBillableTotalHours);
-    	    			 weekNonBillableHours.put(startDate,weekNonBillableTotalHours);
-    	    	         weekTotalHoursMap.put(startDate,weekTotalHours);
-    					
-	    				
-	    			}
-	    			
-	    			else{
-	    				float weekTotalHours            = 0f;
-		    			float weekBillableTotalHours    = 0f;
-		    			float weekNonBillableTotalHours = 0f;
-		    			 
-	    				int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
-	    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-    					for(TimesheetEntries te : timesheetEntries){
-    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
-    							weekNonBillableTotalHours = weekNonBillableTotalHours+getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek);
-    						}
-    						else{
-    							weekBillableTotalHours = weekBillableTotalHours+getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek);
-    						}
-    					}
-    					weekTotalHours = weekBillableTotalHours+ weekNonBillableTotalHours;
-    					
-    					 weekApprovalStatusMap.put(sah.getSubmissionId().getStartDate(),sah.getSubmissionApprovalStatus());
-    		    			
-    					 weekBillableHours.put(sah.getSubmissionId().getStartDate(),weekBillableTotalHours);
-    	    			 weekNonBillableHours.put(sah.getSubmissionId().getStartDate(),weekNonBillableTotalHours);
-    	    	         weekTotalHoursMap.put(sah.getSubmissionId().getStartDate(),weekTotalHours);
-    					
-	    			}
-	    			
+	    		
+	    		if(sah.getSubmissionId().getEndDate().after(endDate) || sah.getSubmissionId().getEndDate().equals(endDate)){
+	    			actualEndDate = endDate;
+	    		}else{
+	    			actualEndDate = sah.getSubmissionId().getEndDate();
 	    		}
+	    		
+	    		List<TimeSheetDayEntries> tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), actualStartDate, actualEndDate);
+	    		float weekTotalHours            = 0f;
+   			    float weekBillableTotalHours    = 0f;
+   			    float weekNonBillableTotalHours = 0f;
+	    		if(tdeList != null && !tdeList.isEmpty()){
+	    			 for(TimeSheetDayEntries tde : tdeList){
+	    				 float totalHours = 0f;
+	    				 float billableHours = 0f;
+	    				 float nonBillableHours = 0f;
+	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
+	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
+		    				 billableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
+		    				 nonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 weekTotalHours = weekTotalHours+totalHours;
+		    			 weekBillableTotalHours= weekBillableTotalHours+billableHours;
+		    			 weekNonBillableTotalHours = weekNonBillableTotalHours+nonBillableHours;
+		    			 
+	    			 }
+	    		}
+	    		 weekApprovalStatusMap.put(actualStartDate,sah.getSubmissionApprovalStatus());
+    			 weekBillableHours.put(actualStartDate,weekBillableTotalHours);
+    			 weekNonBillableHours.put(actualStartDate,weekNonBillableTotalHours);
+    	         weekTotalHoursMap.put(actualStartDate,weekTotalHours);
 	    		count++;
 	        }
-	    	
-	    	if(semiMonthlyMidWeekList != null && !semiMonthlyMidWeekList.isEmpty()){
-	    		 float weekTotalHours            = 0f;
-    			 float weekBillableTotalHours    = 0f;
-    			 float weekNonBillableTotalHours = 0f;
-    			 Date weekStartDate = null;
-    			 Boolean isRejected = false; 
-			     Boolean isAPPROVED = false; 
-			     Boolean isSUBMITTED = false; 
-			     Boolean isNEW = false;
-			     Submission_ApprovalStatus submissionStatus = null;
-	    		 for(SubmissionApproverHierarchy sah :semiMonthlyMidWeekList){
-	    			 /*if(CalendarUtil.getDayOfTheDate(sah.getSubmissionId().getStartDate()) == 2){*/
-	    				 weekStartDate = sah.getSubmissionId().getStartDate();
-	    			 /*}*/
-	    			 if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
-	 					isRejected   = true;  
-	 					submissionStatus = Submission_ApprovalStatus.REJECTED;
-	 				}
-	 				else if(!isRejected  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
-	 					 isNEW   = true;  
-	 					submissionStatus = Submission_ApprovalStatus.NEW;
-	 				}
-	 				else if(!isRejected && !isNEW  && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-	 					isSUBMITTED   = true;  
-	 					submissionStatus = Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL;
-	 				}
-	 				else if(!isRejected && !isNEW  && !isSUBMITTED && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED ){
-	 					 isAPPROVED   = true;  
-	 					submissionStatus = Submission_ApprovalStatus.APPROVED;
-	 				 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-	    				 weekTotalHours=CommonUtil.getCombinedHours(weekTotalHours, Float.parseFloat(sah.getSubmissionId().getTotalHours()));
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-	    				 weekBillableTotalHours=CommonUtil.getCombinedHours(weekBillableTotalHours,Float.parseFloat(sah.getSubmissionId().getBillableHours()));
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-	    				 weekNonBillableTotalHours=CommonUtil.getCombinedHours(weekNonBillableTotalHours,Float.parseFloat(sah.getSubmissionId().getNonBillableHours()));
-	    			 }
-	    		 }
-    			  
-    			 weekApprovalStatusMap.put(weekStartDate,submissionStatus);
-    			 weekBillableHours.put(weekStartDate,weekBillableTotalHours);
-    			 weekNonBillableHours.put(weekStartDate,weekNonBillableTotalHours);
-    	         weekTotalHoursMap.put(weekStartDate,weekTotalHours);
-	    	}
 	    	submissionApproverHierarchy.setWeekApprovalStatusMap(weekApprovalStatusMap);
 	    	submissionApproverHierarchy.setWeekBillableHoursMap(weekBillableHours);
 	    	submissionApproverHierarchy.setWeekNonBillableHoursMap(weekNonBillableHours);
 	    	submissionApproverHierarchy.setWeekTotalHoursMap(weekTotalHoursMap);
-	    	
-			
 	    }
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
@@ -1508,77 +1419,46 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    float monthNonBillableTotalHours = 0f;
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
-	    		if( (sah.getSubmissionId().getStartDate().equals(tsStartDate) &&  sah.getSubmissionId().getEndDate().before(tsEndDate))
-	    		    || (sah.getSubmissionId().getStartDate().after(tsStartDate) &&  sah.getSubmissionId().getEndDate().before(tsEndDate))
-	    			||	sah.getSubmissionId().getEndDate().equals(tsEndDate))   {
-	    			
-	    			 float weekTotalHours            = 0f;
-	    			 float weekBillableTotalHours    = 0f;
-	    			 float weekNonBillableTotalHours = 0f;
-	    			
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-	    				 weekTotalHours=Float.parseFloat(sah.getSubmissionId().getTotalHours());
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())){
-	    				 weekBillableTotalHours=Float.parseFloat(sah.getSubmissionId().getBillableHours());
-	    			 }
-	    			 if(StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())){
-	    				 weekNonBillableTotalHours=Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-	    			 }
-	    			 
-	    			 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours,weekTotalHours);
-	    			 monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours,weekBillableTotalHours);
-	    			 monthNonBillableTotalHours = CommonUtil.getCombinedHours(monthNonBillableTotalHours,weekNonBillableTotalHours);
+	    		Date actualStartDate = null;
+	    		Date actualEndDate = null;
+	    		if(sah.getSubmissionId().getStartDate().before(startDate) || sah.getSubmissionId().getStartDate().equals(startDate)){
+	    			actualStartDate = startDate;
+	    		}else{
+	    			actualStartDate = sah.getSubmissionId().getStartDate();
 	    		}
-	    		else{
-	    			if(sah.getSubmissionId().getEndDate().equals(tsStartDate)
-	    			   || (sah.getSubmissionId().getStartDate().before(tsStartDate) && sah.getSubmissionId().getEndDate().after(tsStartDate))){
-	    				float weekTotalHours            = 0f;
-		    			float weekBillableTotalHours    = 0f;
-		    			float weekNonBillableTotalHours = 0f;
-		    			 
-	    				int dayOfWeek = CalendarUtil.getDayOfTheDate(startDate);
-	    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-    					for(TimesheetEntries te : timesheetEntries){
-    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
-    							weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
-    						}
-    						else{
-    							weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
-    						}
-    					}
-    					 weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,weekNonBillableTotalHours);
-    					 
-    					 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours,weekTotalHours);
-    	    			 monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours,weekBillableTotalHours);
-    	    			 monthNonBillableTotalHours = CommonUtil.getCombinedHours(monthNonBillableTotalHours,weekNonBillableTotalHours);
-	    			}
-	    			
-	    			else{
-	    				float weekTotalHours            = 0f;
-		    			float weekBillableTotalHours    = 0f;
-		    			float weekNonBillableTotalHours = 0f;
-		    			 
-		    			if(sah.getSubmissionId().getStartDate().before(endDate)){
-		    				int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
-		    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-	    					for(TimesheetEntries te : timesheetEntries){
-	    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
-	    							weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-	    						}
-	    						else{
-	    							weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-	    						}
-	    					}
-	    					 weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,weekNonBillableTotalHours);
-		    			}
-    					monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours,weekTotalHours);
-   	    		  	    monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours,weekBillableTotalHours);
-   	    			    monthNonBillableTotalHours = CommonUtil.getCombinedHours(monthNonBillableTotalHours,weekNonBillableTotalHours);
-    					
-	    			}
-	    			
+	    		
+	    		if(sah.getSubmissionId().getEndDate().after(endDate) || sah.getSubmissionId().getEndDate().equals(endDate)){
+	    			actualEndDate = endDate;
+	    		}else{
+	    			actualEndDate = sah.getSubmissionId().getEndDate();
 	    		}
+	    		 float weekTotalHours            = 0f;
+    			 float weekBillableTotalHours    = 0f;
+    			 float weekNonBillableTotalHours = 0f;
+	    		List<TimeSheetDayEntries> tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), actualStartDate, actualEndDate);
+	    		if(tdeList != null && !tdeList.isEmpty()){
+	    			 for(TimeSheetDayEntries tde : tdeList){
+	    				 float totalHours = 0f;
+	    				 float billableHours = 0f;
+	    				 float nonBillableHours = 0f;
+	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
+	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
+		    				 billableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
+		    				 nonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 weekTotalHours = weekTotalHours+totalHours;
+		    			 weekBillableTotalHours= weekBillableTotalHours+billableHours;
+		    			 weekNonBillableTotalHours = weekNonBillableTotalHours+nonBillableHours;
+	    			 }
+	    		}
+	    		 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours,weekTotalHours);
+    			 monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours,weekBillableTotalHours);
+    			 monthNonBillableTotalHours = CommonUtil.getCombinedHours(monthNonBillableTotalHours,weekNonBillableTotalHours);
+    			 
 	        }
 	    	
 	    }
@@ -1587,80 +1467,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    monthTotals.put("MONTH_NONBILLABLE_HOURS", monthNonBillableTotalHours);
 		return monthTotals;
 	}
-	
-	private Float getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(TimesheetEntries te,int dayofweek){
-		 Float weekTotalHours = 0f;
-		 for(int i = 8;i>= dayofweek;i--){
-			 if(i==1)
-				 break;
-			 weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, getDayHours(te,i));
-		 }
-		
-		return weekTotalHours;
-	}
-	
-	private Float getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(TimesheetEntries te,int dayofweek){
-		 Float weekTotalHours = 0f;
-		 for(int i = 2;i<= dayofweek;i++){
-			 weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, getDayHours(te,i));
-		 }
-		
-		return weekTotalHours;
-	}
-	
-	
-	private Float getDayHours(TimesheetEntries te,int flag){
-		float weekhours = 0f;
-		switch(flag){
-		 case 1:  if(StringUtils.isNotEmpty(te.getSunHours())){
-	                  String hours = te.getSunHours().replaceAll(":", ".");
-	                  weekhours= Float.parseFloat(hours);
-	               }
-		             break;
-	 	  case 2:  if(StringUtils.isNotEmpty(te.getMonHours())){
-	 		          String hours = te.getMonHours().replaceAll(":", ".");
-	 		         weekhours= Float.parseFloat(hours);
-			       }
-	 	             break;
-	 		  
-	 	  case 3:  if(StringUtils.isNotEmpty(te.getTueHours())){
-	 		          String hours = te.getTueHours().replaceAll(":", ".");
-	 		         weekhours= Float.parseFloat(hours);
-			       }
-	 	            break;
-	 		  
-		  case 4:  if(StringUtils.isNotEmpty(te.getWedHours())){
-			           String hours = te.getWedHours().replaceAll(":", ".");
-			           weekhours= Float.parseFloat(hours);
-		            }
-		            break;
-		  case 5:  if(StringUtils.isNotEmpty(te.getThuHours())){
-			           String hours = te.getThuHours().replaceAll(":", ".");
-			           weekhours= Float.parseFloat(hours);
-		            }
-		             break;
-		  case 6:  if(StringUtils.isNotEmpty(te.getFriHours())){
-			            String hours = te.getFriHours().replaceAll(":", ".");
-			            weekhours= Float.parseFloat(hours);
-		            }
-		            break;
-	  
-		  case 7:  if(StringUtils.isNotEmpty(te.getSatHours())){
-			             String hours = te.getSatHours().replaceAll(":", ".");
-			             weekhours= Float.parseFloat(hours);
-				    }
-		             break;
-		  case 8:  if(StringUtils.isNotEmpty(te.getSunHours())){
-              String hours = te.getSunHours().replaceAll(":", ".");
-              weekhours= Float.parseFloat(hours);
-           }
-		            break;
-			
-			default: weekhours= 0f;
-		}
-		return weekhours;
-	}
-	
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception {
@@ -1886,93 +1692,51 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		float totalHours = 0f;
 		float billableTotalHours = 0f;
 		float nonBillableTotalHours = 0f;
-		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
-			for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
-				if ((sah.getSubmissionId().getStartDate().equals(startDate)
-						&& sah.getSubmissionId().getEndDate().before(endDate))
-						|| (sah.getSubmissionId().getStartDate().after(startDate)
-								&& sah.getSubmissionId().getEndDate().before(endDate))
-						|| sah.getSubmissionId().getEndDate().equals(endDate)) {
-
-					float weekTotalHours = 0f;
-					float weekBillableTotalHours = 0f;
-					float weekNonBillableTotalHours = 0f;
-
-					if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
-						weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
-					}
-					if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
-						weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-					}
-					if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
-						weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-					}
-
-	    			 
-					totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
-					billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
-					nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
-							weekNonBillableTotalHours);
-				} else {
-					if (sah.getSubmissionId().getEndDate().equals(startDate)
-							|| (sah.getSubmissionId().getStartDate().before(startDate)
-									&& sah.getSubmissionId().getEndDate().after(startDate))) {
-						float weekTotalHours = 0f;
-						float weekBillableTotalHours = 0f;
-						float weekNonBillableTotalHours = 0f;
-
-						int dayOfWeek = CalendarUtil.getDayOfTheDate(startDate);
-						Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao
-								.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-						for (TimesheetEntries te : timesheetEntries) {
-							if (te.getProjectTask() != null && te.getProjectTask().getBillableType() != null && te
-									.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)) {
-								weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,
-										getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
-							} else {
-								weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,
-										getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
-							}
-						}
-						weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours, weekNonBillableTotalHours);
-
-						totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
-						billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
-						nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
-								weekNonBillableTotalHours);
-					}
-
-					else {
-						float weekTotalHours = 0f;
-						float weekBillableTotalHours = 0f;
-						float weekNonBillableTotalHours = 0f;
-
-						int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
-						Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao
-								.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-						for (TimesheetEntries te : timesheetEntries) {
-							if (te.getProjectTask() != null && te.getProjectTask().getBillableType() != null && te
-									.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)) {
-								weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,
-										getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-							} else {
-								weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,
-										getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-							}
-						}
-						weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours, weekNonBillableTotalHours);
-
-						totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
-						billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
-						nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
-								weekNonBillableTotalHours);
-
-					}
-
-				}
-			}
-
-		}
+		
+		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
+	    		Date actualStartDate = null;
+	    		Date actualEndDate = null;
+	    		if(sah.getSubmissionId().getStartDate().before(startDate) || sah.getSubmissionId().getStartDate().equals(startDate)){
+	    			actualStartDate = startDate;
+	    		}else{
+	    			actualStartDate = sah.getSubmissionId().getStartDate();
+	    		}
+	    		
+	    		if(sah.getSubmissionId().getEndDate().after(endDate) || sah.getSubmissionId().getEndDate().equals(endDate)){
+	    			actualEndDate = endDate;
+	    		}else{
+	    			actualEndDate = sah.getSubmissionId().getEndDate();
+	    		}
+	    		 float weekTotalHours            = 0f;
+    			 float weekBillableTotalHours    = 0f;
+    			 float weekNonBillableTotalHours = 0f;
+	    		List<TimeSheetDayEntries> tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), actualStartDate, actualEndDate);
+	    		if(tdeList != null && !tdeList.isEmpty()){
+	    			 for(TimeSheetDayEntries tde : tdeList){
+	    				 float datyTotalHours = 0f;
+	    				 float dayBillableHours = 0f;
+	    				 float dayNonBillableHours = 0f;
+	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
+	    					 datyTotalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
+		    				 dayBillableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
+		    				 dayNonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    			 }
+		    			 weekTotalHours = weekTotalHours+datyTotalHours;
+		    			 weekBillableTotalHours= weekBillableTotalHours+dayBillableHours;
+		    			 weekNonBillableTotalHours = weekNonBillableTotalHours+dayNonBillableHours;
+	    			 }
+	    		}
+	    		totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
+				billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
+				nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours);
+	        }
+	    	
+	     }
 		monthTotals.put("TOTAL_HOURS", totalHours);
 		monthTotals.put("BILLABLE_HOURS", billableTotalHours);
 		monthTotals.put("NONBILLABLE_HOURS", nonBillableTotalHours);
