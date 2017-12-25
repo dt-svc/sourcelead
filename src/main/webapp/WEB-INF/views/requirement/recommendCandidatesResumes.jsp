@@ -356,7 +356,7 @@ function addResume(candidateId) {
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 					           		}else{
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"></a>';
-						           		result = result+'	            <i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="deleteResume('+candidateId+','+opt.id+');"></i>';
+						           		result = result+'	            <i class="glyphicon glyphicon-trash" style="color:#f51515 !important;" onclick="removeresumePopUp('+candidateId+','+opt.id+');"></i>';
 					           		}
 					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';
@@ -388,7 +388,6 @@ function addResume(candidateId) {
 function deleteResume(candidateId, resumeId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
@@ -433,16 +432,37 @@ function deleteResume(candidateId, resumeId){
          			 $("#resMsgDiv").html("Resume deleted");
          			 $("#popUpDivResume").removeClass("edit-details-active");
         			 candidateResumesList(candidateId);
+        			 $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
         			 resMsgFadeinResumes();
         		     
         		 }
    		    }
 	     });
-	
+	}
+</script>
+<script type="text/javascript">
+function removeresumePopUp(candidateId, resumeId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_resume' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Resume</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").empty();
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop_resume").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+<script>
+function deleteResumePopup(){
+	$("#remove_user_pop_resume, .project_inn_mask").fadeOut();
 }
 </script>
 
-
+<div id="deleteEduPopUp"></div> 
 <%-- 
      @author : Venkat Kesav
      this script is for get resume details in edit mode
