@@ -4,399 +4,335 @@ import java.util.List;
 
 public class DataMigrationDTO extends CommonDTO {
 
-	public String staticPath;
+	private String staticPath;
 
-	public List<FileInfo> fileInfo;
+	private List<FileInfo> fileInfo;
 
-	public List<FileInfo> uploadedFileInfo;
+	private List<FileInfo> uploadedFileInfo;
 
-	public List<String> assignedTo;
+	private List<String> assignedTo;
 	
-	public String exportFilePath;
+	private String exportFilePath;
 
-	public String jobTitle;
+	private String jobTitle;
 
-	public String jobType;
+	private String jobType;
 
-	public String jobId;
+	private String jobId;
 
-	public String positions;
+	private String positions;
 
-	public String education;
+	private String education;
 
-	public String minExp;
+	private String minExp;
 
-	public String maxExp;
+	private String maxExp;
 
-	public String industryName;
+	private String industryName;
 
-	public String rate;
+	private String rate;
 
-	public String maxRate;
+	private String maxRate;
 
-	public String travelAllowance;
+	private String travelAllowance;
 
-	public String closedDate;
+	private String closedDate;
 
-	public String location;
+	private String location;
 
-	public String country;
+	private String country;
 
-	public String state;
+	private String state;
 
-	public String city;
+	private String city;
 
-	public String zipCode;
+	private String zipCode;
 
-	public String skills;
+	private String skills;
 
-	public String visa;
+	private String visa;
 
-	public String description;
+	private String description;
 
-	public String noticePeriod;
+	private String noticePeriod;
 
-	public String coolingOff;
+	private String coolingOff;
 
-	public String selectClient;
+	private String selectClient;
 
-	public String selectContact;
+	private String selectContact;
 
-	public String clientRate;
+	private String clientRate;
 	
-	public String approver;
+	private String approver;
 
-	public String manager;
+	private String manager;
 
-	public String priority;
+	private String priority;
 
-	public String getStaticPath()
-	{
+	public String getStaticPath() {
 		return staticPath;
 	}
 
-	public void setStaticPath(String staticPath)
-	{
+	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
 
-	public List<FileInfo> getFileInfo()
-	{
+	public List<FileInfo> getFileInfo() {
 		return fileInfo;
 	}
 
-	public void setFileInfo(List<FileInfo> fileInfo)
-	{
+	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
 
-	public List<FileInfo> getUploadedFileInfo()
-	{
+	public List<FileInfo> getUploadedFileInfo() {
 		return uploadedFileInfo;
 	}
 
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo)
-	{
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
 		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
-	public List<String> getAssignedTo()
-	{
+	public List<String> getAssignedTo() {
 		return assignedTo;
 	}
 
-	public void setAssignedTo(List<String> assignedTo)
-	{
+	public void setAssignedTo(List<String> assignedTo) {
 		this.assignedTo = assignedTo;
 	}
 
-	public String getExportFilePath()
-	{
+	public String getExportFilePath() {
 		return exportFilePath;
 	}
 
-	public void setExportFilePath(String exportFilePath)
-	{
+	public void setExportFilePath(String exportFilePath) {
 		this.exportFilePath = exportFilePath;
 	}
 
-	public String getJobTitle()
-	{
+	public String getJobTitle() {
 		return jobTitle;
 	}
 
-	public void setJobTitle(String jobTitle)
-	{
+	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
 	}
 
-	public String getJobType()
-	{
+	public String getJobType() {
 		return jobType;
 	}
 
-	public void setJobType(String jobType)
-	{
+	public void setJobType(String jobType) {
 		this.jobType = jobType;
 	}
 
-	public String getJobId()
-	{
+	public String getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(String jobId)
-	{
+	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
 
-	public String getPositions()
-	{
+	public String getPositions() {
 		return positions;
 	}
 
-	public void setPositions(String positions)
-	{
+	public void setPositions(String positions) {
 		this.positions = positions;
 	}
 
-	public String getEducation()
-	{
+	public String getEducation() {
 		return education;
 	}
 
-	public void setEducation(String education)
-	{
+	public void setEducation(String education) {
 		this.education = education;
 	}
 
-	public String getMinExp()
-	{
+	public String getMinExp() {
 		return minExp;
 	}
 
-	public void setMinExp(String minExp)
-	{
+	public void setMinExp(String minExp) {
 		this.minExp = minExp;
 	}
 
-	public String getMaxExp()
-	{
+	public String getMaxExp() {
 		return maxExp;
 	}
 
-	public void setMaxExp(String maxExp)
-	{
+	public void setMaxExp(String maxExp) {
 		this.maxExp = maxExp;
 	}
 
-	public String getIndustryName()
-	{
+	public String getIndustryName() {
 		return industryName;
 	}
 
-	public void setIndustryName(String industryName)
-	{
+	public void setIndustryName(String industryName) {
 		this.industryName = industryName;
 	}
 
-	public String getRate()
-	{
+	public String getRate() {
 		return rate;
 	}
 
-	public void setRate(String rate)
-	{
+	public void setRate(String rate) {
 		this.rate = rate;
 	}
 
-	public String getMaxRate()
-	{
+	public String getMaxRate() {
 		return maxRate;
 	}
 
-	public void setMaxRate(String maxRate)
-	{
+	public void setMaxRate(String maxRate) {
 		this.maxRate = maxRate;
 	}
 
-	public String getTravelAllowance()
-	{
+	public String getTravelAllowance() {
 		return travelAllowance;
 	}
 
-	public void setTravelAllowance(String travelAllowance)
-	{
+	public void setTravelAllowance(String travelAllowance) {
 		this.travelAllowance = travelAllowance;
 	}
 
-	public String getClosedDate()
-	{
+	public String getClosedDate() {
 		return closedDate;
 	}
 
-	public void setClosedDate(String closedDate)
-	{
+	public void setClosedDate(String closedDate) {
 		this.closedDate = closedDate;
 	}
 
-	public String getLocation()
-	{
+	public String getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location)
-	{
+	public void setLocation(String location) {
 		this.location = location;
 	}
 
-	public String getCountry()
-	{
+	public String getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country)
-	{
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
-	public String getState()
-	{
+	public String getState() {
 		return state;
 	}
 
-	public void setState(String state)
-	{
+	public void setState(String state) {
 		this.state = state;
 	}
 
-	public String getCity()
-	{
+	public String getCity() {
 		return city;
 	}
 
-	public void setCity(String city)
-	{
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	public String getZipCode()
-	{
+	public String getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(String zipCode)
-	{
+	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
-	public String getSkills()
-	{
+	public String getSkills() {
 		return skills;
 	}
 
-	public void setSkills(String skills)
-	{
+	public void setSkills(String skills) {
 		this.skills = skills;
 	}
 
-	public String getVisa()
-	{
+	public String getVisa() {
 		return visa;
 	}
 
-	public void setVisa(String visa)
-	{
+	public void setVisa(String visa) {
 		this.visa = visa;
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public String getNoticePeriod()
-	{
+	public String getNoticePeriod() {
 		return noticePeriod;
 	}
 
-	public void setNoticePeriod(String noticePeriod)
-	{
+	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
 	}
 
-	public String getCoolingOff()
-	{
+	public String getCoolingOff() {
 		return coolingOff;
 	}
 
-	public void setCoolingOff(String coolingOff)
-	{
+	public void setCoolingOff(String coolingOff) {
 		this.coolingOff = coolingOff;
 	}
 
-	public String getSelectClient()
-	{
+	public String getSelectClient() {
 		return selectClient;
 	}
 
-	public void setSelectClient(String selectClient)
-	{
+	public void setSelectClient(String selectClient) {
 		this.selectClient = selectClient;
 	}
 
-	public String getSelectContact()
-	{
+	public String getSelectContact() {
 		return selectContact;
 	}
 
-	public void setSelectContact(String selectContact)
-	{
+	public void setSelectContact(String selectContact) {
 		this.selectContact = selectContact;
 	}
 
-	public String getClientRate()
-	{
+	public String getClientRate() {
 		return clientRate;
 	}
 
-	public void setClientRate(String clientRate)
-	{
+	public void setClientRate(String clientRate) {
 		this.clientRate = clientRate;
 	}
 
-	public String getApprover()
-	{
+	public String getApprover() {
 		return approver;
 	}
 
-	public void setApprover(String approver)
-	{
+	public void setApprover(String approver) {
 		this.approver = approver;
 	}
 
-	public String getManager()
-	{
+	public String getManager() {
 		return manager;
 	}
 
-	public void setManager(String manager)
-	{
+	public void setManager(String manager) {
 		this.manager = manager;
 	}
 
-	public String getPriority()
-	{
+	public String getPriority() {
 		return priority;
 	}
 
-	public void setPriority(String priority)
-	{
+	public void setPriority(String priority) {
 		this.priority = priority;
 	}
+
+	
 }

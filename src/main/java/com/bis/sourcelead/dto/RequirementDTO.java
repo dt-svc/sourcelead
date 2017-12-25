@@ -8,6 +8,8 @@ import com.bis.sourcelead.annotations.Required;
 public class RequirementDTO extends CommonDTO {
 
 	private String staticPath;
+	
+	private String exportFilePath;
 
 	private List<FileInfo> fileInfo;
 
@@ -333,6 +335,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
+	}
+
+	public String getExportFilePath() {
+		return exportFilePath;
+	}
+
+	public void setExportFilePath(String exportFilePath) {
+		this.exportFilePath = exportFilePath;
 	}
 
 	public List<FileInfo> getFileInfo() {

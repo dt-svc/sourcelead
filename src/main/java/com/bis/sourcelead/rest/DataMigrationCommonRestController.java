@@ -67,7 +67,7 @@ public class DataMigrationCommonRestController {
 	@RequestMapping(value = {"/getDataByMatchedFields","/rest/getDataByMatchedFields"}, method = RequestMethod.POST)
 	public ModelAndView getDataByMatchedFields(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception
 	{
-		dataMigrationService.validateImportedFormData(dataMigrationDTO);
+		dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
 		
 		return null;
 	}
