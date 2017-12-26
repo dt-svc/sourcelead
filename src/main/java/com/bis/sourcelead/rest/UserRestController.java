@@ -1511,4 +1511,19 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		    
 		   
 		} 
+	 
+	 @RequestMapping(value = "/rest/loginUserImageUrl", method = RequestMethod.GET)
+     public String getLoginUserImageUrl(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+         String imageUrl = "";
+         if(loginUser == null){
+                loginUser = userService.getUserById(userId);
+                imageUrl = loginUser.getFileUrl();
+         }else{
+             imageUrl = loginUser.getFileUrl();
+         }
+         if(StringUtils.isBlank(imageUrl))
+             imageUrl ="/resources/images/userprofile-img.png";
+         return imageUrl;
+     }
 }
