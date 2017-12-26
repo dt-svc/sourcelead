@@ -30,6 +30,7 @@
 				<li><a href="#">Retention Rate</a></li>
 				<li><a href="#">Applicant Received</a></li>
 				<li><a href="#">Sales Performance</a></li>
+					<li><a href="${appPath}/timeSheetReports">Timesheet Report</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
