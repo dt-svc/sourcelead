@@ -160,7 +160,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like 'Client' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition;
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			}else{

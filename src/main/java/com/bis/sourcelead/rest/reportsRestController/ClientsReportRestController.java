@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
-import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
-import com.bis.sourcelead.reportsDTO.JobFilterDTO;
-import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -55,15 +53,34 @@ public class ClientsReportRestController {
 		return model;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getTopTenFiveConracts", method = RequestMethod.GET)
-	public List<ContractsDTO> getTopTenFiveConracts(ContractsDTO contractsDTO, HttpServletRequest request) throws Exception {
+	public List<ContractReportsDTO> getTopTenFiveConracts(ContractsDTO contractsDTO, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		Date startDate = null, endDate = null;
-		List<ContractsDTO> contractList = new ArrayList<>();
-		clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,startDate,endDate);
-		return null;
+		List<ContractReportsDTO> contractList = new ArrayList<>();
+		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,startDate,endDate);
+		for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
+			ContractReportsDTO conDto = new ContractReportsDTO();
+			conDto.setClientName(entry.getKey());
+			conDto.setContractsCount(entry.getValue());
+			contractList.add(conDto);
+		}
+		
+		Collections.sort(contractList, new Comparator() {
+			@Override
+			public int compare(Object obj1, Object obj2)
+			{
+				ContractReportsDTO condto1 = (ContractReportsDTO) obj1;
+				ContractReportsDTO condto2 = (ContractReportsDTO) obj2;
+				if(condto1.getContractsCount() > condto2.getContractsCount()) return -1;
+				if(condto1.getContractsCount() < condto2.getContractsCount()) return 1;
+				return 0;
+			}
+		});
+		return contractList;
 	}
 	
 		

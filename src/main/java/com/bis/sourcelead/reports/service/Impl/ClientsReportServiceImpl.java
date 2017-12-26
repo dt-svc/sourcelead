@@ -15,6 +15,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
 
+import net.didion.jwnl.data.list.PointerTargetTreeNodeList.Operation;
+
 @Service
 public class ClientsReportServiceImpl implements ClientReportService{
 
@@ -61,9 +63,16 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		Map<String, Integer> conCount = new HashMap<>();
 		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
 		List<Contracts> contractList = new ArrayList<>();
-		for(OrgRelations rel : orgRelationsList){
-			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,rel.getId(),userRoleName,startDate,endDate);
-			contractList.add(conList.size());
+		for(OrgRelations orgRelation : orgRelationsList){
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,startDate,endDate);
+//			contractList.add(conList.size());
+			if(conList != null && conList.size() > 0){
+				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+					conCount.put(orgRelation.getResponderLocationId().getOrgLocationName(), conList.size());
+				}else{
+					conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
+				}
+			}
 		}
 		return conCount;
 	}

@@ -410,80 +410,83 @@ $(document).ready(function(){
 
 <!-- engagedContracts Report AmChart --> 
 <script type="text/javascript">
-			AmCharts.makeChart("engagedContracts",
+function prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers){
+	
+	AmCharts.makeChart("engagedContracts",
+			{
+			"type": "pie",
+			"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+			"labelRadius": 15,
+			"labelText": "[[title]]:  <br> [[value]]",
+			"pieX": "50%",
+			"pieY": "55%",
+			"radius": "40%",
+			"colorField": "color",
+			"colors": [],
+			"labelsEnabled": false,
+			"marginBottom": 0,
+			"marginTop": 0,
+			"outlineThickness": 2,
+			"titleField": "category",
+			"valueField": "column-1",
+			"addClassNames": true,
+			"handDrawThickness": 10,
+			"export": {
+				"enabled": true
+			},
+			"allLabels": [
 				{
-	"type": "pie",
-	"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
-	"labelRadius": 15,
-	"labelText": "[[title]]:  <br> [[value]]",
-	"pieX": "50%",
-	"pieY": "55%",
-	"radius": "40%",
-	"colorField": "color",
-	"colors": [],
-	"labelsEnabled": false,
-	"marginBottom": 0,
-	"marginTop": 0,
-	"outlineThickness": 2,
-	"titleField": "category",
-	"valueField": "column-1",
-	"addClassNames": true,
-	"handDrawThickness": 10,
-	"export": {
-		"enabled": true
-	},
-	"allLabels": [
-		{
-			"bold": true,
-			"color": "#3F51B5",
-			"id": "Label-1",
-			"size": 15,
-			"text": "Top 5 Engaged Contracts",
-			"x": "5%",
-			"y": "5%"
-		}
-	],
-	"balloon": {},
-	"legend": {
-		"enabled": true,
-		"position": "left"
-	},
-	"titles": [],
-	"dataProvider": [
-		{
-			"category": "Contract1",
-			"column-1": "100",
-			"color": "#26A69A"
-		},
-		{
-			"category": "Contract2",
-			"column-1": "200",
-			"color": "#26C6DA"
-		},
-		{
-			"category": "Contract3",
-			"column-1": "300",
-			"color": "#9CCC65"
-		},
-		{
-			"category": "Contract4",
-			"column-1": "300",
-			"color": "#8D6E63"
-		},
-		{
-			"category": "Contract5",
-			"column-1": "800",
-			"color": "#607D8B"
-		},
-		{
-			"category": "Others",
-			"column-1": "400",
-			"color": "#FFD54F"
-		}
-	]
+					"bold": true,
+					"color": "#3F51B5",
+					"id": "Label-1",
+					"size": 15,
+					"text": "Top 5 Engaged Contracts",
+					"x": "5%",
+					"y": "5%"
+				}
+			],
+			"balloon": {},
+			"legend": {
+				"enabled": true,
+				"position": "left"
+			},
+			"titles": [],
+			"dataProvider": [
+				{
+					"category": client1,
+					"column-1": client1Count,
+					"color": "#26A69A"
+				},
+				{
+					"category": client2,
+					"column-1": client2Count,
+					"color": "#26C6DA"
+				},
+				{
+					"category": client3,
+					"column-1": client3Count,
+					"color": "#9CCC65"
+				},
+				{
+					"category": client4,
+					"column-1": client4Count,
+					"color": "#8D6E63"
+				},
+				{
+					"category": client5,
+					"column-1": client5Count,
+					"color": "#607D8B"
+				},
+				{
+					"category": "Others",
+					"column-1": clientOthersCount,
+					"color": "#FFD54F"
+				}
+			]
+			}
+);
 }
-			);
-		</script> 
+</script> 
 		
 <script type="text/javascript">
 			AmCharts.makeChart("avgtth",
@@ -641,8 +644,46 @@ $(document).ready(function(){
 
 <script>
 function getTopTenClientReports(){
+	var frequency = $("#dateFrequency").val();
 	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
-		
+		if(data != null && data != '' && data != 'undefined'){
+			var client1 = "";
+			var client2 = "";
+			var client3 = "";
+			var client4 = "";
+			var client5 = "";
+			var clientOthers = "";
+			var client1Count = 0;
+			var client2Count = 0;
+			var client3Count = 0;
+			var client4Count = 0;
+			var client5Count = 0;
+			var clientOthersCount = 0;
+			for(i=0; i<data.length; i++){
+				var opt = data[i];
+				if(i == 0){
+					client1 = opt.clientName;
+					client1Count = opt.contractsCount;
+				}else if(i == 1){
+					client2 = opt.clientName;
+					client2Count = opt.contractsCount;
+				}else if(i == 2){
+					client3 = opt.clientName;
+					client3Count = opt.contractsCount;
+				}else if(i == 3){
+					client4 = opt.clientName;
+					client4Count = opt.contractsCount;
+				}else if(i == 4){
+					client5 = opt.clientName;
+					client5Count = opt.contractsCount;
+				}else{
+					clientOthers = opt.clientName;
+					clientOthersCount += opt.contractsCount;
+				}
+			}
+			alert("123")
+			prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers);
+		}
 	});
 }
 
