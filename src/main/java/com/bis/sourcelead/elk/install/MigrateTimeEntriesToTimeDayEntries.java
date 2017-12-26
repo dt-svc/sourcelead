@@ -49,7 +49,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 						 String createdBy = timesheetEntriesResultSet.getString("CREATED_BY");
 						 Date  updatedDate = timesheetEntriesResultSet.getDate("UPDATED_DATE");
 						 String updatedBy = timesheetEntriesResultSet.getString("UPDATED_BY");
-						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.project_tasks where ID = "+projectTaskId+"";
+						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.PROJECT_TASKS where ID = "+projectTaskId+"";
 						 	ResultSet ptResultSet = stmt2.executeQuery(Type);
 						 	while(ptResultSet.next()){
 						 	String  taskType = ptResultSet.getString("BILLABLE_TYPE");
