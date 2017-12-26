@@ -9,6 +9,8 @@ public class JobFilterDTO {
 	private String fromDate;
 	
 	private String toDate;
+	
+	private String year;
 
 	public String getJobIds() {
 		return jobIds;
@@ -40,6 +42,14 @@ public class JobFilterDTO {
 
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
 	}
 	
 	
