@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,14 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -30,6 +38,9 @@ public class ClientsReportRestController {
 	private String sourceleadUrl;
 	@Autowired
 	ClientReportService clientReportService;
+	
+	@Autowired
+	InvoiceService invoiceService;
 	
 	@RequestMapping(value = "/clientReports")
 	public ModelAndView clientReports(HttpServletRequest request) throws Exception
@@ -83,5 +94,39 @@ public class ClientsReportRestController {
 		return contractList;
 	}
 	
+	@RequestMapping(value = "/getTopFiveReceivsblesReports", method = RequestMethod.GET)
+	public Map<String,Float> getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		Map<String,Float> amountList = new LinkedHashMap<>();
+		List<OrgRelations> clientsList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
+		
+		for(OrgRelations orgRelation : clientsList) {
+			Float paidTotalAmount = 0f;
+			List<Invoice> invoiceList = invoiceService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
+			String clientName = null;
+			if(invoiceList != null && invoiceList.size() > 0) {
+				for (Invoice invoice : invoiceList) {
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+						paidTotalAmount = paidTotalAmount + paidAmount;
+						if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+							clientName = invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName();
+						}
+						if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+							clientName =invoice.getOrgRelationID().getLocationId().getOrgLocationName();
+						}
+						
+					}
+				}
+				if(clientName != null)
+				amountList.put(clientName,paidTotalAmount);
+//				amountList.put("others", value);
+			}
+		}
+		return amountList;
+	}
 		
 }

@@ -321,92 +321,7 @@ $(document).ready(function(){
   
   
   <!-- Top5 Vendor Expenses Report AmChart --> 
-<script type="text/javascript">
-			AmCharts.makeChart("top5receivables",
-{
-	"type": "pie",
-	"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
-	"innerRadius": -1,
-	"labelRadius": 15,
-	"labelText": "[[title]]:  <br> $  [[value]]  ([[percents]]%)",
-	"pieX": "50%",
-	"pieY": "55%",
-	"radius": "40%",
-	"colorField": "color",
-	"colors": [],
-	"labelsEnabled": false,
-	"marginBottom": 0,
-	"marginTop": 0,
-	"maxLabelWidth": 75,
-	"outlineThickness": 2,
-	"titleField": "category",
-	"valueField": "column-1",
-	"addClassNames": true,
-	"handDrawThickness": 10,
-	"responsive": {
-		"enabled": true
-	},
-	"export": {
-		"enabled": true
-	},
-	"allLabels": [
-		{
-			"bold": true,
-			"color": "#CC0000",
-			"id": "Label-1",
-			"size": 15,
-			"text": "Top 5 Receivables",
-			"x": "5%",
-			"y": "5%"
-		}
-	],
-	"balloon": {},
-	"legend": {
-		"enabled": true,
-		"labelWidth": 125,
-		"marginLeft": 0,
-		"marginRight": 0,
-		"marginTop": 25,
-		"markerSize": 10,
-		"position": "left",
-		"spacing": 5
-	},
-	"titles": [],
-	"dataProvider": [
-		{
-			"category": "Tata Consultancy Services Pvt. Ltd",
-			"column-1": "1000",
-			"color": "#7E57C2"
-		},
-		{
-			"category": "Client2",
-			"column-1": "2000",
-			"color": "#5C6BC0"
-		},
-		{
-			"category": "Client3",
-			"column-1": "3000",
-			"color": "#64B5F6"
-		},
-		{
-			"category": "Client4",
-			"column-1": "4000",
-			"color": "#81C784"
-		},
-		{
-			"category": "Client5",
-			"column-1": "8000",
-			"color": "#FFB74D"
-		},
-		{
-			"category": "Others",
-			"column-1": "4000",
-			"color": "#FF7043"
-		}
-	]
-}
-							  );
-		</script> 
+
 
 <!-- engagedContracts Report AmChart --> 
 <script type="text/javascript">
@@ -693,12 +608,75 @@ function getTopFiveReceivsblesReports(){
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl+"/getTopFiveReceivsblesReports?&dateFrequency="+frequency+"&type=Receivable",
-// 	    success: function(data) {
-//  	    	$("#popUp").empty();
-//  		    $(".project_inn_mask").fadeOut(200);
-// 	    		location.replace(sourceleadUrl+"/invoiceList");
-// 	    }
+	    success: function(data) {
+	    	getAmchartData(data);
+ 	    }
 	});
+}
+function getAmchartData(data){
+	var clientName = '';
+	var amount = '';
+	var count = 1;
+	var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
+	var i = 0;
+	var mainAmcahrt = [];
+	for(var k in data) {
+		mainAmcahrt[i] = {"category": k, "column-1": data[k], "color": colors[i++] };
+	}
+	mainAmcahrt[i] = {"category": "Others", "column-1": 20, "color": colors[i++] };
+	AmCharts.makeChart("top5receivables",
+			{
+				"type": "pie",
+				"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+				"innerRadius": -1,
+				"labelRadius": 15,
+				"labelText": "[[title]]:  <br> $  [[value]]  ([[percents]]%)",
+				"pieX": "50%",
+				"pieY": "55%",
+				"radius": "40%",
+				"colorField": "color",
+				"colors": [],
+				"labelsEnabled": false,
+				"marginBottom": 0,
+				"marginTop": 0,
+				"maxLabelWidth": 75,
+				"outlineThickness": 2,
+				"titleField": "category",
+				"valueField": "column-1",
+				"addClassNames": true,
+				"handDrawThickness": 10,
+				"responsive": {
+					"enabled": true
+				},
+				"export": {
+					"enabled": true
+				},
+				"allLabels": [
+					{
+						"bold": true,
+						"color": "#CC0000",
+						"id": "Label-1",
+						"size": 15,
+						"text": "Top 5 Receivables",
+						"x": "5%",
+						"y": "5%"
+					}
+				],
+				"balloon": {},
+				"legend": {
+					"enabled": true,
+					"labelWidth": 125,
+					"marginLeft": 0,
+					"marginRight": 0,
+					"marginTop": 25,
+					"markerSize": 10,
+					"position": "left",
+					"spacing": 5
+				},
+				"titles": [],
+				"dataProvider": mainAmcahrt
+			}
+		);
 }
 </script>
 		
