@@ -497,8 +497,20 @@ function editCandidate(candidateId){
 
 <script>
 function deleteCandidate(candidateId){
+	 
+	var requirementId = $("#requirementId").val();
 	  var reason = document.getElementById("rejectReason").value;
-	  var requirementId = $("#requirementId").val();
+	  reason = reason.replace(/\s/g, "") 
+	 
+	  if(reason.length == 0){
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+		}
+	  
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+		  $(".rejectErrorMsgs").empty();
+			  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType=Candidates",        
@@ -525,6 +537,7 @@ function deleteCandidate(candidateId){
                 }
                  },
               }); 
+		  }
 }
 </script>
 
@@ -554,7 +567,7 @@ function removeCandidateAlertMessage(candidateId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<div class='rejectErrorMsgs'/>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
