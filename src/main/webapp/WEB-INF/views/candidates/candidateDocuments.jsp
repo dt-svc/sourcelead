@@ -124,7 +124,7 @@ function candDocumentsList(candidateId){
 	                     
 	                     for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i];  
-	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
+	                    	 if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
 
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
