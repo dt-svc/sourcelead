@@ -130,11 +130,48 @@ $(document).ready(function(){
 			  <div class="col-md-6">
 				<div class="projectDashboad clearfix positionRelative">
 				  <div id="top5receivables" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
+				  
+				  <ul class="list-unstyled list-inline vendor-listcount mt">
+						<li>
+							<label>Draft</label>
+							<span class="text-warning"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+						</li>
+						<li>
+							<label>Unpaid</label>
+							<span class="text-danger"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+						</li>
+						<li>
+							<label>Paid</label>
+							<span class="text-success"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+						</li>
+						<li>
+							<label>Open</label>
+							<span class="text-info"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+						</li>
+					</ul>
 				</div>
 			  </div>
 			  <div class="col-md-6">
 				<div class="projectDashboad clearfix positionRelative">
 				  <div id="engagedContracts" style="width:100%; height:250px" class="amchartAnchor-Hide"></div>
+				  <ul class="list-unstyled list-inline vendor-listcount mt">
+						<li>
+							<label>MSA</label>
+							<span class="text-warning">5411</span>
+						</li>
+						<li>
+							<label>SOW</label>
+							<span class="text-danger">5411</span>
+						</li>
+						<li>
+							<label>NDA</label>
+							<span class="text-success">5411</span>
+						</li>
+						<li>
+							<label>NSA</label>
+							<span class="text-info">5287</span>
+						</li>
+					</ul>
 				</div>
 			  </div>
 			</div>
@@ -719,7 +756,7 @@ function getTopFiveReceivsblesReports(){
 	var frequency = $("#dateFrequency").val();
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl+"/getTopFiveReceivsblesReports?&dateFrequency="+frequency+"&type=Receivable",
+		url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&type=Receivable",
 	    success: function(data) {
 	    	getAmchartData(data);
  	    }
@@ -733,9 +770,13 @@ function getAmchartData(data){
 	var i = 0;
 	var mainAmcahrt = [];
 	for(var k in data) {
-		mainAmcahrt[i] = {"category": k, "column-1": data[k], "color": colors[i++] };
+		mainAmcahrt[i] = {"category": k, "column-1": data[k].toFixed(2), "color": colors[i++] };
 	}
-	mainAmcahrt[i] = {"category": "Others", "column-1": 20, "color": colors[i++] };
+// 	if(k== 'others'){
+// 		alert("2")
+// 		mainAmcahrt[i] = {"category": "Others", "column-1": data[k].toFixed(2), "color": colors[i++] };	
+// 	}
+	
 	AmCharts.makeChart("top5receivables",
 			{
 				"type": "pie",
