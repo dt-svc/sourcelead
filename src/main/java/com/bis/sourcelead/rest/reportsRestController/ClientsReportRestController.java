@@ -22,13 +22,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
-import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
-import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.InvoiceService;
-import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -41,6 +40,9 @@ public class ClientsReportRestController {
 	
 	@Autowired
 	InvoiceService invoiceService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 	@RequestMapping(value = "/clientReports")
 	public ModelAndView clientReports(HttpServletRequest request) throws Exception
@@ -65,14 +67,13 @@ public class ClientsReportRestController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/getTopTenFiveConracts", method = RequestMethod.GET)
-	public List<ContractReportsDTO> getTopTenFiveConracts(ContractsDTO contractsDTO, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getTopFiveConracts", method = RequestMethod.GET)
+	public List<ContractReportsDTO> getTopTenFiveConracts(ContractReportsDTO contractReportsDTO, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		Date startDate = null, endDate = null;
 		List<ContractReportsDTO> contractList = new ArrayList<>();
-		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,startDate,endDate);
+		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,contractReportsDTO);
 		for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
 			ContractReportsDTO conDto = new ContractReportsDTO();
 			conDto.setClientName(entry.getKey());

@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	getTopTenClientReports();
+	getTopFiveConracts();
 	getTopFiveReceivsblesReports();
 });
 </script>
@@ -85,26 +85,25 @@ $(document).ready(function(){
         <div class="hidden"> <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
-        <select class="form-control" id="dateFrequency">
+        <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
           <option>Select Date</option>
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
           <option value="3_months">3 months</option>
-           <option value="YTD">last year</option>
-          <option value="Last_Year">last year</option>
-          <option value="custom">Custom</option>
+          <option value="Last_Year">Last year</option>
+          <option value="Custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
         <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
           <div class="pull-left">
-            <div class="pull-left mr5" style="width: 140px">
-              <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+            <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+              <input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm" type="text">
             </div>
-            <div class="pull-left mr5" style="width: 140px">
-              <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+              <input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm" type="text">
             </div>
-            <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
           </div>
         </div>
         <!-- Top Leave Takers Custom Date --> 
@@ -321,11 +320,152 @@ $(document).ready(function(){
   
   
   <!-- Top5 Vendor Expenses Report AmChart --> 
+<script>
+function showCustomFields(){
+	var frequency = $("#dateFrequency").val();
+	if(frequency == "Custom"){
+		$("#custom-select").show();
+ 		$('#custFromDate').attr('data-validation',"required");
+ 		$('#custToDate').attr('data-validation',"required");
+	}else{
+		$("#custom-select").hide();
+		$('#custFromDate').removeAttr('data-validation');
+		$('#custToDate').attr('data-validation',"required");
+	}
+	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEndDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEndDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEndDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEndDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEndDate = 'yy-dd-mm'; 
+	  }
+
+	  $( "#custFromDate" ).datepicker({
+		   dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true,
+		    maxDate: new Date() ,
+	        onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#custToDate").datepicker("option", "minDate", dt);
+	 		removeStartValid();
+			} 
+	  
+	  });
+	  
+	  $( "#custToDate" ).datepicker({
+		   dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true,
+		  maxDate: new Date() ,
+	  onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#custFromDate").datepicker("option", "maxDate", dt);
+	 		removeEndValid();
+			}});
+}
+
+function removeStartValid(){
+	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+}
+function removeEndValid(){
+	$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function validateCustDates(){
+	var frequency = $("#dateFrequency").val();
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
+	if(frequency == "Custom"){
+		if(fromDate == ''){
+			$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+			$("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+		}
+		if(toDate == ''){
+			$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+			$("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+		}
+		if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+			$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+			$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+			refreshWithNewFreq();
+		}
+	}else{
+		$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+		$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+		refreshWithNewFreq();	
+	} 
+}
+</script>
+
+<script>
+function refreshWithNewFreq(){
+	getTopFiveConracts();
+	getTopFiveReceivsblesReports();
+}
+</script>
 
 
 <!-- engagedContracts Report AmChart --> 
 <script type="text/javascript">
 function prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers){
+	
+	var mainChar = [];
+	if(client1Count>0){
+	mainChar.push( {
+		"category": client1,
+		"column-1": client1Count,
+		"color": "#26A69A"
+	   } );
+	}
+	
+	if(client2Count>0){
+		mainChar.push( {
+			"category": client2,
+			"column-1": client2Count,
+			"color": "#26C6DA"
+		   } );
+		}
+	
+	if(client3Count>0){
+		mainChar.push( {
+			"category": client3,
+			"column-1": client3Count,
+			"color": "#9CCC65"
+		   } );
+		}
+	
+	if(client4Count>0){
+		mainChar.push( {
+			"category": client4,
+			"column-1": client4Count,
+			"color": "#8D6E63"
+		   } );
+		}
+	
+	if(client5Count>0){
+		mainChar.push( {
+			"category": client5,
+			"column-1": client5Count,
+			"color": "#607D8B"
+		   } );
+		}
+	
+	if(clientOthersCount>0){
+		mainChar.push( {
+			"category": "Others",
+			"column-1": clientOthersCount,
+			"color": "#FFD54F"
+		   } );
+		}
+	
 	
 	AmCharts.makeChart("engagedContracts",
 			{
@@ -366,38 +506,7 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
 				"position": "left"
 			},
 			"titles": [],
-			"dataProvider": [
-				{
-					"category": client1,
-					"column-1": client1Count,
-					"color": "#26A69A"
-				},
-				{
-					"category": client2,
-					"column-1": client2Count,
-					"color": "#26C6DA"
-				},
-				{
-					"category": client3,
-					"column-1": client3Count,
-					"color": "#9CCC65"
-				},
-				{
-					"category": client4,
-					"column-1": client4Count,
-					"color": "#8D6E63"
-				},
-				{
-					"category": client5,
-					"column-1": client5Count,
-					"color": "#607D8B"
-				},
-				{
-					"category": "Others",
-					"column-1": clientOthersCount,
-					"color": "#FFD54F"
-				}
-			]
+			"dataProvider": mainChar
 			}
 );
 }
@@ -558,48 +667,51 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
 </script> 
 
 <script>
-function getTopTenClientReports(){
+function getTopFiveConracts(){
 	var frequency = $("#dateFrequency").val();
-	$.get(sourceleadUrl+ "/getTopTenFiveConracts", function(data) {
-		if(data != null && data != '' && data != 'undefined'){
-			var client1 = "";
-			var client2 = "";
-			var client3 = "";
-			var client4 = "";
-			var client5 = "";
-			var clientOthers = "";
-			var client1Count = 0;
-			var client2Count = 0;
-			var client3Count = 0;
-			var client4Count = 0;
-			var client5Count = 0;
-			var clientOthersCount = 0;
-			for(i=0; i<data.length; i++){
-				var opt = data[i];
-				if(i == 0){
-					client1 = opt.clientName;
-					client1Count = opt.contractsCount;
-				}else if(i == 1){
-					client2 = opt.clientName;
-					client2Count = opt.contractsCount;
-				}else if(i == 2){
-					client3 = opt.clientName;
-					client3Count = opt.contractsCount;
-				}else if(i == 3){
-					client4 = opt.clientName;
-					client4Count = opt.contractsCount;
-				}else if(i == 4){
-					client5 = opt.clientName;
-					client5Count = opt.contractsCount;
-				}else{
-					clientOthers = opt.clientName;
-					clientOthersCount += opt.contractsCount;
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
+	if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
+		$.get(sourceleadUrl+ "/getTopFiveConracts?frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+			if(data != null && data != '' && data != 'undefined'){
+				var client1 = "";
+				var client2 = "";
+				var client3 = "";
+				var client4 = "";
+				var client5 = "";
+				var clientOthers = "";
+				var client1Count = 0;
+				var client2Count = 0;
+				var client3Count = 0;
+				var client4Count = 0;
+				var client5Count = 0;
+				var clientOthersCount = 0;
+				for(i=0; i<data.length; i++){
+					var opt = data[i];
+					if(i == 0){
+						client1 = opt.clientName;
+						client1Count = opt.contractsCount;
+					}else if(i == 1){
+						client2 = opt.clientName;
+						client2Count = opt.contractsCount;
+					}else if(i == 2){
+						client3 = opt.clientName;
+						client3Count = opt.contractsCount;
+					}else if(i == 3){
+						client4 = opt.clientName;
+						client4Count = opt.contractsCount;
+					}else if(i == 4){
+						client5 = opt.clientName;
+						client5Count = opt.contractsCount;
+					}else{
+						clientOthers = opt.clientName;
+						clientOthersCount += opt.contractsCount;
+					}
 				}
+				prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers);
 			}
-			alert("123")
-			prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers);
-		}
-	});
+		});
+	}
 }
 
 

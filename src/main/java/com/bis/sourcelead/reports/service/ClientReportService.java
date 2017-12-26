@@ -7,6 +7,7 @@ import java.util.Map;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 
 public interface ClientReportService {
 
@@ -16,6 +17,6 @@ public interface ClientReportService {
 
 	Map<String, Integer> getAllClientsSpocCountByOrgLocationIdAndUserId(Long locationId, Long userId);
 
-	Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user, String userRoleName, Date startDate, Date endDate);
+	Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user, String userRoleName,ContractReportsDTO contractReportsDTO);
 
 }

@@ -18,11 +18,20 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
+import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
 @Repository
 public class ClientReportDaoImpl implements ClientReportDao {
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Transactional
 	public boolean isUserAdminByOrgLocationId(Long orgLocationId, Long userId)
@@ -137,8 +146,18 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,Long orgRelationId,String userRoleName,Date startDate,Date endDate)
+	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,Long orgRelationId,String userRoleName,ContractReportsDTO contractReportsDTO)
 	{
+		String subQuery = "";
+		Date[] freqDates = new Date[2];
+		if(contractReportsDTO.getFromDate() != null && !"".equalsIgnoreCase(contractReportsDTO.getFromDate()) && contractReportsDTO.getToDate() != null && !"".equalsIgnoreCase(contractReportsDTO.getToDate())){
+			subQuery += " and ( contracts.updatedDate >= :startDate and contracts.updatedDate <= :endDate )";
+			freqDates[0] = commonUtil.getDateFormat(contractReportsDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(contractReportsDTO.getToDate());
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(contractReportsDTO.getFrequency());
+			subQuery += " and ( contracts.updatedDate >= :startDate and contracts.updatedDate <= :endDate )";
+		}
 		String userRoleCondition = "";
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 			userRoleCondition = "";
@@ -160,11 +179,11 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition;
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition+subQuery ;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 			}else{
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setCacheable(true).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 			}
 		
 		if (ContractsList.size() > 0)

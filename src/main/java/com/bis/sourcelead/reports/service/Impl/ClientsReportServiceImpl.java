@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
+import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 
 import net.didion.jwnl.data.list.PointerTargetTreeNodeList.Operation;
 
@@ -58,13 +59,13 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,Date startDate,Date endDate)
+	public Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,ContractReportsDTO contractReportsDTO)
 	{
 		Map<String, Integer> conCount = new HashMap<>();
 		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
 		List<Contracts> contractList = new ArrayList<>();
 		for(OrgRelations orgRelation : orgRelationsList){
-			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,startDate,endDate);
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 //			contractList.add(conList.size());
 			if(conList != null && conList.size() > 0){
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
