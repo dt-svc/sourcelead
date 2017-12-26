@@ -559,7 +559,7 @@ function removeCandidateAlertMessage(candidateId){
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".project_inn_mask").fadeIn(200).css({'z-index':'1000'});
 }
 </script>
 
