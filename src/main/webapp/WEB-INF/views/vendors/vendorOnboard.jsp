@@ -360,10 +360,7 @@
 			vendorTasks.href = "#";
 			vendorTasks.className = "disabledLink";
 		}
-		
-		
 		getVendorOnboardDetails();
-	
 		
 		$("#tab-a").show()
 	    $(".newPrTabsMenu a").click(function(event) {
@@ -374,12 +371,12 @@
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
 	    });
+		
 	});
 </script>
 
 <script>
 function getVendorOnboardDetails(){
-	
 	var onboardSubmittedStatus = '${onboardSubmittedStatus}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	if(onboardSubmittedStatus == 'N'){
@@ -419,7 +416,9 @@ function getVendorOnboardDetails(){
 		        	if(json.vendorLocation != null && json.vendorLocation != "" && json.vendorLocation != "undefined"){
 		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>"+json.vendorLocation+"</p>");
 		        	}else{
-		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>'--'</p>");
+
+		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>--</p>");
+
 		        	}
 		        	
 		        	$("#clientContactName").html("<p title='"+json.clientContactName+"'>"+json.clientContactName+"</p>");

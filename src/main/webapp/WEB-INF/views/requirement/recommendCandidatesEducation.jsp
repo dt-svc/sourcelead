@@ -19,6 +19,9 @@ function candidateEducation(candidateId){
 	}else{
 		result = result  +'    	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>                                                            ';
 	}
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -669,7 +672,11 @@ function candidateEducationStore(candidateId){
 				            			$("#quickDisVal").empty();
 				            			$("#quickDisVal").append(data+'%');
 				               			 $("#popUpDiv").removeClass("edit-details-active");
+				               			$("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+				        				$("#eduMsgDiv").html("Success!! New Education added");
 				               			 candidateEducationList(candidateId);
+				               			eduMsgFadeinFunction();
 							    	}
 				                 }   
 				      }, 
@@ -686,7 +693,12 @@ $('body').on('blur', '#education_form', function() {
 
 
 </script>            
-          
+ <script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>          
 
 <script type="text/javascript">
 	(function($) {
@@ -716,10 +728,25 @@ $('body').on('blur', '#education_form', function() {
      @author : david.
      this script is for remove candidateEducation.
 --%>
+<script type="text/javascript">
+function removeEducation(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").empty();
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEducation(candidateEducationId,candidateId){
  var loginUserId = '${SourceLeadWeb_userId}';
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
@@ -755,8 +782,14 @@ function removeEducation(candidateEducationId,candidateId){
    	          				 $("#quickPerVal").removeClass('progress-bar-danger');
    	          				 $("#quickPerVal").addClass("progress-bar-success");
    	          			 }
+   	          	   	$("#selector4").removeAttr("style");
+       			 $("#selector4").css({ display: "block" });
+       			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			candidateEducationList(candidateId);
+             			eduMsgFadeinFunction();
+             			
 			    	}
                } 
         },
@@ -765,7 +798,12 @@ function removeEducation(candidateEducationId,candidateId){
 	 
 }
 </script> 
-
+ <script type="text/javascript">
+function deleteEduPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+<div id="deleteEduPopUp"></div> 
  <!-- this script is for removing the Education  Ends -->       
  
  <%-- 
