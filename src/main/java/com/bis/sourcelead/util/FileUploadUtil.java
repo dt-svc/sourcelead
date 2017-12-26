@@ -2,29 +2,33 @@ package com.bis.sourcelead.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgStorageDetailDTO;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -213,6 +217,58 @@ public class FileUploadUtil {
 			}
 		}
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
+	}
+	
+	public static String getResumeZipFileName(String staticPath, HttpServletRequest request, String uploadid, boolean failed) {
+		File file = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+	    try {
+			file = File.createTempFile("temp/"+(failed ? "failed" : "existed")+"-", ""+ uploadid + ".zip");
+			fos = new FileOutputStream(file);
+			zos = new ZipOutputStream(fos);
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			long orgId = 0, orgLocationId = 0;
+			if (org != null) {
+				orgId = org.getId();
+			}
+			if (loginOrgLocation != null) {
+				orgLocationId = loginOrgLocation.getId();
+			}
+
+			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/resumes-"+(failed ? "failed" : "existed")+"-"+uploadid);
+			File files[] = folder.listFiles();
+			for (File f : files) {
+				try(FileInputStream fis = new FileInputStream(f);) {
+					ZipEntry entry = new ZipEntry(f.getName());
+					byte b[] = new byte[fis.available()];
+					fis.read(b);
+					entry.setExtra(b);
+				    zos.putNextEntry(entry);
+				    zos.closeEntry();
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} finally {
+			if(zos != null)
+				try {
+					zos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}	
+		return file == null ? "" : file.getAbsolutePath();
 	}
 
 }

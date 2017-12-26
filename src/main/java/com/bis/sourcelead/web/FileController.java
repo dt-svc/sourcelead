@@ -340,6 +340,7 @@ public class FileController {
 		File file = null;
 		try {
 			file = new File(staticPath, "temp/log-" + uploadid + ".html");
+			
 			out = new PrintWriter(new FileOutputStream(file), true);
 			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
 			for (CandidateImportLog c : list) {
@@ -357,44 +358,13 @@ public class FileController {
 	@RequestMapping("/bulk-resume-import-export-failed")
 	@ResponseBody
 	public String exportFailedResumes(HttpServletRequest request, String uploadid) {
-		PrintWriter out = null;
-		File file = null;
-		try {
-			file = new File(staticPath, "temp/failed-" + uploadid + ".html");
-			
-			out = new PrintWriter(new FileOutputStream(file), true);
-			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
-			for (CandidateImportLog c : list) {
-				out.write(c.getMessage());
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if(out != null) 
-				out.close();
-		}
-		return file == null ? "" : file.getAbsolutePath();
+		return FileUploadUtil.getResumeZipFileName(staticPath, request, uploadid, true);
 	}
 	
 	@RequestMapping("/bulk-resume-import-export-duplicate")
 	@ResponseBody
 	public String exportDuplicateResumes(HttpServletRequest request, String uploadid) {
-		PrintWriter out = null;
-		File file = null;
-		try {
-			file = new File(staticPath, "temp/duplicate-" + uploadid + ".html");
-			out = new PrintWriter(new FileOutputStream(file), true);
-			List<CandidateImportLog> list = candidateService.getCandidateImportLog(uploadid, true);
-			for (CandidateImportLog c : list) {
-				out.write(c.getMessage());
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if(out != null) 
-				out.close();
-		}
-		return file == null ? "" : file.getAbsolutePath();
+		return FileUploadUtil.getResumeZipFileName(staticPath, request, uploadid, false);
 	}
 
 	private void addToResponse(int type, HttpSession session, String uploadid, ResumeParserJsonUtil resume,
@@ -411,7 +381,7 @@ public class FileController {
 		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " processed...");
 	}
 	
-	@RequestMapping(value = "/downloadFile")
+	@RequestMapping(value = "/downloadFile.html")
     public void downloadFile(HttpServletResponse response, String file) {
         try {
             File file1 = new File(URLDecoder.decode(file, "utf-8"));

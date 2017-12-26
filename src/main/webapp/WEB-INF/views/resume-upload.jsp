@@ -233,8 +233,8 @@ padding: 2px
 <div class='links'>
 	<ul>
 		<li id='exportLog'>Download Upload Log</li>
-		<!-- <li id='exportFailed'>Download Failed Resumes</li>
-		<li id='exportDuplicate'>Download Duplicate Resumes</li> -->
+		 <li id='exportFailed'>Download Failed Resumes</li>
+		<li id='exportDuplicate'>Download Duplicate Resumes</li> 
 	</ul>
 </div>
 	<footer>
