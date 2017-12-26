@@ -19,7 +19,13 @@
 	<td><div class="tbldata-dotdot-sm">
 			<span><b title="${timesheetSubmission.project}">${timesheetSubmission.project}</b></span>
 		</div></td>
-	<td><div title="${timesheetSubmission.clientName}">${timesheetSubmission.clientName}</div></td>
+		
+	<td><div title="${timesheetSubmission.clientName}"><a href="/app/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
+	
+	
+	
+	
+	
     <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
 		<c:forEach var="weekTot" items="${timesheetSubmission.weeekTotal}" varStatus="status"> 
 				<c:if test="${!empty timesheetSubmission.submissionTotal}">
