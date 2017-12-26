@@ -20,7 +20,7 @@
 			<span><b title="${timesheetSubmission.project}">${timesheetSubmission.project}</b></span>
 		</div></td>
 		
-	<td><div title="${timesheetSubmission.clientName}"><a href="/app/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
+	<td><div title="${timesheetSubmission.clientName}"><a class="aLink" href="/app/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
 	
 	
 	
