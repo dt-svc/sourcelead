@@ -264,7 +264,7 @@ function closeCertificatePopup(){
 								result = result	+ '	             <div class="form-horizontal clearfix">';
 								result = result + '	               <div class="clearfix mb10">';
 								result = result + '	                 <div class="col-md-12">';
-								result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumber validate_length length2-100" field-name="Employer Name" value="'+json.name+'"> <span class="hidden">Employer Name</span>';
+								result = result	+ '	                  <input type="text" class="form-control"  placeholder="Employer *" name="name" data-validation="required validate_AlphaNumeric_SpecialChar validate_length length2-100" field-name="Employer Name" value="'+json.name+'"> <span class="hidden">Employer Name</span>';
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
 								result = result	+ '	               <div class="clearfix mb10">';
@@ -354,7 +354,7 @@ function closeCertificatePopup(){
 		               if ((datestr = $(this).val()).length > 0) {
 		                   year = datestr.substring(datestr.length-4, datestr.length);
 		                   month = jQuery.inArray(datestr.substring(0, datestr.length-5), $(this).datepicker('option', 'monthNames'));
-		                   //$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+		                   $(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
 		                   $(this).datepicker('setDate', new Date(year, month, 1));    
 		               }
 		               var other = this.id == "startYear" ? "#endYearEdit" : "#startYear";

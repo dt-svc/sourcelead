@@ -120,7 +120,7 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
-				result = result +'                     <th>Action</th>';
+				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
@@ -170,12 +170,12 @@ function getRequestedAssociatesList(){
 						 estimatedBudget = '--';
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
-						 minExperience = opt.minExperience;
+						 minExperience = "Min Exp. "+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
-						maxExperience = opt.maxExperience;
+						maxExperience = "Max Exp. "+opt.maxExperience;
 					}else{
 						maxExperience = '--';
 					}
@@ -254,11 +254,11 @@ function getRequestedAssociatesList(){
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
 			    		
 				    		if(opt.resourceStatus == 'Waiting For Approval'){
-				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdNewAssociateRequest(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-clock-o" alt="Onhold" title="Onhold"></i></a>';
+				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdNewAssociateRequest(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-clock-o text-primary" alt="Onhold" title="Onhold"></i></a>';
 				    		}
 				    		result = result +'</div>';
 						}else{
-			    			result = result +'<div class="tbldata-dotdot_80 text-success"><strong>'+opt.resourceStatus+'</strong></div>';
+			    			result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
 						result = result +'</td>';
 					 result = result +'</tr>';

@@ -818,9 +818,58 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
 	  }
-   
-  var reStatertDate = $('#reStartDate').val()
+
+ var reStatertDate = $('#reStartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
+	  $('#reStartDate').datepicker({
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+		  minDate:endDate,
+		  maxDate:projectEndDateStr,
+		  showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
+        	   if(selected != null && selected != '' && selected != 'undefined'){
+        		    removevalidation();
+	   	            var dt = toDate('#reStartDate');
+	   	            dt.setDate(dt.getDate() + 1);
+	   	            $("#reEndDate").datepicker("option", "minDate", dt);
+	   	            var event = arguments.callee.caller.caller.arguments[0];
+                   // If "Clear" gets clicked, then really clear it
+                   if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                       $(this).val('');
+                   }
+        	   }
+	    	    
+	        }
+	  
+	  });
+	  
+	  $('#reEndDate').datepicker({
+	      dateFormat: finalDateFormatRecomondedCandCertSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      minDate:endDate,
+	      maxDate:projectEndDateStr,
+	      showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
+        	  if(selected != null && selected != '' && selected != 'undefined'){
+	            var dt = toDate('#reEndDate');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#reStartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
+        	  }
+	        }
+	  });
+  }	else{
 	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
@@ -863,52 +912,6 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
                     $(this).val('');
                 }
 	            removevalidation();
-	        }
-	  });
-  }	  
-	 
-  else{
-	  $('#reStartDate').datepicker({
-	      dateFormat: finalDateFormatRecomondedCandCertSave,
-	      changeMonth: true,
-	  	  changeYear: true, 
-		  minDate:endDate,
-		  maxDate:projectEndDateStr,
-		  showOn: 'focus',
-          showButtonPanel: true,
-          closeText: 'Clear',
-          onClose: function (selected) {
-	    	    removevalidation();
-	            var dt = toDate('#reStartDate');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#reEndDate").datepicker("option", "minDate", dt);
-	            var event = arguments.callee.caller.caller.arguments[0];
-                // If "Clear" gets clicked, then really clear it
-                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-                    $(this).val('');
-                }
-	        }
-	  
-	  });
-	  
-	  $('#reEndDate').datepicker({
-	      dateFormat: finalDateFormatRecomondedCandCertSave,
-	      changeMonth: true,
-	  	  changeYear: true, 
-	      minDate:endDate,
-	      maxDate:projectEndDateStr,
-	      showOn: 'focus',
-          showButtonPanel: true,
-          closeText: 'Clear',
-          onClose: function (selected) {
-	            var dt = toDate('#reEndDate');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#reStartDate").datepicker("option", "maxDate", dt);
-	            var event = arguments.callee.caller.caller.arguments[0];
-                // If "Clear" gets clicked, then really clear it
-                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-                    $(this).val('');
-                }
 	        }
 	  });
   }

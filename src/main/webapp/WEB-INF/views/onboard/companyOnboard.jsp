@@ -124,7 +124,9 @@ right: 15px;
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
+				  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 				  <li>Federal & state taxes</li>
+				  </c:if>
 				  <li>Banking details</li>
 				  <li>Documents</li>
 				  <li>Signatory</li>
@@ -178,7 +180,7 @@ right: 15px;
             <label class="col-md-3 noPad">DBA<span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9 padding_right clearfix">
                 <div class="col-md-10 noPad">
-                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
+                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length1-250">
                 </div>
                 <div class="col-md-2 dbaCheck dbaCheck-cs">
                      
@@ -285,17 +287,24 @@ right: 15px;
 			</div>
 		</div>
 		
-		<div class="col-md-6 clearfix mb" id="generatedUserIdDiv">
+		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+			
+			<div id="generatedUserIdDiv">
+			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 			</div>
+			
+			</div>
+			
 		</div>
 		
-		<div class="col-md-6 clearfix mb">
+		<div class="col-md-6 clearfix mb" id="averageWorkingHoursDiv">
 			<label class="col-md-3 noPad">Working Hours<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
+			<div id="averageWorkingHoursDiv">
 			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+			</div>
 			</div>
 		</div>
 		
@@ -330,6 +339,20 @@ right: 15px;
 			<label class="col-md-3 noPad">Other Business Type</label>
 			<div class="col-md-9 padding_right">
 			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email regarding Po</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email for Remittance</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
 			</div>
 		</div>
 			
@@ -467,7 +490,6 @@ function getDBAName(){
     var uploadedImage = document.getElementById('uploadedImage').value;
     var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
     document.getElementById("errorImage").style.display="none";
-    
     var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
     
     if(extension != 'jpg'){
@@ -478,7 +500,7 @@ function getDBAName(){
  		document.getElementById("errorImage").style.display=""; 
  		$("#save_button").attr("disabled", "disabled");
     	
-    }else if(sizeinbytes > 200000){
+    }else if(sizeinbytes > 205126){
     	output.src = URL.createObjectURL(event.target.files[0]);
  		var msg = "Image size should be less than 200 KB";
  		alertMessage(msg);

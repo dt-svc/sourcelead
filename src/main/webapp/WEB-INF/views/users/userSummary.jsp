@@ -32,9 +32,9 @@ max-height: inherit !important;
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>User Summary</h2>
+				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -194,21 +194,21 @@ $(document).ready(function(){
 			    	userName = json.user.firstName
 			    }
 			   
-			   
+			    
 				result = result + '<div class="project_tabs_inn_table">';
 				
 				result = result + '  <div class="project_details">';
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    '</sec:authorize>';
 				    
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit User</a>';
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    '</sec:authorize>';
 				      
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
@@ -240,7 +240,7 @@ $(document).ready(function(){
 				}
 				
 				else{
-					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\',\'ROLE_CREATE_USER\')">'
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CREATE_ASSOCIATE\')">'
                          result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
                     '</sec:authorize>';	 
 				}
@@ -1466,7 +1466,7 @@ $("#editRoleDetailsList").empty();
 					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 						result = result + '<div class="user_summary_edit_cta" id="vendor">';
 						result = result + ' <label>Vendor</label>';
-						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactsList();">';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
 						result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'">';
@@ -1630,7 +1630,7 @@ function updateUserDesignationOtherType(){
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	//$('#vendors').empty();
+		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
@@ -1642,7 +1642,7 @@ function updateUserDesignationOtherType(){
 		            	  
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            getVendorContactList();
+		            getVendorContactsList();
 		            
 		        }
 		 });
@@ -1650,7 +1650,7 @@ function updateUserDesignationOtherType(){
  </script>
 
 <script>
- function getVendorContactList(){
+ function getVendorContactsList(){
 	 $('#vendorcontact').val('').trigger("chosen:updated");
 	 var orgRelationID = $('#vendors').val();
 	 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){

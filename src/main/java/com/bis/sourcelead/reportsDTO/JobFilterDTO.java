@@ -9,8 +9,11 @@ public class JobFilterDTO {
 	private String fromDate;
 	
 	private String toDate;
-	
+
 	private String fromtype;
+
+	private String year;
+
 
 	public String getJobIds() {
 		return jobIds;
@@ -50,6 +53,14 @@ public class JobFilterDTO {
 
 	public void setFromtype(String fromtype) {
 		this.fromtype = fromtype;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
 	}
 	
 }

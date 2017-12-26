@@ -51,7 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller  
 @PropertySource("${propertyLocation:app.properties}")
-//@RequestMapping("/app")
+@RequestMapping("/app")
 public class SubmissionsRateController {
 	
 	@Autowired
@@ -258,7 +258,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject Rate from Candidate.
 	 */
-	@RequestMapping(value = "/ws/acceptOrRejectRequirement")
+	@RequestMapping(value = "/app/ws/acceptOrRejectRequirement")
 	public ModelAndView acceptOrRejectRequirement(@RequestParam(value="rateStatus", required=false) String rateStatus,@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
 		

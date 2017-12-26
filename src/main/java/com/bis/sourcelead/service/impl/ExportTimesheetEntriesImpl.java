@@ -291,9 +291,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 							            	  if(timesheetDayEntries.getProjectTask() != null){
 							     				 writeRow.createCell(0).setCellValue(timesheetDayEntries.getProjectTask().getTaskName()); 
 							            	  }
-								              Cell cell2 = null;
 								              if(weekMondayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
-								            	  cell2 = writeRow.createCell(1);
+								            	  Cell cell2 = writeRow.createCell(1);
 								            	  cell2.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
@@ -652,7 +651,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         	
         	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 	        	for(ProjectMembers pm :projectMembers.getData()){
-	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects(),commonUtil.currentDate());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
 	        	    }
@@ -989,7 +988,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 	        	for(ProjectMembers pm :projectMembers.getData()){
-	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects(),commonUtil.currentDate());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
 	        	    }

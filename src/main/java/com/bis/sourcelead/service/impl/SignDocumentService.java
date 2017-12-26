@@ -134,6 +134,7 @@ public class SignDocumentService {
 			return dirPath+"/signed.pdf";
 		}
 		
+
 	private Image getSignedImage(PdfDocument pdfDoc, Image img, Coordinates coordinate) {
 		float x = coordinate.getX();
 		float y = coordinate.getY();

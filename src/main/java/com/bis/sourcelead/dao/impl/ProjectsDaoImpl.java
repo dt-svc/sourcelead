@@ -20,14 +20,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
@@ -38,11 +36,11 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
@@ -65,6 +63,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
     
     @Autowired
     ProjectMembersHistoryService projectMembersHistoryService;
+    
+    @Autowired
+    TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
     
     @Autowired
     ProjectMembersService projectMembersService;
@@ -94,6 +95,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In Projects Save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
+			Date weekStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects, projects.getStartDate());
+			projects.setWeekStartDate(weekStartDate);
 			session.saveOrUpdate(projects);
 		}catch(Exception exception){
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
@@ -113,6 +116,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
 			if(projects != null){
+				Date weekStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects, projects.getStartDate());
+				projects.setWeekStartDate(weekStartDate);
 				session.saveOrUpdate(projects);
 				logger.info("Record updated successfully..!");
 			}

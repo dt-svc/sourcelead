@@ -202,7 +202,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true" placeholder="Designation">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -235,7 +235,7 @@ function editCandidate(candidateId){
 							
 
 							result = result + '<div class="col-md-6 custom-fields mt10"">';
-							result = result + '<input type="text" class="form-control input-sm" name="address" id="pfAddress" value="'+address+'" placeholder="Enter your Street Addres">';
+							result = result + '<input type="text" class="form-control input-sm" name="address" id="pfAddress" value="'+address+'" field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -364,7 +364,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';	
 							
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">';
 							result = result + '		          </div>';
 							
 							result = result + '<div class="clearfix mb10">';
@@ -401,7 +401,7 @@ function editCandidate(candidateId){
 						
 							result = result + '</div>';
 							result = result + '<div class="col-md-6">';
-							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>';
 							result = result + '</div>';
 							result = result + '</div>';
@@ -1073,7 +1073,7 @@ function removeSkillById(candidateId, skillId){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 					success : function(json) {
 						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-								$("#employeeSubmissionDetailsList").empty();
+								$("#employeeSubmissionProfile").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
 								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
@@ -1119,6 +1119,7 @@ function removeSkillById(candidateId, skillId){
 								result = result +'            </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
+								$("#employeeSubmissionProfile").empty();
 								$("#employeeSubmissionProfile").append(result);
 						}
 					},
@@ -1201,6 +1202,7 @@ function educationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
+						 $("#educationSubmissionProfile").empty();
 	                     $("#educationSubmissionProfile").append(result); 
         	  }
         },
@@ -1259,7 +1261,7 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
-							
+							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
         	  }
         },

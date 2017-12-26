@@ -78,6 +78,8 @@ public class Constants {
 	public static final DateFormat Y = new SimpleDateFormat("yyyy");
 	public static final DateFormat M = new SimpleDateFormat("MMMM");
 	public static final DateFormat DF_MM = new SimpleDateFormat("MM");
+	public static final DateFormat SHOT_M = new SimpleDateFormat("MMM");
+	public static final DateFormat Y_M = new SimpleDateFormat("yyyy-MM");
 	public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static final DateFormat DF_MDY = new SimpleDateFormat("MM-dd-yyyy");
 	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
@@ -965,6 +967,10 @@ public class Constants {
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
 	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
 	public static final String ROLE_CREATE_CLIENT = "ROLE_CREATE_CLIENT";
+	public static final String ROLE_CREATE_VENDOR = "ROLE_CREATE_VENDOR";
+	public static final String ROLE_CREATE_CANDIDATE ="ROLE_CREATE_CANDIDATE";
+	public static final String ROLE_CREATE_PROJECT ="ROLE_CREATE_PROJECT";
+	public static final String ROLE_ADD_NEW_CONTRACT ="ROLE_ADD_NEW_CONTRACT";
 	
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";

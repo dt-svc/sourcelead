@@ -226,9 +226,10 @@ public class RegistrationController {
 						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
 						if(null != orgSpoc){
 							orgLocations.setUser(orgSpoc.getClientUser());
+							org.setUser(orgSpoc.getClientUser());
 						}
 					}
-					
+					orgService.addOrganization(org);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
 		    	}

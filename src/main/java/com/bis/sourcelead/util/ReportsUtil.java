@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -252,6 +254,49 @@ public class ReportsUtil {
 		dates[1] = endDate;
 		return dates;
 	}
+
+	public   Date[] tenDays(int days) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		cal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(cal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
+
+	public  Date[] apAgingPeriodDays(int sDays, int days) throws ParseException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -sDays);
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(currentCal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
 	
+
+	public  Date above365Days() throws ParseException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -366);
+		Date date = sdf.parse(sdf.format(cal.getTime()));
+		return date;
+	}
+
+	public Date[] getCustomDates(String fromDate, String toDate) throws ParseException {
+		   Date[]  dates = new Date[2];
+		   dates[0] =new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);  
+		   dates[1] =new SimpleDateFormat("yyyy-MM-dd").parse(toDate);  
+		return dates;
+	}
+
 	
 }

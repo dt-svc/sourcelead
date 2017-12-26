@@ -28,7 +28,7 @@ public  class CalendarUtil {
 
 	public static void main(String[] args){
 	 //System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
-		System.out.println(Months.monthsBetween(new LocalDate(), new LocalDate()));
+		System.out.println(getStartAndEndDateFromMonthAndYear(1, "2017"));
 		
 	 /*Months.monthsBetween(new LocalDate(), new LocalDate());*/
 	}
@@ -663,6 +663,31 @@ public  class CalendarUtil {
 		return flag;
 	}
 
+	
+	public static boolean isGivenDateBetweenDateRange(String weekStartDate,String weekEndDate,String date,String dateFormat) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			DateFormat format = new SimpleDateFormat(dateFormat);
+			Date startDate = null;
+			Date endDate = null;
+			Date currentDate = null;
+			try {
+				currentDate = format.parse(date.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate);
+					endDate = format.parse(weekEndDate);
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
+				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+			} catch (ParseException e) {}
+			
+		}
+		return flag;
+	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Calendar calendar = Calendar.getInstance();   
@@ -825,6 +850,7 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
+		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
@@ -872,13 +898,17 @@ public  class CalendarUtil {
 		//		return Year.now().getValue();
 	}
 	
-	
-
-	
 	public static String getCurrentMonth()
 	{
 		Calendar cal = Calendar.getInstance();
 		DateFormat format =Constants.M;
 		return format.format(cal.getTime());
+	}
+	
+	public static long getNumberOfDaysForReports(Date date1, Date date2){
+		long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		return numberofDays+1;
+
 	}
 }

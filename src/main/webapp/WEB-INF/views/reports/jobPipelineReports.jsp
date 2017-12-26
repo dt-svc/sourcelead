@@ -155,9 +155,17 @@ function getJobPipelineReports(){
 	  if(flag){
 	  $.ajax({ 
 		   	type: "POST",
-		   	url: sourceleadUrl+"/getAllJobsPipelineReoportsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
+		   	url: sourceleadUrl+"/getAllJobsPipelineReoportsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 		    success: function(data) {
-		    	getJobsPipelineAmcahrt(data);
+		    	if(data.applicantsCount>0){
+		    		getJobsPipelineAmcahrt(data);
+		    	}else{
+		    		var result = '';
+	 	   			result = result+"<div class='dataTables_empty'>"; 
+	 	   			result = result+"</div> ";
+	 	   	        $("#jobspipline").empty();
+	                $("#jobspipline").append(result);
+		    	}
 		    }
 		 });
 	  }	  
