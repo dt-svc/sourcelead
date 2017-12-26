@@ -255,7 +255,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();removeValidationProfCanDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
@@ -356,11 +356,15 @@ function getDocumentType(documentType){
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
+		  $("#nameDocIdDiv").find('p.jquery_form_error_message').remove();
 		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length1-250");
 	}else{
 		document.getElementById("documentTypeDiv").style.display="none";
 		  $("#documentOtherType").attr("data-validation-optional", "true");
 		  $("#documentOtherType").find('p.jquery_form_error_message').remove();
+		  $("#nameDocIdDiv").find('p.jquery_form_error_message').remove();
+		  //$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		  
 		  if(existingDocumentType ==null || existingDocumentType == "" || existingDocumentType == "undefined" || existingDocumentType != 'Other'){
 			  $("#documentOtherType").val('');
 		  }
@@ -608,6 +612,12 @@ function refreshDocList(candidateId){
 		    });
  }
  </script>
+ <script type="text/javascript">
+ function removeValidationProfCanDoc(){
+	 $("#uploadDocDiv").find('p.jquery_form_error_message').remove(); 
+ }
+ 
+</script>
  <!-- <script>
 	function clearUpload(){
 		$("#uploadFile").val("");

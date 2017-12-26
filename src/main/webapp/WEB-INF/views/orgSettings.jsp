@@ -184,7 +184,7 @@ function cancelOrgImg(){
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
@@ -575,7 +575,7 @@ function cancelOrgImg(){
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add IP</h4>
         </div>
         <div class="modal-body">
@@ -634,6 +634,12 @@ function switchLoginSecurity(){
 </script>
 
 <script>
+function closeWhiteListIp(){
+	$("#fromIpAddress").val("");
+	 $("#toIpAddress").val("");
+	 $("#whiteListId").val("");
+}
+
 function saveWhiteListIps(){
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
@@ -641,9 +647,16 @@ function saveWhiteListIps(){
 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+		var url = "";
+		if(whiteListId != '' && whiteListId != null && whiteListId != 'undefined'){
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId;  
+	      }else{
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress;
+	      }
 			$.ajax({
 			      type : "GET",
-			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
+			      url : url,
+			               
 			       success :function(data) {
 			       if(data == "Success"){
 			    	   $("#fromIpAddress").val("");
@@ -1162,7 +1175,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -1573,7 +1586,7 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
 	    	        if(null != json['orgLocationAddress'] &&  json['orgLocationAddress'] != 'undefined' && json['orgLocationAddress'] != ''){
 	    	        	    result = result +'<div class="form-group">';
-	    	    	        result = result +'<label class="col-md-4">Address :</label>';
+	    	    	        result = result +'<label class="col-md-4 text-right">Address :</label>';
 	    	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationAddress']+'</p>';
 	    	    	        result = result +'</div>';	
 	    	        }
@@ -1615,7 +1628,7 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
 	    	        if(null != json['orglocationUserPhone'] &&  json['orglocationUserPhone'] != 'undefined' && json['orglocationUserPhone'] != ''){
 	    	        	result = result +'<div class="form-group">';
-	 	    	        result = result +'<label class="col-md-4">Mobile : </label>';
+	 	    	        result = result +'<label class="col-md-4 text-right">Mobile : </label>';
 	 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserPhone']+'</p>';
 	 	    	        result = result +'</div>';
 	    	        }
