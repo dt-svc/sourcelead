@@ -40,7 +40,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 String  endDate = resultSet.getString("END_DATE");
 				 LinkedHashMap<String,java.sql.Date> weeekDateList  = calculateDate(startDate,endDate);
 					/*Fetching all data of time-sheet Entries*/ 
-				 	String timesheetEntries = "SELECT * FROM sourcelead.timesheet_entries te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
+				 	String timesheetEntries = "SELECT * FROM sourcelead.TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
 					 ResultSet timesheetEntriesResultSet = stmt1.executeQuery(timesheetEntries);
 					 while(timesheetEntriesResultSet.next()){
 						 Long  projectTaskId = timesheetEntriesResultSet.getLong("PROJECT_TASK");
