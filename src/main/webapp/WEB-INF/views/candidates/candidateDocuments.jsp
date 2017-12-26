@@ -124,6 +124,8 @@ function candDocumentsList(candidateId){
 	                     
 	                     for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i];  
+	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
+
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
@@ -192,6 +194,7 @@ function candDocumentsList(candidateId){
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
+	                    	 }
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";

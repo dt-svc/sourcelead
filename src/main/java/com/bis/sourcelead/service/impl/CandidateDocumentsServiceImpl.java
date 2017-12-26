@@ -254,9 +254,13 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				docDto.setDocUploadStatus(doc.getDocUploadStatus());
 			if(StringUtils.isNotBlank(doc.getRequestedDocRejectedReason()))	
 				docDto.setRequestedDocRejectedReason(doc.getRequestedDocRejectedReason());
+
 			if(StringUtils.isNotBlank(doc.getRequestedDocStatus())){
 				docDto.setRequestedDocStatus(doc.getRequestedDocStatus());
 			}
+
+			docDto.setUserIdStr(doc.getCreatedBy());
+
 			candiDocList.add(docDto);
 		}
 		
