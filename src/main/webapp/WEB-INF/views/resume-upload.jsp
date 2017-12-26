@@ -234,7 +234,7 @@ padding: 2px
 	<ul>
 		<li id='exportLog'>Download Upload Log</li>
 		 <li id='exportFailed'>Download Failed Resumes</li>
-		<li id='exportDuplicate'>Download Duplicate Resumes</li> 
+		<li id='exportDuplicate'>Download Existed Resumes</li> 
 	</ul>
 </div>
 	<footer>
