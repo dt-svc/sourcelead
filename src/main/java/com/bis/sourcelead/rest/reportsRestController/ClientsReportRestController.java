@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,13 +24,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
-import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
-import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.InvoiceService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -94,21 +94,23 @@ public class ClientsReportRestController {
 		return contractList;
 	}
 	
-	@RequestMapping(value = "/getTopFiveReceivsblesReports", method = RequestMethod.GET)
+	@RequestMapping(value = "/getTopFiveReceivablesReports", method = RequestMethod.GET)
 	public Map<String,Float> getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		Map<String,Float> amountList = new LinkedHashMap<>();
+		Map<String,Float> newAmountList = null;
 		List<OrgRelations> clientsList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
 		
+		if(clientsList != null && clientsList.size() > 0) {
 		for(OrgRelations orgRelation : clientsList) {
 			Float paidTotalAmount = 0f;
 			List<Invoice> invoiceList = invoiceService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
 			String clientName = null;
 			if(invoiceList != null && invoiceList.size() > 0) {
 				for (Invoice invoice : invoiceList) {
-					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
 							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
 						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 						paidTotalAmount = paidTotalAmount + paidAmount;
@@ -121,12 +123,40 @@ public class ClientsReportRestController {
 						
 					}
 				}
+				
 				if(clientName != null)
 				amountList.put(clientName,paidTotalAmount);
-//				amountList.put("others", value);
 			}
 		}
-		return amountList;
-	}
 		
+		if(amountList != null && amountList.size() > 0) {
+			Set<Entry<String, Float>> set = amountList.entrySet();
+	        List<Entry<String, Float>> list = new ArrayList<Entry<String, Float>>(set);
+	        Collections.sort(list, new Comparator<Map.Entry<String, Float>>()
+	        {
+	            public int compare( Map.Entry<String, Float> o1, Map.Entry<String, Float> o2 )
+	            {
+	                return (o2.getValue()).compareTo( o1.getValue() );
+	            }
+	        } );
+	        
+	        newAmountList =  new LinkedHashMap<>();
+	        List<Entry<String, Float>> newList =   list.subList(0, 5);
+	        for(Map.Entry<String, Float> entry:newList){
+//	            System.out.println(entry.getKey()+" ==== "+entry.getValue());
+	            newAmountList.put(entry.getKey(), entry.getValue());
+	        }
+	        
+	        List<Entry<String, Float>> othersList =   list.subList(5,list.size());
+	        Float otherAmt = 0f;
+	        for (Entry<String, Float> entry : othersList) {
+	        	Float calcOtherAmt = entry.getValue();
+	        	otherAmt = otherAmt + calcOtherAmt;
+	        	newAmountList.put("Others", otherAmt);
+			}
+		}
+	}
+	return newAmountList;
+	}
+	
 }
