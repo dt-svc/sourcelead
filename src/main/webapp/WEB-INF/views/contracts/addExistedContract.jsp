@@ -1817,25 +1817,17 @@ function previewTemplatePDF(){
 	}
 	
 	function getVendor(){
-		alert("inside vendor");
-	
 		var sourceleadUrl ='${sourceleadUrl}';
-		alert("1");
 		var relationList = '${orgRelationsList}';
-		alert("2");
 		var associateId = $("#submissionOffersList").val();
-		alert("3"+associateId);
 		var map = new Object(); // or var map = {};
-		alert("4");
 		<c:forEach var="vendor" items="${orgRelationsList}">
 		        map['${vendor.id}'] = '${vendor.orgName}';
 		</c:forEach>
-		alert("5");
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
-	        	 alert("su");
 	        	 var json = JSON.parse(data);
 	           	 var result = "";
 	           	 result = result + '<option value="">Select Vendor</option>';

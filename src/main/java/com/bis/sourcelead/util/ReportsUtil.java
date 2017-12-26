@@ -1,5 +1,7 @@
 package com.bis.sourcelead.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,10 +93,27 @@ public class ReportsUtil {
 						requirementDTO.setRequirementId(String.valueOf(requirementIndex.getRequirementId()));
 						requirementDTO.setJobTitle(requirementIndex.getJobTitle());
 						requirementDTOList.add(requirementDTO);
-						requirementIdsList.add(Long.valueOf(requirementIndex.getRequirementId()));
 					}
 				}
 				
+			}
+			
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -14);    
+		    String updatedOn = dateFormat.format(cal.getTime());
+		    RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(updatedOn);
+			boolQueryBuilder.must(qb);
+			SearchHit[] searchHits2 = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults,boolQueryBuilder).getHits();
+			if(searchHits2 != null && searchHits2.length >0){
+				for (SearchHit hit : searchHits2) {
+					String sourceAsString = hit.getSourceAsString();
+					ObjectMapper mapper = new ObjectMapper();
+					if (sourceAsString != null) {
+						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
+						requirementIdsList.add(Long.valueOf(requirementIndex.getRequirementId()));
+					}
+				}
 			}
 			
 		} catch (Exception e) {

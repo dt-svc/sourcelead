@@ -24,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheet_Day_Entries")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetDayEntries")
 public class TimeSheetDayEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class TimeSheetDayEntries implements Serializable{
 	private TimesheetSubmissions timesheetSubmissions;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_TASK_ID")
 	private ProjectTasks projectTask;
 	
