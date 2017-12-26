@@ -150,7 +150,7 @@ public class FileController {
 			saveLogMessage(uploadid, "<br/>Initial process completed " + fileInfoList.size() + " file(s) found!");
 		} else
 			return parsedList;
-		long fileName = new Date().getTime();
+		//long fileName = new Date().getTime();
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -183,8 +183,8 @@ public class FileController {
 						flag = true;
 				}
 				if (c != null && c.getId() > 0 && !flag) {
-					fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-existed-" + fileName));
-					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-existed-" + fileName);
+					fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-existed-" + uploadid));
+					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-existed-" + uploadid);
 					addToResponse(0, session, uploadid, resume, fileInfo, count, i++);
 					existedList.add(resume);
 					continue;
@@ -225,8 +225,8 @@ public class FileController {
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-failed-" + fileName));
-				FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-failed-" + fileName);
+				fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-failed-" + uploadid));
+				FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-failed-" + uploadid);
 				addToResponse(-1, session, uploadid, resume, fileInfo, count, i++);
 				failedList.add(resume);
 			}
