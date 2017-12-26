@@ -11,6 +11,10 @@ window.onload = function () {
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
  
@@ -43,6 +47,7 @@ margin-top: -50px;
 	<div class="content-area content-new clearfix">
 	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
+	<input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -215,6 +220,12 @@ margin-top: -50px;
 			</div>
 			
             <div class="clearfix mb"></div>
+            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+               <c:if test="${sectionOrder.index == 0}">
+                  <div id="customDiv${section.id}"></div>
+               </c:if>
+            </c:forEach>
+             
              
             
           </div>
@@ -317,6 +328,11 @@ margin-top: -50px;
 					
 				   </div>
 		        </div> 
+		        <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+               <c:if test="${sectionOrder.index == 1}">
+                  <div id="customDiv${section.id}"></div>
+               </c:if>
+            </c:forEach>
 		 
           </div>
         </div>
@@ -340,6 +356,20 @@ margin-top: -50px;
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
 
+
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 
 <script type="text/javascript">
