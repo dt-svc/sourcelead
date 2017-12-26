@@ -209,6 +209,12 @@ public class RequirementListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (requirementId != null && !requirementId.isEmpty()) {
 			 requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
+			 if(requirement.getDescription()!= null && StringUtils.isNotBlank(requirement.getDescription())) {
+				 requirement.getDescription();
+			 }else {
+				 requirement.setDescription("");
+			 }
+			 
 			 if(requirement.getCreatedDate()!=null){
 					requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 				}
