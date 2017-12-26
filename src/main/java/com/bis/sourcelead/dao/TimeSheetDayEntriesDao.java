@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao;
 
-import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 
@@ -8,6 +9,14 @@ public interface TimeSheetDayEntriesDao {
 
 	 public TimeSheetDayEntries saveTimesheetDayEntries(TimeSheetDayEntries dayentries) throws Exception;
 	 
-	 public Collection<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
+	 public List<Long> getAllTimeSheetDayEntryIdsBySubmissionId(Long submissionId) throws Exception;
+	 
+	 public Boolean deleteTimeSheetDayEntries(Long id)throws Exception;
+	 
+	 public TimeSheetDayEntries getTimesheetDayEntriesById(Long id) throws Exception;
+	 
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
+	 
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(Long submissionId,Date startDate,Date endDate) throws Exception;
 	
 }
