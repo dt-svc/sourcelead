@@ -60,5 +60,26 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		List<RequirementSubmissionHistory>  subHistiryList = session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
 	    return subHistiryList;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public Integer requirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates, String JobStage) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<Long> requiremnetCount = null;
+		if(searchDates != null){
+			query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus =:JobStage  and (requirement.createdDate BETWEEN :startDate and :endDate)";
+			requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setString("JobStage", JobStage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+		}else {
+			query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds)";
+			requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
+		
+		}
+		Integer count = 0;
+		if(requiremnetCount != null && !requiremnetCount.isEmpty()){
+			count = requiremnetCount.get(0).intValue();
+	}
+	return count;
+	}
 }
