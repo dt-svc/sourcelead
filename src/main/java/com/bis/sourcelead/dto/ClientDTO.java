@@ -104,6 +104,7 @@ public class ClientDTO {
 	
 	private String UUID;
 	
+	private List<CustomFormFieldDTO> customFormData;
 	
 	public String getOrgName() {
 		return orgName;
@@ -387,6 +388,12 @@ public class ClientDTO {
 	}
 	public void setUUID(String uUID) {
 		UUID = uUID;
+	}
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
 	}
 	
 }

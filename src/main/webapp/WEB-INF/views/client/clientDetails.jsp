@@ -120,7 +120,7 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Address :</strong>';
+						result = result + '<strong>Street Address :</strong>';
 						if(json.address != null && json.address !='' && json.address !='undefined'){
 							result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 						}else{
@@ -302,7 +302,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								

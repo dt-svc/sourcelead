@@ -130,7 +130,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    		 result = result+'	 <td><div class="tblicons tblminwidth-125"><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    		 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_DOCUMENT\")">';
 	                    				 result = result+'	 <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocumentForSpoc('+clientLocationId+',\''+spocName+'\','+userId+');  getVendorSpocDocument('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+opt.id+');"></a>';
@@ -249,14 +249,20 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartVendorSpocDocumentStartDate();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" id="startDate" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorSpocDocuStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 clearDate" onClick="cleartVendorSpocDocumentEndDate();">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" id="endDate" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorSpocDocuEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -636,10 +642,10 @@ function vendorSpocDocumentFileSaving()
 </script> -->
 
 <script>
-function cleartVendorSpocDocumentStartDate(){
+function clearVendorSpocDocuStartDate(){
 	$("#startDate").val("");
 	};
-function cleartVendorSpocDocumentEndDate(){
+function clearVendorSpocDocuEndDate(){
 	$("#endDate").val("");
 	};
 </script>

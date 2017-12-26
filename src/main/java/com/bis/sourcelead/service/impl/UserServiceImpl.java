@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
@@ -40,6 +39,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
@@ -50,19 +50,21 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -71,10 +73,12 @@ import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -170,6 +174,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private RegistrationService registrationService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private UserCustomFieldDataService userCustomFieldDataService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -298,6 +308,21 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		if(addUserDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				UserCustomFieldData userCustomFields = new UserCustomFieldData();
+				userCustomFields.setUser(user1);
+				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				 userCustomFields.setOrglocationsFormFields(orgFormField);
+				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+				}
+				
+			}	
+		}
+		
 		
 		//for updating cosultantUserId in candidate
 		if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
@@ -1410,6 +1435,11 @@ public class UserServiceImpl implements UserService {
 	public User getUserByVerficationUUID(String token)
 	{
 		return userDao.getUserByVerficationUUID(token);
+	}
+
+	@Override
+	public User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception {
+		return userDao.getUserByUserCodeAndOrgLocationsId(userCode, orgLocationsId);
 	}
 	
 }

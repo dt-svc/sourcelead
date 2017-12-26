@@ -44,6 +44,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
@@ -59,16 +62,19 @@ import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
@@ -80,6 +86,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -87,10 +94,13 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -193,6 +203,20 @@ public class UsersListRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private UserCustomFieldDataService userCustomFieldDataService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -247,6 +271,7 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
+					role.setUserCode(role.getUser().getUserCode());
 					//role.setIsMailSent(role.getUser().getIsMailSent().toString());	
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
@@ -539,11 +564,11 @@ public class UsersListRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/userSummary/{userId}", method = RequestMethod.GET)
-	public @ResponseBody void userSummary(@PathVariable Long userId, HttpServletRequest request,
+	@RequestMapping(value = "/userSummary/{userCode}", method = RequestMethod.GET)
+	public @ResponseBody void userSummary(@PathVariable String userCode, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userId=").append(userId).toString());
+		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
 
@@ -558,7 +583,7 @@ public class UsersListRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
 		String resultJson = null;
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -626,7 +651,31 @@ public class UsersListRestController {
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
-
+		 
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+		 if(sections != null && !sections.isEmpty()) {
+			 for(SourceleadSectionDTO sec:sections) {
+				 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+					 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+					 custom.setCustomFormFieldId(customFields.getId());
+					 formFieldId.add(custom);
+				 }
+			 }
+			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
+			 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
+			 Map<String,String> dataMap = new HashMap<>();
+			 if(userData!= null && !userData.isEmpty()) {
+				 for(UserCustomFieldData userCustomData:userData) {
+					 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
+					 String labelData = userCustomData.getCustomFormFieldData();
+					 dataMap.put(labelName, labelData);
+					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
+				 	}
+			 	}
+			 }
+		 }
 		resultJson = toJSON(userRole);
 		return resultJson;
 	}
@@ -1796,7 +1845,20 @@ public class UsersListRestController {
 			user.setUpdatedDate(commonUtil.currentDate());
 			userRole.setUpdatedBy(loginUser.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-			userService.addUser(user);
+			User updatedUser = userService.addUser(user);
+			
+			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				UserCustomFieldData userCustomFields = new UserCustomFieldData();
+				userCustomFields.setUser(updatedUser);
+				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				 userCustomFields.setOrglocationsFormFields(orgFormField);
+				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+				}
+				
+			}
+			
 			userRoleService.addUserRole(userRole);
 
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {

@@ -160,16 +160,10 @@ function validateShortCode(){
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-									<div class="input-group errorInptgroup">
 										<input type="text" class="form-control calendar" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > 
-										<span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-									</div>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
-									<div class="input-group">
 										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
-										<span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-									</div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -1186,12 +1180,12 @@ function getBudgetApprover(approverUserId){
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
- <script>
-function clearStartDate(){
+<!--  <script>
+ function clearStartDate(){
 	$("#startDate").val("");
-	};
+	}; 
 function clearEndDate(){
 	$("#endDate").val("");
 	};
 	
-</script>
+</script> -->

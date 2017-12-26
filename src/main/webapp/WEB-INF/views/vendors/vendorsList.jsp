@@ -375,7 +375,7 @@ border:none; background-color: none !important; padding:0 5px !important;
    
 </div>
 
-<div class="side_mask"><div class="proj_close"></div></div>
+<div class="sideMask"><div class="proj_close" onclick="refresh();"></div></div>
 
 <!-- Client Side Nav Div -->
 <div class="clients_side_wrap clientspagedrop">
@@ -1867,7 +1867,7 @@ function getVendorDashboardName(vendorDashboardName){
 		$("#vendorNameDiv").append(orgName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
+		$(".sideMask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
@@ -2004,7 +2004,7 @@ function getVendorOrgname(vendorOrgname){
 							}
 							result = result + '</div>';
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Address :</strong>';
+							result = result + '<strong>Street Address :</strong>';
 							if(json.address != null && json.address !='' && json.address !='undefined'){
 								result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 							}else{
@@ -2357,9 +2357,9 @@ $(document).ready(function() {
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 	});
-    $(".proj_close, .side_mask").click(function(){
+    $(".proj_close, .sideMask").click(function(){
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-		$(".side_mask").fadeOut(200);
+		$(".sideMask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 		//update the details in list.
 		var vendorCont = document.getElementById('listOfVendors').value;
@@ -2370,6 +2370,10 @@ $(document).ready(function() {
    		}
 	});	
 });
+
+function refresh(){
+	getVendorList();
+}
 
 // project side bar tabs
 $(document).ready(function() {

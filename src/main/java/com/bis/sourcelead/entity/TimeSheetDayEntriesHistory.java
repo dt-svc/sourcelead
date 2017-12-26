@@ -23,9 +23,9 @@ import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "TIMESHEET_DAY_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheet_Day_Entries")
-public class TimeSheet_Day_Entries implements Serializable{
+@Table(name = "TIMESHEET_DAY_ENTRIES_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetDayEntriesHistory")
+public class TimeSheetDayEntriesHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -36,12 +36,17 @@ public class TimeSheet_Day_Entries implements Serializable{
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="TIMESHEET_ID") 
+	@JoinColumn(name="ENTRY_ID") 
+	private TimeSheetDayEntries timeSheetDayEntries;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.ALL})
-	@JoinColumn(name = "PROJECT_TASK")
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name = "PROJECT_TASK_ID")
 	private ProjectTasks projectTask;
 	
 	@NotNull
@@ -59,6 +64,9 @@ public class TimeSheet_Day_Entries implements Serializable{
 	@Column(name = "TOTALHOURS")
 	private String totalHours;
 	 
+	@Column(name ="TASK_TYPE")
+	private String taskType;
+	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
 	 
@@ -84,6 +92,14 @@ public class TimeSheet_Day_Entries implements Serializable{
 
 	public void setId(Long id) {
 		Id = id;
+	}
+
+	public TimeSheetDayEntries getTimeSheetDayEntries() {
+		return timeSheetDayEntries;
+	}
+
+	public void setTimeSheetDayEntries(TimeSheetDayEntries timeSheetDayEntries) {
+		this.timeSheetDayEntries = timeSheetDayEntries;
 	}
 
 	public TimesheetSubmissions getTimesheetSubmissions() {
@@ -178,4 +194,12 @@ public class TimeSheet_Day_Entries implements Serializable{
 		return serialVersionUID;
 	}
 
+	public String getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+	
 }

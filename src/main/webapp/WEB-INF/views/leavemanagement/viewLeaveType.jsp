@@ -264,7 +264,7 @@ function openLeaveTypeSummary(typeId){
 			if(report.status == 1){
 			result +='            <a href="javascript:void(0)" class= "btn btn-primary btn-sm mr10" title="Active">Active</a>';
 	        }else{
-	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.id+'\', \'summary\')" title="InActive">InActive</a>';
+	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.id+'\', \'summary\')" title="Re-Active">Re-Active</a>';
 	        }
 			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
 			result +='          </div> ';
@@ -304,16 +304,16 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
-			result +='              <div class="col-md-12 mb">';
-			result +='                  <label class="col-md-2 control-label"><b>No. of Leaves Per Year:</b></label>';
-			result +='                  <div class="col-md-8">';
-			if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
-				result +='                      <span>'+report.numbefrOfLeavesPeryear+'</span>';
-			}else{
-				result +='                      <span>---</span>';
-			}
-			result +='                  </div>';
-			result +='              </div>';
+// 			result +='              <div class="col-md-12 mb">';
+// 			result +='                  <label class="col-md-2 control-label"><b>No. of Leaves Per Year:</b></label>';
+// 			result +='                  <div class="col-md-8">';
+// 			if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
+// 				result +='                      <span>'+report.numbefrOfLeavesPeryear+'</span>';
+// 			}else{
+// 				result +='                      <span>---</span>';
+// 			}
+// 			result +='                  </div>';
+// 			result +='              </div>';
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Description:</b></label>';
 			result +='                  <div class="col-md-8">';

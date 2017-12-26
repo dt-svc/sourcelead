@@ -5,23 +5,65 @@
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
-
-
-
-
-<!-- <div class="pull-left timeAppUse">
+ <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
+   <div class='data_loading' id="loadTime"></div>
+ <div class="pull-left timeAppUse">
 	<span><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
+
 	<p>
-		<input class="timeUsName" type="text" readonly="readonly" value="ramya">
-		<input type="text" readonly="readonly" value="ramyavishnu15@gmail.com">
+		<input class="timeUsName" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
+		<input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
 	</p>
 	<div class="clearfix"></div>
-</div> -->
+</div>
 
-
-
-
-<div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
+<div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
+					<b class="proj_closed pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+					<i class="glyphicon glyphicon-comment rejectedHover"> 
+					<div class="app_error_mes" id="rejectedMessage">${timesheetSubmissionDTO.rejectedReason}</div> </i>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+				    <c:if test="${!empty timesheetSubmissionDTO.reopenRejectedReason}">
+					    <i class='glyphicon glyphicon-comment rejectedHover'>
+					       <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenRejectedReason}</div>
+					    </i>
+					 </c:if>
+			 	     <c:if test="${timesheetSubmissionDTO.reopenButtonVisible}">
+					     <b class="proj_withdraw pull-right" style="width:40%"  onClick='reOpenMyTimesheet();'>Re-Open</b> 
+					</c:if>
+					<c:if test="${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
+					    <i class="pull-right glyphicon glyphicon-comment rejectedHover">
+					    <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div>
+					    </i><p class="pull-right ml" >Re-Open<br>Request sent</p> 
+					</c:if>
+					<c:if test="${timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
+						<i class="pull-right  glyphicon glyphicon-comment rejectedHover">
+						<div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div></i>
+						<div class="pull-right  sm text-center reopen"> 
+						    <label class="clearfix reopen-label">RE-OPEN</label>
+						    <i class="reopen-text-success fa fa-check" title="Accept" alt="Accept" onclick="acceptReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>|<i class="reopen-text-danger fa fa-times" title="Reject" alt="Reject" onclick="rejectReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>
+						</div>
+					</c:if>
+					<b class="proj_active pull-right mr" style="width:40%">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				
+				
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW'}">
+					<b class="proj_new pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
+					<b class="proj_draft pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
+					<b class="proj_process pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
+				</c:if>
+				
+</div>
+</c:if>
+<c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'user'}">
+             <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
 				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
 					<b class="proj_closed">${timesheetSubmissionDTO.timesheetStatus}</b>
 					<i class="glyphicon glyphicon-comment rejectedHover"> 
@@ -44,6 +86,7 @@
 				</c:if>
 				
 </div>
+</c:if>
 <div class="clearfix"></div>
 <div class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -54,7 +97,7 @@
 		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
 			   <li class="${tsf.key ==  timesheetSubmissionDTO.timeSubFrequency ? 'current' : ''} ${fn:contains(timesheetEntryDetailsDTO.filledTimeSubFrequencies, tsf.key) ? 'subColor' : ''}">
-					<a href="javascript:timesheetDivByFrequency('${tsf.key}');" >${tsf.value}</a>
+					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
 			<div class="export dropdown">
@@ -147,8 +190,8 @@
 										          <td> 
 										           <div>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
  
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -173,8 +216,8 @@
 									              <td> 
 									               <div>
 									                  <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -200,8 +243,8 @@
 									                <div>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -226,8 +269,8 @@
 									               <td> 
 									                <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                  
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -252,8 +295,8 @@
 									              <td> 
 									                <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                  
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -278,8 +321,8 @@
 									              <td> 
 									                 <div>
 									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                    
 									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										                <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -304,8 +347,8 @@
 									               <td> 
 									                 <div>
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskType}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
 									                   
 									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -324,7 +367,6 @@
 										               </div>
 									                 </div>
 									                 <c:set var="entryIndex" value="${entryIndex+1}"/>
-									                 <input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
 									              </td>
 									         </c:if>
 									       </c:forEach>
@@ -335,6 +377,7 @@
 										<td></td>
 										<td>
 											<div class="alignDiv">
+											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
 												<input disabled="" id="rowTotal1Id" name="rowTotal1Id"
 													class="inline_field" value="HH:MM" placeholder="00:00"
 													type="text">
@@ -454,10 +497,10 @@
 									</ul>
 								</div>
 								 <c:if test="${timesheetSubmissionDTO.saveButtonVisible}">
-								    <input onclick="newSaveTimesheet('Draft','user');;" value="Save" class="time_btn time_dra" type="button">
+								    <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
 								 </c:if>
 								 <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-								     <input onclick="newSaveTimesheet('Submitted','user');" value="Submit" class="time_btn" type="button">
+								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
 							    </c:if>
 							     <c:if test="${timesheetSubmissionDTO.cancelButtonVisible}">
 							       <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />
@@ -480,11 +523,11 @@
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
-	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
-		$("#timesheet_form input[data-id*=docFile]").remove();
-		}
 	setTotals();
 	maskme();
+	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+		$("#timesheet_form input[data-id*=docFile]").remove();
+	}
 });
 		
 function setTotals(){ 
@@ -1009,10 +1052,11 @@ function removeTimeSheetRow(rowId) {
 			 document.getElementById("timesheetRow"+rowId).value= '';
 			 var  rId = "timesheetRow"+rowId;
 			  var r = document.getElementById("timesheet").rows[rId];
-	          var count = 2*(r.cells.length);
-			    for(i=0;i<=count;i++){
-			        r.deleteCell(0);
-			    } 
+	          var count = (r.cells.length);
+		      for(i=0;i<count;i++){
+		        r.deleteCell(0);
+		      } 
+		      setTotals(); 
 		}
 		
 </script>	
@@ -1026,53 +1070,68 @@ function clearTimesheet(){
 <script>
 
 function editMe(local){
-	 var id = local.id;
-	 var inputValue =  $("#"+id).val();
-	 var split = inputValue.split(':');
-	 var hours = split[0];
-	 var minutes = split[1];
-	 var hours1 = hours.charAt(0);
-	 var hours2 = hours.charAt(1);
-	 var min1 = minutes.charAt(0);
-	 var min2 = minutes.charAt(1);
-	
-	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("0"+hours1+":00");
-	 }
-	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("0"+hours2+":00");
-	 }
-	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("00:"+min1+"0");
-	 }
-	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-		 $("#"+id).val("00:0"+min2);
-	 }
-	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val(hours+":00");
-	 }
-	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val(hours+":"+"0"+min1);
-	 }
-	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-		 $("#"+id).val(hours+":"+"0"+min2);
-	 }
-	 else if(!isNaN(hours)&& !isNaN(minutes)){
+	     var id = local.id;
+	     var inputValue =  $("#"+id).val();
+		 var split = inputValue.split(':');
+		 var hours = split[0];
+		 var minutes = split[1];
+		 var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var min1 = minutes.charAt(0);
+		 var min2 = minutes.charAt(1);
 		
-		  var hrmin= hours * 60;
-		  var totalMin = parseInt(hrmin) + parseInt(minutes);
-		  hours = Math.floor(totalMin / 60); 
-		  minutes = totalMin % 60;
-		  if(hours<=9){
-			  hours = "0"+hours;
-		  }
-		  if(minutes<=9){
-			  minutes = "0"+minutes;
-		  }
-		  $("#"+id).val(hours+":"+minutes);
-	 }
-	 setTotals();
-	 checkHours();
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours1+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours2+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("00:"+min1+"0");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val("00:0"+min2);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min1);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min2);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(minutes)){
+			  var hrmin= hours * 60;
+			  var totalMin = parseInt(hrmin) + parseInt(minutes);
+			  hours = Math.floor(totalMin / 60); 
+			  minutes = totalMin % 60;
+			  if(hours<=9){
+				  hours = "0"+hours;
+			  }
+			  if(minutes<=9){
+				  minutes = "0"+minutes;
+			  }
+			  $("#"+id).val(hours+":"+minutes);
+			  setTotals();
+			  checkHours(); 
+		 }
+		 
+	
 }
 
 function checkHours(){ 
@@ -1238,7 +1297,7 @@ function validateUploadFile(id)
 </script>
 <script type="text/javascript">
    function alertMessage(message,status,savingType){
-   $("#timesheetEntriesDiv").append("<div id='choicepopUp'></div>");
+   $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1300,7 +1359,7 @@ function dropDownExport(){
 <!-- this script is for Timesheet Entries Export -->
 <script>
 function timesheetEntriesExport(exportType){
-	var currentTimeFrequency = $("#timesheetFrequency").val();
+	 var currentTimeFrequency = $("#currentTimeFrequency").val();
 	var dateFrequency = currentTimeFrequency.split('To');
 	var projectMemberId = $("#projectMemberId").val();
 	var startDate = dateFrequency[0];
@@ -1315,8 +1374,8 @@ function timesheetEntriesExport(exportType){
 }
 </script>
 <script type="text/javascript">
-function newSaveTimesheet(status,savingType){ 
-	
+function newSaveTimesheet(status){ 
+	 var savingType = $("#timesheetFor").val();
 	 $(".time_btn").attr("disabled", "disabled");
 	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	 checkHours();
@@ -1339,6 +1398,7 @@ function newSaveTimesheet(status,savingType){
 			
 		 }	
      });
+	
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1352,6 +1412,7 @@ function newSaveTimesheet(status,savingType){
 	        	   return true;
 		     }
 		     else{
+		    	 $("#loadTime").removeAttr("style"); 
 		    	 var message = "<b>Are you sure to submit the timesheets, the following frequencies haven't updated<b>";
 		    	 for(var i=0;i<unfilledDates.length;i++){
 		    		 message = message+"<br/>"+unfilledDates[i];
@@ -1367,6 +1428,41 @@ function newSaveTimesheet(status,savingType){
 	   } 
 }
 </script>
+<script type="text/javascript">
+function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){ 
+		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+	    	 $(".side_mask").fadeOut(200); 
+     		 $("body").css('overflow-y', 'scroll');
+			 var currentPageNumber =  $("#currentPageNumber").val();
+   		     getStatusListData(""+currentPageNumber+"","");
+		 }
+		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
+			 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+			 var dates = timesheetFrequency.split("To");
+				$.ajax({
+			   	type: "POST",
+			    url: sourceleadUrl+"/timesheetApprovalRowDetails?projectMembersId="+projectMembersId+"&frequencyStartDate="+dates[0]+"&frequencyEndDate="+dates[1]+"&tableRowFor="+from, 	   
+					    success: function(data) {
+						    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+		     		    		 $(".side_mask").fadeOut(200); 
+		     	        		 $("body").css('overflow-y', 'scroll');
+		     	        		 $("#dynamic").removeAttr('style');
+		     	        		 if(from == 'approverClose' || from == 'approver' ){
+		     	        			 $("#row"+projectMembersId).empty();
+							         $("#row"+projectMembersId).html(data);
+		     	        		 }else{
+		     	        			 $("#row"+projectMembersId+timesheetFrequency).empty();
+							         $("#row"+projectMembersId+timesheetFrequency).html(data);
+		     	        		 }
+					        
+					    }
+			    }); 
+		 }
+	 
+	         
+}
+</script>
 <script>
  function timesheetDbSave(status,savingType){
 	     $("#choicepopUp").empty(); 
@@ -1376,8 +1472,13 @@ function newSaveTimesheet(status,savingType){
 		 var form = $('#timesheet_form')[0];
     	 var formData = new FormData(form); 
     	 
-    	 var currentTimeFrequency = $("#timesheetFrequency").val();
+    	 var currentTimeFrequency = $("#currentTimeFrequency").val();
+    	 var tableFor = $("#tableFor").val();
     	 var currentTimeSubFrequency = $("#currentTimeSubFrequency").val();
+    	 var projectMemberId = $("#projectMemberId").val();
+    	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    	 $("#loadTime").removeAttr('style');
+    	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 		    type : "POST",
    	        data: formData,
@@ -1385,19 +1486,218 @@ function newSaveTimesheet(status,savingType){
 	        contentType:false,
 	      	  url: sourceleadUrl+"/saveTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
 		      success :function(data) {
-		    	  $("#timesheetDivByFrequency").empty();
-		    	  $("#timesheetDivByFrequency").append(data);
-		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-		    		  $("#currentTimeSubFrequency").val('');
-		    		  $("#timeSubFrequency").val('');
-		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-	            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
+		    	  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+		  			 $("#timesheet_form input[data-id*=docFile]").remove();
+		  		   }
+		    	   
+		    	  if(savingType != null && savingType != '' && savingType != 'undefined'&& savingType == 'approver'){
+		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' ){
+			    		  timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
+			    	  }
+			    	  else{
+			    		  $("#timesheetDivByFrequency").empty();
+				    	  $("#timesheetDivByFrequency").append(data);
+				    	  setTotals();
+        		    	  maskme();
+				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+				    		  $("#currentTimeSubFrequency").val('');
+				    		  $("#timeSubFrequency").val('');
+				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+			            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
+				    	  }
+				    	  $("#loadTime").removeAttr('style');
+			    	  } 
+		    	  }else{
+		    		  $("#timesheetDivByFrequency").empty();
+			    	  $("#timesheetDivByFrequency").append(data);
+			    	  setTotals();
+    		    	  maskme();
+			    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+			    		  $("#currentTimeSubFrequency").val('');
+			    		  $("#timeSubFrequency").val('');
+			    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+		            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
+			    	  }
+			    	  $("#loadTime").removeAttr('style');
 		    	  }
-		    	  $("#loadTime").removeAttr('style');
+		    	 
+		    	  
 		    	  
 		      }
 	      	  
 	    });
  }
 </script>
+<!-- Re-Open Timesheet Scripts Start -->
+<script type="text/javascript">
+function reOpenMyTimesheet(){
+	var projectMemberId = $("#projectMemberId").val();
+	var timesheetFrequency= $("#currentTimeFrequency").val();
+	var totalHours = $("#totalHours").val();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"	</div>";
+	$("#reOpenPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
+    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	var reason = document.getElementById("reOpenReason").value;
+	if(reason !== ""){
+		$("#reOpenReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/ws/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
+		    success: function(data) {
+		    	 cancelReOpen();
+   			    timesheetDivAfterSaving();
+		    }
+	   });
+	}else{
+		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	  
+}
+</script>
+<script>
+function timesheetDivAfterSaving(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	var projectMemberId = $("#projectMemberId").val();
+	var currentTimeFrequency= $("#currentTimeFrequency").val();
+	var currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
+	var timeSheetsFor = $("#timesheetFor").val();
+    if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+ 	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
+    }
+    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+    $.ajax({
+	          type : "POST",
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+		      success :function(data) {
+		    	  $("#timesheetDivByFrequency").empty();
+		    	  $("#timesheetDivByFrequency").append(data);
+		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+		    	  }
+		    	  $("#loadTime").removeAttr('style');
+		      }
+	    }); 
+}
+</script>
+<script>
+function cancelReOpen(){
+$("#reOpenPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
+	var timesheetFrequency = $("#currentTimeFrequency").val(); 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"	</div>";
+	$("#reOpenRejectedPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var superUserId = '${SourceLeadWeb_superUserId}';
+	var reason = document.getElementById("reOpenRejectedReason").value;
+	if(reason != ""){
+		$("#reOpenRejectedReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		   	url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
+		    success: function(data) {
+		    	$("#reOpenRejectedPopup").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
+   			    timesheetDivAfterSaving();
+	    	    $("html").trigger('click');
+	    	    maskme();
+		    }
+	   });
+	}else{
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+
+</script>
+
+<script>
+function cancelReOpenRejected(){
+$("#reOpenRejectedPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var timesheetFrequency = $("#currentTimeFrequency").val(); 
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
+		success : function(data) {
+			timesheetDivAfterSaving();
+		},
+	});
+}
+</script>
+<!-- Re-Open Timesheet Script End -->
+<!-- Tab Switching -->
+ <script>
+	function timesheetDivByFrequency(currentTimeSubFrequency){ 
+	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	               var projectMemberId = $("#projectMemberId").val();
+	               var currentTimeFrequency = $("#currentTimeFrequency").val();
+	               if(currentTimeFrequency ==  null || currentTimeFrequency == '' || currentTimeFrequency == 'undefined'){
+	            	   currentTimeFrequency = $("#timesheetFrequency").val();
+	               }
+	               var timeSheetsFor = $("#timesheetFor").val();
+	               var subFrParam = '';
+	               if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+	            	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
+	               }
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               $.ajax({
+		      	          type : "POST",
+	        	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+	        		      success :function(data) {
+	        		    	  $("#timesheetDivByFrequency").empty();
+	        		    	  $("#timesheetDivByFrequency").append(data);
+	        		    	  setTotals();
+	        		    	  maskme();
+	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
+		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+	        		    	  }
+	        		    	  $("#loadTime").removeAttr('style');
+	        		      }
+	        	    }); 
+	}
+</script> 
+<!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+

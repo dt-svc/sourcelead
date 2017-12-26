@@ -2350,7 +2350,7 @@ addTask-widget table tr th {
 	  padding-top:10px; border-top:1px solid #c1c1c1;
   }
   .design-view {
-	background: #ccc none repeat scroll 0 0; border-radius: 5px; margin-top: 15px; padding: 0 10px 10px;
+	background: #f6f6f6; border-radius: 5px; margin-top: 15px; padding: 0 10px 10px;
   }
   .design-view .select-skills{
 	  background:#fff; border-radius: 5px; padding-top:10px; padding-bottom:25px;
@@ -6237,7 +6237,10 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     width:28% !important;
 }
 .bootstrap_dropdownMenu.dropdownPadding ul {
-	padding:0px 10px;
+	padding:5px 10px;
+}
+.bootstrap_dropdownMenu.dropdownPadding ul li {
+	padding: 5px;
 }
 .modal.modalAssignTeam {
     z-index: 99999!important;	
@@ -7414,13 +7417,13 @@ font-weight: normal; color: #333; padding: 10px !important; border-bottom: 1px s
 height: 40px; vertical-align: middle;
 }
 .tableStyles table thead {
-background-color: #CBCBCB;
+background-color: #e5e5e5;
 }
 .tableStyles table tr {
 border-bottom: 1px solid #BDBDBD;
 }
 .tableStyles table tr td {
-position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
+position: relative; text-align: left; padding: 12px 10px; box-sizing: border-box; color: #666;
 }
 .tableStyles_head {
 position: relative; min-height: 40px;
@@ -7578,16 +7581,18 @@ background-color: #f5f5f5; padding:5px 15px;
 .importcsv-accordion ol li{
 	font-size: 12px; padding: 1px 0;
 }
-
 /* Card Model UI Styles */
 .cardModel-widget {
- background: #fff; padding: 15px; box-shadow: 1px 1px 1px #ddd; border-radius: 3px; color: #444;
+ background: #fff; padding: 15px; box-shadow: 1px 1px 2px #b9b9b9; border-radius: 3px; color: #444;
 }
 .cardModel-widget h4 {
-	margin: 0; margin-bottom: 10px; font-size: 15px;
+	margin: 0; padding-bottom:10px; font-size: 15px; text-align: left;
 }
-.div-borderBottom {
-	border-bottom: 1px solid #ddd;
+.cardModel-widget label {
+	margin-bottom: 0;
+}
+.cardModelwidget-header {
+	border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;
 }
 .mail-actionicons {
 position: absolute; right: 5px; top:8px; z-index: 1; color: #808080; cursor: pointer;
@@ -7609,7 +7614,55 @@ color: #444;
 padding: 5px 10px;
 }
 /* Card Model UI Styles */
-
+.payment-success {
+	padding: 30px; box-sizing: border-box; -webkit-border-radius: 10px;
+-moz-border-radius: 10px; -ms-border-radius: 10px; border-radius: 10px; background: #fff;
+}
+.paymentsuccess-header {
+	text-align: center;
+}
+.paymentsuccess-header h4 {
+	color: #66BB6A; font-size: 25px;
+}
+.paymentsuccess-header h4 span {
+	position: relative; top: -10px;
+}
+.paymentfailed-header h4 {
+	color: #EF5350; font-size: 25px;
+}
+.paymentfailed-header h4 span {
+	position: relative; top: -10px;
+}
+.ulDesing {
+	border: 1px solid #E0E0E0; border-radius: 3px;
+}
+.ulDesing li {
+	border-bottom: 1px solid #E0E0E0; padding: 5px 0;
+}
+.ulDesing li:nth-child(even) {
+	color: #FB8C00;
+}
+/*.ulDesing li:nth-child(odd) {
+	color: #388E3C;
+}
+.ulDesing li:last-child {
+	border-bottom: 0;
+}*/
+.timesheet-billingcount {
+	border: 1px solid #E0E0E0; padding: 10px 10px 15px; background-color: #FAFAFA; border-radius: 5px;
+}
+.timesheet-billingcount .colMd {
+	padding: 5px; text-align: center;
+}
+.fontSize20 {
+	font-size: 20px;
+}
+.validationTxt.whiteSpace {
+	white-space: normal;
+}
+.chosen-disabled {
+  opacity: 0.95 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

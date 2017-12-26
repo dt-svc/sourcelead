@@ -25,6 +25,10 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -34,7 +38,6 @@
     bottom: -14px;
 }
 </style>
-
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
@@ -48,6 +51,7 @@
           
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
+          <input type="hidden" id="actionId" value="${actionId}">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -131,11 +135,10 @@
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
-                    <div class="col-md-6 paddingLeft erMesMid">
+                    <div class="col-md-6 paddingLeft">
                     <div class="row">
-                    <label class="col-md-5">Extension </label>
-                    <div class="col-md-7 posSta">
-                    <input type="text" class="form-control" id="extensionNumber" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
+                    <div class="col-md-12">
+                    <input type="text" class="form-control" id="extensionNumber" placeholder="Extension Number" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
                     </div>
                     </div>
                     </div>
@@ -175,9 +178,9 @@
                 
                 <div class="form-group">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 chooRadius" id="chosen-role">
+                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -185,9 +188,9 @@
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
-                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
+                       <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
 			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			      </sec:authorize>
+			           </sec:authorize>
                 </div>
                 </div> 
                
@@ -296,6 +299,13 @@
 		                </div>
 		                 </div>
                </div>
+                <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
             </div>
             </div>
                 
@@ -317,6 +327,19 @@
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
 
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
  function employementType(type){

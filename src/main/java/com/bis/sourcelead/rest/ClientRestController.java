@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,12 +46,16 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -61,11 +66,14 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -82,6 +90,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -175,6 +185,16 @@ public class ClientRestController {
 	
 	@Autowired
 	VendorOnboardService vendorOnboardService;
+	
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
 	
 	/**
 	 * Handles to get Orgs
@@ -828,6 +848,10 @@ public class ClientRestController {
 			clientVendorDTO.setOrgName(orgRelation.getOrgName());
 		}
 		
+		if(orgRelation.getOrgType() != null){
+			clientVendorDTO.setOrgType(orgRelation.getOrgType());
+		}
+		
 		if(orgRelation.getWebSite() !=null){
 			clientVendorDTO.setWebSite(orgRelation.getWebSite());
 		}
@@ -952,6 +976,34 @@ public class ClientRestController {
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
 		}
+		
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+		 if(sections != null && !sections.isEmpty()) {
+			 for(SourceleadSectionDTO sec:sections) {
+				 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+					 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+					 custom.setCustomFormFieldId(customFields.getId());
+					 formFieldId.add(custom);
+				 }
+			 }
+			 if(formFieldId != null && !formFieldId.isEmpty() && orgLocationId != null) {
+				OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+			 List<ClientCustomFieldData> clientData = clientCustomFieldDataService.getClientCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId);
+			 Map<String,String> dataMap = new HashMap<>();
+			 if(clientData!= null && !clientData.isEmpty()) {
+				 for(ClientCustomFieldData clientCustomData:clientData) {
+					 String labelName = clientCustomData.getOrglocationsFormFields().getLabelName();
+					 String labelData = clientCustomData.getCustomFormFieldData();
+					 dataMap.put(labelName, labelData);
+					 clientVendorDTO.setClientCustomFieldlabelNameAndValue(dataMap);
+				 	}
+			 	}
+			 }
+		 }
+		
 		
 		/*String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);*/

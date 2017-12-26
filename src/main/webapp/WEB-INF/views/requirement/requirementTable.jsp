@@ -6,9 +6,10 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 function requirementListCheck(searchValue,universalRequirementSearchList,searchType,sourceleadUrl){
-	 if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
+	if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
 		 && universalRequirementSearchList=="universalRequirementList")	 {
 		 $("#dataTableSearch").val(searchValue);
+		 $("#searchKey").val(searchValue);
 		 if(searchType == null || searchType == '' || searchType == 'undefined'){
 			    $("#c6").prop("checked", true);
 			  	$("#c8").prop("checked", true);
