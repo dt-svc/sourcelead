@@ -690,7 +690,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		location.replace(sourceleadUrl+"/requirementList");
+	    		location.replace(sourceleadUrl+"/jobs");
 	        },
 	    }); 
       return true; 

@@ -2,11 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="/resources/js/jquery.twbsPagination.js"></script>
 <script src="/resources/js/tableHeadFixer.js"></script>
 
 
-<script src="resources/js/jquery.simplePagination.js"></script>
+<script src="/resources/js/jquery.simplePagination.js"></script>
 
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
