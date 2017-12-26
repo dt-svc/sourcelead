@@ -68,10 +68,23 @@ public class JobPipelineReoprtsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		List<Long> jobIdList = new ArrayList<>();
-
-		if(jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
+		
+		Date[] searchDates = null;
+		
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+		}else {
 			
-			jobIdList = getClientRequirementList(orgLocation,user);
+			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+    	    searchDates = new Date[2];
+    	    searchDates[0] = fromDate;
+    	    searchDates[1] = toDate;
+		}
+
+		if(jobFilterDTO.getFromtype() != null && jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
+			
+			jobIdList = getClientRequirementList(orgLocation,user,searchDates);
 		}else{
 			if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 				String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -83,18 +96,6 @@ public class JobPipelineReoprtsRestController {
 			}
 		}
 			
-			Date[] searchDates = null;
-			
-			if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
-			}else {
-				
-				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
-	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
-	    	    searchDates = new Date[2];
-	    	    searchDates[0] = fromDate;
-	    	    searchDates[1] = toDate;
-			}
 	 
 	    	int applicantsSum = 0;
 			int requestSentSum = 0;
@@ -404,12 +405,12 @@ public class JobPipelineReoprtsRestController {
 	}
 
 
-	private List<Long> getClientRequirementList(OrgLocations orgLocation, User user) {
+	private List<Long> getClientRequirementList(OrgLocations orgLocation, User user, Date[] searchDates) {
 		List<Long> jobIds = new ArrayList<>();
 		List<OrgRelations> clientList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
 		if(clientList != null && clientList.size() > 0) {
 			for(OrgRelations orgRelation : clientList) {
-				List<Requirement> jobsList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(), orgLocation.getId(), user.getId());
+				List<Requirement> jobsList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(), orgLocation.getId(), user.getId(), searchDates, null);
 				if(jobsList != null && jobsList.size() > 0) {
 					for(Requirement req :jobsList) {
 						jobIds.add(req.getId());

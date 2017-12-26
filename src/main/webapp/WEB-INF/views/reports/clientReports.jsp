@@ -206,7 +206,7 @@ $(document).ready(function(){
                   </select>
                 </div>
                 <div class="col-md-2" id="clientSelectDiv">
-                  <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect"></select>
+                  <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect" onchange="clientSummary()"></select>
                 </div>
                 <div class="col-md-2" id="clientContactSelectDiv" style="display: none;">
                   <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect"></select>
@@ -507,7 +507,7 @@ function getTopFiveConracts(){
 	var fromDate = $("#custFromDate").val();
 	var toDate = $("#custToDate").val();
 	if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
-		$.get(sourceleadUrl+ "/getTopFiveConracts?frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(sourceleadUrl+ "/getTopFiveConracts?frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus='FINALIZED'", function(data) {
 			if(data != null && data != '' && data != 'undefined'){
 				var client1 = "";
 				var client2 = "";
@@ -646,7 +646,7 @@ function topTenClientReports(){
 		$("#topClientloadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate,
+			url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus=FINALIZED",
 		    success: function(data) {
 		    	if(data.length > 0){
 		    		var result = "";
@@ -674,7 +674,7 @@ function topTenClientReports(){
 		            for(i=0; i<listLength; i++){
 		            	var opt = data[i];
 		            	result += '  <tr>';
-			            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientName+'</a> </div></td>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgRelationUUID='+opt.orgRelationUUID+'&invoiceType=Receivable&type=byClient">'+opt.clientName+'</a> </div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
@@ -692,7 +692,7 @@ function topTenClientReports(){
 		           	opt += '<option >Select Client</option>';
 		           	for(i=0; i<data.length; i++){
 		           		report = data[i];
-		           		opt += '<option value='+report.orgRelationId+'>'+report.clientName+'</option>';
+		           		opt += '<option value='+report.orgRelationUUID+'>'+report.clientName+'</option>';
 		           	}
 		           	
 		           	$("#topTenClientList").empty();
@@ -715,14 +715,19 @@ function topTenClientReports(){
 <script>
 function getTimeToFillReports(){
 	var frequency = $("#dateFrequency").val();
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
+	if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
+// 		$("#topClientloadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getAllJobsPipelineReoportsList?&dateSelection="+frequency+"&fromtype=clientReport",
+		url : sourceleadUrl+"/getAllJobsPipelineReoportsList?&dateSelection="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&fromtype=clientReport",
 	    success: function(data) {
 	    	getTimeToFillAmchartData(data);
 	    	getSuccessPercentageAmchartData(data);
  	    }
 	});
+	}
 }
 
 </script>
@@ -817,6 +822,8 @@ function getSuccessPercentageAmchartData(data){
 			"categoryAxis": {
 				"gridPosition": "start",
 				"position": "left",
+				"axisThickness": 0,
+				"gridThickness": 0,
 				"title": ""
 			},
 			"trendLines": [],
@@ -837,6 +844,9 @@ function getSuccessPercentageAmchartData(data){
 				{
 					"axisFrequency": 0,
 					"id": "ValueAxis-1",
+					"labelsEnabled": false,
+					"axisThickness": 0,
+					"gridThickness": 0,
 					"totalText": "",
 					"unit": "",
 					"title": ""
@@ -854,7 +864,7 @@ function getSuccessPercentageAmchartData(data){
 			"dataProvider": [
 				{
 					"category": "Applicants",
-					"column-1": data.shortlistedMove,
+					"column-1": 100,
 					"color": "#9575CD"
 				},
 				{
@@ -897,7 +907,7 @@ function topTenClientContactReports(){
 		$("#topClientloadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+"/getTopTenClientContactReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate,
+			url : sourceleadUrl+"/getTopTenClientContactReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus=FINALIZED",
 		    success: function(data) {
 		    	if(data.length > 0){
 		    		var result = "";
@@ -925,7 +935,7 @@ function topTenClientContactReports(){
 		            for(i=0; i<listLength; i++){
 		            	var opt = data[i];
 		            	result += '  <tr>';
-			            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientContactName+'</a> </div></td>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgRelationUUID='+opt.orgRelationUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.clientName+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
@@ -961,4 +971,13 @@ function topTenClientContactReports(){
 	}
 }
 </script>
+<script>
+function clientSummary(){
+	var orgRelationUUID = $("#topTenClientSelect").val();
+	if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){
+	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgRelationUUID+"&invoiceType=Receivable&type=byClient");
+}
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

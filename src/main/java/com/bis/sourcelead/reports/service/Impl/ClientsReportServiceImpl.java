@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
+import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.util.CommonUtil;
@@ -82,30 +83,32 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		int totalSowCount = 0;
 		int totalNdaCount = 0;
 		int totalNsaCount = 0;
-		for(OrgRelations orgRelation : orgRelationsList){
-			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
-//			contractList.add(conList.size());
-			if(conList != null && conList.size() > 0){
-				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
-					conCount.put(orgRelation.getResponderLocationId().getOrgLocationName(), conList.size());
-				}else{
-					conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
-				}
-				for(Contracts con : conList){
-					if(con.getContractType().contains("MSA")){
-						totalMsaCount += 1;	
-					}else if(con.getContractType().contains("SOW")){
-						totalSowCount += 1;
-					}else if(con.getContractType().contains("NDA")){
-						totalNdaCount += 1;
-					}else if(con.getContractType().contains("NSA")){
-						totalNsaCount += 1;
+		if(orgRelationsList != null) {
+			for(OrgRelations orgRelation : orgRelationsList){
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+//				contractList.add(conList.size());
+				if(conList != null && conList.size() > 0){
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+						conCount.put(orgRelation.getResponderLocationId().getOrgLocationName(), conList.size());
+					}else{
+						conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
 					}
+					for(Contracts con : conList){
+						if(con.getContractType().contains("MSA")){
+							totalMsaCount += 1;	
+						}else if(con.getContractType().contains("SOW")){
+							totalSowCount += 1;
+						}else if(con.getContractType().contains("NDA")){
+							totalNdaCount += 1;
+						}else if(con.getContractType().contains("NSA")){
+							totalNsaCount += 1;
+						}
+					}
+					conCount.put("MsaCount",totalMsaCount);
+					conCount.put("SowCount",totalSowCount);
+					conCount.put("NdaCount",totalNdaCount);
+					conCount.put("NsaCount",totalNsaCount);
 				}
-				conCount.put("MsaCount",totalMsaCount);
-				conCount.put("SowCount",totalSowCount);
-				conCount.put("NdaCount",totalNdaCount);
-				conCount.put("NsaCount",totalNsaCount);
 			}
 		}
 		return conCount;
@@ -117,7 +120,7 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type) {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency) {
 
 		Map<String,Float> amountList = new LinkedHashMap<>();
 		Map<String,Float> newAmountList = null;
@@ -241,6 +244,12 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId, Date[] freqDates)
 	{
 		return clientReportDao.getSubmissionListByRequirementId(requirementId,orgLocationId,userId,freqDates);
+	}
+
+	@Override
+	public List<Contracts> getClientBasedContractsLists(OrgLocations orgLocation, User user, String userRoleName,
+			Long orgRelationId, ContractReportsDTO contractReportsDTO) {
+		return clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user, orgRelationId, userRoleName, contractReportsDTO);
 	}
 
 }

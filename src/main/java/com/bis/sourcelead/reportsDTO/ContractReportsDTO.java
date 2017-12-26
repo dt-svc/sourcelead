@@ -12,6 +12,8 @@ public class ContractReportsDTO {
 	private int nsaCount;
 	private int ndaCount;
 	private long contactUser;
+	private String templateSubmissionStatus;
+	
 	public String getClientName()
 	{
 		return clientName;
@@ -92,4 +94,11 @@ public class ContractReportsDTO {
 	{
 		this.contactUser = contactUser;
 	}
+	public String getTemplateSubmissionStatus() {
+		return templateSubmissionStatus;
+	}
+	public void setTemplateSubmissionStatus(String templateSubmissionStatus) {
+		this.templateSubmissionStatus = templateSubmissionStatus;
+	}
+	
 }

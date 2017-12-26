@@ -1,8 +1,10 @@
 package com.bis.sourcelead.reports.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -10,6 +12,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 
@@ -25,12 +28,14 @@ public interface ClientReportService {
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId,String invoiceType);
 
-	InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user, String type);
+	InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user, String type, String dateFrequency);
 
 	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId, Date[] freqDates);
 
 	List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId, Date[] freqDates, Long spocId);
 
 	Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long locationId, Long userId, Date[] freqDates);
+
+	List<Contracts> getClientBasedContractsLists(OrgLocations orgLocation, User user, String userRoleName,Long orgRelationId, ContractReportsDTO contractReportsDTO);
 
 }
