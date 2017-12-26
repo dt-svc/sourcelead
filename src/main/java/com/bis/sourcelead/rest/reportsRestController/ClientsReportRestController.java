@@ -3,12 +3,8 @@ package com.bis.sourcelead.rest.reportsRestController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,15 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ContractsDTO;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
-import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -39,9 +31,6 @@ public class ClientsReportRestController {
 	private String sourceleadUrl;
 	@Autowired
 	ClientReportService clientReportService;
-	
-	@Autowired
-	InvoiceService invoiceService;
 	
 	@Autowired
 	ReportsUtil reportsUtil;
@@ -98,68 +87,12 @@ public class ClientsReportRestController {
 	}
 	
 	@RequestMapping(value = "/getTopFiveReceivablesReports", method = RequestMethod.GET)
-	public Map<String,Float> getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,HttpServletRequest request) throws Exception {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		Map<String,Float> amountList = new LinkedHashMap<>();
-		Map<String,Float> newAmountList = null;
-		List<OrgRelations> clientsList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
+		return clientReportService.getTopFiveReceivsblesReports(orgLocation,user,type);
 		
-		if(clientsList != null && clientsList.size() > 0) {
-		for(OrgRelations orgRelation : clientsList) {
-			Float paidTotalAmount = 0f;
-			List<Invoice> invoiceList = invoiceService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
-			String clientName = null;
-			if(invoiceList != null && invoiceList.size() > 0) {
-				for (Invoice invoice : invoiceList) {
-					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
-							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
-						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
-						paidTotalAmount = paidTotalAmount + paidAmount;
-						if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-							clientName = invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName();
-						}
-						if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-							clientName =invoice.getOrgRelationID().getLocationId().getOrgLocationName();
-						}
-						
-					}
-				}
-				
-				if(clientName != null)
-				amountList.put(clientName,paidTotalAmount);
-			}
-		}
-		
-		if(amountList != null && amountList.size() > 0) {
-			Set<Entry<String, Float>> set = amountList.entrySet();
-	        List<Entry<String, Float>> list = new ArrayList<Entry<String, Float>>(set);
-	        Collections.sort(list, new Comparator<Map.Entry<String, Float>>()
-	        {
-	            public int compare( Map.Entry<String, Float> o1, Map.Entry<String, Float> o2 )
-	            {
-	                return (o2.getValue()).compareTo( o1.getValue() );
-	            }
-	        } );
-	        
-	        newAmountList =  new LinkedHashMap<>();
-	        List<Entry<String, Float>> newList =   list.subList(0, 5);
-	        for(Map.Entry<String, Float> entry:newList){
-//	            System.out.println(entry.getKey()+" ==== "+entry.getValue());
-	            newAmountList.put(entry.getKey(), entry.getValue());
-	        }
-	        
-	        List<Entry<String, Float>> othersList =   list.subList(5,list.size());
-	        Float otherAmt = 0f;
-	        for (Entry<String, Float> entry : othersList) {
-	        	Float calcOtherAmt = entry.getValue();
-	        	otherAmt = otherAmt + calcOtherAmt;
-	        	newAmountList.put("Others", otherAmt);
-			}
-		}
-	}
-	return newAmountList;
 	}
 	
 }

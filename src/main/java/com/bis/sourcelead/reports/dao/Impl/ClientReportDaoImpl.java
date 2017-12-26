@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -190,5 +191,21 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			return ContractsList;
 		else
 			return null;
+	}
+
+	@Override
+	@Transactional
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
+		String subQuery = "";
+		if(invoiceType.equalsIgnoreCase("payables")){
+			subQuery = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		return clientInvoiceList;
 	}
 }

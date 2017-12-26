@@ -1,28 +1,39 @@
 package com.bis.sourcelead.reports.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
-
-import net.didion.jwnl.data.list.PointerTargetTreeNodeList.Operation;
+import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class ClientsReportServiceImpl implements ClientReportService{
 
 	@Autowired
 	ClientReportDao clientReportDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public Map<String, Integer> getAllClientsCountByOrgLocationIdAndUserId(Long locationId, Long userId)
@@ -76,6 +87,120 @@ public class ClientsReportServiceImpl implements ClientReportService{
 			}
 		}
 		return conCount;
+	}
+
+	@Override
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
+		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType);
+	}
+
+	@Override
+	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type) {
+
+		Map<String,Float> amountList = new LinkedHashMap<>();
+		Map<String,Float> newAmountList = null;
+		List<Entry<String, Float>> newList = null;
+		List<OrgRelations> clientsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
+		
+		
+		InvoiceReportDTO invoiceDto = new InvoiceReportDTO();
+		Date todayDate = new Date();
+		Float paidTotalAmount = 0f;
+		Float draftTotalAmount = 0f;
+		Float dueAfterInvoiceAmount = 0f;
+		Float openInvoiceTotal = 0f;
+		
+		if(clientsList != null && clientsList.size() > 0) {
+		for(OrgRelations orgRelation : clientsList) {
+			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
+			String clientName = null;
+			if(invoiceList != null && invoiceList.size() > 0) {
+				for (Invoice invoice : invoiceList) {
+					
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+						paidTotalAmount = paidTotalAmount + paidAmount;
+						invoiceDto.setPaidInvoiceTotal(paidTotalAmount);
+						if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+							clientName = invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName();
+						}
+						if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+							clientName = invoice.getOrgRelationID().getLocationId().getOrgLocationName();
+						}
+						
+					}
+					
+					if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
+						draftTotalAmount += Float.parseFloat(invoice.getDueAmount()) ;
+						invoiceDto.setDraftInvoiceTotal(draftTotalAmount);
+					}
+					
+					
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
+							(Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
+						
+						String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate());
+						Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),dueDate);
+						
+						Float dueAmount = Float.parseFloat(invoice.getDueAmount());
+						
+						if(dueAmount > 0){
+						
+							if(todayDate.after(invoiceDueDate)){
+								dueAfterInvoiceAmount = dueAfterInvoiceAmount + Float.parseFloat(invoice.getDueAmount());
+								invoiceDto.setOverDueInvoicetotal(dueAfterInvoiceAmount);
+							}else{
+								openInvoiceTotal = openInvoiceTotal + Float.parseFloat(invoice.getDueAmount());
+								invoiceDto.setOpenInvoiceTotal(openInvoiceTotal);
+							}
+						}
+						
+						
+					}
+					
+				}
+				
+				if(clientName != null)
+				amountList.put(clientName,paidTotalAmount);
+			}
+		}
+		
+		if(amountList != null && amountList.size() > 0) {
+			Set<Entry<String, Float>> set = amountList.entrySet();
+	        List<Entry<String, Float>> list = new ArrayList<Entry<String, Float>>(set);
+	        Collections.sort(list, new Comparator<Map.Entry<String, Float>>()
+	        {
+	            public int compare( Map.Entry<String, Float> o1, Map.Entry<String, Float> o2 )
+	            {
+	                return (o2.getValue()).compareTo( o1.getValue() );
+	            }
+	        } );
+	        
+	        newAmountList =  new LinkedHashMap<>();
+	        if(list.size() > 5) {
+	        	 newList =   list.subList(0, 5);
+	        	 
+	        	List<Entry<String, Float>> othersList =   list.subList(5,list.size());
+	 	        Float otherAmt = 0f;
+	 	        for (Entry<String, Float> entry : othersList) {
+	 	        	Float calcOtherAmt = entry.getValue();
+	 	        	otherAmt = otherAmt + calcOtherAmt;
+	 	        	newAmountList.put("Others", otherAmt);
+	 	        	invoiceDto.setNewAmountList(newAmountList);
+	 			}
+	        }else {
+	        	 newList =   list;
+	        }
+	        for(Map.Entry<String, Float> entry:newList){
+//	            System.out.println(entry.getKey()+" ==== "+entry.getValue());
+	            newAmountList.put(entry.getKey(), entry.getValue());
+	            invoiceDto.setNewAmountList(newAmountList);
+	        }
+	        
+		}
+	}
+	return invoiceDto;
 	}
 
 }

@@ -134,19 +134,19 @@ $(document).ready(function(){
 				  <ul class="list-unstyled list-inline vendor-listcount mt">
 						<li>
 							<label>Draft</label>
-							<span class="text-warning"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+							<span class="text-warning" id="draftTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
 							<label>Unpaid</label>
-							<span class="text-danger"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+							<span class="text-danger" id="unpaidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
 							<label>Paid</label>
-							<span class="text-success"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+							<span class="text-success" id="paidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
 							<label>Open</label>
-							<span class="text-info"><i class="fa fa-dollar paddingRight"></i>5287965411</span>
+							<span class="text-info" id="openTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 					</ul>
 				</div>
@@ -759,6 +759,10 @@ function getTopFiveReceivsblesReports(){
 		url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&type=Receivable",
 	    success: function(data) {
 	    	getAmchartData(data);
+	    	$("#draftTotalAmount").html(data.draftInvoiceTotal)
+	    	$("#unpaidTotalAmount").html(data.overDueInvoicetotal)
+	    	$("#paidTotalAmount").html(data.paidInvoiceTotal)
+	    	$("#openTotalAmount").html(data.openInvoiceTotal)
  	    }
 	});
 }
@@ -769,13 +773,9 @@ function getAmchartData(data){
 	var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
 	var i = 0;
 	var mainAmcahrt = [];
-	for(var k in data) {
-		mainAmcahrt[i] = {"category": k, "column-1": data[k].toFixed(2), "color": colors[i++] };
+	for(var k in data.newAmountList) {
+		mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
 	}
-// 	if(k== 'others'){
-// 		alert("2")
-// 		mainAmcahrt[i] = {"category": "Others", "column-1": data[k].toFixed(2), "color": colors[i++] };	
-// 	}
 	
 	AmCharts.makeChart("top5receivables",
 			{
