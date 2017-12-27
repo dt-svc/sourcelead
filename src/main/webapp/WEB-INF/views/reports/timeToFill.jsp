@@ -262,7 +262,7 @@ function loadTimeToFillChart(result){
 					"gridCount": 0,
 					"gridThickness": 0,
 					"minorGridAlpha": 0,
-					"title": ""
+					"title": "Avg Days"
 				}
 			],
 			"allLabels": [],
