@@ -49,8 +49,8 @@ public class ApplicantDeclineServiceImpl implements ApplicantDeclineService {
 	        if(rejectValue.getKey().equals("Other")){
 	        	applicantDeclineDTO.setOtherCount((Integer)rejectValue.getValue());
 	        }
-	        //applicantDeclineDTO.setTotalCount(totalCount);
-	}
+	       }
+           applicantDeclineDTO.setTotalCount(applicantDeclineDTO.getSkillsCount() + applicantDeclineDTO.getBadfitCount() + applicantDeclineDTO.getUnsuitableCount() + applicantDeclineDTO.getInterviewCount() + applicantDeclineDTO.getSalaryCount() + applicantDeclineDTO.getOtherCount());
 	    return applicantDeclineDTO;
 
 }

@@ -22,6 +22,7 @@ import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -32,6 +33,9 @@ public class ApplicantDeclineRestController {
 	@Autowired
 	ReportsUtil reportsUtil;
 
+	@Autowired
+	CommonUtil commonUtil;
+	
 	@Autowired
 	ApplicantDeclineService applicantDeclineService;
 
@@ -60,7 +64,15 @@ public class ApplicantDeclineRestController {
 		Date[] searchDates = null;
 
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
 		}
 
 		applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobIdList, searchDates,orgLocation); 
@@ -80,7 +92,15 @@ public class ApplicantDeclineRestController {
 		Date[] searchDates = null;
 
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
 		}
 
 		if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
@@ -96,10 +116,13 @@ public class ApplicantDeclineRestController {
 		 for (Long jobId : jobIdList) {
 			if(jobId!=null){
 			Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
-			applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobIdList, searchDates,orgLocation);
+			List<Long> jobids = new ArrayList<>();
+			jobids.add(jobId);
+			applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobids, searchDates,orgLocation);
 			applicantDeclineDTO.setJobName(requirement.getJobTitle());
-			}
 			applicantDeclineList.add(applicantDeclineDTO);
+			}
+			
 		}
 
 

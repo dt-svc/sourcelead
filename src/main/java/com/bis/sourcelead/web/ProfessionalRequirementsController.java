@@ -109,7 +109,7 @@ public class ProfessionalRequirementsController {
 	}
 	
 	
-	 @RequestMapping(value = "/register")
+	 @RequestMapping(value = "/app/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {

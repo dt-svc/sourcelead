@@ -57,9 +57,11 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
         for(String type:typeName) {
 		
 		if(searchDates != null) {
-			 query ="select count(*) from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) "
+			 query ="select count(*) from RequirementSubmission rs where  rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) "
 					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
-			 submissionCount =  session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocation.getId()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+			 //rs.orgLocations.id = :orgLocationsId and
+			 //.setLong( "orgLocationsId", orgLocation.getId())
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 		}else {
 			 query ="select count(*) from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) ";
 			 submissionCount =  session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocation.getId()).setParameterList("jobIds", jobIds).setCacheable(true).list();
