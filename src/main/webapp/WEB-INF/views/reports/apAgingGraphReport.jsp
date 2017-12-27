@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	vendorapAgingBillGraph();
 });
 </script>
 
@@ -29,50 +29,22 @@ $(document).ready(function(){
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
-        <div class="col-md-4 col-md-offset-5">
+        <div class="col-md-4 col-md-offset-3">
     <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Clinet">
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
+		<select class="chosen-select form-control" multiple data-placeholder="Select Clinet" id="orgId">
+		  <c:if test="${not empty vendorList}">
+               <c:forEach items="${vendorList}" var="vendor">
+   						<option value='${vendor.id }'>${vendor.orgName}</option>
+				</c:forEach>
+		</c:if>
 		</select>
 	</div>
         </div>
-        <div class="col-md-3 dropdown-select hidden">
-        <div class="dropdown-select positionRelative">
-        <select class="form-control" id="custom-dates">
-          <option>Select Date</option>
-          <option>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
-          <option>Year to Date</option>
-          <option value="custom">Custom</option>
-        </select>
-        <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
-    <div class="pull-left">
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
-    </div>
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
-    </div>
-    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-    </div>
-    </div>
-<!-- Top Leave Takers Custom Date --> 
-      </div>
-
+        <div class="col-md-2">
+    		<a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="vendorapAgingBillGraph();">Customize</a>
         </div>
+        
+      
 		<div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
@@ -127,109 +99,123 @@ var config = {
     $('#priority').trigger('chosen:updated');
 </script> 
 
-<!-- amCharts javascript code --> 
-<script type="text/javascript">
-	AmCharts.makeChart("apaging",
-	{
-	"type": "serial",
-	"categoryField": "category",
-	"marginBottom": 15,
-	"marginLeft": 15,
-	"marginRight": 15,
-	"marginTop": 15,
-	"colors": [],
-	"startDuration": 1,
-	"responsive": {
-		"enabled": true
-	},
-	"export": {
-		"enabled": true
-	},
-	"categoryAxis": {
-		"autoRotateAngle": 30,
-		"autoRotateCount": 0,
-		"gridPosition": "start",
-		"axisThickness": 0,
-		"gridThickness": 0
-	},
-	"trendLines": [],
-	"graphs": [
-		{
-			"balloonText": "[[title]]<br> [[category]]<br>Value:  [[value]]",
-			"bulletBorderThickness": 10,
-			"bulletColor": "#E57373",
-			"bulletOffset": 5,
-			"bulletSize": 10,
-			"fillAlphas": 1,
-			"fillColors": "#E57373",
-			"fixedColumnWidth": 50,
-			"id": "araging",
-			"lineColor": "#EF5350",
-			"showOnAxis": true,
-			"title": "ARAging",
-			"topRadius": 0,
-			"type": "column",
-			"valueField": "value"
-		}
-	],
-	"guides": [],
-	"valueAxes": [
-		{
-			"id": "ValueAxis-1",
-			"axisThickness": 0,
-			"gridColor": "#E57373",
-			"gridThickness": 0,
-			"title": ""
-		}
-	],
-	"allLabels": [],
-	"balloon": {
-		"fixedPosition": false
-	},
-	"titles": [
-		{
-			"color": "#E57373",
-			"id": "Title-2",
-			"size": 15,
-			"text": "A/P Aging"
-		}
-	],
-	"dataProvider": [
-		{
-			"category": "1 - 10 Days",
-			"value": "10000"
-		},
-		{
-			"category": "11 - 15 Days",
-			"value": "50000"
-		},
-		{
-			"category": "16 - 30 Days",
-			"value": "10000"
-		},
-		{
-			"category": "31  - 60 Days",
-			"value": "20000"
-		},
-		{
-			"category": "61 - 90 Days",
-			"value": "30000"
-		},
-		{
-			"category": "91 - 180 Days",
-			"value": "80000"
-		},
-		{
-			"category": "181 - 365 Days",
-			"value": "40000"
-		},
-		{
-			"category": ">  365 Days",
-			"value": "50000"
-		}
-	]
+
+<script>
+function vendorapAgingBillGraph(){
+	    var apagingType = 'Payables';
+		var sourceleadUrl ='${sourceleadUrl}';
+		var orgIds = $("#orgId").val();
+	    $.post(sourceleadUrl+"/vendorapAgingBillGraph?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType+"&orgIds="+orgIds, function(json) {
+	    	prepareapagingGraph(json);
+		});  
 }
-	);	
-	</script> 
+</script>
+
+<script>
+function prepareapagingGraph(data){
+	AmCharts.makeChart("apaging",
+			{
+			"type": "serial",
+			"categoryField": "category",
+			"marginBottom": 15,
+			"marginLeft": 15,
+			"marginRight": 15,
+			"marginTop": 15,
+			"colors": [],
+			"startDuration": 1,
+			"responsive": {
+				"enabled": true
+			},
+			"export": {
+				"enabled": true
+			},
+			"categoryAxis": {
+				"autoRotateAngle": 30,
+				"autoRotateCount": 0,
+				"gridPosition": "start",
+				"axisThickness": 0,
+				"gridThickness": 0
+			},
+			"trendLines": [],
+			"graphs": [
+				{
+					"balloonText": "[[title]]<br> [[category]]<br>Value:  [[value]]",
+					"bulletBorderThickness": 10,
+					"bulletColor": "#E57373",
+					"bulletOffset": 5,
+					"bulletSize": 10,
+					"fillAlphas": 1,
+					"fillColors": "#E57373",
+					"fixedColumnWidth": 50,
+					"id": "araging",
+					"lineColor": "#EF5350",
+					"showOnAxis": true,
+					"title": "ARAging",
+					"topRadius": 0,
+					"type": "column",
+					"valueField": "value"
+				}
+			],
+			"guides": [],
+			"valueAxes": [
+				{
+					"id": "ValueAxis-1",
+					"axisThickness": 0,
+					"gridColor": "#E57373",
+					"gridThickness": 0,
+					"title": ""
+				}
+			],
+			"allLabels": [],
+			"balloon": {
+				"fixedPosition": false
+			},
+			"titles": [
+				{
+					"color": "#E57373",
+					"id": "Title-2",
+					"size": 15,
+					"text": "A/P Aging"
+				}
+			],
+			"dataProvider": [
+				{
+					"category": "1 - 10 Days",
+					"value": ""+data.tenDaysToatl+""
+				},
+				{
+					"category": "11 - 15 Days",
+					"value": ""+data.fifteenDaysTotal+""
+				},
+				{
+					"category": "16 - 30 Days",
+					"value": ""+data.thirtyDaysTotal+""
+				},
+				{
+					"category": "31  - 60 Days",
+					"value": ""+data.sixtyDaysTotal+""
+				},
+				{
+					"category": "61 - 90 Days",
+					"value": ""+data.nintyDaysTotal+""
+				},
+				{
+					"category": "91 - 180 Days",
+					"value": ""+data.oneeightyDaysTotal+""
+				},
+				{
+					"category": "181 - 365 Days",
+					"value": ""+data.threeSixtyFiveDaysTotal+""
+				},
+				{
+					"category": ">  365 Days",
+					"value": ""+data.above365DaysTotal+""
+				}
+			]
+		}
+			);	
+}
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />

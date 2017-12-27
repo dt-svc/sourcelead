@@ -8,4 +8,6 @@ public interface FinanceService {
 
 	ResponseList<APAgingDTO> getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO aPAgingDTO);
 
+	ResponseList<APAgingDTO> getApAgingBillListByLocation(OrgLocations orgLocation, APAgingDTO aPAgingDTO);
+
 }

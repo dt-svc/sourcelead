@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -252,6 +253,41 @@ public class ReportsUtil {
 		dates[1] = endDate;
 		return dates;
 	}
+
+	public  static Date[] tenDays(int days) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		cal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(cal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
+
+	public static Date[] apAgingPeriodDays(int sDays, int days) throws ParseException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -sDays);
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(currentCal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
+
+	
+//	public static void main(String[] args) throws ParseException {
+//		apAgingDays(11,15);
+// 	    apAgingDays(16,30);
+//		apAgingPeriodDays(31,60);
+// 	   apAgingDays(61,90);
+// 	   apAgingDays(91,180);
+// 	   apAgingDays(181,360);
+//	}
 	
 	
 }

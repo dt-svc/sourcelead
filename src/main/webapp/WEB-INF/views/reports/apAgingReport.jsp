@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	vendorapAging();
 });
 </script>
 
@@ -20,7 +20,6 @@ $(document).ready(function(){
       <div class="pull-right brud-crum">Home &raquo; A/P Agings List</div>
     </section>
     <div class="clearfix"></div>
-    <div id="loading"></div>
     <div class="ReqRepHead clearfix">
       <div class="col-md-3 pull-left reqListBtn">
           <a href='${appPath}/apAgingGraphReport' title="Graph View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
@@ -71,9 +70,9 @@ $(document).ready(function(){
          <div class="clearfix table_head">
         	 
         	 <div class="col-md-offset-6 select-fild col-md-2 mt5">
-                    <select id="apagingType" name="apagingType" onchange="vendorapAging();">
-                          <option value="byvendorbill">By Bill</option>
+                    <select id="apagingType" name="apagingType" onchange="change();">
                           <option value="Payables">By Vendor</option>
+                          <option value="bill">By Bill</option>
                     </select>
              </div>
              <div class="col-md-2 dropdown-select positionRelatives mt5" style="display: none" id="customDatesDropdown">
@@ -105,140 +104,15 @@ $(document).ready(function(){
          	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5"><strong>250</strong></span>
          	 </p>
          </div>
-         <div id="byCustomer">
-          <table class="table">
-            <thead>
-              <tr>
-               <th>Vendor</th>
-                <th>
-                  10 Days
-                </th>
-                <th>
-                  15 Days
-                </th>
-                <th>
-                  30 Days
-                </th>
-                <th>
-                  60 Days
-                </th>
-                <th>
-                  90 Days
-                </th>
-                 <th>
-                  180 Days
-                </th>
-                 <th>
-                  365 Days
-                </th>
-                 <th>
-                  &gt; 365 Days
-                </th>
-                <th>Total</th>
-              </tr>
-              </thead>
-            <tbody>
-              <tr>
-              <td>
-                  <div class="tbldata-dotdot">Client Name</div>
-                </td>
-				<td>
-                 <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                 <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                 <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                 <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td><div class="tblminwidth-50">2598742365</div></td>              </tr>
-            </tbody>
-          </table>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
+         <div id="apagingVendorByBill" class="datatable_filter">
+          
         </div>
         
         <div class="clearfix"></div>
-      <div id="byInvoice" style="display: none">
-          <table class="table">
-            <thead>
-              <tr>
-              <th>Refer Id</th>
-               <th>Client</th>
-                <th>
-                  Bill Date
-                </th>
-                <th>
-                  Due Date
-                </th>
-                <th>
-                 Due Amounts
-                </th>
-                <th>
-                  Total Amount
-                </th>
-              </tr>
-              </thead>
-            <tbody>
-              <tr>
-              <td>
-                 <div class="tblminwidth-50">00150</div>
-                </td>
-              <td>
-                  <div class="tbldata-dotdot">Client Name</div>
-                </td>
-				<td>
-                 <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-                <td>
-                  <div class="tblminwidth-50">2598742365</div>
-                </td>
-               </tr>
-            </tbody>
-          </table>
-        <nav>
-          <ul id="pagin2" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
+        <!-- <div class='remove_search'>
+ 		 <input type='text' placeholder='Search' id='dataTableSearch'/>
+ 		</div> -->
+      <div id="apagingByVendor" class="datatable_filter">
         </div>
         </div>
         </div>
@@ -281,7 +155,7 @@ $(function() {
         });
     });
 </script>
-<script>
+<!-- <script>
 $(function() {
         $('#araginglistSel').change(function(){
 			var optval = $(this).val();
@@ -296,19 +170,311 @@ $(function() {
 			}
         });
     });
-</script> 
+</script>  -->
+
+<script>
+function change(){
+	var optval = $("#apagingType").val();
+	if(optval === "bill") {
+		vendorapagingBill();
+	}else{
+		vendorapAging();
+	}
+}
+</script>
 
 <script>
 function vendorapAging(){
-		var apagingType = $("#apagingType").val();
-	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/vendorapAging?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType, function(data) {
-         if(data !=null){
-          alert(data);	
-          }
-		}); 
+	   $("#apagingVendorByBill").empty();	
+	    var apagingType = $("#apagingType").val();
+		var sourceleadUrl ='${sourceleadUrl}';
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/vendorapAging?searchValue="+searchValue+"&apagingType="+apagingType;
+		prepareApagingList(url);
+	    /* $.post(sourceleadUrl+"/vendorapAging?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType, function(data) {
+			prepareApagingList();
+		});  */
 }
 </script>
+<script>
+function prepareApagingList(url){
+	   $("#apagingByVendor").empty();
+ 	    var result = "";
+ 	    result = result +" <div class='remove_search'>";
+ 	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
+ 	    result = result +"</div>";
+ 	    result = result +"<table id='apagingPagination' class='display' cellspacing='0' width='100%' >"; 
+        result = result +"<thead>"; 
+        result = result + '<tr>';
+        result = result + '<th>Vendor</th>';
+		result = result + '<th>10 Days</th>';
+		result = result + '<th>15 Days</th>';
+		result = result + '<th>30 Days</th>';
+		result = result + '<th>60 Days</th>';
+		result = result + '<th>90 Days</th>';
+		result = result + '<th>180 Days</th>';
+		result = result + '<th>365 Days</th>';
+		result = result + '<th>&gt 365 Days</th>';
+		result = result + '<th>Total</th>';
+		result = result + '</tr>';
+        result = result +"</thead>";
+        result = result +"<tbody>"; 
+        result = result +" </tbody>";
+        result = result +"</table>";
+      $("#apagingByVendor").append(result);
+      apaging(url); 
+}
+</script>
+
+<script>
+function apaging(url){
+	var colIndex = 0;
+    $('#apagingPagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+        	{ "data": "orgName" },
+            { "data": "tenDays" },
+            { "data": "fifteenDays"},
+            { "data": "thirtyDays"},
+            { "data": "sixtyDays" },
+            { "data": "nintyDays"},
+            { "data": "oneeightyDays" },
+            { "data": "threeSixtyFiveDays" },
+            { "data": "above365Days"},
+            { "data": "total"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "orgName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "tenDays",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "fifteenDays",
+            "render": function ( data, type, opt, meta ) {
+            	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "thirtyDays",
+              "render": function ( data, type, opt, meta ) {
+            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "sixtyDays",
+                "render": function ( data, type, opt, meta ) {
+                		var result = "";
+							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "nintyDays",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "oneeightyDays",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
+	    	  		return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "threeSixtyFiveDays",
+                  "render": function ( data, type, opt, meta ) {
+                	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
+                  }
+                },{
+                    "targets": colIndex++,
+                    "data": "above365Days",
+                    "render": function ( data, type, opt, meta ) {
+                    	return '<td><div class="tblminwidth-75">'+opt.above365Days.toFixed(2)+'</div></td>';
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "total",
+                      "render": function ( data, type, opt, meta ) {
+                    	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
+                      }
+                    } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[0,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#apagingPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   vendorapAging();
+    	   }
+    	});
+	
+}
+</script>
+
+  <!-- Bill Started -->
+  <script>
+function vendorapagingBill(){
+	$("#apagingByVendor").empty();	
+	   var apagingType = 'Payables';
+		var sourceleadUrl ='${sourceleadUrl}';
+		var searchValue = $("#dataTableBillSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType;
+		prepareApagingBillList(url);
+}
+</script>
+<script>
+function prepareApagingBillList(url){
+	   $("#apagingVendorByBill").empty();
+ 	    var result = "";
+ 	    result = result +" <div class='remove_search'>";
+	    result = result +" <input type='text' placeholder='Search' id='dataTableBillSearch'/>";
+	    result = result +"</div>";
+ 	    result = result +"<table id='apagingBillPagination' class='display' cellspacing='0' width='100%' >"; 
+        result = result +"<thead>"; 
+        result = result + '<tr>';
+        result = result + '<th>Refer Id</th>';
+		result = result + '<th>Vendor</th>';
+		result = result + '<th>Bill Date</th>';
+		result = result + '<th>Due Date</th>';
+		result = result + '<th>Due Amount</th>';
+		result = result + '<th>Total Amount</th>';
+		result = result + '</tr>';
+        result = result +"</thead>";
+        result = result +"<tbody>"; 
+        result = result +" </tbody>";
+        result = result +"</table>";
+      $("#apagingVendorByBill").append(result);
+      apagingBill(url); 
+}
+</script>
+
+<script>
+function apagingBill(url){
+	var colIndex = 0;
+    $('#apagingBillPagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+        	{ "data": "referId" },
+        	{ "data": "orgName" },
+            { "data": "billDate"},
+            { "data": "dueDate"},
+            { "data": "dueAmount" },
+            { "data": "totalAmount"},
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "referId",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + ' <td><div class="tblminwidth-75">'+opt.referId+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "orgName",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+						result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "billDate",
+            "render": function ( data, type, opt, meta ) {
+            	return  '<td><div class="tblminwidth-75">'+opt.billDate+'</div></td>';
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "dueDate",
+              "render": function ( data, type, opt, meta ) {
+            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.dueDate+'">'+opt.dueDate+'</div></td>';
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "dueAmount",
+                "render": function ( data, type, opt, meta ) {
+                		var result = "";
+							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.dueAmount.toFixed(2)+'</div></td>';
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "totalAmount",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + '<td><div class="tblminwidth-50">'+opt.totalAmount.toFixed(2)+'</div></td>';
+  	              return result;
+	    	  	}
+	    	  }],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[0,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#apagingBillPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataTableBillSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   vendorapagingBill();
+    	   }
+    	});
+	
+}
+</script>
+  
+  
+  <!-- Bill Started end -->
 
 
 <jsp:include page="../masterFooter.jsp" />

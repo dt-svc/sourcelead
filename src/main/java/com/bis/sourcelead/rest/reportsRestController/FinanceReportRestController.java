@@ -1,5 +1,8 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -31,6 +36,9 @@ public class FinanceReportRestController {
 	
 	@Autowired
 	FinanceService financeService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	/**
 	 * Returns A/P Aging list JSP
@@ -57,6 +65,24 @@ public class FinanceReportRestController {
 	public ModelAndView apAgingGraphReport(HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			if(null != vendorList){
+				for (OrgRelations orgRelations : vendorList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}
+					
+					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+			
+		 model.addObject("vendorList", vendorList);
 		 model.setViewName("reports/apAgingGraphReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
@@ -64,7 +90,7 @@ public class FinanceReportRestController {
 	
 	
 	/**
-	 *  Get A/P aging report
+	 *  Get A/P aging Vendor report
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -78,4 +104,68 @@ public class FinanceReportRestController {
 		return responseList;
 	}
 
+	
+	/**
+	 *  Get A/P aging bill report
+	 * @param request
+	 * @return ResponseList<APAgingDTO>
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = {"/apagingBill","/rest/apagingBill"}, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<APAgingDTO> apagingBill(APAgingDTO aPAgingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<APAgingDTO> responseList = financeService.getApAgingBillListByLocation(orgLocation,aPAgingDTO);
+		return responseList;
+	}
+	
+	
+	/**
+	 *  Get A/P aging Vendor Bill Graph report
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+
+	@RequestMapping(value = {"/vendorapAgingBillGraph","/rest/vendorapAgingBillGraph"}, method = RequestMethod.POST)
+	public @ResponseBody APAgingDTO vendorapAgingBillGraph(APAgingDTO aPAgingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<APAgingDTO> responseList = financeService.getApAgingListByLocation(orgLocation,aPAgingDTO);
+		
+		
+		APAgingDTO apagingDto = new APAgingDTO();
+		
+		List<APAgingDTO> apagingDtoList = responseList.getData(); 
+		 double tenDaysToatl = 0;
+		 double fifteenDaysTotal = 0;
+		 double thirtyDaysTotal = 0;
+		 double sixtyDaysTotal = 0;
+		 double nintyDaysTotal = 0;
+		 double oneeightyDaysTotal = 0;
+		 double threeSixtyFiveDaysTotal = 0;
+		 double above365DaysTotal = 0;
+		
+		for(APAgingDTO ap : apagingDtoList) {
+			tenDaysToatl = tenDaysToatl + ap.getTenDays();
+			fifteenDaysTotal = fifteenDaysTotal + ap.getFifteenDays();
+			thirtyDaysTotal = thirtyDaysTotal + ap.getThirtyDays();
+			sixtyDaysTotal = sixtyDaysTotal + ap.getSixtyDays();
+			nintyDaysTotal = nintyDaysTotal + ap.getNintyDays();
+			oneeightyDaysTotal = oneeightyDaysTotal + ap.getOneeightyDays();
+			threeSixtyFiveDaysTotal = threeSixtyFiveDaysTotal + ap.getThreeSixtyFiveDays();
+			above365DaysTotal = above365DaysTotal + ap.getAbove365Days();
+		}
+		apagingDto.setTenDaysToatl(tenDaysToatl);
+		apagingDto.setFifteenDaysTotal(fifteenDaysTotal);
+		apagingDto.setThirtyDaysTotal(thirtyDaysTotal);
+		apagingDto.setSixtyDaysTotal(sixtyDaysTotal);
+		apagingDto.setNintyDaysTotal(oneeightyDaysTotal);
+		apagingDto.setOneeightyDaysTotal(oneeightyDaysTotal);
+		apagingDto.setThreeSixtyFiveDays(threeSixtyFiveDaysTotal);
+		apagingDto.setAbove365DaysTotal(above365DaysTotal);
+		
+		return apagingDto;
+	}
 }
