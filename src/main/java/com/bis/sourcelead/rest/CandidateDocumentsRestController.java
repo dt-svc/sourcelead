@@ -132,9 +132,9 @@ public class CandidateDocumentsRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		for (CandidateDocumentsDTO canDoc : candidateDocumentsList.getData()) {
+		/*for (CandidateDocumentsDTO canDoc : candidateDocumentsList.getData()) {
 			canDoc.setUserIdStr(user.getId().toString());
-		}
+		}*/
 		return candidateDocumentsList;
 	}
 	

@@ -354,9 +354,11 @@ public class Candidate implements Serializable{
 	 private String postedDateStr;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String vendorName;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String vendorContactName;
 	 
 	 @Transient
