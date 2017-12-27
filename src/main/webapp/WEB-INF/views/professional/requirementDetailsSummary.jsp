@@ -34,6 +34,7 @@
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 </script>
 
 <style type="text/css">
@@ -158,7 +159,7 @@ window.onload = function () {
 <script>
 function publicRequirementProfile(requirementUUID){
 	
-	
+	var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
 	var referUUID = '${referUUID}';
@@ -270,7 +271,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
+				 result = result +'<a href="'+sourceleadLoginUrl+'" class="refer">Refer</a>';
 			     result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
 				
 				 result = result +'          </div>';

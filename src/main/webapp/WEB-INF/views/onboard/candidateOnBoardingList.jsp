@@ -158,7 +158,6 @@
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
-	                    	 
 	                    
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
@@ -179,7 +178,9 @@
                         			 result = result +"<td><div><span>Sent</span></div></td>";
                         		 }else{
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
+                        				 if(opt.rejectedReason != null && opt.rejectedReason != '' && opt.rejectedReason != 'undefined'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
+                        				 }
                         			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
                             			 result = result +"<td><div>Completed</div></td>";
                             		 }else{

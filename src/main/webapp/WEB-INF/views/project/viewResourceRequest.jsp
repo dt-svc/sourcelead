@@ -86,12 +86,12 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				result = result +'<div class="col-md-6">'; 
+				/* result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Status :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
 				result = result +' </div>';    
-				result = result +'</div>';
+				result = result +'</div>'; */
 				
 				result = result +'</div>';
 				result = result +'</div> ';  
