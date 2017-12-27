@@ -139,9 +139,6 @@ public class ProfessionalProfileController {
 			        if(null != candidate.getConsultantUser().getLinkedIn()){
 			        	candidate.setLinkedIn(candidate.getConsultantUser().getLinkedIn());
 			        }
-			        if(null != candidate.getConsultantUser().getFileUrl()){
-			        	candidate.setFileUrl(candidate.getConsultantUser().getFileUrl());
-			        }
 			        	
 		        }
 		        if(candidate.getOrgRelationId() != null){
