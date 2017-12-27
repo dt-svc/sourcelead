@@ -290,9 +290,10 @@ function cancelPop(){
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#sjfb').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
-        var jsonData = encodeURIComponent(con);
+        var jsonData = JSON.stringify(frm);
+        
+        var form = $('#sjfb')[0];
+	    var formData = new FormData(form); 
         var isRemoved = '';
         var isLabelModified = 'N';
         //Loop through fields and save field data to array
@@ -378,15 +379,19 @@ function cancelPop(){
         var sourceleadUrl ='${sourceleadUrl}';
         //Save form to database
         //Demo doesn't actually save. Download project files for save
-        var con2 = JSON.stringify(fields);
-        var jsonStringData = encodeURIComponent(con2);
+        var jsonStringData = JSON.stringify(fields);
+        formData.append("jsonStringData",jsonStringData);
+	      formData.append("jsonData",jsonData); 
         if( myArray.length > 0){
             if(submitTemplate){
             	$("#save_button").attr("disabled", "disabled");
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",
-          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+          	    	data: formData,
+          	    	 processData: false,
+ 	    	        contentType:false,
+          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId, 
           	        success: function(result) {
           	        	if((result == 'interViewFeedBackTemplate')){
           	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 

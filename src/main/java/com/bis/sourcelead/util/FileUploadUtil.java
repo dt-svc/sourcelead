@@ -239,6 +239,8 @@ public class FileUploadUtil {
 			}
 
 			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/resumes-"+(failed ? "failed" : "existed")+"-"+uploadid);
+			if(!folder.exists() || folder.list().length == 0)
+				return "No "+(failed ? "failed" : "existed")+" files found";
 			File files[] = folder.listFiles();
 			for (File f : files) {
 				try(FileInputStream fis = new FileInputStream(f);) {

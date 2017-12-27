@@ -4,8 +4,8 @@
  </c:if>
 </div>
 <!-- Footer Area -->
-  <footer class="footer-area clearfix">
-    <div class="copyright">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
+  <footer class="footer-area clearfix text-center">
+    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
 <!--     <div class="powered-by"> Powered by: businessintelli.com </div>
  -->  </footer>
   
