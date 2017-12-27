@@ -1155,30 +1155,6 @@ public class ProjectsDashboardRestController {
 				 
 			}
 
-		    @RequestMapping(value = "/downloadFile.html")
-		    public void downloadFile(HttpServletResponse response, String file) {
-		        try {
-		            File file1 = new File(URLDecoder.decode(file, "utf-8"));
-		            response.setContentType("application/octet-stream");
-		            response.setHeader("Content-Disposition", "attachment;filename=" + file1.getName());
-
-		            OutputStream outStream;
-		            try (FileInputStream inputStream = new FileInputStream(file1)) {
-		                outStream = response.getOutputStream();
-		                byte[] buffer = new byte[4096];
-		                int bytesRead = -1;
-		                while ((bytesRead = inputStream.read(buffer)) != -1) {
-		                    outStream.write(buffer, 0, bytesRead);
-		                }
-		            }
-		            outStream.close();
-
-		        } catch (Exception ex) {
-		            ex.printStackTrace();
-
-		        }
-		    }
-		   
 		    @RequestMapping(value = "/saveProjectNamePermissions", method = RequestMethod.POST)
 			public @ResponseBody String saveProjectNamePermissions(ProjectsDocumentFolderDTO projectsDocumentFolderDTO) throws Exception
 			{

@@ -146,7 +146,7 @@ $(function(){
 				<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
                			<div id="registeredOrgs"></div>
     			<div class="welBtns welBtnsA">
-					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
+					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/dashboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
 					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
 					<div class="clearfix"></div>
 				</div>

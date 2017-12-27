@@ -118,6 +118,7 @@ display: none;
         <div class="clearfix"></div>
 
       
+      
           <footer class="form-footer">
               <div class="pull-right mr">
                   <button type="button" value="add" id="add_email_account"
