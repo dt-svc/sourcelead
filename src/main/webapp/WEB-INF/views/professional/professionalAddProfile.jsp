@@ -127,7 +127,7 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">--Select--</option>
+                <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>W-2</option>
                  <option>C2H</option>
@@ -315,7 +315,7 @@
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value="">Select</option>
+                <option value="">--Select Notice Period--</option>
                  <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
                  <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
                  <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>

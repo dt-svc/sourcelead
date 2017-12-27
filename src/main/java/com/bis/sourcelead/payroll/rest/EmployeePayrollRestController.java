@@ -154,17 +154,6 @@ public class EmployeePayrollRestController {
 	{
 //		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(employerPayrollCostDTO.getOrgLocationId()));
-		
-		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssn", "totalHrs","grossWages","fica","futa","sui","erLocals","wcCost","adminFee","totalErCost"};
-	     int sortColumnIndex = 3; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(employerPayrollCostDTO.getOrder() != null && !employerPayrollCostDTO.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(employerPayrollCostDTO.getOrder().get(0).get("column"));
-			sortColumnOrder = employerPayrollCostDTO.getOrder().get(0).get("dir");
-		}
-		employerPayrollCostDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		employerPayrollCostDTO.setSortOrder(sortColumnOrder);
-		
 		ResponseList<EmployerPayrollCost> list = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
 		list.setData(data);

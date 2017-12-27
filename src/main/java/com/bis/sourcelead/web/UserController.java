@@ -91,7 +91,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_CREATE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_USER','ROLE_CREATE_ASSOCIATE')")
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -135,7 +135,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER', 'ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_VIEW_ASSOCIATE')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
 			@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "userId", required = false) String userId) throws Exception {
@@ -182,7 +182,7 @@ public class UserController {
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
 				
-				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
+				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{

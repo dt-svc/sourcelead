@@ -1647,7 +1647,7 @@ public class RequirementListRestController {
 		
 		//Requirement Title
 		if(StringUtils.isNotEmpty(search.getRequirementTitle())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", search.getRequirementTitle()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("jobTitle", search.getRequirementTitle()));
 	    }
 		// jobId
 		if(StringUtils.isNotEmpty(search.getJobId())){
@@ -1655,7 +1655,7 @@ public class RequirementListRestController {
 	    }
 	   //Country
 		if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("country", search.getCountry()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry()));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){

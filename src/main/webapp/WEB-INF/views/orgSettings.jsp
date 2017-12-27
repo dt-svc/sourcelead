@@ -582,13 +582,13 @@ function cancelOrgImg(){
         <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
         <input type="hidden" name="id" id="whiteListId"/>
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP</label>
+           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP</label>
+           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
