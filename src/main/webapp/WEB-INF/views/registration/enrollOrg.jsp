@@ -318,7 +318,6 @@ function validateCompanyName(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 if(companyName != null && companyName != ''){
 		 $("#register_button").attr("disabled", "disabled");
-		 $( "#register_button" ).addClass('button').val('Processing..');
 			 $.ajax({
 				    type: "GET",
        	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
@@ -331,7 +330,6 @@ function validateCompanyName(){
 		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
 		    				$('input#companyName').attr('record-exist','yes');
 		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -341,7 +339,6 @@ function validateCompanyName(){
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyName').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }

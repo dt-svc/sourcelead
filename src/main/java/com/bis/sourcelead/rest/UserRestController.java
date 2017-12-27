@@ -278,7 +278,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
@@ -289,7 +289,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		// userService.createUser(jsonObj,user,orgLocations.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";
 	}
 	 
@@ -1380,7 +1380,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
+		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_ASSOCIATE','ROLE_CREATE_ASSOCIATE')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1511,4 +1511,19 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		    
 		   
 		} 
+	 
+	 @RequestMapping(value = "/rest/loginUserImageUrl", method = RequestMethod.GET)
+     public String getLoginUserImageUrl(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+         String imageUrl = "";
+         if(loginUser == null){
+                loginUser = userService.getUserById(userId);
+                imageUrl = loginUser.getFileUrl();
+         }else{
+             imageUrl = loginUser.getFileUrl();
+         }
+         if(StringUtils.isBlank(imageUrl))
+             imageUrl ="/resources/images/userprofile-img.png";
+         return imageUrl;
+     }
 }

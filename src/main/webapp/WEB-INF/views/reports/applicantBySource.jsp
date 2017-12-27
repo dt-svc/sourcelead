@@ -3,11 +3,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
- <script src="/resources/js/amcharts.js"></script>
-<script src="/resources/js/serial.js"></script>
-<script src="/resources/js/light.js"></script>
-<script src="/resources/js/pie.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -21,7 +21,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Applicant(s) by Source</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Applicant(s) by Source</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
     </section>
     <div class="clearfix">
     <div class="clearfix"></div>
@@ -77,28 +77,15 @@ $(document).ready(function(){
 		
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
+            <button type="button" class="btn btn-primary btn-sm" title="Actions"  onclick="reload();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
     	<div class="clearfix"></div>
    	 	<!-- Applicant source Graph 2017 -->
     	 	<div class="dashboard-widget clearfix mt">
-    	 	<div id="applicantSource" class="amchartAnchor-Hide" style="height: 350px; width: 100%;"></div>
+    	 	<div id="applicantSource" class="" style="height: 350px; width: 100%;"></div>
     	 	</div>
-    	 	<!-- Applicant source Graph December 2017 -->
-    	 	
-    	 	
- 	<!-- <div class="clearfix dashboard-widget mts col-md-12 mt">
-		<div class="clearfix">
-		  <div id="applicantSourceListView" class="datatable_filter"></div>
-		</div>
-    </div> -->
-    
     	<div class="clearfix"></div>
     </div>
   </section>
@@ -106,6 +93,11 @@ $(document).ready(function(){
 
 <jsp:include page="../masterFooter.jsp" />
 
+<script>
+function reload(){
+	location.reload();
+}
+</script>
 
 <script>
 function getCustomDates(){
@@ -181,7 +173,18 @@ function getCustomDates(){
 				        					column7: applicantSource.offeredAvgCount,
 				        					column8: applicantSource.offerAcceptedAvgCount,
 				        					column9: applicantSource.offerRejectedAvgCount,
-				        					column10: applicantSource.backoutAvgCount
+				        					column10: applicantSource.backoutAvgCount,
+				        					
+				        					
+				        					applicantsCount: applicantSource.applicantsCount,
+				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					submitToClientCount: applicantSource.submitToClientCount,
+				        					interviewsCount: applicantSource.interviewsCount,
+				        					rejectedCount: applicantSource.rejectedCount,
+				        					offeredCount: applicantSource.offeredCount,
+				        					offerAcceptedCount: applicantSource.offerAcceptedCount,
+				        					offerRejectedCount: applicantSource.offerRejectedCount,
+				        					backoutCount: applicantSource.backoutCount
 				        			     
 				        			    } );
 				        			  }
@@ -233,6 +236,9 @@ function getCustomDates(){
 			"responsive": {
 				"enabled": true
 			},
+			"export": {
+				"enabled": true
+			},
 			
 			"categoryAxis": {
 				"autoRotateAngle": 30,
@@ -282,7 +288,7 @@ function getCustomDates(){
 			"titles": [],
 		   "graphs": [
 				{
-					"balloonText": "[[title]] of<br> [[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
@@ -291,11 +297,12 @@ function getCustomDates(){
 					"legendValueText": "",
 					"lineColor": "#90CAF9",
 					"title": "Applicants",
+					"countValue": "applicantsCount",
 					"type": "column",
 					"valueField": "column2"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
@@ -303,11 +310,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#F48FB1",
 					"title": "Shortlisted",
+					"countValue": "shortlistedCount",
 					"type": "column",
 					"valueField": "column3"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FF8A54",
@@ -315,11 +323,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#FF8A54",
 					"title": "Submit to client",
+					"countValue": "submitToClientCount",
 					"type": "column",
 					"valueField": "column4"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FFCC80",
@@ -327,11 +336,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#FFCC80",
 					"title": "Interviews",
+					"countValue": "interviewsCount",
 					"type": "column",
 					"valueField": "column5"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#B39DDB",
@@ -339,11 +349,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#B39DDB",
 					"title": "Rejected",
+					"countValue": "rejectedCount",
 					"type": "column",
 					"valueField": "column6"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#81C784",
@@ -351,11 +362,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#81C784",
 					"title": "Offered",
+					"countValue": "offeredCount",
 					"type": "column",
 					"valueField": "column7"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#E57373",
@@ -363,11 +375,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#E57373",
 					"title": "Offer Accepted",
+					"countValue": "offerAcceptedCount",
 					"type": "column",
 					"valueField": "column8"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#D84315",
@@ -375,11 +388,12 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#D84315",
 					"title": "Offer Rejected",
+					"countValue": "offerRejectedCount",
 					"type": "column",
 					"valueField": "column9"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#BCAAA4",
@@ -387,6 +401,7 @@ function getCustomDates(){
 					"labelText": "[[value]] %",
 					"lineColor": "#BCAAA4",
 					"title": "Backout",
+					"countValue": "backoutCount",
 					"type": "column",
 					"valueField": "column10"
 				}

@@ -183,7 +183,8 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 				modulesList.add(Long.parseLong(s));
 			 }
        		
-	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId))";
+	    String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
+	    		+ "and sa.id IN(select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId)) and sa.status = '1' ";
 	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesList).setCacheable(true).list();
     
 	    return actionsList;

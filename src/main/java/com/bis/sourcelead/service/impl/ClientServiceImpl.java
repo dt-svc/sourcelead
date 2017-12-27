@@ -32,10 +32,12 @@ import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -47,6 +49,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
@@ -61,6 +64,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -69,6 +73,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -164,7 +169,13 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
 
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -319,7 +330,21 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
+			Org savedClient = orgService.addOrganization(org);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(savedClient);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
 			
 			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
 		    for(LookUpData lookUpData:lookUpExpCatList){
@@ -366,7 +391,22 @@ public class ClientServiceImpl implements ClientService {
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
+			Org savedClient =  orgService.addOrganization(org);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(savedClient);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
 		}
 		
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {

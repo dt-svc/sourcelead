@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -127,7 +128,7 @@ public class ApplicantBySourceRestController {
 		Integer recruiterSourcingOfferRejectedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
 		Integer recruiterSourcingOfferBackoutCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
 		
-		recruiterSourcingApplicantsDTO.setCategory("Recruiters");
+		recruiterSourcingApplicantsDTO.setCategory("Freelance Recruiters");
 		recruiterSourcingApplicantsDTO.setApplicantsCount(recruiterSourcingApplicantCount);
 		recruiterSourcingApplicantsDTO.setShortlistedCount(recruiterSourcingShortlistCount);
 		recruiterSourcingApplicantsDTO.setSubmitToClientCount(recruiterSourcingSubmitToClientCount);

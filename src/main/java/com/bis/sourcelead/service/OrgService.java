@@ -48,6 +48,5 @@ public interface OrgService {
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
 
 	public List<UserDTO> getUserListForOrgChart(Long orgLocationId) throws Exception;
-
-
+	
 }
