@@ -1598,7 +1598,12 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<p></p>'; 	
 				}
 				result = result +'	<h4>Other details:</h4>';
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label></b>';
+				if(json.location != null && json.location != '' && json.location !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>&nbsp;'+json.location+'</b>';
+				}else{
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>--</b>';
+	
+				}
 				if(json.positions != null && json.positions != '' && json.positions !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>'+json.positions+'</b>';
 				}else{
@@ -1620,9 +1625,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
 				}
-				
 				if(json.fileURL != null && json.fileURL != '' && json.fileURL !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href='+json.fileURL+'></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href="'+json.fileURL+'"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}

@@ -42,7 +42,7 @@
 				<label class="col-md-3 padding_left">Nickname<span
 					class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9 padding_right">
-					<input type="text" class="form-control" field-name="Nick Name" id="cpnNickName" name="cpnNickName" value="${sender.nickName}"   data-validation="required validate_length length1-100 validate_Space validate_AlphaNumber">
+					<input type="text" class="form-control" field-name="Nick Name" id="cpnNickName" name="cpnNickName" value="${sender.nickName}"  onblur="validateNickName(${sender.id});"  data-validation="required validate_length length1-100 validate_Space validate_AlphaNumber">
 				</div>
 			</div>		
 		</div>
