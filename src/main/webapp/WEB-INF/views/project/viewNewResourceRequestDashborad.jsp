@@ -170,12 +170,12 @@ function getRequestedAssociatesList(){
 						 estimatedBudget = '--';
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
-						 minExperience = opt.minExperience;
+						 minExperience = "Min Exp. "+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
-						maxExperience = opt.maxExperience;
+						maxExperience = "Max Exp. "+opt.maxExperience;
 					}else{
 						maxExperience = '--';
 					}

@@ -145,7 +145,7 @@ function getBudgetRequestList(requestType){
 						result = result + '     <td><div class="tblminwidth-75">';
 						result = result + '     <i class="fa fa-check" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
 						result = result + '     <i class="fa fa-times" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
-						result = result + '     <i class="fa fa-clock-o marOne" alt="On hold" title="On hold" onclick="onholdBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i></div></td>';
+						result = result + '     <i class="fa fa-clock-o marOne" style="color: #368ee0;" alt="On hold" title="On hold" onclick="onholdBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i></div></td>';
 					}
 					
 					if(requestType == "Rejected"){

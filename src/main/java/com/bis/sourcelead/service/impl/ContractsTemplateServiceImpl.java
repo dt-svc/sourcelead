@@ -19,17 +19,16 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dto.ClientContractsDTO;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
-import com.bis.sourcelead.dto.ContractReqDocsDTO;
+import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.FullTimeContractsDTO;
-import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -41,9 +40,11 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
@@ -53,7 +54,9 @@ import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.NewContractCustomFieldDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -63,7 +66,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -122,6 +124,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private NewContractCustomFieldDataService newContractCustomFieldDataService;
+	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -535,6 +545,21 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 vendorContracts.setContractUUID(contracts.getContractUUID());
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
+		
+		if(contractsDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:contractsDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				NewContractCustomFieldData contractCustomFields = new NewContractCustomFieldData();
+				contractCustomFields.setContracts(savedContracts);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				contractCustomFields.setOrglocationsFormFields(orgFormField);
+				contractCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				newContractCustomFieldDataService.saveNewContractCustomFieldData(contractCustomFields);
+				}
+				
+			}	
+		}
+		
 		
 		if (contractsDTO.getDocument() != null && contractsDTO.getDocument().size() > 0) {
 			for (ContractDocumentsDTO doc : contractsDTO.getDocument()) {

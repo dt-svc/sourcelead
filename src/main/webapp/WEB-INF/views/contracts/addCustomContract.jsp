@@ -5,6 +5,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script>
+		$(document).ready(function() {
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
+		});
+</script>
+
 <script>
 $(document).ready(function(){
 	$("#tempEye").hide();
@@ -59,6 +69,7 @@ $(document).ready(function(){
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
      <form:form id="newcontract_form" name="newcontract_form" method="post">
+     <input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
@@ -376,7 +387,15 @@ $(document).ready(function(){
               <div class="col-md-8">
                 <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
-            </div>         
+            </div>   
+            
+             <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 0}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   		</c:if>      
             
         </div>
       </div>
@@ -511,6 +530,15 @@ $(document).ready(function(){
                         </div>
                       </div>
                     </div>
+                    
+                 <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 1}">
+	                  		<div id="customDiv${section.id}"></div>
+	               		</c:if>
+	            	</c:forEach>
+	   			</c:if>
+                    
             </div>
             <div class="clearfix"></div>
         </div>
@@ -604,6 +632,23 @@ $(document).ready(function(){
 	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
+
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+
+
+
 <script>
 	function addDoc(){  
 				var checkMaxTsRowNum = $("#maxTaxRowNum").val();

@@ -896,7 +896,7 @@ $(document).ready(function () {
 	                  <div id="customDiv${section.id}"></div>
 	               </c:if>
 	            </c:forEach>
-	   </c:if>
+	   	</c:if>
         
       </div>
       <div class="clearfix mt">
@@ -1978,10 +1978,13 @@ function setTemplateValues(){
 					}
 			    	
 			    	//$("textarea#description").val(json.description);
-			    	
+			    	if(json.description != null && json.description != '' && json.description != 'undefined'){
 			    	$('#txtEditor').text(json.description);
 			    	$('.Editor-editor').text(json.description);
-			    	
+			    	}else{
+			    	$('#txtEditor').text('');	
+			    	$('.Editor-editor').text('');
+			    	}
 			    	$("#rate").val(json.rate);
 			    	$("#maxRate").val(json.maxRate);
 			    	

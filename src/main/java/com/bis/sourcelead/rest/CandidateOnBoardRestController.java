@@ -634,6 +634,10 @@ public class CandidateOnBoardRestController {
 					candidateOnBoardingDTO.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
 				}
 				
+				if(null != candidateOnBoarding.getRejectedReason()){
+					candidateOnBoardingDTO.setRejectedReason(candidateOnBoarding.getRejectedReason());
+				}
+				
 				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
 				candidateOnBoardingDTO.setDocumentsCount(documentsCount);
 				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
@@ -744,7 +748,7 @@ public class CandidateOnBoardRestController {
 			}
 			
 			if(null != candidateOnBoarding.getCompanyEmail()){
-				candidateOnBoardingDTO.setState((candidateOnBoarding.getState()));	
+				candidateOnBoardingDTO.setCompanyEmail((candidateOnBoarding.getCompanyEmail()));	
 			}
 			if(null != candidateOnBoarding.getEndDateStr()){
 				candidateOnBoardingDTO.setEndDateStr((candidateOnBoarding.getEndDateStr()));	
