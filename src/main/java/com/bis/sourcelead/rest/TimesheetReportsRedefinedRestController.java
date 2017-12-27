@@ -53,6 +53,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @RestController 
+@RequestMapping("/app")
 public class TimesheetReportsRedefinedRestController {
 
 	@Value("${sourceleadUrl}")
@@ -79,14 +80,14 @@ public class TimesheetReportsRedefinedRestController {
 	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST ) 
 	public ModelAndView prapareTimesheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		ModelAndView model = new  ModelAndView();
-		timesheetReportsDTO = newTimesheet(timesheetReportsDTO,request);
+		timesheetReportsDTO = timesheetReportsDiv(timesheetReportsDTO,request);
 		model.addObject("timesheetReportsDTO",timesheetReportsDTO);
 		model.setViewName("timesheet/timeReportsDropDown");
 		return model;
 		
 	}
 
-	private TimesheetReportsDTO newTimesheet(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
+	private TimesheetReportsDTO timesheetReportsDiv(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		   LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
 			 LinkedList<String>  allMonthsList = CalendarUtil.getAllMonths();
 			 LinkedList<String>  currentMonthsList = new LinkedList<>();

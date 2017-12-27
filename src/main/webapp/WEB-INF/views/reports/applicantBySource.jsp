@@ -9,7 +9,6 @@
 <script src="/resources/js/pie.js"></script>
 
 
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getApplicantBySourceChart();
@@ -40,7 +39,7 @@ $(document).ready(function(){
           </select>
         </div>
         <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection">
+          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -50,10 +49,29 @@ $(document).ready(function(){
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
+          
+          
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+            <div class="pull-left">
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+              </div>
+              
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBySourceChart();"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+          
         </div>
         
+        
+        
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getApplicantBySourceChart();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getApplicantBySourceChart();">Customize</button>
 		</div>
 		
 		
@@ -89,57 +107,122 @@ $(document).ready(function(){
 <jsp:include page="../masterFooter.jsp" />
 
 
+<script>
+function getCustomDates(){
+	 var dateSelection = $("#dateSelection").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 $("#customize_btn").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+	 }
+}
+
+</script>
+
+
 
 <script>
   function getApplicantBySourceChart(){
 	  
+	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
 		  jobIds = '';
 	  }
 	  var dateSelection = $("#dateSelection").val(); 
+	  var fromDate = '';
+	  var toDate = '';
+	  if(dateSelection == 'custom'){
+		   fromDate = $("#fromDate").val();
+		   toDate = $("#toDate").val();
+		  
+		  if(fromDate == '' || toDate == ''){
+			  flag = false;
+			  if(fromDate == ''){
+				  document.getElementById("fromDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+			  }
+			  if(toDate == ''){
+				  document.getElementById("toDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+		  }else{
+			  document.getElementById("fromDateDiv").style.display="none";
+			  document.getElementById("toDateDiv").style.display="none";
+		  }
+		  
+	  }
 		
-		$.ajax({ 
-			   	type: "GET",
-			 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-			    success: function(json) {
-			    	
-			        	if(json.length > 0)	
-			 	   		{
-			        		    var chartData = [];
-								for(var i=0; i < json.length ; i++){
-			        			 var applicantSource = json[i];
-			        			    chartData.push( {
-			        			    	category: applicantSource.category,
-			        					column2: applicantSource.applicantsCount,
-			        					column3: applicantSource.shortlistedCount,
-			        					column4: applicantSource.interviewsCount,
-			        					column5: applicantSource.rejectedCount,
-			        					column6: applicantSource.offeredCount,
-			        					column7: applicantSource.offerAcceptedCount,
-			        					column8: applicantSource.offerRejectedCount,
-			        					column9: applicantSource.backoutCount
-			        			     
-			        			    } );
-			        			  }
+	   if(flag){
+			$.ajax({ 
+				   	type: "GET",
+				 	url: sourceleadUrl+"/getApplicantBySourceDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+				    success: function(json) {
+				    	
+				        	if(json.length > 0)	
+				 	   		{
+				        		    var chartData = [];
+									for(var i=0; i < json.length ; i++){
+				        			 var applicantSource = json[i];
+				        			    chartData.push( {
+				        			    	category: applicantSource.category,
+				        					column2: applicantSource.applicantsAvgCount,
+				        					column3: applicantSource.shortlisteAvgdCount,
+				        					column4: applicantSource.submitToClientAvgCount,
+				        					column5: applicantSource.interviewsAvgCount,
+				        					column6: applicantSource.rejectedAvgCount,
+				        					column7: applicantSource.offeredAvgCount,
+				        					column8: applicantSource.offerAcceptedAvgCount,
+				        					column9: applicantSource.offerRejectedAvgCount,
+				        					column10: applicantSource.backoutAvgCount,
+				        					
+				        					
+				        					applicantsCount: applicantSource.applicantsCount,
+				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					submitToClientCount: applicantSource.submitToClientCount,
+				        					interviewsCount: applicantSource.interviewsCount,
+				        					rejectedCount: applicantSource.rejectedCount,
+				        					offeredCount: applicantSource.offeredCount,
+				        					offerAcceptedCount: applicantSource.offerAcceptedCount,
+				        					offerRejectedCount: applicantSource.offerRejectedCount,
+				        					backoutCount: applicantSource.backoutCount
+				        			     
+				        			    } );
+				        			  }
+				        	
+				        		 loadApplicantSourceChart(chartData);
+				        		 
+				        		 var listView = document.getElementById("listView");
+					        	 listView.addEventListener("click", function() {
+									 getListView(json);
+								  });
+					        	 
+					        	 var graphicView = document.getElementById("graphicView");
+					        	 graphicView.addEventListener("click", function() {
+					        		 loadApplicantSourceChart(chartData);
+								  });
+				 	   		}else{
+				 	   			var result = '';
+				 	   			result = result+"<div class='dataTables_empty'>"; 
+				 	   			result = result+"</div> ";
+				 	   	        $("#applicantSource").empty();
+				                $("#applicantSource").append(result);
+				 	   		}
+				        	
+				        	 
 			        	
-			        		 loadApplicantSourceChart(chartData);
-			 	   		}
-			        	
-			        	 var listView = document.getElementById("listView");
-			        	 listView.addEventListener("click", function() {
-							 getListView(json);
-						  });
-			        	 
-			        	 var graphicView = document.getElementById("graphicView");
-			        	 graphicView.addEventListener("click", function() {
-			        		 loadApplicantSourceChart(chartData);
-						  });
-		        	
-		        },
-		        error: function(e){
-		        }
-		 });
+			        },
+			        error: function(e){
+			        }
+			 });
+	   }
   }
   </script>
 
@@ -161,6 +244,7 @@ $(document).ready(function(){
 			"responsive": {
 				"enabled": true
 			},
+			
 			"categoryAxis": {
 				"autoRotateAngle": 30,
 				"autoRotateCount": 0,
@@ -209,101 +293,122 @@ $(document).ready(function(){
 			"titles": [],
 		   "graphs": [
 				{
-					"balloonText": "[[title]] of<br> [[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
 					"id": "applicants",
-					"labelText": "[[value]]",
+					"labelText": "[[value]] %",
 					"legendValueText": "",
 					"lineColor": "#90CAF9",
 					"title": "Applicants",
+					"countValue": "applicantsCount",
 					"type": "column",
 					"valueField": "column2"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
 					"id": "shortlisted",
-					"labelText": "[[value]]",
+					"labelText": "[[value]] %",
 					"lineColor": "#F48FB1",
 					"title": "Shortlisted",
+					"countValue": "shortlistedCount",
 					"type": "column",
 					"valueField": "column3"
 				},
-				  {
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+				{
+					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#FFCC80",
-					"id": "interviews",
-					"labelText": "[[value]]",
-					"lineColor": "#FFCC80",
-					"title": "Interviews",
+					"fillColors": "#FF8A54",
+					"id": "submittoclient",
+					"labelText": "[[value]] %",
+					"lineColor": "#FF8A54",
+					"title": "Submit to client",
+					"countValue": "submitToClientCount",
 					"type": "column",
 					"valueField": "column4"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#B39DDB",
-					"id": "rejected",
-					"labelText": "[[value]]",
-					"lineColor": "#B39DDB",
-					"title": "Rejected",
+					"fillColors": "#FFCC80",
+					"id": "interviews",
+					"labelText": "[[value]] %",
+					"lineColor": "#FFCC80",
+					"title": "Interviews",
+					"countValue": "interviewsCount",
 					"type": "column",
 					"valueField": "column5"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#81C784",
-					"id": "offered",
-					"labelText": "[[value]]",
-					"lineColor": "#81C784",
-					"title": "Offered",
+					"fillColors": "#B39DDB",
+					"id": "rejected",
+					"labelText": "[[value]] %",
+					"lineColor": "#B39DDB",
+					"title": "Rejected",
+					"countValue": "rejectedCount",
 					"type": "column",
 					"valueField": "column6"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#E57373",
-					"id": "offerAccepted",
-					"labelText": "[[value]]",
-					"lineColor": "#E57373",
-					"title": "Offer Accepted",
+					"fillColors": "#81C784",
+					"id": "offered",
+					"labelText": "[[value]] %",
+					"lineColor": "#81C784",
+					"title": "Offered",
+					"countValue": "offeredCount",
 					"type": "column",
 					"valueField": "column7"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#FF8A54",
-					"id": "offerrejected",
-					"labelText": "[[value]]",
-					"lineColor": "#FF8A54",
-					"title": "Offer Rejected",
+					"fillColors": "#E57373",
+					"id": "offerAccepted",
+					"labelText": "[[value]] %",
+					"lineColor": "#E57373",
+					"title": "Offer Accepted",
+					"countValue": "offerAcceptedCount",
 					"type": "column",
 					"valueField": "column8"
 				},
 				{
-					"balloonText": "[[title]] of<br>[[category]]:[[value]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
-					"fillColors": "#F44336",
-					"id": "backout",
-					"labelText": "[[value]]",
-					"lineColor": "#F44336",
-					"title": "Backout",
+					"fillColors": "#D84315",
+					"id": "offerrejected",
+					"labelText": "[[value]] %",
+					"lineColor": "#D84315",
+					"title": "Offer Rejected",
+					"countValue": "offerRejectedCount",
 					"type": "column",
 					"valueField": "column9"
+				},
+				{
+					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]",
+					"columnWidth": 0.3,
+					"fillAlphas": 1,
+					"fillColors": "#BCAAA4",
+					"id": "backout",
+					"labelText": "[[value]] %",
+					"lineColor": "#BCAAA4",
+					"title": "Backout",
+					"countValue": "backoutCount",
+					"type": "column",
+					"valueField": "column10"
 				}
 			],
 	 });
@@ -386,4 +491,41 @@ $(document).ready(function(){
  		}
  }
  </script>
+ <script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
  

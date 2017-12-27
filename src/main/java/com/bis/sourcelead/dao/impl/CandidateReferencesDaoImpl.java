@@ -142,7 +142,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 		 Collection<CandidateReferences> candidateReferencesList = null;
 		 if(referenceEmail != null && candidateId != null){
 			 if(candidateReferenceId != null) {
-				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.id =:candidateReferenceId";
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.id =:candidateReferenceId and canRef.status='1'";
 					candidateReferencesList = session.createQuery(query.toString()).setLong("candidateReferenceId", candidateReferenceId).setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
 					if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 						flag = false;
@@ -150,7 +150,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 						flag = true;
 					}
 			 }else {
-				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId ";
+				 String query = "from CandidateReferences canRef where canRef.email = :referenceEmail and canRef.candidateId.id = :candidateId and canRef.status='1'";
 				 candidateReferencesList = session.createQuery(query.toString()) .setLong("candidateId", candidateId).setString("referenceEmail", referenceEmail).setCacheable(true).list();
 				 if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 						flag = true;

@@ -382,9 +382,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>'; 
 				    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -527,9 +527,9 @@ function getSearchResultsForAll(searchType,searchValue){
 				            			
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 								    	}else{
-								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+'</a></strong></label>';
 								    	}
 								    	result = result+'</p>'; 
 								    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -892,8 +892,8 @@ function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 </script>
 
 <script>
-function userSummaryRedirect(userId){
-	window.location.href = sourceleadUrl +"/userSummary/"+userId;
+function userSummaryRedirect(userCode){
+	window.location.href = sourceleadUrl +"/userSummary/"+userCode;
 }
 </script>
 
