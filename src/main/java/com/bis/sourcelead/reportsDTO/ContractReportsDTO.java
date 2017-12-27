@@ -7,6 +7,10 @@ public class ContractReportsDTO {
 	private String frequency;
 	private String fromDate;
 	private String toDate;
+	private int msaCount;
+	private int sowCount;
+	private int nsaCount;
+	private int ndaCount;
 	public String getClientName()
 	{
 		return clientName;
@@ -46,5 +50,37 @@ public class ContractReportsDTO {
 	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
+	}
+	public int getMsaCount()
+	{
+		return msaCount;
+	}
+	public void setMsaCount(int msaCount)
+	{
+		this.msaCount = msaCount;
+	}
+	public int getSowCount()
+	{
+		return sowCount;
+	}
+	public void setSowCount(int sowCount)
+	{
+		this.sowCount = sowCount;
+	}
+	public int getNsaCount()
+	{
+		return nsaCount;
+	}
+	public void setNsaCount(int nsaCount)
+	{
+		this.nsaCount = nsaCount;
+	}
+	public int getNdaCount()
+	{
+		return ndaCount;
+	}
+	public void setNdaCount(int ndaCount)
+	{
+		this.ndaCount = ndaCount;
 	}
 }

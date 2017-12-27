@@ -9,6 +9,7 @@
 $(document).ready(function(){
 	getTopFiveConracts();
 	getTopFiveReceivsblesReports();
+	topTenClientReports();
 });
 </script>
 
@@ -157,19 +158,19 @@ $(document).ready(function(){
 				  <ul class="list-unstyled list-inline vendor-listcount mt">
 						<li>
 							<label>MSA</label>
-							<span class="text-warning">5411</span>
+							<span class="" id="msaCount">0</span>
 						</li>
 						<li>
 							<label>SOW</label>
-							<span class="text-danger">5411</span>
+							<span class="" id="sowCount">0</span>
 						</li>
 						<li>
 							<label>NDA</label>
-							<span class="text-success">5411</span>
+							<span class="" id="ndaCount">0</span>
 						</li>
 						<li>
 							<label>NSA</label>
-							<span class="text-info">5287</span>
+							<span class="" id="nsaCount">0</span>
 						</li>
 					</ul>
 				</div>
@@ -223,34 +224,8 @@ $(document).ready(function(){
                   </select>
                 </div>
               </div>
-              <div class="require_wrap_table" id="byVendor">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Company Name</th>
-                      <th>No. of Contacts</th>
-                      <th>Total Jobs Released</th>
-                      <th>Submission</th>
-                      <th>Hired</th>
-                      <th>Avg.TTF</th>
-                      <th>Total Contracts</th>
-                      <th>Billing</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><div class="tbldata-dotdot"><a href="client-report-v1.html">Tata Consultancy Sevices Pvt. Limited</a> </div></td>
-                      <td><div class="tblminwidth-30">100</div></td>
-                      <td><div class="tblminwidth-30">100</div></td>
-                      <td><div class="tblminwidth-30"> <strong class="">200</strong> <small class="text-danger">20%<i class="fa fa-sort-desc"></i></small> </div></td>
-                      <td><div class="tblminwidth-30"> <strong class="">100</strong> <small class="text-danger">8%<i class="fa fa-sort-asc"></i></small> </div></td>
-                      <td><div class="tblminwidth-30">10 days</div></td>
-                      <td><div class="tbldata-dotdot-vsm">200</div></td>
-                      <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <div class="require_wrap_table" id="topTenClientList"></div>
+              
               <div class="require_wrap_table" id="byContract" style="display: none;">
                 <table>
                   <thead>
@@ -723,28 +698,34 @@ function getTopFiveConracts(){
 				var client4Count = 0;
 				var client5Count = 0;
 				var clientOthersCount = 0;
-				for(i=0; i<data.length; i++){
+				for(i=0; i<data.length-1; i++){
 					var opt = data[i];
-					if(i == 0){
-						client1 = opt.clientName;
-						client1Count = opt.contractsCount;
-					}else if(i == 1){
-						client2 = opt.clientName;
-						client2Count = opt.contractsCount;
-					}else if(i == 2){
-						client3 = opt.clientName;
-						client3Count = opt.contractsCount;
-					}else if(i == 3){
-						client4 = opt.clientName;
-						client4Count = opt.contractsCount;
-					}else if(i == 4){
-						client5 = opt.clientName;
-						client5Count = opt.contractsCount;
-					}else{
-						clientOthers = opt.clientName;
-						clientOthersCount += opt.contractsCount;
+						if(i == 0){
+							client1 = opt.clientName;
+							client1Count = opt.contractsCount;
+						}else if(i == 1){
+							client2 = opt.clientName;
+							client2Count = opt.contractsCount;
+						}else if(i == 2){
+							client3 = opt.clientName;
+							client3Count = opt.contractsCount;
+						}else if(i == 3){
+							client4 = opt.clientName;
+							client4Count = opt.contractsCount;
+						}else if(i == 4){
+							client5 = opt.clientName;
+							client5Count = opt.contractsCount;
+						}else{
+							clientOthers = opt.clientName;
+							clientOthersCount += opt.contractsCount;
+						}
 					}
-				}
+				var report = data[data.length-1];
+				$("#msaCount").html(report.msaCount);
+				$("#sowCount").html(report.sowCount);
+				$("#nsaCount").html(report.nsaCount);
+				$("#ndaCount").html(report.ndaCount);
+					
 				prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers);
 			}
 		});
@@ -832,6 +813,56 @@ function getAmchartData(data){
 		);
 }
 </script>
-		
+
+<script>
+function topTenClientReports(){
+	alert("asds")
+	var frequency = $("#dateFrequency").val();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency,
+	    success: function(data) {
+	    	if(data.length > 0){
+	    		var result = "";
+		    	
+		    	result += '<table>';
+	            result += '<thead>';
+	            result += '  <tr>';
+	            result += '    <th>Company Name</th>';
+	            result += '    <th>No. of Contacts</th>';
+	            result += '    <th>Total Jobs Released</th>';
+	            result += '    <th>Submission</th>';
+	            result += '    <th>Hired</th>';
+	            result += '    <th>Avg.TTF</th>';
+	            result += '    <th>Total Contracts</th>';
+	            result += '    <th>Billing</th>';
+	            result += '  </tr>';
+	            result += '</thead>';
+	            result += '<tbody>';
+	            
+	            for(i=0; i<data.length; i++){
+	            	var opt = data[i];
+	            	result += '  <tr>';
+		            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientName+'</a> </div></td>';
+		            result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
+		            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
+		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
+		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
+		            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
+		            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
+		            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+		            result += '  </tr>';
+	            }
+	            
+	            result += '</tbody>';
+	           	result += '</table>';
+	           	
+	           	$("#topTenClientList").empty();
+	           	$("#topTenClientList").append(result);
+	    	}
+ 	    }
+	});
+}
+</script>		
 
 <jsp:include page="../masterFooter.jsp" />

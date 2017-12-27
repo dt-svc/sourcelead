@@ -2222,7 +2222,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="emailDiv">';
 	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" readonly="readonly" data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';

@@ -9,6 +9,9 @@ public class JobFilterDTO {
 	private String fromDate;
 	
 	private String toDate;
+	
+	private String dateFrequency;
+	private String fromtype;
 
 	public String getJobIds() {
 		return jobIds;
@@ -41,6 +44,21 @@ public class JobFilterDTO {
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
-	
+
+	public String getDateFrequency() {
+		return dateFrequency;
+	}
+
+	public void setDateFrequency(String dateFrequency) {
+		this.dateFrequency = dateFrequency;
+	}
+
+	public String getFromtype() {
+		return fromtype;
+	}
+
+	public void setFromtype(String fromtype) {
+		this.fromtype = fromtype;
+	}
 	
 }

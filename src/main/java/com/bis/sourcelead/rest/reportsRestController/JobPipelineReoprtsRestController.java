@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -57,8 +58,13 @@ public class JobPipelineReoprtsRestController {
 	JobPipelineDTO getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<Long> jobIdList = new ArrayList<>();
 
-	       List<Long> jobIdList = new ArrayList<>();
+		if(jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
+			
+			
+		}else{
 			if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 				String[] jobIds = jobFilterDTO.getJobIds().split(",");
 				for(int i=0; i<jobIds.length; i++) {
@@ -67,6 +73,7 @@ public class JobPipelineReoprtsRestController {
 			}else {
 				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
 			}
+		}
 			
 			Date[] searchDates = null;
 			
