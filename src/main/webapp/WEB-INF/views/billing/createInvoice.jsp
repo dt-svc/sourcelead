@@ -60,7 +60,7 @@ function errRemoveClientContact(){
 			<h2>Client Invoice</h2>
 		</div>
 		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Custom Based Invoice</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Client Invoice</div>
 	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -200,7 +200,7 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-	<div class="tbldata-dotdot select-field">
+	<div class="tbldata-dotdot select-field validationTxt">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
 			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
@@ -215,11 +215,11 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot_80 validationTxt">
+	<div class="tbldata-dotdot_80 validationTxt whiteSpace">
 		<input type="text"
 			class="form-control input-sm"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required validate_float" field-name="Rate">
 	</div>
 </div>
 

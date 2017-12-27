@@ -21,7 +21,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       <div class="pull-left">
         <h2>Project Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Project Based Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Project Invoice</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
