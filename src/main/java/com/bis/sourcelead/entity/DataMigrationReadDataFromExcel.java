@@ -2,11 +2,13 @@ package com.bis.sourcelead.entity;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,6 +45,32 @@ public class DataMigrationReadDataFromExcel {
 		Iterator<Cell> cellIterator = nextRow.cellIterator();
 		while (cellIterator.hasNext()) {
 		Cell cell = cellIterator.next();
+		
+		
+        // Create a sheet using createSheet method of workbook
+        Sheet sheet = workbook.createSheet("Sheet one");
+        // Create a row and put some cells in it.
+        Row row = sheet.createRow(0);
+        // Create a cell and put a value in it.
+        Cell cells = row.createCell(0);
+        //cell.setCellValue("Value 1");
+        // Or You can put in one line like this.
+        row.createCell(1).setCellValue("Value 2");
+        row.createCell(2).setCellValue("Value 3");
+        // Create a FileOutputStream by passing the excel file name.
+        FileOutputStream outputStream = new FileOutputStream("POIAddNewCellsExample.xls");
+        // Write the FileOutputStream to workbook object.
+        workbook.write(outputStream);
+        // Finally close the FileOutputStream.
+        outputStream.close();
+		
+		
+		
+		String example = "hi this Is veNkat";
+		
+		example = example.substring(0, 1).toUpperCase()
+                + example.substring(1, example.length());
+		System.out.println(example);
 
 		System.out.println();
 		System.out

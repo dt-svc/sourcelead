@@ -129,16 +129,20 @@ document.getElementById("uploadBtn").onchange = function () {
 <script type="text/javascript">
 function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
-	alert(fileUrl);
-	$.ajax({
-		type: "POST",
-	    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl, 
-	    success: function(data) {
-	    	$("#jobFileImportDiv").attr("style","display:none");
-	    	$('#jobFieldsDiv').removeAttr("style");
-	    	$('#jobFieldsDiv').append(data);
-	    },
-	});
+	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined'){
+		$.ajax({
+			type: "POST",
+		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl, 
+		    success: function(data) {
+		    	$("#jobFileImportDiv").attr("style","display:none");
+		    	$('#jobFieldsDiv').removeAttr("style");
+		    	$('#jobFieldsDiv').append(data);
+		    },
+		});
+	}else{
+		$('#newUploadFile').html("<p class='jquery_form_error_message'>File selection is required</p>");
+	}
+	
 }
 </script>
 

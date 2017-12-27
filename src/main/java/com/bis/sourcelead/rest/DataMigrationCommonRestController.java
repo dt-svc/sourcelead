@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -65,9 +66,9 @@ public class DataMigrationCommonRestController {
 	
 	
 	@RequestMapping(value = {"/getDataByMatchedFields","/rest/getDataByMatchedFields"}, method = RequestMethod.POST)
-	public ModelAndView getDataByMatchedFields(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception
+	public ModelAndView getDataByMatchedFields(DataMigrationDTO dataMigrationDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
+		dataMigrationService.validateImportedFormData(dataMigrationDTO, request, response);
 		
 		return null;
 	}

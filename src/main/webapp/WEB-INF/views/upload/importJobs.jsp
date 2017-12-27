@@ -57,7 +57,7 @@
 						</div>
 					</div>
 				</c:forEach>
-				<input type="text"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
+				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
