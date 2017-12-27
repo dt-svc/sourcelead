@@ -64,6 +64,12 @@ public class RequirementSubmissionHistory implements Serializable{
 	
     @Transient
     private String fileName;
+    
+    @Transient
+    private String fileUrl;
+    
+    @Transient
+    private String contentType;
 	 
     @Transient
     private String resumeid;
@@ -362,4 +368,25 @@ public class RequirementSubmissionHistory implements Serializable{
 	public void setCoolingOffPeriodEndDateStr(String coolingOffPeriodEndDateStr) {
 		this.coolingOffPeriodEndDateStr = coolingOffPeriodEndDateStr;
 	}
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
+	}
+
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
+	}
+	
 }

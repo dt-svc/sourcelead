@@ -551,6 +551,8 @@ public class CandidateRestController {
 			if (null != rsh.getSubmissionId().getCandidateResumes()) {
 				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
 				rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+				rsh.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+				rsh.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
 			}
 			if (!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString())
 					&& null != rsh.getSubmissionId().getOrgLocations().getOrg()) {
