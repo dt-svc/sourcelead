@@ -97,6 +97,7 @@ public class JobPipelineReoprtsRestController {
 			Map<Integer,Long> offerAcceptedMap = new HashMap<>();
 			Map<Integer,Long> submitToClientMap = new HashMap<>();
 			Map<Integer,Long> backOutMap = new HashMap<>();
+			Map<Integer,Long> rejectedMap = new HashMap<>();
 			
 			double applicantDuration    = 0l;
 			double shortlistedDuration    = 0l;
@@ -105,11 +106,24 @@ public class JobPipelineReoprtsRestController {
 			double offerAcceptedDuration = 0l;
 			double submitToClientDuration = 0l;
 			double backOutDuration        = 0l;
+			double rejectDuration        = 0l;
+			
+			int rejectedFromSubmissionCount = 0;
+            int rejectedFromShortlistedCount = 0;
+            int rejectedFromInterviewCount = 0;
+            int rejectedFromOffermadeCount = 0;
+            int rejectedFromRequestSentCount = 0;
+            int rejectedFromOfferAccepetCount = 0;
+            int rejectedFromSubmitTOClientCount = 0;
+            
 			JobPipelineDTO report = new JobPipelineDTO();
 			
 			Integer openJobcount    = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "OPEN");
 			Integer onholdJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "ONHOLD");
-			Integer closedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CLOSED");
+			Integer closedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CLOSED,UNFILLEDCLOSED,FILLEDCLOSED");
+			Integer unfilledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "UNFILLEDCLOSED");
+			Integer filledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "FILLEDCLOSED");
+
 			Integer cancelJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CANCEL");
 			
 			int count = 1;
@@ -125,6 +139,8 @@ public class JobPipelineReoprtsRestController {
 					int offeracceptedCount = 0;
 					int rejectedCount = 0;
 					int backoutCount = 0;
+					
+					
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						Date requirementCreatedDate = reqSub.getRequirement().getCreatedDate();
@@ -135,6 +151,8 @@ public class JobPipelineReoprtsRestController {
 						Date offerAcceptCreatedDate = null;
 						Date submitToClientCreatedDate = null;
 						Date backOutCreatedDate = null;
+						Date rejectedCreatedDate = null;
+						Date rejectedFromCreatedDate = null;
 						Map<String,Date> createdDatesMap = new LinkedHashMap<>();
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
 							createdDatesMap.put(rsh.getToStage(), rsh.getCreatedDate());
@@ -172,6 +190,29 @@ public class JobPipelineReoprtsRestController {
 								submitToClientCreatedDate = rsh.getCreatedDate();
 							} if("rejected".equalsIgnoreCase(rsh.getToStage())){
 								rejectedCount++;
+								rejectedCreatedDate = rsh.getCreatedDate();
+								if(rsh.getFromStage().equalsIgnoreCase("submission")) {
+									rejectedFromSubmissionCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("SUBMISSION");
+								}else if(rsh.getFromStage().equalsIgnoreCase("shortlist")) {
+									rejectedFromShortlistedCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("SHORTLIST");
+								}else if(rsh.getFromStage().equalsIgnoreCase("interview")){
+									rejectedFromInterviewCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("INTERVIEW");
+								}else if(rsh.getFromStage().equalsIgnoreCase("offermade")){
+									rejectedFromOffermadeCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("OFFERMADE");
+								}else if(rsh.getFromStage().equalsIgnoreCase("request_sent")){
+									rejectedFromRequestSentCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("REQUEST_SENT");
+								}else if(rsh.getFromStage().equalsIgnoreCase("offeraccepted")){
+									rejectedFromOfferAccepetCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("OFFERACCEPTED");
+								}else if(rsh.getFromStage().equalsIgnoreCase("submit_to_client")){
+									rejectedFromSubmitTOClientCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("SUBMIT_TO_CLIENT");
+								}
 							} if("backout".equalsIgnoreCase(rsh.getToStage())){
 								backoutCount++;
 								backOutCreatedDate = rsh.getCreatedDate();
@@ -202,6 +243,9 @@ public class JobPipelineReoprtsRestController {
 						}
 						if(offerAcceptCreatedDate != null && offerMadeCreatedDate != null) {
 							offerAcceptedMap.put(count, CalendarUtil.getNumberOfDays(offerMadeCreatedDate,offerAcceptCreatedDate));
+						}
+						if(rejectedCreatedDate != null && rejectedFromCreatedDate != null) {
+							rejectedMap.put(count, CalendarUtil.getNumberOfDays(rejectedFromCreatedDate,rejectedCreatedDate));
 						}
 						
 						
@@ -270,6 +314,13 @@ public class JobPipelineReoprtsRestController {
 		    		backOutDuration = Math.round((double)totalDays/(double)(backOutMap.size()));
 		    	}
 		    	
+		    	if(rejectedMap != null && !rejectedMap.isEmpty()) {
+		    		Long totalDays = 0l;
+		    		for(Integer flag :rejectedMap.keySet()) {
+		    			totalDays = totalDays+rejectedMap.get(flag);
+		    		}
+		    		rejectDuration = Math.round((double)totalDays/(double)(rejectedMap.size()));
+		    	}
 		    	//days
 		    	report.setApplicantsDays(applicantDuration);
 		    	report.setShortlistedDays(shortlistedDuration);
@@ -278,10 +329,11 @@ public class JobPipelineReoprtsRestController {
 		    	report.setOfferedAcceptedDays(offerAcceptedDuration);
 		    	report.setSubmitToClientDays(submitToClientDuration);
 		    	report.setBackoutDays(backOutDuration);
-		    	
+		    	report.setRejectedDays(rejectDuration);
 		    	
 		    	//count 
 		    	report.setApplicantsCount(applicantsSum);
+		    	report.setRequestSentCount(requestSentSum);
 		    	report.setShortlistedCount(shortlistedSum);
 		    	report.setSubmitToClientCount(submitToClientSum);
 		    	report.setInterviewsCount(interviewsSum);
@@ -292,18 +344,42 @@ public class JobPipelineReoprtsRestController {
 		    	
 		    	
 		    	//Moveforward percentage
-		    	report.setShortlistedMove(Math.round((double)shortlistedSum/(double)applicantsSum));
-		    	report.setInterviewsMove(Math.round((double)interviewsSum/(double)shortlistedSum));
-		    	report.setOfferedMove(Math.round((double)offeredSum/(double)interviewsSum));
-		    	report.setOfferedAcceptedMove(Math.round((double)offeredSum/(double)offeracceptedSum));
-		    	report.setBackoutMove(Math.round((double)offeracceptedSum/(double)backoutSum));
+		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum))*100);
+		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum))*100);
+		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum))*100);
+		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum))*100);
+		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum))*100);
+		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum))*100);
 		    	
+		    	Double rejectedMove = 0d;
+		    	if(rejectedFromSubmissionCount > 0 && applicantsSum >0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromSubmissionCount/(double)applicantsSum)*100);
+		    	}
+		    	if(rejectedFromShortlistedCount > 0 && shortlistedSum >0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromShortlistedCount/(double)shortlistedSum)*100);
+		    	}
+		    	if(rejectedFromInterviewCount > 0 && interviewsSum > 0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromInterviewCount/(double)interviewsSum)*100);
+		    	}
+		    	if(rejectedFromOffermadeCount > 0 && offeredSum > 0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromOffermadeCount/(double)offeredSum)*100);
+		    	}
+		    	if(rejectedFromRequestSentCount > 0 && applicantsSum > 0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromRequestSentCount/(double)applicantsSum)*100);
+		    	}
+		    	if(rejectedFromOfferAccepetCount > 0 && offeracceptedSum > 0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromOfferAccepetCount/(double)offeracceptedSum)*100);
+		    	}
+		    	if(rejectedFromSubmitTOClientCount > 0 && submitToClientSum > 0) {
+		    		rejectedMove = rejectedMove+(((double)rejectedFromSubmitTOClientCount/(double)submitToClientSum)*100);
+		    	}
+		    	report.setRejectedMove(Math.round(rejectedMove));
 		    	 
 		    	//jobs count
-		    	report.setAllJobsCount(openJobcount + onholdJobcount + closedJobcount + cancelJobcount);
+		    	report.setAllJobsCount(openJobcount + onholdJobcount + closedJobcount + cancelJobcount + unfilledclosedJobcount + filledclosedJobcount);
 		    	report.setOpenJobsCount(openJobcount);
 		    	report.setOnHoldJobsCount(onholdJobcount);
-		    	report.setClosedJonbsCount(closedJobcount);
+		    	report.setClosedJonbsCount(closedJobcount + unfilledclosedJobcount + filledclosedJobcount);
 		    	report.setCancelledjobsCount(cancelJobcount);
 		    	
 	    	

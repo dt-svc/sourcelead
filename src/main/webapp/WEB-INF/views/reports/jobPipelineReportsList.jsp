@@ -5,7 +5,7 @@
 
 <script>
 $(document).ready(function() {
-	getJobPipelineReports();
+	getJobPipelineReportsList();
 });	
 </script>
  
@@ -55,11 +55,11 @@ function getCustomDates(){
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
-            <option value='Last_7_days' selected>Last 7 days</option>
+            <option value='Last_7_days'>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
-            <option value='YTD'>YTD</option>
+            <option value='YTD' selected>YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
@@ -75,7 +75,7 @@ function getCustomDates(){
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getJobPipelineReports();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getJobPipelineReportsList();"><i class="fa fa-search"></i></button>
             </div>
           </div>
 <!-- Top Leave Takers Custom Date --> 
@@ -83,16 +83,12 @@ function getCustomDates(){
 
         </div>
 		        <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="jobReportList_custome">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="jobReportList_custome" onclick="getJobPipelineReportsList();">Run</button>
 		</div>
          
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
+            <button type="button" class="btn btn-primary btn-sm" title="Actions" onclick="relaod();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
@@ -121,11 +117,11 @@ function getCustomDates(){
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
+        	    <div class="col-md-6 paddingRight">
         	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>10%</span>
+        	    	<span>100 %</span>
         	    </div>
-        	     <div class="col-md-6">
+        	     <div class="col-md-6 paddingLeft">
         	    	<label class="text-muted pull-left">Avg TTF :</label>
         	    	<div class="pull-left paddingLeft"><span id="applicantCountDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
@@ -137,17 +133,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Request Sent:
-        	 	<span class="text-right">40</span>
+        	 	<span class="text-right" id="requestSentCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
+        	    <div class="col-md-6 paddingRight">
         	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>20%</span>
+        	    	<span>100 %</span>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>10 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="requestSentDays"></span><span class="paddingLeft"> days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -156,17 +152,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Shortlisted:
-        	 	<span class="text-right">60</span>
+        	 	<span class="text-right" id="shortListedCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>40%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="shortListedMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>30 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="shortListedDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -175,17 +171,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Submit to Client:
-        	 	<span class="text-right">60</span>
+        	 	<span class="text-right" id="submitToClientCount">60</span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>20%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="submitToClientMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>20 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="submitToClientDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -194,17 +190,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Interview:
-        	 	<span class="text-right">30</span>
+        	 	<span class="text-right" id="interviewCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>30%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="interviewMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>15 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="interviewDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -213,17 +209,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Offer:
-        	 	<span class="text-right">20</span>
+        	 	<span class="text-right" id="offerCount">20</span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>50%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>10 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -232,17 +228,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Offer Accepted:
-        	 	<span class="text-right">20</span>
+        	 	<span class="text-right" id="offerAcceptedCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>10%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerAcceptedMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>2 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerAcceptedDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -251,17 +247,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	 <div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Backout:
-        	 	<span class="text-right">20</span>
+        	 	<span class="text-right" id="backoutCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>40%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="backoutMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>1 day</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="backoutDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -271,17 +267,17 @@ function getCustomDates(){
         	<div class="cardModel-widget">
         	<div class="clearfix row cardModelwidget-header">
         		<h4 class="col-md-12 text-center">Rejected:
-        	 	<span class="text-right">40</span>
+        	 	<span class="text-right" id="rejectedCount"></span>
         	 	</h4>
         	 </div>
         	    <div class="clearfix row">
-        	    <div class="col-md-6">
-        	    	<label class="text-muted">Moved forward :</label>
-        	    	<span>50%</span>
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="rejectedMove"></span><span class="paddingLeft">%</span></div>
         	    </div>
-        	     <div class="col-md-6">
-        	    	<label class="text-muted">Avg TTF :</label>
-        	    	<span>2 days</span>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="rejectedDays"></span><span class="paddingLeft">days</span></div>
         	    </div>
 				</div>
         	</div>
@@ -292,12 +288,17 @@ function getCustomDates(){
       </div>
     
   </section>
+  <script>
+  function relaod(){
+	  location.reload();
+  }
   
+  </script>
 <script>
-function getJobPipelineReports(){
+function getJobPipelineReportsList(){
 	
-	var flag = true;
-	 var jobIds = $("#jobIds").val();
+	  var flag = true;
+	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
 		  jobIds = '';
 	  }
@@ -335,6 +336,45 @@ function getJobPipelineReports(){
 			    	$("#applicantCount").text(data.applicantsCount);
 			    	$("#applicantCountDays").text(data.applicantsDays);
 			    	
+			    	//request sent details
+			    	$("#requestSentCount").text(data.requestSentCount);
+			    	$("#requestSentDays").text(0);
+			    	 
+			    	//shortlisted details
+			    	$("#shortListedCount").text(data.shortlistedCount);
+			    	$("#shortListedDays").text(data.shortlistedDays);
+			    	$("#shortListedMove").text(data.shortlistedMove);
+			    	
+			    	//interview details
+			    	$("#interviewCount").text(data.interviewsCount);
+			    	$("#interviewMove").text(data.interviewsMove);
+			    	$("#interviewDays").text(data.interviewsDays);
+			    	
+			    	
+			    	//submit to client
+			    	$("#submitToClientCount").text(data.submitToClientCount);
+			    	$("#submitToClientMove").text(data.submitToClientMove);
+			    	$("#submitToClientDays").text(data.submitToClientDays)
+			    	
+			    	//offer details
+			    	$("#offerCount").text(data.offeredCount)
+			    	$("#offerDays").text(data.offeredDays)
+			    	$("#offerMove").text(data.offeredMove)
+			    	
+			    	//offer Accepted details
+			    	$("#offerAcceptedCount").text(data.offeredAcceptedCount)
+			    	$("#offerAcceptedDays").text(data.offeredAcceptedDays)
+			    	$("#offerAcceptedMove").text(data.offeredAcceptedMove)
+			    	
+			    	//backout details
+			    	$("#backoutCount").text(data.backoutCount);
+			    	$("#backoutDays").text(data.backoutDays);
+			    	$("#backoutMove").text(data.backoutMove);
+			    	
+			    	//rejected details
+			    	$("#rejectedCount").text(data.rejectedCount);
+			    	$("#rejectedMove").text(data.rejectedMove);
+			    	$("#rejectedDays").text(data.rejectedDays);
 			    	
 			    	//jobs count
 			    	$("#allJobsCount").text(data.allJobsCount);
@@ -343,16 +383,7 @@ function getJobPipelineReports(){
 			    	$("#onHoldJobsCount").text(data.onHoldJobsCount);
 			    	$("#cancelledJobsCount").text(data.cancelledjobsCount);
 			    	
-			    	/* <span id="allJobsCount"></span
-			    	<span id="openJobsCount"></spa
-			    	<span id="closedJobsCount"></s
-			    	<span id="onHoldJobsCount"></s
-			    	<span id="cancelledJobsCount"> */
-			    	
-			    	/* report.setOpenJobsCount(openJobcount);
-			    	report.setOnHoldJobsCount(onholdJobcount);
-			    	report.setClosedJonbsCount(closedJobcount);
-			    	report.setCancelledjobsCount(cancelJobcount); */
+			     
 			    	
 			    	
 			    }

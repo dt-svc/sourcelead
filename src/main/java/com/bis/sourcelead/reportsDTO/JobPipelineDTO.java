@@ -10,6 +10,7 @@ private  int offeredCount;
 private  int offeredAcceptedCount;
 private  int rejectedCount;
 private  int backoutCount;
+private  int requestSentCount;
 
 private  double applicantsDays;
 private  double shortlistedDays;
@@ -208,5 +209,11 @@ public void setOnHoldJobsCount(int onHoldJobsCount) {
 }
 public void setCancelledjobsCount(int cancelledjobsCount) {
 	this.cancelledjobsCount = cancelledjobsCount;
+}
+public int getRequestSentCount() {
+	return requestSentCount;
+}
+public void setRequestSentCount(int requestSentCount) {
+	this.requestSentCount = requestSentCount;
 }
 }
