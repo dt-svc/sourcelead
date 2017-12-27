@@ -53,9 +53,9 @@ public class CandidateDocumentsDTO {
 	
 	private String userIdStr;
 	
-	private long requestDocumentId;
+	private String requestDocumentId;
 	
-	private String requestDocStatus;
+	private String requestedDocStatus;
 	
 	private String docUploadStatus;
 	
@@ -277,24 +277,23 @@ public class CandidateDocumentsDTO {
 		this.userIdStr = userIdStr;
 	}
 
-	public long getRequestDocumentId()
-	{
+	
+
+	
+	public String getRequestDocumentId() {
 		return requestDocumentId;
 	}
 
-	public void setRequestDocumentId(long requestDocumentId)
-	{
+	public void setRequestDocumentId(String requestDocumentId) {
 		this.requestDocumentId = requestDocumentId;
 	}
 
-	public String getRequestDocStatus()
-	{
-		return requestDocStatus;
+	public String getRequestedDocStatus() {
+		return requestedDocStatus;
 	}
 
-	public void setRequestDocStatus(String requestDocStatus)
-	{
-		this.requestDocStatus = requestDocStatus;
+	public void setRequestedDocStatus(String requestedDocStatus) {
+		this.requestedDocStatus = requestedDocStatus;
 	}
 
 	public String getDocUploadStatus()
