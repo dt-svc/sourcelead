@@ -41,7 +41,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
-@RequestMapping("/app")
 public class DocumentSignController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DocumentSignController.class);
@@ -74,7 +73,7 @@ public class DocumentSignController {
 	private EMailJobScheduler eMailJobScheduler;
 	
 
-	@RequestMapping(value = "/signer",method = RequestMethod.POST)
+	@RequestMapping(value = {"/app/signer","/signer"},method = RequestMethod.POST)
 	@ResponseBody
 	public String upload(HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		UserInfo userInfo =  new UserInfo();
@@ -125,7 +124,7 @@ public class DocumentSignController {
 	}
 
 	
-	@RequestMapping(value = "/saveSignatureCoordinates", method = RequestMethod.POST,
+	@RequestMapping(value ={"/app/saveSignatureCoordinates","/saveSignatureCoordinates"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String saveSignatureCoordinates(@RequestBody CoordinatesInfo coordinatesInfo,HttpServletRequest req) {
@@ -147,7 +146,7 @@ public class DocumentSignController {
 		
 	}
 
-	@RequestMapping(value = "/signImage", method = RequestMethod.POST,
+	@RequestMapping(value = {"/app/signImage", "/signImage"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedImage(@RequestBody SignedImageInfo signedImageInfo,  HttpServletRequest req) throws FontFormatException {
@@ -161,7 +160,7 @@ public class DocumentSignController {
 		return "{\"SignatureFileName\" : \"signedImage.jpeg\",\"InitialFileName\" : \"initialsImage.jpeg\"}";
 	}
 
-	@RequestMapping(value = "/signDocument", method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = {"/app/signDocument", "/signDocument"}, method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedDocument(@RequestBody CoordinatesInfo coordinatesInfo, HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		
