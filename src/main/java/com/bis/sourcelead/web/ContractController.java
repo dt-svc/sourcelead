@@ -69,6 +69,9 @@ public class ContractController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -645,6 +648,7 @@ public class ContractController {
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("sourceleadLoginUrl", sourceleadLoginUrl);
 		model.setViewName("contracts/upload");
 		return model;
 	}
