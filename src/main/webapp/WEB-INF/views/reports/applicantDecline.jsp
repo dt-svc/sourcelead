@@ -3,10 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/js/amcharts.js"></script>
+<!-- <script src="/resources/js/amcharts.js"></script>
 <script src="/resources/js/serial.js"></script>
 <script src="/resources/js/light.js"></script>
-<script src="/resources/js/pie.js"></script>
+<script src="/resources/js/pie.js"></script> -->
 
 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
@@ -120,7 +120,6 @@ $(window).load(function() {
 
 function getDeclineApplicants(){
 	
-	alert("hellooo")
 	document.getElementById("applicantDeclineGraphList").style.display="none";
 	document.getElementById("applicantDeclineGraph").style.display="block";
 	  var flag = true;
