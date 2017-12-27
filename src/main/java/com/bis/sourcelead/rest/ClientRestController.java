@@ -968,17 +968,19 @@ public class ClientRestController {
 		
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
+		SourceleadActions action = null;
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+			 action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		}else{
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
+			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
 		}
 		
-		
-		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		if(action != null && action.getId()!= null){
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {
@@ -1003,7 +1005,7 @@ public class ClientRestController {
 			 	}
 			 }
 		 }
-		
+		}
 		
 		/*String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);*/
@@ -1765,10 +1767,10 @@ public class ClientRestController {
 		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderCountry", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorCountry", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 			
@@ -1931,12 +1933,16 @@ public class ClientRestController {
 							BoolQueryBuilder contactNameBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : contactNameArray){
 								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
-									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+									    /*contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+									    contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+									    
+									    contactNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 									  }
 									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
-										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));  
+										 /*contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));*/  
+										 
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
 									  }
 							}
 							boolQueryBuilder.must(contactNameBoolQueryBuilder);
@@ -1994,12 +2000,16 @@ public class ClientRestController {
 							BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : ownerAdvancedNameArray){
 								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
-									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));
+									/* ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));*/
+									 
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
 									  }
 									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
-										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+										/* ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+										 
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 									  }
 							}
 							boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
@@ -2174,13 +2184,16 @@ public class ClientRestController {
 		    }
 		   
 		    
-		    //owner Name
+		 /*   //owner Name
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserFirstName", keywd));
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserLastName", keywd));
 		    
 		    //spock Name
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserFirstName", keywd));
-		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+		    
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 		    
 		    
 		    if("Client".equalsIgnoreCase(responderType)){

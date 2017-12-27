@@ -1,0 +1,67 @@
+package com.bis.sourcelead.reports.dao.Impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.reports.dao.TimeToFillDao;
+
+@Repository
+public class TimeToFillDaoImpl implements TimeToFillDao{
+
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
+	private static final Logger logger = LoggerFactory.getLogger(TimeToFillDaoImpl.class);
+
+	@Override
+	@Transactional
+	public List<RequirementSubmissionHistory> getRequirementHistoryByJobIdsAndStage(List<Long> jobIdList,
+			Date[] searchDates, String stage) throws Exception {
+		
+		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryByJobIdsAndStage method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rh left join fetch rh.submissionId left join fetch rh.submissionId.requirement where rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :toStage "
+				+ " and (rh.createdDate BETWEEN :startDate and :endDate)";
+		return  session.createQuery(query).setParameterList("jobIds", jobIdList).setString("toStage", stage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional
+	public RequirementSubmissionHistory getRequirementHistoryBySubmissionIdsAndStage(Long submissionId, String stage)
+			throws Exception {
+		
+		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryBySubmissionIdsAndStage method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory rh where rh.submissionId.id = :submissionId and rh.toStage = :toStage ";
+		List submissionHistoryList = session.createQuery(query).setLong("submissionId", submissionId).setString("toStage", stage).setCacheable(true).list();
+		
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		if(submissionHistoryList != null && !submissionHistoryList.isEmpty())
+		{
+			requirementSubmissionHistory = (RequirementSubmissionHistory) submissionHistoryList.get(0);
+		}
+		return requirementSubmissionHistory;
+	
+	}
+}

@@ -365,53 +365,49 @@ public class LoginSessionController {
 			String currentDate = sdf.format(new Date());
 			Date todayDate = sdf.parse(currentDate);
 			
-			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
-			if(null != candidateOffBoarding){
-				
-				String endDate = sdf.format(candidateOffBoarding.getEndDate());
-				Date onboardEndDte = sdf.parse(endDate);
-				if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
-					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
-						model.setViewName("offboard/offboardStep1");
-					}else{
-						model.setViewName("offboard/offboardUser");
-					}
-				}else{
-					model.setViewName("dashboard");
-				}
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+				List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+				model.addObject("bussinessTypesList", bussinessTypesList);
+				List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+				model.addObject("timezoneList", timezoneList);
+				model.setViewName("onboard/companyOnboard");
 			}else{
-				
-				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
-				if(null != candidateOnBoarding){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-					if(candidateOnBoarding.getManagerUserId()!=null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
-					}
-					if(candidateOnBoarding.getOnBoardTeamId()!=null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
-					}
-					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcomeStep1");
+				CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
+				if(null != candidateOffBoarding){
+					
+					String endDate = sdf.format(candidateOffBoarding.getEndDate());
+					Date onboardEndDte = sdf.parse(endDate);
+					if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
+						if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+							model.setViewName("offboard/offboardStep1");
+						}else{
+							model.setViewName("offboard/offboardUser");
+						}
 					}else{
 						model.setViewName("dashboard");
 					}
 				}else{
-					model.setViewName("dashboard");
-				}
-			}
-			
-			
-			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded())) {
-				if(orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
-					List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
-					model.addObject("bussinessTypesList", bussinessTypesList);
-					List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-					model.addObject("timezoneList", timezoneList);
-					model.setViewName("onboard/companyOnboard");
-				}else{
-					model.setViewName("dashboard");
+					
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
+					if(null != candidateOnBoarding){
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+						if(candidateOnBoarding.getManagerUserId()!=null){
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+						}
+						if(candidateOnBoarding.getOnBoardTeamId()!=null){
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
+						}
+						if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
+						   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+						   model.setViewName("onboard/welcomeStep1");
+						}else{
+							model.setViewName("dashboard");
+						}
+					}else{
+						model.setViewName("dashboard");
+					}
 				}
 			}
 			
