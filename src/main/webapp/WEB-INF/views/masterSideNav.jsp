@@ -85,8 +85,8 @@
 	                   <li class="${sessionData.nav == 'Vendors' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/vendorsList'/>" title="Vendors"><span><i class="fa fa-suitcase"></i></span><i class="subMenu">Vendors</i></a></li>
 	                </c:if> 
 	                 
-	                 <c:if test="${userTabs.tabName == 'Users'}">
-	                 <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Users"><span><i class="fa fa-users"></i></span><i class="subMenu">Users</i></a></li>
+	                 <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <li class="${sessionData.nav == 'Users' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span><i class="fa fa-users"></i></span><i class="subMenu">Associates</i></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
