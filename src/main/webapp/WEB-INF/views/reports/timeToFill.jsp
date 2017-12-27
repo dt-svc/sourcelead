@@ -99,7 +99,7 @@ $(document).ready(function(){
     	 	<div id="timetofill" class="" style="height: 350px; width: 100%;"></div>
     	 	<div class="clearfix">
     			<div class="reTenWrap mt">
-			<h2 class="clearfix"><p>2017</p><span class="text-success" id="totalyearcount">0</span></h2>
+			<h2 class="clearfix"><p id="yearchart"></p><span class="text-success" id="totalyearcount">0</span></h2>
 			<h3 class="clearfix"><p>Quarter 1</p><span class="text-primary" id="quarter1">0</span></h3>
 			<h3 class="clearfix"><p>Quarter 2</p><span class="text-warning" id="quarter2">0</span></h3>
 			<h3 class="clearfix"><p>Quarter 3</p><span class="text-primary" id="quarter3">0</span></h3>
@@ -192,6 +192,12 @@ function getTimeToFillChart(){
 		        			  }
 		        	
 		        		 loadTimeToFillChart(chartData);
+		        		 
+		        		 if(year != null && year != '' && year != 'undefined'){
+		        			 $("#yearchart").html(year); 
+		        		 }else{
+		        			 $("#yearchart").html('${currentYear}'); 
+		        		 }
 		        		 
 		        		 $("#totalyearcount").html(parseFloat(quarter1)+parseFloat(quarter2)+parseFloat(quarter3)+parseFloat(quarter4));
 		        		 $("#quarter1").html(quarter1);

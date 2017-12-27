@@ -67,6 +67,7 @@ public class ApplicantBySourceController {
 	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementsList", requirementsDTOList);
+		 model.addObject("currentYear", year);
 		 model.addObject("yearList", yearList);
 		 model.setViewName("reports/timeToFill");
 		 return model;
