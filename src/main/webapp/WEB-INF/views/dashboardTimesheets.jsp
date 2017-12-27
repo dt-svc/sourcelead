@@ -14,10 +14,16 @@
 <script> 
 $(document).ready(function(){
 	  if('${bothTimesheets}' == 'true' || '${onlyTimesheets}' == 'true'){
-		  timeSheetSubmissionStatusCount("myTimesheets");
+		  timeSheetSubmissionStatusCountDraft("myTimesheets");
+		  timeSheetSubmissionStatusCountApproval("myTimesheets");
+		  timeSheetSubmissionStatusCountRejected("myTimesheets");
+		  timeSheetSubmissionStatusCountWaitingForApproval("myTimesheets");
 	  }
 	  else{
-		  timeSheetSubmissionStatusCount("employes");
+		  timeSheetSubmissionStatusCountDraft("employes");
+		  timeSheetSubmissionStatusCountApproval("employes");
+		  timeSheetSubmissionStatusCountRejected("employes");
+		  timeSheetSubmissionStatusCountWaitingForApproval("employes");
 	  }
 });
 </script>
@@ -37,35 +43,39 @@ $(document).ready(function(){
              
             <div class="db-widget-sm row">
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
+                <div class="info-box positionRelative"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
                    <p class="info-box-number"><span id="savedTimesheetsSubmissionsCount"></span></p>
                     <p class="info-box-text" id="savedCountAnchor"></p>
                   </div>
+                  <div id ="draftLoading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
+                <div class="info-box positionRelative"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><strong><span  id="waitingTimesheetsSubmissionsCount"></span></strong></p>
                     <p class="info-box-text" id="waitingCountAnchor"></p>
                   </div>
+                  <div id ="waitingLoading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
+                <div class="info-box positionRelative"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
                     <p class="info-box-number"><strong><span id="approvalTimesheetsSubmissionsCount"></span></strong></p>
                     <p class="info-box-text" id="approvedCountAnchor"></p>
                   </div>
+                   <div id ="approvedloading"></div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
+                <div class="info-box positionRelative"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
                   <div class="info-box-content text-center">
-                    <p class="info-box-number"><strong><span id="rejectedTimesheetsSubmissionsCount"></span></strong></p>
+                    <p class="info-box-number"><strong><span id="rejectTimesheetsSubmissionsCount"></span></strong></p>
                     <p class="info-box-text" id="rejectedCountAnchor"></p>
                   </div>
+                   <div id ="rejectLoading"></div>
                 </div>
               </div>
             </div>
@@ -74,66 +84,44 @@ $(document).ready(function(){
       </div>
       <!-- Timesheets ends --> 
       
+      
+<script>
+function timeSheetSubmissionStatusCount(employes){
+	timeSheetSubmissionStatusCountDraft(employes);
+	  timeSheetSubmissionStatusCountApproval(employes);
+	  timeSheetSubmissionStatusCountRejected(employes);
+	  timeSheetSubmissionStatusCountWaitingForApproval(employes);
+}
+</script>
+      
+      
 
 <script type="text/javascript">
-function timeSheetSubmissionStatusCount(timesheetType){
-	
-    var sourceleadUrl ='${sourceleadUrl}';
-    
+function timeSheetSubmissionStatusCountDraft(timesheetType){
+  var sourceleadUrl ='${sourceleadUrl}';
+  $("#savedTimesheetsSubmissionsCount").empty();
+  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType, 
+		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=DRAFT", 
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	
-		        
+		        	$("#draftLoading").removeAttr("style");
 
 		        	 $("#savedTimesheetsSubmissionsCount").empty();
-	        		 $("#approvalTimesheetsSubmissionsCount").empty();
-	        		 $("#rejectedTimesheetsSubmissionsCount").empty();
-	        		 $("#waitingTimesheetsSubmissionsCount").empty();
-	        		 
 	        		 $("#savedCountAnchor").empty();
-	        		 $("#waitingCountAnchor").empty();
-	        		 $("#approvedCountAnchor").empty();
-	        		 $("#rejectedCountAnchor").empty();
 	        		 
 	        		 var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
-		        	 var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
-		        	 var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
-		        	 var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
-		        	 if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+	        		 if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
 	                      $("#savedCountAnchor").html("Draft");
 	                  }else{
 	                	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
 	                	 /*  $("#savedCountAnchor").html("Saved"); */
 	                      $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
-	                  }
-		        	if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		        		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-	                      $("#waitingCountAnchor").html("Submitted");
-	                  }else{
-	                	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-	                	  /* $("#waitingCountAnchor").html("Waiting"); */
-	                       $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
-	                  }
-		        	if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		        		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-	                      $("#approvedCountAnchor").html("Approved");
-	                }else{
-	                	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-	                	/*   $("#approvedCountAnchor").html("Approved"); */
-	                      $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
-	                  }
-		        	if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		        		  $("#rejectedTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-	                      $("#rejectedCountAnchor").html("Rejected");
-	                 }else{
-	                	 $("#rejectedTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-	                     $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
-	                	/*  $("#rejectedCountAnchor").html("Rejected"); */
-	                  }
+	                     
+	                 }
 		 		}
 		  });
 		 
@@ -145,4 +133,99 @@ function timeSheetSubmissionStatusCount(timesheetType){
 		 
 	}
 
-</script>      
+</script>    
+
+<script>
+function timeSheetSubmissionStatusCountApproval(timesheetType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=APPROVED", 
+        success: function(json) {
+        	$("#approvedloading").removeAttr("style");
+        	 $("#approvalTimesheetsSubmissionsCount").empty();
+    		 $("#approvedCountAnchor").empty();
+    		 
+    		 var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
+    		 if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+        		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+                  $("#approvedCountAnchor").html("Approved");
+            }else{
+            	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+            	/*   $("#approvedCountAnchor").html("Approved"); */
+                  $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+              }
+        }
+    });
+    if(timesheetType == "myTimesheets"){
+		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+	 }else{
+		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+	 }
+}
+</script>
+
+<script>
+function timeSheetSubmissionStatusCountRejected(timesheetType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=REJECTED", 
+        success: function(json) {
+        	$("#rejectLoading").removeAttr("style");
+    		 $("#rejectTimesheetsSubmissionsCount").empty();
+    		 $("#rejectedCountAnchor").empty();
+    		 var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount;
+    		 if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+    			 $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+                 $("#rejectedCountAnchor").html("Rejected");
+            }else{
+           	     $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+           	/*  $("#rejectedCountAnchor").html("Rejected"); */
+             }
+        }
+      });
+	    if(timesheetType == "myTimesheets"){
+			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+		 }else{
+			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+		 }
+}
+</script>
+
+
+<script>
+function timeSheetSubmissionStatusCountWaitingForApproval(timesheetType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+    $.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=SUBMITTED", 
+        success: function(json) {
+        	$("#waitingLoading").removeAttr("style");
+    		 $("#waitingTimesheetsSubmissionsCount").empty();
+    		 
+    		 $("#waitingCountAnchor").empty();
+    		 
+    		 var  waitingTimesheetsSubmissionsCount = json.waitingForApprovalTimesheetSubmissionCount;
+    		 if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+       		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+                 $("#waitingCountAnchor").html("Submitted");
+             }else{
+           	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+           	  /* $("#waitingCountAnchor").html("Waiting"); */
+                  $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+             }
+        }
+      });
+	    if(timesheetType == "myTimesheets"){
+			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+		 }else{
+			 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+		 }
+}
+</script>
+  

@@ -963,7 +963,10 @@ public class Constants {
 	public static final String HOLIDAY_RESTRICTED = "Restricted";
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
-	
+
+	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
+	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
+	public static final String ROLE_CREATE_CLIENT = "ROLE_CREATE_CLIENT";
 	
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
@@ -971,6 +974,7 @@ public class Constants {
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+
 
 
 }

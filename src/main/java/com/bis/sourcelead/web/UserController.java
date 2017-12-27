@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -31,6 +33,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -72,8 +75,12 @@ public class UserController {
     CountriesService countriesService;
 	
 	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+
+	@Autowired
 	LookUpDataService lookUpDataService;
 	
+
 	
 	/**
 	 * To forward user creation jsp page
@@ -102,8 +109,12 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
-		    
-		    model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
+		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+		     model.addObject("sourceleadSectionList",sections); 
+		     
+		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
@@ -151,7 +162,7 @@ public class UserController {
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
 					candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
-					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId());
+					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId(),"All");
 					
 					model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
 					model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
@@ -159,6 +170,11 @@ public class UserController {
 					model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
 					model.addObject("assignedProjectsCount", assignedProjectsCount);
 				}
+				
+				 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+			     model.addObject("actionId",action.getId());
+			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+			     model.addObject("sourceleadSectionList",sections); 
 				
 				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
 				request.setAttribute("userId", user.getId());

@@ -43,6 +43,7 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -53,10 +54,12 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
@@ -76,10 +79,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
@@ -148,6 +153,8 @@ public class RequirementServiceImpl implements RequirementService {
 	private ProjectsService projectsService;
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	@Autowired
 	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	@Autowired
@@ -158,10 +165,14 @@ public class RequirementServiceImpl implements RequirementService {
 	private CandidateDao candidateDao;
 	@Autowired
 	private ProjectsDao projectsDao;
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
 	
 	@Autowired
 	private ProjectClientService projectClientService;
 	
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
 	@Override
 	 public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
@@ -779,6 +790,22 @@ public class RequirementServiceImpl implements RequirementService {
 		 */
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		
+		if(requirementDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				JobCustomFieldData jobCustomFields = new JobCustomFieldData();
+				jobCustomFields.setRequirement(savedRequirement);
+				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				jobCustomFields.setOrglocationsFormFields(orgFormField);
+				jobCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				jobCustomFieldDataService.savejobCustomFieldData(jobCustomFields);
+				}
+				
+			}	
+		}
+		
+		
 		if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
 			List<Requirement> parentrequirement = getAllReleasedRequirementsByParentId(savedRequirement.getId());
 			if (null != parentrequirement && !parentrequirement.isEmpty()) {
@@ -989,7 +1016,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName())
 				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -1114,7 +1141,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName())
 				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -1232,7 +1259,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName())
 				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -1476,7 +1503,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("userEmailId", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
 			globalVarsMap.put("loginUserName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -1588,13 +1615,13 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("jobInitiatorName", loginUser.getFirstName());
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		StringBuilder userBuild = new StringBuilder();
 		globalVarsMap.put("loginUserName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		globalVarsMap.put("role", loginUserRole.getUserType());
 		globalVarsMap.put("approverOne", loginUser.getFirstName());
 		StringBuilder attachBuild = new StringBuilder();
-		globalVarsMap.put("attachment", attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
+		globalVarsMap.put("attachment", attachBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new
@@ -1688,7 +1715,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("client", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName())
 				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -2032,8 +2059,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		StringBuilder linkBuild = new StringBuilder();
 		StringBuilder attachBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		globalVarsMap.put("attachment", attachBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("attachment", attachBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new
@@ -2188,8 +2215,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		StringBuilder linkBuild = new StringBuilder();
 		StringBuilder attachBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		globalVarsMap.put("attachment", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("attachment", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>").toString());
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new
@@ -2303,7 +2330,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("requirementName", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new
@@ -2417,7 +2444,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("requirementName", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new
@@ -2534,7 +2561,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("Experience", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName())
 				&& !"".equalsIgnoreCase(loginUser.getLastName())) {

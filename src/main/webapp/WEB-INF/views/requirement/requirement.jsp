@@ -20,6 +20,10 @@
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
 		});
     </script> 
 <script>
@@ -198,6 +202,7 @@ $(document).ready(function () {
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
    <form:form id="requirement_form" name="requirement_form">
+ 	<input type="hidden" id="actionId" value="${actionId}">
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
@@ -885,6 +890,14 @@ $(document).ready(function () {
 				</div>
 			</div>
         
+         <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 0}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   </c:if>
+        
       </div>
       <div class="clearfix mt">
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
@@ -1134,6 +1147,13 @@ $(document).ready(function () {
                   </div>
                 </div>
               </div>
+               <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	              <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	         </c:if>
             </div>
           </div>
         </div>
@@ -1329,6 +1349,13 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
+			<c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	              <c:if test="${sectionOrder.index == 2}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	         </c:if>
       </div>
     </div>
     <!-- Internal Details html Ends -->
@@ -1412,6 +1439,19 @@ $(document).ready(function () {
   
   </div>
 </section>
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1938,10 +1978,13 @@ function setTemplateValues(){
 					}
 			    	
 			    	//$("textarea#description").val(json.description);
-			    	
+			    	if(json.description != null && json.description != '' && json.description != 'undefined'){
 			    	$('#txtEditor').text(json.description);
 			    	$('.Editor-editor').text(json.description);
-			    	
+			    	}else{
+			    	$('#txtEditor').text('');	
+			    	$('.Editor-editor').text('');
+			    	}
 			    	$("#rate").val(json.rate);
 			    	$("#maxRate").val(json.maxRate);
 			    	

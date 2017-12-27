@@ -105,7 +105,7 @@
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" }'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/clientReports"}'>
 	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
@@ -250,7 +250,9 @@ function getNotificationsByuserId(){
 				result = result + ' <li>';
 				result = result + '<div class="clearfix msg">';
 				result = result + '<div class="msg-img"> <span>';
+				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined'){
 				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
+				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
 				result = result + ' <a href="#"><p>'+opt.body+'</p>';
@@ -704,6 +706,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
+						  
+						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  
 	              </ul>
 	            </div>
 	          </li>

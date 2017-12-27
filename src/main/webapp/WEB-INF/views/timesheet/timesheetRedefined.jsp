@@ -10,13 +10,13 @@
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
         </section>
 		 <form id="timesheet_form" name="timesheet_form">
 		 	    <div class='timesheet_out' id="timesheet_out">
 				<div class='timesheet_wrap' id='timesheet_wrap'>
+				 <div class='data_loading' id="loadTime"></div>
 				 <div id ="timesheetEntriesDiv">
-				   <div class='data_loading' id="loadTime"></div>
 		           <jsp:include page="timesheetProjects.jsp"></jsp:include>
 		          </div>
 		       </div>

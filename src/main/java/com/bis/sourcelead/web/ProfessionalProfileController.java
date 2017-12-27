@@ -1,10 +1,13 @@
 package com.bis.sourcelead.web;
 
+import static org.mockito.Matchers.isNotNull;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -136,10 +139,13 @@ public class ProfessionalProfileController {
 			        if(null != candidate.getConsultantUser().getLinkedIn()){
 			        	candidate.setLinkedIn(candidate.getConsultantUser().getLinkedIn());
 			        }
-			        if(null != candidate.getConsultantUser().getFileUrl()){
-			        	candidate.setFileUrl(candidate.getConsultantUser().getFileUrl());
-			        }
 			        	
+		        }
+		        if(candidate.getOrgRelationId() != null){
+		        candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+		        }
+		        if(candidate.getSpocId() != null){
+		        candidate.setVendorContactName(candidate.getSpocId().getVendorUser().getFullName());
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);

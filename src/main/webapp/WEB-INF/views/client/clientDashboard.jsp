@@ -365,7 +365,7 @@ z-index: 1;
 		</div>
 
 
-       <div class="side_mask"><div class="proj_close"></div></div>
+       <div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
 		<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
@@ -1926,6 +1926,10 @@ function getEndDatePickerById(projectId,localFieldName){
 	   		}
 		});
 	});
+	
+	function refresh(){
+		getClientList();
+	}
 
 	//project side bar tabs
 	$(document).ready(function() {
