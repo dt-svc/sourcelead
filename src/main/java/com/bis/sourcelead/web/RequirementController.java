@@ -366,10 +366,10 @@ public class RequirementController {
 		}
 		List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
 		for(ProjectClients projectClients : projectList){
-			if(projectClients.getOrgRelationId() != null){
+			if(projectClients.getOrgRelationId() != null && projectClients.getOrgRelationId().getResponderLocationId() != null && projectClients.getOrgRelationId().getLocationId() != null  ){
 				if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-				}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				}else if( projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
 			}
