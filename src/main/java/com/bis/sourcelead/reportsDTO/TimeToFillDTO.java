@@ -7,6 +7,11 @@ public class TimeToFillDTO {
 	private String fillCount;
 	
 	private Integer year;
+	
+	private String monthStr;
+	
+	private double fillCountValue;
+	
 
 	public String getMonth() {
 		return month;
@@ -31,5 +36,23 @@ public class TimeToFillDTO {
 	public void setYear(Integer year) {
 		this.year = year;
 	}
+
+	public String getMonthStr() {
+		return monthStr;
+	}
+
+	public void setMonthStr(String monthStr) {
+		this.monthStr = monthStr;
+	}
+
+	public double getFillCountValue() {
+		return fillCountValue;
+	}
+
+	public void setFillCountValue(double fillCountValue) {
+		this.fillCountValue = fillCountValue;
+	}
+
+	
 	
 }

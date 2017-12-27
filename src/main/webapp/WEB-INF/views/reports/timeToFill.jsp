@@ -3,10 +3,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/js/amcharts.js"></script>
-<script src="/resources/js/serial.js"></script>
-<script src="/resources/js/light.js"></script>
-<script src="/resources/js/pie.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
@@ -35,7 +33,7 @@ $(document).ready(function(){
         <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
         <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div> -->
-        <div class="col-md-4">
+        <div class="col-md-5">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
@@ -52,8 +50,8 @@ $(document).ready(function(){
           </select>
         </div>
         
-        <div class="col-md-3 dropdown-select positionRelative">
-          <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
+        <div class="col-md-5 dropdown-select positionRelative">
+           <!--<select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -62,7 +60,7 @@ $(document).ready(function(){
             <option value='YTD'>YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
-          </select>
+          </select>-->
           
           
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
@@ -91,25 +89,21 @@ $(document).ready(function(){
 		
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
+            <button type="button" class="btn btn-primary btn-sm" title="Actions" onclick="reload();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
     	<div class="clearfix"></div>
     	 	<div class="dashboard-widget clearfix mt">
+    	 	<div id="loading"></div>
     	 	<div id="timetofill" class="" style="height: 350px; width: 100%;"></div>
-    	 	
     	 	<div class="clearfix">
     			<div class="reTenWrap mt">
-			<h2 class="clearfix"><p>2017</p><span class="text-success">80%</span></h2>
-			<h3 class="clearfix"><p>Quarter 1</p><span class="text-primary">20%</span></h3>
-			<h3 class="clearfix"><p>Quarter 2</p><span class="text-warning">20%</span></h3>
-			<h3 class="clearfix"><p>Quarter 3</p><span class="text-primary">20%</span></h3>
-			<h3 class="clearfix"><p>Quarter 4</p><span class="text-warning">20%</span></h3>
+			<h2 class="clearfix"><p>2017</p><span class="text-success" id="totalyearcount">0</span></h2>
+			<h3 class="clearfix"><p>Quarter 1</p><span class="text-primary" id="quarter1">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 2</p><span class="text-warning" id="quarter2">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 3</p><span class="text-primary" id="quarter3">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 4</p><span class="text-warning" id="quarter4">0</span></h3>
 		</div>
     		</div>
     		
@@ -122,6 +116,12 @@ $(document).ready(function(){
 <jsp:include page="../masterFooter.jsp" />
 
 <script>
+function reload(){
+	location.reload();
+}
+</script>
+
+<script>
 function getTimeToFillChart(){
 	
 	 var flag = true;
@@ -131,7 +131,8 @@ function getTimeToFillChart(){
 	  }
 	  
 	  var year = $("#year").val(); 
-	  var dateSelection = $("#dateSelection").val(); 
+
+	  /*var dateSelection = $("#dateSelection").val(); 
 	  var fromDate = '';
 	  var toDate = '';
 	  if(dateSelection == 'custom'){
@@ -155,16 +156,22 @@ function getTimeToFillChart(){
 			  document.getElementById("toDateDiv").style.display="none";
 		  }
 		  
-	  }
-	  
-	  if(flag){
+	  } */
+	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({ 
 			  type: "GET",
-			 	url: sourceleadUrl+"/getTimeToFillDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&year="+year,
+			 	url: sourceleadUrl+"/getTimeToFillDetails?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&year="+year,
 			    success: function(json) {
 		  
 			    	if(json.length > 0)	
 		 	   		{
+			    		
+			    		var quarter1 = 0;
+			    		var quarter2 = 0;
+			    		var quarter3 = 0;
+			    		var quarter4 = 0;
+			    		var totalyearcount = 0;
+			    		
 		        		    var chartData = [];
 							for(var i=0; i < json.length ; i++){
 		        			 var timeToFill = json[i];
@@ -172,15 +179,35 @@ function getTimeToFillChart(){
 		        			    	date: timeToFill.month,
 		        					column1: timeToFill.fillCount,
 		        			    } );
+		        			    
+		        			     if(timeToFill.monthStr == "Jan" || timeToFill.monthStr == "Feb" || timeToFill.monthStr == "Mar") {
+		        	    	    	  quarter1 = parseFloat(quarter1)+parseFloat(timeToFill.fillCountValue);
+		        	    	      }else if(timeToFill.monthStr == "Apr" || timeToFill.monthStr == "May" || timeToFill.monthStr == "Jun") {
+		        	    	    	  quarter2 = parseFloat(quarter2)+parseFloat(timeToFill.fillCountValue);
+		        	    	      }else if(timeToFill.monthStr == "Jul" || timeToFill.monthStr == "Aug" || timeToFill.monthStr == "Sep") {
+		        	    	    	  quarter3 = parseFloat(quarter3)+parseFloat(timeToFill.fillCountValue);
+		        	    	      }else {
+		        	    	    	  quarter4 = parseFloat(quarter4)+parseFloat(timeToFill.fillCountValue);
+		        	    	      }
 		        			  }
 		        	
 		        		 loadTimeToFillChart(chartData);
+		        		 
+		        		 $("#totalyearcount").html(parseFloat(quarter1)+parseFloat(quarter2)+parseFloat(quarter3)+parseFloat(quarter4));
+		        		 $("#quarter1").html(quarter1);
+		        		 $("#quarter2").html(quarter2);
+		        		 $("#quarter3").html(quarter3);
+		        		 $("#quarter4").html(quarter4);
+		        		 
 		 	   		}
+			    	
+			    	
+			    	
+			    	 $("#loading").removeAttr("style");
 			    },
 		        error: function(e){
 		        }
 		    });
-	  }
 	
 }
 </script>
@@ -198,6 +225,12 @@ function loadTimeToFillChart(result){
 			"accessibleTitle": "",
 			"borderColor": "#FFFFFF",
 			"theme": "default",
+			"responsive": {
+				"enabled": true
+			},
+			"export": {
+				"enabled": true
+			},
 			"categoryAxis": {
 				"forceShowField": "",
 				"minPeriod": "MM",

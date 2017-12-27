@@ -3,10 +3,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="/resources/js/amcharts.js"></script>
-<script src="/resources/js/serial.js"></script>
-<script src="/resources/js/light.js"></script>
-<script src="/resources/js/pie.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
@@ -79,11 +77,7 @@ $(document).ready(function(){
 		
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
+            <button type="button" class="btn btn-primary btn-sm" title="Actions"  onclick="reload();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
@@ -92,15 +86,6 @@ $(document).ready(function(){
     	 	<div class="dashboard-widget clearfix mt">
     	 	<div id="applicantSource" class="" style="height: 350px; width: 100%;"></div>
     	 	</div>
-    	 	<!-- Applicant source Graph December 2017 -->
-    	 	
-    	 	
- 	<!-- <div class="clearfix dashboard-widget mts col-md-12 mt">
-		<div class="clearfix">
-		  <div id="applicantSourceListView" class="datatable_filter"></div>
-		</div>
-    </div> -->
-    
     	<div class="clearfix"></div>
     </div>
   </section>
@@ -108,6 +93,11 @@ $(document).ready(function(){
 
 <jsp:include page="../masterFooter.jsp" />
 
+<script>
+function reload(){
+	location.reload();
+}
+</script>
 
 <script>
 function getCustomDates(){

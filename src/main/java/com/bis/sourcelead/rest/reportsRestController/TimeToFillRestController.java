@@ -55,10 +55,6 @@ public class TimeToFillRestController {
 			jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
 		}
 		
-		Double quarter1 = 0d;
-		Double quarter2 = 0d;
-		Double quarter3 = 0d;
-		Double quarter4 = 0d;
 		
 		for(int i=0; i<12; i++) {
 			
@@ -102,19 +98,9 @@ public class TimeToFillRestController {
     	    	  timeToFillDTO.setFillCount(String.valueOf(timeToFillCount));
     	      }
     	      
-    	      if(monthStr == "Jan" || monthStr == "Feb" || monthStr == "Mar") {
-    	    	  quarter1 = quarter1+timeToFillCount;
-    	      }else if(monthStr == "Apr" || monthStr == "May" || monthStr == "Jun") {
-    	    	  quarter2 = quarter2+timeToFillCount;
-    	      }else if(monthStr == "Jul" || monthStr == "Aug" || monthStr == "Sep") {
-    	    	  quarter3 = quarter3+timeToFillCount;
-    	      }else {
-    	    	  quarter4 = quarter4+timeToFillCount;
-    	      }
-    	      
-    	      System.out.println(quarter1+">>"+quarter2+">>"+quarter3+">>"+quarter4);
-    	     
+    	      timeToFillDTO.setMonthStr(monthStr);
     	      timeToFillDTO.setFillCount(df.format(timeToFillCount));
+    	      timeToFillDTO.setFillCountValue(timeToFillCount);
     	      timeToFillDTO.setMonth(month);
     	      timeToFillList.add(timeToFillDTO);
 			  
