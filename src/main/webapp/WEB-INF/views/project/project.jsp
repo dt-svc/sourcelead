@@ -718,7 +718,7 @@ function getProjectDetails(){
 	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
-	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
+// 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
