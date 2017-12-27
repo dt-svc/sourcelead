@@ -226,7 +226,14 @@ padding: 2px
 		<div class="clear"></div>
 	</header>
 		<h2><b>Candidate (Resume) Bulk Import</b></h2>
-
+<div class="browseProgress">
+            <div class="browseProgressInn">
+            <div class="labText" id='progressText'>Please wait while uploading the file(s)</div>
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
+                </div>
+            </div>                
+            </div>
 <div id="uploader">
     <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
 </div>
@@ -250,6 +257,38 @@ padding: 2px
 var sourceleadUrl = '${sourceleadUrl}';
 
 	var uploadid = 0;
+	var win1, win2;
+	function getUploadStatus() {
+		if(uploadid > 0) {
+			$.post("bulk-resume-import-log", {uploadid: uploadid}, function(data) {
+				$(".editText").append(data);
+// 				if(data.indexOf('Completed!') === -1) {
+					win1 = window.setTimeout('getUploadStatus()', 1000);
+					win2 = window.setTimeout('getUploadFileStatus()', 1000);
+// 				} else {
+// 					$(".browseProgress").hide();
+// 					$("#clear").click();
+// 				}
+			});
+		}
+	}
+	
+	function getUploadFileStatus() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-counts", {uploadid: uploadid}, function(data) {
+			if(data !== "") { // && data.indexOf('Completed!') === -1
+				var i = data.split(" ")[0];
+				var count = data.split(" of ")[1].split(" ")[0];
+				percentComplete = parseInt(i)/parseInt(count);
+				$(".progress div").css("width", parseInt(percentComplete*100) + "%");
+				$("#progressBar").html(parseInt(percentComplete*100)+'%');
+				$("#progressText").html(data);
+			}
+// 			} else if(data !== "")
+// 				$("#progressText").html(data);
+		});
+	}
 	
 </script>
 <input type='file' style='display:none' multiple="multiple" id='filesSelected'/>
@@ -304,6 +343,11 @@ $(function() {
     						uploadid = new Date().getTime();
     						up.settings.url = 'upload-resumes?uploadid='+uploadid;
     						up.start();
+    						$(".browseProgress").show();
+    						$("#progressBar").html('0%');
+    						$(".progress div").css("width", "0%");
+//     						$(".editText").html("");
+    						getUploadStatus();
     					} else {
     						alert("No Session found");
     						location.href='/login';
@@ -315,6 +359,10 @@ $(function() {
     		
     		UploadComplete: function(up, files) {
                 $(".links").show();
+                $(".browseProgress").hide();
+				$("#clear").click();
+				clearTimeout(win1);
+				clearTimeout(win2);
             },
         }
     });
@@ -349,8 +397,10 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
-			if(data !== "")
+			if(data !== "" && data.indexOf("files found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
+			else if(data !== "" && data.indexOf("files found") !== -1)
+				alert(data);
 			else
 				alert("Unable to locate logs for this upload");
 		});
