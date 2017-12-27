@@ -4,10 +4,11 @@
  </c:if>
 </div>
 <!-- Footer Area -->
-  <footer class="footer-area clearfix">
-    <div class="copyright">@ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
-  </footer>
+  <footer class="footer-area clearfix text-center">
+    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
+<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
+ -->  </footer>
+  
   <div class='file_mask'>
   </div>
   <div class="alert alert-danger" role="alert" style='display:none;'>

@@ -2,6 +2,8 @@ package com.bis.sourcelead.util;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -9,36 +11,39 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgStorageDetailDTO;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 
 import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadUtil {
 
-	public String cropImage(String staticPath, MultipartFile multiFile, int x, int y, int w, int h) {
+	public String cropImage(String staticPath, File inFile, int x, int y, int w, int h) {
 		try {
-			BufferedImage bufferedImage = Thumbnails.of(multiFile.getInputStream()).useExifOrientation(true).scale(1).asBufferedImage();
+			BufferedImage bufferedImage = Thumbnails.of(new FileInputStream(inFile)).useExifOrientation(true).scale(1).asBufferedImage();
 			if(x > 0 || y > 0 || w > 0 || h > 0)
 				bufferedImage = bufferedImage.getSubimage(x, y, w, h);
 			if (bufferedImage == null) {
 				return "failed";
 			}
 			bufferedImage = Thumbnails.of(bufferedImage).size(250, 250).asBufferedImage();
-			String fileName = multiFile.getOriginalFilename().replace("&", "").replace("%", "").replace("?", "");
+			String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");
 			String extenstion = fileName.substring(fileName.lastIndexOf("."));
 			fileName = fileName.substring(0, fileName.lastIndexOf("."));
 			long time = new Date().getTime();
@@ -60,8 +65,8 @@ public class FileUploadUtil {
 	}
 
 	public String uploadFile(String staticPath, long orgId, long locationId, String fileType,
-			MultipartFile multipartFile) {
-		String fileName = multipartFile.getOriginalFilename().replace("&", "").replace("%", "").replace("?", "");;
+			File inFile) {
+		String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");;
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
@@ -77,8 +82,7 @@ public class FileUploadUtil {
 
 		File file = new File(staticPath, fileName);
 		try {
-
-			multipartFile.transferTo(file);
+			Files.move(inFile.toPath(), file.toPath());
 			return url;
 		} catch (IllegalStateException | IOException e) {
 			e.printStackTrace();
@@ -86,10 +90,10 @@ public class FileUploadUtil {
 		return "";
 	}
 	
-	public List<FileInfo> uploadZipFile(String staticPath, long orgId, long locationId, String fileType, MultipartFile multipartFile)
+	public List<FileInfo> uploadZipFile(String staticPath, long orgId, long locationId, String fileType, File inFile)
 	{
 		List<FileInfo> fileInfoList = new ArrayList<>();
-		String fileName = multipartFile.getOriginalFilename();
+		String fileName = inFile.getName();
 		String extenstion = fileName.substring(fileName.lastIndexOf("."));
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
@@ -102,7 +106,7 @@ public class FileUploadUtil {
 			folderFile.mkdirs();
 		File file = new File(staticPath, fileName);
 		try {
-			multipartFile.transferTo(file);
+			Files.move(inFile.toPath(), file.toPath());
 			List<FileInfo> list = extractAll1(file.toPath(), folderFile.toPath(), orgId, locationId, staticPath);
 			if (list != null)
 				fileInfoList.addAll(list);
@@ -213,6 +217,60 @@ public class FileUploadUtil {
 			}
 		}
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
+	}
+	
+	public static String getResumeZipFileName(String staticPath, HttpServletRequest request, String uploadid, boolean failed) {
+		File file = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+	    try {
+			file = File.createTempFile("temp/"+(failed ? "failed" : "existed")+"-", ""+ uploadid + ".zip");
+			fos = new FileOutputStream(file);
+			zos = new ZipOutputStream(fos);
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			long orgId = 0, orgLocationId = 0;
+			if (org != null) {
+				orgId = org.getId();
+			}
+			if (loginOrgLocation != null) {
+				orgLocationId = loginOrgLocation.getId();
+			}
+
+			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/resumes-"+(failed ? "failed" : "existed")+"-"+uploadid);
+			if(!folder.exists() || folder.list().length == 0)
+				return "No "+(failed ? "failed" : "existed")+" files found";
+			File files[] = folder.listFiles();
+			for (File f : files) {
+				try(FileInputStream fis = new FileInputStream(f);) {
+					ZipEntry entry = new ZipEntry(f.getName());
+					byte b[] = new byte[fis.available()];
+					fis.read(b);
+					entry.setExtra(b);
+				    zos.putNextEntry(entry);
+				    zos.closeEntry();
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} finally {
+			if(zos != null)
+				try {
+					zos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}	
+		return file == null ? "" : file.getAbsolutePath();
 	}
 
 }
