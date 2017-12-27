@@ -401,7 +401,7 @@ function validateShortCode(){
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
 								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
-									data-validation-optional="true" class="form-control" onblur="">
+									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
 
@@ -438,7 +438,7 @@ function validateShortCode(){
 					                </select>
 					                </div>
 									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
-										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>

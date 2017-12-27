@@ -111,6 +111,8 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String onboardSubmitted;
 	
+	private String rejectedReason;
+	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
 	}
@@ -520,4 +522,16 @@ public class CandidateOnBoardingDTO implements Serializable {
 	public void setOnboardingTemplate(String onboardingTemplate) {
 		this.onboardingTemplate = onboardingTemplate;
 	}
+
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
+	}
+	
+	
 }
