@@ -6736,7 +6736,7 @@ hr {
     padding: 5px !important;
 }
 #Re-AssignProject {
-z-index: 99999;
+z-index: 99999 !important;
 }
 .terms-conditions.modal .modal-body {
   min-height: 150px; max-height: 500px; overflow:auto; z-index: 9999999;
