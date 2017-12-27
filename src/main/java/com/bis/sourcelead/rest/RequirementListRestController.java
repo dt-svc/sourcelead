@@ -1641,7 +1641,7 @@ public class RequirementListRestController {
 		
 		//Requirement Title
 		if(StringUtils.isNotEmpty(search.getRequirementTitle())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", search.getRequirementTitle()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("jobTitle", search.getRequirementTitle()));
 	    }
 		// jobId
 		if(StringUtils.isNotEmpty(search.getJobId())){
@@ -1649,7 +1649,7 @@ public class RequirementListRestController {
 	    }
 	   //Country
 		if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("country", search.getCountry()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry()));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
@@ -1838,11 +1838,11 @@ public class RequirementListRestController {
    }
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
