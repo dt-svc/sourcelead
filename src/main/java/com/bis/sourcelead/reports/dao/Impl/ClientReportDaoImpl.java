@@ -236,7 +236,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		Session session = this.sessionFactory.getCurrentSession();
 //		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
 		List<Requirement> reqList = null;
-		Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId");
+		Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId");
 		reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return reqList;
 	}

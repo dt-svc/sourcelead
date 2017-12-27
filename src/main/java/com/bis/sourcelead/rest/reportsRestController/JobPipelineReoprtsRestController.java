@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reports.service.JobsPipelineReportService;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.reportsDTO.JobPipelineDTO;
@@ -50,6 +54,9 @@ public class JobPipelineReoprtsRestController {
 	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@Autowired
+	ClientReportService clientReportService;
+	
 	
 	@SuppressWarnings("unchecked")
 	@Async
@@ -58,12 +65,13 @@ public class JobPipelineReoprtsRestController {
 	JobPipelineDTO getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		List<Long> jobIdList = new ArrayList<>();
 
 		if(jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
 			
-			
+			jobIdList = getClientRequirementList(orgLocation,user);
 		}else{
 			if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 				String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -393,6 +401,23 @@ public class JobPipelineReoprtsRestController {
 	    	}
 			return report;
 		 
+	}
+
+
+	private List<Long> getClientRequirementList(OrgLocations orgLocation, User user) {
+		List<Long> jobIds = new ArrayList<>();
+		List<OrgRelations> clientList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+		if(clientList != null && clientList.size() > 0) {
+			for(OrgRelations orgRelation : clientList) {
+				List<Requirement> jobsList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(), orgLocation.getId(), user.getId());
+				if(jobsList != null && jobsList.size() > 0) {
+					for(Requirement req :jobsList) {
+						jobIds.add(req.getId());
+					}
+				}
+			}
+		}
+		return jobIds;
 	}
 
 }

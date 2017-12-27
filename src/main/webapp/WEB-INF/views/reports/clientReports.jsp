@@ -10,6 +10,7 @@ $(document).ready(function(){
 	getTopFiveConracts();
 	getTopFiveReceivsblesReports();
 	topTenClientReports();
+	getTimeToFillReports();
 });
 </script>
 
@@ -179,12 +180,12 @@ $(document).ready(function(){
 			<div class="clearfix mt mb row">
 			  <div class="col-md-6">
 				<div class="projectDashboad clearfix positionRelative">
-				  <div id="avgttf" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
+				  <div id="timeToFill" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
 				</div>
 			  </div>
 			  <div class="col-md-6">
 				<div class="projectDashboad clearfix positionRelative">
-				  <div id="avgtth" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
+				  <div id="successPercentage" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
 				</div>
 			  </div>
 			</div>
@@ -421,6 +422,7 @@ function validateCustDates(){
 function refreshWithNewFreq(){
 	getTopFiveConracts();
 	getTopFiveReceivsblesReports();
+	getTimeToFillReports();
 }
 </script>
 
@@ -524,159 +526,9 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
 }
 </script> 
 		
-<script type="text/javascript">
-			AmCharts.makeChart("avgtth",
-				{
-					"type": "serial",
-					"categoryField": "category",
-					"rotate": true,
-					"marginBottom": 0,
-					"marginLeft": 0,
-					"marginTop": 10,
-					"startDuration": 1,
-					"categoryAxis": {
-						"gridPosition": "start",
-						"position": "left",
-						"title": ""
-					},
-					"trendLines": [],
-					"graphs": [
-						{
-							"balloonText": "[[value]]%",
-							"colorField": "color",
-							"fillAlphas": 1,
-							"id": "AmGraph-1",
-							"lineColorField": "color",
-							"title": "graph 1",
-							"type": "column",
-							"valueField": "column-1"
-						}
-					],
-					"guides": [],
-					"valueAxes": [
-						{
-							"axisFrequency": 0,
-							"id": "ValueAxis-1",
-							"totalText": "",
-							"unit": "",
-							"title": ""
-						}
-					],
-					"allLabels": [],
-					"balloon": {},
-					"titles": [
-						{
-							"id": "Title-1",
-							"size": 15,
-							"text": "Success Percentage"
-						}
-					],
-					"dataProvider": [
-						{
-							"category": "Applicants",
-							"column-1": "100",
-							"color": "#9575CD"
-						},
-						{
-							"category": "Shortlisted",
-							"color": "#90CAF9",
-							"column-1": "80"
-						},
-						{
-							"category": "Submit to Client",
-							"column-1": "50",
-							"color": "#FFB74D"
-						},
-						{
-							"category": "Interviewed",
-							"column-1": "30",
-							"color": "#5C6BC0"
-						},
-						{
-							"category": "Offered",
-							"column-1": "20",
-							"color": "#9CCC65"
-						},
-						{
-							"category": "Joined",
-							"column-1": "10",
-							"color": "#1E88E5"
-						}
-					]
-				}
-			);
-	</script> 
+
 <!-- amCharts javascript code --> 
-<script type="text/javascript">
-			AmCharts.makeChart("avgttf",
-				{
-	"type": "pie",
-	"innerRadius": "0%",
-	"pieX": "50%",
-	"pieY": "55%",
-	"radius": "40%",
-	"colorField": "color",
-	"labelsEnabled": false,
-	"titleField": "category",
-	"valueField": "column-1",
-	"export": {
-		"enabled": true
-	},
-	"allLabels": [],
-	"balloon": {
-		"showBullet": true
-	},
-	"legend": {
-		"enabled": true,
-		"markerLabelGap": 10,
-		"markerSize": 15,
-		"position": "left",
-		"spacing": 25,
-		"valueText": "[[value]] Days",
-		"valueWidth": 35,
-		"verticalGap": 15
-	},
-	"titles": [
-		{
-			"id": "Title-1",
-			"text": "Average Time to Fill"
-		}
-	],
-	"dataProvider": [
-		{
-			"category": "Applicants",
-			"column-1": 6,
-			"color": "#80CBC4"
-		},
-		{
-			"category": "Shortlisted",
-			"column-1": 2,
-			"color": "#FFB74D"
-		},
-		{
-			"category": "Submit to Client",
-			"column-1": 2,
-			"color": "#9575CD"
-		},
-		{
-			"category": "Interviewed",
-			"column-1": 2,
-			"color": "#4DD0E1"
-		},
-		{
-			"category": "Offered",
-			"column-1": 2,
-			"color": "#AED581"
-		},
-		{
-			"category": "Joined",
-			"column-1": "3",
-			"color": "#81D4FA"
-		}
-	]
-}
-			);
-</script> 
+
 
 <script>
 function getTopFiveConracts(){
@@ -863,6 +715,182 @@ function topTenClientReports(){
  	    }
 	});
 }
+</script>
+
+<script>
+function getTimeToFillReports(){
+	var frequency = $("#dateFrequency").val();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/getAllJobsPipelineReoportsList?&dateSelection="+frequency+"&fromtype=clientReport",
+	    success: function(data) {
+	    	getTimeToFillAmchartData(data);
+	    	getSuccessPercentageAmchartData(data);
+ 	    }
+	});
+}
+
+</script>
+
+<script>
+function getTimeToFillAmchartData(data){
+	
+	
+	AmCharts.makeChart("timeToFill",
+		{
+"type": "pie",
+"innerRadius": "0%",
+"pieX": "50%",
+"pieY": "55%",
+"radius": "40%",
+"colorField": "color",
+"labelsEnabled": false,
+"titleField": "category",
+"valueField": "column-1",
+"export": {
+"enabled": true
+},
+"allLabels": [],
+"balloon": {
+"showBullet": true
+},
+"legend": {
+"enabled": true,
+"markerLabelGap": 10,
+"markerSize": 15,
+"position": "left",
+"spacing": 25,
+"valueText": "[[value]] Days",
+"valueWidth": 35,
+"verticalGap": 15
+},
+"titles": [
+{
+	"id": "Title-1",
+	"text": "Average Time to Fill"
+}
+],
+"dataProvider": [
+{
+	"category": "Applicants",
+	"column-1": data.applicantsDays,
+	"color": "#80CBC4"
+},
+{
+	"category": "Shortlisted",
+	"column-1": data.shortlistedDays,
+	"color": "#FFB74D"
+},
+{
+	"category": "Submit to Client",
+	"column-1": data.submitToClientDays,
+	"color": "#9575CD"
+},
+{
+	"category": "Interviewed",
+	"column-1": data.interviewsDays,
+	"color": "#4DD0E1"
+},
+{
+	"category": "Offered",
+	"column-1": data.offeredDays,
+	"color": "#AED581"
+},
+{
+	"category": "Joined",
+	"column-1": data.offeredAcceptedDays,
+	"color": "#81D4FA"
+}
+]
+}
+	);
+}
 </script>		
+
+<script>
+function getSuccessPercentageAmchartData(data){
+	
+	AmCharts.makeChart("successPercentage",
+		{
+			"type": "serial",
+			"categoryField": "category",
+			"rotate": true,
+			"marginBottom": 0,
+			"marginLeft": 0,
+			"marginTop": 10,
+			"startDuration": 1,
+			"categoryAxis": {
+				"gridPosition": "start",
+				"position": "left",
+				"title": ""
+			},
+			"trendLines": [],
+			"graphs": [
+				{
+					"balloonText": "[[value]]%",
+					"colorField": "color",
+					"fillAlphas": 1,
+					"id": "AmGraph-1",
+					"lineColorField": "color",
+					"title": "graph 1",
+					"type": "column",
+					"valueField": "column-1"
+				}
+			],
+			"guides": [],
+			"valueAxes": [
+				{
+					"axisFrequency": 0,
+					"id": "ValueAxis-1",
+					"totalText": "",
+					"unit": "",
+					"title": ""
+				}
+			],
+			"allLabels": [],
+			"balloon": {},
+			"titles": [
+				{
+					"id": "Title-1",
+					"size": 15,
+					"text": "Success Percentage"
+				}
+			],
+			"dataProvider": [
+				{
+					"category": "Applicants",
+					"column-1": data.shortlistedMove,
+					"color": "#9575CD"
+				},
+				{
+					"category": "Shortlisted",
+					"color": "#9575CD",
+					"column-1": data.shortlistedMove
+				},
+				{
+					"category": "Submit to Client",
+					"column-1": data.submitToClientMove,
+					"color": "#FFB74D"
+				},
+				{
+					"category": "Interviewed",
+					"column-1": data.interviewsMove,
+					"color": "#5C6BC0"
+				},
+				{
+					"category": "Offered",
+					"column-1": data.offeredMove,
+					"color": "#9CCC65"
+				},
+				{
+					"category": "Joined",
+					"column-1": data.offeredAcceptedMove,
+					"color": "#1E88E5"
+				}
+			]
+		}
+	);
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
