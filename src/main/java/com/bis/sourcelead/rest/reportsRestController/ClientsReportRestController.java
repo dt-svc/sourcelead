@@ -25,8 +25,10 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.service.ClientReportService;
+import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -76,10 +78,14 @@ public class ClientsReportRestController {
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<ContractReportsDTO> contractList = new ArrayList<>();
 		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,contractReportsDTO);
+		
 		for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
 			ContractReportsDTO conDto = new ContractReportsDTO();
-			conDto.setClientName(entry.getKey());
-			conDto.setContractsCount(entry.getValue());
+			if(!"MsaCount".equalsIgnoreCase(entry.getKey()) && !"SowCount".equalsIgnoreCase(entry.getKey())
+					&& !"NdaCount".equalsIgnoreCase(entry.getKey()) && !"NsaCount".equalsIgnoreCase(entry.getKey())){
+				conDto.setClientName(entry.getKey());
+				conDto.setContractsCount(entry.getValue());
+			}
 			contractList.add(conDto);
 		}
 		
@@ -94,6 +100,14 @@ public class ClientsReportRestController {
 				return 0;
 			}
 		});
+		
+		ContractReportsDTO conDto = new ContractReportsDTO();
+		conDto.setMsaCount(clientcontractList.get("MsaCount"));
+		conDto.setSowCount(clientcontractList.get("SowCount"));
+		conDto.setNdaCount(clientcontractList.get("NdaCount"));
+		conDto.setNsaCount(clientcontractList.get("NsaCount"));
+		contractList.add(conDto);
+		
 		return contractList;
 	}
 	
@@ -160,6 +174,29 @@ public class ClientsReportRestController {
 		}
 	}
 	return newAmountList;
+	}
+	
+	@RequestMapping(value = "/getTopTenClientReports", method = RequestMethod.GET)
+	public List<ClientReportsDTO> getTopTenClientReports(@RequestParam(value = "frequency", required = false) String frequency,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<ClientReportsDTO> clientDtoList = new ArrayList<>();
+		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+		for(OrgRelations orgRelation : clientList){
+			ClientReportsDTO clientDto = new ClientReportsDTO();
+			if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
+				clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+			}else{
+				clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
+			}
+			List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId());
+			if(spocList != null && spocList.size() > 0)
+				clientDto.setNoOfContacts(spocList.size());
+			
+			clientDtoList.add(clientDto);
+		}
+		
+		return clientDtoList;
 	}
 	
 }

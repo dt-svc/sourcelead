@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 
@@ -18,5 +19,7 @@ public interface ClientReportDao {
 	List<OrgRelations> getAllClientsByOrgLocationIdAndUserId(Long locationId, Long userId);
 
 	List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user, Long relationId, String userRoleName,ContractReportsDTO contractReportsDTO);
+
+	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId);
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
@@ -64,6 +65,10 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		Map<String, Integer> conCount = new HashMap<>();
 		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
 		List<Contracts> contractList = new ArrayList<>();
+		int totalMsaCount = 0;
+		int totalSowCount = 0;
+		int totalNdaCount = 0;
+		int totalNsaCount = 0;
 		for(OrgRelations orgRelation : orgRelationsList){
 			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 //			contractList.add(conList.size());
@@ -73,9 +78,30 @@ public class ClientsReportServiceImpl implements ClientReportService{
 				}else{
 					conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
 				}
+				for(Contracts con : conList){
+					if(con.getContractType().contains("MSA")){
+						totalMsaCount += 1;	
+					}else if(con.getContractType().contains("SOW")){
+						totalSowCount += 1;
+					}else if(con.getContractType().contains("NDA")){
+						totalNdaCount += 1;
+					}else if(con.getContractType().contains("NSA")){
+						totalNsaCount += 1;
+					}
+				}
+				conCount.put("MsaCount",totalMsaCount);
+				conCount.put("SowCount",totalSowCount);
+				conCount.put("NdaCount",totalNdaCount);
+				conCount.put("NsaCount",totalNsaCount);
 			}
 		}
 		return conCount;
+	}
+
+	@Override
+	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId)
+	{
+		return clientReportDao.getClientSpocListByOrgRelationid(orgRelationid, locationId, userId);
 	}
 
 }

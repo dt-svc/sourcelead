@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
@@ -190,5 +191,22 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			return ContractsList;
 		else
 			return null;
+	}
+
+	@Override
+	@Transactional
+	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationId, Long orgLocationId, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		List<OrgSpoc> spocList = null;
+		if (isadmin) {
+			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId");
+			spocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		}else{
+			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId");
+			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+		}
+		return spocList;
 	}
 }
