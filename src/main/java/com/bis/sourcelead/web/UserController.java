@@ -171,6 +171,11 @@ public class UserController {
 					model.addObject("assignedProjectsCount", assignedProjectsCount);
 				}
 				
+				 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
+			     model.addObject("actionId",action.getId());
+			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+			     model.addObject("sourceleadSectionList",sections); 
+				
 				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");

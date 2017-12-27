@@ -36,13 +36,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -83,8 +84,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	private static final Logger logger = LoggerFactory.getLogger(ExportTimesheetEntriesImpl.class);
 	
+	
 	@Autowired
-	TimesheetEntriesDao timesheetEntriesDao;
+	TimeSheetDayEntriesDao timeSheetDayEntriesDao;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -269,13 +271,12 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    		
 		    		count = count+1;
 		    		//Collection<ProjectTasks>  ProjectTasksList = projectTasksService.getAllTasksByProjectId(ts.getProjectMembers().getProjects().getId());
-		    		Collection<TimesheetEntries>  timesheetEntriesList =   getAllTimesheetEntriesBySubmissionId(ts.getId());
+		    		Collection<TimeSheetDayEntries>  timesheetDayEntriesList =   getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
 		    		Long  totalHours =0l;
-					if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
-						    
-								Integer maxCount = timesheetEntriesList.size();
-								maxCount = maxCount+1;
-								for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
+					if(timesheetDayEntriesList != null && !timesheetDayEntriesList.isEmpty()){
+								//Integer maxCount = timesheetDayEntriesList.size();
+								//maxCount = maxCount+1;
+								for(TimeSheetDayEntries timesheetDayEntries   : timesheetDayEntriesList){
 									    Long weekTotHours = 0L;
 									    Long monHours = 0L;
 										Long tueHours = 0L;
@@ -287,75 +288,74 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 									    writeRow = sheet.createRow(count); 
 									      //lastRow = count+timesheetEntriesList.size();
 								              
-							            	  if(timesheetEntries.getProjectTask() != null){
-							     				 writeRow.createCell(0).setCellValue(timesheetEntries.getProjectTask().getTaskName()); 
+							            	  if(timesheetDayEntries.getProjectTask() != null){
+							     				 writeRow.createCell(0).setCellValue(timesheetDayEntries.getProjectTask().getTaskName()); 
 							            	  }
 								              Cell cell2 = null;
-								              if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
+								              if(weekMondayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
 								            	  cell2 = writeRow.createCell(1);
-								            	  cell2.setCellValue(timesheetEntries.getMonHours()); 
-								            	 // monTotHours = monTotHours + Double.parseDouble(timesheetEntries.getMonHours());
-								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
-								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
+								            	  cell2.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell2.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
 								              }
-							            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
-							            		  cell2.setCellComment(getCellComment(sheet,wb,timesheetEntries.getMoncomments()));
-							            	  }
+							            	  
 								              Cell cell3 = writeRow.createCell(2);
-								              if(timesheetEntries.getTueHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getTueHours())){
-								            	  cell3.setCellValue(timesheetEntries.getTueHours());
-								            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
-								            	  tueHours = tueHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
-								              }
-								              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
-								            	  cell3.setCellComment(getCellComment(sheet,wb,timesheetEntries.getTuecomments()));
+								              if(tuesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell3.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  tueHours =  tueHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell3.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
 								              }
 								              Cell cell4 = writeRow.createCell(3);
-								              if(timesheetEntries.getWedHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getWedHours())){
-								            	  cell4.setCellValue(timesheetEntries.getWedHours()); 
-								            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
-								            	  wedHours = wedHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
-								              }
-								              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
-								            	  cell4.setCellComment(getCellComment(sheet,wb,timesheetEntries.getWedcomments()));
+								              if(WednesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell4.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  wedHours =  wedHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell4.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
 								              }
 								              Cell cell5 = writeRow.createCell(4);
-								              if(timesheetEntries.getThuHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getThuHours())){
-								            	  cell5.setCellValue(timesheetEntries.getThuHours());   
-								            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
-								            	  thuHours = thuHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
+								              if(ThursDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell5.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  thuHours =  thuHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell5.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
 								              }
-							            	  if(!isNullOrEmpty(timesheetEntries.getThucomments())){
-							            		  cell5.setCellComment(getCellComment(sheet,wb,timesheetEntries.getThucomments()));
-							            	  }
 								              Cell cell6 = writeRow.createCell(5);
-								              if(timesheetEntries.getFriHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getFriHours())){
-								            	  cell6.setCellValue(timesheetEntries.getFriHours()); 
-								            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
-								            	  friHours = friHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
+								              if(FriDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell6.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  friHours =  friHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell6.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
 								              }
-							            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
-							            		  cell6.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
-							            	  }
 								              Cell cell7 = writeRow.createCell(6);
-								              if(timesheetEntries.getSatHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSatHours())){
-								            	  cell7.setCellValue(timesheetEntries.getSatHours());   
-								            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
-								            	  satHours = satHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
-								            	  
-								              } 
-							            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
-							            		  cell7.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
-							            	  }
+								              if(SaturdayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell7.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  satHours =  satHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell7.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
+								              }
 								              Cell cell8 = writeRow.createCell(7);
-								              if(timesheetEntries.getSunHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSunHours())){
-								            	  cell8.setCellValue(timesheetEntries.getSunHours());   
-								            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
-								            	  sunHours = sunHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
-								              } 
-							            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
-							            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
-							            	  }  
+								              if(SundayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  cell8.setCellValue(timesheetDayEntries.getTotalHours()); 
+								            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  sunHours =  sunHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
+								            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
+								            	  }
+								              }
 							            	  
 							            	  weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
 							            	  Cell cell9 = writeRow.createCell(8);
@@ -420,8 +420,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		 * @return Collection<TimesheetEntries> 
 		 * @throws NullPointer
 		 */
-    public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
-		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
+    public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception {
+		List<TimeSheetDayEntries> list = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionId(submissionId);
 		return list;
 		
 	}

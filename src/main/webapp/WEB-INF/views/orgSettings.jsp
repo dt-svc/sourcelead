@@ -575,7 +575,7 @@ function cancelOrgImg(){
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add IP</h4>
         </div>
         <div class="modal-body">
@@ -634,6 +634,12 @@ function switchLoginSecurity(){
 </script>
 
 <script>
+function closeWhiteListIp(){
+	$("#fromIpAddress").val("");
+	 $("#toIpAddress").val("");
+	 $("#whiteListId").val("");
+}
+
 function saveWhiteListIps(){
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
@@ -641,9 +647,16 @@ function saveWhiteListIps(){
 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+		var url = "";
+		if(whiteListId != '' && whiteListId != null && whiteListId != 'undefined'){
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId;  
+	      }else{
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress;
+	      }
 			$.ajax({
 			      type : "GET",
-			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
+			      url : url,
+			               
 			       success :function(data) {
 			       if(data == "Success"){
 			    	   $("#fromIpAddress").val("");

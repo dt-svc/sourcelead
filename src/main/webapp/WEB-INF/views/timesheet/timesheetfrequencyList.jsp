@@ -7,7 +7,7 @@
     <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
     <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
     <input type="hidden" id="timesheetFor" name="timesheetFor" value="user"/>
-	<select id='timesheetFrequency' name='currentTimeFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >
+	<select id='currentTimeFrequency' name='currentTimeFrequency' class='form-control chosen-select' onChange='timesheetDivByFrequency()' >
 		<c:forEach var="tf" items="${timesheetEntryDetailsDTO.timeFrequencies}">
 		    <option data-icon='fa fa-calendar' ${tf.key == timesheetEntryDetailsDTO.currentTimeFrequency ? "selected='selected'":"" } value="${tf.key}">${tf.value}</option>
 		</c:forEach>
@@ -20,7 +20,7 @@
 	function timesheetDivByFrequency(currentTimeSubFrequency){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var projectMemberId = $("#projectMemberId").val();
-	               var currentTimeFrequency = $("#timesheetFrequency").val();
+	               var currentTimeFrequency = $("#currentTimeFrequency").val();
 	               var subFrParam = '';
 	               if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
 	            	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
