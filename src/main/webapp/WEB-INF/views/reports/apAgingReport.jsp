@@ -26,7 +26,7 @@ $(document).ready(function(){
           <a href='${appPath}/apAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
      </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4 hidden">
-        <select class="form-control" id="custom-dates">
+        <select class="form-control" id="custom-datedds">
           <option>Select Date</option>
           <option selected>Last 7 days</option>
           <option>Last 15 days</option>
@@ -36,7 +36,7 @@ $(document).ready(function(){
           <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
-        <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
+        <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selecddt" style="display: none; width: 346px;">
           <div class="pull-left">
             <div class="pull-left mr5" style="width: 140px">
               <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
@@ -69,32 +69,32 @@ $(document).ready(function(){
         <div class="tableStyles">
          <div class="clearfix table_head">
         	 
-        	 <div class="col-md-offset-6 select-fild col-md-2 mt5">
+        	 <div class="col-md-offset-4 select-fild col-md-2 mt5">
                     <select id="apagingType" name="apagingType" onchange="change();">
                           <option value="Payables">By Vendor</option>
                           <option value="bill">By Bill</option>
                     </select>
              </div>
              <div class="col-md-2 dropdown-select positionRelatives mt5" style="display: none" id="customDatesDropdown">
-        <select class="form-control" id="custom-datess">
-          <option>Select Date</option>
-          <option selected>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
+        <select class="form-control" id="custom-dates"  name="filterDateType" onchange="vendorapagingBill();">
+          <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option>
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" >last year</option>
           <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
         <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
           <div class="pull-left">
-            <div class="pull-left mr5" style="width: 140px">
+            <div class="pull-left mr5" style="width: 125px">
               <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
             </div>
-            <div class="pull-left mr5" style="width: 140px">
+            <div class="pull-left mr5" style="width: 125px">
               <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
             </div>
-            <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+            <button type="button" class="btn btn-primary btn-sm">Submit</button>
           </div>
         </div>
         <!-- Top Leave Takers Custom Date --> 
@@ -104,14 +104,18 @@ $(document).ready(function(){
          	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5"><strong>250</strong></span>
          	 </p>
          </div>
+         <div class="clearfix"></div>
+         <div class='remove_search'>
+ 		 <input type='text' placeholder='Search' id='dataTableBillSearch'/>
+ 		</div>
          <div id="apagingVendorByBill" class="datatable_filter">
           
         </div>
         
         <div class="clearfix"></div>
-        <!-- <div class='remove_search'>
+       <div class='remove_search'>
  		 <input type='text' placeholder='Search' id='dataTableSearch'/>
- 		</div> -->
+ 		</div> 
       <div id="apagingByVendor" class="datatable_filter">
         </div>
         </div>
@@ -155,22 +159,7 @@ $(function() {
         });
     });
 </script>
-<!-- <script>
-$(function() {
-        $('#araginglistSel').change(function(){
-			var optval = $(this).val();
-			if(optval === "byInvoice") {
-				$("#byInvoice").show();
-				$("#byCustomer").hide();
-				$("#customDatesDropdown").show();
-			}else if(optval === "byCustomer"){
-				$("#byCustomer").show();
-				$("#byInvoice").hide();
-	$("#customDatesDropdown").hide();
-			}
-        });
-    });
-</script>  -->
+
 
 <script>
 function change(){
@@ -186,6 +175,8 @@ function change(){
 <script>
 function vendorapAging(){
 	   $("#apagingVendorByBill").empty();	
+	   $("#dataTableBillSearch").hide();
+	   $("#dataTableSearch").show();
 	    var apagingType = $("#apagingType").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -201,9 +192,9 @@ function vendorapAging(){
 function prepareApagingList(url){
 	   $("#apagingByVendor").empty();
  	    var result = "";
- 	    result = result +" <div class='remove_search'>";
+ 	    /* result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
- 	    result = result +"</div>";
+ 	    result = result +"</div>"; */
  	    result = result +"<table id='apagingPagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
@@ -350,11 +341,14 @@ function apaging(url){
   <script>
 function vendorapagingBill(){
 	$("#apagingByVendor").empty();	
-	   var apagingType = 'Payables';
+	   $("#dataTableSearch").hide();
+	   $("#dataTableBillSearch").show();
+	     var apagingType = 'Payables';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableBillSearch").val();
+		var filterDateType = $("#filterDateType").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType;
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterDateType="+filterDateType;
 		prepareApagingBillList(url);
 }
 </script>
@@ -362,9 +356,9 @@ function vendorapagingBill(){
 function prepareApagingBillList(url){
 	   $("#apagingVendorByBill").empty();
  	    var result = "";
- 	    result = result +" <div class='remove_search'>";
+ 	   /*  result = result +" <div class='remove_search'>";
 	    result = result +" <input type='text' placeholder='Search' id='dataTableBillSearch'/>";
-	    result = result +"</div>";
+	    result = result +"</div>"; */
  	    result = result +"<table id='apagingBillPagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
@@ -472,8 +466,23 @@ function apagingBill(url){
 	
 }
 </script>
-  
-  
+ 
+ <script>
+$(function() {
+        $('#apagingType').change(function(){
+			var optval = $(this).val();
+			if(optval === "Payables") {
+				$("#byInvoice").show();
+				$("#byCustomer").hide();
+				$("#customDatesDropdown").show();
+			}else if(optval === "bill"){
+				$("#byCustomer").show();
+				$("#byInvoice").hide();
+				$("#customDatesDropdown").hide();
+			}
+        });
+    });
+</script>
   <!-- Bill Started end -->
 
 

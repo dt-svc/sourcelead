@@ -43,6 +43,7 @@ public class FinanceDaoImpl implements FinanceDao{
 	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@SuppressWarnings("static-access")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public ResponseList<APAgingDTO> getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -134,7 +135,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			    		   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			    		   Date dueDate = sdf.parse(sdf.format(invoice.getDueDate()));
 			    		   if(dueDate.after(tenDays[0]) && dueDate.before(tenDays[1])) {
-			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getTotal());
+			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
 			    		   if(dueDate.after(fifteenDays[0]) && dueDate.before(fifteenDays[1])) {
 			    			   fifteenDaysTotal = fifteenDaysTotal + Double.parseDouble(invoice.getDueAmount());
@@ -162,7 +163,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			    		   apagingDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
 						}
 						if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-							apagingDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+							apagingDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 						}
 						   apagingDTO.setTenDays(tenDaysTotal);
 						   apagingDTO.setFifteenDays(fifteenDaysTotal);

@@ -52,7 +52,7 @@ public class FinanceServiceImpl implements FinanceService{
 					apagingDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
-					apagingDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+					apagingDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 				}
 				apagingDTO.setDueDate(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));

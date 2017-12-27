@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	arAgingInvoiceGraph();
 });
 </script>
 
@@ -31,17 +31,12 @@ $(document).ready(function(){
        
         <div class="col-md-4 col-md-offset-3">
     <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Client">
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
+		<select class="chosen-select form-control" multiple data-placeholder="Select Client" id="orgId" name="orgId">
+		 <c:if test="${not empty clientList}">
+               <c:forEach items="${clientList}" var="client">
+   						<option value='${client.id }'>${client.orgName}</option>
+				</c:forEach>
+		</c:if>
 		</select>
 	</div>
         </div>
@@ -74,7 +69,7 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="arAgingInvoiceGraph();">Customize</button>
 		</div>
 		<div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -134,8 +129,22 @@ var config = {
     $('#priority').trigger('chosen:updated');
 </script> 
 
-<!-- amCharts javascript code --> 
+
+<script>
+function arAgingInvoiceGraph(){
+	    var apagingType = 'Receivable';
+		var sourceleadUrl ='${sourceleadUrl}';
+		var orgIds = $("#orgId").val();
+	    $.post(sourceleadUrl+"/vendorapAgingBillGraph?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType+"&orgIds="+orgIds, function(json) {
+	    	prepareAragingGraph(json);
+		});  
+}
+</script>
+
+
 <script type="text/javascript">
+function prepareAragingGraph(data){
+	
 	AmCharts.makeChart("araging",
 	{
 	"type": "serial",
@@ -206,39 +215,40 @@ var config = {
 	"dataProvider": [
 		{
 			"category": "1 - 10 Days",
-			"value": "10000"
+			"value":""+data.tenDaysToatl+""
 		},
 		{
 			"category": "11 - 15 Days",
-			"value": "50000"
+			"value": ""+data.fifteenDaysTotal+""
 		},
 		{
 			"category": "16 - 30 Days",
-			"value": "10000"
+			"value": ""+data.thirtyDaysTotal+""
 		},
 		{
 			"category": "31  - 60 Days",
-			"value": "20000"
+			"value": ""+data.sixtyDaysTotal+""
 		},
 		{
 			"category": "61 - 90 Days",
-			"value": "30000"
+			"value": ""+data.nintyDaysTotal+""
 		},
 		{
 			"category": "91 - 180 Days",
-			"value": "80000"
+			"value": ""+data.oneeightyDaysTotal+""
 		},
 		{
 			"category": "181 - 365 Days",
-			"value": "40000"
+			"value": ""+data.threeSixtyFiveDaysTotal+""
 		},
 		{
 			"category": ">  365 Days",
-			"value": "50000"
+			"value":  ""+data.above365DaysTotal+""
 		}
 	]
 }
 );
+	}
 		</script> 
 
 

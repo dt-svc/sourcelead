@@ -29,6 +29,8 @@ public class APAgingDTO extends SearchDTO {
 	private double threeSixtyFiveDaysTotal;
 	private double above365DaysTotal;
 	private String orgIds;
+	private String filterDateType;
+	
 
 	public double getTenDays() {
 		return tenDays;
@@ -229,5 +231,15 @@ public class APAgingDTO extends SearchDTO {
 	public void setOrgIds(String orgIds) {
 		this.orgIds = orgIds;
 	}
+
+	public String getFilterDateType() {
+		return filterDateType;
+	}
+
+	public void setFilterDateType(String filterDateType) {
+		this.filterDateType = filterDateType;
+	}
+	
+	
 
 }

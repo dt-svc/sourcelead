@@ -104,6 +104,20 @@ public class FinanceReportRestController {
 	public ModelAndView arAgingGraphReport(HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			if(null != clientList){
+				for (OrgRelations orgRelations : clientList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+		 model.addObject("clientList", clientList);
 		 model.setViewName("reports/arAgingGraphReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
