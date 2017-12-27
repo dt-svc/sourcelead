@@ -176,7 +176,7 @@
          </div>
        </div>
                 
-                <div class="form-group">
+                <div class="form-group errorInptgroup">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
