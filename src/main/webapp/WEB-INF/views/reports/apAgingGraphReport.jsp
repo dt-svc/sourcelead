@@ -115,7 +115,7 @@ function vendorapAgingBillGraph(){
 	    	var result = "";
 	    	result = result + "<ul class='list-unstyled mt text-center ulDesing'>";
 	    	var year = json.above365Dates;
-	    	 $("#total").html(json.total) 
+	    	 $("#total").html(json.total.toFixed(2)) 
 	    	for(var i=0; i< year.length; i++){
 	    		var data = year[i];
 	    		result = result + "<li><label class='tblminwidth-50'>"+data.year+":</label><span>"+data.amount+"<b class='paddingLeft'></b></span></li>";
