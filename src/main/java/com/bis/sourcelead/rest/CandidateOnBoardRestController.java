@@ -744,7 +744,7 @@ public class CandidateOnBoardRestController {
 			}
 			
 			if(null != candidateOnBoarding.getCompanyEmail()){
-				candidateOnBoardingDTO.setState((candidateOnBoarding.getState()));	
+				candidateOnBoardingDTO.setCompanyEmail((candidateOnBoarding.getCompanyEmail()));	
 			}
 			if(null != candidateOnBoarding.getEndDateStr()){
 				candidateOnBoardingDTO.setEndDateStr((candidateOnBoarding.getEndDateStr()));	
