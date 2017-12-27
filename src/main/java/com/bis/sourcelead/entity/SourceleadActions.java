@@ -49,6 +49,9 @@ public class SourceleadActions implements Serializable{
 	@Transient
 	private String isActionConfigured;
 	
+	@Column(name = "STATUS", nullable = false)
+   	private Integer status;
+	
 	
 
 	public Long getId() {
@@ -89,6 +92,14 @@ public class SourceleadActions implements Serializable{
 
 	public void setIsActionConfigured(String isActionConfigured) {
 		this.isActionConfigured = isActionConfigured;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	
