@@ -47,13 +47,24 @@ public class FinanceReportRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/apAgingReport")
-	public ModelAndView clientReports(HttpServletRequest request) throws Exception
+	public ModelAndView apAgingReport(HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
 		 model.setViewName("reports/apAgingReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
 	}
+	
+	
+	@RequestMapping(value = "/arAgingReport")
+	public ModelAndView arAgingReport(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/arAgingReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
 	
 	/**
 	 *  Returns A/P Aging hraph JSP
@@ -89,6 +100,14 @@ public class FinanceReportRestController {
 	}
 	
 	
+	@RequestMapping(value = "/arAgingGraphReport")
+	public ModelAndView arAgingGraphReport(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/arAgingGraphReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
 	/**
 	 *  Get A/P aging Vendor report
 	 * @param request
