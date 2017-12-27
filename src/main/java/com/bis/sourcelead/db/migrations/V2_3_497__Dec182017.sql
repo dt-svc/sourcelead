@@ -1,2 +1,4 @@
+SET SQL_SAFE_UPDATES=0;
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Sourcelead Account Activation' WHERE UNIQUE_SCENARIO_NAME='ActivateUserEmail';
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Sourcelead Login Alert' WHERE UNIQUE_SCENARIO_NAME='LoginOTPEmail';
+SET SQL_SAFE_UPDATES=1;

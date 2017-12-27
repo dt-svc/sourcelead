@@ -509,22 +509,33 @@ public class DashboardRestController {
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 		if("today".equals(daterange)){
 			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+			 String customStartTimeStr = outputFormatter.print(zoned);
+			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			 String endDate = outputFormatter1.print(zoned);
+			 Date endDateString = TZ_DF_TS.parse(endDate);
+			 endUTCDate = endDateString;
+			 	/*old logic*/
+			/* DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 			 String startDate = outputFormatter.print(zoned);
 			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
 			 startUTCDate = TZ_DF_TS.parse(startDateString);
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
+			 endUTCDate = TZ_DF_TS.parse(endDateString);*/
 		}else{
 			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+			 String customStartTimeStr = outputFormatter.print(zoned);
+			 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			 /*old logic*/
+			 /*DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 			 String startDate = outputFormatter.print(zoned);
 			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
+			 startUTCDate = TZ_DF_TS.parse(startDateString);*/
 		}
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
