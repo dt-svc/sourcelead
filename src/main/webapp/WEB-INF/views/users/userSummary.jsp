@@ -32,9 +32,9 @@ max-height: inherit !important;
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>User Summary</h2>
+				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -205,7 +205,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit User</a>';
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'

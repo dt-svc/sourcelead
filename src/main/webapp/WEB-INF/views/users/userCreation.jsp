@@ -42,9 +42,9 @@
   <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Add User</h2>
+            <h2>Add Associate</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Users List</a> &raquo; Add User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
@@ -55,7 +55,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-                <div class="col-md-12 clearfix">
+      <%-- <div class="col-md-12 clearfix">
         <div class="well clearfix">
           
           <div class="col-md-6 er selectUser col-md-offset-3">
@@ -73,7 +73,7 @@
                  <option>Other</option>
              </select>
              </div>
-             <div class="col-md-8 paddingLeft">
+           <div class="col-md-8 paddingLeft">
            <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
 	          <!--   <option value="">-Select Employment Type-</option> -->
 	            <option value=" " selected>-Select Associate-</option>
@@ -85,7 +85,7 @@
           </div>
            <input type="hidden" id="associateId" name="associateId"/>
           </div>
-        </div>
+        </div> --%>
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>

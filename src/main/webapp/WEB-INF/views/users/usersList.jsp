@@ -80,10 +80,10 @@ function getUsersSearchResult(searchValue){
 			</div>
 	     </c:if>
       <div class="pull-left">
-        <h2>Users </h2>
+        <h2>Associates </h2>
       </div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
     <div class="timesheet_out">
     <div class="vendor_wrap" style="overflow-x: auto;">
@@ -242,15 +242,15 @@ function getUsersSearchResult(searchValue){
                 </c:forEach>
 				</select>
 		   </li>
-		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
+		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
+	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 	                      <li title="Import"><a href="<c:url value='${appPath}/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 	         </sec:authorize>		  
 		  
-		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
+		   <sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
 		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			    <div id="exportPop" class="user_exp">
 				   <ul class="ul_padding">
@@ -545,11 +545,11 @@ function exportToPdf(){
 			       	    	opt = opt +"</div>";
 			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
-			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">'
 			       	         	opt = opt +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
-			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">'
 		       	         	   opt = opt +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
