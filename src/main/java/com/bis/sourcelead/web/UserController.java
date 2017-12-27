@@ -176,7 +176,7 @@ public class UserController {
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
 				
-				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
+				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{
