@@ -640,7 +640,7 @@ width: 50px; height: auto; float: left; text-align: center; text-shadow: 1px 1px
 line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-in-out 0s; position: relative;
 }
 .side-bar .side-nav ul li:hover {
-	background: #3081cb;
+	background: #3081cb; color: #fff;
 }
 .side-bar .side-nav ul li.side-nav-active {
 	background: #3081cb;
@@ -825,10 +825,10 @@ bottom: 0; height: 45px; right: 0; position: relative; width: 100%; line-height:
  margin-left: 50px;
 }
 .copyright {
-float: left;
+	display: block; text-align: center;
 }
 .powered-by {
- float: right;
+
 }
 /* Form Footer Styles */
 .form-footer {
@@ -2350,7 +2350,7 @@ addTask-widget table tr th {
 	  padding-top:10px; border-top:1px solid #c1c1c1;
   }
   .design-view {
-	background: #ccc none repeat scroll 0 0; border-radius: 5px; margin-top: 15px; padding: 0 10px 10px;
+	background: #f6f6f6; border-radius: 5px; margin-top: 15px; padding: 0 10px 10px;
   }
   .design-view .select-skills{
 	  background:#fff; border-radius: 5px; padding-top:10px; padding-bottom:25px;
@@ -6237,7 +6237,10 @@ background-position: center; background-size: 200px; position: relative;top:-8px
     width:28% !important;
 }
 .bootstrap_dropdownMenu.dropdownPadding ul {
-	padding:0px 10px;
+	padding:5px 10px;
+}
+.bootstrap_dropdownMenu.dropdownPadding ul li {
+	padding: 5px;
 }
 .modal.modalAssignTeam {
     z-index: 99999!important;	
@@ -7229,6 +7232,7 @@ position:relative;
 }
 .jobpipline-count ul li {
 	padding: 10px; text-align: center; width: 19.5%; border-radius: 3px;
+
 	background-color: #fff; border: 1px solid #c3c3c3;
 	box-shadow: 1px 1px 2px #d8d8d8;
 }
@@ -7406,6 +7410,7 @@ min-height:80px;
 }
 .tableStyles {
 	position: relative; /*border: 1px solid #ddd;*/
+	overflow-y: auto;
 }
 .tableStyles table tbody{
 	background-color: #FAFAFA; border: 1px solid #BDBDBD;
@@ -7415,13 +7420,13 @@ font-weight: normal; color: #333; padding: 10px !important; border-bottom: 1px s
 height: 40px; vertical-align: middle;
 }
 .tableStyles table thead {
-background-color: #CBCBCB;
+background-color: #e5e5e5;
 }
 .tableStyles table tr {
 border-bottom: 1px solid #BDBDBD;
 }
 .tableStyles table tr td {
-position: relative; text-align: left; padding: 15px 10px; box-sizing: border-box; color: #757575;
+position: relative; text-align: left; padding: 11px 10px; box-sizing: border-box; color: #666;
 }
 .tableStyles_head {
 position: relative; min-height: 40px;
@@ -7509,19 +7514,8 @@ margin-right: 0;
 .bootSelectpicker .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
 width: 220px;
 }
-
-.popMask.popMask-zindex {
-	z-index: 10000 !important;
-}
-.cusFielPopup.cusFiel-popup {
-z-index: 10001 !important;	
-}
 .assignTableScroll.assignTableScroll-mnh {
 min-height: 150px;
-}
-
-.modal.addipPopup-modal {
-    display: none;
 }
 .authenticationMask {
 position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
@@ -7577,7 +7571,6 @@ vertical-align: middle !important; padding: 15px 10px !important;
 }
 .immigration-head {
 background-color: #f5f5f5; padding:5px 15px;
-
 }
 .importcsv-accordion h4 {
 	font-size: 14px; font-weight: normal;
@@ -7591,17 +7584,23 @@ background-color: #f5f5f5; padding:5px 15px;
 .importcsv-accordion ol li{
 	font-size: 12px; padding: 1px 0;
 }
-
 /* Card Model UI Styles */
 .cardModel-widget {
  background: #fff; padding: 15px; box-shadow: 1px 1px 2px #d8d8d8; border-radius: 3px; color: #444;
+<<<<<<< HEAD
  border: 1px solid #c3c3c3;
+=======
+border: 1px solid #c3c3c3;
+>>>>>>> b444d58f5e7de5029b0b3725533236f5941b8d78
 }
 .cardModel-widget h4 {
-	margin: 0; margin-bottom: 10px; font-size: 15px;
+	margin: 0; padding-bottom:10px; font-size: 15px; text-align: left;
 }
-.div-borderBottom {
-	border-bottom: 1px solid #ddd;
+.cardModel-widget label {
+	margin-bottom: 0;
+}
+.cardModelwidget-header {
+	border-bottom: 1px solid #EEEEEE; margin-bottom: 10px;
 }
 .mail-actionicons {
 position: absolute; right: 5px; top:8px; z-index: 1; color: #808080; cursor: pointer;
@@ -7623,7 +7622,55 @@ color: #444;
 padding: 5px 10px;
 }
 /* Card Model UI Styles */
-
+.payment-success {
+	padding: 30px; box-sizing: border-box; -webkit-border-radius: 10px;
+-moz-border-radius: 10px; -ms-border-radius: 10px; border-radius: 10px; background: #fff;
+}
+.paymentsuccess-header {
+	text-align: center;
+}
+.paymentsuccess-header h4 {
+	color: #66BB6A; font-size: 25px;
+}
+.paymentsuccess-header h4 span {
+	position: relative; top: -10px;
+}
+.paymentfailed-header h4 {
+	color: #EF5350; font-size: 25px;
+}
+.paymentfailed-header h4 span {
+	position: relative; top: -10px;
+}
+.ulDesing {
+	border: 1px solid #E0E0E0; border-radius: 3px;
+}
+.ulDesing li {
+	border-bottom: 1px solid #E0E0E0; padding: 5px 0;
+}
+.ulDesing li:nth-child(even) {
+	color: #FB8C00;
+}
+/*.ulDesing li:nth-child(odd) {
+	color: #388E3C;
+}
+.ulDesing li:last-child {
+	border-bottom: 0;
+}*/
+.timesheet-billingcount {
+	border: 1px solid #E0E0E0; padding: 10px 10px 15px; background-color: #FAFAFA; border-radius: 5px;
+}
+.timesheet-billingcount .colMd {
+	padding: 5px; text-align: center;
+}
+.fontSize20 {
+	font-size: 20px;
+}
+.validationTxt.whiteSpace {
+	white-space: normal;
+}
+.chosen-disabled {
+  opacity: 0.95 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

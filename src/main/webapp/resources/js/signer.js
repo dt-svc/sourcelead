@@ -14,8 +14,17 @@ var Signer = (function() {
 
 
     //Upload pdf doc for signing
-    let uploadDoc = function() {
-    	let sourceleadUrl = $("#sourceUrl").val();
+    let uploadDoc = function(publicUrl) {
+    	let sourceleadUrl = '';
+    	if(publicUrl == 'public')
+    		{
+    		 sourceleadUrl = $("#publicSourceUrl").val();
+    		 sourceleadUrl = sourceleadUrl.replace('/login', '');
+    		}
+    	else
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		}
     	let contractId = $("#contractId").val();
     	 $.ajax({
     	      type : "POST",

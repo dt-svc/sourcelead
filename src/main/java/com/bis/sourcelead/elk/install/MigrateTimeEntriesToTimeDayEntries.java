@@ -40,7 +40,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 String  endDate = resultSet.getString("END_DATE");
 				 LinkedHashMap<String,java.sql.Date> weeekDateList  = calculateDate(startDate,endDate);
 					/*Fetching all data of time-sheet Entries*/ 
-				 	String timesheetEntries = "SELECT * FROM sourcelead.timesheet_entries te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
+				 	String timesheetEntries = "SELECT * FROM sourcelead.TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
 					 ResultSet timesheetEntriesResultSet = stmt1.executeQuery(timesheetEntries);
 					 while(timesheetEntriesResultSet.next()){
 						 Long  projectTaskId = timesheetEntriesResultSet.getLong("PROJECT_TASK");
@@ -49,7 +49,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 						 String createdBy = timesheetEntriesResultSet.getString("CREATED_BY");
 						 Date  updatedDate = timesheetEntriesResultSet.getDate("UPDATED_DATE");
 						 String updatedBy = timesheetEntriesResultSet.getString("UPDATED_BY");
-						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.project_tasks where ID = "+projectTaskId+"";
+						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.PROJECT_TASKS where ID = "+projectTaskId+"";
 						 	ResultSet ptResultSet = stmt2.executeQuery(Type);
 						 	while(ptResultSet.next()){
 						 	String  taskType = ptResultSet.getString("BILLABLE_TYPE");

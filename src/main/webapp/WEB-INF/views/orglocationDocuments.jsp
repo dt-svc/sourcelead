@@ -266,7 +266,7 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 								success : function(result) {
 									
 									if(result == 'success'){
-										location.replace(sourceleadUrl+"/orgSettings"); 
+										$("#loading").removeAttr("style");
 						        	}else{
 						        		$("#loading").removeAttr("style"); 
 						        	}

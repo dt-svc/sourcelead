@@ -237,6 +237,10 @@ public class ClientController {
 				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
 				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
 				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocName", orgSpoc.getClientUser().getFullName());
+				model.addObject("spocLocationId", orgSpoc.getClientLocationId().getId());
+				model.addObject("orgRelationId", orgSpoc.getOrgRelations().getId());
+				model.addObject("userId", orgSpoc.getVendorUser().getId());
 			 }
 			}
 			

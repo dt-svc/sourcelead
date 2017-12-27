@@ -708,6 +708,34 @@ function preventTabkey(e){
 						  </sec:authorize>
 						  
 						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  	
+						 <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="subMenuView">
+						 	
+						 	
+<%-- 						 	<c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}"> --%>
+<!--                               <ul class="collapses" style="display: none"> -->
+<%--                                   <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
+<%--                                   <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
+<!--                               </ul> -->
+<%--                            </c:if> --%>
+                              
+<%--                            <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}"> --%>
+<!--                            <ul class="collapses" style="display: none"> -->
+<%--                                <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
+<%--                                 <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
+<!--                            </ul> -->
+<%--                            </c:if> --%>
+						 	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
+			
+			                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
+								<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
+		 
+			         </sec:authorize>
+						 	
+								
+							</div>
+						 </li> 	
 						  
 	              </ul>
 	            </div>
@@ -1936,3 +1964,12 @@ function zipcodeMask(country,zipCodeId){
 </script>
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
+<script>
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+});
+</script>
+
