@@ -367,7 +367,6 @@
 										               </div>
 									                 </div>
 									                 <c:set var="entryIndex" value="${entryIndex+1}"/>
-									                 <input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
 									              </td>
 									         </c:if>
 									       </c:forEach>
@@ -378,6 +377,7 @@
 										<td></td>
 										<td>
 											<div class="alignDiv">
+											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
 												<input disabled="" id="rowTotal1Id" name="rowTotal1Id"
 													class="inline_field" value="HH:MM" placeholder="00:00"
 													type="text">
@@ -743,7 +743,7 @@ function withdrawMyTimesheet(){
 	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var projectMemberId = $("#projectMemberId").val();
-	 var timesheetFrequency  = $("#timesheetFrequency").val();
+	 var timesheetFrequency  = $("#currentTimeFrequency").val();
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
@@ -1052,10 +1052,11 @@ function removeTimeSheetRow(rowId) {
 			 document.getElementById("timesheetRow"+rowId).value= '';
 			 var  rId = "timesheetRow"+rowId;
 			  var r = document.getElementById("timesheet").rows[rId];
-	          var count = 2*(r.cells.length);
-			    for(i=0;i<=count;i++){
-			        r.deleteCell(0);
-			    } 
+	          var count = (r.cells.length);
+		      for(i=0;i<count;i++){
+		        r.deleteCell(0);
+		      } 
+		      setTotals(); 
 		}
 		
 </script>	
@@ -1069,53 +1070,68 @@ function clearTimesheet(){
 <script>
 
 function editMe(local){
-	 var id = local.id;
-	 var inputValue =  $("#"+id).val();
-	 var split = inputValue.split(':');
-	 var hours = split[0];
-	 var minutes = split[1];
-	 var hours1 = hours.charAt(0);
-	 var hours2 = hours.charAt(1);
-	 var min1 = minutes.charAt(0);
-	 var min2 = minutes.charAt(1);
-	
-	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("0"+hours1+":00");
-	 }
-	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("0"+hours2+":00");
-	 }
-	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val("00:"+min1+"0");
-	 }
-	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-		 $("#"+id).val("00:0"+min2);
-	 }
-	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val(hours+":00");
-	 }
-	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-		 $("#"+id).val(hours+":"+"0"+min1);
-	 }
-	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-		 $("#"+id).val(hours+":"+"0"+min2);
-	 }
-	 else if(!isNaN(hours)&& !isNaN(minutes)){
+	     var id = local.id;
+	     var inputValue =  $("#"+id).val();
+		 var split = inputValue.split(':');
+		 var hours = split[0];
+		 var minutes = split[1];
+		 var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var min1 = minutes.charAt(0);
+		 var min2 = minutes.charAt(1);
 		
-		  var hrmin= hours * 60;
-		  var totalMin = parseInt(hrmin) + parseInt(minutes);
-		  hours = Math.floor(totalMin / 60); 
-		  minutes = totalMin % 60;
-		  if(hours<=9){
-			  hours = "0"+hours;
-		  }
-		  if(minutes<=9){
-			  minutes = "0"+minutes;
-		  }
-		  $("#"+id).val(hours+":"+minutes);
-	 }
-	 setTotals();
-	 checkHours();
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours1+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours2+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("00:"+min1+"0");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val("00:0"+min2);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":00");
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min1);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min2);
+			 setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(minutes)){
+			  var hrmin= hours * 60;
+			  var totalMin = parseInt(hrmin) + parseInt(minutes);
+			  hours = Math.floor(totalMin / 60); 
+			  minutes = totalMin % 60;
+			  if(hours<=9){
+				  hours = "0"+hours;
+			  }
+			  if(minutes<=9){
+				  minutes = "0"+minutes;
+			  }
+			  $("#"+id).val(hours+":"+minutes);
+			  setTotals();
+			  checkHours(); 
+		 }
+		 
+	
 }
 
 function checkHours(){ 
@@ -1343,7 +1359,7 @@ function dropDownExport(){
 <!-- this script is for Timesheet Entries Export -->
 <script>
 function timesheetEntriesExport(exportType){
-	var currentTimeFrequency = $("#timesheetFrequency").val();
+	 var currentTimeFrequency = $("#currentTimeFrequency").val();
 	var dateFrequency = currentTimeFrequency.split('To');
 	var projectMemberId = $("#projectMemberId").val();
 	var startDate = dateFrequency[0];
