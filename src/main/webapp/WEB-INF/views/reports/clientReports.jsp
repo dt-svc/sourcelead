@@ -845,11 +845,11 @@ function topTenClientReports(){
 	            	result += '  <tr>';
 		            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientName+'</a> </div></td>';
 		            result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
-		            result += '    <td><div class="tblminwidth-30">100</div></td>';
-		            result += '    <td><div class="tblminwidth-30"> <strong class="">200</strong> <small class="text-danger">20%<i class="fa fa-sort-desc"></i></small> </div></td>';
-		            result += '    <td><div class="tblminwidth-30"> <strong class="">100</strong> <small class="text-danger">8%<i class="fa fa-sort-asc"></i></small> </div></td>';
+		            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
+		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
+		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 		            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
-		            result += '    <td><div class="tbldata-dotdot-vsm">200</div></td>';
+		            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
 		            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
 		            result += '  </tr>';
 	            }

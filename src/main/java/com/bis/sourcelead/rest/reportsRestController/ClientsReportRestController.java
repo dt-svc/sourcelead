@@ -22,11 +22,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
@@ -47,6 +51,9 @@ public class ClientsReportRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	ClientReportDao clientReportDao;
 	
 	@RequestMapping(value = "/clientReports")
 	public ModelAndView clientReports(HttpServletRequest request) throws Exception
@@ -180,6 +187,7 @@ public class ClientsReportRestController {
 	public List<ClientReportsDTO> getTopTenClientReports(@RequestParam(value = "frequency", required = false) String frequency,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<ClientReportsDTO> clientDtoList = new ArrayList<>();
 		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
 		for(OrgRelations orgRelation : clientList){
@@ -192,6 +200,27 @@ public class ClientsReportRestController {
 			List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId());
 			if(spocList != null && spocList.size() > 0)
 				clientDto.setNoOfContacts(spocList.size());
+			else
+				clientDto.setNoOfContacts(0);
+			
+			List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),user.getId());
+			if(reqList != null && reqList.size() > 0)
+				clientDto.setReleasedJobs(reqList.size());
+			else
+				clientDto.setReleasedJobs(0);
+			for(Requirement req : reqList){
+				Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),user.getId());
+				clientDto.setSubmissionCount(subListCount.get("submissionCount"));
+				clientDto.setSubmissionCount(subListCount.get("hiredCount"));
+			}
+			ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+			contractReportsDTO.setFrequency(frequency);
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user,orgRelation.getId(),userRoleName,contractReportsDTO);
+			if(conList != null && conList.size() > 0){
+				clientDto.setTotalContracts(conList.size());
+			}else{
+				clientDto.setTotalContracts(0);
+			}
 			
 			clientDtoList.add(clientDto);
 		}

@@ -9,6 +9,11 @@ public class ClientReportsDTO {
 	private String toDate;
 	private int releasedJobs;
 	private int noOfContacts;
+	private int submissionCount;
+	private int hiredCount;
+	private int avgTTF;
+	private int totalContracts;
+	private int totalBillingAmount;
 	public String getClientName()
 	{
 		return clientName;
@@ -65,4 +70,45 @@ public class ClientReportsDTO {
 	{
 		this.noOfContacts = noOfContacts;
 	}
+	public int getSubmissionCount()
+	{
+		return submissionCount;
+	}
+	public void setSubmissionCount(int submissionCount)
+	{
+		this.submissionCount = submissionCount;
+	}
+	public int getHiredCount()
+	{
+		return hiredCount;
+	}
+	public void setHiredCount(int hiredCount)
+	{
+		this.hiredCount = hiredCount;
+	}
+	public int getAvgTTF()
+	{
+		return avgTTF;
+	}
+	public void setAvgTTF(int avgTTF)
+	{
+		this.avgTTF = avgTTF;
+	}
+	public int getTotalContracts()
+	{
+		return totalContracts;
+	}
+	public void setTotalContracts(int totalContracts)
+	{
+		this.totalContracts = totalContracts;
+	}
+	public int getTotalBillingAmount()
+	{
+		return totalBillingAmount;
+	}
+	public void setTotalBillingAmount(int totalBillingAmount)
+	{
+		this.totalBillingAmount = totalBillingAmount;
+	}
+	
 }

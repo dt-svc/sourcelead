@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
@@ -208,5 +210,38 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
 		}
 		return spocList;
+	}
+
+	@Override
+	@Transactional
+	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationId, Long orgLocationId, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+//		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		List<Requirement> reqList = null;
+		Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId");
+		reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return reqList;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Map<String, Integer> subCount = new HashMap<>();
+//		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		List<RequirementSubmission> reqSubList = null;
+		Query query= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId");
+		reqSubList = query.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			subCount.put("submissionCount", reqSubList.size());
+		
+		List<RequirementSubmission> hiredList = null;
+		Query hiredQuery= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = 'OFFERACCEPTED'");
+		hiredList = hiredQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(hiredList != null)
+			subCount.put("hiredCount", hiredList.size());
+		
+		return subCount;
 	}
 }

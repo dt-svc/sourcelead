@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ClientReportService;
@@ -102,6 +104,18 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId)
 	{
 		return clientReportDao.getClientSpocListByOrgRelationid(orgRelationid, locationId, userId);
+	}
+
+	@Override
+	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId)
+	{
+		return clientReportDao.getClientJobsByOrgRelationId(orgRelationid,locationId,userId);
+	}
+
+	@Override
+	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId)
+	{
+		return clientReportDao.getSubmissionListByRequirementId(requirementId,orgLocationId,userId);
 	}
 
 }
