@@ -28,7 +28,7 @@
 			noUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
-		if (leaveEffective == 'AllEmployees') {
+		if (leaveEffective == 'AllEmployees' || leaveEffective == '') {
 			hideExperienced();
 		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
 			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
